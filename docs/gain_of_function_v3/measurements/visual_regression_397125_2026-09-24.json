@@ -1,0 +1,72 @@
+{
+  "version": "visual_regression_audit_v1",
+  "status": "regression confirmed on identical inputs; cause not yet located",
+  "measured_at": "2026-09-24 09:05:54 PM PDT (raw result file time)",
+  "source_step": 397125,
+  "reference_step": 380500,
+  "reference": "the qualified model: the private qualification run (qualification_hand_vision_v3) after its 300 repaired updates from the same step-380,200 save production resumed from at 4:03 AM PDT",
+  "reference_checkpoint": "Saved\\gof_takeover_20260924\\repair\\qualification_hand_vision_v3\\experiments\\candidate\\checkpoints\\ckpt_step_380500",
+  "source_checkpoint": "Saved\\mimo_bridge\\experiments\\H84_fresh_drivers_20260918_seg39_resume_20260924_203443\\checkpoints\\ckpt_step_397125",
+  "fixed_input_windows": 8,
+  "fixed_inputs": "replay windows drawn with seed 947 from the step-397,125 replay memory, each 128 stored moments (the last is the current moment) plus the moment after it as the target; both models predict that target vision token from the same stored tokens",
+  "score": "Mean squared difference per encoded visual feature; lower is better",
+  "comparison": "'the picture stays the same': the current vision token used as the prediction of the next (persistence_mse; identical for both models because the inputs are identical)",
+  "raw_evidence": "Saved\\gof_takeover_20260924\\repair\\visual_audit_397125\\result.json",
+  "raw_evidence_sha256": "083cfd07acc8280e4cb83a9de4e224d9da9be5a6c9c7e170ca4e50455e2bee9f",
+  "run_by": "docs/gain_of_function_v4/continue_pause_2026-09-24_evening.py (job vision_audit_397125, exit 0, 52.5 s; receipt Saved\\gof_observer_20260924\\pauses\\20260924_203751\\receipt_continued.json)",
+  "frozen_comparison": {
+    "before": {
+      "base_mse": 4.8355302810668945,
+      "total_mse": 0.005999306216835976,
+      "persistence_mse": 0.004851604346185923,
+      "regularizer_base": 0.20197388529777527,
+      "regularizer_total": 0.015477830544114113
+    },
+    "after": {
+      "base_mse": 5.745920181274414,
+      "total_mse": 0.0149812838062644,
+      "persistence_mse": 0.004851604346185923,
+      "regularizer_base": 0.17123423516750336,
+      "regularizer_total": 0.006583735346794128
+    }
+  },
+  "derived": {
+    "before_times_the_unchanged_picture_error": 1.24,
+    "after_times_the_unchanged_picture_error": 3.09,
+    "after_over_before": 2.5,
+    "windows_where_after_is_worse": "8 of 8",
+    "part_swaps_into_the_397125_model": {
+      "old_prediction_heads": {
+        "total_mse": 2.1003551483154297,
+        "times_the_unchanged_picture_error": 432.92
+      },
+      "old_efference_weights": {
+        "total_mse": 1.277442216873169,
+        "times_the_unchanged_picture_error": 263.3
+      },
+      "old_efference_centres": {
+        "total_mse": 0.04225245490670204,
+        "times_the_unchanged_picture_error": 8.71
+      },
+      "old_heads_and_efference": {
+        "total_mse": 0.7682588696479797,
+        "times_the_unchanged_picture_error": 158.35
+      }
+    },
+    "same_raw_image_encoder_feature_cosine": 0.782,
+    "same_raw_image_encoder_feature_cosine_scale": "1 = the vision encoder turns the same raw picture into the same features as the qualified model; 0 = unrelated"
+  },
+  "reading": [
+    "On the same 8 saved moments, the step-397,125 model's next-picture error is 3.09 times the error of 'the picture stays the same'; the qualified step-380,500 model's is 1.24 times. The newer model's error is 2.50 times the qualified model's and is larger on 8 of 8 moments.",
+    "Neither model beats 'the picture stays the same' on these moments.",
+    "Putting parts of the qualified model into the newer one did not restore its accuracy. The parts were the prediction heads (the output layers that turn the transformer's state into each sense's next token), the efference-copy weights (the parts that predict what the model's own commands change; for vision, how the picture shifts when the eyes move), their running centres, and heads plus efference weights together. Each swap gave 8.7 to 433 times the unchanged-picture error, against 3.09 times without a swap. The encoder's features changed too, so this swap cannot show where the loss is.",
+    "The vision encoder changed as well: for the same raw pictures, the average cosine similarity between its features and the qualified model's is 78 on a scale where 100 means the same features and 0 unrelated ones. Both models start from the step-380,200 save: the qualified one took 300 private updates, the newer one 16,925 production updates. How much encoder change is normal over that much training has not been measured."
+  ],
+  "not_measured": [
+    "The private training arms (--train): whether the morning cause, one unnormalized input to the visual prediction network growing (VISUAL_REGRESSION_2026-09-24.md), has returned, and whether the morning treatment repairs it again. A first run at 9:28-9:29 PM PDT stopped without a result: on the step-380,500 model its input-conditioning arm changed the starting prediction by up to 1,466 times a typical token value, because the repaired vision head already divides its input by its saved input_scale (lem/model/input_conditioning.py) and the arm replaces that forward pass (log Saved/gof_observer_20260924/pauses/20260924_212748/vision_audit_397125_train64.log).",
+    "A larger sample: the morning audit used 64 saved moments (--windows 64); this one used the default 8."
+  ],
+  "script": "docs/gain_of_function_v3/audit_visual_regression_2026_09_24.py",
+  "script_sha256": "24b4533bce54187460e7bdaf45effa1147e213ab91cc3f5e25f5e2efcfdf93de",
+  "code_unchanged_during_audit": true
+}

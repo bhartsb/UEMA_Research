@@ -1,0 +1,139 @@
+SECOND INDEPENDENT READ OF THE REACH PLAN PAGE
+Page: docs/H84_REACH_SOLUTION_REVISED_2026-10-23.html, sha256 3127648272e72f2e3dc9fd0f9dafc9c4a8c0a27edb0eb8c3cbf8adfe1c49a077 (checked; written 2:43:32 AM PDT).
+Reader: the same independent reviewer agent as the first read (page_review_20261024.txt); it edited nothing except this file. Written Oct 24, 2026, 2:49 AM PDT (clock).
+Read: the whole page top to bottom; the diff against the committed version; the two new data files (step1_three_way_20261024.json, written 2:39 AM; c_drive_reading_20261024.json, read_at 2:43:32 AM); and, for the new mechanism and source claims, the code and files named below.
+
+RESULT
+- Of the 44 first-read findings: 41 APPLIED, 3 PARTLY APPLIED (3, 20, 37), 0 NOT APPLIED.
+- New findings introduced by the rewrite: 8 (1 HIGH, 7 LOW). The HIGH one (N1) is a false statement that came from my own first-read suggestion in finding 14.
+- Numbers in the changed text that disagree with their file: 2 (two E medians, each 0.01 off the raw result file).
+- Cognitive load of section 7 now: 4 of 10 (first read: 6).
+
+====================================================================================================
+(1) THE 44 FIRST-READ FINDINGS
+====================================================================================================
+1 Heading built on "nearer": APPLIED (the heading gives 1.49/1.94, 4.85/8.36 and 5.13/7.62 cm).
+2 No predicted row for the direct command: APPLIED ("unmeasured" row).
+3 Not the section-2 table: PARTLY APPLIED. The rows are added (within 2.0 cm at the start and at 3 s, predicted nearer, nearer than the start, measured minus predicted) and the caption warns against subtracting medians. Still missing: a per-body table on the page (section 2 has a collapsed per-command table; here the per-hand values exist only in step1_three_way_20261024.json).
+4 Planner's predicted row without a why: APPLIED.
+5 16 of 16 without its size: APPLIED (0.50 cm and 1.52 cm against 0.0000847 cm).
+6 Arrival rule without "first", body 6 hidden: APPLIED in section 7 (both counts, the first-arrival rule named, body 6 described). Residual, outside section 7: the opening's definition of Stayed still reads "after arriving" with no "first".
+7 One-hand results, E, falls missing: APPLIED (two E medians are 0.01 off; see part 3).
+8 Body 3 sentence without purpose: APPLIED.
+9 Body 5 contact: APPLIED (right-hand fingers, the mobile defined, the contact rule cited, the "Do not enable D as a general controller" reason given).
+10 Rule quoted without the ruling: APPLIED.
+11 Relation to steps 2 and 3: APPLIED ("Step 2 has no decision yet").
+12 Second attempt's status: APPLIED.
+13 Fragment, "the run" ambiguous: APPLIED.
+14 "wrist" undefined, "far": APPLIED as I suggested (2.25 cm; the row defined), but my suggested definition was wrong; see N1.
+15 Blend's consequence: APPLIED.
+16 Box without a why: APPLIED.
+17 Computation sentence: APPLIED (the 4 rows named, the 11 ignored rows, finger rows rebuilt, the first command as the planner uses it).
+18 Differences from the direct command: APPLIED.
+19 "conversion" with two meanings: APPLIED.
+20 Several names for the planner's selection: PARTLY APPLIED. "the planner's result" is now defined in the Output item, but two other names remain: "with the search's choice at 0.029862 between them" (quaternion-sign item) and "the same search result" (identity bullet of the test). Both mean the planner's result.
+21 Switch-off equality without facts: APPLIED (but see N3 on "test scenes").
+22 Test counts without the failing set: APPLIED (299 tests: 291 passed, 5 failed, 3 skipped, the same 5 on the code before the change).
+23 "writing" and 1,200: APPLIED.
+24 Body head reading the sign: APPLIED. The mechanism matches the review and the code in substance; strictly, the motor encoder (encoder_registry.py line 297) reads the raw numbers and feeds the transformer. "the transformer, which receives the 4 numbers as written" is a simplification I accept.
+25 Round-2 recommendations understated: APPLIED (three, all made).
+26 Paragraph too long: APPLIED (lists).
+27 Why 496,250: APPLIED.
+28 What the test cannot show, no pass line: APPLIED.
+29 Learning on without a why, run ambiguity, order: APPLIED. The new reason ("the decision being tested is made after that model step's learning update") is supported by the a2 code's comment, lem_model.py lines 6236-6237: "step() encodes this model step's frame (tokens_raw) BEFORE its optimizer update (self.optimizer.step()), and the planner runs AFTER it".
+30 300 s without a basis: APPLIED (72.682 + 6 x 2.6811 + 81.062 = 169.83 s).
+31 "learned state": APPLIED (now "saved state", defined).
+32 "seven checks" against "seven gates": APPLIED.
+33 Trigger, Tests rows, "sealed": APPLIED.
+34 9.77 GiB without a source; launch check; page file: APPLIED (9.73 GiB with its file; "the commit guard (section 6's resource check)"; the page file defined).
+35 "the same checks", 14 GiB: APPLIED (but see N4 on the first check's wording).
+36 The operator's setting without a why: APPLIED.
+37 Start check by one screen, repeat, 282.6 s: PARTLY APPLIED. Hand point, turn, contact pairs, the repeat and the 282.6 s are now explained. Still missing: the fourth screen, "each matched contact place within 0.1 cm"; result.json fidelity.places reads "within" for all 8 bodies, largest 0.0000031 cm (3.13e-06).
+38 Open facts never closed; the statement: APPLIED.
+39 Header: APPLIED.
+40 Section 6 forward reference; 892779037 missing: APPLIED (section 6 restored; the records list moved to section 8 with 892779037).
+41 Decisions of 10:13 PM and 11:21 PM unnamed: APPLIED.
+42 Sources incomplete: APPLIED (but see N8: the scene file has no path).
+43 Undefined words: APPLIED (commit, branch, page file, sealed defined; "subagent" replaced).
+44 Section 3's arm solve: APPLIED. Checked against action_decoder.py: "Arm and leg segments stay orientation-only: the arm is solved as one group whose wrist already carries position rows"; HANDLE_CHAINS "upperarm_L": ("left_upper_arm",) and "lowerarm_L": ("left_lower_arm",) carry turns only.
+
+====================================================================================================
+(2) NEW FINDINGS INTRODUCED BY THE REWRITE
+====================================================================================================
+N1 [HIGH] The wrist row is the hand point's row; the page now says the opposite.
+Sentence: "Each hand's command row requests the position of the wrist, a point other than the hand point."
+Fails: false in the code. The hand's command row wrist_L or wrist_R belongs to the hand body: proprio_adapter.py maps "wrist_L": "left_hand"; action_decoder.py HANDLE_CHAINS "wrist_L": ("left_hand", "left_lower_arm", "left_upper_arm"). The replay tool defines the palm point (the page's hand point) as "the origin of the hand body (left_hand and right_hand: the wrist_L and wrist_R handle rows; the centre of the palm box ...)" (physical_comparison.py lines 186-187). So the row requests a position for the hand point itself; "wrist" is only the code's name for the row. This wording is my first-read suggestion for finding 14, which was wrong; the rewrite applied it as given.
+Needs: "Each hand's command row (the code calls it wrist_L or wrist_R) requests a position for the hand point. In the 8 bodies the first command's two hand rows lay 5.37 cm to 26.56 cm from T's hand points, ... so every version the search could make kept each requested hand point at least 2.25 cm from T's." The 2.25 cm arithmetic is unaffected.
+
+N2 [LOW] Banned filler, and the quote is attributed wrongly.
+Sentence: "the decision of 11:21 PM ordered it built on a separate branch (...), switched off by default, and stated its cause plainly: "the search only allowed small changes around its first command; ...""
+Fails: "plainly" is the meta-language the style guide bans ("said plainly"). In the decision the quoted words follow "Existing page owner should add the result and plain cause:", so the overseer gave the page owner wording to add; it was not stating the cause in its order.
+Needs: "... switched off by default, and gave this page its cause: "..."".
+
+N3 [LOW] "scene" carries two meanings.
+Sentence: "In 3 test scenes the reviewer ran, the outputs with the switch off matched the code before the change in every recorded number; ..."
+Fails: section 8 now uses "scene" for the simulated world file ("the scene file mimo_bridge_crib_w5.xml"); the review report says "scenarios".
+Needs: "In 3 test scenarios the reviewer ran, ...".
+
+N4 [LOW] One of the five checks is impossible as written.
+Sentence: "... after five checks: the folder and its parents lie inside the user's Temp folder; none of them is a reparse point (a redirection to another place); ..."
+Fails: the folder's parents include C:\Users\bhart and C:\, which do not lie inside the Temp folder. The check is that the folder's resolved path lies inside the user's Temp folder; the reparse check covers the folder and every folder above it up to C:\ (the precheck file dardntvf_precheck_dry.json lists parents to C:\).
+Needs: "the folder's resolved path lies inside the user's Temp folder; neither it nor any folder above it is a reparse point (...)".
+
+N5 [LOW] "first command" now has two definitions.
+Sentence (section 7): "As the planner uses it, the first command is the motor controller's command with its eye row and finger goal set by the planner's own gaze and hand stages."
+Fails: the opening still says the motor controller's output "is called the first command", and section 2's table note still reads ""first command" = the planner sent the motor controller's command unchanged". One term, two definitions on one page (ONE WORD PER THING).
+Needs: put section 7's definition into the opening's definition once, and let section 7 use it.
+
+N6 [LOW] "the keep rule" is used as a name without being introduced.
+Sentence: "... the extra version replaces the planner's result (the search's best version, or the first command when no version passed the keep rule) ..."
+Fails: the opening describes the rule (below both the start pose's score and the first command's predicted score) but never names it "keep rule".
+Needs: name it in the opening ("the keep rule") or write "when no version passed the opening's rule".
+
+N7 [LOW] "Its" has no clear referent.
+Sentence: "Its targets differ from step 1's, so the result is not a rerun of step 1."
+Fails: "Its" follows "the complete saved state of model step 496,250"; the targets are the planner's choices at that model step.
+Needs: "The targets the planner chooses at model step 496,250 differ from step 1's (chosen at 496,260), so ...".
+
+N8 [LOW] A source named without a path.
+Sentence (section 8): "the mobile: the scene file mimo_bridge_crib_w5.xml, body mobile."
+Fails: no folder is given, so a reader cannot find it. The copy the run wrote is D:/UEMA_Research/external/D/UEMA_scratch/h84/d1_planner_recovery/attempts/reach_baseline_8start_a1/tmp/scenes/mimo_bridge_crib_w5.xml (body "mobile", geom "mobile_string" 0 to -0.60 m); the source is Source/Python/mimo_bridge/env.py, MOBILE_XML. The "60 cm string" itself is right.
+Needs: the path.
+
+====================================================================================================
+(3) NUMBERS IN THE CHANGED TEXT THAT DISAGREE WITH THEIR FILE
+====================================================================================================
+1. Direct command's E median at 250 ms: the page and step1_three_way_20261024.json (E_medians.direct_250ms) read 2.02. The raw result file it is "computed from" gives 2.0134, which is 2.01. Cause: the data file took the median of per-body values already rounded to 2 decimals ((1.93 + 2.10) / 2 = 2.015).
+2. Direct command's E median at 3 s: the page and the data file (E_medians.direct_3s) read 1.14; the raw result file gives 1.1344, which is 1.13 (same cause: (1.09 + 1.18) / 2 = 1.135).
+
+Checked and matching:
+- The other E medians against raw values: start 6.7094 (6.71); planner predicted 5.5359 (5.54); planner at 250 ms 5.2823 (5.28); planner at 3 s 5.4991 (5.50). Direct below planner in 8 of 8 bodies at 250 ms and at 3 s.
+- All 12 D medians; the counts 0/1, 3/6, 4/3, 0/0, 8/7, 5/5 of 8; -0.71 and +1.77; 5 of 8 and 2 of 8 predicted farther; 0.50 and 1.52 cm (body 4, left).
+- Arrivals: bodies 2 and 5 at model step 6; body 6 from 9 to 60; one-hand lists; no fall flag. The flag lines (60 deg roll, 2.0001 cm root drop) are in declaration.json.
+- 0.0000847 cm (max 8.47e-05); 0.0001092 deg; pairs the same in 8; repeat in 8.
+- 282.6 s; 9:21:28, 9:21:33 and 9:59:59 PM; the 54-test row.
+- 1.80 cm, 11.0 deg, 5.37 to 26.56 cm, 3.12 cm, 2.25 cm.
+- 0.35, smooth_actions 0.35, smooth_source proposal (args.json).
+- 4 rows and 11 rows; 40.02 cm; 0.261.
+- 720 of 1,200; 0.029855, 0.029892 and 0.029862.
+- 22, 164/0 and 299/291/5/3 tests.
+- Commit times 12:03, 12:20, 1:14 and 1:50 AM; encoder_registry.py line 297; efference.py lines 560 to 562.
+- 496,250, 496,256 and 496,260 / 496,350; 6 model steps; 72.7, 2.68, 81.1 and 169.8 s; 300 s and 900 s.
+- 9.73 GiB (10,451,513,344 bytes at 2:43:32 AM); 12 GiB; 7,736,427,412 bytes and 1,215 files; 10:27 to 10:35 PM; 9:42 PM; 44 min 52 s; 14 GiB; Visual Studio 18.7.4.
+- The 60 cm string; the mobile grouped as one contact entity by its top-level body (observer_record.py's entity table).
+- Section 8's commit list, including 892779037.
+
+====================================================================================================
+(4) COGNITIVE LOAD OF SECTION 7 NOW: 4 of 10
+====================================================================================================
+Lower than the first read (6): the heading carries distances, the parts arrive in reading order with their whys, the change is input/computation/output, and the test lists what it cannot show.
+What still costs load:
+- Section 7 is now about twice its first length.
+- The E sentence carries 6 numbers in one sentence; they belong in the table as rows.
+- The quaternion-sign item is one long paragraph.
+- The disk paragraph lists five checks in prose.
+- N1's false statement would mislead a reader who compares the requested hand-row distances (5.37 to 26.56 cm) with D.
+The three changes that would most lower it:
+(a) Fix N1.
+(b) Move the E medians into the step 1 table as rows.
+(c) Make the five disk checks a list, and cut the sign item to its mechanism and its 0.029855 against 0.029892 consequence.

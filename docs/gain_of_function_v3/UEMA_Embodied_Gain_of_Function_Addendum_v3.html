@@ -1,0 +1,1632 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Gain-of-Function Addendum v3</title>
+<style>
+:root{
+  --bg:#f6f8fb; --card:#fff; --card2:#fbfcfe; --ink:#17202a; --muted:#5f6b78;
+  --line:#d9e0ea; --blue:#263ea8; --blue2:#172554; --head1:#172554; --head2:#263ea8;
+  --green:#0f766e; --soft:#eef2ff; --soft2:#ecfdf5;
+  --warn:#fff7e6; --warn-edge:#b7791f; --rose:#fff1f2; --rose-edge:#be123c;
+  --th:#eef2f7; --boxbg:#f8faff; --boxedge:#a5b4fc; --arrow:#64748b;
+  --chip-built-bg:#e6f5ee; --chip-built:#0f6b4a;
+  --chip-live-bg:#e8eefc; --chip-live:#23409a;
+  --chip-meas-bg:#f1ebfb; --chip-meas:#5b2d9e;
+  --chip-not-bg:#eef0f3; --chip-not:#4b5563;
+  --chip-open-bg:#fff4e0; --chip-open:#8a5200;
+  --chip-prog-bg:#e3f4f7; --chip-prog:#0b5e6e;
+  --chip-fix-bg:#fdeee6; --chip-fix:#9a3412;
+  --svg-fill:#f8faff; --svg-new:#eef4ff; --svg-warn:#be123c;
+  --bar:#2a78d6; --grid:#e1e0d9;
+  --draft-bg:#fff7e6; --draft-edge:#b7791f;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0f1318; --card:#171d24; --card2:#1b222b; --ink:#e6ebf1; --muted:#9aa6b4;
+    --line:#2a333e; --blue:#8ea8ff; --blue2:#b9c8ff; --head1:#141b3a; --head2:#22348a;
+    --green:#5fd3a2; --soft:#1b2340; --soft2:#12372a;
+    --warn:#3a2a10; --warn-edge:#f2b35c; --rose:#3a1520; --rose-edge:#f47a93;
+    --th:#212a35; --boxbg:#1b2340; --boxedge:#5566b8; --arrow:#9aa6b4;
+    --chip-built-bg:#12372a; --chip-built:#5fd3a2;
+    --chip-live-bg:#1b2a52; --chip-live:#9fb6ff;
+    --chip-meas-bg:#2d2045; --chip-meas:#c9a8ff;
+    --chip-not-bg:#252c35; --chip-not:#c3cad3;
+    --chip-open-bg:#3a2a10; --chip-open:#f2b35c;
+    --chip-prog-bg:#10333a; --chip-prog:#6fd0e0;
+    --chip-fix-bg:#3a1f10; --chip-fix:#fdba74;
+    --svg-fill:#1b222b; --svg-new:#1b2340; --svg-warn:#f47a93;
+    --bar:#3987e5; --grid:#2c2c2a;
+    --draft-bg:#3a2a10; --draft-edge:#f2b35c;
+  }
+}
+:root[data-theme="dark"]{
+    --bg:#0f1318; --card:#171d24; --card2:#1b222b; --ink:#e6ebf1; --muted:#9aa6b4;
+    --line:#2a333e; --blue:#8ea8ff; --blue2:#b9c8ff; --head1:#141b3a; --head2:#22348a;
+    --green:#5fd3a2; --soft:#1b2340; --soft2:#12372a;
+    --warn:#3a2a10; --warn-edge:#f2b35c; --rose:#3a1520; --rose-edge:#f47a93;
+    --th:#212a35; --boxbg:#1b2340; --boxedge:#5566b8; --arrow:#9aa6b4;
+    --chip-built-bg:#12372a; --chip-built:#5fd3a2;
+    --chip-live-bg:#1b2a52; --chip-live:#9fb6ff;
+    --chip-meas-bg:#2d2045; --chip-meas:#c9a8ff;
+    --chip-not-bg:#252c35; --chip-not:#c3cad3;
+    --chip-open-bg:#3a2a10; --chip-open:#f2b35c;
+    --chip-prog-bg:#10333a; --chip-prog:#6fd0e0;
+    --chip-fix-bg:#3a1f10; --chip-fix:#fdba74;
+    --svg-fill:#1b222b; --svg-new:#1b2340; --svg-warn:#f47a93;
+    --bar:#3987e5; --grid:#2c2c2a;
+    --draft-bg:#3a2a10; --draft-edge:#f2b35c;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:Arial,Helvetica,sans-serif;line-height:1.55;overflow-x:hidden}
+main{max-width:1120px;margin:auto;padding:28px 20px 72px}
+header{
+  color:#fff;background:linear-gradient(135deg,var(--head1),var(--head2));
+  border-radius:18px;padding:36px;box-shadow:0 8px 28px rgba(0,0,0,.13)
+}
+h1{font-size:34px;line-height:1.15;margin:0 0 10px}
+.subtitle{font-size:18px;max-width:900px;opacity:.94}
+.meta{font-size:14px;opacity:.85;margin-top:14px}
+.draftflag{display:inline-block;background:#fff;color:#8a5200;font-weight:700;border-radius:8px;padding:3px 10px;margin-bottom:12px;font-size:14px;letter-spacing:.04em}
+section{
+  background:var(--card);border:1px solid var(--line);border-radius:16px;
+  padding:25px 28px;margin-top:20px
+}
+h2{margin:0 0 12px;color:var(--blue2);font-size:25px}
+h3{margin:22px 0 8px;font-size:19px}
+h4{margin:16px 0 6px;font-size:16px}
+p{margin:8px 0 12px}
+ul,ol{padding-left:23px}
+li{margin:7px 0}
+a{color:var(--blue)}
+code{font-family:ui-monospace,Consolas,monospace;font-size:13px;background:var(--th);border-radius:4px;padding:1px 4px;overflow-wrap:anywhere}
+.callout{background:var(--soft);border-left:5px solid var(--blue);padding:14px 16px;border-radius:10px;margin:14px 0}
+.good{background:var(--soft2);border-left-color:var(--green)}
+.warn{background:var(--warn);border-left-color:var(--warn-edge)}
+.reject{background:var(--rose);border-left-color:var(--rose-edge)}
+.draft{background:var(--draft-bg);border:2px solid var(--draft-edge);border-radius:12px;padding:14px 18px;margin:20px 0 0}
+.diagram{overflow:auto;padding:8px 0 2px}
+.flow{display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap;margin:8px 0}
+.box{min-width:145px;max-width:220px;padding:12px 14px;border:2px solid var(--boxedge);border-radius:12px;background:var(--boxbg);text-align:center;font-weight:700}
+.arrow{font-size:25px;color:var(--arrow)}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:14px 0}
+table{width:100%;border-collapse:collapse;font-size:15px}
+.tw table{margin:0}
+th,td{border:1px solid var(--line);padding:10px 11px;vertical-align:top;text-align:left}
+th{background:var(--th)}
+td.num{white-space:nowrap}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px;margin:12px 0}
+.tile{border:1px solid var(--line);border-radius:12px;padding:13px;background:var(--card2)}
+.tile b{display:block;color:var(--blue2);margin-bottom:4px}
+.v2{border:1px dashed var(--line);border-radius:12px;padding:6px 16px 10px;margin:10px 0 16px;background:var(--card2)}
+.v2label{font-size:12px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);margin:8px 0 2px}
+.status{border:1px solid var(--line);border-left:5px solid var(--blue);border-radius:12px;padding:12px 16px;margin:12px 0;background:var(--card)}
+.statuslabel{font-size:12px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);margin:0 0 6px}
+.chip{display:inline-block;font-size:12.5px;font-weight:700;border-radius:6px;padding:2px 8px;margin:0 6px 4px 0;white-space:nowrap}
+.c-built{background:var(--chip-built-bg);color:var(--chip-built)}
+.c-live{background:var(--chip-live-bg);color:var(--chip-live)}
+.c-meas{background:var(--chip-meas-bg);color:var(--chip-meas)}
+.c-not{background:var(--chip-not-bg);color:var(--chip-not)}
+.c-open{background:var(--chip-open-bg);color:var(--chip-open)}
+.c-prog{background:var(--chip-prog-bg);color:var(--chip-prog)}
+.c-fix{background:var(--chip-fix-bg);color:var(--chip-fix)}
+.v-true{background:var(--chip-built-bg);color:var(--chip-built)}
+.v-false{background:var(--rose);color:var(--rose-edge)}
+.v-partly{background:var(--chip-open-bg);color:var(--chip-open)}
+.v-unver{background:var(--chip-not-bg);color:var(--chip-not)}
+.fill{border:2px dashed var(--draft-edge);border-radius:10px;padding:8px 12px;margin:8px 0;background:var(--draft-bg)}
+.src{color:var(--muted);font-size:13.5px}
+.item{border:1px solid var(--line);border-radius:14px;padding:16px 18px;margin:16px 0;background:var(--card2)}
+.item h3{margin-top:0}
+dl.kv{display:grid;grid-template-columns:190px 1fr;gap:6px 14px;margin:8px 0}
+dl.kv dt{font-weight:700;color:var(--muted)}
+dl.kv dd{margin:0}
+nav.toc ol{columns:2;column-gap:32px}
+nav.toc li{margin:3px 0;break-inside:avoid}
+figure{margin:14px 0}
+figure svg{display:block;width:100%;height:auto;max-width:100%;color:var(--ink)}
+figcaption{color:var(--muted);font-size:14px;margin-top:6px}
+.s-box{fill:var(--svg-fill);stroke:currentColor;stroke-width:1.5}
+.s-new{fill:var(--svg-new);stroke:currentColor;stroke-width:1.5;stroke-dasharray:6 4}
+.s-warnbox{stroke:var(--svg-warn);stroke-width:2.5}
+.s-t{fill:currentColor;font:600 13px Arial,Helvetica,sans-serif}
+.s-s{fill:var(--muted);font:11.5px Arial,Helvetica,sans-serif}
+.s-l{fill:var(--muted);font:italic 11px Arial,Helvetica,sans-serif}
+.s-w{fill:currentColor;font:11px Arial,Helvetica,sans-serif}
+.s-line{stroke:var(--arrow);stroke-width:1.6;fill:none}
+.s-dot{fill:var(--svg-warn)}
+.s-dott{fill:#fff;font:700 11px Arial,Helvetica,sans-serif}
+.s-bar{fill:var(--bar)}
+.s-grid{stroke:var(--grid);stroke-width:1}
+.s-base{stroke:var(--muted);stroke-width:1}
+.footer{color:var(--muted);font-size:13px;text-align:center;margin-top:28px}
+@media (max-width:700px){
+  main{padding:16px 16px 56px}
+  header{padding:22px 18px}
+  h1{font-size:26px}
+  section{padding:18px 16px}
+  h2{font-size:21px}
+  nav.toc ol{columns:1}
+  dl.kv{grid-template-columns:1fr}
+  table{font-size:14px}
+  th,td{padding:8px}
+  .chip{white-space:normal}
+}
+@media print{body{background:#fff}section,header{box-shadow:none}}
+</style>
+</head>
+<body>
+<main>
+<header>
+  <div class="draftflag">DRAFT</div>
+  <h1>UEMA Embodied Gain-of-Function Addendum &mdash; Third Pass</h1>
+  <div class="status"><div class="statuslabel">Takeover amendment &mdash; 23 September 2026</div>
+  <p>Training has resumed after repairs to planner selection, eye-command prediction and exploration
+  rotations. All learned state and eight worlds were preserved. Physical tests found a useful
+  moving-wrist hand interface; synergy remains learning-only because it failed its movement comparison.
+  The next implementation priority is making prediction and planning use the improved hand interface.
+  Read the
+  <a href="MOTOR_CONTROL_REVIEW_2026-09-23.md">current findings and actions</a> or open the
+  <a href="http://127.0.0.1:8766/">live capability dashboard</a> for training status and test progress.
+  The <a href="HAND_CAPABILITY_PROGRAM_2026-09-23.md">hand programme</a> covers opening,
+  selective fingers, grasp, release, manipulation and two-hand use.</p>
+  <p><b>The earlier all-switches-on synergy restart is superseded.</b> The bootstrap learns the movement
+  map with <code>--motor-synergy on --synergy-planner off --synergy-babble off --smooth-source proposal</code>.
+  Learning the map and letting it control the body are separate decisions. See
+  <a href="RESTART_CRITERIA.md">the replacement restart and adoption criteria</a>.
+  The dated status entries below are the original build record. Current results and actions
+  are in the linked report and dashboard.</p></div>
+  <div class="subtitle">
+    The second pass's plan, section by section, marked with what was built, what was measured, what was not built and why &mdash; plus a check of every claim the plan makes about the current system, and everything the build added that the plan did not name.
+  </div>
+  <div class="meta">Original build record: 22&ndash;23 September 2026 &bull; current investigation linked above &bull; version 2's plan retained inside each section</div>
+</header>
+
+<div class="draft">
+<b>Measure useful control.</b> Each capability is assessed through prediction, chosen physical action,
+repeatability, retention after further learning and new starting conditions. The dashboard maps
+all ten upgrades below to these capability tests.
+</div>
+
+<section id="verdict">
+<h2>Verdict</h2>
+<ul>
+<li><b>Items 1&ndash;6 and 10 of section 19 are built and committed, each behind its own switch.</b> None has run in training yet. Each is switched on at the deploy that starts segment 32.</li>
+<li><b>Items 1&ndash;4, 6 and 10 have review fixes in progress; item 5's review is still running.</b> Eight adversarial reviews found 3 blockers, 39 major and 79 minor defects. Two parts must not be switched on as built: the new goal ranking picked the oldest remembered moment as the goal in 42 of 44 choices, and the payment for a foreseen touch lets foreseen touches of the outside world open the one gate that then pays self-touches.</li>
+<li><b>Items 7&ndash;10's probes are built and were run once, on the last checkpoint before the build.</b> That is the "before" picture. The probe review found they cannot yet save a starting moment of the upgraded model; that fix is in progress.</li>
+<li><b>The before picture: the model's predictions ignored the order.</b> For a gaze command the model foresaw 0.0000073% of the real change in what the eyes saw (0% = ignores the order, 100% = foresees the whole change).</li>
+<li><b>The body follows its orders weakly.</b> Out of 100 orders, a body part ended closer to its ordered turn 54 times; chance is 31, and a pose the body has held, on physics alone, reaches 87.</li>
+<li><b>Two causes were found by measurement.</b> The head that should say where each limb ends up gives the same answer for every order. The attention that brings the order into the model reads 1 of 26 body handles per head. Both date from the lineage's first 7,196 steps; a repair step follows the loss-balance build.</li>
+<li><b>Item 5 (motor synergy) is built behind its switches and has not run in a segment.</b> In its physics check, orders written by the synergy were followed no better than separate random turns. Items 11&ndash;15 are outside this build.</li>
+</ul>
+<p class="src">Sources: <code>docs/gain_of_function_v3/WORKLOG.md</code>; <code>agents/*.md</code>; <code>reviews/*.md</code>; <code>Saved/mimo_bridge/gof_probes/index.jsonl</code>; <code>measurements/following_out_of_100.json</code>; <code>measurements/liveness_over_lineage/README.txt</code>.</p>
+</section>
+
+<section id="howtoread">
+<h2>How to read the marks</h2>
+<div class="tw"><table>
+<tr><th>mark</th><th>what it means</th></tr>
+<tr><td><span class="chip c-built">built</span></td><td>Code and tests are committed. The commit and the switch (a command-line flag of the trainer) are named. The flag's default keeps today's behaviour, so an old command on the new code changes nothing.</td></tr>
+<tr><td><span class="chip c-fix">built; review fixes in progress</span></td><td>Code and tests are committed, and an adversarial review (<code>docs/gain_of_function_v3/reviews/</code>) found defects that must be fixed before the switch is turned on or its readings are trusted. Fix agents are working on them now. This mark never means "done".</td></tr>
+<tr><td><span class="chip c-meas">measured</span></td><td>A number exists, with its range in plain terms and the file it came from.</td></tr>
+<tr><td><span class="chip c-prog">in progress</span></td><td>An agent is building or reviewing it now; nothing new is committed yet.</td></tr>
+<tr><td><span class="chip c-not">not built</span></td><td>Not in this build, with the reason.</td></tr>
+<tr><td><span class="chip c-open">open</span></td><td>A question or defect with no decision or fix yet.</td></tr>
+<tr><td><div class="fill" style="margin:0">dashed amber box</div></td><td>To be filled after segment 32's first hours.</td></tr>
+</table></div>
+<p>Words used throughout. <b>Segment</b>: one run of the trainer in the H84 lineage; segment 31 stopped at step 344,400, and 1 model step is 0.05 s of body time for each of 8 bodies, so 344,400 steps are 4.8 hours lived per body. <b>Checkpoint</b>: the saved weights; the "before" checkpoint is <code>ckpt_step_344400</code>. <b>Order</b>: the motor command held for 250 ms (5 model steps). <b>Token</b>: the vector one sense is turned into before the forward model reads it. <b>Forward model</b>: the part that predicts the next moment from the present and the order. <b>Wellness</b>: the model's felt value of a moment. <b>Probe</b>: a test run on a frozen checkpoint from a restored lived moment. <b>Latch</b>: the moment, every 5th step, when a new order is sent to the body. <b>Babble</b>: random noise added to orders so the body explores. <b>Goal ring</b>: the 200 remembered moments the planner can pick a goal from. <b>Efference head</b>: a small head given a copy of the outgoing order, predicting its effect in centimetres and degrees. <b>Handle</b>: one of the 26 body points an order names (wrists, fingers, head, limbs, eyes' gaze, trunk). <b>Following count</b>: out of 100 orders, how many times a body part ends closer to the orientation it was ordered to 250 ms later than it was when the order was given (<code>measurements/following_out_of_100.json</code>). <b>Chance</b> on that count is what the same real turns score against a target at the same distance in a random direction: 31 out of 100 for the live orders, not 50, because a turn about as large as the distance lands closer to a randomly placed target only about 1 time in 4.</p>
+</section>
+
+<section id="glance">
+<h2>The ten items at a glance</h2>
+<div class="tw"><table>
+<tr><th>#</th><th>item (section 19)</th><th>status</th><th>switch</th><th>commit</th></tr>
+<tr><td>1</td><td>Log the causal chain: intention &rarr; prediction &rarr; predicted wellness &rarr; action &rarr; result</td><td><span class="chip c-fix">built; review fixes in progress</span></td><td><code>--causal-chain on</code>, <code>--efference-heads on</code></td><td>2adadb74e</td></tr>
+<tr><td>2</td><td>Embodied controllability in wellness</td><td><span class="chip c-fix">built; review fixes in progress</span></td><td><code>--controllability on</code></td><td>664415b95</td></tr>
+<tr><td>3</td><td>Learning progress in wellness</td><td><span class="chip c-fix">built; review fixes in progress</span></td><td><code>--learning-progress on</code></td><td>664415b95</td></tr>
+<tr><td>4</td><td>Put wellness channels on their own scale, in priority order</td><td><span class="chip c-fix">built; review fixes in progress</span> not to be switched on as built</td><td><code>--wellness-rank normalized</code>, <code>--curiosity-mode additive</code>, <code>--consequence-self-contact exclude</code></td><td>664415b95</td></tr>
+<tr><td>5</td><td>Small nonlinear motor-synergy network</td><td><span class="chip c-built">built behind flags; not yet in a running segment</span> <span class="chip c-prog">review running</span></td><td><code>--motor-synergy on</code>, <code>--synergy-babble on</code>, <code>--smooth-source executed</code></td><td>80eaf88ac</td></tr>
+<tr><td>6</td><td>Self-on-self contact first-class</td><td><span class="chip c-fix">built; review fixes in progress</span> payment not to be switched on as built</td><td><code>--contact-head on</code>, <code>--contact-control-wellness</code></td><td>df2486b20, 1c7cd98f8, e5fa2d070</td></tr>
+<tr><td>7</td><td>Gaze causal probes</td><td><span class="chip c-fix">built; review fixes and re-run in progress</span> <span class="chip c-meas">measured: before</span></td><td>tool <code>gof_probe_gaze</code></td><td>80dcbea17, 632080101</td></tr>
+<tr><td>8</td><td>Simple body-control probes</td><td><span class="chip c-fix">built; review fixes and re-run in progress</span> <span class="chip c-meas">measured: before</span></td><td>tool <code>gof_probe_body</code></td><td>80dcbea17, 632080101</td></tr>
+<tr><td>9</td><td>Arm-into-view and self-touch probes</td><td><span class="chip c-fix">built; review fixes and re-run in progress</span> <span class="chip c-meas">measured: before</span></td><td>tool <code>gof_probe_binding</code></td><td>80dcbea17, 632080101</td></tr>
+<tr><td>10</td><td>Vestibular/posture probes and a vestibular sense</td><td><span class="chip c-fix">sense and probe: built; review fixes in progress</span> <span class="chip c-meas">probe: measured before</span></td><td><code>--vestibular-sense on</code>; tool <code>gof_probe_posture</code></td><td>df2486b20, 1f1132359, e5fa2d070, 80dcbea17</td></tr>
+</table></div>
+<p>Details for each item, with its measured baseline, its goal line and its review's findings, are in <a href="#items">Part 3</a>.</p>
+</section>
+
+<section id="toc">
+<nav class="toc">
+<h2>Contents</h2>
+<ol>
+<li><a href="#part1">Part 1 &mdash; the plan, section by section (v2 sections 1&ndash;21)</a></li>
+<li><a href="#part2">Part 2 &mdash; the assertion check</a></li>
+<li><a href="#items">Part 3 &mdash; items 1&ndash;10 in detail</a></li>
+<li><a href="#part4">Part 4 &mdash; added beyond version 2</a></li>
+<li><a href="#part5">Part 5 &mdash; what the lead fills in, and open issues</a></li>
+<li><a href="#sources">Sources</a></li>
+</ol>
+</nav>
+</section>
+
+<!-- =============================== PART 1 =============================== -->
+<section id="part1" style="background:var(--soft)">
+<h2>Part 1 &mdash; the plan, section by section</h2>
+<p>Each section keeps version 2's text unchanged (the operator's plan, in the dashed frame), followed by its status in version 3.</p>
+</section>
+
+<section id="s1">
+<h2>1. What We Are Trying to Prove</h2>
+<div class="v2"><div class="v2label">Plan text (v2, unchanged)</div>
+<p>The first UEMA model should learn a simple loop:</p>
+<div class="diagram"><div class="flow">
+<div class="box">I intend to do something</div><div class="arrow">&rarr;</div>
+<div class="box">I predict what will happen</div><div class="arrow">&rarr;</div>
+<div class="box">I act</div><div class="arrow">&rarr;</div>
+<div class="box">I sense what happened</div><div class="arrow">&rarr;</div>
+<div class="box">I update my model</div>
+</div></div>
+<p>A real <b>gain of function</b> is not &ldquo;the arm moved&rdquo; or &ldquo;the eye jumped.&rdquo; It is:</p>
+<div class="grid">
+<div class="tile"><b>Predict</b>The model says what should happen before it acts.</div>
+<div class="tile"><b>Intend</b>The action is selected because of its predicted consequence.</div>
+<div class="tile"><b>Execute</b>The predicted consequence actually happens.</div>
+<div class="tile"><b>Repeat</b>The system can make it happen again.</div>
+</div>
+<div class="callout good"><b>Main thesis:</b> early UEMA learning should strongly value <b>embodied controllability</b> &mdash; knowing that &ldquo;when I choose this action, my body and senses change in the way I expect.&rdquo;</div>
+</div>
+
+<div class="status"><div class="statuslabel">Status in v3</div>
+<span class="chip c-fix">record built; review fixes in progress</span> <span class="chip c-meas">measured: before</span>
+<p><b>Every link of the loop now has a record.</b> The causal-chain record (commit 2adadb74e, <code>--causal-chain on</code>) writes, at every planning event: the goal, the chosen plan's predicted next moment and predicted wellness, the same for four alternatives from the same moment (hold still, the reflex controller's order, two perturbed plans), the chosen plan's rank among them, the latch that carried it to the body, and what really happened 50 ms later and when the order ended at 250 ms.</p>
+<p><b>The four tiles, measured on the last checkpoint before the build:</b></p>
+<div class="tw"><table>
+<tr><th>tile</th><th>before (ckpt_step_344400)</th><th>goal line</th><th>distance</th></tr>
+<tr><td>Predict</td><td>Knowing the order the body really executed changed the next-moment prediction's error by less than 0.08%, either way, compared with another body's order, in every sense and every segment (0% = the order makes no difference, 100% = the order removes the whole error).</td><td>unmeasured</td><td>distance to goal unmeasured</td></tr>
+<tr><td>Intend</td><td>The planner aims at the best-valued remembered moment by token distance; predicted wellness has weight 0 in its choice. In the gaze probe the predicted wellness of two candidate eye commands tied in 8 of 8 pairs, so a choice by predicted wellness could not even be tested.</td><td>unmeasured: the planner does not aim at predicted wellness, and the evaluator's gaps between candidates are a tenth of its own error (review of b1)</td><td>distance to goal unmeasured</td></tr>
+<tr><td>Execute</td><td>Out of 100 orders, a body part ended closer to its ordered turn 54 times, 250 ms after the order (the checkpoint's own orders, 5 of its 8 bodies, 6,125 part-orders). Chance on the same turns: 31.</td><td>a goal line for orders of the live size is unmeasured; a pose the body has held reaches 87 on physics alone, with smaller turns (median 4.6&deg; against the live 23.8&deg;)</td><td>33 out of 100 below the held-pose anchor</td></tr>
+<tr><td>Repeat</td><td>Unmeasured for an intended result. The probes restored the same moment 3 times and got identical turns and predictions; that checks the instrument, not the model.</td><td>unmeasured</td><td>distance to goal unmeasured</td></tr>
+</table></div>
+<p class="src">Sources: DESIGN.md section 0; agents/understand-training-probes.md (section 20 check, <code>improvement_over_shuffled</code> = 1 minus the error with the real order over the error with another body's order); <code>gof_probes/.../gaze.json</code> findings <code>planner_toward_better_predicted_wellness</code>; reviews/b1-causal-efference.md major 3; <code>measurements/following_out_of_100.json</code>; <code>body.json</code> findings <code>repeatability</code>.</p>
+
+<figure>
+<svg viewBox="0 0 1040 480" role="img" aria-label="The causal chain as built: the goal ring feeds a normalized ranking, the planner, the smoother and latch, and the body; the senses, encoders and forward model close the loop into wellness and the goal ring. New parts, drawn dashed: the ranking, the efference heads, the causal-chain record and the new channels. Measured weak links: the planner's wellness copy has 5% of its units responding, the motor token's attention reads one handle per head, and the pose head has 0 of 256 units responding.">
+<defs>
+<marker id="ah1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="currentColor"/></marker>
+</defs>
+<!-- warn notes above top row -->
+<circle class="s-dot" cx="440" cy="26" r="8"/><text class="s-dott" x="440" y="30" text-anchor="middle">!</text>
+<text class="s-w" x="454" y="24">planner's wellness copy:</text>
+<text class="s-w" x="454" y="38">5% of its units respond</text>
+<!-- top row -->
+<rect class="s-box" x="20" y="60" width="180" height="70" rx="10"/>
+<text class="s-t" x="110" y="84" text-anchor="middle">Goal ring</text>
+<text class="s-s" x="110" y="101" text-anchor="middle">200 remembered moments</text>
+<text class="s-s" x="110" y="116" text-anchor="middle">+ each one's channel values</text>
+
+<rect class="s-new" x="225" y="60" width="180" height="70" rx="10"/>
+<text class="s-t" x="315" y="84" text-anchor="middle">Ranking (new)</text>
+<text class="s-s" x="315" y="101" text-anchor="middle">each channel on its own</text>
+<text class="s-s" x="315" y="116" text-anchor="middle">scale x priority; pain gate</text>
+
+<rect class="s-box s-warnbox" x="430" y="60" width="180" height="70" rx="10"/>
+<text class="s-t" x="520" y="84" text-anchor="middle">Planner</text>
+<text class="s-s" x="520" y="101" text-anchor="middle">20 descent steps toward</text>
+<text class="s-s" x="520" y="116" text-anchor="middle">the goal's tokens</text>
+
+<rect class="s-box" x="635" y="60" width="180" height="70" rx="10"/>
+<text class="s-t" x="725" y="84" text-anchor="middle">Smoother + latch</text>
+<text class="s-s" x="725" y="101" text-anchor="middle">35% new + 65% previous;</text>
+<text class="s-s" x="725" y="116" text-anchor="middle">order held 250 ms</text>
+
+<rect class="s-box" x="840" y="60" width="180" height="70" rx="10"/>
+<text class="s-t" x="930" y="84" text-anchor="middle">Body</text>
+<text class="s-s" x="930" y="101" text-anchor="middle">decoder &#8594; joint torques</text>
+<text class="s-s" x="930" y="116" text-anchor="middle">&#8594; physics (MuJoCo)</text>
+
+<!-- top arrows -->
+<line class="s-line" x1="200" y1="95" x2="223" y2="95" marker-end="url(#ah1)"/>
+<line class="s-line" x1="405" y1="95" x2="428" y2="95" marker-end="url(#ah1)"/>
+<line class="s-line" x1="610" y1="95" x2="633" y2="95" marker-end="url(#ah1)"/>
+<line class="s-line" x1="815" y1="95" x2="838" y2="95" marker-end="url(#ah1)"/>
+<text class="s-l" x="212" y="54" text-anchor="middle">every 10th step</text>
+<text class="s-l" x="417" y="150" text-anchor="middle">goal</text>
+<text class="s-l" x="622" y="150" text-anchor="middle">order</text>
+<text class="s-l" x="827" y="150" text-anchor="middle">sent</text>
+
+<!-- middle row -->
+<rect class="s-new" x="225" y="210" width="180" height="70" rx="10"/>
+<text class="s-t" x="315" y="234" text-anchor="middle">New channels</text>
+<text class="s-s" x="315" y="251" text-anchor="middle">controllability: expected vs</text>
+<text class="s-s" x="315" y="266" text-anchor="middle">achieved; learning progress</text>
+
+<rect class="s-new" x="430" y="210" width="180" height="70" rx="10"/>
+<text class="s-t" x="520" y="234" text-anchor="middle">Causal-chain record (new)</text>
+<text class="s-s" x="520" y="251" text-anchor="middle">prediction before sending;</text>
+<text class="s-s" x="520" y="266" text-anchor="middle">checked at 50 and 250 ms</text>
+
+<rect class="s-new" x="635" y="210" width="180" height="70" rx="10"/>
+<text class="s-t" x="725" y="234" text-anchor="middle">Efference heads (new)</text>
+<text class="s-s" x="725" y="251" text-anchor="middle">order given directly &#8594;</text>
+<text class="s-s" x="725" y="266" text-anchor="middle">expected cm and degrees</text>
+
+<!-- verticals from top to middle -->
+<line class="s-line" x1="725" y1="130" x2="725" y2="208" marker-end="url(#ah1)"/>
+<text class="s-l" x="731" y="176">copy of the order</text>
+<line class="s-line" x1="520" y1="130" x2="520" y2="208" marker-end="url(#ah1)"/>
+<text class="s-l" x="526" y="176">plan + 4 alternatives,</text>
+<text class="s-l" x="526" y="190">predicted wellness</text>
+<!-- middle horizontals -->
+<line class="s-line" x1="635" y1="245" x2="612" y2="245" marker-end="url(#ah1)"/>
+<text class="s-l" x="622" y="300" text-anchor="middle">expected</text>
+<line class="s-line" x1="430" y1="245" x2="407" y2="245" marker-end="url(#ah1)"/>
+<text class="s-l" x="417" y="300" text-anchor="middle">graded</text>
+
+<!-- bottom row -->
+<rect class="s-box" x="225" y="350" width="180" height="70" rx="10"/>
+<text class="s-t" x="315" y="374" text-anchor="middle">Wellness now</text>
+<text class="s-s" x="315" y="391" text-anchor="middle">6 grounded formulas</text>
+<text class="s-s" x="315" y="406" text-anchor="middle">+ the new channels</text>
+
+<rect class="s-box" x="430" y="350" width="180" height="70" rx="10"/>
+<text class="s-t" x="520" y="374" text-anchor="middle">Forward model</text>
+<text class="s-s" x="520" y="391" text-anchor="middle">4 attention blocks</text>
+<text class="s-s" x="520" y="406" text-anchor="middle">&#8594; predicted next moment</text>
+
+<rect class="s-box s-warnbox" x="635" y="350" width="180" height="70" rx="10"/>
+<text class="s-t" x="725" y="374" text-anchor="middle">Encoders</text>
+<text class="s-s" x="725" y="391" text-anchor="middle">one token per sense; the</text>
+<text class="s-s" x="725" y="406" text-anchor="middle">order enters only as a token</text>
+
+<rect class="s-box" x="840" y="350" width="180" height="70" rx="10"/>
+<text class="s-t" x="930" y="374" text-anchor="middle">Senses</text>
+<text class="s-s" x="930" y="391" text-anchor="middle">vision, touch, body, hearing,</text>
+<text class="s-s" x="930" y="406" text-anchor="middle">vestibular (new)</text>
+
+<!-- body to senses -->
+<line class="s-line" x1="930" y1="130" x2="930" y2="348" marker-end="url(#ah1)"/>
+<text class="s-l" x="936" y="245">what happened</text>
+<!-- bottom arrows right to left -->
+<line class="s-line" x1="840" y1="385" x2="817" y2="385" marker-end="url(#ah1)"/>
+<text class="s-l" x="827" y="340" text-anchor="middle">readings</text>
+<line class="s-line" x1="635" y1="385" x2="612" y2="385" marker-end="url(#ah1)"/>
+<text class="s-l" x="622" y="340" text-anchor="middle">tokens</text>
+<line class="s-line" x1="430" y1="385" x2="407" y2="385" marker-end="url(#ah1)"/>
+<text class="s-l" x="417" y="340" text-anchor="middle">error</text>
+<!-- forward model to record -->
+<line class="s-line" x1="520" y1="350" x2="520" y2="282" marker-end="url(#ah1)"/>
+<text class="s-l" x="526" y="322">real next moment</text>
+<!-- new channels to wellness -->
+<line class="s-line" x1="315" y1="280" x2="315" y2="348" marker-end="url(#ah1)"/>
+<text class="s-l" x="321" y="322">channel values</text>
+<!-- wellness back to goal ring -->
+<polyline class="s-line" points="225,385 110,385 110,132" marker-end="url(#ah1)"/>
+<text class="s-l" x="116" y="245">stored as</text>
+<text class="s-l" x="116" y="259">a moment</text>
+
+<!-- warn notes below bottom row -->
+<circle class="s-dot" cx="645" cy="444" r="8"/><text class="s-dott" x="645" y="448" text-anchor="middle">!</text>
+<text class="s-w" x="659" y="442">order's attention locked: each of</text>
+<text class="s-w" x="659" y="456">4 heads reads 1 of 26 handles</text>
+<circle class="s-dot" cx="440" cy="444" r="8"/><text class="s-dott" x="440" y="448" text-anchor="middle">!</text>
+<text class="s-w" x="454" y="442">pose head beside it: 0 of 256</text>
+<text class="s-w" x="454" y="456">units respond</text>
+<!-- legend -->
+<rect class="s-new" x="20" y="438" width="30" height="18" rx="4"/>
+<text class="s-w" x="58" y="451">built in this build, off until segment 32</text>
+</svg>
+<figcaption><b>The causal chain as built.</b> Solid boxes existed before the build; dashed boxes are new and switch on at segment 32. The red-outlined boxes and "!" notes mark the weak links measured on ckpt_step_344400 (see <a href="#liveness">Part 4, liveness</a>): the planner's learned copy of wellness, the attention that pools the order into its token, and the pose head fed by the forward model. The ranking picks the goal only among remembered moments; the planner then descends on token distance to that goal.</figcaption>
+</figure>
+</div>
+</section>
+
+<section id="s2">
+<h2>2. Why Self-on-Self Contact Matters</h2>
+<div class="v2"><div class="v2label">Plan text (v2, unchanged)</div>
+<p>MIMo now has self-on-self contact. In the rigid-body simulator, useful signals include contact force and shear-like contact information tied back to body parts. That gives the model more than joint angles alone.</p>
+<p>Self-contact is unusually useful because the same event is sensed on <b>both sides of the body</b>. When one finger touches another, both fingers feel it, both finger poses are known, the motor command is known, and vision may also see the event.</p>
+<div class="callout"><b>Implementation point:</b> weight <b>successful prediction and control of self-contact</b> more strongly than ordinary external contact during early body learning. Do not give wellness merely because self-contact happened. Otherwise the model could learn a useless loop of touching itself repeatedly.</div>
+<h3>MIMo versus the Unreal Engine avatar</h3>
+<div class="tw"><table>
+<tr><th>MIMo now</th><th>Unreal Engine avatar later</th></tr>
+<tr><td>Rigid-body joint state, body pose, contact force, and shear-like contact signals.</td><td>All of the above plus richer soft-body deformation, local stretch/strain, skin movement, and non-contact proprioceptive deformation signals.</td></tr>
+</table></div>
+<p>The same UEMA logic can be used in both systems, but the Unreal avatar can provide a richer proprioceptive stream.</p>
+</div>
+
+<div class="status"><div class="statuslabel">Status in v3</div>
+<span class="chip c-meas">claims checked: true, with exceptions below</span> <span class="chip c-fix">built; review fixes in progress</span>
+<ul>
+<li><b>Self-contact is real.</b> 1,410 pairs of the infant's own body parts can collide. Each body had on average 2.4 (segment 30) and 2.6 (segment 31) of its 53 skin patches in self-contact.</li>
+<li><b>Most of it is the thumb resting in the palm.</b> At zero command, every self-contact was the thumb's base in the palm of the same hand (on 148 of 300 steps). Under babble, 257 of 2,049 new self-touches (12.5%) were pairs that touch even at zero command; the world now marks these "structural", and they are never scored or paid.</li>
+<li><b>Both sides feel it.</b> Each contact gives one record per touching side, with pressure, shear, slip and area. The eyes are the exception: they have no skin patch, so a hand on an eye is felt on the hand only.</li>
+<li><b>"Do not give wellness merely because self-contact happened" was broken before the build.</b> The consequence term added half of one whole wellness formula's range (those formulas run 0 to 1) to a moment's goal value whenever a hand pressed above 2 kPa; in a random-command probe, 399 of 414 pressing steps were pure self-contact. Now <code>--consequence-self-contact exclude</code> counts only contact with the world (commit 664415b95).</li>
+<li><b>Built:</b> the world reports which touches are new, whose they are, and whether an eye could see them (commit df2486b20). A contact head predicts, for each of the 53 skin patches, whether it will be touched at the next moment, by the body itself or by the world; it is given the order directly (commit 1c7cd98f8, <code>--contact-head on</code>). A foreseen self-touch pays 2 and a foreseen outside touch pays 1, fading for a pair repeated within 200 moments; touch itself never pays (<code>--contact-control-wellness</code> sets the channel's weight).</li>
+<li><b>Measured on the new head</b> (2 bodies, 480 moments, training, on the processor), on the question that matters: will a patch that is untouched now be touched by the body itself at the next moment? Out of 100 pairs of such patches, one about to be touched and one that stayed untouched, the head gave the higher chance to the right one 74 times (moments 380&ndash;480; 67 at moments 250&ndash;380). A base-rate rule that knows only each patch's own history got 82 both times. A coin flip gets 50. Goal line: unmeasured; the head is 8 out of 100 below its control.</li>
+<li><b>The headline number the build logged measures something easier.</b> Counted over every patch, including touches that simply continue from the moment before, the head reached 92 out of 100 pairs; that count is dominated by patches whose state simply continues from the moment before, so it measures persistence, not foresight (review of b4, finding M3).</li>
+<li><b>The payment is not to be switched on as built</b> (review of b4, findings M1 and M2). Its evidence gate pools foreseen outside touches with foreseen self-touches (70 of its 157 readings in the build's run were outside touches), so outside touches can open the gate that then pays self-touches 2 each. Once open, one paid self-touch adds as much to a moment's goal value as integrity, the top-priority channel, would add if it sat 2.8 of its own spreads above its usual level. The gate never opened in the build's run, so the channel paid 0. Fixes are being made in the model lane.</li>
+<li><b>The table's MIMo column holds</b>, with one detail: MIMo's two stretch columns are constant (the body is rigid) and are dropped before the model.</li>
+</ul>
+<p class="src">Sources: agents/understand-touch-selfcontact.md; agents/env-senses.md (onsets under babble, 15,000 frames); agents/b4-self-contact.md (measurement m1); reviews/b4-self-contact.md (M1, M2, M3; AUC = the chance that a patch about to be touched is ranked above one that is not, which is the "out of 100 pairs" count).</p>
+<div class="fill"><b>Segment 32:</b> the contact head's onset count against its base-rate control on 8 bodies; foreseen self-touch against the other-body-order control; whether each payment gate opened.</div>
+</div>
+</section>
+
+<section id="s3">
+<h2>3. Wellness Should Care About Control &mdash; But Not Treat All Surprise as Bad</h2>
+<div class="v2"><div class="v2label">Plan text (v2, unchanged)</div>
+<h3>3.1 Embodied controllability</h3>
+<p>A failed body prediction should matter when it means loss of agency. Example: &ldquo;I expected my elbow to bend, but it did not.&rdquo;</p>
+<h3>3.2 Do not make &ldquo;surprise = bad&rdquo;</h3>
+<p>If every surprising event lowers wellness, the safest strategy can become &ldquo;stay still and avoid new things.&rdquo; Separate:</p>
+<ul>
+<li><b>Control failure:</b> I intended an effect, but my body did not do it.</li>
+<li><b>Harmful internal state:</b> too much strain, fatigue, instability, or unsafe force.</li>
+<li><b>Useful novelty:</b> something unexpected happened, but it helped the model learn.</li>
+</ul>
+<h3>3.3 Learning progress</h3>
+<p>The model should care not only about having low prediction error, but also about <b>getting better</b>.</p>
+<div class="callout good">A simple measure is: <b>old prediction error &minus; new prediction error</b>. If the number is positive, the model is learning that part of its world.</div>
+<h3>3.4 Wellness should have priorities</h3>
+<ol>
+<li><b>Body integrity and safety</b> &mdash; strong strain, damaging force, or unstable internal state can override everything else.</li>
+<li><b>Controllability</b> &mdash; can intended body effects actually be produced?</li>
+<li><b>Learning progress</b> &mdash; is prediction improving?</li>
+<li><b>Efficiency</b> &mdash; among movements that work, prefer lower effort and lower fatigue.</li>
+</ol>
+<p>This is still a wellness system, not a task reward or policy network.</p>
+</div>
+
+<div class="status"><div class="statuslabel">Status in v3</div>
+<span class="chip c-fix">3.1&ndash;3.4 built; review fixes in progress</span> <span class="chip c-meas">measured in short runs on the processor</span> <span class="chip c-open">the ranking in 3.4 is not to be switched on as built</span>
+<h4>3.1 Controllability &mdash; <code>--controllability on</code>, commit 664415b95</h4>
+<p>For each order, the effect the model expected (the efference body head's 250 ms prediction; the commanded turn when those heads are off) is compared with the effect the body achieved over the same 250 ms. An order counts only when both are larger than the drift of a body told to hold still (the drift that only 5 in 100 hold-still orders exceeded). A mispaired control compares one body's expectation with another body's result.</p>
+<ul>
+<li>Measured before, from the commanded turn (1 body, 136 orders): the expected and achieved effects agreed no better than one body's expectation agreed with another body's result (the agreement score multiplies direction match by size match; not yet measured as a count). The orders asked for 57&deg; of turn per axis; the handles turned 12&deg;.</li>
+<li>With the fresh efference head, the expected effect stayed under the hold-still drift on 78 of 78 orders, so the channel reads "unmeasured" until the head learns.</li>
+<li>Added beyond the design (a deviation, stated): the channel's weight stays 0 until its last 32 readings beat the mispaired control by more than twice their standard error, because in the build's run the reading sat inside the control's own range and would have steered goals by noise.</li>
+<li><b>Review finding (major), fix in progress:</b> the control swaps in another body's whole expectation, which also carries that body's own state. A head that predicts each body's drift from its state alone, and ignores the order, then beats the control and opens the gate: in the reviewer's test it opened after 8 orders. The fix scores this body's state with another body's order instead, which b1's heads already compute.</li>
+</ul>
+<h4>3.2 Surprise &mdash; now split into three channels</h4>
+<ul>
+<li><b>Control failure</b> is the controllability channel above.</li>
+<li><b>Harmful internal state</b> is the integrity channel: 1 minus the larger of skin pain and the penalty for pushing a limb to the edge of its reach. It is also a gate: a remembered moment more painful than the most painful of 980 ordinary lived moments is never chosen as a goal. On the pain scale (0% = no modelled aversion anywhere on the skin, 100% = the extreme-load end, never reached) that line is 87%; two 2-body runs peaked at 75% and 78%, and routine pain on a settled body sits near 77%.</li>
+<li><b>Useful novelty</b> is learning progress (3.3). It replaces the curiosity multiplier, which before the build decided the winning goal in 5 of 5 captured snapshots; curiosity is now one added channel with a quarter of controllability's weight.</li>
+<li>Still true: the old prediction-error formula (1 minus the error) remains in the raw wellness sum and as a channel with a quarter of controllability's weight, so every surprise still lowers that one channel.</li>
+</ul>
+<h4>3.3 Learning progress &mdash; <code>--learning-progress on</code>, commit 664415b95</h4>
+<p>Per sense and per body, the model's error is divided by the error of predicting "nothing changes", which cancels the world simply becoming easier or harder (the caregiver leaving). Progress is how far the recent (200-step) average of that ratio sits below its long-run (2,000-step) average: 0% = not changing, 100% = the recent error has vanished, below 0% = getting worse.</p>
+<ul>
+<li>During training (2 bodies, 240 moments): 0.6% and 1.2% per 100-moment window; vision 3.1% and 7.6%.</li>
+<li>On frozen weights, where nothing can be learned, it read &minus;1.6% to &minus;7.1%, from the world changing alone. So a reading of this size does not prove learning. <span class="chip c-open">open</span> A fixed-anchor control (a frozen copy scoring the same moments, "old error minus new error") is not built; its cost is one more copy of the forward model and heads in memory and one extra forward pass per sampled moment. The fix lane for b3 carries it.</li>
+</ul>
+<h4>3.4 Priorities &mdash; <code>--wellness-rank normalized</code>, commit 664415b95</h4>
+<p>Goal choice now ranks remembered moments by <code>value = &Sigma; weight &times; (channel &minus; its running centre) &divide; max(its running spread, its measured floor)</code>, with the integrity gate above. The raw wellness sum is unchanged; it still feeds the reflex controller's input and the self-model's teacher (the entity self, which tracks which named things go with wellness).</p>
+<ul>
+<li><b>Review blocker: the ranking picks goals by when a moment happened, not by what it holds.</b> In the build's own run (2 bodies, 240 moments, training), 42 of 44 goals were in the oldest tenth of the 200-moment ring; a choice blind to age puts 4.4 of 44 there on average. Integrity, capability and learning progress drift steadily across a ring's 10 s, so their sum peaks at one end of it. Taking those three out of the re-ranking brought the oldest tenth down to 16 in 100 goals. At the deploy the fresh heads' learning progress would pull the goal to the present moment, telling the planner to stay where it is. Not to be switched on until fixed; the fix is in the model lane.</li>
+<li>In the same run, integrity carried 97 to 99 of every 100 parts of how much the ranking value varied between moments, while pain was still building from 49% to 78% of the way to the extreme-load end. The record had no field for the chosen goal's age, which is why this went unseen.</li>
+<li>Also found (major): the list of ranked channels is saved with the episode, so a later resume that changes a wellness switch either stops with an error at the first step or silently ignores the change.</li>
+<li>Efficiency is logged with weight 0: energy is item 11, outside this build.</li>
+</ul>
+
+<figure>
+<svg viewBox="0 0 940 500" role="img" aria-label="Wellness ranking weights under the normalized ranking, as multiples of controllability&#39;s weight: integrity 2, also a gate at 87% pain; controllability 1, behind an evidence gate; learning progress three quarters; coherence, contact control, consequence and self value one half each; agency, prediction error, tactile comfort, capability, movement and curiosity one quarter each; efficiency 0, logged only.">
+<text class="s-w" x="200" y="18" style="font-weight:700">weight in the ranking (controllability = 1)</text>
+<line class="s-grid" x1="350" y1="28" x2="350" y2="470"/>
+<line class="s-grid" x1="500" y1="28" x2="500" y2="470"/>
+<text class="s-s" x="200" y="486" text-anchor="middle">0</text>
+<text class="s-s" x="275" y="486" text-anchor="middle">&#189;</text>
+<text class="s-s" x="350" y="486" text-anchor="middle">1</text>
+<text class="s-s" x="425" y="486" text-anchor="middle">1&#189;</text>
+<text class="s-s" x="500" y="486" text-anchor="middle">2</text>
+<text class="s-w" x="560" y="18" style="font-weight:700">gate or rule</text>
+<!-- rows: y top = 30 + i*31, bar height 16 -->
+<g>
+<title>integrity: weight 2; a moment with pain above 87% is never a goal</title>
+<text class="s-w" x="190" y="43" text-anchor="end">1. integrity</text>
+<path class="s-bar" d="M200,31 h296 a4,4 0 0 1 4,4 v8 a4,4 0 0 1 -4,4 h-296 z"/>
+<text class="s-w" x="508" y="43">2</text>
+<text class="s-w" x="560" y="43">also a gate: pain above 87% is never a goal</text>
+</g>
+<g>
+<title>controllability: weight 1; 0 until 32 readings beat the mispaired control</title>
+<text class="s-w" x="190" y="74" text-anchor="end">2. controllability</text>
+<path class="s-bar" d="M200,62 h146 a4,4 0 0 1 4,4 v8 a4,4 0 0 1 -4,4 h-146 z"/>
+<text class="s-w" x="358" y="74">1</text>
+<text class="s-w" x="560" y="74">weight 0 until 32 readings beat its control</text>
+</g>
+<g>
+<title>learning progress: weight three quarters</title>
+<text class="s-w" x="190" y="105" text-anchor="end">3. learning progress</text>
+<path class="s-bar" d="M200,93 h108.5 a4,4 0 0 1 4,4 v8 a4,4 0 0 1 -4,4 h-108.5 z"/>
+<text class="s-w" x="320" y="105">&#190;</text>
+<text class="s-w" x="560" y="105">useful novelty; no same-moment control yet</text>
+</g>
+<g>
+<title>coherence: weight one half</title>
+<text class="s-w" x="190" y="136" text-anchor="end">coherence</text>
+<path class="s-bar" d="M200,124 h71 a4,4 0 0 1 4,4 v8 a4,4 0 0 1 -4,4 h-71 z"/>
+<text class="s-w" x="283" y="136">&#189;</text>
+<text class="s-w" x="560" y="136">share of the body the map calls its own</text>
+</g>
+<g>
+<title>contact control: weight one half</title>
+<text class="s-w" x="190" y="167" text-anchor="end">contact control</text>
+<path class="s-bar" d="M200,155 h71 a4,4 0 0 1 4,4 v8 a4,4 0 0 1 -4,4 h-71 z"/>
+<text class="s-w" x="283" y="167">&#189;</text>
+<text class="s-w" x="560" y="167">foreseen touches; 0 until it beats its control</text>
+</g>
+<g>
+<title>consequence: weight one half</title>
+<text class="s-w" x="190" y="198" text-anchor="end">consequence</text>
+<path class="s-bar" d="M200,186 h71 a4,4 0 0 1 4,4 v8 a4,4 0 0 1 -4,4 h-71 z"/>
+<text class="s-w" x="283" y="198">&#189;</text>
+<text class="s-w" x="560" y="198">world contact only; self-touch excluded</text>
+</g>
+<g>
+<title>self value: weight one half</title>
+<text class="s-w" x="190" y="229" text-anchor="end">self value</text>
+<path class="s-bar" d="M200,217 h71 a4,4 0 0 1 4,4 v8 a4,4 0 0 1 -4,4 h-71 z"/>
+<text class="s-w" x="283" y="229">&#189;</text>
+<text class="s-w" x="560" y="229">only while the self-value reader's gate is open</text>
+</g>
+<g>
+<title>agency: weight one quarter</title>
+<text class="s-w" x="190" y="260" text-anchor="end">agency</text>
+<path class="s-bar" d="M200,248 h33.5 a4,4 0 0 1 4,4 v8 a4,4 0 0 1 -4,4 h-33.5 z"/>
+<text class="s-w" x="245" y="260">&#188;</text>
+</g>
+<g>
+<title>prediction error: weight one quarter</title>
+<text class="s-w" x="190" y="291" text-anchor="end">prediction error</text>
+<path class="s-bar" d="M200,279 h33.5 a4,4 0 0 1 4,4 v8 a4,4 0 0 1 -4,4 h-33.5 z"/>
+<text class="s-w" x="245" y="291">&#188;</text>
+<text class="s-w" x="560" y="291">every surprise still lowers this one channel</text>
+</g>
+<g>
+<title>tactile comfort: weight one quarter</title>
+<text class="s-w" x="190" y="322" text-anchor="end">tactile comfort</text>
+<path class="s-bar" d="M200,310 h33.5 a4,4 0 0 1 4,4 v8 a4,4 0 0 1 -4,4 h-33.5 z"/>
+<text class="s-w" x="245" y="322">&#188;</text>
+</g>
+<g>
+<title>capability: weight one quarter</title>
+<text class="s-w" x="190" y="353" text-anchor="end">capability</text>
+<path class="s-bar" d="M200,341 h33.5 a4,4 0 0 1 4,4 v8 a4,4 0 0 1 -4,4 h-33.5 z"/>
+<text class="s-w" x="245" y="353">&#188;</text>
+</g>
+<g>
+<title>movement: weight one quarter</title>
+<text class="s-w" x="190" y="384" text-anchor="end">movement</text>
+<path class="s-bar" d="M200,372 h33.5 a4,4 0 0 1 4,4 v8 a4,4 0 0 1 -4,4 h-33.5 z"/>
+<text class="s-w" x="245" y="384">&#188;</text>
+</g>
+<g>
+<title>curiosity: weight one quarter, added</title>
+<text class="s-w" x="190" y="415" text-anchor="end">curiosity</text>
+<path class="s-bar" d="M200,403 h33.5 a4,4 0 0 1 4,4 v8 a4,4 0 0 1 -4,4 h-33.5 z"/>
+<text class="s-w" x="245" y="415">&#188;</text>
+<text class="s-w" x="560" y="415">added; no longer multiplies the whole value</text>
+</g>
+<g>
+<title>efficiency: weight 0, logged only</title>
+<text class="s-w" x="190" y="446" text-anchor="end">4. efficiency</text>
+<line class="s-base" x1="200" y1="432" x2="200" y2="450"/>
+<text class="s-w" x="208" y="446">0</text>
+<text class="s-w" x="560" y="446">logged only; energy is item 11</text>
+</g>
+<line class="s-base" x1="200" y1="28" x2="200" y2="470"/>
+</svg>
+<figcaption><b>How the goal is chosen under the normalized ranking</b> (built; not to be switched on until the goal-age fix in section 3.4 lands). Each channel is first put on its own scale (its running centre and spread, never below a measured floor), then weighted; the numbers 1&ndash;4 are version 2's priority order. Before the build the value was a plain sum, plus half of one formula's 0-to-1 range per consequence kind, multiplied by (1 + curiosity): the consequence term carried 96 of every 100 parts of the value's movement between report windows, and of the 94.5 consequence kinds counted per 100 moments, 75 were "hand pressing", which fired on self-contact. Agency = how often an order's outcome was matched back to that order; self value = what the self-value reader adds once a named thing is proven to go with wellness. Hover a bar for its weight. Source: <code>lem/model/wellness_channels.py</code> (<code>DEFAULT_WEIGHTS</code>), DESIGN.md section 4, agents/understand-wellness-planner.md.</figcaption>
+</figure>
+<p class="src">Sources: agents/b3-wellness.md (measurements 1&ndash;3, floors, integrity gate line); <code>lem/model/wellness_channels.py</code> (<code>agreement</code>, <code>INTEGRITY_GATE_LINE</code>, the pain scale of <code>contact_response</code>); reviews/b3-wellness.md (blocker, majors); agents/understand-wellness-planner.md.</p>
+<div class="fill"><b>Segment 32:</b> the chosen goals' ages; each channel's share of the ranking value's spread and of the winner's margin on 8 bodies; how often the pain gate fired; the controllability channel's measured orders and gate; learning progress per sense beside its control.</div>
+</div>
+</section>
+
+<section id="s4">
+<h2>4. Energy, Strength, Fatigue, and Body Limits</h2>
+<div class="v2"><div class="v2label">Plan text (v2, unchanged)</div>
+<p>Energy matters because raising an arm against gravity, holding the body up, or repeatedly using an actuator should not be free. But energy should be a <b>secondary shaper early in development</b>.</p>
+<ul>
+<li>Predict the effort/fatigue consequence of an intended movement.</li>
+<li>Keep the early penalty modest.</li>
+<li>As controllability improves, let energy shape the style of movement.</li>
+<li>Let strength, fatigue, range of motion, and prior use change what movements are possible.</li>
+</ul>
+<h3>Energy tests</h3>
+<ul>
+<li>Does predicted effort rise when the arm is lifted against gravity?</li>
+<li>Does holding the arm up continue to cost energy?</li>
+<li>Does a tired actuator change the predicted movement?</li>
+<li>Can the model find a lower-effort way to get the same body result?</li>
+</ul>
+<div class="callout warn">Use the energy model that already exists in MIMo as the first test bed. Implement the Unreal equivalent later; do not let that block the earlier controllability work.</div>
+</div>
+
+<div class="status"><div class="statuslabel">Status in v3</div>
+<span class="chip c-not">not built: item 11, outside this build</span> <span class="chip c-meas">claim about MIMo: partly true</span> <span class="chip c-open">fatigue drain off by each motor's gear</span>
+<ul>
+<li><b>MIMo's "energy model" is an instantaneous cost</b> (squared control weighted by each motor's strength). No bridge code calls it, and MIMo has no fatigue.</li>
+<li><b>The bridge runs its own fatigue model</b> per body set (10 sets). It drains on |torque &times; joint speed|, so an arm held still against gravity costs 0 W. It reaches the model as a column in every proprioception row, as the capability wellness formula (66% of the way from exhausted to fresh on segment 31), and as the real motor force.</li>
+<li><b>A defect found, not fixed:</b> the fatigue drain leaves out each motor's gear, and the gears differ up to 2,860-fold across the body. Fixing it changes capacity and motor force on this lineage, so it was surfaced and left; the world-side fix agent (lane A) is measuring capacity under the corrected power so the lead can decide.</li>
+<li><b>Added so item 11 can start:</b> the new vestibular vector carries mechanical power (1.0 = 66 W), holding torque (1.0 = 63 N m), joint-limit load and the lowest and mean capacity. The ranking has an efficiency channel with weight 0 (logged only).</li>
+<li><b>Energy tests:</b> predicted effort is unmeasured (the model has no effort output). The posture probe's head-lift effort was printed as newton metres but summed the motors' own force units; the probe review measured the same lift at 3.63 N m of real neck joint torque, 3.4 times the probe's figure. The fix is in lane A.</li>
+</ul>
+<p class="src">Sources: agents/understand-motor-path-energy.md; agents/understand-wellness-planner.md (capability = mean of the 10 body-set capacities, 0 = exhausted, 1 = fresh); agents/env-senses.md; reviews/env-senses.md minor 6; reviews/probes.md ("The head-lift effort is in actuator units").</p>
+</div>
+</section>
+
+<section id="s5">
+<h2>5. Soft Motor Development: Synergies, Not Hard Joint Unlocking</h2>
+<div class="v2"><div class="v2label">Plan text (v2, unchanged)</div>
+<p>We considered turning joints on in a hand-written schedule. That is not the preferred design. Biology is closer to broad early movement patterns that become more differentiated with learning.</p>
+<div class="diagram"><div class="flow">
+<div class="box">Compact UEMA motor intention</div><div class="arrow">&rarr;</div>
+<div class="box">Small nonlinear motor-synergy MLP</div><div class="arrow">&rarr;</div>
+<div class="box">Many joint / actuator commands</div><div class="arrow">&rarr;</div>
+<div class="box">Body movement</div>
+</div></div>
+<ul>
+<li>Use a small nonlinear MLP immediately rather than spending weeks proving a linear version first.</li>
+<li>Input: compact motor intention.</li>
+<li>Use 2&ndash;3 small nonlinear layers for the first version.</li>
+<li>Output: motor targets or motor deltas.</li>
+<li>Train it as part of the embodied loop.</li>
+</ul>
+<p>The MLP is not a policy network. It is a low-level coordination map. Early control can be broad and coupled; finer independent control should emerge as prediction improves.</p>
+</div>
+
+<div class="status"><div class="statuslabel">Status in v3</div>
+<span class="chip c-built">built behind flags (80eaf88ac); not yet in a running segment</span> <span class="chip c-prog">review running (review-b5)</span> <span class="chip c-meas">measured: following counts, physics check</span>
+<p><b>Built</b> (commit 80eaf88ac; work log <code>agents/b5-synergy.md</code>): the network the plan asks for, with two nonlinear hidden layers. It turns an intention of 32 numbers into a change of every body handle's target, relative to where the body is now: a turn for each of the 25 body handles and a move for each of the 14 handles whose position the decoder reads, never the eyes (they have their own servo); all zeros hold the pose.</p>
+<ul>
+<li><b>How it learns, in the loop:</b> every order that ran its whole 250 ms becomes a sample: the pose it began in and the change the body really made. The network must reproduce that change through its 32 numbers. Each sample counts in proportion to how well the order was followed and how much the body moved, so orders the body ignored do not shape it. Nothing here is a reward.</li>
+<li><b>Who uses it:</b> the planner searches the 32 numbers instead of 234 numbers per body (<code>--motor-synergy on</code>); babble draws the 32 numbers at random (<code>--synergy-babble on</code>), sized so each body handle turns 45.7&deg; on average, the same as today's separate wobble. With <code>--smooth-source executed</code> the smoother blends the new order with the order the body really got; today it blends with a running average of proposals, most of them never sent.</li>
+<li><b>Why 32 numbers:</b> on the record saved with the last checkpoint (9,592 orders that ran their whole 250 ms, 8 bodies), 32 directions carry 89 of every 100 parts of the recorded posture changes; 90 would need 35, and the design caps the size at 32. Trained on the first 80% of that record in time, it reproduced 83% of each later change it had not seen (0% = no better than asking for no change, 100% = the whole change); 16 numbers reached 79%, 8 numbers 70%.</li>
+<li><b>At the switch:</b> a fresh network asks 0.0069&deg; of turn and 0.0018 cm of move per handle, against 11&deg; and 2.8 cm for one typical 250 ms change, so at first the planner's orders hold the pose; after the smoother they ask 14&deg; of turn per handle, against 40&deg; from today's planner (1 body, processor). Emulated on the recorded orders, it reproduced 38% of a change before learning from it after 1,000 samples, and 71% to 76% after 5,000 to 9,000.</li>
+<li><b>Proofs on the real checkpoint</b> (processor, 1 body): with the switches off, every order, loss and weight equals the code before it; switched on, only the new network starts fresh, and 406 of 406 saved optimizer states carry over.</li>
+<li><b>Cost:</b> 4 ms per moment on average on the processor; a lesson every fifth moment takes 11 ms.</li>
+<li><b>No hard schedule exists:</b> H84 runs no growth ramp and no joint unlocking.</li>
+</ul>
+
+<h4>How well the body follows its orders today, as counts</h4>
+<p>The question: when an order tells a body part (a wrist, an elbow, a finger) to turn to a new orientation, is that part closer to the ordered orientation 250 ms later than it was when the order was given? Counted per part per order.</p>
+<div class="tw"><table>
+<tr><th>case</th><th>what it is</th><th>closer, out of 100</th><th>chance on the same turns</th></tr>
+<tr><td>Live orders</td><td>The last checkpoint's own orders: 5 of its 8 bodies each lived 12.5 s from the saved episode, learning off, on the processor (245 orders, 6,125 part-orders). Median ordered turn 23.8&deg;; the parts turned a median 13.7&deg;.</td><td class="num">54 (95% interval 53 to 56)</td><td class="num">31</td></tr>
+<tr><td>A pose the body has held</td><td>Physics only, no model: the body is driven into a pose, brought back, then ordered to that pose (200 orders). The turns are small: median 4.6&deg;.</td><td class="num">87</td><td class="num">29</td></tr>
+<tr><td>Separate random turns</td><td>Physics only: every part is ordered its own random 20&deg; turn, the kind of order today's babble makes (200 orders).</td><td class="num">69</td><td class="num">31</td></tr>
+</table></div>
+<ul>
+<li><b>Chance is not 50.</b> It is what the same real turns score against a target at the same distance in a random direction. A turn about as large as the distance lands closer to a randomly placed target only about 1 time in 4.</li>
+<li><b>By who wrote the order</b> (live): the planner 52, the reflex controller alone 53, the reflex controller with babble 59 (chance 33, 25 and 32).</li>
+<li><b>By body part</b> (live): feet, thighs and head end closer 82 to 89 times in 100; the fingers 27 to 42 times, near their chance of 24 to 26.</li>
+<li><b>Closer is not arrival.</b> Summed over all live part-orders, the distance to the ordered orientation grew 3.4% in 250 ms, because the parts that missed ended farther away by more than the hits gained; the median part closed 3.3% of its distance. For a held pose the median part closed 51%.</li>
+<li><b>Limits.</b> The live count covers 5 of 8 bodies: the caregiver's speech library, which the world needs, was deleted mid-run by a git operation in a second worktree, and was later restored. The probe learns nothing in its 12.5 s, while the live run learns every step. Every body got the same mix of authors, because one babble schedule serves all bodies. The physics cases have no caregiver, mobile or fatigue, a fixed strength and fixed turn sizes, so they show what the body's mechanics allow; they are not goal lines for the live orders.</li>
+<li><b>Found beside it, queued for the world and dashboard fix agents:</b> the environment's live following gauge treats the last of the 26 rows as the eyes' (env.py line 2349), but the eyes are row 23, so it scores the eyes' row and never scores the chest; its "250 ms" spans 26 physics ticks, not 25; and the physics anchors recorded in <code>scale_anchors.json</code> on 2026-09-19 no longer reproduce on today's code.</li>
+</ul>
+
+<h4>Did the synergy make orders the body follows better?</h4>
+<p><b>Not so far.</b> b5's physics check (1 body at rest, 20 trials per case, <code>tools/synergy_following.py</code>) ran three kinds of order through the same body: orders written by the trained synergy, the recorded live changes it learned from, and separate random turns. All three were followed alike, and each less well than a pose the body has held, on the environment's direction gauge (its count form is not yet measured). Why, and the design question it leaves for the lead: see the plain-words box below.</p>
+<p><b>Planner check</b> (1 body, the same decision planned six ways): the planner closed 0.22% of the distance to its goal planning directly and 0.06% through the synergy (0% = no closer, 100% = arrived); adding a per-handle correction at any of four weights moved where it ended by 0.014% of the distance or less. The reason: the forward model's prediction ignores the order (knowing the real order changes its error by less than 0.08%, section 1). So the correction (<code>--synergy-residual-l2</code>) bought nothing measurable and is off by default.</p>
+<p class="src">Sources: agents/b5-synergy.md; commit 80eaf88ac; <code>lem/model/motor_synergy.py</code> (size, change scales); <code>mimo_bridge/lem_model.py</code> <code>synergy_window_summary</code> (reproduced share = 1 minus squared error over squared change); <code>measurements/following_out_of_100.json</code>; WORKLOG.md 00:31&ndash;00:52.</p>
+<div class="fill"><b>Segment 32:</b> the following count per author once the synergy writes orders, against 54 today; the synergy's reproduced share and the live share of its units; the declared auto-revert criteria (DESIGN D11a).</div>
+</div>
+
+<div class="status" id="s5-explained"><div class="statuslabel">In plain words: what the synergy network is, why, and whether it can give exact movement (operator request, 2026-09-23; updated with the following counts and the build's status)</div>
+<p><b>Where it stands.</b> Segment 32 is training the synergy map with its planner and exploration off and proposal smoothing retained. The review found a regression when the fresh map and executed-order smoothing were enabled together. The planner now starts from the encoded controller proposal; activating it still requires the paired physical comparison in <a href="RESTART_CRITERIA.md">the takeover criteria</a>. Faster learning remains unproven.</p>
+<p><b>How is the body moved today?</b> The model never sets joints directly. Each order gives each of 25 body parts (plus the eyes) a target: where the part should be and how it should be turned. A solver (inverse kinematics, IK: working out the joint angles that reach a target) turns those targets into joint forces, solving each arm as one connected chain. So IK is already used, and these targets are the same idea as Unreal's physics handles. One piece is missing: the spec gives each handle a radius (how far its pull spreads to nearby bones), and the MIMo decoder never reads it.</p>
+<p><b>How well does the body follow its orders?</b> The count: is a body part closer to its ordered orientation 250 ms after the order than it was when the order was given? Out of 100 orders:</p>
+<ul>
+<li><b>Live orders: 54.</b> These are the last checkpoint's own orders, from 5 of its 8 bodies over 12.5 s each (6,125 part-orders).</li>
+<li><b>A pose the body has held: 87.</b> Physics only, no model: the body is driven into a pose, brought back, then ordered to that pose. These turns are small: median 4.6&deg;, against 23.8&deg; for the live orders.</li>
+<li><b>Separate random turns: 69.</b> Physics only: every part gets its own random 20&deg; turn, the kind of order babble makes.</li>
+<li><b>Chance: 31.</b> That is what the same real turns score against a target at the same distance in a random direction. It is not 50, because a turn about as large as the distance lands closer to a random target only about 1 time in 4.</li>
+</ul>
+<p>Limits of these counts: the live count covers 5 of 8 bodies, because the speech library the world needs was deleted from disk mid-run (and later restored). The probe learns nothing during its 12.5 s; the live run learns every step. The physics cases have no caregiver and no fatigue and use fixed sizes, so they show what the body's mechanics allow; they are not goal lines for the live orders.</p>
+<p><b>Why random moves at all?</b> UEMA gets no demonstrations and no reward, so the model must find out what its own orders do by trying them. That is motor babbling, a standard method in developmental robotics and part of the UEMA spec (section 19.2).</p>
+<p><b>What is wrong with today's random moves?</b> Each part's target gets its own random twist, chosen with no regard to any other part. Under separate random turns the forearms end closer only 49 to 52 times in 100, against 96 to 98 for a pose the body has held. The held-pose orders ask smaller turns, but even the quarter of them asking the most (more than 8.6&deg;) end closer 85 times in 100. The planner has the same flaw: it tunes 234 numbers per body, each on its own.</p>
+<p><b>What are the options?</b></p>
+<ul>
+<li><b>Radius handles, as in Unreal:</b> one handle's pull spreads to its neighbours. Hand-designed: someone chooses each spread.</li>
+<li><b>Goal babbling</b> (Rolf, Steil and Gienger; standard in robotics): pick a random place for the hand to reach and let the controller reach for it, which gives coordinated reaches instead of random nudges.</li>
+<li><b>A learned synergy network</b> (this section's item): a small network learns, from moves the body really made, a short list of coordinated whole-body movements; practice moves and the planner pick from that list. Also a standard idea: "postural synergies" and "eigengrasps" in robot hands, "latent action spaces" in robot learning.</li>
+</ul>
+<p><b>What we are doing, and why:</b> the learned synergy network, because this plan chose learned synergies over hand-written schedules. Radius handles and goal babbling can be added; that is the operator's call.</p>
+<p><b>What was built.</b> A small network with two nonlinear hidden layers (this plan asks for 2 to 3) turns an intention of 32 numbers into a change of every body handle's target, relative to where the body is now. An intention of all zeros holds the pose. It learns in the loop, from hindsight: every order that ran its whole 250 ms is a sample of a change the body really made, and it counts in proportion to how well the order was followed and how much the body moved. The planner searches the 32 numbers instead of 234 per body (<code>--motor-synergy on</code>). Babble draws the 32 numbers at random, at today's average size of 45.7&deg; of turn per handle (<code>--synergy-babble on</code>). With <code>--smooth-source executed</code>, the smoother blends each new order with the order the body really got, instead of with an average of proposals most of which were never sent.</p>
+<p><b>Why 32.</b> On 9,592 recorded orders, 32 directions carry 89 of every 100 parts of the posture changes. A network of that size reproduced 83% of later changes it had not seen (0% = no better than asking for no change, 100% = the whole change).</p>
+<p><b>Does it help yet?</b> Not in the one check so far. In the builder's physics check (1 body at rest, 20 trials per case), orders the trained synergy wrote were followed as well as separate random turns, and less well than a pose the body has held. That check used the environment's direction gauge; its count form is not yet measured. The reason found: the network learned to reproduce the changes the body made, and those changes, taken from other poses, act like separate turns from the rest pose. What it should learn from instead (for example only well-followed orders) is a decision for the lead.</p>
+<p><b>Is this standard robotics?</b> The parts are standard: IK handles, motor babbling, synergies, planning with a learned model of the body. What is different is the whole: no demonstrations, no reward, no trained policy; the model picks its own goals from its wellness and plans with its own predictions (spec section 1). Most robotics either hand-writes the controller for a known task or trains a policy with rewards.</p>
+<p><b>Can it give exact, articulated movement from intentions?</b> Yes, if three layers work together; the synergy network alone would not:</p>
+<ol>
+<li><b>The IK solver:</b> for a reachable target the joint solution is exact; the limits are physical (strength, fatigue, gravity, things in the way).</li>
+<li><b>The planner</b> must choose the right target, which needs the model to predict correctly what an order will do. Today it does not: the probes found its predictions did not change when its orders changed, and in the builder's planner check the planner closed 0.22% of the distance to its goal (0% = no closer, 100% = arrived). That is why the dead parts are repaired first.</li>
+<li><b>The synergy network</b> gives coordinated whole-body movement from a short list of numbers; a short list cannot spell out every precise pose, so alone it gives smooth but approximate movement.</li>
+</ol>
+<p>Precision stays possible because the planner may add a small correction to each individual part on top of the synergy (<code>--synergy-residual-l2</code>), at a cost, so it is used only where the coarse movement misses. It is built and off by default: the builder could not measure what it buys while the model's predictions ignore the order (knowing the real order changes their error by less than 0.08%, where 0% = the order makes no difference). That is this plan's own path: "Early control can be broad and coupled; finer independent control should emerge as prediction improves." It would be stopped by predictions that keep ignoring orders, a correction cost set too high, or the body's physical limits.</p>
+<p><b>How we will know.</b> Two measurements:</p>
+<ol>
+<li>The following count above, run on the live orders: whether orders written through the synergy end closer more often than today's 54 in 100, toward the held-pose count of 87.</li>
+<li>The body probe gives each limb an order several times and measures, in centimetres, how far it ends from where it was told; then it repeats the test after first turning the shoulder 10 degrees away (<code>gof_probe_body.py</code>, <code>PRE_TURN_DEG</code>). Exact control means that distance shrinks to the body's own natural wobble and stays there after the shoulder turn. That wobble, the finish line, has not been measured yet.</li>
+</ol>
+<p class="src">Sources: <code>measurements/following_out_of_100.json</code> (every count); agents/b5-synergy.md and commit 80eaf88ac (the build and its checks); <code>lem/model/motor_synergy.py</code>; agents/understand-motor-path-energy.md; UEMA_Spec_v3_6.txt sections 1, 3.4 and 19.2; gof_probe_body.py. Also kept as docs/gain_of_function_v3/explanation_motor_synergy.md.</p>
+</div>
+</section>
+
+<section id="s6">
+<h2>6. Gaze: The Cleanest Early Proof</h2>
+<div class="fill"><b>Current eye progress, 23 September:</b> in the new saved-model test, eye-angle prediction has 52% less error than assuming no movement. Giving the model the correct eye command reduces visual-prediction error by 9.5% compared with a hold-still command. Useful, repeatable choices of where to look remain unproven. Read the <a href="EYE_PROGRESS_2026-09-23.md">test conditions, comparisons and limits</a>. The original build record below predates the integrated repairs.</div>
+<div class="v2"><div class="v2label">Plan text (v2, unchanged)</div>
+<p>Gaze is useful because action and sensory consequence are tightly connected.</p>
+<ul>
+<li>Give the forward model an explicit copy of the gaze command.</li>
+<li>Predict eye pose and visual change together.</li>
+<li>Include head pose.</li>
+<li>Use a horizon long enough to cover the eye movement, not only one tiny step.</li>
+<li>For the current MIMo eye dynamics, around 100&ndash;150 ms is a sensible early probe.</li>
+<li>Keep gaze prediction visible in the loss so larger sensory channels do not drown it out.</li>
+</ul>
+<h3>Development without explicit goals</h3>
+<p>Do not code &ldquo;track the ball&rdquo; as a reward. Instead, expose the model to head motion, moving visual objects, hand-eye coupling, self-touch while looking, and other events where better gaze control improves prediction and wellness.</p>
+<h3>Gaze tests</h3>
+<ol>
+<li><b>Counterfactual gaze:</b> change only the gaze command. Does the predicted retinal shift change correctly?</li>
+<li><b>Prediction-before-action:</b> log eye pose and visual result before movement.</li>
+<li><b>Repeatability:</b> same starting state, same intended gaze, repeated trials.</li>
+<li><b>Generalization:</b> nearby eye/head pose, same intended consequence.</li>
+<li><b>Action-conditioning ablation:</b> remove gaze command from prediction and measure the loss.</li>
+<li><b>Wellness-selection test:</b> when two candidate gaze actions are imagined, does intention tend toward the one with better predicted wellness?</li>
+</ol>
+</div>
+
+<div class="status"><div class="statuslabel">Status in v3</div>
+<span class="chip c-fix">gaze head built; review fixes in progress</span> <span class="chip c-meas">all six tests run: before</span> <span class="chip c-prog">loss balance in progress</span>
+<div class="tw"><table>
+<tr><th>plan line</th><th>before the build</th><th>now</th></tr>
+<tr><td>Explicit copy of the gaze command</td><td>Partly: the eye command was 1 of 26 rows pooled into one motor token; a gaze command moved that token by 0.0012% of its size.</td><td>The efference gaze head is given the order directly and predicts the eye's turn at 50, 100 and 150 ms, in degrees (commit 2adadb74e, <code>--efference-heads on</code>). It reuses the parameters of a gaze head that existed but was never called. Review of b1 (major): the copy reaches only this eye-angle prediction, not the forward model's prediction of what the eyes will see; the head's attention pool locked onto one input within 100 training steps on real moments. Fixes in the model lane.</td></tr>
+<tr><td>Eye pose and visual change together</td><td>Partly: eye pose was buried inside the body token; no readable eye-pose prediction.</td><td>Eye pose is a readable output (the gaze head); visual change is still predicted without the gaze copy.</td></tr>
+<tr><td>Include head pose</td><td>True: the head's orientation is a body-token row.</td><td>Also the head's gravity direction and turning rate in the vestibular sense.</td></tr>
+<tr><td>100&ndash;150 ms horizon fits the eye</td><td>Partly: measured, 5&deg;, 10&deg; and 20&deg; eye jumps settle within 5% in 130, 155 and 195 ms, peaking at 73, 113 and 159 &deg;/s with no overshoot. So 150 ms covers a 5&deg; jump only. Neither code comment on eye speed held.</td><td>The gaze head predicts 50, 100 and 150 ms; the main lesson is 50 ms and the imagination chain 150 ms.</td></tr>
+<tr><td>Gaze visible in the loss</td><td>False: no gaze term trained anything; hearing was 67% of the next-moment lesson.</td><td>The two efference heads each carry one tenth of a full lesson's weight (<code>--efference-weight</code>): together 9.9% of the positive loss at 1 body (the next-moment lesson was 8.7% on segment 31). Per-sense balance (<code>--next-frame-norm persistence</code>) is being built (b6, started 00:47).</td></tr>
+<tr><td>No explicit goals</td><td>Violated: a hand-coded "look at the consequence" pull on the gaze command was 4.8% of the positive loss.</td><td>Switched off at the deploy (decision D14).</td></tr>
+</table></div>
+<p><b>The six gaze tests, run on ckpt_step_344400</b> (4 start moments, on the processor):</p>
+<ol>
+<li>Counterfactual: the imagined picture 150 ms ahead moved 0.0000073% of the way the real picture moved (0% = ignores the command, 100% = foresees it). Of 24 command pairs, 20 gave identical predictions.</li>
+<li>Prediction before action: every prediction was made before the order was sent. No readable eye-pose output existed to log.</li>
+<li>Repeatability: 3 restores of the same moment gave identical eye turns and predictions (the instrument repeats exactly).</li>
+<li>Generalization: with the head first turned 10&deg;, 0.000002% captured; 0 of 2 command pairs told apart correctly.</li>
+<li>Ablation: removing the gaze command changed the vision prediction's error by 0.000005% of it.</li>
+<li>Wellness selection: predicted wellness tied in 8 of 8 candidate pairs, so the planner's choice could not be scored.</li>
+</ol>
+<p>A 10&deg; command moved the eye 6.1&deg; by 150 ms (spread 2.2&deg;). The ceiling for each share is 100%, but a goal line (what working control scores, given what no model can foresee) is unmeasured, so the distance to goal is unmeasured too.</p>
+<p><b>Review of the probes:</b> the 4 of 24 command pairs whose predictions differed were decided by predicted differences near 5 millionths of the real difference, with no measured noise line to separate them from rounding, and the 50 ms share came from the imagination route, not the trained route the sentence named. The conclusion stands; the wording and scoring fixes, and a re-run, are in lane A.</p>
+<p class="src">Sources: <code>gaze.json</code> (findings, controls, step_response); agents/probes.md; agents/understand-forward-model.md; agents/b1-causal-efference.md; reviews/b1-causal-efference.md (major 1, major 4); reviews/probes.md.</p>
+<div class="fill"><b>Segment 32:</b> the gaze head's error in degrees at 50/100/150 ms against "the eye stays where it is" and against a shuffled order; the gaze probe re-run on segment 32's first checkpoint.</div>
+</div>
+</section>
+
+<section id="s7">
+<h2>7. Body-Motion Gain of Function</h2>
+<div class="v2"><div class="v2label">Plan text (v2, unchanged)</div>
+<p>The body tests must separate <b>intentional control</b> from random motor babble.</p>
+<div class="tw"><table>
+<tr><th>Test</th><th>What it proves</th></tr>
+<tr><td>Action &rarr; prediction</td><td>Different motor commands produce different, sensible predicted outcomes.</td></tr>
+<tr><td>Counterfactual action</td><td>Changing only the imagined action changes the predicted result correctly.</td></tr>
+<tr><td>Prediction before movement</td><td>The result was expected before it happened.</td></tr>
+<tr><td>Predicted-wellness choice</td><td>The selected intention was the one expected to improve wellness, not a random action.</td></tr>
+<tr><td>Repeatability</td><td>The same intended result can be produced multiple times.</td></tr>
+<tr><td>Generalization</td><td>The same result can be reached from a slightly different pose.</td></tr>
+<tr><td>Perturbation</td><td>The model adapts if the limb is nudged, loaded, or made harder to move.</td></tr>
+</table></div>
+<h3>Motor-babble controls</h3>
+<ul>
+<li>Compare against a random-action baseline.</li>
+<li>Compare against a no-op/persistence baseline when appropriate.</li>
+<li>Compare against the model's own earlier checkpoint.</li>
+</ul>
+<h3>Body milestone ladder</h3>
+<ol>
+<li>Repeatable finger flexion/extension.</li>
+<li>Repeatable wrist movement.</li>
+<li>Repeatable elbow movement.</li>
+<li>Finger-to-finger self-touch.</li>
+<li>Hand-to-face or hand-to-torso touch.</li>
+<li>Raise the arm into view and predict where it will appear.</li>
+<li>Push against the ground or support surface.</li>
+<li>Shift weight while predicting proprioceptive and vestibular effects.</li>
+<li>Lift part of the trunk.</li>
+<li>Combine limbs and trunk into rolling, propping, crawling-like, or other self-discovered postures.</li>
+</ol>
+<div class="callout good">The important milestone is not the named behavior itself. The milestone is that the model can <b>intend, predict, execute, and repeat</b> increasingly complex body consequences.</div>
+</div>
+
+<div class="status"><div class="statuslabel">Status in v3</div>
+<span class="chip c-fix">body probe built; review fixes and re-run in progress</span> <span class="chip c-meas">every test and control run: before</span>
+<div class="tw"><table>
+<tr><th>test</th><th>before (ckpt_step_344400, 3 start moments)</th></tr>
+<tr><td>Action &rarr; prediction, counterfactual</td><td>One limb ordered to turn 20&deg; while the rest held still: the model's 250 ms prediction of every body part's place foresaw 0.0% of the real difference (0% = ignores the order, 100% = foresees it); its 50 ms body-token prediction foresaw at most 0.75% (finger). The 250 ms pose head gave the same output for every state and order.</td></tr>
+<tr><td>Prediction before movement</td><td>Every prediction made before the order was sent.</td></tr>
+<tr><td>Predicted-wellness choice</td><td>Not scorable: predicted wellness tied between candidates (see section 6).</td></tr>
+<tr><td>Repeatability</td><td>3 restores: identical turns and predictions (the instrument).</td></tr>
+<tr><td>Generalization</td><td>From a pose with the limb pre-turned 10&deg;: also 0.0% captured.</td></tr>
+<tr><td>Perturbation</td><td>A 2.49 N load (the forearm and hand's own weight) changed the elbow's turn by 0.11&deg; (11.7&deg; free, 11.8&deg; loaded). From the order's second step to its last, the model's body-sense error fell to 40% of its second-step value when loaded and 38% when free (100% = no change, 0% = the error vanished). The review found the load moved the limb too little (0.9% of its turn) for this arm to test adaptation at all; the fix sizes the load until it changes the motion.</td></tr>
+<tr><td>Control: random order</td><td>0.0% captured (error 0.80 cm against 0.75 cm for predicting no movement).</td></tr>
+<tr><td>Control: hold still</td><td>Every arm compared with holding still from the same moment.</td></tr>
+<tr><td>Control: earlier checkpoint</td><td>Segment 30's last (step 328,375): 0.0% captured; the pose head was equally unresponsive.</td></tr>
+</table></div>
+<p><b>What the body did:</b> asked for 20&deg;, the finger turned 6.5&deg;, the wrist 9.8&deg;, the elbow 10.9&deg;, the shoulder 8.2&deg; and the leg 12.3&deg; (means of 3). A 20&deg; limb order moved the motor token by 3.2% of its size; a random order moving every part, 18.9%.</p>
+<p><b>Ladder:</b> the probe scores rung 1 (fingers) and reports the others as the arms above. Rungs 4&ndash;6 are in the binding probe (section 16, item 9); rungs 7&ndash;9 in the posture probe (item 10); rung 10 is unmeasured. What the probe measured for rungs 1&ndash;3 is physics following a scripted order and the model's prediction of it; a movement the model itself intended, repeated, is unmeasured.</p>
+<p><b>Review of the probes:</b> the body, binding and posture probes predicted with an eye command 161&deg; away from the one the model is later told it executed, and on this checkpoint that wrong eye row moved the vision prediction more than a 20&deg; elbow order did. The "before" conclusion stands (an order changed the prediction by millionths to thousandths of the real change); the exact sizes carry that error. Fix and re-run in lane A.</p>
+<p class="src">Sources: <code>body.json</code> findings, controls; agents/probes.md; reviews/probes.md (eye command, load arm, milestone table).</p>
+<div class="fill"><b>Segment 32:</b> the body probe on the first segment 32 checkpoint, with the efference body head's captured share in cm; the ladder rungs reached.</div>
+</div>
+</section>
+
+<section id="s8">
+<h2>8. Body Awareness Should Be Multimodal</h2>
+<div class="v2"><div class="v2label">Plan text (v2, unchanged)</div>
+<p>A useful body representation should come from many signals at once:</p>
+<ul>
+<li>joint angle and joint motion,</li>
+<li>body position and orientation,</li>
+<li>contact force and shear,</li>
+<li>self-contact on both body parts,</li>
+<li>visual appearance of the body,</li>
+<li>vestibular signals,</li>
+<li>strain/stretch in the Unreal soft-body avatar,</li>
+<li>effort and fatigue.</li>
+</ul>
+<p>These streams should line up in time so the forward model can learn that they are different views of the same body event.</p>
+</div>
+
+<div class="status"><div class="statuslabel">Status in v3</div>
+<span class="chip c-meas">checked signal by signal</span> <span class="chip c-fix">vestibular and effort: built; review fixes in progress</span>
+<div class="tw"><table>
+<tr><th>signal</th><th>reaches the model?</th><th>change in this build</th></tr>
+<tr><td>joint angle and motion</td><td><span class="chip v-partly">partly</span> Each tracked body part's world orientation, position and linear speed. No joint angles, joint speeds or torques; MIMo's own joint sensors are configured and never read.</td><td>Neck angles, neck speeds and neck effort enter through the vestibular sense. Limb joints: unchanged.</td></tr>
+<tr><td>body position and orientation</td><td><span class="chip v-true">yes</span></td><td>none</td></tr>
+<tr><td>contact force and shear</td><td><span class="chip v-true">yes</span> pressure, shear, slip, area, push direction, depth, arrival speed per patch</td><td>none</td></tr>
+<tr><td>self-contact on both parts</td><td><span class="chip v-partly">partly</span> both touch rows carry an own-body share; the partner's identity is thrown away; one pooled touch token</td><td>The contact head predicts each patch's own-body and outside contact; the world names both parts of each new self-touch.</td></tr>
+<tr><td>visual appearance of the body</td><td><span class="chip v-partly">partly</span> rendered, but a hand was within 30&deg; of an eye's axis on 1.6% of body-steps</td><td>none</td></tr>
+<tr><td>vestibular</td><td><span class="chip v-false">no</span> read every frame and discarded</td><td>A 29-number vestibular and internal-state sense (<code>--vestibular-sense on</code>).</td></tr>
+<tr><td>strain/stretch (Unreal)</td><td>not applicable in MIMo (rigid)</td><td>none</td></tr>
+<tr><td>effort and fatigue</td><td><span class="chip v-partly">partly</span> fatigue capacity per body part; effort only in wellness</td><td>Mechanical power, holding torque, limit load and capacities in the vestibular sense.</td></tr>
+<tr><td>lined up in time</td><td><span class="chip v-true">yes</span> one reading per 50 ms step</td><td>none</td></tr>
+</table></div>
+<p class="src">Sources: agents/understand-senses-proprio-vestibular.md; agents/env-senses.md; agents/b2-vestibular.md.</p>
+</div>
+</section>
+
+<section id="s9">
+<h2>9. Voice and the BioFold</h2>
+<div class="v2"><div class="v2label">Plan text (v2, unchanged)</div>
+<div class="diagram"><div class="flow">
+<div class="box">Vocal intention</div><div class="arrow">&rarr;</div>
+<div class="box">Breath + BioFold + lips + tongue + jaw</div><div class="arrow">&rarr;</div>
+<div class="box">Internal sensation + sound</div><div class="arrow">&rarr;</div>
+<div class="box">Prediction update</div>
+</div></div>
+<p>The model should sense BioFold pressure/flow state, strain, contact, vibration, mouth/jaw/tongue/lip proprioception, and hearing of the produced sound.</p>
+<p>The BioFold does not need literal human airways. It can be a virtual organ. What matters is a reliable causal chain from motor command &rarr; internal state &rarr; sound.</p>
+<h3>Voice gain-of-function ladder</h3>
+<ol>
+<li>Make a sound on purpose.</li>
+<li>Stop a sound on purpose.</li>
+<li>Control onset and duration.</li>
+<li>Control loudness.</li>
+<li>Control pitch range.</li>
+<li>Move lips, tongue, and jaw predictably.</li>
+<li>Predict how articulation changes the heard sound.</li>
+<li>Repeat a chosen vocal pattern.</li>
+</ol>
+<h3>Voice tests</h3>
+<ul>
+<li>Change only one articulator command and check whether the predicted sound changes.</li>
+<li>Mute hearing and measure how much vocal prediction/control degrades.</li>
+<li>Remove internal BioFold sensing and measure the loss of control.</li>
+<li>Perturb a vocal actuator and test adaptation.</li>
+</ul>
+</div>
+
+<div class="status"><div class="statuslabel">Status in v3</div>
+<span class="chip c-not">not built: excluded by the operator ("not ready")</span>
+<p>Nothing in this build touches voice. Hearing is a real sense on H84 (its next-moment error was 67% of that lesson's loss). The model's voice head runs every step without gradient and nothing reads its output.</p>
+<p class="src">Sources: WORKLOG.md (the ten items table); agents/understand-forward-model.md.</p>
+</div>
+</section>
+
+<section id="s10">
+<h2>10. Space and Time Should Emerge from Prediction</h2>
+<div class="v2"><div class="v2label">Plan text (v2, unchanged)</div>
+<p>Do not hand-code &ldquo;this is 3D space&rdquo; or give UEMA a symbolic body map. Do provide the basic scaffolding the model cannot infer without data:</p>
+<ul>
+<li>body-part or modality identity,</li>
+<li>the order of events in time,</li>
+<li>the action that was sent,</li>
+<li>synchronized sensory streams.</li>
+</ul>
+<p>The forward model can then discover regularities such as &ldquo;this action moves my hand through my visual field,&rdquo; &ldquo;self-touch follows when these body states converge,&rdquo; and &ldquo;this movement takes longer than that movement.&rdquo;</p>
+<h3>Consequences need more than one time step</h3>
+<p>Keep the short next-step prediction, but also test short multi-step prediction. The exact horizon can grow with capability. The model should learn <b>when</b> consequences arrive, not only that they arrive.</p>
+</div>
+
+<div class="status"><div class="statuslabel">Status in v3</div>
+<span class="chip c-meas">scaffolding: true</span> <span class="chip c-meas">multi-step: partly</span> <span class="chip c-not">arrival-time test: item 13, not in this build</span>
+<ul>
+<li><b>Scaffolding, all four present:</b> each sense and each body handle has its own identity; moments are ordered in 50 ms slots; the executed order is an input; all senses are read at the same step.</li>
+<li><b>Multi-step, before:</b> the imagination lesson trains 3 steps ahead (150 ms). The planner may use a depth only while that depth beats "do nothing" in more than half of its tries; on segment 31 depth 1 won 38 of 100, depth 2 71 and depth 3 88, so the planner stayed at 1 step.</li>
+<li><b>Multi-step, added:</b> the gaze head predicts 50/100/150 ms and the body head 50 ms and the order's 250 ms, in degrees and centimetres.</li>
+<li><b>When consequences arrive:</b> no test exists.</li>
+</ul>
+<p class="src">Sources: agents/understand-forward-model.md; agents/understand-wellness-planner.md (plan license).</p>
+</div>
+</section>
+
+<section id="s11">
+<h2>11. What the Attention Blocks and Forward Model Are Doing</h2>
+<div class="v2"><div class="v2label">Plan text (v2, unchanged)</div>
+<p>In the current model, the attention blocks are inside the forward model. That is where relationships are learned across senses, body parts, motor commands, and time.</p>
+<p>The current model has been expanded from <b>128-dimensional encoders to 192-dimensional encoders</b>, and from <b>2 attention blocks to 4</b>.</p>
+<div class="diagram"><div class="flow">
+<div class="box">Vision</div>
+<div class="box">Touch</div>
+<div class="box">Body / proprioception</div>
+<div class="box">Vestibular / internal state</div>
+<div class="box">Action copy</div>
+<div class="arrow">&rarr;</div>
+<div class="box">Forward model<br>4 attention blocks</div>
+<div class="arrow">&rarr;</div>
+<div class="box">Predicted future sensory/body state</div>
+</div></div>
+<p>The attention blocks should not be told &ldquo;this is hand-eye coordination.&rdquo; They should learn that relation because eye, hand, vision, and touch signals repeatedly predict one another.</p>
+</div>
+
+<div class="status"><div class="statuslabel">Status in v3</div>
+<span class="chip c-meas">size claims: true</span> <span class="chip c-fix">vestibular input: built; review fixes in progress</span> <span class="chip c-open">locked attention: repair planned</span>
+<ul>
+<li><b>Size: true.</b> H83 was 128 wide with 2 blocks (3.3 million parameters). H84 started fresh at 192 wide with 4 blocks (14.4 million), so it is a new model at the larger size, not a grown copy of H83.</li>
+<li><b>Attention inside the forward model: true.</b> Each block attends across senses, across time, and across both at once; the encoders and heads have attention too.</li>
+<li><b>The five inputs:</b> vision, touch, body and the action copy were inputs; vestibular was not. Hearing and a placeholder slot were extra inputs. The placeholder was fed random noise, but on the last checkpoint its encoder had learned to output the same token every moment (it varied by 0.000035% of its size), and every part that reads the slot was trained against that constant. The vestibular sense now takes the placeholder's slot (commit 1f1132359). Review of b2 (major): the switch is therefore not function-preserving: on identical input, the orders sent to the body change by 11.7 in every 100 parts of their size at the first moment. Fix in the model lane: start the new encoder so its first token equals the old constant.</li>
+<li><b>What the attention actually does, measured on ckpt_step_344400:</b> the order's own attention pool is locked: each of its 4 heads reads exactly 1 of the 26 handles, and 16 handles got no weight over 4 moments. The first block's attention across the 6 senses is locked on one sense, and its attention across everything on one input. In blocks 2 to 4 the attention across senses is less concentrated than in block 1, and block 3's attention across time spreads the widest. These spreads are read from an entropy (0 = one input only, 1 = all inputs evenly) and are not yet measured as a count.</li>
+</ul>
+<p class="src">Sources: agents/understand-forward-model.md; <code>measurements/liveness_sweep_ckpt_step_344400.json</code>; <code>measurements/why_pose_head_and_motor_token.py</code>; reviews/b2-vestibular.md (major 1).</p>
+</div>
+</section>
+
+<section id="s12">
+<h2>12. The First Model Does Not Need the Frozen Model</h2>
+<div class="v2"><div class="v2label">Plan text (v2, unchanged)</div>
+<p>The &ldquo;frozen model&rdquo; means a later pre-trained language or multimodal model that can eventually be fused with UEMA. It is <b>not</b> part of the first embodied MIMo model.</p>
+<ul>
+<li>First prove that the UEMA core can gain embodied function on its own.</li>
+<li>Keep the forward model trainable.</li>
+<li>Bring in a frozen pre-trained model later.</li>
+</ul>
+</div>
+<div class="status"><div class="statuslabel">Status in v3</div>
+<span class="chip c-meas">true: no frozen model anywhere</span>
+<p>No pre-trained model is loaded; the forward model trains every step. No change.</p>
+<p class="src">Source: agents/understand-forward-model.md.</p>
+</div>
+</section>
+
+<section id="s13">
+<h2>13. ManyMinds Is Not the Motor-Synergy Layer</h2>
+<div class="v2"><div class="v2label">Plan text (v2, unchanged)</div>
+<div class="tw"><table>
+<tr><th>Part</th><th>Purpose</th></tr>
+<tr><td>Motor-synergy MLP</td><td>Low-level: turn compact motor intention into coordinated actuator commands.</td></tr>
+<tr><td>ManyMinds</td><td>Higher-level: allow specialization and coordination among learned domains or competencies.</td></tr>
+</table></div>
+<p>Recommendation: first make one UEMA mind learn primitive embodied control. Do not use ManyMinds to solve basic gaze, finger, elbow, or voice control.</p>
+</div>
+<div class="status"><div class="statuslabel">Status in v3</div>
+<span class="chip c-meas">true</span> <span class="chip c-fix">placeholder replaced by the vestibular sense: built; review fixes in progress</span>
+<p>ManyMinds does not exist in the model. Its placeholder slot was fed random noise at loss weight 0 and reached attention, the reflex controller's input and the self-model; on the last checkpoint its encoder turned that noise into the same token every moment (review of b2, which corrects DESIGN D4's "noise" wording). With <code>--vestibular-sense on</code> that slot becomes the vestibular sense. ManyMinds can take a seventh slot when it exists.</p>
+<p class="src">Sources: DESIGN.md decision D4; agents/understand-motor-path-energy.md; reviews/b2-vestibular.md (major 1).</p>
+</div>
+</section>
+
+<section id="s14">
+<h2>14. Extra Signals We Identified as Important</h2>
+<div class="v2"><div class="v2label">Plan text (v2, unchanged)</div>
+<ul>
+<li><b>Vestibular sensing:</b> tilt, acceleration, balance, posture.</li>
+<li><b>Interoception:</b> fatigue, strain, breathing demand, internal load.</li>
+<li><b>Prediction confidence:</b> how sure the model is about a predicted consequence.</li>
+<li><b>Temporal credit:</b> connecting an action to a consequence that arrives later.</li>
+<li><b>Learning progress:</b> improvement itself should matter.</li>
+<li><b>Body integrity:</b> unsafe strain or impossible motion should strongly hurt wellness.</li>
+</ul>
+</div>
+<div class="status"><div class="statuslabel">Status in v3</div>
+<div class="tw"><table>
+<tr><th>signal</th><th>status</th><th>what exists</th></tr>
+<tr><td>Vestibular</td><td><span class="chip c-fix">built; review fixes in progress</span></td><td>Head accelerometer and gyro, neck angles, speeds and effort, the chest's up-direction, where the body's weight rests (head, trunk, arms, legs), total support force. Commits df2486b20 and 1f1132359.</td></tr>
+<tr><td>Interoception</td><td><span class="chip c-fix">partly built; review fixes in progress</span></td><td>Mechanical power, holding torque, joint-limit load, lowest and mean capacity in the same sense. Breathing demand: none.</td></tr>
+<tr><td>Prediction confidence</td><td><span class="chip c-not">not built</span></td><td>The reflex controller reports a confidence; nothing uses it in wellness or planning.</td></tr>
+<tr><td>Temporal credit</td><td><span class="chip c-fix">partly built; review fixes in progress</span></td><td>The body head grades each order at its 250 ms end; the causal-chain record checks each prediction at 50 and 250 ms.</td></tr>
+<tr><td>Learning progress</td><td><span class="chip c-fix">built; review fixes in progress</span></td><td>Section 3.3; no same-moment control yet.</td></tr>
+<tr><td>Body integrity</td><td><span class="chip c-fix">built; review fixes in progress</span></td><td>Integrity channel at the top weight, and the pain gate at 87% of the pain scale (section 3.2). Review of b3: the gate reads pain only, not the limb-at-its-limit part of integrity, and its line was measured before the skin's sustained load had built up.</td></tr>
+</table></div>
+<p class="src">Sources: agents/env-senses.md; agents/b2-vestibular.md; agents/b3-wellness.md; reviews/b2-vestibular.md; reviews/env-senses.md; reviews/b3-wellness.md.</p>
+</div>
+</section>
+
+<section id="s15">
+<h2>15. Long Training Runs Are Fine &mdash; If They Diagnose Themselves</h2>
+<div class="v2"><div class="v2label">Plan text (v2, unchanged)</div>
+<p>It is reasonable to run 8-, 16-, or 24-hour sessions instead of spending weeks on tiny architecture comparisons. But every run should automatically tell you <b>what is failing</b>.</p>
+<h3>Log at checkpoints</h3>
+<ul>
+<li>motor intention,</li>
+<li>candidate imagined actions if used,</li>
+<li>predicted body/sensory outcome before action,</li>
+<li>predicted wellness consequence,</li>
+<li>actual action and actual result,</li>
+<li>prediction error by channel and body region,</li>
+<li>confidence, effort, fatigue, repeatability, and generalization.</li>
+</ul>
+<div class="tw"><table>
+<tr><th>What you observe</th><th>Likely place to look</th></tr>
+<tr><td>Different actions produce almost the same prediction.</td><td>The forward model may be ignoring action.</td></tr>
+<tr><td>Predictions are causal, but intention does not favor better predicted wellness.</td><td>Wellness/intention coupling may be weak or mis-scaled.</td></tr>
+<tr><td>Movement happens, but it cannot be repeated.</td><td>Motor-synergy mapping or state representation may be unstable.</td></tr>
+<tr><td>Self-touch happens, but both sides are not predicted.</td><td>Body-part binding or contact representation may be weak.</td></tr>
+<tr><td>Low error occurs mainly when the body stays still.</td><td>Learning-progress / controllability pressure may be too weak.</td></tr>
+</table></div>
+</div>
+
+<div class="status"><div class="statuslabel">Status in v3</div>
+<span class="chip c-fix">logging built; review fixes in progress</span> <span class="chip c-fix">watcher reads the new blocks; review fixes in progress</span>
+<p><b>What each training record (every 100 steps) now carries:</b> the causal chain (goal, chosen plan, 4 alternatives from the same moment, predicted and real wellness change, the rank of the chosen plan), the efference heads' errors in cm and degrees against "do nothing" and a shuffled order, controllability, learning progress, the ranking's per-channel shares, the contact head, the vestibular sense, and a machine block (free memory, committed memory, the graphics card's memory, step time split into model and bodies). Each block appears only when its flag is on; a missing block means unmeasured, never 0. The hourly watcher reads all of them (commit a27b9c1e9). Review of ops-storage: two of its lines compare against the wrong control (the contact head against a coin flip instead of its base-rate rule; controllability printed as steering the goal while its gate is shut), and it stays silent when the archive drive is missing or the archiver's pass fails. Fixes in lane A.</p>
+<p><b>The diagnosis table, mapped to a reading:</b></p>
+<div class="tw"><table>
+<tr><th>what you observe</th><th>the reading that shows it</th><th>before the build</th></tr>
+<tr><td>Different actions, almost the same prediction</td><td>per-sense sensitivity (how far the prediction moves when only the order changes) and the four probes</td><td><b>Observed:</b> knowing the real order changed the prediction's error by less than 0.08%, either way, against another body's order, in every segment; the probes foresaw 0.0000073% to 0.14% of the real change.</td></tr>
+<tr><td>Intention does not favour better predicted wellness</td><td>share of planning events whose chosen plan had the best predicted wellness</td><td>Could not be read: predicted wellness tied in 8 of 8 pairs (the planner's wellness copy has 5% of its units responding). Review of b1: in the new record the candidates' predicted wellness differs by a median one tenth of the evaluator's own error, so "chosen best" is decided by noise until a tie band is measured.</td></tr>
+<tr><td>Movement cannot be repeated</td><td>controllability; the probes' repeated arms</td><td>Unmeasured (no intended result to repeat).</td></tr>
+<tr><td>Self-touch, both sides not predicted</td><td>foreseen self-touch with both sides, against a mispaired control</td><td>No per-side prediction existed. The pooled touch audit found self-touch predicted no better than other touch on segments 30 and 31: both readings sat inside their own window-to-window spread (not yet measured as a count).</td></tr>
+<tr><td>Low error mainly when still</td><td>learning progress; controllability counts only orders above the hold-still drift</td><td>Unmeasured.</td></tr>
+</table></div>
+<p><b>Not logged yet:</b> prediction error by body region; confidence; repeatability and generalization during training (probes only).</p>
+<p class="src">Sources: DESIGN.md section 3; agents/b1-causal-efference.md; agents/ops-storage.md; agents/understand-training-probes.md; agents/understand-touch-selfcontact.md (self-touch contrast); reviews/b1-causal-efference.md (major 3); reviews/ops-storage.md (majors 2 and 5).</p>
+<div class="fill"><b>Segment 32:</b> the first hour's readings of each diagnosis row.</div>
+</div>
+</section>
+
+<section id="s16">
+<h2>16. Automatic Probe Suite</h2>
+<div class="v2"><div class="v2label">Plan text (v2, unchanged)</div>
+<p>At every major checkpoint, freeze the model and run the same probes from controlled starting states.</p>
+<div class="grid">
+<div class="tile"><b>Causal prediction</b>Does changing the action change the predicted outcome?</div>
+<div class="tile"><b>Intentionality</b>Was the chosen action expected to improve wellness?</div>
+<div class="tile"><b>Repeatability</b>Can the same intended consequence be produced again?</div>
+<div class="tile"><b>Generalization</b>Does control survive a nearby starting state?</div>
+<div class="tile"><b>Self-contact</b>Are both sides of self-touch predicted correctly?</div>
+<div class="tile"><b>Cross-modal binding</b>Does predicted body movement match its visual/touch result?</div>
+<div class="tile"><b>Perturbation</b>Can control adapt when the body is nudged or loaded?</div>
+<div class="tile"><b>Efficiency</b>Later, does the model prefer lower effort for the same result?</div>
+</div>
+</div>
+
+<div class="status"><div class="statuslabel">Status in v3</div>
+<span class="chip c-fix">suite and watcher built; review fixes and re-run in progress</span> <span class="chip c-meas">run once: before</span> <span class="chip c-open">watcher not started</span>
+<p>Before the build no probe had ever run on H84: the shared probe loader could not build a 192-wide model (repaired in commit 555e971b5, which also brought 17 older probe tools back). The new suite (commit 80dcbea17) runs four probes from the checkpoint's own lived moments, on the processor, and writes one line per probe to <code>Saved/mimo_bridge/gof_probes/index.jsonl</code>. One suite took 877 s and peaked at 3.57 GB. A watcher that runs it on every new checkpoint exists and is not running yet.</p>
+<p><b>Review blocker, fix in progress (lane A):</b> a probe cannot yet save its starting moment for a model built with the contact head or the normalised ranking switched on (two new tracker objects refuse the snapshot), so every probe of the upgraded lineage would stop with an error, and the watcher would record the failure and never retry. The watcher must not be started on segment 32 until this is fixed.</p>
+<div class="tw"><table>
+<tr><th>tile</th><th>before (ckpt_step_344400)</th></tr>
+<tr><td>Causal prediction</td><td>gaze 0.0000073%, body 0.0%, posture 0.0000022% of the real change foreseen (0% = ignores the order, 100% = foresees it)</td></tr>
+<tr><td>Intentionality</td><td>not scorable: predicted wellness tied in 8 of 8 pairs</td></tr>
+<tr><td>Repeatability</td><td>instrument only (identical over 3 restores)</td></tr>
+<tr><td>Generalization</td><td>gaze with the head turned 10&deg;: 0.000002%; body from a pre-turned limb: 0.0%</td></tr>
+<tr><td>Self-contact both sides</td><td>unmeasured: no contact head existed. The binding probe scored the pooled touch token instead: at touch onsets it foresaw &minus;4.0% of the change (below 0 = predicted the wrong way), against +3.1% for holding still. Review: that "holding still" arm was in fact ordered to the touching pose, so it compares one touch with a slower one.</td></tr>
+<tr><td>Cross-modal binding</td><td>hand entering the view: vision foresaw 0.14% of the real change. Review: this headline is not taken against what the same moment predicts with a hold order, so a model that ignores the order and continues the hand's motion scores the same; the fix scores the order against the hold order from the same moment.</td></tr>
+<tr><td>Perturbation</td><td>a 2.49 N load changed the elbow's turn by 0.11&deg; out of 11.7&deg;; the model's error followed the same course loaded and free</td></tr>
+<tr><td>Efficiency</td><td>unmeasured: the model has no effort output</td></tr>
+</table></div>
+<p class="src">Sources: <code>suite.json</code>; <code>index.jsonl</code>; agents/probes.md; reviews/probes.md (blocker; majors on the binding headline, the self-touch hold arm and the watcher).</p>
+<div class="fill"><b>To fill:</b> the watcher's start for segment 32 and the first "after" suite.</div>
+</div>
+</section>
+
+<section id="s17">
+<h2>17. Ablations That Make the Evidence Convincing</h2>
+<div class="v2"><div class="v2label">Plan text (v2, unchanged)</div>
+<div class="tw"><table>
+<tr><th>Ablation</th><th>Expected result if the mechanism is real</th></tr>
+<tr><td>Remove action input from forward prediction</td><td>Counterfactual prediction becomes much worse.</td></tr>
+<tr><td>Remove embodied controllability from wellness</td><td>Intentional repeatable control emerges more slowly or less strongly.</td></tr>
+<tr><td>Remove self-contact sensing</td><td>Self-body schema and intentional self-touch weaken.</td></tr>
+<tr><td>Remove detailed proprioception</td><td>Body control becomes less precise.</td></tr>
+<tr><td>Remove learning-progress influence</td><td>The model is more likely to settle into easy, already-predictable behavior.</td></tr>
+<tr><td>Make energy penalty strong too early</td><td>Exploration and movement decrease.</td></tr>
+<tr><td>Remove hearing from voice</td><td>Acoustic control degrades.</td></tr>
+<tr><td>Remove internal BioFold sensing</td><td>Voice becomes harder to control even if hearing remains.</td></tr>
+</table></div>
+</div>
+<div class="status"><div class="statuslabel">Status in v3</div>
+<span class="chip c-not">ablation runs: item 14, not in this build</span>
+<p>Every new part has its own off switch, which is the ablation switch. No ablation run has been made.</p>
+<div class="tw"><table>
+<tr><th>ablation</th><th>switch that exists</th></tr>
+<tr><td>Remove action input</td><td>the probes' ablation arm (gaze: removing the command changed the error by 0.000005%, so there was nothing yet to lose)</td></tr>
+<tr><td>Remove controllability</td><td><code>--controllability off</code></td></tr>
+<tr><td>Remove self-contact sensing</td><td><code>--contact-head off</code> for the prediction; the survey found no switch that removes the own-body columns of touch</td></tr>
+<tr><td>Remove detailed proprioception</td><td>the survey found none</td></tr>
+<tr><td>Remove learning progress</td><td><code>--learning-progress off</code></td></tr>
+<tr><td>Strong early energy penalty</td><td>the ranking's efficiency weight can be raised with <code>--wellness-weights</code> (it is 0 now); the planner's effort charge has no switch</td></tr>
+<tr><td>Hearing / BioFold</td><td>hearing can be made a placeholder (<code>--audio placeholder</code>); BioFold excluded</td></tr>
+</table></div>
+</div>
+</section>
+
+<section id="s18">
+<h2>18. What We Deliberately Rejected or Corrected</h2>
+<div class="v2"><div class="v2label">Plan text (v2, unchanged)</div>
+<div class="callout reject">
+<ul>
+<li><b>Rejected:</b> &ldquo;Every surprise should lower wellness.&rdquo; <b>Correction:</b> control failure and harmful internal state can be negative; useful novelty can drive learning.</li>
+<li><b>Rejected:</b> hard schedules that turn joints on one at a time. <b>Correction:</b> use learned motor synergies.</li>
+<li><b>Rejected:</b> explicit goals, task rewards, or a policy network for these gains. <b>Correction:</b> let intention be driven by predicted wellness.</li>
+<li><b>Rejected:</b> ManyMinds as the fix for primitive body control. <b>Correction:</b> get one embodied UEMA mind working first.</li>
+<li><b>Rejected:</b> energy as the main early driver. <b>Correction:</b> use it later to shape efficiency.</li>
+<li><b>Rejected:</b> a frozen pre-trained language model in the first gain-of-function test. <b>Correction:</b> fuse it later.</li>
+<li><b>Rejected:</b> hand-coding a symbolic 3D world model as the source of spatial awareness. <b>Correction:</b> let spatial structure emerge from synchronized action and sensory prediction.</li>
+</ul>
+</div>
+</div>
+<div class="status"><div class="statuslabel">Status in v3 &mdash; did the running system respect each rejection?</div>
+<div class="tw"><table>
+<tr><th>rejection</th><th>before the build</th><th>now</th></tr>
+<tr><td>Every surprise lowers wellness</td><td><span class="chip v-false">violated</span> the prediction-error formula (1 minus error) charged every surprise</td><td>Split into channels (section 3.2); the prediction-error channel remains, with a quarter of controllability's weight.</td></tr>
+<tr><td>Hard joint schedules</td><td><span class="chip v-true">respected</span> no growth ramp, no unlocking</td><td>Synergy built behind switches (80eaf88ac); not yet in a running segment.</td></tr>
+<tr><td>Explicit goals, task rewards, policy network</td><td><span class="chip v-partly">partly violated</span> the goal value read named-object flags (ball, mobile, box touched; hand pressing, including on itself); a hand-coded "look at the consequence" pull trained the gaze command</td><td>Hand pressing counts world contact only; the gaze pull is switched off at the deploy. Named-object flags still feed the consequence channel, with half of controllability's weight.</td></tr>
+<tr><td>Intention driven by predicted wellness</td><td><span class="chip v-false">not so</span> the goal was the best remembered moment; predicted wellness had weight 0</td><td>Unchanged in the planner's descent; the causal-chain record now measures whether the chosen plan had the best predicted wellness.</td></tr>
+<tr><td>ManyMinds for body control</td><td><span class="chip v-true">respected</span></td><td>The placeholder slot becomes the vestibular sense.</td></tr>
+<tr><td>Energy as the main driver</td><td><span class="chip v-true">respected</span> the planner's effort charge was about 5% of its goal distance</td><td>Efficiency with weight 0 (logged only).</td></tr>
+<tr><td>Frozen model</td><td><span class="chip v-true">respected</span></td><td>No change.</td></tr>
+<tr><td>Symbolic 3D world model</td><td><span class="chip v-true">respected</span></td><td>No change.</td></tr>
+</table></div>
+<p class="src">Sources: agents/understand-wellness-planner.md; DESIGN.md D9, D14.</p>
+</div>
+</section>
+
+<section id="s19">
+<h2>19. Recommended Implementation Order</h2>
+<div class="v2"><div class="v2label">Plan text (v2, unchanged)</div>
+<ol>
+<li><b>Instrument the causal chain:</b> intention &rarr; prediction &rarr; predicted wellness &rarr; action &rarr; actual result.</li>
+<li><b>Add embodied controllability to wellness.</b></li>
+<li><b>Add learning progress.</b></li>
+<li><b>Normalize/scale wellness channels so one does not win only because its numbers are larger.</b></li>
+<li><b>Add the small nonlinear motor-synergy MLP.</b></li>
+<li><b>Make self-on-self contact first-class.</b></li>
+<li><b>Run gaze causal probes.</b></li>
+<li><b>Run simple body-control probes.</b></li>
+<li><b>Run arm-into-view and self-touch probes to bind vision + proprioception + touch.</b></li>
+<li><b>Add vestibular/posture probes.</b></li>
+<li><b>Add energy/fatigue gently.</b></li>
+<li><b>Run BioFold/voice probes.</b></li>
+<li><b>Add short multi-step consequence tests.</b></li>
+<li><b>Run ablations.</b></li>
+<li><b>Only after primitive embodied control is solid, expand toward ManyMinds and later frozen-model fusion.</b></li>
+</ol>
+</div>
+<div class="status"><div class="statuslabel">Status in v3</div>
+<div class="tw"><table>
+<tr><th>#</th><th>status</th></tr>
+<tr><td>1&ndash;4, 6</td><td><span class="chip c-fix">built; review fixes in progress</span> the normalised ranking (4) and the touch payment (6) are not to be switched on as built; see <a href="#items">Part 3</a></td></tr>
+<tr><td>5</td><td><span class="chip c-built">built behind flags (80eaf88ac); not yet in a running segment</span> <span class="chip c-prog">review running</span></td></tr>
+<tr><td>7&ndash;9</td><td><span class="chip c-fix">built; review fixes and re-run in progress</span> <span class="chip c-meas">run once: before</span></td></tr>
+<tr><td>10</td><td><span class="chip c-fix">sense and probe: built; review fixes in progress</span> <span class="chip c-meas">probe: before</span></td></tr>
+<tr><td>11 energy/fatigue</td><td><span class="chip c-not">not built: outside this build's scope</span> the signals it needs were added (section 4)</td></tr>
+<tr><td>12 BioFold/voice</td><td><span class="chip c-not">not built: excluded by the operator ("not ready")</span></td></tr>
+<tr><td>13 multi-step tests</td><td><span class="chip c-not">not built</span> the gaze and body heads predict 50 to 250 ms ahead; no "when does it arrive" test</td></tr>
+<tr><td>14 ablations</td><td><span class="chip c-not">not built as runs</span> each new part has its off switch (section 17)</td></tr>
+<tr><td>15 ManyMinds, frozen fusion</td><td><span class="chip c-not">not started</span> by the plan's own order</td></tr>
+</table></div>
+</div>
+</section>
+
+<section id="s20">
+<h2>20. How Fast Should Primitive Control Appear?</h2>
+<div class="v2"><div class="v2label">Plan text (v2, unchanged)</div>
+<p>For simple simulator mappings such as &ldquo;this command moves this joint this way,&rdquo; it is reasonable to expect an artificial model to learn much faster than a human infant because the simulator can provide dense, repeated, perfectly logged experience.</p>
+<p>That does not mean all development should happen instantly. Coordinated multi-step behavior, body-wide balance, and cross-modal generalization are harder.</p>
+<div class="callout warn">If basic action-conditioned prediction and repeatable control are still not improving after substantial simulated experience, do not simply wait longer. Treat that as evidence that the action signal, scaling, architecture, motor mapping, or wellness coupling may be wrong.</div>
+</div>
+<div class="status"><div class="statuslabel">Status in v3</div>
+<span class="chip c-meas">the condition was met, and acted on</span>
+<ul>
+<li><b>Experience:</b> 344,400 model steps, 4.8 hours lived by each of 8 bodies.</li>
+<li><b>Action-conditioned prediction did not improve:</b> in every segment, from the first to the last, knowing the real order changed the next-moment prediction's error by less than 0.08%, either way, against another body's order (0% = the order makes no difference, 100% = the order removes the whole error). Vision and body were predicted worse than "nothing changes" on segment 31: 4.5% and 2.9% more error than simply predicting no change.</li>
+<li><b>Treated as evidence, as the plan says:</b> training was paused and the build changes the design (DESIGN.md section 0).</li>
+<li><b>The architecture causes, measured:</b> the pose head is unresponsive and the order's attention is locked (<a href="#liveness">Part 4</a>). <b>The motor mapping:</b> out of 100 live orders a body part ends closer to its ordered turn 54 times, against 87 for a pose the body has held and 31 by chance (section 5). <b>The scaling:</b> of the positive loss, 52.5% was VICReg (a term that keeps the tokens from collapsing to one value), 23.6% imagination and 8.7% next-moment prediction; the body sense's part of that was 0.33% of the positive loss.</li>
+</ul>
+<p class="src">Sources: DESIGN.md section 0; agents/understand-training-probes.md (section 20 check); agents/understand-senses-proprio-vestibular.md (improvement over persistence = 1 minus the model's error over the error of "nothing changes"); <code>measurements/following_out_of_100.json</code>.</p>
+</div>
+</section>
+
+<section id="s21">
+<h2>21. Final Success Standard</h2>
+<div class="v2"><div class="v2label">Plan text (v2, unchanged)</div>
+<p>The strongest evidence for UEMA would be a sequence of gains that appear without demonstrations or task rewards:</p>
+<ol>
+<li>the model predicts its own gaze and body consequences,</li>
+<li>it begins choosing actions whose predicted consequences improve wellness,</li>
+<li>those actions become repeatable,</li>
+<li>control generalizes to nearby states,</li>
+<li>self-touch and cross-modal body awareness improve,</li>
+<li>posture and body-support behaviors emerge,</li>
+<li>voice becomes intentionally controllable,</li>
+<li>multi-step consequences become predictable, and</li>
+<li>the gains weaken in the correct ablation experiments.</li>
+</ol>
+<div class="callout good">If that pattern appears, the important result is not merely that the avatar can move. It is that UEMA is building <b>agency, body schema, spatial-temporal prediction, and increasingly capable intention</b> from embodied prediction and wellness.</div>
+</div>
+<div class="status"><div class="statuslabel">Status in v3</div>
+<span class="chip c-open">none reached before the build</span>
+<div class="tw"><table>
+<tr><th>gain</th><th>before</th><th>reading that will show it</th></tr>
+<tr><td>1 predicts its own gaze and body consequences</td><td>0.0000073% (gaze), 0.0% (body)</td><td>gaze and body probes; efference errors against "do nothing"</td></tr>
+<tr><td>2 chooses actions whose predicted consequence improves wellness</td><td>not scorable (ties)</td><td>causal chain: chosen-best share, once a tie band for the evaluator is measured</td></tr>
+<tr><td>3 repeatable</td><td>unmeasured (the body ends closer to its ordered turn 54 times in 100, section 5)</td><td>controllability; probe repeats; the following count per author</td></tr>
+<tr><td>4 generalizes</td><td>0.0%</td><td>probe generalization arms</td></tr>
+<tr><td>5 self-touch and cross-modal awareness</td><td>0.14% (hand into view; the review found this headline cannot tell binding from continuing the motion)</td><td>contact head's onset count against its base-rate rule; binding probe scored against a hold order</td></tr>
+<tr><td>6 posture and support</td><td>0.0000022% (head orders)</td><td>posture probe; vestibular sense's prediction</td></tr>
+<tr><td>7 voice</td><td>excluded</td><td>&mdash;</td></tr>
+<tr><td>8 multi-step</td><td>planner held at 1 step</td><td>plan license; gaze head at 150 ms</td></tr>
+<tr><td>9 gains weaken under ablation</td><td>no gains yet</td><td>item 14</td></tr>
+</table></div>
+<div class="fill"><b>To fill after segment 32:</b> each row's first "after" reading.</div>
+</div>
+</section>
+
+<!-- =============================== PART 2 =============================== -->
+<section id="part2">
+<h2>Part 2 &mdash; the assertion check</h2>
+<p>Every factual claim version 2 makes about the current system, checked by ten read-only surveys against the code and the H84 records on 2026-09-22 (<code>docs/gain_of_function_v3/agents/understand-*.md</code>), with what was done about each false or partly true one.</p>
+<p><span class="chip v-true">true</span> <span class="chip v-partly">partly</span> <span class="chip v-false">false</span> <span class="chip v-unver">unverifiable</span></p>
+<div class="tw"><table>
+<tr><th>#</th><th>claim (section)</th><th>verdict</th><th>evidence</th><th>what was done</th></tr>
+<tr><td>1</td><td>MIMo now has self-on-self contact (2)</td><td><span class="chip v-true">true</span></td><td>1,410 pairs of own body parts can collide; 2.4&ndash;2.6 self-contact patches per body live. Most is the thumb resting in the palm.</td><td>Resting pairs marked structural and never scored.</td></tr>
+<tr><td>2</td><td>Contact force and shear-like signals tied to body parts (2)</td><td><span class="chip v-true">true</span></td><td>Pressure, shear, slip, area per sensing body; force = pressure &times; area. Shear on self-contact sits near the friction limit: shear was 92% of the pressure, where MIMo's friction lets it reach 100%.</td><td>none needed</td></tr>
+<tr><td>3</td><td>Both sides of a self-touch feel it (2)</td><td><span class="chip v-true">true</span></td><td>One record per sensing side; identical rows in snapshots. The eyes have no skin patch.</td><td>none needed</td></tr>
+<tr><td>4</td><td>Both finger poses are known (2)</td><td><span class="chip v-partly">partly</span></td><td>Only each finger's tip segment is tracked; the thumb's base, the most frequent self-toucher, is not.</td><td>not changed</td></tr>
+<tr><td>5</td><td>The motor command is known (2)</td><td><span class="chip v-partly">partly</span></td><td>True at the input (columns 10&ndash;18 of the motor token), but the live pass writes zeros there; the executed order enters as part of the previous moment in the context and in the lessons. The attention that pools the token reads 1 of 26 handles per head.</td><td>Efference heads and the contact head get the order directly; pool repair planned.</td></tr>
+<tr><td>6</td><td>Vision may also see the event (2)</td><td><span class="chip v-unver">unverifiable before</span></td><td>No per-event in-view check existed.</td><td>Each new self-touch now carries "in view" (within 30&deg; of an eye's axis): 0.8% of self-touches under babble.</td></tr>
+<tr><td>7</td><td>MIMo gives rigid-body joint state, pose, contact force and shear (2)</td><td><span class="chip v-partly">partly</span></td><td>MIMo computes joint angles, speeds, 54 torque sensors and limit sensors; the bridge reads none of them. Pose and touch: true.</td><td>Neck angles, speeds and effort now read (vestibular sense).</td></tr>
+<tr><td>8</td><td>Expanded 128 &rarr; 192 wide and 2 &rarr; 4 attention blocks (11)</td><td><span class="chip v-true">true</span></td><td>H83: 128/2, 3.3 M parameters. H84: 192/4, 14.4 M, started fresh (not grown from H83). The placeholder slot stayed 128 inside.</td><td>none needed</td></tr>
+<tr><td>9</td><td>The attention blocks are inside the forward model (11)</td><td><span class="chip v-true">true</span></td><td>Three attention stages per block (across senses, across time, across both); encoders and heads have attention too.</td><td>Found locked (Part 4); repair planned.</td></tr>
+<tr><td>10</td><td>Vestibular / internal state is a forward-model input (11 diagram)</td><td><span class="chip v-false">false</span></td><td>MIMo's head accelerometer and gyro were read every frame and carried on the frame, never encoded. Internal state: only fatigue capacity.</td><td>Made true: a 29-number sense in the placeholder's slot (df2486b20, 1f1132359); built, review fixes in progress.</td></tr>
+<tr><td>11</td><td>An action copy is an input (11 diagram)</td><td><span class="chip v-true">true</span></td><td>Motor token = achieved pose (10 numbers) + executed order (9) per handle.</td><td>Locked pool: see claim 5.</td></tr>
+<tr><td>12</td><td>An explicit copy of the gaze command reaches the forward model (6)</td><td><span class="chip v-partly">partly</span></td><td>The eye command is 1 of 26 rows pooled into one token; it moved the token by 0.0012% of its size; neutralised in the 250 ms lesson.</td><td>The efference gaze head takes it directly (2adadb74e).</td></tr>
+<tr><td>13</td><td>100&ndash;150 ms suits MIMo's eye dynamics (6)</td><td><span class="chip v-partly">partly</span></td><td>Measured: 5&deg;/10&deg;/20&deg; jumps settle within 5% in 130/155/195 ms. 150 ms covers a 5&deg; jump only. Neither code comment on the eye's speed ("110 &deg;/s, 130 ms"; "70.8 &deg;/s") matches the measured jumps, which peaked at 73, 113 and 159 &deg;/s.</td><td>The gaze head predicts 50/100/150 ms; the comments were not changed by this build.</td></tr>
+<tr><td>14</td><td>Gaze prediction is visible in the loss (6, as a requirement)</td><td><span class="chip v-false">false</span></td><td>No gaze term; the gaze head existed and was never called; hearing was 67% of the next-moment lesson.</td><td>Gaze head with one tenth of a full lesson's weight; per-sense balance in progress (b6).</td></tr>
+<tr><td>15</td><td>An energy model already exists in MIMo (4)</td><td><span class="chip v-partly">partly</span></td><td>MIMo has an instantaneous cost function, called by no bridge code, and no fatigue. The bridge's own fatigue model costs 0 W for holding still and leaves out each motor's gear, and the gears differ up to 2,860-fold.</td><td>Effort signals added to the vestibular sense; item 11 not built.</td></tr>
+<tr><td>16</td><td>A tired actuator changes what movements are possible (4)</td><td><span class="chip v-partly">partly</span></td><td>Real motor force scales with capacity (body function "modulate"); the model's prediction of it is unmeasured.</td><td>not changed</td></tr>
+<tr><td>17</td><td>The frozen model is not part of the first model; the forward model is trainable (12)</td><td><span class="chip v-true">true</span></td><td>No pre-trained model anywhere.</td><td>none needed</td></tr>
+<tr><td>18</td><td>ManyMinds is not the motor layer (13)</td><td><span class="chip v-true">true</span></td><td>Only a placeholder existed, fed noise; on the last checkpoint its token was a learned constant. It did reach the reflex controller's input.</td><td>Placeholder replaced by the vestibular sense (review fixes in progress).</td></tr>
+<tr><td>19</td><td>No hard joint schedule (5, 18)</td><td><span class="chip v-true">true</span></td><td>H84 starts "mature": no ramp, no unlocking. No synergy layer existed.</td><td>Synergy built behind switches (80eaf88ac); not yet in a running segment.</td></tr>
+<tr><td>20</td><td>Self-contact is not paid merely for happening (2, as a requirement)</td><td><span class="chip v-false">false</span></td><td>The consequence term paid 0.5 per "hand pressing", which fired on 69&ndash;75% of moments; 399 of 414 pressing steps in a random-command probe were pure self-contact. It carried 96 of every 100 parts of the goal value's movement.</td><td>World-only rule (<code>--consequence-self-contact exclude</code>); the world reports hand pressing split into self and world.</td></tr>
+<tr><td>21</td><td>Successful prediction and control of self-contact is weighted above outside contact (2, as a requirement)</td><td><span class="chip v-false">false</span></td><td>The self-touch term (weight 0 on H84) paid any arrival of an own part once its gate opened, not a predicted one; the planner could not see it.</td><td>Contact head + contact-control channel: foreseen self-touch pays 2, outside 1, gated on a control. The payment is not to be switched on as built (review of b4: one gate serves both kinds of touch).</td></tr>
+<tr><td>22</td><td>Every surprise lowers wellness (3.2, the risk named)</td><td><span class="chip v-true">true, as feared</span></td><td>The prediction-error formula is 1 minus the error; on segment 31 it read 97% of its no-error value.</td><td>Channels split; the formula remains, with a quarter of controllability's weight.</td></tr>
+<tr><td>23</td><td>Wellness channels are on different scales (item 4's premise)</td><td><span class="chip v-true">true</span></td><td>Consequence carried 96 of every 100 parts of the goal value's movement; the curiosity multiplier decided the winner in 5 of 5 snapshots; four formulas run 0 to 1, touch comfort 0 to 85% of that.</td><td>Normalized ranking (section 3.4), built; not to be switched on until its goal-age fix lands.</td></tr>
+<tr><td>24</td><td>This is a wellness system, not a task reward or policy (3.4, 18)</td><td><span class="chip v-partly">partly</span></td><td>No reward is trained and the planner has no parameters; but the goal value read named-object world flags, and a hand-coded gaze pull trained the eye command.</td><td>Gaze pull off at the deploy; self-contact excluded from hand pressing.</td></tr>
+<tr><td>25</td><td>Intention is driven by predicted wellness (18)</td><td><span class="chip v-false">false</span></td><td>The goal is the best remembered moment; predicted wellness had weight 0 and was used only for an exit that never fires at 1 step; the planner's wellness copy has 5% of its units responding.</td><td>Now measured by the causal-chain record; the copy's repair is planned.</td></tr>
+<tr><td>26</td><td>Runs log intention, candidates, predicted outcome and wellness, action, result, error by channel and region (15)</td><td><span class="chip v-partly">partly</span></td><td>Logged: a last-event summary of intention, per-sense error with controls. Not logged: candidates, predicted wellness, whether the plan reached the body (hard-coded empty), region error, repeatability.</td><td>Causal-chain record, efference, machine blocks (2adadb74e).</td></tr>
+<tr><td>27</td><td>Probes run at every major checkpoint (16)</td><td><span class="chip v-false">false</span></td><td>No probe output existed for any H84 checkpoint; the shared loader could not build H84.</td><td>Loader repaired; suite, index and watcher built.</td></tr>
+<tr><td>28</td><td>Motor-babble controls exist: random action, no-op, earlier checkpoint (7)</td><td><span class="chip v-partly">partly</span></td><td>No-op and shuffled-order controls ran online; no random-action or earlier-checkpoint comparison on H84.</td><td>The body probe carries all three.</td></tr>
+<tr><td>29</td><td>Scaffolding: identity, time order, action, synced streams (10)</td><td><span class="chip v-true">true</span></td><td>Modality and handle identities, 50 ms slots, the executed order, one reading per step.</td><td>none needed</td></tr>
+<tr><td>30</td><td>Short multi-step prediction exists (10)</td><td><span class="chip v-partly">partly</span></td><td>Imagination trains 3 steps (150 ms); the planner stays at 1 step because depth 1 beats "do nothing" only 38 times in 100.</td><td>Heads at 50&ndash;250 ms added; item 13 not built.</td></tr>
+<tr><td>31</td><td>Action-conditioned prediction not improving after substantial experience (20)</td><td><span class="chip v-true">true</span></td><td>Knowing the real order changed the prediction's error by less than 0.08%, either way, in every segment over 344,400 steps.</td><td>Paused and redesigned; causes measured.</td></tr>
+</table></div>
+<p class="src">Sources, by claim: 1&ndash;7, 20&ndash;21 agents/understand-touch-selfcontact.md and understand-baseline-diff.md; 8&ndash;14, 17, 29&ndash;30 understand-forward-model.md; 10, 7 understand-senses-proprio-vestibular.md; 15&ndash;16, 18&ndash;19 understand-motor-path-energy.md; 22&ndash;25 understand-wellness-planner.md; 26&ndash;28, 31 understand-training-probes.md and understand-dashboards.md; 13 also <code>gaze.json</code> step_response.</p>
+</section>
+
+<!-- =============================== PART 3 =============================== -->
+<section id="items">
+<h2>Part 3 &mdash; items 1&ndash;10 in detail</h2>
+<p>For each item: what was built in plain words, its switch, the stats block it writes into each training record, its probe, the measured baseline on ckpt_step_344400, the goal line, and what segment 32 must show.</p>
+<div class="callout warn"><b>Functional gains remain unproven.</b> The takeover has declared the comparison requirements below and in <a href="RESTART_CRITERIA.md">the restart criteria</a>. The older build descriptions and reviews remain historical records; the <a href="TAKEOVER_REVIEW_2026-09-23.html">current review</a> records integrated repairs, qualification and measured starting performance. Operational checks do not substitute for these functional comparisons.</div>
+
+<div class="item" id="item1">
+<h3>Item 1 &mdash; the causal chain is recorded</h3>
+<span class="chip c-fix">built; review fixes in progress</span>
+<dl class="kv">
+<dt>What was built</dt><dd>At every planning event the run records the goal, the chosen plan's predicted next moment and predicted wellness, the same for four alternatives from the same moment (hold still, the reflex controller's order, two perturbed plans), where the chosen plan ranked, whether it reached the body at the next latch, and what really happened 50 ms later and at the order's end. Every latched order, planned or not, also gets a prediction before it is sent. Two efference heads are given the order directly and predict each handle's movement in cm and degrees (next 50 ms and the order's 250 ms) and the eye's turn at 50, 100 and 150 ms.</dd>
+<dt>Switch</dt><dd><code>--causal-chain on</code>, <code>--efference-heads on</code>, <code>--efference-weight</code> (each head's loss weight, set to one tenth) (commit 2adadb74e)</dd>
+<dt>Stats blocks</dt><dd><code>causal_chain</code>, <code>efference</code>, <code>machine</code> (always on); per-sense sensitivity in <code>prediction_audit</code>. Event detail in <code>causal_chain.jsonl</code> beside the stats.</dd>
+<dt>Probe</dt><dd>All four probes' "prediction before action" arms; the body and gaze probes switch to the efference heads when present.</dd>
+<dt>Baseline</dt><dd>Nothing was recorded before. Predicted wellness tied in 8 of 8 gaze candidate pairs. A 45-step smoke run at 1 body read the chosen plan best 0 of 3 times (a smoke reading, not a finding). The untrained heads sat at the "do nothing" level: 1.32 cm against 1.32 cm over 50 ms, 4.54&deg; against 4.13&deg; for the eye at 50 ms.</dd>
+<dt>Goal line</dt><dd>Chosen plan: unmeasured; the planner aims at a remembered moment, not at predicted wellness, so "best in every event" is a scale end, not a goal. Efference heads: goal line unmeasured; "do nothing" is the floor.</dd>
+<dt>Review (b1), 4 major</dt><dd>(1) Both heads' attention pools locked within 100 training steps on real moments: the largest single weight in each pool rose from 38 to 84 of every 100 parts (body) and from 34 to 78 (gaze). (2) The body head is told where each part should go, not where it is now. (3) The candidates' predicted wellness differs by a median one tenth of the evaluator's own error, so "chosen best" is decided by noise. (4) The gaze copy reaches only the eye-angle head, not what the eyes will see. Fixes in lane B.</dd>
+<dt>Cost</dt><dd>+88 ms on a 2,146 ms step at 1 body on the processor (4.1%) for the heads; the record about 60 ms per step (2.8%). Graphics-card cost at 8 bodies: unmeasured; the deploy's 25-step proof measures it.</dd>
+<dt>Readings to watch</dt><dd>chosen-best share beside a tie band; efference error against "do nothing" and a shuffled order; reached-body share; the heads' live units and pool spread.</dd>
+</dl>
+<div class="fill"><b>Functional evidence still required:</b> Reconcile predicted, latched and completed orders; beat persistence and same-state shuffled orders on held-out starts, above measured prediction noise. <a href="RESTART_CRITERIA.md">Takeover criteria and comparison rules</a>.</div>
+</div>
+
+<div class="item" id="item2">
+<h3>Item 2 &mdash; controllability in wellness</h3>
+<span class="chip c-fix">built; review fixes in progress</span>
+<dl class="kv">
+<dt>What was built</dt><dd>For each order, the effect the model expected (efference body head) is compared with what the body did over the same 250 ms. Stillness never counts as control: both must exceed the hold-still drift. A mispaired control uses another body's expectation. The running agreement is a wellness channel with weight 1 (the other channels' weights are read as multiples of it), held at 0 until 32 readings beat the control.</dd>
+<dt>Switch</dt><dd><code>--controllability on</code> (commit 664415b95)</dd>
+<dt>Stats block</dt><dd><code>controllability</code></dd>
+<dt>Probe</dt><dd>body probe (efference captured share, when present)</dd>
+<dt>Baseline</dt><dd>From the commanded turn, 1 body, 136 orders: the expected and achieved effects agreed no better than the mispaired control (agreement = direction match times size match; not yet measured as a count). Orders asked for 57&deg; per axis, the body turned 12&deg;. Following today: out of 100 orders a body part ends closer to its ordered turn 54 times, chance 31 (section 5).</dd>
+<dt>Goal line</dt><dd>Agreement: unmeasured. Following: a goal line for orders of the live size is unmeasured; a pose the body has held reaches 87 on physics alone, 33 above today's 54.</dd>
+<dt>Review (b3)</dt><dd>Major: the control swaps in another body's whole expectation, which carries that body's state, so a head that ignores the order and predicts each body's drift opens the gate (it opened after 8 orders in the reviewer's test). Minor: with no control at all the gate still opens by chance on 2.7 in 100 planning events, because the same line opens and closes it. Fixes in lane B.</dd>
+<dt>Readings to watch</dt><dd>measured orders; agreement against the corrected control; gate open or shut and why.</dd>
+</dl>
+<div class="fill"><b>Functional evidence still required:</b> Keep an order-blind control gated out; beat the same-state shuffled-order control and report completed following by actual author. <a href="RESTART_CRITERIA.md">Takeover criteria and comparison rules</a>.</div>
+</div>
+
+<div class="item" id="item3">
+<h3>Item 3 &mdash; learning progress in wellness</h3>
+<span class="chip c-fix">built; review fixes in progress</span> <span class="chip c-open">no same-moment control</span>
+<dl class="kv">
+<dt>What was built</dt><dd>Per sense, per body and per efference head: how far the recent (200-step) average of the model's error, relative to "nothing changes", sits below its long-run (2,000-step) average. A wellness channel with three quarters of controllability's weight; it takes the curiosity multiplier's role as "useful novelty".</dd>
+<dt>Switch</dt><dd><code>--learning-progress on</code> (needs <code>--next-frame-loss on</code>; commit 664415b95)</dd>
+<dt>Stats block</dt><dd><code>learning_progress</code></dd>
+<dt>Probe</dt><dd>none of its own</dd>
+<dt>Baseline</dt><dd>Training, 2 bodies, 240 moments: 0.6% and 1.2% per window (0% = not changing, 100% = the recent error has vanished, below 0% = getting worse). Frozen weights, where no learning is possible: &minus;1.6% to &minus;7.1%, so a reading of this size does not prove learning.</dd>
+<dt>Goal line</dt><dd>unmeasured</dd>
+<dt>Reviews</dt><dd>b3: inside a goal ring, learning progress rises toward the newest moments, which pulls the goal to the present (part of the ranking blocker, item 4). b2: at the deploy the fresh vestibular encoder's error falls fastest, so that one sense will dominate this channel (size unmeasured). The fixed-anchor control is in lane B's b3 work.</dd>
+<dt>Readings to watch</dt><dd>channel value beside its control; per-sense progress; fast and slow error ratios.</dd>
+</dl>
+<div class="fill"><b>Functional evidence still required:</b> Compare earlier and later weights on identical held-out moments. Until a same-moment control exists, treat this score as a heuristic. <a href="RESTART_CRITERIA.md">Takeover criteria and comparison rules</a>.</div>
+</div>
+
+<div class="item" id="item4">
+<h3>Item 4 &mdash; channels on their own scale, in priority order</h3>
+<span class="chip c-fix">built; review fixes in progress</span> <span class="chip c-open">not to be switched on as built</span>
+<dl class="kv">
+<dt>What was built</dt><dd>Goal choice ranks remembered moments by weighted channels, each first centred and scaled by its own running statistics (never below a measured floor). Integrity is also a gate at 87% of the pain scale. Curiosity is added, not multiplied. Consequence counts world contact only. The raw sum feeding the motor controller is unchanged. Diagram: <a href="#s3">section 3</a>.</dd>
+<dt>Switch</dt><dd><code>--wellness-rank normalized</code>, <code>--wellness-weights</code>, <code>--curiosity-mode additive</code>, <code>--consequence-self-contact exclude</code> (commit 664415b95). The review found the last two do what they say; the first is the one held back.</dd>
+<dt>Stats blocks</dt><dd><code>wellness_rank</code>, <code>hand_press</code></dd>
+<dt>Probe</dt><dd>gaze probe's wellness-selection arm</dd>
+<dt>Baseline</dt><dd>Before: consequence carried 96 of every 100 parts of the goal value's movement; curiosity decided the winner in 5 of 5 snapshots. After, in a fresh 2-body world: 42 of 44 goals were in the oldest tenth of the ring; integrity carried 97 to 99 of every 100 parts of the value's spread while pain built up; the pain gate fired on 0 candidates.</dd>
+<dt>Goal line</dt><dd>unmeasured</dd>
+<dt>Review (b3)</dt><dd>Blocker: the ranking picks goals by when a moment happened, not by what it holds (section 3.4). Major: the list of ranked channels rides the saved episode, so a later resume that changes a wellness switch stops with an error or silently ignores the change. Minor: the pain gate reads pain only, not the limb-at-its-limit part of integrity; its line was measured before the skin's sustained load built up. Fixes in lane B.</dd>
+<dt>Readings to watch</dt><dd>the chosen goals' ages; each channel's share of spread and of the winner's margin against its share of the weight; gate firing share; spread beside floor.</dd>
+</dl>
+<div class="fill"><b>Functional evidence still required:</b> Check goal ages, actual channel contributions and harm gates; a slow trend alone must not pick a memory-ring endpoint. Demonstrate effective approach to the selected state. <a href="RESTART_CRITERIA.md">Takeover criteria and comparison rules</a>.</div>
+</div>
+
+<div class="item" id="item5">
+<h3>Item 5 &mdash; motor synergy</h3>
+<span class="chip c-built">built behind flags (80eaf88ac); not yet in a running segment</span> <span class="chip c-prog">review running</span>
+<dl class="kv">
+<dt>What was built</dt><dd>A small network with two nonlinear hidden layers turns an intention of 32 numbers into a change of every body handle's target from the current pose; it learns in the loop from the changes the body really made, weighted by how well each order was followed; the planner searches the 32 numbers and babble draws them at random. The smoother can blend with the order the body really got. Details: <a href="#s5">section 5</a>.</dd>
+<dt>Switch</dt><dd><code>--motor-synergy on</code>, <code>--synergy-dim</code> (32, measured), <code>--synergy-babble on</code>, <code>--synergy-residual-l2</code> (off by default), <code>--smooth-source executed</code></dd>
+<dt>Stats block</dt><dd><code>synergy</code></dd>
+<dt>Probe</dt><dd>the physics check <code>tools/synergy_following.py</code>; the following count (<code>measurements/following_out_of_100.json</code>)</dd>
+<dt>Baseline</dt><dd>Out of 100 live orders a body part ends closer to its ordered turn 54 times; chance 31. Physics only: a pose the body has held 87, separate random 20&deg; turns 69. Orders written by the trained synergy, in the physics check: followed no better than separate random turns (direction gauge; not yet measured as a count).</dd>
+<dt>Goal line</dt><dd>unmeasured for orders of the live size; the held-pose anchor reads 87 on physics alone.</dd>
+<dt>Readings to watch</dt><dd>(from b5's deploy notes) the share of each change it reproduces, rising from near 0% at the switch; babble's turn per handle against its 45.7&deg; target and the count of babble moments at the reach limit; the planner's intention size; the turn asked per author; the live share of its units; the following count per author.</dd>
+</dl>
+<div class="fill"><b>Functional evidence still required:</b> Pass separate paired tests for synergy planning and exploration, keeping proposal smoothing fixed. Both control switches stay off until then; the old timed cosine rollback is superseded. <a href="RESTART_CRITERIA.md">Takeover criteria and comparison rules</a>.</div>
+</div>
+
+<div class="item" id="item6">
+<h3>Item 6 &mdash; self-on-self contact first-class</h3>
+<span class="chip c-fix">built; review fixes in progress</span> <span class="chip c-open">payment not to be switched on as built</span>
+<dl class="kv">
+<dt>What was built</dt><dd>The world reports new touches, whose they are, which are resting pairs, and which an eye could see. A contact head predicts each skin patch's touch at the next moment, given the order directly. Foreseen touches pay (self 2, world 1), fading for repeats; the payment is gated on beating a mispaired-order control.</dd>
+<dt>Switch</dt><dd><code>--contact-head on</code>, <code>--contact-control-wellness</code> (the channel's weight; half of controllability's in b4's deploy note) (commits df2486b20, 1c7cd98f8, e5fa2d070)</dd>
+<dt>Stats blocks</dt><dd><code>contact_control</code>, <code>self_contact_events</code>, <code>skin_regions_per_body</code></dd>
+<dt>Probe</dt><dd>binding probe's self-touch arms (a reader for the contact head is still to be written; in lane A's fixes)</dd>
+<dt>Baseline</dt><dd>Pooled self-touch audit on segments 30 and 31: self-touch predicted no better than other touch (not yet measured as a count). New head, 2 bodies, 480 moments, on patches untouched the moment before: out of 100 pairs, one about to be touched by the body itself and one staying untouched, the head picked the right one 74 times; a base-rate rule 82; a coin flip 50.</dd>
+<dt>Goal line</dt><dd>unmeasured; the head is 8 out of 100 below its base-rate rule, the line it must pass first.</dd>
+<dt>Review (b4)</dt><dd>M1: one evidence gate pools outside and self readings, then pays self-touches 2 each. M2: once open, one paid touch outweighs integrity's top priority. M3: the logged headline counts continuing touches and reads 92 out of 100, which measures persistence. M4: the watcher prints habituation on the reverse scale and compares the head with a control counted on other moments. Fixes in lane B (M1, M2, M3) and lane A (M4).</dd>
+<dt>Readings to watch</dt><dd>onset count against the base-rate rule; foreseen self-touch against the other-body-order control; false alarms against 5 in 100 per patch; each gate's state; resting-pair share.</dd>
+</dl>
+<div class="fill"><b>Functional evidence still required:</b> Beat onset base-rate and shuffled-order controls separately for self and world contact; verify both sides, false alarms and habituation without credit for persistent resting contact. <a href="RESTART_CRITERIA.md">Takeover criteria and comparison rules</a>.</div>
+</div>
+
+<div class="item" id="item7">
+<h3>Item 7 &mdash; gaze causal probes</h3>
+<span class="chip c-fix">built; review fixes and re-run in progress</span> <span class="chip c-meas">measured: before</span>
+<dl class="kv">
+<dt>What was built</dt><dd>Six arms: counterfactual command, prediction before action, repeat, nearby head pose, ablation, wellness selection; plus the eye servo's measured step response.</dd>
+<dt>Tool</dt><dd><code>python -m mimo_bridge.tools.gof_probe_gaze --ckpt &lt;checkpoint&gt;</code> (commits 80dcbea17, 632080101)</dd>
+<dt>Baseline</dt><dd>Vision 150 ms ahead foresaw 0.0000073% of the real change (0% = ignores, 100% = foresees); 20 of 24 command pairs tied; ablation 0.000005%; 8 of 8 wellness pairs tied. Eye servo: 130/155/195 ms to settle 5&deg;/10&deg;/20&deg;.</dd>
+<dt>Goal line</dt><dd>ceiling 100%; a goal line (what working control reaches) is unmeasured, so the distance to goal is unmeasured.</dd>
+<dt>Review (probes)</dt><dd>Blocker for every probe: it cannot save a starting moment of the upgraded model (section 16). Gaze: the untied pairs were decided below any measured noise line, and the 50 ms share came from the imagination route. Fixes and a re-run in lane A.</dd>
+</dl>
+<div class="fill"><b>Functional evidence still required:</b> Predict command-dependent visual changes, then use those predictions to choose useful eye commands; repeat across head poses and after retaining the learned weights. <a href="RESTART_CRITERIA.md">Takeover criteria and comparison rules</a>.</div>
+</div>
+
+<div class="item" id="item8">
+<h3>Item 8 &mdash; simple body-control probes</h3>
+<span class="chip c-fix">built; review fixes and re-run in progress</span> <span class="chip c-meas">measured: before</span>
+<dl class="kv">
+<dt>What was built</dt><dd>20&deg; single-limb orders (finger, wrist, elbow, shoulder, knee) against holding still, a random order, an earlier checkpoint, a repeat, a pre-turned pose and a 2.49 N load.</dd>
+<dt>Tool</dt><dd><code>gof_probe_body</code></dd>
+<dt>Baseline</dt><dd>0.0% of the 250 ms change foreseen; at most 0.75% at 50 ms; none of the pose head's 256 units responded: even on the unit nearest to responding, a change in its input moved its output by 2 in every billion parts of that change; a unit sitting at the line where responding starts moves it by 1.2% (<a href="#liveness">Part 4, liveness</a>); limbs turned 6.5&deg; to 12.3&deg; of the 20&deg; asked.</dd>
+<dt>Goal line</dt><dd>ceiling 100% of the body's change foreseen; goal line unmeasured.</dd>
+<dt>Review (probes)</dt><dd>The probe predicted with an eye command 161&deg; from the one the model is told it executed; the load arm changed the elbow's turn by 0.9%, too little to test adaptation; the earlier-checkpoint control tried 2 of 25 ancestors. Fixes and a re-run of the body probe in lane A.</dd>
+</dl>
+<div class="fill"><b>Functional evidence still required:</b> Predict and achieve body changes better than hold and alternative orders; repeat across starts and a load that measurably changes the outcome. <a href="RESTART_CRITERIA.md">Takeover criteria and comparison rules</a>.</div>
+</div>
+
+<div class="item" id="item9">
+<h3>Item 9 &mdash; arm into view and self-touch binding</h3>
+<span class="chip c-fix">built; review fixes and re-run in progress</span> <span class="chip c-meas">measured: before</span>
+<dl class="kv">
+<dt>What was built</dt><dd>The hand is sent to a point in front of the eyes; the step it enters the view is scored for vision, touch and body predictions. Scripted finger-to-finger, hand-to-face and hand-to-hand touches are scored at their onset.</dd>
+<dt>Tool</dt><dd><code>gof_probe_binding</code></dd>
+<dt>Baseline</dt><dd>The hand reached the view in 800 and 600 ms; vision foresaw 0.14% of the change (holding still at the same step: &minus;19.8%, where below 0% = the prediction moved the wrong way). Touch achievable within 1 s: finger-to-finger 1 of 2 moments (200 ms), hand-to-face 1 of 2 (850 ms), hand-to-hand 0 of 2. The pooled touch prediction at onset foresaw &minus;4.0% on average (holding: +3.1%). Both-sides scoring: unmeasured (no contact head then).</dd>
+<dt>Goal line</dt><dd>ceiling 100% of the view's change foreseen; goal line unmeasured.</dd>
+<dt>Review (probes)</dt><dd>The headline is not taken against the hold order from the same moment, so a model that ignores the order and continues the hand's motion scores the same; the self-touch "holding still" arm was ordered to the touching pose; the probe has no reader for the new contact head. Fixes and a re-run of the binding probe in lane A.</dd>
+</dl>
+<div class="fill"><b>Functional evidence still required:</b> Anticipate the difference between continuing and stopping the hand from identical states, and both sides of attainable self-touch; repeat across starts. <a href="RESTART_CRITERIA.md">Takeover criteria and comparison rules</a>.</div>
+</div>
+
+<div class="item" id="item10">
+<h3>Item 10 &mdash; vestibular sense and posture probes</h3>
+<span class="chip c-fix">sense and probe: built; review fixes in progress</span> <span class="chip c-meas">probe: before</span>
+<dl class="kv">
+<dt>What was built</dt><dd>A 29-number sense in the placeholder's slot: head accelerometer (1.0 = one g) and gyro, neck angles, speeds and effort, the chest's up-direction, the share of support force on head, trunk, arms and legs, total support (1.0 = body weight), mechanical power, holding torque, limit load, capacities, and a validity flag. A probe with head orders, a self-made versus pushed head turn, a weight shift and a head lift.</dd>
+<dt>Switch / tool</dt><dd><code>--vestibular-sense on</code> (commits df2486b20, 1f1132359, e5fa2d070); <code>gof_probe_posture</code></dd>
+<dt>Stats block</dt><dd><code>vestibular</code> (prediction error against "nothing changes", head tilt, trunk roll and pitch in degrees, support, limit load)</dd>
+<dt>Baseline</dt><dd>Head orders: the body token foresaw 0.0000022% of the change (a proxy: the head's row cannot be separated inside it). Self-made against pushed turn: the self-made turn was predicted with 0.3% less error than the pushed one (0% = no difference). The new sense in the build's runs, with a fresh encoder: its error took 43 of every 100 parts of the next-moment lesson in b2's paired run and 25 to 54 in b4's run, and was 185 times the body sense's error in b2's run.</dd>
+<dt>Goal line</dt><dd>probe share: ceiling 100%, goal line unmeasured; self-made turn predicted better than pushed (size unmeasured).</dd>
+<dt>Reviews</dt><dd>b2 (major): the switch changes the orders sent to the body by 11.7 in every 100 parts of their size at the first moment, because the old slot held a learned constant; and the new sense crowds the next-moment lesson unless the loss-balance build scales it. World side (major): 87 of every 100 parts of the vector's size are the same on every frame and nothing centres it, the condition that preceded the pose head's death. Probes: the head-lift effort is in motor units, not N m, and the self-made and pushed turns were matched by size, not direction. Fixes in lanes A and B.</dd>
+<dt>Cost</dt><dd>+2.5 ms on a 1,663 ms step on the processor (0.15%)</dd>
+<dt>Readings to watch</dt><dd>improvement over "nothing changes" (starts below 0% with a fresh encoder); the sense's share of the next-moment lesson; its encoder's live units.</dd>
+</dl>
+<div class="fill"><b>Functional evidence still required:</b> Keep the balance encoder responsive and beat persistence on head and support changes; match self-made and pushed motion by direction and size. <a href="RESTART_CRITERIA.md">Takeover criteria and comparison rules</a>.</div>
+</div>
+</section>
+
+<!-- =============================== PART 4 =============================== -->
+<section id="part4">
+<h2>Part 4 &mdash; added beyond version 2</h2>
+
+<h3>The vestibular / internal-state sense, and where it went</h3>
+<span class="chip c-fix">built; review fixes in progress</span>
+<p>Version 2 names the sense; the design is this build's. It takes the placeholder slot (decision D4) rather than a seventh slot, because the placeholder slot already reached attention, the reflex controller and the self-model at zero benefit, and a seventh slot adds 16.7% more tokens to every forward pass on a run that had just stopped on step time. DESIGN D4 calls the placeholder's content noise; the review of b2 measured that on the last checkpoint its encoder had turned the noise into a learned constant, which is why switching the slot changes the orders at once (item 10). Every scale was measured on the crib body under babble, rolls and 10 cm drops (18,450 frames) and written to <code>scale_anchors.json</code>. On the checkpoint, 445 of the 477 saved tensors load unchanged, 17 (the slot's prediction head, gate and decoder) move unchanged to the new name, and 15 (the placeholder's encoder) are replaced by a fresh encoder; 391 of 406 optimizer states carry over.</p>
+<p class="src">Sources: agents/env-senses.md; agents/b2-vestibular.md; DESIGN.md D4 and section 7; reviews/b2-vestibular.md; reviews/env-senses.md.</p>
+
+<h3>Efference heads</h3>
+<span class="chip c-fix">built; review fixes in progress</span>
+<p>Not named in version 2. They give the order to two small heads directly, bypassing the locked pool, and state their predictions in centimetres and degrees, so controllability and the probes read in lived units. Their divisors were measured (root mean square per axis, 1 body, the run's own orders): a handle moves 0.45 cm and turns 2.7&deg; per 50 ms, 1.8 cm and 11&deg; per 250 ms order; the eye turns 3.2&deg;, 6.2&deg; and 8.9&deg; over 50, 100 and 150 ms. The loss is a Huber loss (squared for small errors, straight-line for large ones) because the first step after a world reset moves every handle 27.7 cm in 50 ms, which in a squared loss would outweigh about 3,700 ordinary steps. The review of b1 found both heads' attention pools lock within 100 training steps and the body head is not told where each part is now (item 1).</p>
+<p class="src">Sources: agents/b1-causal-efference.md; reviews/b1-causal-efference.md.</p>
+
+<h3 id="liveness">Liveness: parts that stopped responding, since H84's first day</h3>
+<span class="chip c-meas">measured</span> <span class="chip c-open">repair planned after the loss-balance build</span>
+<p>A sweep of every learned part on 24 lived moments per checkpoint, at seven checkpoints of the lineage. The table counts, out of every 100 units of a layer, how many responded on some moment (0 = the layer outputs a constant whatever it sees, 100 = every unit responds). A unit responds when its input leaves the flat low end of its activation function (GELU, the curve that turns a unit's input into its output). In that flat end, a change in the unit's input moves its output by less than 1.2% of the change, and the lesson's correction reaches the unit's weights shrunk by the same share; for a large input the output moves as much as the input (100%). The pose head and the planner's wellness copy each have 256 units.</p>
+<div class="tw"><table>
+<tr><th>step</th><th>pose head</th><th>planner's wellness copy</th><th>reflex controller block 1</th><th>touch reconstruction</th><th>memory outcome</th></tr>
+<tr><td class="num">7,196</td><td>26</td><td>50</td><td>100</td><td>98</td><td>72</td></tr>
+<tr><td class="num">35,165</td><td>5</td><td>23</td><td>41</td><td>79</td><td>51</td></tr>
+<tr><td class="num">67,077</td><td>5</td><td>13</td><td>25</td><td>64</td><td>32</td></tr>
+<tr><td class="num">131,952</td><td>3</td><td>10</td><td>11</td><td>44</td><td>35</td></tr>
+<tr><td class="num">328,375</td><td>0</td><td>9</td><td>13</td><td>15</td><td>18</td></tr>
+<tr><td class="num">344,400</td><td>0</td><td>5</td><td>5</td><td>5</td><td>37</td></tr>
+</table></div>
+<p>Attention, from the same sweep: the order's attention pool was locked on single handles at every checkpoint from step 7,196 on. The first block's attention across the 6 senses was locked on one sense from step 35,165 on; at step 7,196 it spread wider. Both readings come from the same entropy measure as section 11 and are not yet measured as a count.</p>
+<ul>
+<li><b>Why the pose head died:</b> the forward model's output has a part shared by every moment (size 66 of a total 75). Every one of the head's 256 rows points partly against that shared part, which alone pushes every unit into the flat low end of GELU: a typical unit's output moves by less than 1 in every trillion parts of a change in its input. Even the unit nearest to responding moved its output by 6 in every ten million parts, against 1.2% for a unit sitting at the edge of the flat end. So the head outputs 0 and almost none of the lesson's correction reaches it, and it cannot recover by training.</li>
+<li><b>The order's attention locked within the first 7,196 steps</b> and never reopened: each of its 4 heads reads exactly 1 of 26 handles; 16 handles, including the gaze, the right wrist and forearm, both thighs and the lower trunk, got zero weight over four moments. The touch token's pool is locked the same way, on one contact row (not yet measured as a count).</li>
+<li><b>Why earlier checks missed it:</b> they checked that data reached each part and read logged averages; none checked whether a part's units respond or whether an attention pool spreads.</li>
+<li><b>Rules added for every new part</b> (DESIGN.md section 10): a head fed the forward model's output removes the shared part first (running mean, then normalisation); every new layer reports its share responding; every new pool has a path every element reaches; tests prove a new part responds at start and after 100 training steps.</li>
+<li><b>The repair</b> (after the loss-balance build): re-initialise the unresponsive units' incoming weights with their outgoing weights at zero (so the model's output is unchanged at the switch), remove the shared part from their input, open the motor and touch pools with an all-element path, and add a permanent responsiveness block, watcher lines and a probe.</li>
+<li>Checkpoints before step 266,375 load only with a fresh touch encoder, so their numbers downstream of touch are approximate; step 220,675 read out of line with its neighbours and is not shown.</li>
+</ul>
+<p class="src">Sources: <code>measurements/liveness_sweep_ckpt_step_344400.json</code>; <code>measurements/liveness_over_lineage/README.txt</code> (shares, turned here into counts per 100 units); <code>measurements/why_pose_head_and_motor_token.py</code>; commits 59da739ec, 9c9f491ed.</p>
+<div class="fill"><b>To fill:</b> the repair's commit and the shares after it.</div>
+
+<h3>A resume now applies the environment settings it is launched with</h3>
+<span class="chip c-fix">built (bdbfb7895); review fixes in progress</span>
+<p>Segment 31 was launched with the toy hand-off on, yet all 161 of its records show 0 grips: a resumed episode rebuilt its worlds from the settings saved in the checkpoint, so any environment flag changed at a resume was silently ignored. A resume now rewrites the saved hand-off and finger-armature settings from its command and names every other setting it could not apply. Measured on ckpt_step_344400: it applies the command's hand-off ("follow") and finger-armature settings on 8 of 8 worlds. Review of ops-storage (major): this runs on every resume with no new flag, so a resume on segment 31's old command now turns the toy hand-off on, which DESIGN D2 forbids; the fallback script that was meant to restore the old behaviour would therefore change the world. The fix in progress (lane A, DESIGN D2 note of 2026-09-23): keep the saved settings by default and apply the command's only with <code>--resume-env-settings launch</code>, which the deploy passes.</p>
+
+<h3>The recorder no longer loses events to the archiver</h3>
+<span class="chip c-built">built (e78b6b4d0)</span>
+<p>At 11:46:25 on segment 31 the caregiver recorder lost 143 events: the archiver read a manifest while the trainer was replacing it, and Windows refused the replace. The writer now retries (8 waits over 1.275 s), the archiver skips manifests written in the last 10 s, every move is mirrored to C:, and a lock lets exactly one archiver run. The running archiver still runs the old code until the deploy restarts it.</p>
+
+<h3>Finding moved files, and a reversible offload tool</h3>
+<span class="chip c-fix">built (bdbfb7895, 1273305b8); review fixes in progress</span> <span class="chip c-open">what to move is the operator's call</span>
+<p>Archived checkpoints on D: could be neither resumed nor probed: their companion path pointed at a deleted C: file and their folder had no settings file. A resolver now finds a moved checkpoint or companion through the move records. The offload tool moves folders C: &rarr; D: and back with a record every reader follows. Its dry run listed 21.92 GB in 733 folders that could move; nothing was moved. Review of ops-storage (major): that list includes the caregiver's speech library, which every H84 launch opens by its path, and the probe index; the fix keeps every path a run's settings name. The checkpoint-proof tests would also skip without a word once the archiver moves ckpt_step_344400.</p>
+<p>Disk runway at 19:25: C: 89.5 GB free (stop line 8 GB); D: 517.5 GB free, taking in 34.3 GB a day from the archiver in normal running, which lasts 15.1 days; nothing thins D:. The watcher alerts at 5 days. Thinning deletes, so it is the operator's decision.</p>
+<p class="src">Sources: agents/ops-storage.md; agents/understand-storage-disk.md; reviews/ops-storage.md (majors 1&ndash;4).</p>
+
+<h3>The documentation index</h3>
+<span class="chip c-built">built (cc8ac0a69, 74c675eea)</span>
+<p><code>docs/index.html</code> names one master file per question and marks the rest as history; it reads <code>docs/source_of_truth.json</code>, and a test keeps its embedded copy equal to that file and every named path existing. This addendum is the master for "what the plan is and which of its items are done".</p>
+
+<h3>The dashboard rebuild</h3>
+<span class="chip c-fix">built (08eb894f3, 2a136c813); review fixes in progress</span>
+<p>The development dashboard opens with the training state in plain words, shows the ten items, and its "Over time" tab charts the whole H84 lineage with segment markers (before, it read registries frozen on 2026-09-13 and had no time series). Every time estimate was removed. The old dashboard now describes only the current lineage: its rebuild cycle fell from 37.2 s to 0.2 s of processor time. The server had used 50% to 90% of one processor core parsing 796 MB every 148 s.</p>
+<p>Review of the dashboards (blocker): the ten-item panel places controllability, learning progress and self-touch prediction against "knowing nothing" instead of the control each producer logs, so a contact head worse than a base-rate guess would show 70% of the way along its scale. Also found: a green "action readable" badge on the old dashboard passes the very test (all 26 handles changed at once) that hid the locked motor pool; bare score decimals on every page. The fix agent (lane A) is rewriting the panel with counts and controls.</p>
+<p class="src">Sources: agents/dashboards.md; WORKLOG.md 23:06; reviews/dashboards.md; agents/fix-dashboards.md.</p>
+
+<h3>The machine block in every training record</h3>
+<span class="chip c-built">built (2adadb74e); always on</span>
+<p>Free memory, committed memory and its limit, the trainer's own memory, the graphics card's used and total memory (read with the driver's tool every 10th record), and the step time split into model and bodies. Segment 31 recorded none of these, which is why its slowdown's cause is unmeasured.</p>
+
+<h3>Segment 31's step-rate stop, and the pause</h3>
+<span class="chip c-meas">measured</span> <span class="chip c-open">cause unmeasured</span>
+<ul>
+<li>Segment 31 ran 4,500, 4,330 and 4,410 model steps an hour in its first three hours. Between the records at 14:15 (4,410 an hour) and 14:19 (1,830 an hour) it fell, inside the hourly burst of saves, and then stayed at 1,370 to 1,440 an hour, under a third of its first hour.</li>
+<li>Every world slowed at once (world steps 49.0 &rarr; 15.2&ndash;15.9 per second, contacts per world unchanged), so the physics load did not change.</li>
+<li>The watcher's stop rule (under one third of the first hour for two hourly checks) wrote the stop at 17:15; ckpt_step_344400 was saved at 17:17:09.</li>
+<li>Most likely cause: the graphics card held 7.07 of 8.19 GB, and a program taking card memory beside the trainer pushes the trainer into shared system memory, measured 3 times slower at launch. Nothing sampled the card during the slow hours, so this is unconfirmed. A sampler writes the card's memory every 60 s since 17:23.</li>
+<li>At 17:27 the operator allowed pausing training for the build ("If it is easier you can pause training while you are doing this work"). The supervisor is paused; training resumes as segment 32 through the deploy.</li>
+</ul>
+<p class="src">Sources: H84 README, "State on 2026-09-22"; WORKLOG.md 17:20&ndash;17:27.</p>
+
+<h3>Other additions and findings</h3>
+<ul>
+<li><b>The probe loader repair</b> (555e971b5): 17 older probe tools built through a loader that could not build H84; they load again.</li>
+<li><b>The commit guard</b> (0109b5dd0): any heavy process checks committed memory first, after a second trainer exhausted it and killed the supervisor on 2026-09-21.</li>
+<li><b>A load defect found and fixed during the build</b> (e5fa2d070): the vestibular switch together with the efference heads could not load ckpt_step_344400 with its optimizer; now 391 of 406 optimizer states carry over.</li>
+<li><b>The hourly watcher</b> (a27b9c1e9) reports every new block, D:'s runway, the archiver's heartbeat and machine memory.</li>
+<li><b>48 stray files</b> that a probe test wrote into the lineage's caregiver recordings folder, which is still in use, (18:49&ndash;18:54) are listed in <code>agents/probes_stray_caregiver_files.txt</code> and not deleted: the lead's call.</li>
+<li><b>The explainer update</b> (1c367163b, 2be423be6): the page draws every part of the build and has a Probes and liveness tab; its bare-decimal pass is in lane A.</li>
+<li><b>Eight adversarial reviews</b> (efc2ecd17, <code>docs/gain_of_function_v3/reviews/</code>): 3 blockers, 39 major and 79 minor findings across the committed pieces. Their fixes run in lane A (main tree: watcher, probes, dashboards, world code, explainer) and lane B (a separate worktree for the model files), each followed by a verify-and-repair agent.</li>
+<li><b>The following count</b> (ba581b806, <code>measurements/following_out_of_100.json</code>): the body's following measured as counts, with its three findings about the live gauge (section 5).</li>
+<li><b>An incident:</b> at 00:31 a git operation in the model lane's worktree, whose Saved folder was a link to the real one, deleted the 1,288 tracked files under the real Saved, including the caregiver's speech library; every one was restored from the commit (WORKLOG.md 00:31). The live following count lost 3 of its 8 bodies to it.</li>
+<li><b>In progress beside this update:</b> the loss-balance build (b6, started 00:47); the review of the motor-synergy build; the fix lanes.</li>
+</ul>
+<div class="fill"><b>To fill:</b> the loss-balance commit and its measured per-sense shares; the review fixes' commits and their verify results; the liveness repair.</div>
+</section>
+
+<!-- =============================== PART 5 =============================== -->
+<section id="part5">
+<h2>Part 5 &mdash; what the lead fills in, and open issues</h2>
+<h3>To fill before this stops being a draft</h3>
+<ol>
+<li>The loss-balance commit and its per-sense shares; the review of the motor-synergy build; the liveness repair's commit.</li>
+<li>The deploy: the date, the command, the 25-step proof, the card memory at 8 bodies with every flag on.</li>
+<li>Each item's declared criteria for segment 32, with their reachability arithmetic.</li>
+<li>Segment 32's first-hours readings in every dashed amber box.</li>
+<li>The first "after" probe suite, beside the "before" one.</li>
+<li>Each review fix's commit and its verify result, and every mark here moved from "review fixes in progress" to what the verify showed.</li>
+</ol>
+<h3>Open issues, each with its cost</h3>
+<div class="tw"><table>
+<tr><th>issue</th><th>cost of leaving it</th><th>source</th></tr>
+<tr><td>The normalised ranking picks goals by their age (review blocker)</td><td>Switched on as built, it aims the planner at the oldest or the newest remembered moment, not the best one; at the deploy, the fresh heads' learning progress would aim it at the present, which tells the body to stay where it is.</td><td>reviews/b3-wellness.md</td></tr>
+<tr><td>The probes cannot snapshot the upgraded model (review blocker)</td><td>No "after" reading for items 7&ndash;10 until fixed; the watcher would record the failures and never retry them.</td><td>reviews/probes.md</td></tr>
+<tr><td>The dashboard places three items against "knowing nothing" (review blocker)</td><td>At the deploy a contact head worse than its base-rate rule would read as 70% of the way along its scale.</td><td>reviews/dashboards.md</td></tr>
+<tr><td>Learning progress has no same-moment control</td><td>A positive reading cannot be told from the world changing; a fixed-anchor control costs one more copy of the forward model and heads plus one forward per sampled moment.</td><td>b3-wellness.md</td></tr>
+<tr><td>Contact head starts behind its base-rate rule</td><td>The contact channel pays nothing until it passes: on touches about to start, the head picked the right patch in 74 of 100 pairs against the rule's 82. Option: predict on top of the base rate; then its outputs depend on saved running statistics.</td><td>b4-self-contact.md, reviews/b4-self-contact.md</td></tr>
+<tr><td>Synergy-made orders are followed no better than separate random turns</td><td>If it learns only to reproduce the changes the body made, the planner and babble gain coordination in name only; what it should learn from is a design decision for the lead.</td><td>b5-synergy.md</td></tr>
+<tr><td>The live following gauge scores the eyes' row and never the chest; its "250 ms" is 26 physics ticks</td><td>Every past following reading mixes the eye servo into the body's following; the dashboards and the synergy's judging window read this gauge.</td><td>measurements/following_out_of_100.json; WORKLOG.md queued follow-ups</td></tr>
+<tr><td>The 2026-09-19 physics anchors in <code>scale_anchors.json</code> no longer reproduce</td><td>Any page still citing them compares today's body with a body two finger commits old; the counts in section 5 replace them.</td><td>measurements/following_out_of_100.json</td></tr>
+<tr><td>Fatigue drain leaves out each motor's gear (the gears differ up to 2,860-fold)</td><td>Capability and real motor force are wrong per motor; fixing it changes this lineage's body.</td><td>env-senses.md, reviews/env-senses.md</td></tr>
+<tr><td>The 2 kPa hand-press line predates the current skin law</td><td>The world part of hand pressing fired on 18% of moments (the floor pressing a hand).</td><td>env-senses.md, b3-wellness.md</td></tr>
+<tr><td>Predicted wellness cannot see most new channels</td><td>The planner's wellness copy predicts 5 formulas; controllability, learning progress, contact control and the rest act only through which remembered moment is chosen.</td><td>b3-wellness.md</td></tr>
+<tr><td>The probe watcher is not running</td><td>No "after" probes until it is started for segment 32.</td><td>probes.md</td></tr>
+<tr><td>Archiver and supervisor run the old code</td><td>The recorder fix, the lock and the C: mirror take effect only after the deploy restarts them.</td><td>ops-storage.md</td></tr>
+<tr><td>D: fills in 15.1 days and nothing thins it</td><td>When full, C: takes 1.46&ndash;1.49 GB an hour again.</td><td>ops-storage.md</td></tr>
+<tr><td>The documentation index shows a "pending" master as "not written yet"</td><td>This draft's row reads "not written yet" on the index page while its note says "draft written"; changing the label is outside this draft's files.</td><td>docs/index.html</td></tr>
+</table></div>
+</section>
+
+<section id="sources">
+<h2>Sources</h2>
+<ul>
+<li>Plan: <code>docs/gain_of_function_v3/addendum_v2_source.html</code> (the operator's version 2).</li>
+<li>Decisions and contracts: <code>docs/gain_of_function_v3/DESIGN.md</code>; timeline: <code>WORKLOG.md</code>.</li>
+<li>Surveys: <code>agents/understand-*.md</code> (ten). Build logs: <code>agents/env-senses.md, ops-storage.md, probes.md, dashboards.md, b1-causal-efference.md, b2-vestibular.md, b3-wellness.md, b4-self-contact.md, b5-synergy.md</code>.</li>
+<li>Measurements: <code>docs/gain_of_function_v3/measurements/</code>; <code>Saved/mimo_bridge/gof_probes/index.jsonl</code> and <code>gof_probes/H84_fresh_drivers_20260918_seg31_toy_and_push/ckpt_step_344400/</code>.</li>
+<li>Lineage: <code>docs/h84_launch_2026-09-18/README.md</code>.</li>
+</ul>
+</section>
+
+<div class="footer">UEMA Embodied Gain-of-Function Addendum &bull; third pass &bull; DRAFT of 2026-09-22, updated 2026-09-23, to be operationally qualified and resumed 2026-09-23; functional comparisons pending</div>
+</main>
+</body>
+</html>

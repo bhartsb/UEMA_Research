@@ -1,0 +1,90 @@
+FOLLOW-UP REVIEW (round 2): the re-sealed package of the unblended run u
+(D:/UEMA_Research/external/D/UEMA_scratch/h84/d1_planner_recovery/target_unblended_496250_package, MANIFEST.json sha256
+fc753c00e860ee35220108b4765f79d3be6bcc3b8972150cfe68a8e952037d57, 139 pins)
+
+Reviewer: the same focused independent reviewer (the builder subagent of session 358a210a). Written Oct 24, 2026, 8:57 PM
+PDT (the round-2 checks ran from 8:48 to 8:54 PM PDT by their files' stamps). Same limits as round 1: read only; no owner step, seal,
+manifest program, trainer, model, world or program on saved run evidence; only the named tests run. Round-2 files are
+in round2/ beside this report.
+
+======================================================================================================================
+VERDICT: READY. R1 is resolved; no new REQUIRED item.
+======================================================================================================================
+
+R1: RESOLVED. reader/read_policy_pair.py (sha256 f94339d92d4230cf...), gate_ordinary_search (lines 510-609), part (f)
+at lines 567-597:
+- the group: bodies whose target_candidate.selected reads false in both runs (lines 573-576); a selected list that is
+  not true/false for every body in both runs reads MISSING (lines 577-578);
+- every DECISION_FIELDS path equal by same_value for each such body (lines 579-588: objective.selected_iteration, the
+  selected forecast's position and rotation, effort.selected, fallback_reason, changed, objective.per_body.*.selected,
+  command.sent_sha, command.executed_sha); a field that is not one value per body in both runs reads MISSING;
+- every DECISION_ARRAYS array equal bit for bit by body_rows_equal for each such body (lines 589-597: planned, sent,
+  executed, hand_joint_goal_raw, forecast_pose__selected_position_cm, _quaternion, _order, forecast__* of the five
+  senses, plan0); an absent array reads MISSING;
+- the bodies compared are written into the gate as ordinary_winner_bodies (line 608); the other groups stay reported
+  (G3_NOT_REQUIRED, lines 247-255; DEFINITIONS["final_outputs"], lines 1571-1584).
+This is the corrected reader's P3 loop restricted to that group, which read PASS on the s2 data. Tests:
+test_a_changed_ordinary_result_fails_G3 now includes a neither body's objective.selected_iteration (body 5), its sent
+array (body 5) and its command.sent_sha (body 6), each making G3 read FAIL with every other gate PASS;
+test_a_chosen_body_s_planner_output_differs_and_G3_still_passes changes the sent and executed commands of bodies 0, 2
+and 3 (common_selected, newly_selected, no_longer_selected) and two record fields, and every gate reads PASS. Reader
+tests: 30 passed (round2/tests_reader_r2.txt).
+
+THE RECOMMENDED ITEMS
+- M3 (authorization date): DONE. I rebuilt the first seal's owner from the s2 owner matched_exec.py (4568a8d8...) and
+  the superseded diff (superseded/owner_diff_20261024_204322); it hashes 3f69e0d0..., the first seal's owner. Its diff
+  to the new owner 6edb61d6... (round2/owner/old_to_new_owner.diff) holds only: iso_time (a timezone-aware datetime
+  from an ISO time with its offset; None for no offset or an unreadable value), BUILD_DECISION_CREATED_AT
+  "2026-10-25T01:11:05.929096+00:00", the refusal in authorization_problems of a created_at that is unreadable or not
+  later than that time, EXPECTED_TESTS 31 -> 32, and module text. seal_authorization.decision_values (lines 116-126)
+  applies the owner's own iso_time and constant. test_authorization_must_postdate_the_build_decision checks the
+  constant against the build decision's own message file and covers: the same instant in two offsets, earlier, no
+  offset, unreadable and absent (refused by both), one microsecond later and a "Z" time (accepted by both), and an
+  earlier message leaving the seal's package without any written file.
+- M2 (finding 1): DONE in CONDITIONS.json and README.md: eye commands from 496,252 can differ inside the 250 ms window
+  in every body, with the 0.000030 cm s2 analogue.
+- M1 (the 0.65 term): DONE where the package can change it: the reader's DEFINITIONS["control_run"] (lines 1502-1505)
+  and README.txt say "0.65 x the smoother's memory (under --smooth-source proposal, the running blend of every proposal
+  since the last latch)"; row_u_run's question and the gate texts use the same words; UNBLENDED_TEXT keeps the record
+  string byte for byte, with a comment (lines 208-212) that names what its words mean; the record string itself is
+  finding 9.
+- M8 (contacts): DONE. contacts_and_falls adds records_with_contact_other_than_floor_or_self and
+  contact_other_than_floor_or_self_peak_force_n (lines 1414-1427), defined in DEFINITIONS["contacts"].
+- M9 (fall reference): DONE as DEFINITIONS["fall_reference"] (lines 1585-1588) and finding 14.
+- M4, M5, M6, M7: recorded as findings 10 to 13 (CONDITIONS.json and README.md); the line numbers they cite match the
+  branch at 46e0c8363 (lem_model.py 1639, 7836, 7848, 7892, 8025; continuation_state.py 36, 37, 169;
+  intention_generator.py 772-776; physical_goal.py 346-352 and 375-379; test_target_candidate_unblended.py 234, 253,
+  275). Recording them rather than changing the branch keeps configuration 66a6cdbcc2f65852 and every pin bound to it.
+
+THE RE-SEALED PACKAGE
+- MANIFEST.json reads fc753c00...; all 139 pins equal their files; no package file outside runtime/ is unpinned; pins
+  by folder: 32 top-level, 39 dev_checks, 4 reader, 3 rows, 61 superseded (round2/manifest_pins_r2.txt).
+- Unchanged from the first seal: command_u.json (094c820e...), commands_diff.json, execute_u.sh, control_inputs.json,
+  start_world_manifests.json, read_matched_pair.py, make_commands.py, make_preflight_proposal_u.py,
+  preflight_write_record_u.py, pin_control_headers.py, make_timing_ledger.py.
+- Route: the installed training_preflight.py still reads 51e4729b...; the new route diff applies to a copy with no
+  offset or fuzz and gives the new draft byte for byte (401b35ca...); the new draft differs from the first only in
+  owner_sha256, now 6edb61d6... (round2/route/route_apply_r2.txt). Probe on the applied copy
+  (round2/route_probe_r2.txt): routes 1 to 11 equal to the installed file's; command_u.json at the branch code reads
+  66a6cdbcc2f65852 and maps to route 12 with owner policy_exec.py at 6edb61d6...; the s2 ON and OFF commands and
+  command_u with --smooth-actions 0.5 map to no route.
+- Regenerated files (round2/regenerated_diffs_r2.txt, against the superseded first-seal copies): the tests row's
+  counts (31 -> 32), hashes and timing basis; row_u_run's question (the M1 words); row_reading's timestamps only;
+  COMMANDS.json's hashes and the tests row's argv (the u row's and the reading row's argv unchanged); the adoption
+  block's owner_sha256 only; preflight_values_u.json's owner and gates hashes. preflight_gates_u.json keeps all seven
+  gates FAIL, its texts now in the M1 words.
+- The branch checkout is unchanged at 46e0c83630250f7a3e260c654955b727922bf8b9 with an empty git status
+  (round2/identities_r2.txt).
+
+OBSERVATION (not required)
+O1. When no body is chosen in neither run, part (f) compares no body: the gate records ordinary_winner_bodies [] but
+    still lists every DECISION_FIELDS path and array as "(neither bodies)" under compared, and G3 then rests on the
+    ordinary results' values. With the control's candidate in bodies 0, 1, 5 and 6, this happens if u sends the
+    candidate to all of bodies 2, 3, 4 and 7. A one-line note in the gate when the group is empty would state it.
+
+TESTS RUN (CPU, synthetic data)
+- Reader: test_read_policy_pair.py: 30 passed in 7.32 s (round2/tests_reader_r2.txt).
+- Package tests through run_package_tests.py (tests b7b00071..., owner 6edb61d6...): verdict pass, 32 passed in 6.33 s
+  (round2/package_tests_out/).
+
+CLAIM LEDGER: ledger2.json (39 entries), checked with .agent/hooks/claim_check.py: "CLAIM LEDGER: 39 of 39 verified" (round2/claim_check_output_r2.txt).

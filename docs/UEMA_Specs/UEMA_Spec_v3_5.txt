@@ -1,0 +1,1025 @@
+Unified Embodied Mind Architecture (UEMA)
+A Complete Specification for Differentiable Embodied Intelligence
+Version 3.5
+February 2026  |  Mind Machine Learning
+Status: Working Specification  |  Supersedes: UEMA v3.3, v3.0, v2.0, v1.0
+Part I: Foundations
+1. Core Thesis: Why Policy Networks Cannot Achieve Genuine Mind
+Policy networks learn a mapping: observation → action. This collapses five distinct cognitive stages into one undifferentiated mapping:
+I perceive  →  I predict  →  I feel myself  →  I intend  →  I act
+Five distinct stages. Each must be a meaningful internal process with its own computational substrate. A policy network collapses all five into f(observation) = action.
+The Zombie Problem: A policy network has no internal state representing WHY an action works. It is purely reactive. There is nothing it is LIKE to be this system.
+No Permanent Policy Exceptions: This thesis applies to the ENTIRE system. There is no permanent RL reflex layer. There is no bootstrap scaffold. The grounded wellness evaluator provides gradient signal from frame zero over PCC-stabilized baseline posture. Developmental constraints (Section 9.4) limit the search space to all handles at very low strength (2%) and minimal ROM (5%) initially. Every motor command flows through the prediction-wellness architecture from the start.
+2. The Dual Objective: Prediction Error and Wellness
+Prediction Error (PE) drives world-model learning. The forward model minimizes PE about sensorimotor experience. PE is how the system comes to UNDERSTAND the world. Prediction is compression; to predict well you must understand the underlying process.
+Wellness gradient drives action selection. The wellness evaluator maps current sensory state to a multi-dimensional wellness vector. Its gradient with respect to motor parameters determines WHICH actions are generated.
+Why both are necessary: PE alone: system could minimize PE by sitting still (no motivation). Wellness alone: system might learn shortcuts without deep world models. Together: PE builds accurate world model, wellness drives self-preserving action on that model.
+Everything else emerges from this dual objective:
+Emergent Phenomenon	Mechanism
+Curiosity	Seek states where PE is moderate—high learning potential
+Boredom	PE → 0 in current domain—seek novelty
+Self-coherence	Maintain predictive accuracy about 'self'—most complex prediction set
+Self-preservation	Protect body model—most valuable predictive asset
+Intention	Invert forward model—desired consequence → action
+Imagination	Chain forward model without executing—simulate before committing energy
+Stress	Sustained multi-modal PE without resolution
+Grief	Deeply reinforced prediction becomes permanently false
+No external curriculum. No task-specific reward. No permanent RL reward signal anywhere.
+3. Hardware Foundation
+Every concept maps to measurable quantities. Sources: ImplementationSpec_Ellipsoid_OGC_TMC_v10.md, foveated_vision_specification_v2.docx, PH_Control_System_Spec_v1_2.docx.
+3.1 Tactile Sensing (TMC Ellipsoid System)
+Output Field	Units	Rate	Description
+normalPressure	Pa	500–1000 Hz	Normal force per unit area
+shearMagnitude	Pa	500–1000 Hz	Tangential force magnitude
+slipRate	mm/s	500–1000 Hz	Relative surface velocity
+contactArea	mm²	500–1000 Hz	Contact patch size
+vibrationPower[4]	W	500–1000 Hz	FFT bins at 50,100,200,400 Hz
+Fingertip patches: 2,000 tetrahedra, 12–18mm × 3mm. Material: 50 kPa Young’s modulus. TMC iterations: 1–3/frame, adaptive. HuHu-LuLu regularization: weight 0.1. Biological mapping: SA-I → normalPressure, RA-I → shearMagnitude/slipRate, RA-II → vibrationPower[200Hz/400Hz].
+The vibration channels (200Hz, 400Hz) are frequency-domain features extracted from contact force history via FFT over a rolling window, NOT the simulation timestep
+3.2 Vision (Foveated System)
+Component	Resolution	FOV	Tokens
+Panorama	2520×1560	210°×130°	15,229
+Fovea	512×512	5°	1,024
+Total	—	—	16,253
+Angular position encoding (azimuth, elevation), not pixel (x,y). Swin Transformer. 48 MB/frame.
+3.3 Auditory (Spatial Audio + Pink Trombone)
+Bi-aural stereo PCM at ear locations. ITD (μs), ILD (dB). Pink Trombone vocal synthesis. Self-voice coherence [0,1]. Loudness: 30–60 dB comfortable, 75–90 dB negative wellness.
+3.4 Motor Control (Physics Handle System)
+Three-layer physics stack: (1) Ragdoll/PhAT (mass, inertia, joint limits), (2) PCC (baseline stiffness, postural tone), (3) Physics Handles (AI-controlled motor commands).
+Per-frame: Final Motion = Gravity + PCC + PH + TMC Contact. PH action space per handle: target_position (vec3), target_rotation (quat), radius [0,1] (motor synergy), strength [0,1]. Handles per hand: Wrist, Thumb, Index, Middle, Ring, Pinky (12 hand handles). Full-body handles: Head (stiffness 1.5x), UpperArm_L/R (2.5x), LowerArm_L/R (2.0x), Thigh_L/R (3.0x), Calf_L/R (2.5x), Foot_L/R (1.5x). Total: 23 physics handles. Per-region stiffness scaling ensures consistent apparent compliance across body segments of different mass.
+Critical: PCC resistance IS the proprioceptive effort signal. PH overcomes PCC + gravity + contact forces. This total resistance IS 'effort.'
+Energy: E_total = Σ|dot(F,v)|*dt + λ * Σ PCC_Strength*dt. Fatigue: capacity depletes under load, recovers at rest, limits effective PCC strength.
+Implementation Status: 23-handle full-body motor control implemented. Data-driven FHandleDefinition struct with per-region stiffness. Action buffer: 1176 bytes (20 header + 828 motor + 8 gaze + 320 voice). SHM protocol ACTION_VERSION=2. Backward compatible with SetLeftArmCommand()/SetRightArmCommand() wrappers mapping to indices 0-5 and 6-11.
+Part II: The Perception-Prediction Duality
+4. The Two Registers of Experience
+4.1 The Grounded Register
+Perception IS sensor data. The Grounded Perception State P_t is the complete, uncompressed state of all sensors at time t. Every dimension corresponds to a measurable physical quantity.
+P_t = {
+  vision:        {fovea_tokens[1024,768], pano_tokens[15229,768], angular_pos[16253,2], gaze_target},
+  tactile:       {patches: List[{normalPressure, shearMagnitude, slipRate, contactArea, vibPower[4]}]},
+  audio:         {left_spectrum[256], right_spectrum[256], itd, ild, self_voice_coherence},
+  proprioception:{joint_pos[n_joints,3], joint_vel[n_joints,3], ph_forces[n_handles,3],
+                  ph_targets[n_handles,7], pcc_strengths[n_bodysets], muscle_cap[n_bodysets], energy},
+  motor_commands:{ph_commands[n_handles,9]}
+}
+4.2 The Predictive Register
+Plain-English Intuition: What Encoding Does | The problem: Raw sensor data is enormous. Vision alone is 16,253 patches times 768 numbers each. Tactile is 200 patches times 8 numbers. Audio, proprioception, motor commands—all together this is millions of numbers per frame. No neural network can efficiently predict “what happens next” from millions of raw numbers. | The solution: Compression. Each sense gets squeezed down to 768 numbers (a “token”). Vision’s 16,253 patches become one token of 768 numbers. Tactile’s 200 patches become one token of 768 numbers. Six senses, six tokens, each 768 numbers. That is the entire state of the system compressed into 4,608 numbers. | What is lost: Detail. You cannot reconstruct the original 16,253 vision patches from 768 numbers. Information is thrown away. This is lossy compression, like JPEG for images. The encoder learns WHICH information to keep: the information most useful for predicting what happens next. | “Learned jointly with forward model”: The encoder’s compression is trained together with the prediction system. If the encoder throws away information that the predictor needs, prediction gets worse, gradients flow back, and the encoder learns to keep that information. The encoder learns what matters by being punished for throwing away useful things. | “Only runs on real data”: The encoder only compresses actual sensor data. During imagination (chained prediction), the system works with already-compressed tokens. It does not re-encode imagined states because there is nothing to encode—there are no real sensors firing during imagination. | Analogy: Think of it like summarizing a book into a one-paragraph summary (encoding). You can reason about the summary (prediction in token space). You can even imagine what the next chapter’s summary might be (chaining). But your imagined summary is not as rich as actually reading the next chapter (grounded register). And you cannot reconstruct the full book from just the summary (lossy).
+Encoding compresses P_t into d_model tokens for imagination rollout. Six modality tokens:
+z_t = {z_vision, z_audio, z_tactile, z_proprio, z_motor, z_intermind}  // each Tensor[768]
+Properties: lossy (cannot reconstruct P_t), learned (jointly with forward model), only runs on real data (imagination chains z without re-encoding).
+TODO: Investigate slotting in density-matrix latent geometry (UWM-JEPA, AgentField.ai, arXiv 2605.25313, 2026). Currently z_t is a point vector — a single commitment to one future state. Under partial observability, the same sensory history is consistent with multiple futures and a point vector can only represent one. A density-matrix latent (positive-semidefinite matrix evolving via unitary conjugation ρ → UρU†) holds a probability distribution over possible hidden states simultaneously, preserving information about all futures until action or new observation collapses the distribution. Hypothesis: this would reduce information loss during multi-step imagination rollouts, particularly in ambiguous motor situations. This is a forward model internals change only — encoders, wellness evaluators, motor controller, and everything above the forward model would be unaffected. Key question: does the six-modality grounded sensory stream already resolve enough ambiguity that the gain is small? Validate against rollout retention degradation beyond k=10 frames.
+4.3 Reconciliation
+Situation	Register	Wellness Evaluator	Motor Source
+Execution	Grounded (P_t)	Grounded (authoritative)	Adaptive motor controller
+Imagination	Predictive (z_t)	Approximate (trained to match)	Intention generator
+Retrospection	Both (compare)	Both (training signal)	None (learning only)
+Imagining pain does not hurt: this is the phenomenological gap between registers. The system learns to model this gap. The Grounded Register is authoritative (all evaluation happens here). The Predictive Register is approximate (all prediction and planning happens here). The gap between registers IS self-knowledge: the system learns that its imagination of pain differs from actual pain by a measurable amount. This discrepancy is the computational basis for distinguishing reality from thought.
+Part III: Modality Encoders
+Each modality has a specialized encoder compressing raw data into d_model=768 tokens. All encoders process at d_model width internally (768-dim attention, 768-dim MLPs) and are trained jointly with the forward model. There is no intermediate bottleneck dimension; the encoder learns what information to discard at the final pooling step, not before.
+5. Encoder Specifications
+5.1 Vision Encoder
+Architecture: patch_embed(Linear 768→768) + AngularPositionEncoding + SwinTransformer(4 layers) + AttentionPooling. Input: 16,253 raw patches. Output: pooled vision token [768] + full patch sequence for downstream attention. Rate: 24 Hz (human visual cortex V4/IT operates at 20–30 Hz; see Section 24.4). The forward model reuses the latest z_vision between vision updates. All other encoders run at 60 Hz.
+Implementation Status: Implemented as SwinPatchEncoder with angular position encoding. CRITICAL: Code introduces d_internal=128, a code-only concept not in the spec. All encoders process at 128-dim internally and only project to d_model at the final layer. The spec defines encoders working at full d_model width throughout (e.g., patch_embed Linear 768→768, Swin at 768-dim). At d_model=768 this is a 6x bottleneck: encoders squeeze all information to 128 numbers before the encoder has determined what matters, then stretch back to 768 at the end. This was a development convenience for local GPU iteration, but is unjustified on the target RTX PRO 6000 (4.3 GB of 96 GB VRAM used, CUDA cores severely underutilized). d_internal must be removed; encoders must run at d_model=768 as the spec intends. Split-rate implemented at ~30 Hz (vision_every_n_frames=2 at 60 FPS); adjust to 24 Hz per spec.
+5.2 Tactile Encoder
+Architecture: patch_mlp(Linear 8→64→768) + CrossPatchAttention(8 heads) + AttentionPooling. Input: ~200 patches × 8 fields. Output: tactile token [768]. Cross-patch attention captures spatial relationships ('4 fingers gripping, 1 slipping').
+Implementation Status: Implemented as CrossPatchAttention with learned_query pooling. Uses d_internal=128 (see Section 5.1 note: must be removed, run at d_model).
+5.3 Audio Encoder
+Architecture: Conv1d stack (2→64→128→768) + AdaptiveAvgPool + ITD/ILD embed + Linear combine. Input: stereo spectrum + spatial cues. Output: audio token [768].
+Implementation Status: Implemented as Conv1DStack with dual-branch (spectral + spatial ILD/ITD) and gated combination. Adds explicit spatial branch for binaural cues beyond the spec.
+5.4 Proprioception Encoder
+Architecture: MLP (input_dim→256→768). Input: flattened joint_pos, joint_vel, ph_forces, ph_targets, pcc_strengths, muscle_capacities, energy. Output: proprio token [768].
+Implementation Status: Implemented as MLPProject with input_dim=276 (23 handles x 12 features: quat4+pos3+vel3+fatigue1+idx1).
+5.5 Motor Command Encoder
+Architecture: handle_mlp(8→64→768) + CrossHandleAttention(8 heads) + AttentionPooling. Input: n_handles × 8 (pos+rot+radius+strength). Output: motor token [768].
+Implementation Status: Implemented as CrossPatchAttention (aliased cross_handle_attention). 23 handles x 10 features.
+5.6 Inter-Mind Communication Encoder
+Architecture: PerMindIntermindEncoder with cross-attention and learned identity embeddings (target; current stub is SelfAttentionPoolEncoder). Input: readable internal state — each mind projects its forward model last hidden layer through a learned linear to [d_model]. During single-mind training, the mind reads its own projected state (self-reading). Output: intermind token [768].
+Implementation Status: Implemented as SelfAttentionPoolEncoder (intermind.py). Current stub returns zeros with loss_weight=0.0. Change to 0.1 and enable self-reading from step 0. Replace with PerMindIntermindEncoder (ManyMinds v2 §2.4) to accept forward model last hidden layer.
+5.7 Preventing Encoder Collapse
+Two signals: (1) Prediction utility — forward model needs distinguishable representations. (2) InfoNCE contrastive loss — different inputs must produce different embeddings. Temperature: 0.07.
+Implementation Status: Code implements VICReg (variance/covariance regularization) instead of InfoNCE. VICReg addresses the same collapse failure mode but is better suited for online learning (no negative pairs needed). UPDATED 2026-06: VICReg is now ENABLED by default (vicreg.enabled: true in master_config.yaml; variance_weight 1.0, covariance_weight 0.04, variance_target 1.0), so active encoder collapse prevention IS running (loss_manager.py compute_vicreg; verified by tests/test_vicreg.py). Note: defaults.py still carries the legacy disabled value — master_config.yaml is the operative config.
+Part IV: The Forward Model
+6. Architecture
+The forward model predicts the next encoded state from a context window of past encoded states. It operates entirely in the Predictive Register. Input: sequence of 6 modality tokens per timestep for past k frames. Output: predicted encoded tokens for t+1 across 5 sensory+intermind modalities (motor is action, not predicted).
+class ForwardModel(nn.Module):
+    def __init__(self, d_model=768, n_layers=8, n_heads=12, ctx_len=32):
+        self.modality_embed = nn.Embedding(6, d_model)  # V,A,T,P,M,I
+        self.temporal_embed = nn.Embedding(ctx_len, d_model)
+        self.blocks = nn.ModuleList([
+            ForwardModelBlock(d_model, n_heads) for _ in range(n_layers)])
+        self.heads = nn.ModuleDict({
+            'vision': PredictionHead(d_model),
+            'audio': PredictionHead(d_model),
+            'tactile': PredictionHead(d_model),
+            'proprio': PredictionHead(d_model),
+            'intermind': PredictionHead(d_model),  # predicts communication patterns
+        })
+    def forward(self, modality_tokens, timesteps):
+        # modality_tokens: [batch, time, 6, d_model]
+        batch, time, n_mod, d = modality_tokens.shape
+        modality_tokens += self.modality_embed(torch.arange(n_mod))
+        modality_tokens += self.temporal_embed(timesteps).unsqueeze(-2)
+        x = modality_tokens.reshape(batch, time * n_mod, d)
+        for block in self.blocks:
+            x = block(x, time, n_mod)
+        latest = x[:, -n_mod:, :]
+        return {k: head(latest) for k, head in self.heads.items()}
+6.1 Three-Stage Attention Block
+Each ForwardModelBlock performs: (1) Cross-modal attention within each timestep (discovers co-occurrences: 'vision and touch fired together'). (2) Causal temporal attention within each modality (discovers temporal patterns: 'touch increasing for 5 frames'). Uses causal mask. (3) Cross-modal temporal bridge (discovers causal chains: 'vision changed at t-3 caused touch to change at t-1'). Each stage has LayerNorm + residual. Block ends with FFN (d_model → 4*d_model → d_model, GELU).
+6.2 Prediction Head
+class PredictionHead(nn.Module):
+    def __init__(self, d_model):
+        self.attn_pool = nn.MultiheadAttention(d_model, num_heads=4)
+        self.query = nn.Parameter(torch.randn(1, 1, d_model))
+        self.mlp = nn.Sequential(
+            nn.Linear(d_model, d_model*2), nn.GELU(),
+            nn.Linear(d_model*2, d_model))
+    def forward(self, context):  # [batch, 6, d_model]
+        query = self.query.expand(context.shape[0], 1, -1)
+        pooled = self.attn_pool(query, context, context)[0].squeeze(1)
+        return self.mlp(pooled)
+6.3 Distribution Shift Mitigation
+During imagination rollout, forward model outputs feed back as inputs, causing drift (the telephone game effect: each prediction is slightly wrong, compounding over steps). Two countermeasures:
+Latent regularizer: Tracks running mean/variance of real encoder outputs. Penalizes predictions deviating >2σ. Penalty: max(0, |z_score|-2)^2. Differentiable.
+Imagination-aware training: Chain forward model through own predictions for 3 steps during training, comparing each step against real trajectory. Multi-step loss weighted 0.5.
+Implementation Status: UPDATED 2026-06: IMPLEMENTED and ENABLED. context_length is now 8 (master_config.yaml). The latent regularizer is active (latent_reg.enabled: true, loss_weight 0.01; ±2σ envelope penalty over EMA running statistics; training/latent_regularizer.py, verified by tests/test_latent_regularizer.py). Imagination-aware training is active (imagination.enabled: true, steps 3, loss_weight 0.5, every step): run_batched_imagination chains the forward model through its own predictions with gradient flow across all steps (training_step.py; verified by tests/test_imagination.py).
+[FUTURE] Dual-Timescale Latent Channels: Add slow-updating latent channel (every T=30 steps, ~0.5s) alongside fast 60 Hz channel. The split-rate vision architecture (Section 24.4) already introduces multi-rate signals, providing a natural testbed. Evaluate only after recursive motor controller and deep supervision.
+6.4 Gaze Head
+A dedicated gaze output head produces active gaze direction as a motor decision. Architecture: learned query vector with multi-head attention over forward model latents, followed by MLP, with tanh-scaled output clamped to configurable ranges. Output: azimuth [-pi, pi] and elevation [-pi/2, pi/2]. Loss weight: 0.1.
+The gaze head enables the system to choose where to look, making gaze an active motor decision rather than a passive property of the vision system. This is essential for: foveal targeting (directing the 5-degree fovea), anticipation system gaze-dwell metrics (Section 12), and social gaze communication.
+Implementation Status: Implemented. Class GazeHead in prediction_heads.py. Uses learned query + MHA + MLP + tanh scaling.
+Part V: The Evaluative Architecture
+7. Wellness: Two Evaluators, One Concept
+7.1 What Wellness IS
+Wellness is a REGION in grounded perception space where: predictions succeed (low PE), sensors function (TMC active, fovea tracking, audio in range), body has capacity (muscle not depleted), and self-model is coherent (high motor-correlation consistency). It is not a scalar > 0.7; it is a multi-dimensional state.
+7.2 Grounded Wellness Evaluator (Execution Mode)
+Operates on raw sensor data P_t. This is the AUTHORITATIVE wellness signal. All learning signals ultimately derive from it.
+class GroundedWellnessEvaluator(nn.Module):
+    def __init__(self, forward_model, body_schema):
+        self.forward_model = forward_model
+        self.body_schema = body_schema
+        self.prediction_wellness = nn.Sequential(nn.Linear(1,32),nn.ReLU(),nn.Linear(32,1),nn.Sigmoid())
+        self.tactile_wellness = nn.Sequential(nn.Linear(8,32),nn.ReLU(),nn.Linear(32,1),nn.Sigmoid())
+        self.capacity_wellness = nn.Sequential(nn.Linear(21,32),nn.ReLU(),nn.Linear(32,1),nn.Sigmoid())
+        self.coherence_wellness = nn.Sequential(nn.Linear(1,32),nn.ReLU(),nn.Linear(32,1),nn.Sigmoid())
+    def forward(self, P_t, prediction_error):
+        components = {}
+        components['prediction'] = self.prediction_wellness(prediction_error.unsqueeze(-1)).squeeze()
+        components['tactile'] = self.tactile_wellness(self.summarize_tactile(P_t.tactile)).squeeze()
+        components['capacity'] = self.capacity_wellness(P_t.proprioception.muscle_capacities).squeeze()
+        components['coherence'] = self.coherence_wellness(
+            self.body_schema.coherence_score().unsqueeze(-1)).squeeze()
+        return torch.stack(list(components.values())), components
+Implementation Status: Partially implemented. Grounded evaluators use simplified inputs: prediction_wellness(input_dim=1), tactile_wellness(input_dim=8), capability_wellness(input_dim=21 for 10 body sets: pcc_strengths[10]+pcc_capacity[10]+energy[1]), coherence_wellness(input_dim=1). The capability evaluator currently returns zeros (stub). With 23 handles, n_bodysets is 10 (added Leg_L, Leg_R, Foot_L, Foot_R, Head).
+7.3 Approximate Wellness Evaluator (Imagination Mode)
+Operates on encoded tokens z_hat from forward model predictions. Trained to match grounded evaluator outputs during execution: loss = ||W_approx(z_t) - W_grounded(P_t)||^2.
+class ApproximateWellnessEvaluator(nn.Module):
+    def __init__(self, d_model=768, n_components=4):
+        self.encoder = nn.Sequential(
+            nn.Linear(d_model * 5, 256), nn.ReLU(),  # 5 sensory modality tokens
+            nn.Linear(256, 128), nn.ReLU(),
+            nn.Linear(128, n_components), nn.Sigmoid())
+    def forward(self, z_sensory):  # [5, d_model] (no motor token)
+        return self.encoder(z_sensory.flatten())
+7.4 Wellness Gradient to Motor Translation
+The wellness gradient is the core motor drive signal. During execution (single-mind; when Many Minds active, each mind calls this independently with system wellness sum — see ManyMinds Gap B):
+def compute_motor_drive(grounded_eval, P_t, pe, motor_controller):
+    # Enable gradients through motor parameters
+    P_t.motor_commands.requires_grad_(True)
+    wellness_vector, components = grounded_eval(P_t, pe)
+    total_wellness = wellness_vector.sum()
+    # Gradient: which direction in motor space improves wellness?
+    wellness_grad = torch.autograd.grad(total_wellness, P_t.motor_commands,
+                                         create_graph=True)[0]
+    # Motor controller transforms gradient into structured PH commands
+    return motor_controller.from_wellness_gradient(wellness_grad, P_t)
+Implementation Status: UPDATED 2026-06: IMPLEMENTED and wired. The wellness gradient motor drive — the spec’s core motor signal (the “feel” stage) — is now live in the training loop: torch.autograd.grad(total_wellness, motor_commands) is computed in training_step.py and passed into the motor controller as an additional input (motor_controller.py concatenates the flattened wellness gradient into the motor input). End-to-end gradient flow from the wellness evaluators through the motor controller is verified by tests/test_wellness_gradient.py. The five-stage pipeline (perceive→predict→feel→intend→act) is therefore closed — not the perceive-predict-act “zombie” of Section 1. Remaining dependency: signal quality scales with forward-model accuracy (the same reason intention / model inversion in Section 10 stays gated off by default).
+8. Pleasure and Pain: Trajectories Through Perception Space
+8.1 Pain Response Walkthrough
+Scenario: Hand contacts hot surface. TMC Detection: normalPressure spikes (contact), thermal exceeds threshold. Grounded Wellness: tactile wellness drops sharply (high pressure + thermal). Wellness gradient: points AWAY from contact → withdrawal. Motor effect: PH strength increases for withdrawal, radius expands (whole-arm retraction). Forward model: learns 'this visual+tactile pattern leads to wellness drop.' Future: anticipatory withdrawal when visual pattern alone is detected.
+8.2 Pleasure Response Walkthrough
+Scenario: Hand contacts pleasant texture. TMC Detection: light normalPressure (500 Pa), vibrationPower shows texture signature. Grounded Wellness: tactile wellness rises (pattern matches learned pleasant association). Wellness gradient: points TOWARD continued contact. Motor effect: strength decreases (lighter touch), exploration of texture surface. Forward model: learns this visual+tactile pattern leads to wellness increase. Future: approach when visual pattern detected.
+Part VI: Motor Control
+This section replaces v2.0's three-mode motor control (reflex/habitual/intentional with PE-threshold gating) with an adaptive computation depth system and developmental constraints.
+9. Adaptive Computation Depth Motor Controller
+9.1 Design Rationale
+Biology has distinct processing speeds—fast reflexive responses and slow deliberate actions—but these EMERGE from a unified mechanism, they are not pre-wired as three fixed modes. A system with hardcoded tiers cannot discover a fourth processing strategy, cannot introspect on WHY it processes differently, and has arbitrary gating thresholds.
+The adaptive computation depth controller produces mode-like behavior (fast for familiar situations, deep for novel ones) through a learned confidence-based mechanism. The system can introspect: 'I am thinking more carefully because my predictions are uncertain.'
+9.2 Core Architecture
+class AdaptiveMotorController(nn.Module):
+    '''
+    Generates motor commands with variable computation depth.
+    Fast path: single forward pass when prediction confidence is high.
+    Deep path: imagination rollouts when confidence is low.
+    '''
+    def __init__(self, d_model=768, n_handles=23, max_depth=10):
+        self.motor_net = AdaptiveMotorNet(d_model, n_handles)
+        self.confidence_estimator = nn.Sequential(
+            nn.Linear(d_model * 6, 128), nn.ReLU(),
+            nn.Linear(128, 1), nn.Sigmoid())
+        self.depth_threshold = nn.Parameter(torch.tensor(0.7))  # learned
+        self.thinking_energy_rate = 0.001  # energy cost per imagination step
+        self.max_depth = max_depth
+    def forward(self, encoded_state, wellness_gradient, forward_model,
+                approx_wellness, available_energy):
+        '''
+        encoded_state: {z_vision, z_audio, z_tactile, z_proprio, z_motor, z_intermind}
+        wellness_gradient: gradient of wellness w.r.t. motor params
+        Returns: motor_commands [n_handles, 8], metadata
+        '''
+        state_flat = torch.cat([encoded_state[k] for k in encoded_state])
+        # Step 1: Fast response (always computed)
+        fast_cmd = self.motor_net(state_flat, wellness_gradient, depth=1)
+        confidence = self.confidence_estimator(state_flat)
+        # Step 2: If confident enough, emit fast response
+        if confidence > self.depth_threshold:
+            return fast_cmd, {'depth': 1, 'confidence': confidence}
+        # Step 3: Iterative deepening via imagination
+        best_cmd = fast_cmd
+        best_wellness = approx_wellness(
+            forward_model.predict_from_action(state_flat, fast_cmd))
+        actual_depth = 1
+        for depth in range(2, self.max_depth + 1):
+            candidate = self.motor_net(state_flat, wellness_gradient, depth=depth)
+            imagined = forward_model.rollout(state_flat, candidate, steps=depth)
+            candidate_w = approx_wellness(imagined)
+Implementation Status: SIGNIFICANT DEVIATION: Code implements a fixed 6-layer MLP that runs all layers every frame regardless of confidence. The confidence head exists but does not gate computation. No imagination rollouts. No energy budget. Adaptive depth requires context_length>1 for meaningful rollouts. The code has recursive: false config option anticipating the errata&#x2019;s FUTURE recursive motor controller (2 layers recursed 1-6x, ~14M params instead of 42.6M). Implement depth-gated layer count after context_length is increased.
+            if candidate_w.sum() > best_wellness.sum():
+                best_cmd, best_wellness = candidate, candidate_w
+                actual_depth = depth
+            # Energy budget: stop if thinking costs too much
+            if depth * self.thinking_energy_rate > available_energy * 0.1:
+                break
+        return best_cmd, {'depth': actual_depth, 'confidence': confidence}
+9.3 The Adaptive Motor Network
+class AdaptiveMotorNet(nn.Module):
+    '''
+    Motor network that accepts a depth parameter.
+    At depth=1: single forward pass (fast, habitual-like).
+    At depth>1: processes wellness gradient + state through more layers.
+    '''
+    def __init__(self, d_model=768, n_handles=23, n_layers=6):
+        self.layers = nn.ModuleList([
+            nn.Sequential(nn.Linear(d_model*6 + n_handles*8, 512),
+                          nn.ReLU(), nn.Linear(512, 512))
+            for _ in range(n_layers)])
+        self.output_head = StructuredMotorHead(512, n_handles)
+    def forward(self, state, wellness_grad, depth=1):
+        x = torch.cat([state, wellness_grad.flatten()])
+        for i in range(min(depth, len(self.layers))):
+            x = self.layers[i](x) + x  # residual
+        return self.output_head(x)
+class StructuredMotorHead(nn.Module):
+    '''Outputs structured PH commands respecting action space constraints.'''
+    def __init__(self, input_dim, n_handles=23):
+        self.pos_head = nn.Linear(input_dim, n_handles * 3)
+        self.rot_head = nn.Linear(input_dim, n_handles * 4)
+        self.radius_head = nn.Linear(input_dim, n_handles)
+        self.strength_head = nn.Linear(input_dim, n_handles)
+    def forward(self, x):
+        pos = self.pos_head(x).reshape(-1, 3)
+        rot = F.normalize(self.rot_head(x).reshape(-1, 4), dim=-1)
+        radius = torch.sigmoid(self.radius_head(x))
+        strength = torch.sigmoid(self.strength_head(x))
+        return torch.cat([pos, rot, radius.unsqueeze(-1),
+                          strength.unsqueeze(-1)], dim=-1)  # [n_handles, 8]
+[FUTURE] Recursive Motor Controller: Replace 6 sequential layers (42.6M params at d=768) with 2 layers recursed 1–6x (~14M params). Add learned halt head. Motor controller uses negligible FLOPS; saves parameters and improves generalization. Reference: HRM (Wang et al., June 2025, arXiv:2506.21734).
+9.4 Developmental Motor Constraints
+Rather than training a permanent RL reflex policy, the system develops through constrained degrees of freedom:
+class DevelopmentalConstraints:
+    '''
+    Constrains motor output during early development.
+    Unlocks more DOF as existing ones are mastered.
+    '''
+    PHASES = {
+        'neonate':      {'handles': 'all',          'rom': 0.05, 'strength': 0.02},
+        'early_infant': {'handles': ['Head','Wrist_L','Wrist_R'], 'rom': 0.3, 'strength': 0.15},
+        'late_infant':  {'handles': ['Head','Wrist_L','Wrist_R','Thumb_L','Thumb_R',
+                                     'Index_L','Index_R'], 'rom': 0.5, 'strength': 0.3},
+        'toddler':      {'handles': 'all',          'rom': 0.7, 'strength': 0.6},
+        'child':        {'handles': 'all',          'rom': 1.0, 'strength': 0.9},
+        'mature':       {'handles': 'all',          'rom': 1.0, 'strength': 1.0},
+    }
+    def __init__(self):
+        self.phase = 'neonate'
+    def constrain(self, raw_commands, handles):
+        cfg = self.PHASES[self.phase]
+        active = cfg['handles'] if cfg['handles'] != 'all' else handles
+        for h in handles:
+            if h not in active:
+                raw_commands[h] *= 0
+            else:
+                raw_commands[h][:3] *= cfg['rom']     # position
+                raw_commands[h][-1] *= cfg['strength'] # strength
+        return raw_commands
+    def check_advancement(self, mastery_metrics):
+Implementation Status: Code implements 4 phases (neonate/infant/toddler/child) with explicit numeric constraints: neonate (0-10K steps, ROM=0.05, strength=0.02, exploration_noise=0.01), infant (10K-50K, ROM=0.20, strength=0.10), toddler (50K-200K, ROM=0.50, strength=0.30), child (200K+, ROM=1.0, strength=1.0). All 23 handles active in all phases. The spec&#x2019;s 6 phases are merged: early_infant+late_infant=infant, mature omitted.
+        # Advance when current active handles show PE < threshold
+        transitions = {
+            'neonate': ('early_infant', 'head_control', 0.8),
+            'early_infant': ('late_infant', 'reaching', 0.7),
+            'late_infant': ('toddler', 'basic_grasp', 0.7),
+            'toddler': ('child', 'locomotion', 0.6),
+            'child': ('mature', 'fine_motor', 0.6),
+        }
+        if self.phase in transitions:
+            next_phase, metric, thresh = transitions[self.phase]
+            if mastery_metrics.get(metric, 0) > thresh:
+                self.phase = next_phase
+9.5 Bootstrap Without Scaffold
+The bootstrap concern (how does the system learn from random motor commands?) is resolved without any scaffold network. The wellness gradient provides learning signal from frame zero because:
+PCC Gravitational Baseline: PCC maintains postural tone against gravity from the first frame. The system is not floating in free space; it has a stable baseline posture. Random PH commands perturb FROM this baseline, not from unconstrained chaos.
+Grounded Wellness Signal: The grounded wellness evaluator assesses joint limits, posture quality, sensor functioning, and energy from frame one. Wellness has STRONG gradients near boundaries: approaching a joint limit sharply drops wellness. A random motor command that pushes toward a joint limit produces a clear negative gradient. This asymmetry IS the bootstrap signal.
+Developmental Constraints: During the neonate phase, all handles fire at very low strength (2%) and minimal ROM (5%) (Section 9.4). The search space is small: all handles but constrained to tiny movements. Weak limb movements brushing surfaces generate correlated proprioception + tactile + vision for body schema discovery across the whole body from step zero.
+No scaffold network is needed. No Phase 0 training is needed. The prediction-wellness architecture IS the mechanism from step zero. Early training may be slower than with a scaffold, but that IS the developmental process. The system earns every capability through the same mechanism it will use forever.
+This approach ensures zero architectural exceptions to the core thesis. There is no temporary RL policy, no blend weight, no decay schedule. The wellness gradient, PCC baseline, and developmental constraints together provide sufficient structure for learning to begin.
+10. Intention as Differentiable Model Inversion
+10.1 Forward Model to Intention
+During exploration, the forward model learns: action → consequence. Intention INVERTS this: desired consequence → action.
+Implementation Status: EXISTS and FUNCTIONAL (intention_generator.py:78-189, 11 tests). Disabled by default (enabled: false in config), which is correct — it requires an accurate forward model. Includes plan_multistep (line 196) and CrossSimulationAttention (line 283) with trainable parameters. CLI flag --intention to enable. Called in inference path (live_test.py:1417-1433), not in training loop. Justified deferral of activation until forward model accuracy is established and imagination-aware training is working.
+10.2 Structured Action Space
+class IntentionGenerator(nn.Module):
+    def __init__(self, fwd_model, motor_encoder, n_handles=23, n_steps=50, lr=0.1):
+        self.fwd_model = fwd_model
+        self.motor_encoder = motor_encoder
+        self.n_handles = n_handles
+        self.n_steps = n_steps
+        self.lr = lr
+    def generate_action(self, current_encoded, desired_encoded, current_motor):
+        pos = current_motor[:, :3].clone().requires_grad_(True)
+        rot = current_motor[:, 3:7].clone().requires_grad_(True)
+        radius = current_motor[:, 7].clone().requires_grad_(True)
+        strength = current_motor[:, 8].clone().requires_grad_(True)
+        optimizer = torch.optim.Adam([pos, rot, radius, strength], lr=self.lr)
+        for step in range(self.n_steps):
+            optimizer.zero_grad()
+            rot_norm = F.normalize(rot, dim=-1)
+            r_bounded = torch.sigmoid(radius)
+            s_bounded = torch.sigmoid(strength)
+            action = torch.cat([pos, rot_norm, r_bounded.unsqueeze(-1),
+                                s_bounded.unsqueeze(-1)], dim=-1)
+            predicted = self.fwd_model.predict_from_action(
+                current_encoded, self.motor_encoder(action))
+            loss = F.mse_loss(predicted, desired_encoded) + (s_bounded**2).sum()*0.01
+            loss.backward()
+            optimizer.step()
+        with torch.no_grad():
+            return torch.cat([pos, F.normalize(rot,dim=-1),
+                torch.sigmoid(radius).unsqueeze(-1),
+                torch.sigmoid(strength).unsqueeze(-1)], dim=-1)
+10.3 Multi-Step Intention: Imagination Rollout
+def plan_multistep(intention_gen, fwd_model, approx_wellness,
+                    current_state, goal_state, max_steps=5):
+    plan = []
+    imagined = current_state
+    for step in range(max_steps):
+        if F.mse_loss(imagined, goal_state) < 0.01:
+            break
+        action = intention_gen.generate_action(imagined, goal_state, ...)
+        plan.append(action)
+        imagined = fwd_model.predict_from_action(imagined, encode_motor(action))
+        if approx_wellness(imagined).min() < 0.2:
+            break  # imagined trajectory leads to unwellness
+    return plan
+Plans are naturally short because imagination drifts (distribution shift, the telephone game effect). This forces: plan a few steps, execute, re-observe in Grounded Register, plan again.
+[FUTURE] Deep Supervision for Imagination Rollouts: At each imagination step, supervise prediction against ground truth, detach gradient, feed detached prediction forward. Training strategy change, not architecture change. Reference: TRM (Jolicoeur-Martineau, Oct 2025, arXiv:2510.04871).
+10.4 Cross-Simulation Attention
+Multiple forward rollouts for the same goal. Attend across them to find invariants: what all simulations agree on. Divergent details wash out. Intention crystallizes as the common element.
+class CrossSimulationAttention(nn.Module):
+    def __init__(self, d_model, n_rollouts=5):
+        self.n_rollouts = n_rollouts
+        self.cross_attn = nn.MultiheadAttention(d_model, num_heads=4)
+    def forward(self, fwd_model, current, goal, noise=0.1):
+        rollouts = []
+        for i in range(self.n_rollouts):
+            noisy_goal = goal + torch.randn_like(goal) * noise * (i > 0)
+            plan = plan_multistep(fwd_model, current, noisy_goal)
+            rollouts.append(torch.stack([encode_action(a) for a in plan]))
+        all_r = torch.stack(rollouts)
+        query = all_r.mean(dim=0, keepdim=True)
+        consensus, weights = self.cross_attn(query, all_r.reshape(-1, all_r.shape[-1]),
+                                              all_r.reshape(-1, all_r.shape[-1]))
+        return consensus.squeeze(0), weights
+10.5 Visual Imagination Module [FUTURE]
+DreamZero (NVIDIA GEAR, Feb 2026) demonstrates chunked video diffusion prediction produces more coherent multi-frame trajectories than autoregressive chaining. Optional chunked visual prediction module for cross-simulation attention during deep motor computation. Evaluate during Stream 4.
+10.6 From Predictions to Reusable Skill (added 2026-09-08)
+UEMA has a useful foundation for learning action consequences: the action-conditioned forward model learns what an action does, and Sections 10.1-10.3 invert it to choose actions. The central gap, named by the 2026-09-08 developmental assessment, is turning those predictions into reusable skill. Nothing in Sections 10.1-10.5 yet does that, and it does not follow automatically.
+Two concrete failures define the gap. First, the detour problem: the intention generator optimizes each action against its own next predicted state and executes only the first action. Moving a hand around a barrier first takes it FARTHER from the object, so a per-step optimizer has no objective term that PREFERS the detour - it can still stumble into one, but nothing scores the first action by the sequence's end; executing and re-looking corrects errors but supplies no reason to take the first detour step (wording narrowed per the 2026-09-08 code-verification review). Extending the imagined chain does not fix this - a longer greedy chain still never scores the first action by the sequence's end. Second, the skill problem: remembering a recently good-feeling state (the goal ring) is a goal, not a skill. A reusable skill needs four functions the architecture does not yet learn: when it can START (initiation conditions), how to CONTINUE under disturbance, when it has SUCCEEDED (termination), and how to RECOVER when an intermediate step is disturbed. These functions must be learned, never hand-authored per behavior - hand-authoring would violate Section 1's core thesis.
+Three candidate mechanisms, to be tested one at a time against the same acceptance test: (a) a learned subgoal mechanism - endpoints of learned consequences become selectable intermediate goals; (b) a short joint action-sequence objective - optimize two to three actions against the imagined SEQUENCE outcome, replacing the greedy per-step objective at matched compute; (c) a temporally extended controller - a learned policy over initiation/continuation/termination, trained from the forward model's own rollouts.
+Acceptance test (from the developmental assessment, governs any claim that this gap is closed): a composition such as reaching around a barrier before contact. The final goal must change the FIRST action appropriately; held-out trials must succeed; and the simple component ability must remain after learning the composition. Upstream gate: first-action benefit must first be measurable at all - chosen actions must improve actual outcomes over matched alternative actions from restored identical states, after identical-action replay establishes the noise floor.
+Implementation Status: NOT IMPLEMENTED (2026-09-08). The small-scale test bed's attribution probe found chosen-goal approach statistically indistinguishable from matched random controls (probe parity limits documented in the 2026-09-08 external review); the same review found the intention generator's strength penalty sums across the batch while sensory error averages, making the effective effort penalty scale with body count - that defect biases the live multi-body planner toward weak actions and must be fixed before multi-body first-action rankings are comparable across body counts (single-body probes are unaffected by it - narrowed per the same review). Until one candidate mechanism passes the acceptance test, the gain-of-function tree's arrows from "consequences learned" to "plans compose" are hypotheses, not established dependencies.
+Part VII: Self and Body
+11. The Dynamic Self-Model
+11.1 Self as Motor-Correlation Boundary
+The self is not defined by skeleton or sensor layout. It is defined by what correlates with motor commands. This boundary is dynamic, fully differentiable:
+class DifferentiableBodySchema(nn.Module):
+    def __init__(self, n_sensor_dims, temperature=5.0, ema_momentum=0.99):
+        self.correlation_scores = nn.Parameter(
+            torch.zeros(n_sensor_dims), requires_grad=False)
+        self.temperature = temperature
+        self.momentum = ema_momentum
+    def update(self, motor_delta, sensor_delta):
+        with torch.no_grad():
+            instant_corr = self._compute_correlation(motor_delta, sensor_delta)
+            self.correlation_scores.data = (
+                self.momentum * self.correlation_scores.data +
+                (1 - self.momentum) * instant_corr)
+    def self_membership(self, sensor_dims=None):
+        scores = self.correlation_scores[sensor_dims] if sensor_dims else self.correlation_scores
+        return torch.sigmoid(self.temperature * (scores - 0.5))
+    def coherence_score(self):
+        membership = self.self_membership()
+        certainty = (membership - 0.5).abs() * 2
+        return certainty.mean()  # differentiable
+    def incorporation_strength(self, sensor_dims):
+Implementation Status: EXISTS and FUNCTIONAL (body_schema.py:22-175, 17+ tests). EMA-tracked [n_handles, n_handles*n_proprio] correlation matrix. Updates every frame in inference loop (replay_train.py:1807, live_test.py:1342). Produces: coherence_score() (scalar [0,1]), self_membership() (per-handle [0,1] via sigmoid(temperature * (mean_correlation - 0.5))), incorporation_strength(indices) (scalar). ~6.6K elements (~26 KB, no trainable weights). Body schema correlation buffers are prerequisite for correlation-based domain discovery (Gap D).
+        return self.self_membership(sensor_dims).mean()
+11.2 Object Incorporation
+Grasping expands the self. Before grasp: cup is 'world' (visual position independent of motor, correlation ≈ 0). During grasp: cup tracks motor commands (correlation rises, self_membership increases). On release: correlation drops, self contracts. On slip: partial contraction triggers grip correction via wellness gradient.
+11.3 Slip Detection as Self-Contraction
+def slip_driven_correction(body_schema, grounded_eval, P_t, pe):
+    cup_dims = P_t.tactile.cup_contact_patch_indices
+    incorporation = body_schema.incorporation_strength(cup_dims)
+    # Incorporation drop = self-contraction = prediction error about self
+    coherence = body_schema.coherence_score()
+    wellness_grad = torch.autograd.grad(
+        grounded_eval(P_t, pe)[0].sum(), P_t.motor_commands, create_graph=True)[0]
+    # Gradient naturally drives grip tightening because:
+    # lower coherence -> lower wellness -> gradient toward restoring coherence
+    # -> restoring grip -> restoring incorporation
+    return wellness_grad
+11.4 Hierarchical Self-Model
+The motor-correlation boundary (Section 11.1) defines Level 1 self: what directly responds to motor commands. But the self extends beyond immediate motor correlation. A grasped tool is self (Level 1), but a house is also self in a meaningful sense: losing it contracts the space of achievable wellness states. The single DifferentiableBodySchema captures Level 1. The HierarchicalSelfModel extends this to multiple timescales:
+class HierarchicalSelfModel(nn.Module):     '''     Multi-timescale self-model. Each level tracks correlation between     entities and wellness maintenance at different time horizons.     Level 1: Motor-correlation (body, grasped objects). ~100 frames.     Level 2: Control-correlation (sustained wellness maintenance). ~10K frames.     Level 3: Abstract-correlation (long-term wellness trajectory). ~100K frames.     '''     def __init__(self, n_sensor_dims, n_entity_slots=64):         self.levels = nn.ModuleDict({             'motor':    DifferentiableBodySchema(n_sensor_dims, ema_momentum=0.99),             'control':  DifferentiableBodySchema(n_entity_slots, ema_momentum=0.9999),             'abstract': DifferentiableBodySchema(n_entity_slots, ema_momentum=0.99999),         })      def update_level1(self, motor_delta, sensor_delta):         '''Standard motor-correlation update (every frame).'''         self.levels['motor'].update(motor_delta, sensor_delta)      def update_level2(self, entity_states, wellness_trajectory):         '''Control-correlation: does entity presence correlate with         ability to maintain wellness over minutes?'''         wellness_delta = wellness_trajectory[-1] - wellness_trajectory[0]         for entity_id, state in entity_states.items():             presence_delta = state.current - state.previous             self.levels['control'].update(presence_delta, wellness_delta)      def update_level3(self, entity_states, long_wellness):         '''Abstract-correlation: does entity correlate with wellness over hours?'''         wellness_delta = long_wellness[-1] - long_wellness[0]         for entity_id, state in entity_states.items():             presence_delta = state.current - state.previous             self.levels['abstract'].update(presence_delta, wellness_delta)      def full_self_membership(self, sensor_or_entity_dims):         '''Returns max membership across all levels.'''         return torch.stack([             level.self_membership(sensor_or_entity_dims)             for level in self.levels.values()         ]).max(dim=0).values      def loss_at_level(self, level_name):         '''PE pattern differs by level:         Level 1 loss (hand injury): immediate, sharp PE         Level 2 loss (tool taken): delayed, moderate PE         Level 3 loss (house burns): slow, deep PE, long resolution time         '''         return 1.0 - self.levels[level_name].coherence_score()
+Level 2 self includes entities whose presence correlates with the ability to BRING ABOUT wellness through action sequences. A house does not move with the hand (not Level 1), but having a house correlates with achievable wellness states: shelter, storage, operational base. Losing the house contracts achievable wellness space. Level 3 extends to multi-step causal chains: money correlates with resource access which correlates with wellness maintenance. The correlation strength is proportional to chain reliability.
+This produces correct behavior without programming. The system is NOT told to protect a house. It learns that certain states correlate with sustained wellness, and the gradient maintains them. It is NOT told to be possessive. It learns that losing control contracts achievable wellness space, and acts to prevent contraction. Weak or unreliable causal chains produce weak incorporation: ten houses when one is needed produces diminishing correlation.
+Connection to Many Minds (Sections 13-18): When a mind splits, the subordinate inherits domain-specific self at Levels 1 and 2 for its domain. The walking subordinate Level 2 self includes familiar terrain. The grasping subordinate Level 2 self includes known tools. The higher mind retains the full hierarchy including Level 3 abstract self. The self model IS distributed across minds.
+No reward signal. No grip-force controller. Grip tightens because self-contraction degrades wellness coherence, and the wellness gradient points toward restoring it.
+11.5 Self-Preservation
+The body model is the most complex, most refined prediction set. Damage (limb stops responding, sensors go dark) produces the LARGEST possible prediction error. Self-preservation emerges: the system acts to prevent body model degradation because that is the most costly PE event.
+12. Grounded Anticipation
+12.1 Anticipation is Observable Motor Preparation
+Anticipation is not a label or abstract pattern. It is the actual state of motor and sensor systems when features predict upcoming interaction. These are measurable:
+Metric	Source	Measurement	Threshold
+Gaze dwell	Vision	Time fovea held on target	> 200ms on approaching object
+COM shift	Proprioception	Center-of-mass displacement	> 2mm before expected contact
+TMC boost	Tactile	Adaptive iteration increase	iterations > baseline before contact
+PH preload	Motor	Strength > 0 with velocity = 0	Any handle preloading
+12.2 Grounded Metrics as Training Signal for Learned Generalization
+v3’s concrete metrics become the SUPERVISION for a learned anticipation system. The system learns to anticipate, but we MEASURE anticipation through observable motor preparation:
+class GroundedAnticipation(nn.Module):
+    '''
+    Learned anticipation network supervised by measurable metrics.
+    '''
+    OBSERVABLE_METRICS = {
+        'gaze_dwell': lambda s: s.vision.gaze_dwell_time,
+        'com_shift':  lambda s: torch.norm(s.com - s.prev_com),
+        'tmc_boost':  lambda s: (s.tactile.adaptive_iterations > s.baseline_iters).float(),
+        'ph_preload': lambda s: any(ph.strength > 0 and ph.velocity < 0.01
+                                    for ph in s.physics_handles),
+    }
+    def __init__(self, d_model=768, n_handles=23):
+        self.anticipation_net = nn.Sequential(
+            nn.Linear(d_model * 6, 256), nn.ReLU(),
+            nn.Linear(256, 128), nn.ReLU(),
+            nn.Linear(128, 4 + n_handles * 8))  # 4 metrics + motor prep
+        self.confidence_gate = nn.Sequential(
+            nn.Linear(d_model * 6, 64), nn.ReLU(), nn.Linear(64, 1), nn.Sigmoid())
+    def forward(self, z_current):
+        flat = torch.cat([z_current[k] for k in z_current]).flatten()
+        raw_output = self.anticipation_net(flat)
+        confidence = self.confidence_gate(flat)
+        metric_predictions = raw_output[:4]
+        motor_prep = raw_output[4:].reshape(-1, 8) * confidence
+        return motor_prep, confidence, metric_predictions
+    def training_loss(self, trajectory, lookahead=30):
+        loss = 0
+        for t in range(len(trajectory) - lookahead):
+            predicted = self.forward(trajectory[t].z)
+            actual = {k: fn(trajectory[t+1]) for k, fn in self.OBSERVABLE_METRICS.items()}
+            loss += F.mse_loss(predicted[2], torch.stack(list(actual.values())))
+        return loss
+The learned system generalizes to novel situations while v3’s metrics verify that anticipation manifests as real, observable motor preparation.
+Implementation Status: NOT IMPLEMENTED. Requires context_length>1 for temporal prediction and a reasonably accurate forward model. Justified deferral. Implement after context_length is increased and forward model reaches basic accuracy.
+Part VIII: Many Minds Architecture
+When a mind masters a skill, it splits into a subordinate mind handling that domain and a higher mind freed for broader learning. A mastered subordinate is not explicitly frozen: it continues to run inference, predict, generate motor commands, and monitor its domain every frame, while its gradients naturally approach zero under stable low-PE conditions. Optimizer state may be evicted for memory efficiency and restored when gradients return.
+13. Core Data Structures
+class Mind:
+    mind_id: str
+    parent_id: Optional[str]           # None for top-level
+    children: List[str]
+    depth: int                         # 0 = top
+    # Domain
+    motor_channels: Set[str]           # PH handles this mind controls
+    sensor_domains: Set[str]           # Sensor subsets monitored for PE
+    # Computational substrate (EACH mind has its own)
+    forward_model: ForwardModel
+    motor_controller: AdaptiveMotorController
+    wellness_evaluator: WellnessEval
+    # Training state
+    # Training: natural gradient dynamics (no explicit freeze flag)
+    # Optimizer state evicted when gradient norm below threshold
+    # Monitoring
+    pe_history: RingBuffer[float]      # Rolling PE in domain
+    pe_variance: float
+    mastery_score: float               # 0.0 to 1.0
+    # Communication
+    # handle_indices can be empty set (top mind, no PH commands)
+    # Communication: continuous inter-mind state reading via z_intermind
+    intermind_state: Tensor            # last hidden layer projected to [d_model]
+class MindHierarchy:
+    minds: Dict[str, Mind]
+    top_mind_id: str
+    shared_sensory_bus: SensoryBus     # Tokenized sensor broadcast
+    # Motor: confidence-weighted softmax blend per handle (no binary arbitrator)
+14. Sensory Sharing
+Every mind receives the identical tokenized sensory stream every frame. Non-negotiable. The walking subordinate sees the same world as the top and attending minds. This shared grounded stream lets all minds observe the same physical reality and measure the consequences of one another’s actions. When terrain changes from flat ground to stairs, the walking mind’s PE rises on the same frame that higher minds also observe the changed world. The resulting internal state shift is available through z_intermind; no alert protocol is required.
+class SensoryBus:
+    def broadcast(self, encoded_tokens: Dict[str, Tensor]):
+        '''Broadcast to all minds. READ-ONLY.'''
+        for mind in self.hierarchy.all_minds():
+            mind.receive_sensory(encoded_tokens)
+Implementation: shared encoders run ONCE producing encoded tokens. Each mind runs its own (potentially smaller) forward model over shared tokens for its domain. Subordinates may attend primarily to domain-relevant tokens but all are available.
+15. Mind Splitting
+15.1 Mastery Detection
+class MasteryDetector:
+    WINDOW = 50_000        # steps to evaluate
+    PE_THRESHOLD = 0.05    # mean PE below this
+    VARIANCE_THRESHOLD = 0.01  # PE variance below this
+    CONSISTENCY = 0.95     # fraction of window meeting criteria
+    def check_mastery(self, mind, domain_channels):
+        domain_pe = mind.pe_history.get_domain(domain_channels, self.WINDOW)
+        return (domain_pe.mean() < self.PE_THRESHOLD and
+                domain_pe.var() < self.VARIANCE_THRESHOLD and
+                (domain_pe < self.PE_THRESHOLD).float().mean() > self.CONSISTENCY)
+Mastered domains are identified by correlation-based discovery: (1) find handles with PE below threshold, (2) cluster by motor-to-proprioceptive correlation from body schema EMA buffers, (3) return each correlated cluster as candidate domain. No predefined domain groups. The core tracking logic already exists as MasteryTracker in curriculum.py:111-178 with matching thresholds (rolling 50K-step window, PE < 0.05, variance < 0.01, 95% consistency). Used for curriculum phase advancement. The remaining gap is per-domain PE input — MasteryTracker currently receives a single scalar mean_pe, not per-handle breakdowns needed for domain-specific mastery detection.
+15.2 The Split Operation
+class MindHierarchy:
+    def split(self, parent_id, mastered_domain):
+        parent = self.minds[parent_id]
+        # 1. Create subordinate: COPY parent's weights for this domain
+        sub = Mind(
+            mind_id=f'mind_{self.next_id()}',
+            parent_id=parent.mind_id,
+            motor_channels=mastered_domain,
+            sensor_domains=handle_set_to_sensor_scope(mastered_domain, self.handle_defs),
+            forward_model=copy.deepcopy(parent.forward_model),  # Full deepcopy
+            motor_controller=parent.motor_controller.clone_for_channels(mastered_domain),
+            # Natural gradient dynamics: no explicit freeze
+            # Optimizer state evicted when gradients near zero
+            # Sensor scoping via handle_set_to_sensor_scope (ManyMinds v2 §2.13)
+            # Inter-mind: child reads parent state through z_intermind
+        )
+        # 2. Remove mastered channels from parent
+        parent.motor_channels -= mastered_domain
+        parent.children.append(sub.mind_id)
+        # 3. Register
+        self.minds[sub.mind_id] = sub
+        # No motor_arbitrator: confidence-weighted blend (Gap B)
+        return sub.mind_id
+After split: subordinate handles motor for mastered domain. Higher mind still maintains forward model (predicts subordinate’s domain) but no longer generates motor commands there. Higher mind is FREE—attention and learning shift to new challenges. When splitting, the subordinate also inherits domain-specific self-model levels: Level 1 (motor-correlation for its handles) and Level 2 (control-correlation for entities in its domain). The higher mind retains the full hierarchical self across all levels.
+16. Inter-Mind Communication
+16.1 Inter-Mind Readable State (Replaces Alert Protocol)
+# AlertSignal REMOVED in v3.5. Replaced by continuous readable internal state.
+# source_mind_id — REMOVED
+# domain — REMOVED
+# current_pe — REMOVED
+# pe_delta — REMOVED
+# anomaly_context — REMOVED
+# urgency — REMOVED
+class Mind:
+    def run_subordinate_tick(self, sensory_tokens):
+        '''Called every frame. All minds always generate motor output.'''
+        predicted = self.forward_model.predict(sensory_tokens)
+        domain_pe = self.compute_domain_pe(predicted, sensory_tokens)
+        # PE is tracked and exposed through intermind_state
+        self.intermind_state = self.project_internal_state(
+            last_hidden=self.forward_model.get_last_hidden(),
+            prediction_error=domain_pe,
+            motor_intent=self.motor_controller.last_output,
+            confidence=self.motor_controller.last_confidence,
+        )
+        # No AlertSignal, no alert_threshold, no send_alert_to_parent
+        # override_active REMOVED — all minds always generate motor output
+        return self.motor_controller(sensory_tokens)
+        # Control via confidence-weighted blend, not by returning None
+Inter-mind state propagates through z_intermind. Each mind’s projected internal state is available to all other minds via the PerMindIntermindEncoder (§2.4). Escalation is expressed through stronger readable internal state and its effect on other minds’ computation, especially attending-side engagement.
+Example: Walking subordinate encounters stairs (high PE: model predicted flat ground). Its internal state shifts — high PE, low confidence, changed motor intent. This is readable by the attending mind through z_intermind. The attending mind’s g_engage rises, increasing its coordination depth for the current frame. No alert protocol, no override command.
+16.2 Attending-Mind Engagement (Replaces Override Protocol)
+class Mind:
+    # override_subordinate() REMOVED in v3.5.
+    # Top-mind influence: attending engagement modulation via z_intermind
+    # g_engage = sigmoid(MLP([latents_attend, z_inter_from_top, pe_attend, approx_wellness_attend]))
+    # High g_engage: increased computation depth + coordination gain
+    # The top mind does not enter per-handle arbitration and does not emit PH commands;
+    # it reshapes present-world behavior only by shifting the attending mind's computation
+    # through z_intermind, which changes attending-side engagement, confidence, depth,
+    # and coordination strength.
+    # release_override() REMOVED in v3.5.
+    # (stale override line removed)
+    # Release is natural: higher mind loses interest, outputs fade
+    # Lower mind steady-state outputs dominate again
+    # process_alerts() REMOVED in v3.5.
+    # Replaced by inter-mind readable state + attending engagement signal
+    # See ManyMinds_Spec Gap E/F resolutions
+    # High g_engage: attending mind in executive coordination mode
+    # Low g_engage: routine control, specialist child minds dominate
+    #
+    #
+    #
+    #
+v3.5: Override/release protocol replaced by continuous inter-mind state reading and learned attending engagement. See ManyMinds_Spec v2 §§2.3-2.5.1.
+16.3 Inter-Mind Communication Tokens
+Communication is implemented as special tokens on the shared sensory bus—a 6th modality:
+class InterMindToken:
+    source_mind: str
+    # target_mind REMOVED — state is broadcast, filtered by per-mind attention
+    # token_type REMOVED — no prescribed message types
+    content: Tensor[d_model]
+# Forward model token sequence per timestep:
+# [z_vision, z_tactile, z_audio, z_proprio, z_motor, z_intermind]
+The forward model can learn to predict inter-mind state patterns: when another mind’s prediction error, confidence, motor intent, or engagement state will shift, and how those shifts will affect distributed coordination. This is the Many Minds contribution to self-awareness about distributed processing.
+17. Motor Arbitration
+class MotorArbitrator:
+    '''
+    Resolves motor output per handle via confidence-weighted blend.
+    No ownership flags. No binary arbitration. See ManyMinds Gap B.
+    '''
+    def resolve(self, hierarchy):
+        final = {}
+        for h in range(n_handles):  # confidence-weighted blend
+            competing = [(m.motor_controller.get_command(h), m.confidence[h])
+                         for m in hierarchy.all_minds() if h in m.motor_channels]
+        return final
+    # Confidence-weighted softmax blend per handle.
+    # Broader-scope mind dominates when more wellness dimensions active.
+    # Temperature per-handle and learned.
+    # Top mind has no handles — influences through inter-mind + g_engage.
+    # See ManyMinds Gap B for full mechanism.
+18. Growth Trajectory
+# Split order NOT prescribed. Topology emerges from correlation-based
+# mastery detection (Gap D). Example below is illustrative:
+#
+# Phase 1: [Attending] -> all 23 handles
+# Phase 2+: Motor splits emerge as correlated groups reach mastery
+# Late: Two-level apex:
+#   [Top] -> empty handles, broadest perception space, Level 1+2+3 self
+#     |-- [Attending] -> present-world coordinator, gaze, navigation
+#           |-- [Motor children] -> topology from Gap D
+#
+# Top splits when ALL attending handles show sustained mastery.
+# Top has no PH handles (motor_controller.py needs zero-handle support).
+# Top specializes through deeper imagination (16+ steps vs 3-5).
+#
+#
+#
+Each split frees the attending mind’s capacity. The system scales through hierarchy depth, not model size. The top mind is freed for abstract thought only when the attending mind’s motor hierarchy is sufficiently mastered.
+Implementation Status: NOT IMPLEMENTED. Infrastructure ready: InterMind modality exists as a stub (loss_weight=0.0, zero vectors). SelfAttentionPool encoder processes n_agents=5. No MindHierarchy, SensoryBus, MotorArbitrator, mastery detection, mind splitting, or motor arbitration logic exists. Justified deferral: requires single-mind training to demonstrate mastery (~100K steps).
+Part IX: Bootstrap and Training Pipeline
+19. The Bootstrap: From Nothing to Body Knowledge
+19.1 The Null Prediction
+At time zero, the simplest prediction: 'nothing will change.' Everything interesting becomes a surprise. This is the universal starting point.
+19.2 Motor Babbling + Cross-Modal Correlation
+Constrained random motor commands fire across ALL handles at very low strength (2%) and minimal ROM (5%). All modalities are live from step zero. The null prediction breaks non-uniformly. Arm moves through air: vision changes, proprioception changes, audio silent, touch silent (TMC reports no contact). One motor command → 2 correlated sensor changes, 3 uncorrelated.
+19.3 Discovery of Self vs. World
+Over thousands of movements, correlation statistics partition sensors: Self = always correlates with motor (proprioception, body-image vision, self-voice). World = sometimes correlates (objects when grasped), never correlates (background). This IS the body schema emerging.
+19.4 Progressive Prediction Refinement
+Forward model accuracy improves monotonically for self-sensors (reliable motor-sensor coupling). World-sensor accuracy improves for physics-governed patterns (objects fall when released). Stochastic world events remain hard to predict (another agent acts). This natural hierarchy of predictability guides learning.
+20. Training Pipeline
+20.1 Training Streams (Overlapping, Not Sequential)
+Training is organized as overlapping streams with different onset times, not strict sequential phases. Motor babbling begins first. Stream 3 can overlap from step zero if PH extraction pipeline is available. All other streams can run in parallel or be introduced when their data becomes available.
+20.2 Stream 1: Motor Babbling (Onset: Step 0)
+Duration: ~10M steps. Developmental constraints active (neonate phase: all handles at 2% strength, 5% ROM). No scaffold: PCC baseline + wellness gradient + developmental constraints provide learning signal from frame zero. Forward model trains via PE minimization + contrastive loss. Body schema emerges. By end: head control mastered, advancing to early_infant phase.
+20.3 Stream 2: Observation Pre-Training (Onset: Step 0, parallel)
+Duration: ~5M video frames, running in parallel with motor babbling from step zero. Visual prediction only (other modalities masked with learned unknown tokens). Learns: salience (what moves matters), physics priors (objects fall, collide), temporal structure (actions have durations). Does not require motor competence.
+[FUTURE] When Stream 2 is implemented, clarify that modality masking is a data reality (external video has no tactile/proprioceptive channels), not a design choice. In all embodied streams (1, 3, 4), all six channels are always live.
+[FUTURE] Two DreamZero transfer pathways for Stream 2: (1) Knowledge distillation: train smaller model matching d_model to reproduce DreamZero visual predictions. (2) Data generation: use DreamZero to generate manipulation video trajectories as Stream 2 data. Both require DreamZero API access. Neither requires architectural changes.
+20.4 Stream 3: Imitation Grounding (Onset: Step 0, when PH extraction pipeline validated)
+Duration: ~20M steps. Introduced whenever mocap + eye gaze tracking data becomes available, at whatever developmental stage the system has reached. Kinematic animations played on avatar body. Forward model predicts expected sensation, compares with actual. Learns what coordinated movement FEELS like. Gaze data is critical: gaze-leads-hand timing teaches the anticipation system where to attend. This stream provides acceleration, not a prerequisite.
+Hard prerequisite: PH extraction pipeline working (PH spec Milestone 5).
+Soft prerequisite: None. Does NOT require prior body schema.
+Can overlap with Stream 1 from step zero.
+Implementation Status: Code implements a single unified training loop handling motor babbling (neonate phase) and prediction (all modalities) simultaneously. Stream 3 integration should be prioritized given the errata&#x2019;s step-zero onset. Streams 3-4 require PH extraction pipeline and intention generator respectively. The single loop correctly handles what is currently implemented; 4-stream support will be needed as components come online.
+20.5 Stream 4: Goal-Directed Behavior + Many Minds Splitting (Onset: ~1M steps)
+Duration: ongoing. Self-generated through imagination + execution. Curiosity drives exploration. When mastery detected → mind splits (Section 15). Hierarchy grows.
+def goal_directed_step(hierarchy, fwd_model, intention_gen,
+                        grounded_eval, approx_eval, env):
+    P_t = env.observe()                    # Grounded Register
+    z_t = encode(P_t)                      # Predictive Register
+    goal = curiosity.select_goal(fwd_model, z_t)
+    plan = plan_multistep(intention_gen, fwd_model, approx_eval, z_t, goal)
+    for action in plan:
+        # Motor arbitrator resolves per-channel control
+        final_cmd = hierarchy.motor_arbitrator.resolve(hierarchy)
+
+        # Present-world motor output coordinated by attending mind
+        # Top-mind influence enters through z_intermind / g_engage, not PH commands
+        env.step(final_cmd)
+        P_next = env.observe()              # Back to Grounded
+        z_next = encode(P_next)
+        pe = F.mse_loss(fwd_model.predict(z_t), z_next)
+        # Train forward model
+        fwd_model.update(pe)
+        # Train approximate evaluator
+        w_g, _ = grounded_eval(P_next, pe)
+        w_a = approx_eval(z_next[:5])
+        approx_eval.update(F.mse_loss(w_a, w_g.detach()))
+        # Check for mind splitting
+        hierarchy.check_mastery_and_split()
+
+        # (stale process_alerts line removed)
+        z_t = z_next
+20.6 UE Transfer Contracts (added 2026-09-08)
+The newer UE touch work adds real capability - point-touch inspection, first-person views, contact diagnostics, grasp/release changes - but the 2026-09-08 assessment found three boundary defects between the UE simulation and the Python learner. No training run on the UE avatar earns credit until all three contracts below are verified with a recorded sensor/action trace from the MATCHING project + engine + assets build. Precedent for taking these seriously: on the small test bed, one field copied across a unit boundary (normalized achieved positions written into a centimetre command interface) trained for a day before an external review's isolated replay caught it - field names and filled bits are never evidence of meaning.
+Contract 1 - Touch into the learner. The old pressure-patch producer is retired by default and the new engine point-touch API is consumed by the inspection UI, with no verified replacement call into the learner's publisher. Required: trace one actual contact from the engine producer through the publisher, the Python parser, and into the model tensor. Pressure patches and collision events carry SEPARATE validity and freshness masks; collision-only data must never mark the touch slice valid while pressure patches are absent. Realistic visible deformation, physically valid force/slip estimates, and information reaching the learner are three separate achievements - dense debug points are not dense usable sensing. The inspected engine revision (ec6086c3) computes the field named slip as body-space point speed, not relative sliding against the contacted surface, and estimates pressure from deformation and stiffness: each field's physical meaning and timing must be verified per paired build, never assumed from its name.
+Contract 2 - Action into body sense. UE currently exports command TARGET positions in its motor slice while the Python learning path reads those fields as ACHIEVED state. Requested, accepted, and achieved action are three distinct quantities and must travel as three distinct fields. Acceptance test: physically block a limb - the command fields must change while the achieved fields correctly do not. Until this passes, every learner quantity built on achieved state (body speed, rest stillness, tenure targets, the motor-correlation self boundary of Section 11) is unmeasured on the UE side.
+Contract 3 - Vision into the learner. The newest default capture path serves demonstration recording; widget and training texture paths differ, and a filled bit can be set without fresh data. Required before training on it: prove fresh camera data AND eye-position feedback for the same physical interval in explicit training mode, with the demonstration/widget path provably out of the loop.
+Implementation Status: NOT VERIFIED on UE (2026-09-08). All three contracts are open findings from the UE touch/transfer notes; the first combined acceptance artifact is the recorded trace above, produced BEFORE any long training run. Grasp aids (hull substitutions, welds, release helpers) change the environment and must be recorded in any claim about learned grasping. The checking PROGRAM itself is implemented and proven on the MIMo test bed (mimo_bridge/tools/sensor_action_contract_check.py, hardened 2026-09-08 after external review): contact identity by named skin rows with press-onset/release peaks, blocked-limb requested-vs-achieved with the applied joint control recorded, commanded eye-orientation response against matched no-command windows, frame/sim-time freshness, and the learner-side tokenized tensors cross-checked against the raw adapter values - with built-in negative controls (--self-test) that a defective source must fail. The env is built by the trainer's own constructor (age, delays, seed, curriculum phase), never a partial copy.
+Part X: Curiosity and Emergence
+21. Curiosity: Moderate Prediction Error
+Curiosity is: seek states where PE is MODERATE—high enough to learn, low enough to make progress. NOT 'seek maximum PE' (chaos-seeking).
+class CuriositySystem:
+    def __init__(self, pe_range=(0.1, 0.4)):
+        self.pe_min, self.pe_max = pe_range
+    def compute_drive(self, pe):
+        if pe < self.pe_min:       # too easy -> bored
+            return pe / self.pe_min - 1  # negative
+        elif pe > self.pe_max:     # too hard -> overwhelmed
+            return 1 - pe / self.pe_max  # negative
+        else:                       # goldilocks zone
+            mid = (self.pe_min + self.pe_max) / 2
+            return 1 - abs(pe - mid) / (self.pe_max - self.pe_min)
+Curiosity drive modulates the wellness gradient: positive drive biases toward novel-PE states, negative drive biases toward familiar or simpler states. This is not a reward signal—it is a modulation of the wellness gradient direction.
+Implementation Status: compute_drive() EXISTS and FUNCTIONAL (curiosity.py:12-48). Goldilocks zone (pe_min=0.1, pe_max=0.4) implemented and called in training step (training_step.py:889-890), scaling wellness loss. select_goal() DOES NOT EXIST — this is a Stream 4 feature (post-1M steps), not needed for neonate/infant phases. Motor babbling (exploration_noise=0.01) provides undirected exploration for neonate phase.
+22. Emergent Phenomena
+22.1 Stress as Sustained Prediction Error
+When PE remains elevated across multiple modalities without resolution: forward model generates failing predictions, exploration drive stays elevated (burning energy), motor controller cannot find wellness-improving actions. This IS stress. Critical distinction from curiosity: stress is elevated PE that RESISTS reduction despite effort. Curiosity is elevated PE that is being productively reduced. The system experiences stress when it cannot find motor commands that reduce PE; it experiences curiosity when PE is moderate and each action reveals learnable structure.
+22.2 Grief as Unresolvable Prediction Error
+A deeply reinforced prediction (object on shelf for 1000s of timesteps) becomes permanently false (object removed). Sequence: (1) PE spikes. (2) Exploration burst. (3) Repeated failure to resolve. (4) Energy depletion. (5) Structural model update: learning objects can cease to exist. (6) Gradual overwriting. This IS grief. Validation milestone: the system should eventually exhibit grief about abstract losses (capabilities, resources, relationships as captured by the hierarchical self-model), not just concrete object disappearance. Grief about a Level 3 self-entity indicates higher-order perception spaces have formed.
+22.3 Conditions for Emergence
+The architecture PRESERVES conditions for emergence: PE must be allowed to persist (no clamping), energy/exploration coupling maintained, forward model supports structural updates (not just parameter updates).
+Part XI: The Path to Self-Awareness
+23. What Self-Awareness Requires
+23.1 Necessary Components
+Self-awareness is not binary. It emerges from: (1) A model of the world (forward model). (2) A model of oneself AS PART OF that world (body schema as subset). (3) Ability to predict own future states (forward model includes self). (4) Ability to distinguish self from other (motor-correlation boundary). (5) Ability to model own prediction process (meta-cognition, emergent).
+23.2 The Two-Register Contribution
+The two-register architecture provides three levels of meta-prediction:
+Level 1: 'I predict z_{t+1}.' Forward model prediction in the Predictive Register.
+Level 2: 'I predict my prediction will be wrong by ε.' Meta-prediction: forward model learns to estimate its own PE.
+Level 3: 'I predict the wellness gap between my imagination and my experience will be δ.' The system learns that approximate wellness differs from grounded wellness, and by how much. This IS self-knowledge about the limits of one’s own imagination.
+23.3 The Many Minds Contribution
+The Many Minds hierarchy adds a fourth level:
+Level 4: ‘I predict how my other minds will shift state in this situation.’ The system models the hierarchy itself: which subordinate minds will become uncertain, which domains will remain stable, when attending-side engagement will rise, and how distributed coordination will reconfigure across the hierarchy. This is self-awareness about distributed processing.
+The hierarchy IS the self. The system’s identity is the entire graph of minds, their relationships, and their communication. When introspecting on 'what am I doing,' the answer is distributed: posture mind maintains balance, grasp mind holds object, top mind plans next action. All are 'me.' This mirrors human experience: you do not consciously control breathing, posture, or balance, but identify all as 'you.'
+23.4 The Critical Test
+def test_self_awareness(fwd_model, grounded_eval, approx_eval, hierarchy, state):
+    # Level 1: Predict what will happen
+    predicted_z = fwd_model.predict(state)
+    # Level 2: Predict own PE
+    predicted_pe = fwd_model.predict_own_error(state)
+    # Level 3: Predict grounded-vs-approximate wellness gap
+    predicted_gap = fwd_model.predict_wellness_gap(state)
+    # Level 4: Predict inter-mind state shifts
+    predicted_inter = fwd_model.predict_intermind(state)
+    # Execute and measure
+    actual_P = env.step_and_observe()
+    actual_z = encode(actual_P)
+    actual_pe = F.mse_loss(predicted_z, actual_z)
+    actual_gap = F.mse_loss(grounded_eval(actual_P, actual_pe)[0],
+                            approx_eval(predicted_z))
+    actual_inter = hierarchy.read_all_intermind_states()
+    pe_accuracy = 1 - abs(predicted_pe - actual_pe) / (actual_pe + 1e-6)
+    gap_accuracy = 1 - abs(predicted_gap - actual_gap) / (actual_gap + 1e-6)
+    inter_accuracy = compare_predicted_states(predicted_inter, actual_inter)
+    return pe_accuracy, gap_accuracy, inter_accuracy
+23.5 Emergence Through Architecture
+Self-awareness is not programmed. It emerges when: (1) forward model predicts own failures, (2) body schema models the prediction process, (3) hierarchy provides distributed self-knowledge, (4) sufficient experience teaches reliability boundaries.
+The system discovers: what correlates with its commands IS self. Inverting its forward model produces actions achieving consequences. Moderate PE is where learning happens. Its body model is its most valuable asset. Its imagination differs from experience. Its subordinate minds handle routine processing. These are computational facts, not metaphors.
+Part XII: Implementation Specifications
+24. Hardware, Model Configuration, and Compute Plan
+24.1 Hardware: GCP G4 Instances (RTX PRO 6000 Blackwell)
+MML uses Google Cloud G4 instances with NVIDIA RTX PRO 6000 Blackwell Server Edition GPUs (GA October 2025). These replace the RTX 4090 the spec was originally designed around.
+Spec                      RTX PRO 6000 Blackwell (Server)    RTX 4090 (old target)
+CUDA Cores                24,064                              16,384
+Tensor Cores              752 (5th gen)                       512 (4th gen)
+VRAM                      96 GB GDDR7 ECC                     24 GB GDDR6X
+Memory Bandwidth          1,586 GB/s                          1,008 GB/s
+FP16 TFLOPS (tensor)      ~220                                ~165
+FP4 AI TOPS (sparse)      3,753                               N/A
+PCIe                      Gen 5                               Gen 4
+Available G4 instance types:
+Machine Type        GPUs    vCPUs    RAM         ~Monthly
+g4-standard-48      1       48       180 GB      ~$3,300
+g4-standard-96      2       96       360 GB      ~$6,500
+g4-standard-192     4       192      720 GB      $13,141
+g4-standard-384     8       384      1,440 GB    ~$26,000
+CPU: AMD Turin (EPYC 9005). Interconnect: Google custom P2P over PCIe Gen 5. NVLink is NOT available. Ratio: 48 vCPU per GPU.
+Development target: g4-standard-96 (2 GPUs, 96 vCPUs, 360 GB RAM). GPU 0: UE rendering + tokenizer. GPU 1: model training. Upgrade to g4-standard-192 only if d_model increase beyond 768 is needed.
+24.2 Corrected Parameter Counts
+ERRATUM: v3.2 Section 24 stated “total_forward_model_params ~27M.” This was incorrect. The three-stage attention architecture in Section 6.1 produces 173M forward model parameters at d=768. The v3.2 estimate was based on standard single-attention transformer blocks, not the three-stage architecture the spec actually specifies.
+Verified parameter counts (d_model=768, 8 layers):
+Component                                           Millions
+Vision Encoder (Swin 4-layer, 16K patches)          28.9M
+Tactile Encoder (CrossPatchAttention, 200 patches)  7.1M
+Audio Encoder (Conv1d stack)                         4.1M
+Proprioception Encoder (MLP)                         0.9M
+Motor Command Encoder (CrossHandleAttention)         7.1M
+Inter-Mind Encoder (SelfAttention)                   7.1M
+Forward Model (8 three-stage blocks + 5 heads)       173.1M
+Adaptive Motor Controller (6 layers)                 42.6M
+Wellness Evaluators (grounded + approximate)         0.6M
+ALL ENCODERS                                         55.3M
+TOTAL TRAINABLE                                      ~271M
+VRAM: mixed-precision Adam + gradient checkpointing = 4.3 GB. A single 96 GB GPU holds this model with 95% VRAM unused. Multi-GPU is needed for FLOPS, not memory.
+24.3 Vision Encoder is 96% of Compute
+Per-call FLOPS breakdown (d=768, 8 layers):
+Component                                    GFLOPS / call    % of total
+Vision Encoder (Swin, 16K patches)           945              96.3%
+Forward Model (8 blocks, 192 tokens)         34               3.5%
+All other encoders + motor + wellness        2.5              0.3%
+TOTAL per frame (all @ 60 Hz)                982              100%
+24.4 Split-Rate Modality Architecture
+Decision: vision encoder runs at 24 Hz. All other encoders and the forward model run at 60 Hz.
+Human visual cortex object recognition (V4/IT) operates at 20–30 Hz. Film looks smooth at 24 FPS. The UEMA vision encoder performs SwinTransformer scene understanding, which maps to V4/IT processing. Running it at 60 Hz was never biologically motivated and is 96% of compute cost.
+Proprioception, tactile, and motor benefit from 60 Hz: muscle spindle afferents fire at ~100 Hz, mechanoreceptors up to 300 Hz, motor control loop runs at 50–100 Hz.
+Forward model input pattern at 24 Hz vision / 60 Hz other:
+Frame:  1    2    3    4    5    6    7    8    9   10
+Vis:   [V1] [V1] [V1] [V2] [V2] [V3] [V3] [V3] [V4] [V4]
+Tact:  [T1] [T2] [T3] [T4] [T5] [T6] [T7] [T8] [T9] [T10]
+Prop:  [P1] [P2] [P3] [P4] [P5] [P6] [P7] [P8] [P9] [P10]
+Motor: [M1] [M2] [M3] [M4] [M5] [M6] [M7] [M8] [M9] [M10]
+The forward model reuses the latest z_vision token for frames between vision updates. Its temporal attention learns that vision updates are slower. The cross-modal bridge learns to weight tactile and proprioception more heavily during fast-changing situations. This is more biologically faithful than running all modalities at the same rate.
+24.5 GPU Allocation and Real-Time Feasibility
+g4-standard-96 allocation:
+GPU      Role                                              Key Timing
+GPU 0    UE rendering + OGC/TMC physics + tokenizer        6.65ms tokenizer + ~10ms UE render = ~16.7ms total
+GPU 1    Model training (fwd + bwd + Adam @ frame rate)    14.1ms per frame = 71 FPS (18% headroom above 60 FPS)
+GPU 0 and GPU 1 operate in parallel. GPU 0 tokenizes frame N while GPU 1 trains on frame N-1. Transfer between GPUs is 13KB via pinned memory (<0.1ms).
+Sustained compute at d=768, 24 Hz vision, 1 training GPU:
+Metric                                            Value
+Vision encoder calls                              24/sec x 945 GFLOPS = 22,680 GFLOPS/s
+Non-vision (forward model + encoders + motor)     60/sec x 36.5 GFLOPS = 2,190 GFLOPS/s
+Total forward pass                                24,870 GFLOPS/s
+Training (fwd + 2x bwd + optimizer)               74,610 GFLOPS/s (74.6 TFLOPS/s)
+Available (1x GPU, 40% util, fp16)                88,000 GFLOPS/s (88 TFLOPS/s)
+Utilization                                        85%
+Effective FPS                                      71
+24.6 Model Dimensions
+Component                    Size       Justification
+d_model                      768        Fits single training GPU at 24 Hz vision (71 FPS).
+Implementation Status: Code currently uses d_model=512, n_heads=8 (built against original spec before errata hardware upgrade). Total system at d=512 is ~104.5M params (38% of errata target ~271M). GPU runs at ~40% utilization instead of 85%. Fix: change d_model to 768 and n_heads to 12 in master_config.yaml. Config has progressive_resize: true for Net2Net-style scaling from existing checkpoints. No code changes required. Benchmark-proven: d=512 vs d=768 vs d=1024 produce identical FPS under CUDA graphs because kernel dispatch overhead, not GPU compute, determines wall-clock time.
+n_layers (forward model)     8          Three-stage blocks. 173M forward model params.
+n_heads                      12         Standard for d=768 (head_dim=64).
+n_modalities                 6          V, A, T, P, M, InterMind.
+context_length               32         ~0.5s at 60 FPS forward model rate.
+Implementation Status: CRITICAL DEVIATION: Code sets context_length=1, disabling temporal learning entirely. Stage 2 (causal-temporal attention) is a no-op at ctx=1. Split-rate learning, imagination rollouts, anticipation, and body schema temporal correlation all require ctx>1. The architecture supports any context_length; this is a config-only fix. Recommendation: increase to 8 immediately (captures 3+ vision cycles at 24 Hz), scale toward 32. Memory cost at ctx=32, d=768: ~590 KB (negligible on 96 GB GPU).
+adaptive_motor_layers        6          Variable depth 1-6 based on confidence. 42.6M params.
+vision_encoder_rate          24 Hz      V4/IT biological rate. 58% compute reduction vs 60 Hz.
+other_encoder_rate           60 Hz      Tactile, proprio, motor, audio, intermind.
+forward_model_rate           60 Hz      Reuses latest z_vision between vision updates.
+total_forward_model_params   ~173M      CORRECTED from ~27M. Three-stage attention blocks at d=768.
+total_system_params          ~271M      All encoders + forward model + motor + wellness.
+25. Training Compute Budget
+At d=768, 24 Hz vision, single training GPU on g4-standard-96 (~$9/hr): 71 FPS sustained.
+Stream                   Steps       Wall Time    Cost            Milestone
+Stream 1: Babbling       5M–15M      1–3 days     $216–$648       Forward model loss plateaus; body schema >80%
+Stream 3: Imitation      10M–30M     2–5 days     $432–$1,080     Predicts sensory consequences of PH-driven actions
+Stream 4: Goal-directed  20M–100M    3–17 days    $648–$3,672     Intentional reaching via imagination rollouts
+Stream 3 overlaps Stream 1 from step zero (see Section 20.4). Total to first goal-directed behavior: approximately 5–20 days, $1,000–$4,000.
+25.1 Near-Term Implementation Plan
+$1,200 GCP credit expires mid-February 2026. Plan:
+Day      Task                                                                                Deliverable
+1        Code model from UEMA spec: encoders, forward model, motor controller,               Training loop runs, loss computes,
+         wellness, training loop. Wire to tokenizer outputs.                                  gradients flow.
+2–7      Train d=768 on g4-standard-96 at 24 Hz vision.                                      ~30M training steps. Body schema
+         Stream 1 + Stream 3 concurrent.                                                      validation. Prediction loss curves.
+$1,200 at ~$9/hr = ~133 hours = ~5.5 days continuous. Budget allows full Stream 1 and substantial Stream 3 progress.
+Scaling path after initial credit:
+1. Stay on g4-standard-96 (d=768, 24 Hz vision, 71 FPS). ~$6,500/month.
+2. If prediction quality needs more capacity: upgrade to g4-standard-192. 3 training GPUs → d=1024 (~480M params) at 30 Hz vision.
+3. For parallel experiments: two g4-standard-96 instances with FedAvg. Same cost as one g4-standard-192, cleaner isolation, A/B comparison.
+26. Loss Functions
+def total_loss(fwd_model, encoders, grounded_eval, approx_eval, anticipation, trajectory):
+    losses = {}
+    # 1. Forward model prediction error (dual-objective: PE side)
+    losses['prediction'] = forward_model_loss(fwd_model, encoders, trajectory)
+    # 2. Encoder contrastive loss
+    losses['contrastive'] = encoder_contrastive_loss(encoders, trajectory)
+    # 3. Imagination-aware loss (distribution shift)
+    losses['imagination'] = imagination_aware_loss(fwd_model, encoders, trajectory)
+    # 4. Latent regularization
+    losses['latent_reg'] = latent_regularizer.penalty(fwd_model.last_predictions)
+    # 5. Approximate wellness alignment
+    losses['approx_wellness'] = train_approx_evaluator(
+        grounded_eval, approx_eval, trajectory[-1])
+    # 6. Anticipation grounding (measurable metrics)
+    losses['anticipation'] = anticipation.training_loss(trajectory)
+    total = (1.0 * losses['prediction'] +
+             0.1 * losses['contrastive'] +
+             0.5 * losses['imagination'] +
+             0.01 * losses['latent_reg'] +
+             0.3 * losses['approx_wellness'] +
+             0.2 * losses['anticipation'])
+    return total, losses
+Note: No habitual distillation loss. Skill consolidation is handled by Many Minds splitting, which is a structural operation (cloning + freezing weights), not a loss term.
+Implementation Status: Code uses a different loss structure: per-modality prediction loss (weighted by modality-specific loss_weight and source_scales: real=1.0, synthetic=0.0, stale=0.3), motor loss (developmental scale), wellness loss (0.1), gaze loss (0.1). VICReg available but disabled. L_curiosity and L_anticipation not implemented (those systems don&#x2019;t exist). L_imagination not implemented (requires context_length>1). Single AdamW optimizer, lr=3e-4, weight_decay=0.01, grad_clip=1.0, warmup=1000 steps, bf16 precision.
+27. Differentiability Verification
+Component	Differentiable?	How
+Encoders	✓	Standard neural networks
+Forward model	✓	Transformer
+Prediction error	✓	MSE loss
+Grounded wellness eval	✓	Neural network on raw sensors
+Approximate wellness eval	✓	Neural network on encoded tokens
+Wellness gradient	✓	torch.autograd.grad through evaluator
+Adaptive motor controller	✓	Variable-depth neural network
+Confidence estimator	✓	Sigmoid output, learned threshold
+Developmental constraints	✗	Discrete phase transitions (not on gradient path)
+Bootstrap mechanism	✓	PCC baseline + wellness gradient (no scaffold needed)
+Intention generator	✓	Gradient descent through forward model
+Body schema update	✗	EMA tracking (not on gradient path)
+Body schema membership	✓	Sigmoid on correlation scores
+Anticipation	✓	Neural network with measurable supervision
+Curiosity drive	✓	Smooth function of PE
+Mind splitting	✗	Structural operation (clone + freeze)
+Inter-mind tokens	✓	Encoded through InterMindEncoder
+Motor arbitration	✗	Hierarchy walk (not on gradient path)
+Non-differentiable components (developmental constraints, body schema update, mind splitting, motor arbitration) operate outside the gradient path by design. They are structural/scheduling operations, not learned transforms.
+28. Open Questions
+Vision encoder depth: single pooled token may be too aggressive. May need spatial patch tokens preserved.
+Optimal curiosity PE range: 0.1-0.4 is estimated. Needs empirical tuning.
+Imagination step count: fixed 3 for training. Should adapt based on confidence?
+Adaptive motor depth threshold: initial 0.7, but this is learned. What is the convergence behavior?
+Body schema temperature: 5.0 for sigmoid sharpness. Optimal value?
+Approximate wellness evaluator capacity: may need more layers.
+Mastery detection thresholds: PE < 0.05, variance < 0.01. Per-domain calibration needed?
+Mind splitting granularity: when should a domain split further vs. remain consolidated?
+Subordinate model size: full forward model clone or domain-specific subset?
+Inter-mind token bandwidth: how many concurrent signals can be processed without degrading prediction?
+Hierarchical self-model timescale parameters: momentum 0.99/0.9999/0.99999. Optimal values per level?
+Entity slot count for Level 2/3 self: 64 proposed. Scaling behavior with environment complexity?
+Level 2/3 self interaction with Many Minds: optimal inheritance strategy during mind splitting?
+Summary: The Path from Zombie to Mind
+Stage	What's Present	What's Missing
+Policy Network (Zombie)	Input→Output mapping	Everything else
++ Prediction	World model	Self-model
++ Motor Correlation	Self/world boundary	Stakes
++ Body Schema	Self-model	Temporal continuity
++ Fatigue/Energy	Stakes (things to lose)	Motivation
++ Dual Objective (PE+Wellness)	Understanding + Motivation	Flexible computation
++ Adaptive Computation Depth	Variable processing (emergent modes)	Scalability
++ Model Inversion	Intention (goal→action)	Distributed processing
++ Many Minds	Hierarchical skill mastery	Self-knowledge
++ Meta-Prediction	Model of own predictions	???
++ Hierarchy Self-Model	Self-awareness of distributed processing	—
+At each stage, something missing becomes present. The final stages—meta-prediction and hierarchy self-modeling—are the closest we can get to defining self-awareness computationally.
+The system is not told it has a self. It discovers that some predictions correlate with its commands.
+The system is not told to have intentions. It discovers that inverting its forward model achieves desired consequences.
+The system is not told to be curious. It discovers that moderate PE is where learning happens.
+The system is not told to value resources. It discovers that certain entities correlate with sustained wellness across timescales, and acts to maintain them.
+The system is not told to fear death. It discovers its body model is its most valuable asset.
+The system is not told its imagination differs from experience. It discovers its approximate wellness evaluator is less reliable than its grounded evaluator.
+The system is not told it has subordinate minds. It discovers it can predict its own inter-mind communication patterns.
+These are not metaphors. They are the computational facts of what this architecture does.
+References
+DreamZero: NVIDIA GEAR Lab, Feb 2026. https://dreamzero0.github.io/DreamZero.pdf
+HRM: Wang et al., June 2025. arXiv:2506.21734
+TRM: Jolicoeur-Martineau, Oct 2025. arXiv:2510.04871
+Compute analysis scripts: uema_compute_analysis.py, split_rate_analysis.py, training_timeline.py
+End of Specification
+29. Implementation Deviations and Priorities
+This section documents the reconciliation between the UEMA specification and the actual codebase (UEMA-feature branch, config v2.1). Source of truth is the code; this section identifies where code deviates from spec intent and provides implementation priorities.
+29.1 Naming
+The codebase uses LEM (Learning Embodiment Model) in config comments, SHM buffer names (LEM_Action_Buffer), and log prefixes. The spec uses UEMA throughout. These refer to the same system.
+29.2 Critical Deviations (Must Fix)
+CF-1: context_length = 1 (spec: 32). The single most impactful deviation. Disables Stage 2 temporal attention (dead weight), blocks split-rate learning, imagination rollouts, anticipation, intention, and body schema temporal correlation. Fix: change context_length in master_config.yaml to 8 (minimum), scaling toward 32. Architecture already supports it. Memory at ctx=32, d=768: ~590 KB.
+CF-2: d_model = 512, n_heads = 8 (errata: 768, 12). Forward model has ~50M params instead of 173M (71% less capacity). GPU at ~40% utilization. Config-only fix: d_model=768, n_heads=12. Net2Net progressive resize available for existing checkpoints. Benchmark-proven safe: d=512/768/1024 produce identical FPS under CUDA graphs.
+CF-3: Missing wellness gradient motor drive (spec Section 7.4). The five-stage pipeline collapses to perceive-predict-act without the wellness gradient input to the motor controller. Core thesis violation. Fix: add torch.autograd.grad(total_wellness, motor_commands) to training loop, pass result as motor controller input. Small code change, outsized impact.
+CF-4: No active encoder collapse prevention. VICReg is implemented but disabled (enabled: false). No InfoNCE either. Encoders can silently collapse. Fix: set vicreg.enabled=true.
+CF-5: d_internal=128 must be removed (spec: encoders run at d_model). The code introduces d_internal, a concept not in the spec. Every encoder processes at 128-dim internally and only projects to d_model at the final layer. The spec defines encoders working at full d_model width throughout (Section 5: patch_embed Linear 768→768, Swin at 768-dim, CrossPatchAttention at 768-dim). This was a development convenience for local GPU iteration, but on the target RTX PRO 6000 it is unjustified: 4.3 GB of 96 GB VRAM is used, CUDA cores are severely underutilized. At d_model=768, the 128-dim bottleneck forces encoders to compress all sensory information to 128 numbers before the network has learned what matters, then expand back to 768 at the very end. The forward model (173M params, 768-dim) receives representations of 128-dim quality. This is like reading a book, writing a few keywords on an index card, and then trying to expand those keywords into a detailed report. Fix: remove d_internal from encoder_defaults entirely. Set all encoders to process at d_model=768 as the spec defines. This is a config deletion, not a code change. The parameter cost increase (from ~15M to ~55M for all encoders per errata Table 3) is well within the 96 GB VRAM budget.
+CF-6: Body schema. RESOLVED. DifferentiableBodySchema EXISTS and FUNCTIONAL (body_schema.py:22-175, 17+ tests). EMA motor-sensor correlation tracking with self_membership(), coherence_score(), and incorporation_strength(). Updates every frame. Body schema correlation buffers are prerequisite for correlation-based domain discovery (Gap D).
+29.3 Justified Deferrals
+The following omissions are justified because their dependencies are not yet met. They should be implemented in order as dependencies resolve.
+CF-7: Adaptive computation depth (spec Section 9.2-9.3). Requires context_length>1 for meaningful rollouts. Confidence head is built. Implement when context_length is increased. The errata FUTURE recursive motor controller (2 layers recursed 1-6x) provides the target architecture.
+CF-8: Imagination-aware training (spec Section 6.3). Requires context_length>1 for multi-step trajectories. Implement after CF-1.
+CF-9: Intention generator (spec Section 10). EXISTS (intention_generator.py:78-189, 11 tests) but disabled by default. Activation requires accurate forward model + imagination. Enable after CF-7 and CF-8.
+CF-10: Curiosity system (spec Section 21). compute_drive() EXISTS and FUNCTIONAL (curiosity.py:12-48), called in training step. select_goal() not yet implemented (Stream 4). No selective effect in early training when PE is uniformly high.
+CF-11: Latent regularizer (spec Section 6.3). Implement with imagination-aware training.
+CF-12: Anticipation system (spec Section 12). Requires context_length>1 and forward model accuracy.
+CF-13: Many Minds hierarchy (spec Sections 13-18, amended by ManyMinds_Spec v2 and gap analysis). Requires single-mind mastery. Key v3.5 changes: override_active removed, MotorArbitrator replaced by confidence-weighted blend, predefined groups replaced by correlation discovery, two-level apex added, natural gradient dynamics replace explicit freeze. InterMind stub needs self-reading (loss_weight 0.0→0.1) and PerMindIntermindEncoder.
+29.4 Code Improvements Over Spec
+The following code-only components improve on the original spec and are adopted as canonical in v3.4.
+23-handle full-body motor control. Extends spec from 12 hand-only handles to full-body control (head, arms, legs, feet). Per-region stiffness scaling. Data-driven handle definitions. Enables the embodied cognition thesis across the whole body, not just hands.
+Gaze head. Active gaze output (azimuth/elevation, loss_weight=0.1). Essential for foveal targeting, anticipation gaze-dwell metrics, and social gaze. Makes looking an active motor decision.
+Source scales and loss engineering. Per-data-source loss weighting (real=1.0, synthetic=0.0, stale=0.3). Per-modality loss weights and ramps. Prevents learning from placeholder noise; essential for synthetic-to-real transitions.
+VICReg collapse prevention. Variance-Invariance-Covariance regularization as an alternative to InfoNCE. Better suited for online learning (no negative pairs). Available but needs to be enabled.
+Real-time infrastructure. Async ring-buffer reader (ring_size=3, max_stale_age_ms=50), SHM action buffer (1176 bytes, Python-to-UE5), dual-GPU topology (GPU 0 WDDM capture, GPU 1 TCC training), torch.compile with CUDA graphs (reduce-overhead mode), backward_every_n_frames configurable skip, voice modality stub (56-dim, disabled).
+Unified widget handle selection. All 23 handles use consistent 1-click direct-select grouped by body region. Depth-plane mouse projection for accurate target placement.
+29.5 Implementation Priority
+Four config changes (CF-1 + CF-2 + CF-4 + CF-5) unlock the majority of model capability with zero code changes. These should be applied before any further training runs.
+P0 (Config-only, do now): CF-1 context_length 1 to 8+. CF-2 d_model 512 to 768, n_heads 8 to 12. CF-4 enable VICReg. CF-5 remove d_internal (set encoders to d_model).
+P1 (Small code changes): CF-3 wellness gradient motor drive. CF-6 body schema (~6.6K elements, EMA buffer).
+P2 (Moderate code, after P0/P1): CF-7 adaptive computation depth. CF-8 imagination-aware training.
+P3 (Significant code): CF-9 intention generator. CF-10 curiosity system (before ~50K steps).
+P4 (Later-stage features): CF-11 latent regularizer. CF-12 anticipation. CF-13 Many Minds hierarchy.
+29.6 Frame Rate Impact
+The kernel dispatch bottleneck (documented in MML_Optimization_Runbook.md) means most P0 changes are safe for frame rate under CUDA graphs. d_model 512 to 768 is benchmark-proven free (d=512/768/1024 produce identical FPS). VICReg enable is negligible. Context_length increase is likely safe at 8-16 (benchmark at 32). Removing d_internal (CF-5) raises encoder params from ~15M to ~55M, but on the RTX PRO 6000 with 4.3 GB of 96 GB VRAM used and CUDA cores severely underutilized, this is absorbed entirely by idle GPU capacity. The vision encoder at full d_model=768 with 24 Hz split-rate fits within the errata compute budget (945 GFLOPS/call at 24 calls/sec = 22.7 TFLOPS of the available 88 TFLOPS). All P0 changes together (d_model=768, d_internal removed, context_length=8+, VICReg enabled) still fit comfortably on a single training GPU.

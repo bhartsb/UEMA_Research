@@ -1,0 +1,208 @@
+{
+ "job": "card_check_selftest",
+ "started": "Oct 15, 2026 02:32:36 PM Pacific Daylight Time",
+ "program": "C:\\Users\\bhart\\Documents\\UEMA_wt\\speed_hand_card_check\\docs\\gain_of_function_v4\\speed_hand_search\\card_check_hand_call.py",
+ "program_sha256": "11420886998266490935e7da2409fa470be1097ad1c28a43232765792f216aaa",
+ "cases": {
+  "genuine": {
+   "expected": "verdict pass; both captures pass with every binding, OLD/NEW and fidelity check held",
+   "observed": {
+    "verdict": "pass",
+    "old": [
+     "pass",
+     "pass",
+     110,
+     110,
+     18,
+     18
+    ],
+    "new": [
+     "pass",
+     "pass",
+     110,
+     110,
+     18,
+     18
+    ]
+   },
+   "as_expected": true
+  },
+  "live_moved": {
+   "expected": "verdict invalid; the OLD-made capture's fidelity fails while its OLD/NEW checks all hold; the NEW-made capture passes",
+   "observed": {
+    "verdict": "invalid",
+    "old": [
+     "invalid",
+     "pass",
+     110,
+     110,
+     17,
+     18
+    ],
+    "new": [
+     "pass",
+     "pass",
+     110,
+     110,
+     18,
+     18
+    ]
+   },
+   "as_expected": true
+  },
+  "module_hash": {
+   "expected": "verdict invalid; the OLD-made capture is not replayed: its binding 'the admission records the maker tree's declared trainer code hash' fails; the NEW-made capture passes",
+   "observed": {
+    "verdict": "invalid",
+    "old": [
+     "invalid",
+     "not run",
+     null,
+     null,
+     null,
+     null
+    ],
+    "failed_binding": [
+     "the admission records the maker tree's declared trainer code hash (its module files)"
+    ]
+   },
+   "as_expected": true
+  },
+  "missing": {
+   "expected": "verdict invalid; the NEW-made capture reads 'capture file present' not held; the OLD-made capture passes",
+   "observed": {
+    "verdict": "invalid",
+    "new": [
+     "invalid",
+     "not run",
+     null,
+     null,
+     null,
+     null
+    ],
+    "failed_binding": [
+     "capture file present"
+    ]
+   },
+   "as_expected": true
+  },
+  "maker_swapped": {
+   "expected": "verdict invalid; neither capture replayed; for each, the launch line's commit and the admission's commit do not name the declared maker",
+   "observed": {
+    "verdict": "invalid",
+    "old": {
+     "counts": [
+      "invalid",
+      "not run",
+      null,
+      null,
+      null,
+      null
+     ],
+     "failed": [
+      "the run's --planner-reuse matches the maker tree's declared conversion",
+      "the run's launch line holds the capture's model step and names the maker's commit",
+      "the admission records the maker's commit with a clean tree",
+      "the admission records the maker tree's declared trainer code hash (its module files)"
+     ]
+    },
+    "new": {
+     "counts": [
+      "invalid",
+      "not run",
+      null,
+      null,
+      null,
+      null
+     ],
+     "failed": [
+      "the run's --planner-reuse matches the maker tree's declared conversion",
+      "the run's launch line holds the capture's model step and names the maker's commit",
+      "the admission records the maker's commit with a clean tree",
+      "the admission records the maker tree's declared trainer code hash (its module files)"
+     ]
+    }
+   },
+   "as_expected": true
+  },
+  "numbers_within_spread": {
+   "expected": "'metadata first' holds by rule S although NEW's text differs; every metadata check holds",
+   "observed": {
+    "first": {
+     "name": "metadata first",
+     "holds": true,
+     "rule": "S",
+     "detail": "NEW's largest difference 4.999999996257998e-07 against OLD's own spread 1.000000000139778e-06"
+    },
+    "text_differs": true,
+    "not_held": []
+   },
+   "as_expected": true
+  },
+  "numbers_beyond_spread": {
+   "expected": "'metadata first' fails by rule S",
+   "observed": {
+    "first": {
+     "name": "metadata first",
+     "holds": false,
+     "rule": "S",
+     "detail": "NEW's largest difference 9.999999999621423e-06 against OLD's own spread 1.000000000139778e-06"
+    }
+   },
+   "as_expected": true
+  },
+  "non_numeric": {
+   "expected": "'metadata trace' fails, rule parse, naming the non-numeric value",
+   "observed": {
+    "trace": {
+     "name": "metadata trace",
+     "holds": false,
+     "rule": "parse",
+     "detail": "NEW evaluation 1: non-numeric value '0.5' (str) at trace[0][0]"
+    }
+   },
+   "as_expected": true
+  },
+  "module_record": {
+   "expected": "the unchanged record: every module check holds; the changed one: exactly that module's check fails",
+   "observed": {
+    "control_not_held": [],
+    "altered_not_held": [
+     "OLD ran lem/model/hand_response.py with the file hash the trainer code hash covers"
+    ]
+   },
+   "as_expected": true
+  }
+ },
+ "pins": {
+  "old": {
+   "tree": "C:/Users/bhart/Documents/UEMA_wt/speed_abc_a_trace",
+   "commit": "af05c7c1a90422b9d58b1cb7484d3de1ef113f9f",
+   "code_hash": "1f96df36b4aa9ec4160498a9c07cf6dbd6cf89fa192ceeef087e7e5af757c017",
+   "conversion": "learner"
+  },
+  "new": {
+   "tree": "C:/Users/bhart/Documents/UEMA_wt/speed_candidate1",
+   "commit": "c5d38c8b2d7bd0c58b8e2b81ae65e13f3ccaa1ce",
+   "code_hash": "902ed78dcd60357843c735beec696b65e9e8dadddf2aa5e7eb6ed68aec739d4c",
+   "conversion": "decision"
+  }
+ },
+ "makers": [
+  {
+   "tree": "old",
+   "exit": 0,
+   "agreement": true,
+   "output": "agreement True\n{\"status\": \"captured\", \"path\": \"D:\\\\UEMA_scratch\\\\speed_10x\\\\candidate1_card_check\\\\selftest_run1\\\\standin\\\\old_genuine\\\\run\\\\SELFTEST_OLD\\\\hand_call_capture.pt\", \"sha256\": \"bd07bb8bea0ea18801d1f53d8372db4079303cd15e7c2e42b420d276ef145182\", \"model_step\": 492805, \"at\": 1792099969.9175491}\n{\"status\": \"captured\", \"path\": \"D:\\\\UEMA_scratch\\\\speed_10x\\\\candidate1_card_check\\\\selftest_run1\\\\standin\\\\old_moved\\\\run\\\\SELFTEST_OLD\\\\hand_call_capture.pt\", \"sha256\": \"1074cbe893aa7fe6681c49d0f40a88aaa1e6a8b27c94807332d09b72bd768376\", \"model_step\": 492805, \"at\": 1792099970.1628103}\n{\"status\": \"captured\", \"path\": \"D:\\\\UEMA_scratch\\\\speed_10x\\\\candidate1_card_check\\\\selftest_run1\\\\standin\\\\old_module_hash\\\\run\\\\SELFTEST_OLD\\\\hand_call_capture.pt\", \"sha256\": \"0a1ec67cbeb901ee5c5953184b7dfca0b6803116a47d36c420c170d0d807b0ec\", \"model_step\": 492805, \"at\": 1792099970.3839235}\n"
+  },
+  {
+   "tree": "new",
+   "exit": 0,
+   "agreement": true,
+   "output": "agreement True\n{\"status\": \"captured\", \"path\": \"D:\\\\UEMA_scratch\\\\speed_10x\\\\candidate1_card_check\\\\selftest_run1\\\\standin\\\\new_genuine\\\\run\\\\SELFTEST_NEW\\\\hand_call_capture.pt\", \"sha256\": \"17852f1277d404cc908f3dd762fe94e05363a0a4eec5a4564da527f04cfe5293\", \"model_step\": 492805, \"at\": 1792099973.742336}\n"
+  }
+ ],
+ "verdict": "pass",
+ "ended": "Oct 15, 2026 02:34:52 PM Pacific Daylight Time",
+ "seconds": 135.9
+}

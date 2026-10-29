@@ -1,0 +1,409 @@
+/* Copyright (c) 2026 Mind Machine Learning, Inc. All rights reserved. */
+/* Licensed under the Mind Machine Learning Noncommercial License 1.0; see the LICENSE file. */
+/* explainer viewer - inlined by build_explainer.py; no external assets */
+* { box-sizing: border-box; }
+body { font-family: "Segoe UI", system-ui, sans-serif; margin: 0; background: #f6f6f3;
+       color: #1c1c1c; font-size: 14px; line-height: 1.4; }
+header { background: #22314f; color: #fff; padding: .55rem 1rem; display: flex;
+         align-items: baseline; gap: 1rem; flex-wrap: wrap; }
+header h1 { font-size: 1.05rem; margin: 0; }
+header .sub { color: #b9c4da; font-size: .8rem; }
+header a { color: #d4e6ff; }
+.run-state { margin: .9rem auto; max-width: 1468px; padding: .8rem 1rem;
+  border: 1px solid #c5cddb; border-left: 5px solid #496b98; border-radius: 6px;
+  background: #fff; overflow-wrap: anywhere; }
+.run-state h2 { margin: 0 0 .35rem; font-size: 1.1rem; color: #22314f; }
+.run-state p { margin: .45rem 0; max-width: 88ch; }
+.run-state details { margin-top: .6rem; }
+.run-state summary { cursor: pointer; font-weight: 600; }
+.run-state table { width: 100%; border-collapse: collapse; margin-top: .5rem; }
+.run-state th, .run-state td { padding: .4rem .6rem; text-align: left;
+  vertical-align: top; border-bottom: 1px solid #dfe3e9; }
+.run-state th { background: #f0f3f8; }
+.run-state code { font-size: .78rem; }
+@media (max-width: 650px) {
+  .run-state { margin: .6rem; padding: .7rem; }
+  .run-state th, .run-state td { padding: .35rem; }
+  nav.tabs { flex-wrap: wrap; padding: 0 .4rem; }
+  nav.tabs button { padding: .4rem .55rem; }
+}
+nav.tabs { display: flex; gap: .25rem; background: #22314f; padding: 0 1rem; }
+nav.tabs button { border: 0; padding: .45rem 1rem; cursor: pointer; font-size: .9rem;
+  background: #33456b; color: #cdd6e8; border-radius: 6px 6px 0 0; }
+nav.tabs button.active { background: #f6f6f3; color: #1c1c1c; font-weight: 600; }
+main { padding: 1rem; max-width: 1500px; margin: 0 auto; }
+.hidden { display: none !important; }
+
+.panelgrid { display: flex; flex-wrap: wrap; gap: .8rem; align-items: flex-start; }
+.panel { background: #fff; border: 1px solid #ddd; border-radius: 6px;
+         padding: .6rem .8rem; }
+.panel h3 { margin: 0 0 .45rem; font-size: .92rem; border-bottom: 1px solid #eee;
+            padding-bottom: .25rem; display: flex; align-items: center; gap: .4rem; }
+.doc-btn { cursor: pointer; border: 1px solid #aab; background: #eef; color: #345;
+  border-radius: 50%; width: 1.15rem; height: 1.15rem; font-size: .7rem; line-height: 1;
+  flex: 0 0 auto; }
+.note { color: #666; font-size: .8rem; }
+.warn { color: #a04b12; font-size: .82rem; }
+.caption { color: #444; font-size: .82rem; margin: .1rem 0 .5rem; max-width: 46rem;
+           line-height: 1.35; }
+
+.tiles { display: flex; flex-wrap: wrap; gap: .7rem; margin: .3rem 0 1rem; }
+.tile { background: #fff; border: 1px solid #ddd; border-left: 6px solid #999;
+        border-radius: 6px; padding: .5rem .75rem; width: 265px; }
+.tile-title { font-weight: 600; font-size: .85rem; margin-bottom: .15rem; }
+.tile .big { font-size: 1.7rem; font-weight: 700; line-height: 1.15;
+             font-variant-numeric: tabular-nums; }
+.tile-sub { font-size: .78rem; color: #444; line-height: 1.3; margin-top: .2rem; }
+.tile.good { border-left-color: #3a8a3a; }
+.tile.warn { border-left-color: #c98a2a; }
+.tile.bad  { border-left-color: #b04040; }
+.tile.same { border-left-color: #6b7280; }
+.tile.info { border-left-color: #4a7ab5; }
+.tile.na   { border-left-color: #bbb; color: #666; }
+.tile.na .big { color: #999; }
+
+.chip { display: inline-block; font-size: .68rem; font-weight: 600; padding: .1rem .55rem;
+        border-radius: 10px; margin-left: .5rem; vertical-align: middle; }
+.chip.good { background: #e4f2e4; color: #205a20; border: 1px solid #9c9; }
+.chip.bad  { background: #f7e2e2; color: #7a2020; border: 1px solid #d99; }
+.chip.same { background: #eceef1; color: #444; border: 1px solid #ccc; }
+.kv { display: grid; grid-template-columns: auto auto; gap: .1rem .8rem; font-size: .85rem; }
+.kv b { font-weight: 600; }
+.chips span { display: inline-block; padding: .1rem .5rem; border-radius: 10px;
+  margin: .1rem .2rem .1rem 0; font-size: .78rem; border: 1px solid #ccc; }
+.chips .real { background: #e4f2e4; border-color: #9c9; }
+.chips .stale { background: #fdf3d9; border-color: #d8b45e; }
+.chips .synthetic { background: #f1e4f4; border-color: #c9a; }
+
+.selrow { display: flex; gap: 1rem; align-items: center; flex-wrap: wrap;
+          margin-bottom: .7rem; font-size: .85rem; }
+.selrow select, .selrow input[type=range] { font-size: .85rem; }
+canvas.hm { image-rendering: pixelated; border: 1px solid #ccc; background: #fff; }
+.hmwrap { position: relative; display: inline-block; }
+.hmtip { position: absolute; pointer-events: none; background: #222; color: #fff;
+  font-size: .72rem; padding: .15rem .4rem; border-radius: 3px; display: none; z-index: 5;
+  white-space: nowrap; }
+.axis-label { font-size: .72rem; fill: #555; }
+.eyegrid { display: grid; grid-template-columns: auto auto; gap: .4rem; }
+.eyegrid figure { margin: 0; text-align: center; }
+.eyegrid img { width: 132px; height: 132px; image-rendering: pixelated; border: 1px solid #bbb; }
+.eyegrid figcaption { font-size: .72rem; color: #555; }
+
+table.motor { border-collapse: collapse; font-size: .76rem; }
+table.motor th, table.motor td { border: 1px solid #ddd; padding: .12rem .35rem;
+  text-align: right; font-variant-numeric: tabular-nums; }
+table.motor th { background: #eef1f6; }
+table.motor td.name { text-align: left; font-weight: 600; }
+
+.bars { display: grid; grid-template-columns: max-content 1fr max-content;
+        gap: .15rem .6rem; align-items: center; font-size: .82rem; min-width: 260px; }
+.bars .bar { height: .7rem; background: #4a7ab5; border-radius: 2px; min-width: 1px; }
+.bars .bar.neg { background: #b5574a; }
+
+svg.chart { background: #fff; border: 1px solid #ddd; border-radius: 4px; }
+.chart-block { margin-bottom: 1rem; }
+.chart-block h3 { margin: .2rem 0; font-size: .9rem; }
+.legend { font-size: .76rem; margin: .15rem 0 .3rem; }
+.legend span { margin-right: .9rem; }
+.legend i { display: inline-block; width: 1.1em; height: .55em; margin-right: .25em;
+            border-radius: 2px; }
+.readout { position: sticky; top: 0; background: #fffef4; border: 1px solid #d8cf9e;
+  border-radius: 6px; padding: .5rem .7rem; font-size: .8rem; max-height: 85vh;
+  overflow-y: auto; min-width: 230px; }
+.readout table { border-collapse: collapse; }
+.readout td { padding: .05rem .45rem .05rem 0; font-variant-numeric: tabular-nums; }
+
+#diagram svg { background: #fff; border: 1px solid #ddd; border-radius: 6px; width: 100%;
+               height: auto; }
+.dg-node rect { fill: #eef1f7; stroke: #8a96ad; rx: 4; cursor: pointer; }
+/* THE TOUR IS VIOLET and orange marks the parts being worked on (the decided design of the Architecture tab, Oct 7,
+   2026, D-E2 and D-E3): a lit box takes a violet fill, and its violet outline is an element of its own drawn over the
+   box (rect.dg-tour-mark, renderTour), so the bold blue "a lesson reaches these weights" outline cannot hide it */
+.dg-node.hl rect { fill: #efe6fa; }
+.dg-tour-mark { fill: none; stroke: #6b3fa0; stroke-width: 2.5; pointer-events: none; }
+/* the orange ring 3 units outside a box, in its own layer behind the boxes: solid = a repair at IN TRAINING switched on
+   in this page's run, or a RUNNING test of a part drawn only there; dashed = a repair at BUILT/OFF, REVIEWED or
+   QUALIFIED/OFF. #b35c00 is 4.7:1 on white */
+.dg-ring { fill: none; stroke: #b35c00; stroke-width: 2; pointer-events: none; }
+.dg-ring.dashed { stroke-dasharray: 5 3; }
+/* box text one size step larger than until Oct 7, 2026 (D-E6): titles 12, sub-captions 10, corner counts 9 units */
+.dg-node text { font-size: 12px; pointer-events: none; }
+/* a line inside a box that opens its own entry (a repair path the run built inside the box) */
+.dg-node text.hosted { pointer-events: auto; cursor: pointer; text-decoration: underline; fill: #2a5db0; }
+.dg-node text.hosted:hover { fill: #6b3fa0; }
+/* the four parts of a block drawn as a compact row (blocks 1 to 3): small cells, their names at 10 units */
+.dg-node text.cell { font-size: 10px; fill: #1c1c1c; }
+.sublabel { font-size: 9px; fill: #566; }
+.dg-edge { stroke: #9aa5b8; stroke-width: 1.4; fill: none; marker-end: url(#arrow); }
+/* the 8-unit links between the cells of a compact block row take the small arrowhead */
+.dg-edge.short { marker-end: url(#arrow-s); }
+.dg-edge.loss { stroke: #b5574a; stroke-dasharray: 3 3; }
+.dg-edge.loopback { stroke: #4a8a5a; stroke-dasharray: 6 3; }
+/* a line drawn over lines it must cross: the diagram's own white beneath it, so a crossing reads as
+   one line passing over another (viewer.js, the efference heads' goal-ranking line) */
+.dg-halo { stroke: #fff; stroke-width: 6; fill: none; pointer-events: none; }
+
+/* THE MODEL DIAGRAM'S PANEL (D-E1): its heading, the tour of it and the drawing in one white panel */
+/* the drawing takes the panel's whole width (a narrow side padding, no frame of its own): at a 1400-pixel window a
+   1rem padding cost the drawing 34 of its 1,342 pixels, measured Oct 7, 2026; the heading, the tour and the list keep
+   their own padding */
+#model-diagram { background: #fff; border: 1px solid #ddd; border-radius: 6px; padding: .5rem .3rem .6rem;
+                 margin-bottom: .8rem; }
+#model-diagram > h3, #tour, #worked-on { padding-left: .7rem; padding-right: .7rem; }
+#model-diagram #diagram svg { border: 0; }
+#model-diagram > h3 { margin: .1rem 0 .4rem; font-size: .92rem; display: flex; align-items: center; gap: .4rem; }
+#tour { margin: 0 0 .55rem; }
+#tour .tour-bar { display: flex; flex-wrap: wrap; align-items: center; gap: .35rem .5rem; }
+#tour .tour-title { font-weight: 600; margin-right: .6rem; }
+#tour .tour-body { margin: .45rem 0; max-width: 75rem; border-left: 4px solid #6b3fa0; padding-left: .6rem; }
+#tour button { padding: .25rem .8rem; }
+#tour .tour-pos { color: #555; font-size: .8rem; }
+
+#docpanel { position: fixed; right: 1rem; top: 4.5rem; width: 27rem; max-width: 92vw;
+  background: #fff; border: 2px solid #22314f; border-radius: 8px; padding: .7rem .9rem;
+  box-shadow: 0 6px 24px rgba(0,0,0,.25); z-index: 40; font-size: .84rem;
+  max-height: 82vh; overflow-y: auto; }
+#docpanel h4 { margin: 0 .5rem .4rem 0; font-size: .95rem; }
+#docpanel .docbar { display: flex; justify-content: flex-end; gap: .4rem;
+  margin: -.2rem -.3rem .1rem 0; }
+#docpanel .close { cursor: pointer; border: 0; background: none; font-size: 1rem; }
+#docpanel .back { cursor: pointer; border: 1px solid #aab; background: #eef;
+  border-radius: 4px; font-size: .74rem; padding: .05rem .5rem; }
+#docpanel dt { font-weight: 600; margin-top: .4rem; }
+#docpanel dd { margin: 0 0 .2rem 0; }
+#docpanel .docp { margin: 0 0 .45rem 0; }
+#docpanel .doclist { margin: .1rem 0 .45rem 1.1rem; padding: 0; }
+#docpanel .doclist li { margin: 0 0 .3rem 0; }
+/* the code's own name for a thing, written between backticks in the popup text */
+#docpanel code, #detail-text code { font-family: Consolas, "Courier New", monospace; font-size: .92em;
+  background: #f1f2f4; border-radius: 3px; padding: 0 .2em; }
+h4.kvgroup { margin: .7rem 0 .2rem; font-size: .86rem; color: #22314f; }
+a.term { color: #2a5db0; text-decoration: underline dotted; cursor: pointer; }
+a.term:hover { background: #eef3fb; }
+svg.mini { background: #fbfbf8; border: 1px solid #ddd; border-radius: 6px;
+  width: 100%; height: auto; margin-top: .5rem; }
+svg.mini text { font-size: 11px; }
+svg.mini .sublabel { font-size: 9px; fill: #566; }
+.mini-box { fill: #eef1f7; stroke: #8a96ad; }
+.mini-edge { stroke: #6b7280; stroke-width: 1.3; fill: none; }
+/* the numbered circle is a label, not a control: it is drawn after the boxes and the
+   lines, so without this rule it takes the click meant for the box corner and for the
+   line under it */
+.dg-badge { fill: #22314f; stroke: #fff; stroke-width: 1.2; pointer-events: none; }
+.dg-badge-num { font-size: 9px; fill: #fff; font-weight: 700; pointer-events: none; }
+/* every line is clickable through a wide invisible twin; hover lights the line */
+.dg-hit { stroke: transparent; stroke-width: 12; fill: none; cursor: pointer;
+          pointer-events: stroke; }
+.dg-edge.hot { stroke: #6b3fa0; stroke-width: 2.4; }
+.flowlabel { font-size: 9.5px; fill: #345; }
+.flowlabel.clicky, .mini-node.clicky { cursor: pointer; }
+.flowlabel.clicky:hover { fill: #6b3fa0; }
+.mini-node.clicky:hover rect { stroke: #6b3fa0; stroke-width: 2; }
+.mini-edge.dash { stroke-dasharray: 5 4; }
+.mini-edge.plainline { stroke: #2a5db0; stroke-width: 2; }
+#learnloop { background: #fff; border: 1px solid #ddd; border-radius: 6px;
+             padding: .5rem 1rem .2rem; margin-bottom: .8rem; }
+#learnloop h3 { margin: .1rem 0 .3rem; font-size: .92rem; display: flex;
+                align-items: center; gap: .4rem; }
+@media (max-width: 650px) {
+  /* Keep diagram lettering legible; each panel pans without widening the page. */
+  #learnloop .goal-details, #diagram { overflow-x: auto; }
+  #learnloop svg { min-width: 920px; }
+  #diagram svg { min-width: 1180px; }
+  #learnloop .goal-details[open]::before { content: "Scroll sideways to read the weight-update diagram.";
+    display: block; margin-bottom: .3rem; color: #526075; font-size: .8rem; }
+  #diagram::before { content: "Scroll sideways to read the model diagram.";
+    display: block; margin-bottom: .3rem; color: #526075; font-size: .8rem; }
+}
+#detail { background: #fff; border: 2px solid #4a6ab0; border-radius: 6px;
+          padding: .6rem 1rem; margin-top: .8rem; }
+#detail h3 { margin: .1rem 0 .3rem; font-size: .95rem; display: flex;
+             align-items: center; gap: .5rem; }
+#detail h3 .close { margin-left: auto; cursor: pointer; border: 0;
+                    background: none; font-size: 1.1rem; }
+.wellness-detail-scroll { overflow-x: auto; max-width: 100%; }
+@media (max-width: 900px) {
+  .wellness-detail-scroll svg { min-width: 1260px; }
+  .wellness-detail-scroll::before { content: "Scroll sideways to follow the wellness calculations.";
+    display: block; margin: .5rem 0; color: #526075; font-size: .84rem; }
+}
+/* the detail panel carries the box's whole entry (what it is, when it runs, how it is computed, what
+   would fool it, the live values) above its diagram: the popup's text layout, at the panel's width */
+#detail-text { font-size: .84rem; max-width: 75rem; border-radius: 4px; transition: background .4s; }
+#detail-text.flash { background: #fff3cf; }
+#detail-text dl { margin: .2rem 0 .4rem; }
+#detail-text dt { font-weight: 600; margin-top: .4rem; }
+#detail-text dd { margin: 0 0 .2rem 0; }
+#detail-text .docp { margin: 0 0 .45rem 0; }
+#detail-text .doclist { margin: .1rem 0 .45rem 1.1rem; padding: 0; }
+#detail-text .doclist li { margin: 0 0 .3rem 0; }
+#detail-text h4 { margin: .6rem 0 .2rem; font-size: .9rem; }
+.dg-node.learned rect { stroke: #4a6ab0; stroke-width: 2; }
+.paramtag { font-size: 9px; fill: #4a6ab0; font-weight: 700; pointer-events: none; }
+/* a box's sub-caption and corner count keep their own sizes. ".dg-node text" (a class and an
+   element) outranks ".sublabel" and ".paramtag" (a class each), so until 2026-10-02 both were drawn
+   at 11px inside every box (measured in headless Edge on H84's page) and ran past it; viewer.js
+   node() lays a box's text out for 12, 10 and 9 (one size step larger since Oct 7, 2026: D-E6) */
+.dg-node text.sublabel { font-size: 10px; }
+.dg-node text.paramtag { font-size: 9px; }
+/* the model diagram's own captions (the lines' contracts, the frames' names, the caption band) at the sub-caption's
+   size; the detail diagrams and the learning circle keep 9 (svg.mini .sublabel) */
+#diagram .sublabel { font-size: 10px; }
+/* saved numbers that sit in the optimizer's list but that no loss term reaches:
+   an ordinary thin outline, never the bold learned one, and a grey count */
+.dg-node.nolesson rect { stroke: #8a96ad; stroke-width: 1.2; }
+.paramtag.nolesson { fill: #7a7f8c; font-weight: 600; }
+/* drawn text that opens a popup: the footer's part names, the block-group label and
+   the caption under the world box */
+.docword { fill: #2a5db0; cursor: pointer; text-decoration: underline; }
+.docword:hover { fill: #6b3fa0; }
+.sublabel.clicky { cursor: pointer; text-decoration: underline; }
+.sublabel.clicky:hover { fill: #6b3fa0; }
+/* tour animation: the active slide's own lines march in violet, so they stand out from every other line */
+.dg-edge.flow { stroke: #6b3fa0; stroke-width: 2.2; stroke-dasharray: 7 5;
+                animation: dgmarch 0.9s linear infinite; }
+@keyframes dgmarch { to { stroke-dashoffset: -24; } }
+@media (prefers-reduced-motion: reduce) { .dg-edge.flow { animation: none; } }
+footer { color: #777; font-size: .75rem; padding: 1rem; text-align: center; }
+/* the gain-of-function build (2026-09-22): signed bars (a zero line in the middle, negative to
+   the left in red, positive to the right in blue), the probes' floor-to-goal bar and the plain
+   tables the new panels use */
+.sbars { display: grid; grid-template-columns: max-content 200px max-content;
+         gap: .15rem .6rem; align-items: center; font-size: .8rem; }
+.strack { position: relative; width: 200px; height: .7rem; background: linear-gradient(
+            to right, transparent 99.5px, #999 99.5px, #999 100.5px, transparent 100.5px); }
+.sbar { height: .7rem; background: #4a7ab5; border-radius: 2px; }
+.sbar.neg { background: #b5574a; }
+.pbar { display: flex; align-items: center; gap: .5rem; margin: .2rem 0; }
+.ptrack { width: 240px; height: .7rem; background: #eceef1; border: 1px solid #ccc;
+          border-radius: 3px; }
+.pfill { height: 100%; background: #3a8a5a; border-radius: 2px; }
+table.kvtable { border-collapse: collapse; font-size: .76rem; margin: .3rem 0; }
+table.kvtable th, table.kvtable td { border: 1px solid #ddd; padding: .12rem .35rem;
+  text-align: left; font-variant-numeric: tabular-nums; }
+table.kvtable th { background: #eef1f6; }
+/* A PICTURE, NOT A NUMBER (DESIGN.md section 11, 2026-09-23): a raw internal - a cosine, a
+   correlation, an entropy - drawn as a marker on a track between its two named ends, followed by
+   the words "not yet measured as a count". The marker's place is its style, never text. */
+.pic { display: inline-flex; align-items: center; gap: .35rem; flex-wrap: wrap;
+       font-size: .74rem; margin: .05rem .4rem .05rem 0; }
+.picend { color: #555; white-space: nowrap; }
+.pictrack { position: relative; display: inline-block; width: 110px; height: .55rem;
+            background: #eceef1; border: 1px solid #c8ccd4; border-radius: 3px; }
+.pictrack i { position: absolute; top: -3px; width: 4px; height: calc(100% + 6px);
+              margin-left: -2px; background: #2a5db0; border-radius: 1px; }
+.picnone { position: absolute; left: 45%; top: -4px; color: #999; }
+.picnote { color: #888; font-style: italic; }
+/* THE CODE AND QA MAP (the recovery directive of Oct 5, 2026, sections 7C and 9): the components of a box in its
+   popup and its detail panel, the red QA STALE label, the boxes of a component opened by its address, and the list
+   of every component under the drawing */
+.comp-section { margin-top: .6rem; border-top: 1px solid #dde2ea; padding-top: .4rem; }
+.comp-section > h4 { margin: .2rem 0 .35rem; font-size: .88rem; color: #22314f; }
+.comp-card { border: 1px solid #d5dbe6; border-left: 4px solid #4a6ab0; border-radius: 5px; padding: .4rem .6rem;
+  margin: 0 0 .5rem; background: #fbfcfe; overflow-wrap: anywhere; }
+.comp-card.stale { border-left-color: #b42318; }
+.comp-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: .2rem .5rem; margin-bottom: .2rem; }
+.comp-id { font-family: Consolas, "Courier New", monospace; font-weight: 700; font-size: .86rem; }
+.comp-name { color: #444; }
+.qa-stale { display: inline-block; background: #b42318; color: #fff; font-weight: 700; font-size: .72rem;
+  letter-spacing: .04em; padding: .05rem .4rem; border-radius: 3px; }
+.comp-does { margin: .15rem 0 .35rem; }
+.comp-card .kv { grid-template-columns: minmax(6.5rem, 9rem) minmax(0, 1fr); }
+.comp-list { margin: 0; padding-left: 1rem; }
+.comp-error { color: #b42318; font-weight: 600; margin: .3rem 0; }
+.dg-node.comp-hl rect { stroke: #b42318; stroke-width: 3; fill: #fff1f0; }
+.comp-index { background: #fff; border: 1px solid #ddd; border-radius: 6px; padding: .5rem .8rem; margin-top: .8rem; }
+.comp-index > summary { cursor: pointer; font-weight: 600; }
+.comp-index h4 { margin: .6rem 0 .25rem; font-size: .86rem; color: #22314f; }
+.comp-index-list { display: flex; flex-wrap: wrap; gap: .3rem; }
+.comp-index-item { border: 1px solid #c5cddb; background: #f6f8fc; border-radius: 4px; padding: .15rem .45rem;
+  cursor: pointer; font-size: .8rem; text-align: left; }
+.comp-index-item code { font-weight: 700; }
+.comp-index-item .qa-stale { margin-left: .35rem; }
+.comp-index-item.stale { border-color: #e2a59e; }
+/* THE PARTS BEING WORKED ON (D-E2): the chip prints the repair state's own word, orange for a solid mark, dashed
+   orange for a dashed one, grey for a state listed without a ring; the list under the model diagram, one line per item */
+.state-chip { display: inline-block; font-size: .7rem; font-weight: 700; letter-spacing: .02em; padding: 0 .4rem;
+  border-radius: 3px; margin-left: .35rem; line-height: 1.35rem; white-space: nowrap; vertical-align: baseline; }
+.state-chip.solid { background: #b35c00; color: #fff; border: 1.5px solid #b35c00; }
+.state-chip.dashed { background: #fff; color: #8a4500; border: 1.5px dashed #b35c00; }
+.state-chip.plain { background: #f1f2f4; color: #3d4350; border: 1px solid #9aa0aa; }
+#worked-on { margin-top: .6rem; border-top: 1px solid #e5e8ee; padding-top: .45rem; font-size: .84rem; }
+#worked-on > h4 { margin: .1rem 0 .25rem; font-size: .9rem; color: #22314f; }
+#worked-on .worked-rule { margin: 0 0 .4rem; max-width: 88ch; }
+.ring-key { display: inline-block; width: 1.4rem; height: .8rem; border: 2px solid #b35c00; border-radius: 3px;
+  vertical-align: middle; margin: 0 .2rem; }
+.ring-key.dashed { border-style: dashed; }
+.worked-list { margin: 0; padding-left: 1.1rem; }
+.worked-list > li { margin: 0 0 .45rem; overflow-wrap: anywhere; }
+.worked-name { border: 0; background: none; padding: 0; cursor: pointer; font: inherit; color: #2a5db0;
+  text-decoration: underline; text-align: left; }
+.worked-name code { font-weight: 700; }
+.worked-ends { margin: .1rem 0 0; padding-left: 1rem; color: #3d4350; }
+.worked-ends li { margin: .1rem 0; }
+.worked-note > summary { cursor: pointer; color: #2a5db0; }
+.worked-note > p { margin: .15rem 0 .25rem; max-width: 110ch; }
+
+/* The goal loop uses a four-column grid and explicit feedback rows. At narrow
+   widths it reads top-to-bottom; text keeps its font size rather than shrinking. */
+.goal-lead { font-size: 1rem; max-width: 105ch; margin: .55rem 0; }
+.goal-run-state { color: #42546c; font-size: .84rem; margin: .4rem 0 1rem; }
+.goal-flow { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 1.5rem; list-style: none; padding: 0; margin: 0 0 1rem; }
+.goal-card { position: relative; min-width: 0; border: 1px solid #9baec9;
+  border-top: 4px solid #536fa0; border-radius: 6px; background: #f4f7fc; padding: .8rem; }
+.goal-card:not(:last-child)::after { content: "→"; position: absolute; right: -1.3rem;
+  top: 45%; color: #536fa0; font-size: 1.2rem; }
+.goal-card h4, .goal-return h4 { display: flex; align-items: baseline; gap: .4rem;
+  font-size: .96rem; line-height: 1.35; margin: 0 0 .65rem; }
+.goal-card h4 .doc-btn, .goal-return h4 .doc-btn { margin-left: auto; }
+.goal-number { font-size: .8rem; color: #536fa0; }
+.goal-card p, .goal-return p { margin: .45rem 0 0; font-size: .9rem; line-height: 1.5; }
+.goal-card .goal-card-note { margin-top: .8rem; color: #445268; font-size: .84rem; }
+.goal-feedback { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; }
+.goal-return { border: 1px solid #aac8b3; border-left: 4px solid #527f60;
+  border-radius: 5px; padding: .75rem .9rem; background: #f3f8f4; }
+.goal-caution { background: #fff8e9; border-left: 4px solid #ba8b31; padding: .75rem .9rem;
+  line-height: 1.5; margin: 1rem 0 .7rem; }
+.goal-details { border-top: 1px solid #dce2eb; padding-top: .6rem; }
+.goal-details > summary { cursor: pointer; color: #254c80; font-weight: 600; }
+.goal-details > p { max-width: 105ch; }
+@media (max-width: 950px) {
+  .goal-flow { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .goal-card:nth-child(2)::after { content: none; }
+}
+@media (max-width: 600px) {
+  .goal-flow, .goal-feedback { grid-template-columns: 1fr; }
+  .goal-flow { gap: 1.5rem; }
+  .goal-card:not(:last-child)::after { content: "↓"; top: auto; right: 50%; bottom: -1.45rem; }
+  .goal-card h4, .goal-return h4 { font-size: 1rem; }
+}
+
+/* the gated parts' switches (Oct 15, 2026): a part shown although this run has it off is faint and dashed */
+.dg-node.offrun rect { stroke-dasharray: 4 3; opacity: 0.55; }
+.dg-node.offrun text { opacity: 0.6; }
+.dg-edge.offrun { opacity: 0.45; }
+.gate-panel { margin: 6px 0 8px; border: 1px solid #ddd; border-radius: 6px; padding: 4px 10px; background: #fafbfd; }
+.gate-panel summary { cursor: pointer; font-size: 13px; color: #2a3a57; }
+.gate-panel .gate-note { font-size: 12px; color: #555; margin: 6px 0; }
+.gate-panel .gate-table { border-collapse: collapse; font-size: 12px; margin: 4px 0; }
+.gate-panel .gate-table th, .gate-panel .gate-table td { text-align: left; padding: 2px 8px; border-bottom: 1px solid #eee;
+  vertical-align: top; }
+.gate-panel .gate-table tr.gate-changed td { background: #fff6e0; }
+.gate-panel .gate-buttons { margin: 6px 0 4px; display: flex; gap: 8px; }
+.gate-panel button { font-size: 12px; padding: 2px 10px; cursor: pointer; }
+
+/* Plain entry first; technical evidence remains available below it. */
+.plain-part-explanation {font-size:17px;line-height:1.55;max-width:78ch;}
+.plain-part-explanation .note {font-size:15px;line-height:1.5;background:#edf4fa;padding:12px;border-left:4px solid #4065a5;}
+.plain-part-explanation details {margin:12px 0;}
+.plain-part-explanation details[open] {max-width:100%;}
+#detail > details {margin:12px 0;}
+
+/* Self architecture review, Oct28 */
+.self-guide{font:18px/1.55 system-ui,sans-serif;color:#163346;background:#fff;border:1px solid #cad9e2;border-radius:10px;padding:28px;margin:22px 0;overflow-wrap:anywhere}
+.self-guide header{display:block;position:static;background:transparent;color:#163346;padding:0;border:0;height:auto;min-height:0}.self-guide header p{color:#163346}.self-guide header .sg-kicker{color:#396277}.self-guide header h2{color:#12374c}
+.self-guide h2{font-size:1.9rem;line-height:1.2;color:#12374c;margin:8px 0 18px}.self-guide h3{font-size:1.35rem;line-height:1.3;color:#12374c;margin:24px 0 12px}.self-guide h4{font-size:1.06rem;line-height:1.4;margin:0 0 12px;color:#12374c}.self-guide p{max-width:86ch;margin:12px 0 16px}.self-guide .sg-kicker{font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.09em;color:#396277}.self-guide a{color:#0e5f95;text-decoration:underline}.self-guide code{font-size:.88em;background:#edf2f5;color:#17435d;padding:1px 4px;border-radius:3px}.sg-tabs{display:flex;flex-wrap:wrap;gap:9px;margin:22px 0}.self-guide .sg-tabs button{font:600 16px/1.3 system-ui,sans-serif;background:#edf3f6;border:1px solid #94b1c0;color:#163b51;border-radius:6px;padding:12px 16px;cursor:pointer}.self-guide .sg-tabs button[aria-pressed=true]{background:#165777;color:#fff}.self-guide button:focus-visible,.self-guide summary:focus-visible{outline:3px solid #d48b11;outline-offset:3px}.sg-topic[hidden]{display:none}.sg-scroll{overflow-x:auto;max-width:100%;margin:20px 0;background:#f8fbfc;border:1px solid #d8e5ec;border-radius:8px}.sg-map{display:block;width:100%;min-width:940px}.sg-box rect{fill:#edf2f5;stroke:#779bac;stroke-width:1.5}.sg-neural rect{fill:#e5f2ed;stroke:#34816b;stroke-width:2}.sg-map text{font:600 17px system-ui,sans-serif;fill:#163346;text-anchor:middle}.sg-map .sg-small{font-size:15px;font-weight:400}.sg-map .sg-label{font-size:13px;font-weight:400;fill:#30596e}.sg-arrow{fill:none;stroke:#2c6682;stroke-width:2;marker-end:url(#sg-arrow)}.sg-caption{font-size:16px;color:#36596b}.sg-route{border-left:4px solid #377e9b;background:#eef6fa;padding:15px 20px;margin:18px 0}.sg-route p{margin:8px 0}.sg-run{border:1px solid #d3b77b;background:#fff9ed;padding:16px;font-size:16px}.sg-part-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}.sg-part-grid article{border:1px solid #cad9e2;background:#f5f8fa;border-radius:7px;padding:20px}.sg-part-grid .sg-neural-card{background:#edf7f1}.self-guide details{padding:13px 16px;border:1px solid #ccdce4;background:#f8fbfc;border-radius:6px;margin:22px 0;font-size:16px}.self-guide summary{cursor:pointer;font-weight:650;color:#1d526f}.sg-table-scroll{overflow-x:auto;max-width:100%}.self-guide table{border-collapse:collapse;width:100%;font-size:16px;min-width:560px}.self-guide td,.self-guide th{padding:13px;text-align:left;vertical-align:top;border-bottom:1px solid #ccdce4;white-space:normal}.self-guide th{background:#eaf2f6;color:#163346}.sg-story{padding-left:24px;max-width:88ch}.sg-story li{margin:15px 0}.self-guide .sg-evidence{margin-top:30px}.sg-standalone{margin:0;background:#edf2f5}.sg-standalone>main{max-width:1220px;margin:auto;padding:18px}.sg-standalone .sg-home{font:16px system-ui,sans-serif}.dg-node.offrun rect{stroke:#9ba7b3;stroke-dasharray:4 3;fill:#eff1f4}.dg-node.offrun text{fill:#596575}
+.sg-spec-loop{border-top:3px solid #377e9b;margin-top:24px}.sg-five-stages{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:18px;list-style:none;padding:0;margin:22px 0}.sg-five-stages li{position:relative;background:#edf7f1;border:1px solid #83a995;border-radius:8px;padding:16px;font-size:16px;line-height:1.5}.sg-five-stages strong{display:block;color:#154b3c;margin-bottom:10px}.sg-five-stages span{display:block}.sg-five-stages li:not(:last-child)::after{content:'\2192';position:absolute;right:-18px;top:40%;font-size:20px;color:#27694e}.sg-feedback{border-left:4px solid #34816b;background:#edf7f1;padding:14px 18px}
+@media(max-width:850px){.sg-five-stages{grid-template-columns:1fr;gap:20px}.sg-five-stages li:not(:last-child)::after{content:'\2193';top:auto;bottom:-23px;right:50%}}
+@media(max-width:700px){.self-guide{padding:18px 14px;font-size:17px}.self-guide h2{font-size:1.5rem}.sg-part-grid{grid-template-columns:1fr}.sg-tabs{display:grid;grid-template-columns:1fr 1fr}.self-guide .sg-tabs button{font-size:14px;padding:10px}.sg-standalone>main{padding:6px}.self-guide .sg-route{padding:12px}.self-guide .sg-scroll{margin-left:0;margin-right:0}.self-guide .sg-table-scroll{overflow:visible}.self-guide table{display:block;min-width:0}.self-guide thead{display:none}.self-guide tbody{display:block}.self-guide tr{display:block;margin:12px 0;border:1px solid #ccdce4;border-radius:6px;background:#f8fbfc}.self-guide td{display:block;overflow-wrap:normal;word-break:normal}.self-guide td:last-child{border-bottom:0}.self-guide td::before{content:attr(data-label);display:block;font-weight:700;color:#1d526f;margin-bottom:6px}}

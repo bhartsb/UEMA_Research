@@ -1,0 +1,235 @@
+{
+ "tool": "rhl_common_starts_v1",
+ "kind": "second_endpoint_pass_trigger",
+ "verdict": "pass",
+ "problems": [],
+ "written": "Oct 11, 2026 8:54:46 PM PDT",
+ "passes": {
+  "baseline_1": {
+   "pass_label": "baseline_1",
+   "checkpoint": "D:/UEMA_Research/Saved/mimo_bridge/experiments/H84_fresh_drivers_20260918_seg41j_1526/checkpoints/ckpt_step_484675",
+   "checkpoint_step": 484675,
+   "model_sha256": "f021c515ae86a771ee8fc2cbc31099a5119e4b2b71c757211761643ed5df6ddd",
+   "starts_file": "D:/UEMA_Research/external/D/UEMA_scratch/remembered_hand_learning_2026-10-11/starts.json",
+   "starts_sha256": "4b3c70acdd350c39a319befb61853d3a53173c2090b4c9bc980956373b09b5b5",
+   "file": "D:/UEMA_Research/external/D/UEMA_scratch/remembered_hand_learning_2026-10-11/passes/baseline_1.json",
+   "file_sha256": "cc0917ea4455c71d06f5c0ff69fcf18bddc8de7ab6776b7e9948b5e5bb22f720"
+  },
+  "baseline_2": {
+   "pass_label": "baseline_2",
+   "checkpoint": "D:/UEMA_Research/Saved/mimo_bridge/experiments/H84_fresh_drivers_20260918_seg41j_1526/checkpoints/ckpt_step_484675",
+   "checkpoint_step": 484675,
+   "model_sha256": "f021c515ae86a771ee8fc2cbc31099a5119e4b2b71c757211761643ed5df6ddd",
+   "starts_file": "D:/UEMA_Research/external/D/UEMA_scratch/remembered_hand_learning_2026-10-11/starts.json",
+   "starts_sha256": "4b3c70acdd350c39a319befb61853d3a53173c2090b4c9bc980956373b09b5b5",
+   "file": "D:/UEMA_Research/external/D/UEMA_scratch/remembered_hand_learning_2026-10-11/passes/baseline_2.json",
+   "file_sha256": "e393390b4bd514d3dd0f70965954dbe9cce7d39622fb10e3e5135d1f8f8ffda6"
+  },
+  "baseline_3": {
+   "pass_label": "baseline_3",
+   "checkpoint": "D:/UEMA_Research/Saved/mimo_bridge/experiments/H84_fresh_drivers_20260918_seg41j_1526/checkpoints/ckpt_step_484675",
+   "checkpoint_step": 484675,
+   "model_sha256": "f021c515ae86a771ee8fc2cbc31099a5119e4b2b71c757211761643ed5df6ddd",
+   "starts_file": "D:/UEMA_Research/external/D/UEMA_scratch/remembered_hand_learning_2026-10-11/starts.json",
+   "starts_sha256": "4b3c70acdd350c39a319befb61853d3a53173c2090b4c9bc980956373b09b5b5",
+   "file": "D:/UEMA_Research/external/D/UEMA_scratch/remembered_hand_learning_2026-10-11/passes/baseline_3.json",
+   "file_sha256": "15e9ef98c2d0f5aac11d24c958de7e3b8c70c0e24eb1777bf956678416d10530"
+  },
+  "endpoint_1": {
+   "pass_label": "endpoint_1",
+   "checkpoint": "D:\\UEMA_Research\\Saved\\mimo_bridge\\experiments\\H84_fresh_drivers_20260918_seg41r_1539/checkpoints/ckpt_step_489350",
+   "checkpoint_step": 489350,
+   "model_sha256": "49bbd9e036ec1387b8c50a56153f06ecc86bbb894e4c593e165c84a2e59166fe",
+   "starts_file": "D:/UEMA_Research/external/D/UEMA_scratch/remembered_hand_learning_2026-10-11/starts.json",
+   "starts_sha256": "4b3c70acdd350c39a319befb61853d3a53173c2090b4c9bc980956373b09b5b5",
+   "file": "D:/UEMA_Research/external/D/UEMA_scratch/remembered_hand_learning_2026-10-11/passes/endpoint_1.json",
+   "file_sha256": "29334d832a46c9bc8676deb28454187391aaf668d126238256ab4164a8a0d0b4"
+  }
+ },
+ "required": true,
+ "required_frozen": true,
+ "required_by_adopted_rule": true,
+ "frozen": {
+  "rule": "run one second endpoint pass when any body's endpoint pass 1 mean of hand_shape_error lies outside the closed range between that body's two baseline means (the plan's trigger; not a pass or fail line)",
+  "measure": "hand_shape_error",
+  "bodies": {
+   "4": {
+    "baseline_1_mean": 4.325195142472839,
+    "baseline_2_mean": 4.294768075328521,
+    "endpoint_1_mean": 4.02771597632781,
+    "outside": true
+   },
+   "5": {
+    "baseline_1_mean": 3.6272973787311096,
+    "baseline_2_mean": 3.16209339685244,
+    "endpoint_1_mean": 3.315547655375426,
+    "outside": false
+   },
+   "6": {
+    "baseline_1_mean": 3.904772379269231,
+    "baseline_2_mean": 3.8732453535460745,
+    "endpoint_1_mean": 2.557464419223425,
+    "outside": true
+   },
+   "7": {
+    "baseline_1_mean": 3.434443299145082,
+    "baseline_2_mean": 3.411370158080093,
+    "endpoint_1_mean": 3.7519122969408953,
+    "outside": true
+   }
+  },
+  "bodies_outside": [
+   4,
+   6,
+   7
+  ],
+  "required": true
+ },
+ "adopted_rule_on_endpoint_1": {
+  "rule": "A_s = mean of the 4 end hand-shape errors at start step s; reference = 3 baseline passes, 81 same-model combined changes; distinguishable only when every endpoint A_s lies beyond all 3 baseline A_s at all start steps and the combined change beyond all 81 (module text)",
+  "endpoint_passes": 1,
+  "steps": [
+   0,
+   1,
+   2,
+   3
+  ],
+  "step_means": {
+   "baseline": [
+    {
+     "0": 4.786705290644592,
+     "1": 2.9056551004991955,
+     "2": 4.212644344073234,
+     "3": 3.38670346440124
+    },
+    {
+     "0": 4.608351697981397,
+     "1": 2.7325929086044156,
+     "2": 3.887198321585283,
+     "3": 3.5133340556360326
+    },
+    {
+     "0": 4.548009342420233,
+     "1": 2.7974508098355275,
+     "2": 3.861354327705118,
+     "3": 3.6074074811038663
+    }
+   ],
+   "endpoint": [
+    {
+     "0": 4.178474450271551,
+     "1": 2.716746782473667,
+     "2": 3.7014939425497877,
+     "3": 3.0559251725725507
+    }
+   ]
+  },
+  "below_all_baselines": {
+   "0": true,
+   "1": true,
+   "2": true,
+   "3": true
+  },
+  "above_all_baselines": {
+   "0": false,
+   "1": false,
+   "2": false,
+   "3": false
+  },
+  "step_condition": {
+   "improvement": true,
+   "worsening": false
+  },
+  "combined_change": -0.3409880609612846,
+  "reference": {
+   "count": 81,
+   "lowest": -0.15767837688713937,
+   "highest": 0.21122868805906603,
+   "values": [
+    -0.15767837688713937,
+    -0.14798687918207742,
+    -0.135049993551703,
+    -0.1333566639254724,
+    -0.12535849584664105,
+    -0.12366516622041046,
+    -0.11072828059003603,
+    -0.11019190517409205,
+    -0.10103678288497409,
+    -0.1005004074690301,
+    -0.09278005492659691,
+    -0.08756352183865568,
+    -0.08587019221242509,
+    -0.08308855722153496,
+    -0.07787202413359373,
+    -0.07617869450736314,
+    -0.07491437062365447,
+    -0.07015167159116054,
+    -0.06816739630300483,
+    -0.06522287291859252,
+    -0.06324180887698871,
+    -0.06046017388609859,
+    -0.05847589859794289,
+    -0.05355031117192677,
+    -0.052285987288218094,
+    -0.050592657661987506,
+    -0.04529358321354959,
+    -0.04384568334133787,
+    -0.04259448958315615,
+    -0.04090115995692556,
+    -0.035602085508487646,
+    -0.034154185636275924,
+    -0.02796427432655113,
+    -0.02594462074909587,
+    -0.022665199878113218,
+    -0.020680924589957517,
+    -0.018272776621489184,
+    -0.012973702173051271,
+    -0.01098942688489557,
+    -0.01001604866311201,
+    -0.003316237413659495,
+    -0.0032690743424623747,
+    -0.0016229077874289066,
+    -0.00032455095805006273,
+    0.003640788371709447,
+    0.006422423362599572,
+    0.012612334672324366,
+    0.013332286076771394,
+    0.014596609960480067,
+    0.02100547554800747,
+    0.021541850963951448,
+    0.022303832377386312,
+    0.024288107665542014,
+    0.03891832292214703,
+    0.03895370121144659,
+    0.04417023429938782,
+    0.04421739737058494,
+    0.04586356392561841,
+    0.04860982062720898,
+    0.05390889507564689,
+    0.05681938551438903,
+    0.061582084546882965,
+    0.06356635983503867,
+    0.06849194726105479,
+    0.0794477688498254,
+    0.07949493192102253,
+    0.081141098476056,
+    0.08644017292449391,
+    0.08788807279670563,
+    0.08918642962608447,
+    0.10376948181149237,
+    0.10906855625993028,
+    0.11105283154808598,
+    0.12171770747493149,
+    0.12846468179558113,
+    0.13537454450975295,
+    0.14434609081036787,
+    0.14633036609852357,
+    0.17065207906019053,
+    0.17595115350862844,
+    0.21122868805906603
+   ]
+  },
+  "conclusion": "improvement distinguishable from repeat variation",
+  "false_call": "if nothing changed and the passes are exchangeable draws, a false call in one direction has chance (1/4)^4 = 1 in 256 with one endpoint pass and (1/10)^4 = 1 in 10,000 with two (module text)"
+ }
+}

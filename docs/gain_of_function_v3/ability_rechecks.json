@@ -1,0 +1,255 @@
+{
+  "schema": 2,
+  "lineage": "H84_fresh_drivers_20260918",
+  "purpose": "Run physical choice comparisons automatically after repaired training advances; keep every completion and failure receipt.",
+  "classes": {
+    "frequent": "Runs every every_steps training updates and may pause training for its own saved window.",
+    "triggered": "Runs when one of its declared triggers fires, joining the next saved window, or at its longest interval (every_steps). It pauses training by itself only at that interval, or once ride_along_steps have passed since a trigger fired without a window. Triggers: a committed change to its declared code since its last round (code), a change of the production run's flags (flags), a listed task's result crossing its declared line, its own included (lines), a live gauge moving more than its tolerance since its last round (gauges).",
+    "decided": "2026-09-25, the operator's decision of 9:09 AM PDT (docs/gain_of_function_v3/WORKLOG.md, 'Operator decisions'): split the tests into cheap ones that run often and heavy ones that run less often or on a trigger. Classes, cadences, tolerances and the arithmetic of the expected training break, from the scheduler's receipts: docs/gain_of_function_v4/agents/scheduler_classes_2026-09-25.md."
+  },
+  "ride_along_steps": 3000,
+  "tasks": [
+    {
+      "id": "body_and_synergy",
+      "title": "Reachable body goals and coordinated control",
+      "script": "docs/gain_of_function_v3/compare_hand_body_goals_2026-09-24.py",
+      "arguments": [
+        "--goal-suite",
+        "hand_and_body"
+      ],
+      "class": "triggered",
+      "first_step": 380500,
+      "every_steps": 12000,
+      "memory_gib": 12,
+      "triggers": {
+        "code": [
+          "Source/Python/lem/model/physical_goal.py",
+          "Source/Python/lem/model/motor_synergy.py",
+          "Source/Python/lem/model/intention_generator.py",
+          "Source/Python/lem/model/forward_model.py",
+          "Source/Python/mimo_bridge/lem_model.py",
+          "Source/Python/mimo_bridge/env.py",
+          "Source/Python/mimo_bridge/hand_target_control.py",
+          "Source/Python/mimo_bridge/action_decoder.py"
+        ],
+        "flags": true,
+        "lines": [
+          "body_and_synergy",
+          "hand_following"
+        ]
+      },
+      "depends": [
+        "Source/Python/mimo_bridge/tools/gof_probe_harness.py",
+        "Source/Python/mimo_bridge/tools/motor_reachability_probe.py",
+        "Source/Python/mimo_bridge/tools/command_ranking.py",
+        "docs/gain_of_function_v3/compare_synergy_physical.py",
+        "docs/gain_of_function_v3/audit_hand_target_conflicts.py",
+        "Source/Python/mimo_bridge/copied_execution.py"
+      ]
+    },
+    {
+      "id": "fixed_start_body_and_synergy",
+      "title": "Reachable body goals from fixed starts, anchored search",
+      "script": "docs/gain_of_function_v3/fixed_probe_set_2026-10-18.py",
+      "path_arguments": {
+        "--frozen-set-receipt": "docs/gain_of_function_v3/measurements/fixed_probe_set_494025.receipt.json",
+        "--anchor": "docs/gain_of_function_v3/measurements/fixed_probe_anchor_494025.json",
+        "--reference-receipt": "docs/gain_of_function_v3/measurements/fixed_probe_reference_494025.json"
+      },
+      "arguments": [
+        "--reference-receipt-sha256",
+        "cbf88ff02d89794aef5a73145a11aef5b094a8b2ba7d67a7da2ecea6eaf59c3b"
+      ],
+      "ready": "October 18, 2026, 9:25 PM PDT: ready for the first scheduled checkpoint at or beyond 506025, subject to the separately authorized production continuation and its actual lineage (proxy decision fixed-probe-repair-accepted-scheduling-ready-20261018, under the operator's October 13, 2026 delegation; metadata only, not a scheduler or supervisor start, an unpause, an experiment launch or an adoption decision). The first scheduled round will be the first real integration run of this repaired version (script SHA-256 70e37ff3...); until it finishes it is labelled so, and a failed integration reads INVALID with its reason, never a gain. Lineage: the reference 494025 (D:/UEMA_Research/weights/b1_continue_B1K_skip13_492800/run/checkpoints/ckpt_step_494025) is the selected measurement reference, not an authorization to resume that branch; H84_fresh_drivers_20260918 is a discovery prefix only; at the separately authorized production launch the scheduler is bound to that exact approved run, its checkpoint ancestry verified, never a sibling experiment checkpoint or the stale seg41r pointer. every_steps 12000 and the bound reference are unchanged.",
+      "gain_rule": "proxy decision movement-viewer-fixed-probe-decision-20261018 (October 18, 2026, 7:38 PM PDT, under the operator's October 13, 2026 delegation; message SHA-256 e56108dfe0086b719b101068062876a6106116a4f6615f33efffbdfddd370d21). Each planner arm at the scheduled checkpoint is compared with the same arm of the bound reference run at 494,025: the receipt docs/gain_of_function_v3/measurements/fixed_probe_reference_494025.json (SHA-256 cbf88ff02d89794aef5a73145a11aef5b094a8b2ba7d67a7da2ecea6eaf59c3b; the anchored run Saved/mimo_bridge/fixed_probe_set/anchored_494025, every file it reads named with its SHA-256; row fixed_start_reference_receipt_494025), passed as --reference-receipt with --reference-receipt-sha256. DIRECT is the primary arm: line met when its paired 95 percent interval over the 8 bodies (per body the mean over the 5 goals of this checkpoint's physical goal error minus the reference's; 10,000 draws, seed 641) lies below 0; synergy is reported with the same arithmetic and never changes the line; a broken pairing, a missing or differing mandatory value or a nonfinite value makes the comparison invalid, and the scheduler's validator refuses such a result (INVALID). first_step 506,025 = 494,025 + 12,000, not 494,026 (no pause for a one-model-step comparison); the floor holds for triggers and ride-along selection (ability_rechecks.schedule and due_checkpoint); a candidate checkpoint is a complete checkpoint of the supervisor's active run whose folder name starts with the manifest's lineage (ability_rechecks.cycle, training_continuation.complete_candidates); memory_gib 12 and the resource and preservation guards are unchanged. Recomputed from the saved outputs: at 483,411 valid and not met (direct +0.0199, interval -0.0214 to +0.0671; synergy +0.0116, interval -0.0195 to +0.0419; row fixed_start_gain_483411); the reference against itself valid, 0, not met (row fixed_start_gain_494025_itself).",
+      "enabled_earlier": "Made under the earlier criterion (the body comparison's line: a planner search's interval of arm minus controller below 0), before the gain rule: October 18, 2026, 7:06 PM PDT: enabled on the anchored mode (path argument --anchor docs/gain_of_function_v3/measurements/fixed_probe_anchor_494025.json, SHA-256 a44609442c974826c0526cc459aaab1b948ca8820f879d60a9d1e47a8c994a2f). first_step 494026: the first checkpoint after 494,025, where the frozen set and its anchor were made and checked; with no completed round on record the scheduler takes the first complete checkpoint at or after it (due_checkpoint) and, like body_and_synergy (due since its step 484,800), may ask for a saved window once the live step reaches it. Evidence: rows fixed_start_reference_normal_494025, fixed_start_set_make_494025, fixed_start_equality_494025_bodies2, fixed_start_equality_494025_bodies8, fixed_start_first_comparison_483411, fixed_start_anchor_make_494025, fixed_start_anchored_equality_494025_recheck, fixed_start_anchored_comparison_483411, fixed_start_anchored_equality_494025_scheduled_version, each a sealed PASS. HELD since October 18, 2026, 7:17 PM PDT: the registry row fixed_start_body_and_synergy is blocked until its pass line compares like with like (the line compares the anchored planner searches with each checkpoint's own controller command and reads met at 483,411 from that command distance alone); the scheduler refuses the task while the block stands.",
+      "class": "triggered",
+      "first_step": 506025,
+      "every_steps": 12000,
+      "memory_gib": 12,
+      "triggers": {
+        "code": [
+          "Source/Python/lem/model/physical_goal.py",
+          "Source/Python/lem/model/motor_synergy.py",
+          "Source/Python/lem/model/intention_generator.py",
+          "Source/Python/lem/model/forward_model.py",
+          "Source/Python/mimo_bridge/lem_model.py",
+          "Source/Python/mimo_bridge/env.py",
+          "Source/Python/mimo_bridge/hand_target_control.py",
+          "Source/Python/mimo_bridge/action_decoder.py"
+        ],
+        "flags": true,
+        "lines": [
+          "fixed_start_body_and_synergy",
+          "body_and_synergy",
+          "hand_following"
+        ]
+      },
+      "depends": [
+        "Source/Python/mimo_bridge/tools/gof_probe_harness.py",
+        "Source/Python/mimo_bridge/tools/motor_reachability_probe.py",
+        "Source/Python/mimo_bridge/tools/command_ranking.py",
+        "docs/gain_of_function_v3/compare_synergy_physical.py",
+        "docs/gain_of_function_v3/audit_hand_target_conflicts.py",
+        "Source/Python/mimo_bridge/copied_execution.py",
+        "docs/gain_of_function_v3/compare_hand_body_goals_2026-09-24.py",
+        "docs/gain_of_function_v3/measurements/fixed_probe_set_494025.receipt.json",
+        "docs/gain_of_function_v3/measurements/fixed_probe_anchor_494025.json",
+        "docs/gain_of_function_v3/measurements/fixed_probe_reference_494025.json"
+      ]
+    },
+    {
+      "id": "chosen_self_touch",
+      "title": "Choose a reachable self-touch against alternative commands",
+      "script": "docs/gain_of_function_v3/probe_saved_self_touch_choices.py",
+      "held": "2026-09-25 12:56 AM PDT: held (first_step 999999999, planned 380500; the next round was due at step 402,100). The independent review of the new three-layer self-touch test found that its prediction and selection scores can pass for the wrong reason: the selection score does not use the planner's own effort term and ignores how the planner picks finger poses; it counts a pair as 'wellness prefers the touch' on differences far smaller than the evaluator can tell apart; neither score has a matched control, so 50 of 100 is not the chance line; and one body with many pairs can carry the verdict. The round runs again once the fixes are made and reviewed.",
+      "class": "triggered",
+      "first_step": 999999999,
+      "every_steps": 12000,
+      "memory_gib": 12,
+      "triggers": {
+        "code": [
+          "Source/Python/lem/model/contact_head.py",
+          "Source/Python/lem/model/contact_wellness.py",
+          "Source/Python/lem/model/wellness.py",
+          "Source/Python/lem/model/intention_generator.py",
+          "Source/Python/mimo_bridge/lem_model.py",
+          "Source/Python/mimo_bridge/env.py",
+          "Source/Python/mimo_bridge/virtual_skin.py",
+          "Source/Python/mimo_bridge/skin_contract.py"
+        ],
+        "flags": true,
+        "lines": [
+          "chosen_self_touch"
+        ]
+      },
+      "depends": [
+        "Source/Python/mimo_bridge/tools/gof_probe_harness.py",
+        "Source/Python/mimo_bridge/copied_execution.py"
+      ]
+    },
+    {
+      "id": "gaze_prediction",
+      "title": "Predict eye movement and the resulting view",
+      "script": "docs/gain_of_function_v3/probe_saved_gaze.py",
+      "class": "triggered",
+      "first_step": 380500,
+      "every_steps": 12000,
+      "memory_gib": 12,
+      "triggers": {
+        "code": [
+          "Source/Python/lem/model/efference.py",
+          "Source/Python/lem/model/prediction_heads.py",
+          "Source/Python/lem/model/persistent_memory.py",
+          "Source/Python/lem/model/forward_model.py",
+          "Source/Python/lem/model/input_conditioning.py",
+          "Source/Python/lem/model/activation_compensation.py",
+          "Source/Python/lem/model/encoders",
+          "Source/Python/mimo_bridge/lem_model.py",
+          "Source/Python/mimo_bridge/gaze_reflex.py",
+          "Source/Python/mimo_bridge/vision_adapter.py",
+          "Source/Python/mimo_bridge/env.py"
+        ],
+        "flags": true,
+        "gauges": [
+          {
+            "name": "eye_forecast_share_150ms",
+            "tolerance": 0.07
+          }
+        ],
+        "lines": [
+          "gaze_prediction"
+        ]
+      },
+      "depends": [
+        "Source/Python/mimo_bridge/tools/gof_probe_harness.py",
+        "Source/Python/mimo_bridge/tools/gof_probe_gaze.py",
+        "Source/Python/mimo_bridge/copied_execution.py"
+      ]
+    },
+    {
+      "id": "hand_following",
+      "title": "Opening, closing and selective finger following",
+      "script": "docs/gain_of_function_v3/qualify_hand_execution_2026-09-24.py",
+      "class": "triggered",
+      "first_step": 380500,
+      "every_steps": 12000,
+      "memory_gib": 4,
+      "triggers": {
+        "code": [
+          "Source/Python/mimo_bridge/env.py",
+          "Source/Python/mimo_bridge/hand_target_control.py",
+          "Source/Python/mimo_bridge/action_decoder.py"
+        ],
+        "flags": true,
+        "gauges": [
+          {
+            "name": "hand_joint_error_deg",
+            "tolerance": 1.65
+          }
+        ],
+        "lines": [
+          "hand_following",
+          "hand_memory_route"
+        ]
+      },
+      "depends": [
+        "Source/Python/mimo_bridge/tools/gof_probe_harness.py",
+        "Source/Python/mimo_bridge/copied_execution.py"
+      ]
+    },
+    {
+      "id": "planner_candidates",
+      "title": "Why planner choices tie: candidate forecasts, their evaluation, actual outcomes and depth",
+      "script": "docs/gain_of_function_v4/probe_planner_candidates.py",
+      "class": "triggered",
+      "first_step": 399050,
+      "every_steps": 12000,
+      "memory_gib": 12,
+      "triggers": {
+        "code": [
+          "Source/Python/lem/model/intention_generator.py",
+          "Source/Python/lem/model/predictive_state.py",
+          "Source/Python/lem/model/wellness.py",
+          "Source/Python/lem/model/wellness_channels.py",
+          "Source/Python/lem/model/forward_model.py",
+          "Source/Python/mimo_bridge/causal_chain.py",
+          "Source/Python/mimo_bridge/hand_target_control.py",
+          "Source/Python/mimo_bridge/lem_model.py"
+        ],
+        "flags": true,
+        "lines": [
+          "planner_candidates",
+          "body_and_synergy"
+        ]
+      },
+      "depends": [
+        "Source/Python/mimo_bridge/tools/gof_probe_harness.py",
+        "Source/Python/mimo_bridge/tools/command_ranking.py",
+        "Source/Python/mimo_bridge/copied_execution.py"
+      ]
+    },
+    {
+      "id": "hand_memory_route",
+      "title": "Remembered hand goals: the learned hand stage against the same decision without it",
+      "script": "docs/gain_of_function_v3/compare_hand_memory_route_2026-09-24.py",
+      "path_arguments": {
+        "--calibration": "docs/gain_of_function_v3/measurements/hand_response_calibration_380200.json"
+      },
+      "class": "frequent",
+      "hold_training_on_failed_comparison": true,
+      "decided": "H84 runs hand goals from memory, so this mechanism steers production; by the operator's decision of 2026-09-25 9:09 AM PDT (docs/gain_of_function_v3/WORKLOG.md) a round that fails its declared comparison keeps the saved pause for review instead of resuming training. A round that ends without a valid result is a failed attempt and follows the retry rules; it did not measure the mechanism. first_step stays out of reach so that a scheduler without this hold (every one started before this change) never runs the task; a scheduler with it starts the task at first_step_under_hold.",
+      "first_step": 999999999,
+      "first_step_under_hold": 399050,
+      "every_steps": 12000,
+      "memory_gib": 12,
+      "depends": [
+        "Source/Python/mimo_bridge/tools/gof_probe_harness.py",
+        "docs/gain_of_function_v3/compare_synergy_physical.py",
+        "docs/gain_of_function_v3/prove_takeover_restart.py",
+        "Source/Python/mimo_bridge/copied_execution.py"
+      ],
+      "cadence_note": "every_steps 3000 -> 12000 (operator, Oct 1 2026: 12 of 12 rounds passed; with the trainer's save in the reserve each 12 GiB round now pauses training)"
+    }
+  ]
+}

@@ -1,0 +1,2372 @@
+{
+  "checkpoint_step": 380200,
+  "scope": "Frozen body-stage diagnostic with fixed eyes and strength; auditor-selected reachable goals; no learned autonomous goal selection.",
+  "goal_error_definition": "Mean squared handle position error per coordinate divided by1.8cm squared, plus mean squared rotation-vector error per coordinate divided by11degrees squared; excludes gaze. Lower is better; zero reaches every observed goal pose.",
+  "same_reference_and_controller_trajectories": true,
+  "runs": {
+    "hand_body_goals_v2": {
+      "result": {
+        "checkpoint": "Saved\\mimo_bridge\\experiments\\H84_fresh_drivers_20260918_seg36_supervised_planner\\checkpoints\\ckpt_step_380200",
+        "bodies": 8,
+        "goals": [
+          "curl_witness",
+          "extension_witness"
+        ],
+        "contract": "wrist_relative_joint_v1",
+        "learning": false,
+        "production_changed": false,
+        "hold_seconds": 0.25,
+        "goal_source": "Observed endpoint of a same-state physical reference with chosen compatible curl/extension, ordinary wrist order and force settings.",
+        "comparison": "Starting controller, direct feasible-hand planner, composed learned-synergy/feasible-hand planner. Strength and gaze are fixed to the controller inside both searches.",
+        "adoption": "Compare common physical-goal error and hand-joint error across independent bodies; no switch is changed by this experiment.",
+        "script_sha256": "dfac5b2b582ab786d1b5887d22097b5569d75f3e8be619e70f96fa3dc93a8aa5",
+        "summary": {
+          "physical_goal_error": {
+            "means": {
+              "controller": 0.34221492195501924,
+              "direct": 2.7699622064828873,
+              "synergy": 1.488056305795908
+            },
+            "synergy_minus_direct": -1.2819059006869793,
+            "paired_bootstrap95": [
+              -2.714048311114311,
+              -0.25934168323874474
+            ],
+            "bodies_synergy_better": 7
+          },
+          "hand_joint_error_deg": {
+            "means": {
+              "controller": 3.938795894384384,
+              "direct": 4.563829451799393,
+              "synergy": 5.24462166428566
+            },
+            "synergy_minus_direct": 0.6807922124862671,
+            "paired_bootstrap95": [
+              0.2039492465555668,
+              1.1369530111551285
+            ],
+            "bodies_synergy_better": 2
+          },
+          "wrist_goal_error_cm": {
+            "means": {
+              "controller": 0.006647939406320802,
+              "direct": 4.360466778278351,
+              "synergy": 2.541039764881134
+            },
+            "synergy_minus_direct": -1.8194270133972168,
+            "paired_bootstrap95": [
+              -3.2271591052412987,
+              -0.5599871002137664
+            ],
+            "bodies_synergy_better": 7
+          }
+        },
+        "weights_unchanged": true,
+        "exact_replay": true,
+        "elapsed_s": 412.06455087661743
+      },
+      "source_files": {
+        "Saved\\gof_takeover_20260924\\repair\\hand_body_goals_v2\\result.json": "54bdff1c6ed7a59307be64f8e772e89a967a7da2b171de47667d611a51217a08",
+        "Saved\\gof_takeover_20260924\\repair\\hand_body_goals_v2\\trials.jsonl": "4a4bd64a5bf506484fc27b12ff55ce5b33d088596c6df2691ea3c93dae450aaa"
+      },
+      "trials": [
+        {
+          "body": 0,
+          "goal": "curl_witness",
+          "witness_trajectory_sha256": "35b1c511930822972ddd7637a761414bdb018f33e7a868afe67078792cbcbeb0",
+          "exact_replay": true,
+          "outcomes": {
+            "controller": {
+              "physical_goal_error": 0.9299671053886414,
+              "hand_joint_error_deg": 6.632680892944336,
+              "wrist_goal_error_cm": 0.0017020832747220993,
+              "trajectory_sha256": "55ab803f6e3c957ccf5cbf65505a1e6ebd32e9f856986586ad73f4c53a96c294",
+              "seconds": 0.2500000000509317
+            },
+            "direct": {
+              "physical_goal_error": 7.8047051429748535,
+              "hand_joint_error_deg": 9.130376815795898,
+              "wrist_goal_error_cm": 8.204771995544434,
+              "trajectory_sha256": "0b905f8eeeff0f4b769f39d61d5a07568f3f8047862f2441c19376c74185780b",
+              "seconds": 0.2500000000509317,
+              "predicted_search_start": 1.4673010110855103,
+              "predicted_search_selected": 1.0645811557769775,
+              "actual_difference_from_controller": 6.874738037586212
+            },
+            "synergy": {
+              "physical_goal_error": 2.508291721343994,
+              "hand_joint_error_deg": 8.5516357421875,
+              "wrist_goal_error_cm": 3.2030317783355713,
+              "trajectory_sha256": "a8a78aa3d5d5b4a7e4930ee66f038ed053eecaad68442a60ce81552987039667",
+              "seconds": 0.2500000000509317,
+              "predicted_search_start": 1.7645046710968018,
+              "predicted_search_selected": 1.248810887336731,
+              "actual_difference_from_controller": 1.5783246159553528
+            }
+          }
+        },
+        {
+          "body": 0,
+          "goal": "extension_witness",
+          "witness_trajectory_sha256": "7a845016b52c020d2a4ba7254e9a5e4a0f33025e5c9eeda67bcdb16a9f51cc57",
+          "exact_replay": true,
+          "outcomes": {
+            "controller": {
+              "physical_goal_error": 0.3686102330684662,
+              "hand_joint_error_deg": 3.9097025394439697,
+              "wrist_goal_error_cm": 0.001147513510659337,
+              "trajectory_sha256": "55ab803f6e3c957ccf5cbf65505a1e6ebd32e9f856986586ad73f4c53a96c294",
+              "seconds": 0.2500000000509317
+            },
+            "direct": {
+              "physical_goal_error": 7.267421722412109,
+              "hand_joint_error_deg": 3.9368855953216553,
+              "wrist_goal_error_cm": 9.772269248962402,
+              "trajectory_sha256": "8a85de7c89c77eec76ab40928453ec484ec23f5c8361855830e14af515851f74",
+              "seconds": 0.2500000000509317,
+              "predicted_search_start": 1.2618536949157715,
+              "predicted_search_selected": 0.620084822177887,
+              "actual_difference_from_controller": 6.898811489343643
+            },
+            "synergy": {
+              "physical_goal_error": 0.9922772645950317,
+              "hand_joint_error_deg": 3.9088516235351562,
+              "wrist_goal_error_cm": 3.1300370693206787,
+              "trajectory_sha256": "4a7f7004d5d5cd630c74ffd5f281d16193a9e8653e1b259f4aa1d6e49bd60972",
+              "seconds": 0.2500000000509317,
+              "predicted_search_start": 0.9744387865066528,
+              "predicted_search_selected": 0.6139947772026062,
+              "actual_difference_from_controller": 0.6236670315265656
+            }
+          }
+        },
+        {
+          "body": 1,
+          "goal": "curl_witness",
+          "witness_trajectory_sha256": "0a77e24fd6ad0f80803d8b145066a07a1d16a8e4f03487204061180d8ec309a2",
+          "exact_replay": true,
+          "outcomes": {
+            "controller": {
+              "physical_goal_error": 0.2403164654970169,
+              "hand_joint_error_deg": 4.066976547241211,
+              "wrist_goal_error_cm": 0.023186450824141502,
+              "trajectory_sha256": "9d671ae4d2ef0b569eb28cbe1e0670e06cc262afc684b80ce5d6ffd018a606c1",
+              "seconds": 0.2500000000509317
+            },
+            "direct": {
+              "physical_goal_error": 2.4414424896240234,
+              "hand_joint_error_deg": 5.434788703918457,
+              "wrist_goal_error_cm": 4.08412504196167,
+              "trajectory_sha256": "9360850746a7541ddb9d57c87ce0e8a18e11b49cc70384f762f9b11459920928",
+              "seconds": 0.2500000000509317,
+              "predicted_search_start": 2.68927001953125,
+              "predicted_search_selected": 1.0090817213058472,
+              "actual_difference_from_controller": 2.2011260241270065
+            },
+            "synergy": {
+              "physical_goal_error": 1.5990322828292847,
+              "hand_joint_error_deg": 5.5596537590026855,
+              "wrist_goal_error_cm": 2.405805826187134,
+              "trajectory_sha256": "6117bb75a2a5138b125e2e42fe558954ae2a0096fa9703f341829360f82491c9",
+              "seconds": 0.2500000000509317,
+              "predicted_search_start": 2.1309025287628174,
+              "predicted_search_selected": 1.0761375427246094,
+              "actual_difference_from_controller": 1.3587158173322678
+            }
+          }
+        },
+        {
+          "body": 1,
+          "goal": "extension_witness",
+          "witness_trajectory_sha256": "68454bf814bd6f630bdb3b75f5e7bc474be02a624526edfd6ce6847de51c4790",
+          "exact_replay": true,
+          "outcomes": {
+            "controller": {
+              "physical_goal_error": 0.09019672125577927,
+              "hand_joint_error_deg": 2.3088300228118896,
+              "wrist_goal_error_cm": 0.0012015693355351686,
+              "trajectory_sha256": "9d671ae4d2ef0b569eb28cbe1e0670e06cc262afc684b80ce5d6ffd018a606c1",
+              "seconds": 0.2500000000509317
+            },
+            "direct": {
+              "physical_goal_error": 2.465780735015869,
+              "hand_joint_error_deg": 2.027583122253418,
+              "wrist_goal_error_cm": 4.4417195320129395,
+              "trajectory_sha256": "3dedb634694647425b01861c9c1e405f8207b85c99ad41cd21ca6caa3fee533c",
+              "seconds": 0.2500000000509317,
+              "predicted_search_start": 2.1957647800445557,
+              "predicted_search_selected": 0.39517641067504883,
+              "actual_difference_from_controller": 2.37558401376009
+            },
+            "synergy": {
+              "physical_goal_error": 1.0444728136062622,
+              "hand_joint_error_deg": 3.512728691101074,
+              "wrist_goal_error_cm": 2.3510360717773438,
+              "trajectory_sha256": "a7cee5db697c6c610cbd24ea3cd8b651ea5015e85d076ca1e3376118b5edcfd8",
+              "seconds": 0.2500000000509317,
+              "predicted_search_start": 1.6630613803863525,
+              "predicted_search_selected": 0.6036683320999146,
+              "actual_difference_from_controller": 0.9542760923504829
+            }
+          }
+        },
+        {
+          "body": 2,
+          "goal": "curl_witness",
+          "witness_trajectory_sha256": "8099045574a87e43ebd772c4d4f9e6103445cc8df37390e2f18ca76293c7b5cf",
+          "exact_replay": true,
+          "outcomes": {
+            "controller": {
+              "physical_goal_error": 0.13965818285942078,
+              "hand_joint_error_deg": 3.808072805404663,
+              "wrist_goal_error_cm": 0.0009800709085538983,
+              "trajectory_sha256": "7f6a3b498f16b0985a31bed3253a24a2ab8ddac65cce413c1d22a39302874178",
+              "seconds": 0.2500000000509317
+            },
+            "direct": {
+              "physical_goal_error": 1.033656120300293,
+              "hand_joint_error_deg": 3.9125261306762695,
+              "wrist_goal_error_cm": 1.3910243511199951,
+              "trajectory_sha256": "57b9c4056d972eeb07cb50b0db715ffc10f2b3b15824a8b06bf054590db8a6fe",
+              "seconds": 0.2500000000509317,
+              "predicted_search_start": 2.5702462196350098,
+              "predicted_search_selected": 1.453171730041504,
+              "actual_difference_from_controller": 0.8939979374408722
+            },
+            "synergy": {
+              "physical_goal_error": 2.257152795791626,
+              "hand_joint_error_deg": 5.729099750518799,
+              "wrist_goal_error_cm": 2.567481517791748,
+              "trajectory_sha256": "abf85b5cb044376bd80ea9b4e051dc028e9bd4c59d09bbd8dab3135e43fe6a03",
+              "seconds": 0.2500000000509317,
+              "predicted_search_start": 2.663254737854004,
+              "predicted_search_selected": 2.2253732681274414,
+              "actual_difference_from_controller": 2.117494612932205
+            }
+          }
+        },
+        {
+          "body": 2,
+          "goal": "extension_witness",
+          "witness_trajectory_sha256": "e0828b817506d176e131a7cfb7246226e3228536ca76a2b0da6a2a65727b0e09",
+          "exact_replay": true,
+          "outcomes": {
+            "controller": {
+              "physical_goal_error": 0.24067950248718262,
+              "hand_joint_error_deg": 3.8964059352874756,
+              "wrist_goal_error_cm": 0.001691254903562367,
+              "trajectory_sha256": "7f6a3b498f16b0985a31bed3253a24a2ab8ddac65cce413c1d22a39302874178",
+              "seconds": 0.2500000000509317
+            },
+            "direct": {
+              "physical_goal_error": 1.6009647846221924,
+              "hand_joint_error_deg": 5.441822528839111,
+              "wrist_goal_error_cm": 1.424544095993042,
+              "trajectory_sha256": "83e4d15e24cdc507e2e239e7bde7ff4431b03c2de3e2307c30d63d54edd8dc13",
+              "seconds": 0.2500000000509317,
+              "predicted_search_start": 1.9011462926864624,
+              "predicted_search_selected": 1.0547394752502441,
+              "actual_difference_from_controller": 1.3602852821350098
+            },
+            "synergy": {
+              "physical_goal_error": 1.547083854675293,
+              "hand_joint_error_deg": 3.474337577819824,
+              "wrist_goal_error_cm": 2.698265314102173,
+              "trajectory_sha256": "13f40baea1a2495c3cb438b4f23871e3f840dae73ec328551daf4f9b8bd9b258",
+              "seconds": 0.2500000000509317,
+              "predicted_search_start": 1.9953055381774902,
+              "predicted_search_selected": 1.5787162780761719,
+              "actual_difference_from_controller": 1.3064043521881104
+            }
+          }
+        },
+        {
+          "body": 3,
+          "goal": "curl_witness",
+          "witness_trajectory_sha256": "acaf947aa4ffe9eb7432b640644e934fc06a426026f730418212d687849df9f0",
+          "exact_replay": true,
+          "outcomes": {
+            "controller": {
+              "physical_goal_error": 0.4216539263725281,
+              "hand_joint_error_deg": 3.5472257137298584,
+              "wrist_goal_error_cm": 0.0018000586424022913,
+              "trajectory_sha256": "3e51f913ae6f8738e32d67a62568d7d9a3c42fd56370b28d15f13bfc31a7ab4a",
+              "seconds": 0.2500000000509317
+            },
+            "direct": {
+              "physical_goal_error": 3.475127696990967,
+              "hand_joint_error_deg": 4.778383255004883,
+              "wrist_goal_error_cm": 6.623050689697266,
+              "trajectory_sha256": "3daa3bfef4c35152c4056154976101ae2013b21aefa2b2ee1ccf32f0c1361719",
+              "seconds": 0.2500000000509317,
+              "predicted_search_start": 1.1113730669021606,
+              "predicted_search_selected": 0.8508602976799011,
+              "actual_difference_from_controller": 3.0534737706184387
+            },
+            "synergy": {
+              "physical_goal_error": 1.0781313180923462,
+              "hand_joint_error_deg": 5.060181140899658,
+              "wrist_goal_error_cm": 2.315459728240967,
+              "trajectory_sha256": "7c9b176d3fd72d192a85a3bd3182225f768dbc12631485a654f7d8a0fec934a3",
+              "seconds": 0.2500000000509317,
+              "predicted_search_start": 1.8929543495178223,
+              "predicted_search_selected": 1.4749157428741455,
+              "actual_difference_from_controller": 0.6564773917198181
+            }
+          }
+        },
+        {
+          "body": 3,
+          "goal": "extension_witness",
+          "witness_trajectory_sha256": "165e4edf2b883dad40df7d0ef1d416e2ed0d1ec5243d5df36cf11c46a4656148",
+          "exact_replay": true,
+          "outcomes": {
+            "controller": {
+              "physical_goal_error": 0.43668290972709656,
+              "hand_joint_error_deg": 4.02555513381958,
+              "wrist_goal_error_cm": 0.002367995446547866,
+              "trajectory_sha256": "3e51f913ae6f8738e32d67a62568d7d9a3c42fd56370b28d15f13bfc31a7ab4a",
+              "seconds": 0.2500000000509317
+            },
+            "direct": {
+              "physical_goal_error": 1.8842341899871826,
+              "hand_joint_error_deg": 4.200151443481445,
+              "wrist_goal_error_cm": 4.090427398681641,
+              "trajectory_sha256": "015331811af29d69e72a7931e3a1afe08eff67b2906045603356dd33eea3d429",
+              "seconds": 0.2500000000509317,
+              "predicted_search_start": 0.891795814037323,
+              "predicted_search_selected": 0.6972537040710449,
+              "actual_difference_from_controller": 1.447551280260086
+            },
+            "synergy": {
+              "physical_goal_error": 1.1667708158493042,
+              "hand_joint_error_deg": 3.9267396926879883,
+              "wrist_goal_error_cm": 2.7426342964172363,
+              "trajectory_sha256": "f3b0199cf5c09f6c53b6f9a4e4751677b0b92bcbcc519eb7a40b1276c7ea1308",
+              "seconds": 0.2500000000509317,
+              "predicted_search_start": 1.4730761051177979,
+              "predicted_search_selected": 1.0234404802322388,
+              "actual_difference_from_controller": 0.7300879061222076
+            }
+          }
+        },
+        {
+          "body": 4,
+          "goal": "curl_witness",
+          "witness_trajectory_sha256": "2da5822f825cd867a887a004ef9925b15c0adc85c842d449ebf84f13c193b6c9",
+          "exact_replay": true,
+          "outcomes": {
+            "controller": {
+              "physical_goal_error": 0.295910507440567,
+              "hand_joint_error_deg": 3.3928000926971436,
+              "wrist_goal_error_cm": 0.0009402178111486137,
+              "trajectory_sha256": "78edbac0a803e5dd01d75d4e820f1e27c26ef323aed6cf238dc1ee4a2b7c9244",
+              "seconds": 0.2500000000509317
+            },
+            "direct": {
+              "physical_goal_error": 2.3996379375457764,
+              "hand_joint_error_deg": 3.367438316345215,
+              "wrist_goal_error_cm": 4.498813152313232,
+              "trajectory_sha256": "4cc4866153ed3c7d7f486d918bf9d1a544b59cda46e6bcf3ca397fffa720f885",
+              "seconds": 0.2500000000509317,
+              "predicted_search_start": 1.4003329277038574,
+              "predicted_search_selected": 0.9012515544891357,
+              "actual_difference_from_controller": 2.1037274301052094
+            },
+            "synergy": {
+              "physical_goal_error": 0.5933859348297119,
+              "hand_joint_error_deg": 4.675657749176025,
+              "wrist_goal_error_cm": 1.6874406337738037,
+              "trajectory_sha256": "a41761784cdf635a24132bd0868bb1ac05e3fdf5b2f84160d60fbedb96e55ea5",
+              "seconds": 0.2500000000509317,
+              "predicted_search_start": 2.790273427963257,
+              "predicted_search_selected": 2.1669859886169434,
+              "actual_difference_from_controller": 0.2974754273891449
+            }
+          }
+        },
+        {
+          "body": 4,
+          "goal": "extension_witness",
+          "witness_trajectory_sha256": "0c3523dc8af529dde88d22207637a5646a8d053503e10af5b66a19f064212443",
+          "exact_replay": true,
+          "outcomes": {
+            "controller": {
+              "physical_goal_error": 0.3800119161605835,
+              "hand_joint_error_deg": 3.7368955612182617,
+              "wrist_goal_error_cm": 0.017500557005405426,
+              "trajectory_sha256": "78edbac0a803e5dd01d75d4e820f1e27c26ef323aed6cf238dc1ee4a2b7c9244",
+              "seconds": 0.2500000000509317
+            },
+            "direct": {
+              "physical_goal_error": 1.846164584159851,
+              "hand_joint_error_deg": 4.104391098022461,
+              "wrist_goal_error_cm": 3.14567232131958,
+              "trajectory_sha256": "10636f0231acad652dfbf7d2cdcb685384facb4847366cbfa7500c3291ef86f0",
+              "seconds": 0.2500000000509317,
+              "predicted_search_start": 1.2392308712005615,
+              "predicted_search_selected": 0.7321184873580933,
+              "actual_difference_from_controller": 1.4661526679992676
+            },
+            "synergy": {
+              "physical_goal_error": 0.8641217350959778,
+              "hand_joint_error_deg": 4.234130382537842,
+              "wrist_goal_error_cm": 1.397142767906189,
+              "trajectory_sha256": "adfafa4b46878a080be04ffb90ab70222ae9aa4509a1426bb36c7c58e746ba34",
+              "seconds": 0.2500000000509317,
+              "predicted_search_start": 2.397329807281494,
+              "predicted_search_selected": 1.7991673946380615,
+              "actual_difference_from_controller": 0.4841098189353943
+            }
+          }
+        },
+        {
+          "body": 5,
+          "goal": "curl_witness",
+          "witness_trajectory_sha256": "6497b496f2fb457df60e76a085ce640f6163061517755048228672a8cfc83a31",
+          "exact_replay": true,
+          "outcomes": {
+            "controller": {
+              "physical_goal_error": 0.29607653617858887,
+              "hand_joint_error_deg": 4.743619918823242,
+              "wrist_goal_error_cm": 0.0014643854228779674,
+              "trajectory_sha256": "e79565e104b2e722b88c1e5c552586ddcfbb3ff7c17f0c1b2ed4da9815a752b0",
+              "seconds": 0.2500000000509317
+            },
+            "direct": {
+              "physical_goal_error": 2.9695820808410645,
+              "hand_joint_error_deg": 5.972829818725586,
+              "wrist_goal_error_cm": 4.61751651763916,
+              "trajectory_sha256": "3d7b7ca11ae55b7b9eb66b765873c73e821bdc0658e79249b577ea07c097e741",
+              "seconds": 0.2500000000509317,
+              "predicted_search_start": 1.4905593395233154,
+              "predicted_search_selected": 0.8285794854164124,
+              "actual_difference_from_controller": 2.6735055446624756
+            },
+            "synergy": {
+              "physical_goal_error": 1.9346988201141357,
+              "hand_joint_error_deg": 6.139418125152588,
+              "wrist_goal_error_cm": 2.8583667278289795,
+              "trajectory_sha256": "bbc28c4fd00df8ea8363d2452b51fb5daee97be04e23a7a2018b76ea8416e66b",
+              "seconds": 0.2500000000509317,
+              "predicted_search_start": 1.3898488283157349,
+              "predicted_search_selected": 0.8231927156448364,
+              "actual_difference_from_controller": 1.6386222839355469
+            }
+          }
+        },
+        {
+          "body": 5,
+          "goal": "extension_witness",
+          "witness_trajectory_sha256": "4cd9e1f90f78cd0eb87cb3255e0c7ea9e0526dd15eed63b154f393e428a56719",
+          "exact_replay": true,
+          "outcomes": {
+            "controller": {
+              "physical_goal_error": 0.1520387828350067,
+              "hand_joint_error_deg": 2.5169432163238525,
+              "wrist_goal_error_cm": 0.0014796113828197122,
+              "trajectory_sha256": "e79565e104b2e722b88c1e5c552586ddcfbb3ff7c17f0c1b2ed4da9815a752b0",
+              "seconds": 0.2500000000509317
+            },
+            "direct": {
+              "physical_goal_error": 1.159669041633606,
+              "hand_joint_error_deg": 2.2976741790771484,
+              "wrist_goal_error_cm": 3.2448079586029053,
+              "trajectory_sha256": "6cdba9f90dd418179a55c46a4967bfae8fbe31aed70fc8f95bfc9459b91df8f0",
+              "seconds": 0.2500000000509317,
+              "predicted_search_start": 1.0049214363098145,
+              "predicted_search_selected": 0.4429216980934143,
+              "actual_difference_from_controller": 1.0076302587985992
+            },
+            "synergy": {
+              "physical_goal_error": 1.5671906471252441,
+              "hand_joint_error_deg": 5.051565170288086,
+              "wrist_goal_error_cm": 2.5804474353790283,
+              "trajectory_sha256": "262cba3a0ad73bdee8206678c9a227d4c601430a7dc33b98ee9f937be83a89cb",
+              "seconds": 0.2500000000509317,
+              "predicted_search_start": 0.9983248710632324,
+              "predicted_search_selected": 0.5722461342811584,
+              "actual_difference_from_controller": 1.4151518642902374
+            }
+          }
+        },
+        {
+          "body": 6,
+          "goal": "curl_witness",
+          "witness_trajectory_sha256": "8754be2197f86a8454fa7a4d7a434b21c5ececa2e34aebf5a9a3e7b47ac06fda",
+          "exact_replay": true,
+          "outcomes": {
+            "controller": {
+              "physical_goal_error": 0.15391352772712708,
+              "hand_joint_error_deg": 2.2895922660827637,
+              "wrist_goal_error_cm": 0.00039205796201713383,
+              "trajectory_sha256": "14518e86470ceb64b032b2d67922e3e4f199c1cd1c829ab24a017faea586dd76",
+              "seconds": 0.2500000000509317
+            },
+            "direct": {
+              "physical_goal_error": 1.736623764038086,
+              "hand_joint_error_deg": 3.105323076248169,
+              "wrist_goal_error_cm": 4.268798351287842,
+              "trajectory_sha256": "5fe3d6b2c9d5dc5cb85bcd76f63f304b6e46ee894175b6f271125d8da8d40551",
+              "seconds": 0.2500000000509317,
+              "predicted_search_start": 1.809798002243042,
+              "predicted_search_selected": 0.675315797328949,
+              "actual_difference_from_controller": 1.5827102363109589
+            },
+            "synergy": {
+              "physical_goal_error": 1.1342813968658447,
+              "hand_joint_error_deg": 3.9323015213012695,
+              "wrist_goal_error_cm": 2.0688343048095703,
+              "trajectory_sha256": "4b4b60408785bb97b114035532982370a852a7b119e17128f45b5ca47bd492ce",
+              "seconds": 0.2500000000509317,
+              "predicted_search_start": 1.788848638534546,
+              "predicted_search_selected": 0.919413685798645,
+              "actual_difference_from_controller": 0.9803678691387177
+            }
+          }
+        },
+        {
+          "body": 6,
+          "goal": "extension_witness",
+          "witness_trajectory_sha256": "6d1f903d3a679506db7f0f803be57fb0a19728ffd70519d75f7920786db2227a",
+          "exact_replay": true,
+          "outcomes": {
+            "controller": {
+              "physical_goal_error": 0.09692439436912537,
+              "hand_joint_error_deg": 3.356529474258423,
+              "wrist_goal_error_cm": 0.00035411480348557234,
+              "trajectory_sha256": "14518e86470ceb64b032b2d67922e3e4f199c1cd1c829ab24a017faea586dd76",
+              "seconds": 0.2500000000509317
+            },
+            "direct": {
+              "physical_goal_error": 1.2106881141662598,
+              "hand_joint_error_deg": 2.7218732833862305,
+              "wrist_goal_error_cm": 2.956432819366455,
+              "trajectory_sha256": "c336e24d3da66c2984838a2aa8d542449d1c2a0d7f8968d8b2db34212eaa8e88",
+              "seconds": 0.2500000000509317,
+              "predicted_search_start": 1.9155091047286987,
+              "predicted_search_selected": 0.5359182953834534,
+              "actual_difference_from_controller": 1.1137637197971344
+            },
+            "synergy": {
+              "physical_goal_error": 0.9391542673110962,
+              "hand_joint_error_deg": 4.367362976074219,
+              "wrist_goal_error_cm": 1.7681704759597778,
+              "trajectory_sha256": "134117ec43cc470b341c08b77de2d6e98f7f295ab93342931d0f7f5fdbb87da7",
+              "seconds": 0.2500000000509317,
+              "predicted_search_start": 1.884023666381836,
+              "predicted_search_selected": 0.979165256023407,
+              "actual_difference_from_controller": 0.8422298729419708
+            }
+          }
+        },
+        {
+          "body": 7,
+          "goal": "curl_witness",
+          "witness_trajectory_sha256": "1a9c4e722a8d7e580a7f15b93741ca1dd5ad630e4df2b3017606e1748abe692f",
+          "exact_replay": true,
+          "outcomes": {
+            "controller": {
+              "physical_goal_error": 0.6847589612007141,
+              "hand_joint_error_deg": 6.3123016357421875,
+              "wrist_goal_error_cm": 0.0014338940382003784,
+              "trajectory_sha256": "3f2b7999c540df33c481f08bae43e7678b8dfa857ea0217a1a5b150ff1ca80df",
+              "seconds": 0.2500000000509317
+            },
+            "direct": {
+              "physical_goal_error": 2.748753547668457,
+              "hand_joint_error_deg": 7.306460857391357,
+              "wrist_goal_error_cm": 3.9425671100616455,
+              "trajectory_sha256": "76c766a9bbc4afa1f22b0ed94c1864c2fa69d47d0687e559b77ac4e8c8809e6b",
+              "seconds": 0.2500000000509317,
+              "predicted_search_start": 1.5580329895019531,
+              "predicted_search_selected": 1.11177396774292,
+              "actual_difference_from_controller": 2.063994586467743
+            },
+            "synergy": {
+              "physical_goal_error": 2.361800193786621,
+              "hand_joint_error_deg": 9.183094024658203,
+              "wrist_goal_error_cm": 2.5965030193328857,
+              "trajectory_sha256": "0e5e4cd628cdb67cea11516e1462131668232ddf8d30868c1de0676f62e36d0b",
+              "seconds": 0.2500000000509317,
+              "predicted_search_start": 1.6129907369613647,
+              "predicted_search_selected": 1.1977933645248413,
+              "actual_difference_from_controller": 1.677041232585907
+            }
+          }
+        },
+        {
+          "body": 7,
+          "goal": "extension_witness",
+          "witness_trajectory_sha256": "da578e264e6719c2b49c67c73be742e82d699134d2eb97ecedf201539f9a189f",
+          "exact_replay": true,
+          "outcomes": {
+            "controller": {
+              "physical_goal_error": 0.5480390787124634,
+              "hand_joint_error_deg": 4.476602554321289,
+              "wrist_goal_error_cm": 0.0487251952290535,
+              "trajectory_sha256": "3f2b7999c540df33c481f08bae43e7678b8dfa857ea0217a1a5b150ff1ca80df",
+              "seconds": 0.2500000000509317
+            },
+            "direct": {
+              "physical_goal_error": 2.2749433517456055,
+              "hand_joint_error_deg": 5.2827630043029785,
+              "wrist_goal_error_cm": 3.0609278678894043,
+              "trajectory_sha256": "30dac22bb9322bd6ab13a8dcc5f2b4f0a443cc3864e180649a75c87b05a2280c",
+              "seconds": 0.2500000000509317,
+              "predicted_search_start": 1.760431170463562,
+              "predicted_search_selected": 0.7369346618652344,
+              "actual_difference_from_controller": 1.726904273033142
+            },
+            "synergy": {
+              "physical_goal_error": 2.221055030822754,
+              "hand_joint_error_deg": 6.607188701629639,
+              "wrist_goal_error_cm": 4.285979270935059,
+              "trajectory_sha256": "11501e8be0c843b36724b7c007e74f011503c5fb7e0da48630f159c0a56ddcb9",
+              "seconds": 0.2500000000509317,
+              "predicted_search_start": 1.3125722408294678,
+              "predicted_search_selected": 0.8441412448883057,
+              "actual_difference_from_controller": 1.6730159521102905
+            }
+          }
+        }
+      ]
+    },
+    "hand_body_goals_bounded_v1": {
+      "result": {
+        "checkpoint": "Saved\\mimo_bridge\\experiments\\H84_fresh_drivers_20260918_seg36_supervised_planner\\checkpoints\\ckpt_step_380200",
+        "bodies": 8,
+        "goals": [
+          "curl_witness",
+          "extension_witness"
+        ],
+        "contract": "wrist_relative_joint_v1",
+        "learning": false,
+        "production_changed": false,
+        "hold_seconds": 0.25,
+        "goal_source": "Observed endpoint of a same-state physical reference with chosen compatible curl/extension, ordinary wrist order and force settings.",
+        "comparison": "Starting controller, direct feasible-hand planner, composed learned-synergy/feasible-hand planner. Strength and gaze are fixed to the controller inside both searches.",
+        "adoption": "Compare common physical-goal error and hand-joint error across independent bodies; no switch is changed by this experiment.",
+        "script_sha256": "f060bf5a5455cd3b69384fc9bea910b5ba61b15109dd0cce17eb5a8532de76d1",
+        "source_sha256": {
+          "Source\\Python\\mimo_bridge\\hand_target_control.py": "e075999c4beb9f4acf1f543e30e0c930eaf4bf33c706b8cbdd9aa17e887b0d63",
+          "Source\\Python\\mimo_bridge\\lem_model.py": "feced74510abc7427ba6ad722b21d2add9dbd51b1f5d5e61634d0be2fe072e7b",
+          "Source\\Python\\lem\\model\\physical_goal.py": "370e50f12c7845e2ddedbba0514517754f594ca0025e67abaeaea01759d567ce",
+          "Source\\Python\\mimo_bridge\\env.py": "98ebba7e16769f236e06165b8285888f1446e83db706e07a751f5e3ab7166f88",
+          "Source\\Python\\mimo_bridge\\tools\\gof_probe_harness.py": "086172f9c9cea17da7c04dbd601ae0f158fcd07f4c50bc28c5c031d028d6a376"
+        },
+        "seed": 0,
+        "summary": {
+          "physical_goal_error": {
+            "means": {
+              "controller": 0.34221492195501924,
+              "direct": 0.4584247125312686,
+              "synergy": 0.4100540867075324
+            },
+            "synergy_minus_direct": -0.04837062582373619,
+            "paired_bootstrap95": [
+              -0.08876394885592162,
+              -0.012097479775547981
+            ],
+            "bodies_synergy_better": 6,
+            "against_controller": {
+              "direct": {
+                "mean_difference": 0.11620979057624936,
+                "paired_bootstrap95": [
+                  0.06791424285620451,
+                  0.17081644851714373
+                ],
+                "bodies_better": 0
+              },
+              "synergy": {
+                "mean_difference": 0.06783916475251317,
+                "paired_bootstrap95": [
+                  0.03785904124379158,
+                  0.1002618120983243
+                ],
+                "bodies_better": 0
+              }
+            }
+          },
+          "hand_joint_error_deg": {
+            "means": {
+              "controller": 3.938795894384384,
+              "direct": 4.302755147218704,
+              "synergy": 4.262749657034874
+            },
+            "synergy_minus_direct": -0.04000549018383026,
+            "paired_bootstrap95": [
+              -0.0832393828779459,
+              0.007309740781784041
+            ],
+            "bodies_synergy_better": 6,
+            "against_controller": {
+              "direct": {
+                "mean_difference": 0.36395925283432007,
+                "paired_bootstrap95": [
+                  0.27863008454442023,
+                  0.47056475840508927
+                ],
+                "bodies_better": 0
+              },
+              "synergy": {
+                "mean_difference": 0.3239537626504898,
+                "paired_bootstrap95": [
+                  0.25175942815840247,
+                  0.4108731597661972
+                ],
+                "bodies_better": 0
+              }
+            }
+          },
+          "wrist_goal_error_cm": {
+            "means": {
+              "controller": 0.006647939406320802,
+              "direct": 0.9672191850841045,
+              "synergy": 0.7048789840191603
+            },
+            "synergy_minus_direct": -0.26234020106494427,
+            "paired_bootstrap95": [
+              -0.48637907952070236,
+              -0.062032346054911744
+            ],
+            "bodies_synergy_better": 6,
+            "against_controller": {
+              "direct": {
+                "mean_difference": 0.9605712456777837,
+                "paired_bootstrap95": [
+                  0.7008786259069893,
+                  1.237143240243131
+                ],
+                "bodies_better": 0
+              },
+              "synergy": {
+                "mean_difference": 0.6982310446128395,
+                "paired_bootstrap95": [
+                  0.5567012708422681,
+                  0.8485974704249655
+                ],
+                "bodies_better": 0
+              }
+            }
+          }
+        },
+        "weights_unchanged": true,
+        "exact_replay": true,
+        "elapsed_s": 404.87066650390625
+      },
+      "source_files": {
+        "Saved\\gof_takeover_20260924\\repair\\hand_body_goals_bounded_v1\\result.json": "8654ce3ae033ded12d123a7d9ab77e299930f0954c839bb78976edde67137ee1",
+        "Saved\\gof_takeover_20260924\\repair\\hand_body_goals_bounded_v1\\trials.jsonl": "5cc8331367b1a8a1ad3003f5f72da356f485bc9071154ebcfe8a1fc4502c9b54"
+      },
+      "trials": [
+        {
+          "body": 0,
+          "goal": "curl_witness",
+          "witness_trajectory_sha256": "35b1c511930822972ddd7637a761414bdb018f33e7a868afe67078792cbcbeb0",
+          "exact_replay": true,
+          "outcomes": {
+            "controller": {
+              "physical_goal_error": 0.9299671053886414,
+              "hand_joint_error_deg": 6.632680892944336,
+              "wrist_goal_error_cm": 0.0017020832747220993,
+              "trajectory_sha256": "55ab803f6e3c957ccf5cbf65505a1e6ebd32e9f856986586ad73f4c53a96c294",
+              "seconds": 0.2500000000509317
+            },
+            "direct": {
+              "physical_goal_error": 1.1117300987243652,
+              "hand_joint_error_deg": 7.293566703796387,
+              "wrist_goal_error_cm": 1.3797779083251953,
+              "trajectory_sha256": "097f971093aa04bf44ab714d4cf4bc387bf11b2e0209b4e17b27fd721d34af39",
+              "seconds": 0.2500000000509317,
+              "predicted_search_start": 1.4673008918762207,
+              "predicted_search_selected": 1.0495127439498901,
+              "actual_difference_from_controller": 0.18176299333572388
+            },
+            "synergy": {
+              "physical_goal_error": 0.8898770809173584,
+              "hand_joint_error_deg": 7.215184211730957,
+              "wrist_goal_error_cm": 0.6620596051216125,
+              "trajectory_sha256": "0f87e3d4282f63063ce3d56d9fdebc13cb5cec5f7b2ffd2d6195747012d25b03",
+              "seconds": 0.2500000000509317,
+              "predicted_search_start": 1.3602924346923828,
+              "predicted_search_selected": 1.1658073663711548,
+              "actual_difference_from_controller": -0.04009002447128296
+            }
+          }
+        },
+        {
+          "body": 0,
+          "goal": "extension_witness",
+          "witness_trajectory_sha256": "7a845016b52c020d2a4ba7254e9a5e4a0f33025e5c9eeda67bcdb16a9f51cc57",
+          "exact_replay": true,
+          "outcomes": {
+            "controller": {
+              "physical_goal_error": 0.3686102330684662,
+              "hand_joint_error_deg": 3.9097025394439697,
+              "wrist_goal_error_cm": 0.001147513510659337,
+              "trajectory_sha256": "55ab803f6e3c957ccf5cbf65505a1e6ebd32e9f856986586ad73f4c53a96c294",
+              "seconds": 0.2500000000509317
+            },
+            "direct": {
+              "physical_goal_error": 0.5047788023948669,
+              "hand_joint_error_deg": 4.6214680671691895,
+              "wrist_goal_error_cm": 1.3864742517471313,
+              "trajectory_sha256": "dc8119a08a1c79964a9bf3ec7d36c4e42b06aad7f883468b841f2b08d54d85ef",
+              "seconds": 0.2500000000509317,
+              "predicted_search_start": 1.2618532180786133,
+              "predicted_search_selected": 0.619843602180481,
+              "actual_difference_from_controller": 0.13616856932640076
+            },
+            "synergy": {
+              "physical_goal_error": 0.4526277780532837,
+              "hand_joint_error_deg": 4.484696865081787,
+              "wrist_goal_error_cm": 0.44981470704078674,
+              "trajectory_sha256": "4d474d7b499343720e6d63e2a50c1ee8984586f9bd8ab77c0b6c4674da7c3079",
+              "seconds": 0.2500000000509317,
+              "predicted_search_start": 1.1565738916397095,
+              "predicted_search_selected": 0.8129861354827881,
+              "actual_difference_from_controller": 0.0840175449848175
+            }
+          }
+        },
+        {
+          "body": 1,
+          "goal": "curl_witness",
+          "witness_trajectory_sha256": "0a77e24fd6ad0f80803d8b145066a07a1d16a8e4f03487204061180d8ec309a2",
+          "exact_replay": true,
+          "outcomes": {
+            "controller": {
+              "physical_goal_error": 0.2403164654970169,
+              "hand_joint_error_deg": 4.066976547241211,
+              "wrist_goal_error_cm": 0.023186450824141502,
+              "trajectory_sha256": "9d671ae4d2ef0b569eb28cbe1e0670e06cc262afc684b80ce5d6ffd018a606c1",
+              "seconds": 0.2500000000509317
+            },
+            "direct": {
+              "physical_goal_error": 0.5205316543579102,
+              "hand_joint_error_deg": 4.76037073135376,
+              "wrist_goal_error_cm": 1.2090471982955933,
+              "trajectory_sha256": "0ff3e97c7aad264ef42aa58011ae5a284c60715cdbc62d66986e1d11df5a1377",
+              "seconds": 0.2500000000509317,
+              "predicted_search_start": 2.689269542694092,
+              "predicted_search_selected": 1.3403658866882324,
+              "actual_difference_from_controller": 0.28021518886089325
+            },
+            "synergy": {
+              "physical_goal_error": 0.4773324728012085,
+              "hand_joint_error_deg": 4.721700668334961,
+              "wrist_goal_error_cm": 0.950082004070282,
+              "trajectory_sha256": "454d7c7483cb996846f7a66e89d319ddeabac5110fdac10123a3eddfa7abbf5c",
+              "seconds": 0.2500000000509317,
+              "predicted_search_start": 2.803485155105591,
+              "predicted_search_selected": 1.8795981407165527,
+              "actual_difference_from_controller": 0.2370160073041916
+            }
+          }
+        },
+        {
+          "body": 1,
+          "goal": "extension_witness",
+          "witness_trajectory_sha256": "68454bf814bd6f630bdb3b75f5e7bc474be02a624526edfd6ce6847de51c4790",
+          "exact_replay": true,
+          "outcomes": {
+            "controller": {
+              "physical_goal_error": 0.09019672125577927,
+              "hand_joint_error_deg": 2.3088300228118896,
+              "wrist_goal_error_cm": 0.0012015693355351686,
+              "trajectory_sha256": "9d671ae4d2ef0b569eb28cbe1e0670e06cc262afc684b80ce5d6ffd018a606c1",
+              "seconds": 0.2500000000509317
+            },
+            "direct": {
+              "physical_goal_error": 0.21485012769699097,
+              "hand_joint_error_deg": 2.3935983180999756,
+              "wrist_goal_error_cm": 1.1973047256469727,
+              "trajectory_sha256": "b3e312880a0c2971ba133f84ae784463409035aa4e5e066e8b4b62f73d0f2bfd",
+              "seconds": 0.2500000000509317,
+              "predicted_search_start": 2.1957645416259766,
+              "predicted_search_selected": 0.8203682899475098,
+              "actual_difference_from_controller": 0.1246534064412117
+            },
+            "synergy": {
+              "physical_goal_error": 0.15250113606452942,
+              "hand_joint_error_deg": 2.4652230739593506,
+              "wrist_goal_error_cm": 0.9069677591323853,
+              "trajectory_sha256": "169c16094d9b2b8f0365a612e62b794faeccd6475bfec03ca4b3653785e55705",
+              "seconds": 0.2500000000509317,
+              "predicted_search_start": 2.3837945461273193,
+              "predicted_search_selected": 1.4043292999267578,
+              "actual_difference_from_controller": 0.06230441480875015
+            }
+          }
+        },
+        {
+          "body": 2,
+          "goal": "curl_witness",
+          "witness_trajectory_sha256": "8099045574a87e43ebd772c4d4f9e6103445cc8df37390e2f18ca76293c7b5cf",
+          "exact_replay": true,
+          "outcomes": {
+            "controller": {
+              "physical_goal_error": 0.13965818285942078,
+              "hand_joint_error_deg": 3.808072805404663,
+              "wrist_goal_error_cm": 0.0009800709085538983,
+              "trajectory_sha256": "7f6a3b498f16b0985a31bed3253a24a2ab8ddac65cce413c1d22a39302874178",
+              "seconds": 0.2500000000509317
+            },
+            "direct": {
+              "physical_goal_error": 0.21714313328266144,
+              "hand_joint_error_deg": 4.066757678985596,
+              "wrist_goal_error_cm": 0.581247091293335,
+              "trajectory_sha256": "aa71ebd768558659398442369b8f9dbafdbf8ebb640e0d77fdf5e4112ce6aad1",
+              "seconds": 0.2500000000509317,
+              "predicted_search_start": 2.5702462196350098,
+              "predicted_search_selected": 2.3497908115386963,
+              "actual_difference_from_controller": 0.07748495042324066
+            },
+            "synergy": {
+              "physical_goal_error": 0.21579422056674957,
+              "hand_joint_error_deg": 4.073904514312744,
+              "wrist_goal_error_cm": 0.44905492663383484,
+              "trajectory_sha256": "e3c1bd2a1819e2dc0b2caa26e2f7d6d010d9cad8d809c3ad442d3803064e9290",
+              "seconds": 0.2500000000509317,
+              "predicted_search_start": 2.5603370666503906,
+              "predicted_search_selected": 2.462698459625244,
+              "actual_difference_from_controller": 0.0761360377073288
+            }
+          }
+        },
+        {
+          "body": 2,
+          "goal": "extension_witness",
+          "witness_trajectory_sha256": "e0828b817506d176e131a7cfb7246226e3228536ca76a2b0da6a2a65727b0e09",
+          "exact_replay": true,
+          "outcomes": {
+            "controller": {
+              "physical_goal_error": 0.24067950248718262,
+              "hand_joint_error_deg": 3.8964059352874756,
+              "wrist_goal_error_cm": 0.001691254903562367,
+              "trajectory_sha256": "7f6a3b498f16b0985a31bed3253a24a2ab8ddac65cce413c1d22a39302874178",
+              "seconds": 0.2500000000509317
+            },
+            "direct": {
+              "physical_goal_error": 0.2652430832386017,
+              "hand_joint_error_deg": 4.27955961227417,
+              "wrist_goal_error_cm": 0.4598502516746521,
+              "trajectory_sha256": "2ffb1f63f150e2f9f98a340eaa8df056b0c04bc5da33dc7d2a88eeb8c626ad47",
+              "seconds": 0.2500000000509317,
+              "predicted_search_start": 1.9011462926864624,
+              "predicted_search_selected": 1.6823680400848389,
+              "actual_difference_from_controller": 0.024563580751419067
+            },
+            "synergy": {
+              "physical_goal_error": 0.30137157440185547,
+              "hand_joint_error_deg": 4.251112461090088,
+              "wrist_goal_error_cm": 0.3819241523742676,
+              "trajectory_sha256": "4636f190b65db4b4f1dd1ba3feba4863b261836affdc218db34d5b217711d406",
+              "seconds": 0.2500000000509317,
+              "predicted_search_start": 1.8859260082244873,
+              "predicted_search_selected": 1.7907243967056274,
+              "actual_difference_from_controller": 0.06069207191467285
+            }
+          }
+        },
+        {
+          "body": 3,
+          "goal": "curl_witness",
+          "witness_trajectory_sha256": "acaf947aa4ffe9eb7432b640644e934fc06a426026f730418212d687849df9f0",
+          "exact_replay": true,
+          "outcomes": {
+            "controller": {
+              "physical_goal_error": 0.4216539263725281,
+              "hand_joint_error_deg": 3.5472257137298584,
+              "wrist_goal_error_cm": 0.0018000586424022913,
+              "trajectory_sha256": "3e51f913ae6f8738e32d67a62568d7d9a3c42fd56370b28d15f13bfc31a7ab4a",
+              "seconds": 0.2500000000509317
+            },
+            "direct": {
+              "physical_goal_error": 0.4066387116909027,
+              "hand_joint_error_deg": 3.9035024642944336,
+              "wrist_goal_error_cm": 0.5738140940666199,
+              "trajectory_sha256": "e7489cb246245a25ac4d3e532dcc0caa105d5f999bb5bcde5d0285ff122f3b1a",
+              "seconds": 0.2500000000509317,
+              "predicted_search_start": 1.1113731861114502,
+              "predicted_search_selected": 0.9758794903755188,
+              "actual_difference_from_controller": -0.015015214681625366
+            },
+            "synergy": {
+              "physical_goal_error": 0.3798423409461975,
+              "hand_joint_error_deg": 3.8636085987091064,
+              "wrist_goal_error_cm": 0.6686114072799683,
+              "trajectory_sha256": "5835f0181ec713a2df84332a6fef2e88b658a6037713ed6d0eefa96deb69f867",
+              "seconds": 0.2500000000509317,
+              "predicted_search_start": 1.1089547872543335,
+              "predicted_search_selected": 1.0253459215164185,
+              "actual_difference_from_controller": -0.041811585426330566
+            }
+          }
+        },
+        {
+          "body": 3,
+          "goal": "extension_witness",
+          "witness_trajectory_sha256": "165e4edf2b883dad40df7d0ef1d416e2ed0d1ec5243d5df36cf11c46a4656148",
+          "exact_replay": true,
+          "outcomes": {
+            "controller": {
+              "physical_goal_error": 0.43668290972709656,
+              "hand_joint_error_deg": 4.02555513381958,
+              "wrist_goal_error_cm": 0.002367995446547866,
+              "trajectory_sha256": "3e51f913ae6f8738e32d67a62568d7d9a3c42fd56370b28d15f13bfc31a7ab4a",
+              "seconds": 0.2500000000509317
+            },
+            "direct": {
+              "physical_goal_error": 0.5619334578514099,
+              "hand_joint_error_deg": 4.234722137451172,
+              "wrist_goal_error_cm": 0.8078760504722595,
+              "trajectory_sha256": "515277de277c3aa86b7aad05e51aeb632fc772912a63753902c91ca55c71ff57",
+              "seconds": 0.2500000000509317,
+              "predicted_search_start": 0.8917958736419678,
+              "predicted_search_selected": 0.7072376608848572,
+              "actual_difference_from_controller": 0.12525054812431335
+            },
+            "synergy": {
+              "physical_goal_error": 0.5354653000831604,
+              "hand_joint_error_deg": 4.237067222595215,
+              "wrist_goal_error_cm": 0.8895816206932068,
+              "trajectory_sha256": "f0e680270503fd3abf16f6781362055f756f6ecc7b8c9965c887a79e45ec86ec",
+              "seconds": 0.2500000000509317,
+              "predicted_search_start": 0.8874834179878235,
+              "predicted_search_selected": 0.7553818821907043,
+              "actual_difference_from_controller": 0.09878239035606384
+            }
+          }
+        },
+        {
+          "body": 4,
+          "goal": "curl_witness",
+          "witness_trajectory_sha256": "2da5822f825cd867a887a004ef9925b15c0adc85c842d449ebf84f13c193b6c9",
+          "exact_replay": true,
+          "outcomes": {
+            "controller": {
+              "physical_goal_error": 0.295910507440567,
+              "hand_joint_error_deg": 3.3928000926971436,
+              "wrist_goal_error_cm": 0.0009402178111486137,
+              "trajectory_sha256": "78edbac0a803e5dd01d75d4e820f1e27c26ef323aed6cf238dc1ee4a2b7c9244",
+              "seconds": 0.2500000000509317
+            },
+            "direct": {
+              "physical_goal_error": 0.3556346297264099,
+              "hand_joint_error_deg": 3.8662397861480713,
+              "wrist_goal_error_cm": 0.6338695287704468,
+              "trajectory_sha256": "408ae7df938ee3a81e3b6480b84cccf46bdca3a76bf4be51525f122d088eadab",
+              "seconds": 0.2500000000509317,
+              "predicted_search_start": 1.4003329277038574,
+              "predicted_search_selected": 0.9746651649475098,
+              "actual_difference_from_controller": 0.059724122285842896
+            },
+            "synergy": {
+              "physical_goal_error": 0.32445722818374634,
+              "hand_joint_error_deg": 3.764364004135132,
+              "wrist_goal_error_cm": 0.4652617573738098,
+              "trajectory_sha256": "d324273ae66ba9af51dd0ed836d2a901e29969f720251a74a87afbc0b97ceec7",
+              "seconds": 0.2500000000509317,
+              "predicted_search_start": 1.3719440698623657,
+              "predicted_search_selected": 1.2166481018066406,
+              "actual_difference_from_controller": 0.02854672074317932
+            }
+          }
+        },
+        {
+          "body": 4,
+          "goal": "extension_witness",
+          "witness_trajectory_sha256": "0c3523dc8af529dde88d22207637a5646a8d053503e10af5b66a19f064212443",
+          "exact_replay": true,
+          "outcomes": {
+            "controller": {
+              "physical_goal_error": 0.3800119161605835,
+              "hand_joint_error_deg": 3.7368955612182617,
+              "wrist_goal_error_cm": 0.017500557005405426,
+              "trajectory_sha256": "78edbac0a803e5dd01d75d4e820f1e27c26ef323aed6cf238dc1ee4a2b7c9244",
+              "seconds": 0.2500000000509317
+            },
+            "direct": {
+              "physical_goal_error": 0.4169995188713074,
+              "hand_joint_error_deg": 3.840304374694824,
+              "wrist_goal_error_cm": 0.47217053174972534,
+              "trajectory_sha256": "f167c061033fec5137378693c8e869e42f0fe5d3e4db450c0325800755524b72",
+              "seconds": 0.2500000000509317,
+              "predicted_search_start": 1.2392308712005615,
+              "predicted_search_selected": 0.8522533774375916,
+              "actual_difference_from_controller": 0.03698760271072388
+            },
+            "synergy": {
+              "physical_goal_error": 0.3879556655883789,
+              "hand_joint_error_deg": 3.6960179805755615,
+              "wrist_goal_error_cm": 0.46538403630256653,
+              "trajectory_sha256": "de87e1ee25624f83e855e2627328ee306bb7319fc87fbb88eb6e0d52ff45d7f5",
+              "seconds": 0.2500000000509317,
+              "predicted_search_start": 1.2023032903671265,
+              "predicted_search_selected": 1.0479530096054077,
+              "actual_difference_from_controller": 0.00794374942779541
+            }
+          }
+        },
+        {
+          "body": 5,
+          "goal": "curl_witness",
+          "witness_trajectory_sha256": "6497b496f2fb457df60e76a085ce640f6163061517755048228672a8cfc83a31",
+          "exact_replay": true,
+          "outcomes": {
+            "controller": {
+              "physical_goal_error": 0.29607653617858887,
+              "hand_joint_error_deg": 4.743619918823242,
+              "wrist_goal_error_cm": 0.0014643854228779674,
+              "trajectory_sha256": "e79565e104b2e722b88c1e5c552586ddcfbb3ff7c17f0c1b2ed4da9815a752b0",
+              "seconds": 0.2500000000509317
+            },
+            "direct": {
+              "physical_goal_error": 0.6170757412910461,
+              "hand_joint_error_deg": 5.173242092132568,
+              "wrist_goal_error_cm": 1.654658317565918,
+              "trajectory_sha256": "8d9da7c70028b82e413e907cc55de9b7179f42be2a0d022dd1cead9d8d2c7b90",
+              "seconds": 0.2500000000509317,
+              "predicted_search_start": 1.4905592203140259,
+              "predicted_search_selected": 0.8724955320358276,
+              "actual_difference_from_controller": 0.3209992051124573
+            },
+            "synergy": {
+              "physical_goal_error": 0.4349822700023651,
+              "hand_joint_error_deg": 5.2309794425964355,
+              "wrist_goal_error_cm": 0.9426759481430054,
+              "trajectory_sha256": "5cd073a6a091e731042c7ccf3215b673d7761e20d5f4caed5b42e340dd86bdc7",
+              "seconds": 0.2500000000509317,
+              "predicted_search_start": 1.4667937755584717,
+              "predicted_search_selected": 1.0419660806655884,
+              "actual_difference_from_controller": 0.13890573382377625
+            }
+          }
+        },
+        {
+          "body": 5,
+          "goal": "extension_witness",
+          "witness_trajectory_sha256": "4cd9e1f90f78cd0eb87cb3255e0c7ea9e0526dd15eed63b154f393e428a56719",
+          "exact_replay": true,
+          "outcomes": {
+            "controller": {
+              "physical_goal_error": 0.1520387828350067,
+              "hand_joint_error_deg": 2.5169432163238525,
+              "wrist_goal_error_cm": 0.0014796113828197122,
+              "trajectory_sha256": "e79565e104b2e722b88c1e5c552586ddcfbb3ff7c17f0c1b2ed4da9815a752b0",
+              "seconds": 0.2500000000509317
+            },
+            "direct": {
+              "physical_goal_error": 0.34813275933265686,
+              "hand_joint_error_deg": 2.4334890842437744,
+              "wrist_goal_error_cm": 1.6319546699523926,
+              "trajectory_sha256": "f53b43dbf629db6f27de7fc145d2b1bc61e17888a7e44347a93e4f8376b3e40f",
+              "seconds": 0.2500000000509317,
+              "predicted_search_start": 1.0049214363098145,
+              "predicted_search_selected": 0.4926849901676178,
+              "actual_difference_from_controller": 0.19609397649765015
+            },
+            "synergy": {
+              "physical_goal_error": 0.25828230381011963,
+              "hand_joint_error_deg": 2.5405495166778564,
+              "wrist_goal_error_cm": 1.197562575340271,
+              "trajectory_sha256": "e59745a06fd6dd62fe9e21e3dc2487da09f49e4c32fd24d27b862900f0b2adef",
+              "seconds": 0.2500000000509317,
+              "predicted_search_start": 0.9854817986488342,
+              "predicted_search_selected": 0.6270880699157715,
+              "actual_difference_from_controller": 0.10624352097511292
+            }
+          }
+        },
+        {
+          "body": 6,
+          "goal": "curl_witness",
+          "witness_trajectory_sha256": "8754be2197f86a8454fa7a4d7a434b21c5ececa2e34aebf5a9a3e7b47ac06fda",
+          "exact_replay": true,
+          "outcomes": {
+            "controller": {
+              "physical_goal_error": 0.15391352772712708,
+              "hand_joint_error_deg": 2.2895922660827637,
+              "wrist_goal_error_cm": 0.00039205796201713383,
+              "trajectory_sha256": "14518e86470ceb64b032b2d67922e3e4f199c1cd1c829ab24a017faea586dd76",
+              "seconds": 0.2500000000509317
+            },
+            "direct": {
+              "physical_goal_error": 0.20536112785339355,
+              "hand_joint_error_deg": 2.7427167892456055,
+              "wrist_goal_error_cm": 0.6285941004753113,
+              "trajectory_sha256": "e07ee7f57fec8b54f7fb67d7d57099e9fac3531eabac8d16a0c2b947c5a7ffa5",
+              "seconds": 0.2500000000509317,
+              "predicted_search_start": 1.809798240661621,
+              "predicted_search_selected": 0.9795604944229126,
+              "actual_difference_from_controller": 0.05144760012626648
+            },
+            "synergy": {
+              "physical_goal_error": 0.21750012040138245,
+              "hand_joint_error_deg": 2.433293104171753,
+              "wrist_goal_error_cm": 0.8682547211647034,
+              "trajectory_sha256": "da5dd276b477dcbc18cb98f2265e257fb5acbca9c12e3d6dbc9e5cec9c6af5c0",
+              "seconds": 0.2500000000509317,
+              "predicted_search_start": 1.8357560634613037,
+              "predicted_search_selected": 1.4164056777954102,
+              "actual_difference_from_controller": 0.06358659267425537
+            }
+          }
+        },
+        {
+          "body": 6,
+          "goal": "extension_witness",
+          "witness_trajectory_sha256": "6d1f903d3a679506db7f0f803be57fb0a19728ffd70519d75f7920786db2227a",
+          "exact_replay": true,
+          "outcomes": {
+            "controller": {
+              "physical_goal_error": 0.09692439436912537,
+              "hand_joint_error_deg": 3.356529474258423,
+              "wrist_goal_error_cm": 0.00035411480348557234,
+              "trajectory_sha256": "14518e86470ceb64b032b2d67922e3e4f199c1cd1c829ab24a017faea586dd76",
+              "seconds": 0.2500000000509317
+            },
+            "direct": {
+              "physical_goal_error": 0.18799513578414917,
+              "hand_joint_error_deg": 3.7493016719818115,
+              "wrist_goal_error_cm": 0.7060064077377319,
+              "trajectory_sha256": "d84f81e7f1d8d1c2e2bbd5cb453154f232aa3de5428dcd791db09a76f2106703",
+              "seconds": 0.2500000000509317,
+              "predicted_search_start": 1.9155091047286987,
+              "predicted_search_selected": 1.0846614837646484,
+              "actual_difference_from_controller": 0.0910707414150238
+            },
+            "synergy": {
+              "physical_goal_error": 0.20253986120224,
+              "hand_joint_error_deg": 3.8990705013275146,
+              "wrist_goal_error_cm": 0.6811602711677551,
+              "trajectory_sha256": "b801007bc9a3b4d4f6a64b869a489d05f80678039ab2b0db8536b6599a32ed88",
+              "seconds": 0.2500000000509317,
+              "predicted_search_start": 1.9362714290618896,
+              "predicted_search_selected": 1.5057319402694702,
+              "actual_difference_from_controller": 0.10561546683311462
+            }
+          }
+        },
+        {
+          "body": 7,
+          "goal": "curl_witness",
+          "witness_trajectory_sha256": "1a9c4e722a8d7e580a7f15b93741ca1dd5ad630e4df2b3017606e1748abe692f",
+          "exact_replay": true,
+          "outcomes": {
+            "controller": {
+              "physical_goal_error": 0.6847589612007141,
+              "hand_joint_error_deg": 6.3123016357421875,
+              "wrist_goal_error_cm": 0.0014338940382003784,
+              "trajectory_sha256": "3f2b7999c540df33c481f08bae43e7678b8dfa857ea0217a1a5b150ff1ca80df",
+              "seconds": 0.2500000000509317
+            },
+            "direct": {
+              "physical_goal_error": 0.868114709854126,
+              "hand_joint_error_deg": 6.6248779296875,
+              "wrist_goal_error_cm": 1.1083519458770752,
+              "trajectory_sha256": "e2d588141ec5458c20183a7313f333271e66473f22ae8f7c573e6b6bd6032d82",
+              "seconds": 0.2500000000509317,
+              "predicted_search_start": 1.5580329895019531,
+              "predicted_search_selected": 1.0582382678985596,
+              "actual_difference_from_controller": 0.18335574865341187
+            },
+            "synergy": {
+              "physical_goal_error": 0.7730960845947266,
+              "hand_joint_error_deg": 6.442090034484863,
+              "wrist_goal_error_cm": 0.6346539855003357,
+              "trajectory_sha256": "4a7ee1b6a80dc0e31098954675cd2da484049204593628557dcaf3d967e14813",
+              "seconds": 0.2500000000509317,
+              "predicted_search_start": 1.5665600299835205,
+              "predicted_search_selected": 1.2745318412780762,
+              "actual_difference_from_controller": 0.08833712339401245
+            }
+          }
+        },
+        {
+          "body": 7,
+          "goal": "extension_witness",
+          "witness_trajectory_sha256": "da578e264e6719c2b49c67c73be742e82d699134d2eb97ecedf201539f9a189f",
+          "exact_replay": true,
+          "outcomes": {
+            "controller": {
+              "physical_goal_error": 0.5480390787124634,
+              "hand_joint_error_deg": 4.476602554321289,
+              "wrist_goal_error_cm": 0.0487251952290535,
+              "trajectory_sha256": "3f2b7999c540df33c481f08bae43e7678b8dfa857ea0217a1a5b150ff1ca80df",
+              "seconds": 0.2500000000509317
+            },
+            "direct": {
+              "physical_goal_error": 0.5326327085494995,
+              "hand_joint_error_deg": 4.86036491394043,
+              "wrist_goal_error_cm": 1.0445098876953125,
+              "trajectory_sha256": "9fd79665ab7346b8835d381a2a279bf70cf7fa1c18b1994aab348c20ba04d220",
+              "seconds": 0.2500000000509317,
+              "predicted_search_start": 1.7604310512542725,
+              "predicted_search_selected": 0.8555564284324646,
+              "actual_difference_from_controller": -0.015406370162963867
+            },
+            "synergy": {
+              "physical_goal_error": 0.5572399497032166,
+              "hand_joint_error_deg": 4.885132312774658,
+              "wrist_goal_error_cm": 0.6650142669677734,
+              "trajectory_sha256": "50ab4c7cfad7825285a347c63428934d499568922187c58ed533a18ac3f62ca3",
+              "seconds": 0.2500000000509317,
+              "predicted_search_start": 1.7531070709228516,
+              "predicted_search_selected": 1.2038296461105347,
+              "actual_difference_from_controller": 0.009200870990753174
+            }
+          }
+        }
+      ]
+    },
+    "hand_body_goals_seed_v1": {
+      "result": {
+        "checkpoint": "Saved\\mimo_bridge\\experiments\\H84_fresh_drivers_20260918_seg36_supervised_planner\\checkpoints\\ckpt_step_380200",
+        "bodies": 8,
+        "goals": [
+          "curl_witness",
+          "extension_witness"
+        ],
+        "contract": "wrist_relative_joint_v1",
+        "learning": false,
+        "production_changed": false,
+        "hold_seconds": 0.25,
+        "initializer": "goal_pose",
+        "goal_source": "Observed endpoint of a same-state physical reference with chosen compatible curl/extension, ordinary wrist order and force settings.",
+        "comparison": "Starting controller, direct feasible-hand planner, composed learned-synergy/feasible-hand planner. Strength and gaze are fixed to the controller inside both searches.",
+        "gaze_scope": "Body-stage mechanism comparison: visual gaze optimization is deliberately held fixed in every arm; this does not qualify the combined visual/body policy.",
+        "adoption": "Compare common physical-goal error and hand-joint error across independent bodies; no switch is changed by this experiment.",
+        "script_sha256": "a575bfbc325f70c13f9dccfc24d9f6bcc7227552489159c2c782f4c91aeb65d4",
+        "source_sha256": {
+          "Source\\Python\\mimo_bridge\\hand_target_control.py": "e075999c4beb9f4acf1f543e30e0c930eaf4bf33c706b8cbdd9aa17e887b0d63",
+          "Source\\Python\\mimo_bridge\\lem_model.py": "40e4d91a67a7995ea64e58495ee80d211bdd57352002a59586928f54b6b50f0b",
+          "Source\\Python\\lem\\model\\physical_goal.py": "0b305a6e8549613ae19b39b090bd87adc07e3a4f3a5c0c3889d5511dfee8f6ad",
+          "Source\\Python\\mimo_bridge\\env.py": "98ebba7e16769f236e06165b8285888f1446e83db706e07a751f5e3ab7166f88",
+          "Source\\Python\\mimo_bridge\\tools\\gof_probe_harness.py": "086172f9c9cea17da7c04dbd601ae0f158fcd07f4c50bc28c5c031d028d6a376"
+        },
+        "seed": 0,
+        "summary": {
+          "physical_goal_error": {
+            "means": {
+              "controller": 0.34221492195501924,
+              "goal_seed": 0.6897462056949735,
+              "direct": 0.7226439109072089,
+              "synergy": 0.7214191202074289
+            },
+            "synergy_minus_direct": -0.0012247906997799873,
+            "paired_bootstrap95": [
+              -0.021075321175158025,
+              0.018144383141770942
+            ],
+            "bodies_synergy_better": 3,
+            "against_controller": {
+              "goal_seed": {
+                "mean_difference": 0.34753128373995423,
+                "paired_bootstrap95": [
+                  0.19907733582658696,
+                  0.49659152288222674
+                ],
+                "bodies_better": 0
+              },
+              "direct": {
+                "mean_difference": 0.3804289889521897,
+                "paired_bootstrap95": [
+                  0.2307050047791563,
+                  0.5462520075961947
+                ],
+                "bodies_better": 0
+              },
+              "synergy": {
+                "mean_difference": 0.3792041982524097,
+                "paired_bootstrap95": [
+                  0.2372011836152524,
+                  0.5409841970540583
+                ],
+                "bodies_better": 0
+              }
+            },
+            "against_goal_seed": {
+              "direct": {
+                "mean_difference": 0.03289770521223545,
+                "paired_bootstrap95": [
+                  -0.019532401114702225,
+                  0.08362200460396704
+                ],
+                "bodies_better": 2
+              },
+              "synergy": {
+                "mean_difference": 0.03167291451245546,
+                "paired_bootstrap95": [
+                  -0.017227383027784527,
+                  0.0807367255911231
+                ],
+                "bodies_better": 4
+              }
+            }
+          },
+          "hand_joint_error_deg": {
+            "means": {
+              "controller": 3.938795894384384,
+              "goal_seed": 4.429378345608711,
+              "direct": 4.578570708632469,
+              "synergy": 4.59077512472868
+            },
+            "synergy_minus_direct": 0.01220441609621048,
+            "paired_bootstrap95": [
+              -0.041722267866134644,
+              0.061532892286777496
+            ],
+            "bodies_synergy_better": 3,
+            "against_controller": {
+              "goal_seed": {
+                "mean_difference": 0.4905824512243271,
+                "paired_bootstrap95": [
+                  0.09511366933584213,
+                  0.8809411548078059
+                ],
+                "bodies_better": 2
+              },
+              "direct": {
+                "mean_difference": 0.639774814248085,
+                "paired_bootstrap95": [
+                  0.43032936193048954,
+                  0.8734246492385864
+                ],
+                "bodies_better": 0
+              },
+              "synergy": {
+                "mean_difference": 0.6519792303442955,
+                "paired_bootstrap95": [
+                  0.4540087431669235,
+                  0.8733288295567032
+                ],
+                "bodies_better": 0
+              }
+            },
+            "against_goal_seed": {
+              "direct": {
+                "mean_difference": 0.14919236302375793,
+                "paired_bootstrap95": [
+                  -0.17464253418147563,
+                  0.4277079850435257
+                ],
+                "bodies_better": 2
+              },
+              "synergy": {
+                "mean_difference": 0.16139677911996841,
+                "paired_bootstrap95": [
+                  -0.17079242058098315,
+                  0.448958077467978
+                ],
+                "bodies_better": 2
+              }
+            }
+          },
+          "wrist_goal_error_cm": {
+            "means": {
+              "controller": 0.006647939406320802,
+              "goal_seed": 0.7112337294965982,
+              "direct": 0.9614683501422405,
+              "synergy": 0.8949072640389204
+            },
+            "synergy_minus_direct": -0.06656108610332012,
+            "paired_bootstrap95": [
+              -0.14244642108678818,
+              0.02114022895693779
+            ],
+            "bodies_synergy_better": 6,
+            "against_controller": {
+              "goal_seed": {
+                "mean_difference": 0.7045857900902774,
+                "paired_bootstrap95": [
+                  0.5434696646445445,
+                  0.8371722861156741
+                ],
+                "bodies_better": 0
+              },
+              "direct": {
+                "mean_difference": 0.9548204107359197,
+                "paired_bootstrap95": [
+                  0.7130951109538728,
+                  1.1733313355118298
+                ],
+                "bodies_better": 0
+              },
+              "synergy": {
+                "mean_difference": 0.8882593246325996,
+                "paired_bootstrap95": [
+                  0.7072554555088573,
+                  1.0512817768503737
+                ],
+                "bodies_better": 0
+              }
+            },
+            "against_goal_seed": {
+              "direct": {
+                "mean_difference": 0.2502346206456423,
+                "paired_bootstrap95": [
+                  0.08837051317095757,
+                  0.3704241695348173
+                ],
+                "bodies_better": 1
+              },
+              "synergy": {
+                "mean_difference": 0.18367353454232216,
+                "paired_bootstrap95": [
+                  0.027116915723308925,
+                  0.30533791333436966
+                ],
+                "bodies_better": 1
+              }
+            }
+          }
+        },
+        "weights_unchanged": true,
+        "exact_replay": true,
+        "elapsed_s": 431.4740078449249
+      },
+      "source_files": {
+        "Saved\\gof_takeover_20260924\\repair\\hand_body_goals_seed_v1\\result.json": "76e054cfc6cb3d23a9258e3d183c0e8d1e429da351e1337ca5adc34c29431ebe",
+        "Saved\\gof_takeover_20260924\\repair\\hand_body_goals_seed_v1\\trials.jsonl": "1a6ff85dfbc9744eb8de0962d5502bd02afd7e780889ecd821df21ef610c8ea7"
+      },
+      "trials": [
+        {
+          "body": 0,
+          "goal": "curl_witness",
+          "witness_trajectory_sha256": "35b1c511930822972ddd7637a761414bdb018f33e7a868afe67078792cbcbeb0",
+          "exact_replay": true,
+          "outcomes": {
+            "controller": {
+              "physical_goal_error": 0.9299671053886414,
+              "hand_joint_error_deg": 6.632680892944336,
+              "wrist_goal_error_cm": 0.0017020832747220993,
+              "trajectory_sha256": "55ab803f6e3c957ccf5cbf65505a1e6ebd32e9f856986586ad73f4c53a96c294",
+              "seconds": 0.2500000000509317
+            },
+            "goal_seed": {
+              "physical_goal_error": 1.2449679374694824,
+              "hand_joint_error_deg": 7.119019985198975,
+              "wrist_goal_error_cm": 0.837026834487915,
+              "trajectory_sha256": "a4b18c1c313c6e523560576b269230a52aa83089d44a149bd6e4632b2a806d22",
+              "seconds": 0.2500000000509317
+            },
+            "direct": {
+              "physical_goal_error": 1.4917153120040894,
+              "hand_joint_error_deg": 7.976036548614502,
+              "wrist_goal_error_cm": 1.5061664581298828,
+              "trajectory_sha256": "c88ff0448abaaa5a66e63a90ad3b4e3c36bc1a8558b03f2f11432739cc23cf58",
+              "seconds": 0.2500000000509317,
+              "prediction_check": {
+                "predicted_start": 1.9430327415466309,
+                "predicted_selected": 1.3762727975845337,
+                "predicted_change_during_search": -0.5667599439620972,
+                "actual_reference": "goal_seed",
+                "actual_change_from_reference": 0.24674737453460693,
+                "interpretation": "The predicted change compares the optimizer own first and selected candidates; synergy first projects the supplied proposal through its learned movement map. Actual error compares the separately executed named reference."
+              }
+            },
+            "synergy": {
+              "physical_goal_error": 1.402843952178955,
+              "hand_joint_error_deg": 8.249716758728027,
+              "wrist_goal_error_cm": 1.3488991260528564,
+              "trajectory_sha256": "13f2d29aafd085f6f5a58b1e67b8c3facd7736a2ede1d705bd3f746c930bacd7",
+              "seconds": 0.2500000000509317,
+              "prediction_check": {
+                "predicted_start": 1.9179879426956177,
+                "predicted_selected": 1.5871466398239136,
+                "predicted_change_during_search": -0.3308413028717041,
+                "actual_reference": "goal_seed",
+                "actual_change_from_reference": 0.15787601470947266,
+                "interpretation": "The predicted change compares the optimizer own first and selected candidates; synergy first projects the supplied proposal through its learned movement map. Actual error compares the separately executed named reference."
+              }
+            }
+          }
+        },
+        {
+          "body": 0,
+          "goal": "extension_witness",
+          "witness_trajectory_sha256": "7a845016b52c020d2a4ba7254e9a5e4a0f33025e5c9eeda67bcdb16a9f51cc57",
+          "exact_replay": true,
+          "outcomes": {
+            "controller": {
+              "physical_goal_error": 0.3686102330684662,
+              "hand_joint_error_deg": 3.9097025394439697,
+              "wrist_goal_error_cm": 0.001147513510659337,
+              "trajectory_sha256": "55ab803f6e3c957ccf5cbf65505a1e6ebd32e9f856986586ad73f4c53a96c294",
+              "seconds": 0.2500000000509317
+            },
+            "goal_seed": {
+              "physical_goal_error": 0.2076173722743988,
+              "hand_joint_error_deg": 2.6626994609832764,
+              "wrist_goal_error_cm": 0.8234589099884033,
+              "trajectory_sha256": "b70030ab7ecea2a222328234fa1a5ab006d8781a4d969e015b1569913f0dccbf",
+              "seconds": 0.2500000000509317
+            },
+            "direct": {
+              "physical_goal_error": 0.19596585631370544,
+              "hand_joint_error_deg": 3.2526352405548096,
+              "wrist_goal_error_cm": 0.9090572595596313,
+              "trajectory_sha256": "ea997cf11977390f787e5434ff54c07ed49665afcebb2fe6c726a81a672ee087",
+              "seconds": 0.2500000000509317,
+              "prediction_check": {
+                "predicted_start": 0.860563337802887,
+                "predicted_selected": 0.6590635180473328,
+                "predicted_change_during_search": -0.2014998197555542,
+                "actual_reference": "goal_seed",
+                "actual_change_from_reference": -0.01165151596069336,
+                "interpretation": "The predicted change compares the optimizer own first and selected candidates; synergy first projects the supplied proposal through its learned movement map. Actual error compares the separately executed named reference."
+              }
+            },
+            "synergy": {
+              "physical_goal_error": 0.21044161915779114,
+              "hand_joint_error_deg": 3.2603471279144287,
+              "wrist_goal_error_cm": 0.8209488391876221,
+              "trajectory_sha256": "b8d61cb8470cdce92ba26f89e16724661512ba32f64538cb37cd9c973cf1e590",
+              "seconds": 0.2500000000509317,
+              "prediction_check": {
+                "predicted_start": 0.8620012998580933,
+                "predicted_selected": 0.7028766870498657,
+                "predicted_change_during_search": -0.15912461280822754,
+                "actual_reference": "goal_seed",
+                "actual_change_from_reference": 0.002824246883392334,
+                "interpretation": "The predicted change compares the optimizer own first and selected candidates; synergy first projects the supplied proposal through its learned movement map. Actual error compares the separately executed named reference."
+              }
+            }
+          }
+        },
+        {
+          "body": 1,
+          "goal": "curl_witness",
+          "witness_trajectory_sha256": "0a77e24fd6ad0f80803d8b145066a07a1d16a8e4f03487204061180d8ec309a2",
+          "exact_replay": true,
+          "outcomes": {
+            "controller": {
+              "physical_goal_error": 0.2403164654970169,
+              "hand_joint_error_deg": 4.066976547241211,
+              "wrist_goal_error_cm": 0.023186450824141502,
+              "trajectory_sha256": "9d671ae4d2ef0b569eb28cbe1e0670e06cc262afc684b80ce5d6ffd018a606c1",
+              "seconds": 0.2500000000509317
+            },
+            "goal_seed": {
+              "physical_goal_error": 1.1082063913345337,
+              "hand_joint_error_deg": 5.733639717102051,
+              "wrist_goal_error_cm": 0.923437237739563,
+              "trajectory_sha256": "4120162a9fa5898bcbdb813eb1bd8be5b8444133c2e63063ab276b913c4e36bf",
+              "seconds": 0.2500000000509317
+            },
+            "direct": {
+              "physical_goal_error": 1.1795997619628906,
+              "hand_joint_error_deg": 5.382261276245117,
+              "wrist_goal_error_cm": 1.5588757991790771,
+              "trajectory_sha256": "315804085a14cf12885abd327c0c6f3101e6e386c31bc6f044bc9199b85627a9",
+              "seconds": 0.2500000000509317,
+              "prediction_check": {
+                "predicted_start": 1.8645882606506348,
+                "predicted_selected": 1.2395644187927246,
+                "predicted_change_during_search": -0.6250238418579102,
+                "actual_reference": "goal_seed",
+                "actual_change_from_reference": 0.07139337062835693,
+                "interpretation": "The predicted change compares the optimizer own first and selected candidates; synergy first projects the supplied proposal through its learned movement map. Actual error compares the separately executed named reference."
+              }
+            },
+            "synergy": {
+              "physical_goal_error": 1.1212387084960938,
+              "hand_joint_error_deg": 5.363653182983398,
+              "wrist_goal_error_cm": 1.2612266540527344,
+              "trajectory_sha256": "77135a656f48728c934ba87bc348fbd86e87368a2f780918456a4f0b25f306c7",
+              "seconds": 0.2500000000509317,
+              "prediction_check": {
+                "predicted_start": 1.9295886754989624,
+                "predicted_selected": 1.4266538619995117,
+                "predicted_change_during_search": -0.5029348134994507,
+                "actual_reference": "goal_seed",
+                "actual_change_from_reference": 0.013032317161560059,
+                "interpretation": "The predicted change compares the optimizer own first and selected candidates; synergy first projects the supplied proposal through its learned movement map. Actual error compares the separately executed named reference."
+              }
+            }
+          }
+        },
+        {
+          "body": 1,
+          "goal": "extension_witness",
+          "witness_trajectory_sha256": "68454bf814bd6f630bdb3b75f5e7bc474be02a624526edfd6ce6847de51c4790",
+          "exact_replay": true,
+          "outcomes": {
+            "controller": {
+              "physical_goal_error": 0.09019672125577927,
+              "hand_joint_error_deg": 2.3088300228118896,
+              "wrist_goal_error_cm": 0.0012015693355351686,
+              "trajectory_sha256": "9d671ae4d2ef0b569eb28cbe1e0670e06cc262afc684b80ce5d6ffd018a606c1",
+              "seconds": 0.2500000000509317
+            },
+            "goal_seed": {
+              "physical_goal_error": 0.2764449119567871,
+              "hand_joint_error_deg": 3.2138137817382812,
+              "wrist_goal_error_cm": 0.9269323945045471,
+              "trajectory_sha256": "e2d6280bfa17c4048ad0077e904afeddd5f15d864c4b899442015600cd96ae19",
+              "seconds": 0.2500000000509317
+            },
+            "direct": {
+              "physical_goal_error": 0.26400288939476013,
+              "hand_joint_error_deg": 1.8736004829406738,
+              "wrist_goal_error_cm": 1.2387946844100952,
+              "trajectory_sha256": "2fd5957a37fedb723c42deaa8d1ce6d2e3fee21f822e82d54dc9e4212a543012",
+              "seconds": 0.2500000000509317,
+              "prediction_check": {
+                "predicted_start": 1.36741304397583,
+                "predicted_selected": 0.7361676692962646,
+                "predicted_change_during_search": -0.6312453746795654,
+                "actual_reference": "goal_seed",
+                "actual_change_from_reference": -0.012442022562026978,
+                "interpretation": "The predicted change compares the optimizer own first and selected candidates; synergy first projects the supplied proposal through its learned movement map. Actual error compares the separately executed named reference."
+              }
+            },
+            "synergy": {
+              "physical_goal_error": 0.26282989978790283,
+              "hand_joint_error_deg": 1.8690491914749146,
+              "wrist_goal_error_cm": 1.0742065906524658,
+              "trajectory_sha256": "bde85c8998cd8e105e31b7f4ecad91d8391707aa40658702ab2b05978f5130e1",
+              "seconds": 0.2500000000509317,
+              "prediction_check": {
+                "predicted_start": 1.419424057006836,
+                "predicted_selected": 0.891025722026825,
+                "predicted_change_during_search": -0.528398334980011,
+                "actual_reference": "goal_seed",
+                "actual_change_from_reference": -0.013615012168884277,
+                "interpretation": "The predicted change compares the optimizer own first and selected candidates; synergy first projects the supplied proposal through its learned movement map. Actual error compares the separately executed named reference."
+              }
+            }
+          }
+        },
+        {
+          "body": 2,
+          "goal": "curl_witness",
+          "witness_trajectory_sha256": "8099045574a87e43ebd772c4d4f9e6103445cc8df37390e2f18ca76293c7b5cf",
+          "exact_replay": true,
+          "outcomes": {
+            "controller": {
+              "physical_goal_error": 0.13965818285942078,
+              "hand_joint_error_deg": 3.808072805404663,
+              "wrist_goal_error_cm": 0.0009800709085538983,
+              "trajectory_sha256": "7f6a3b498f16b0985a31bed3253a24a2ab8ddac65cce413c1d22a39302874178",
+              "seconds": 0.2500000000509317
+            },
+            "goal_seed": {
+              "physical_goal_error": 1.5050432682037354,
+              "hand_joint_error_deg": 6.2403244972229,
+              "wrist_goal_error_cm": 0.7938439249992371,
+              "trajectory_sha256": "a5e4ec7ee4eede64a68da185ed4b80f27020d05583107d8dc6486220f46c4bed",
+              "seconds": 0.2500000000509317
+            },
+            "direct": {
+              "physical_goal_error": 1.6843727827072144,
+              "hand_joint_error_deg": 6.272974014282227,
+              "wrist_goal_error_cm": 1.1637452840805054,
+              "trajectory_sha256": "263cc16177b5e7fd5bcdd443e8bae804999a74e5de8b45acb360545414a61474",
+              "seconds": 0.2500000000509317,
+              "prediction_check": {
+                "predicted_start": 2.7037456035614014,
+                "predicted_selected": 2.4288525581359863,
+                "predicted_change_during_search": -0.27489304542541504,
+                "actual_reference": "goal_seed",
+                "actual_change_from_reference": 0.179329514503479,
+                "interpretation": "The predicted change compares the optimizer own first and selected candidates; synergy first projects the supplied proposal through its learned movement map. Actual error compares the separately executed named reference."
+              }
+            },
+            "synergy": {
+              "physical_goal_error": 1.788089632987976,
+              "hand_joint_error_deg": 6.249627590179443,
+              "wrist_goal_error_cm": 1.2395119667053223,
+              "trajectory_sha256": "c616b4c02d9631012bdf20c8f9a4eb1ad18ac55faee5082145ac74dc074ef0d2",
+              "seconds": 0.2500000000509317,
+              "prediction_check": {
+                "predicted_start": 2.7022604942321777,
+                "predicted_selected": 2.5815985202789307,
+                "predicted_change_during_search": -0.12066197395324707,
+                "actual_reference": "goal_seed",
+                "actual_change_from_reference": 0.2830463647842407,
+                "interpretation": "The predicted change compares the optimizer own first and selected candidates; synergy first projects the supplied proposal through its learned movement map. Actual error compares the separately executed named reference."
+              }
+            }
+          }
+        },
+        {
+          "body": 2,
+          "goal": "extension_witness",
+          "witness_trajectory_sha256": "e0828b817506d176e131a7cfb7246226e3228536ca76a2b0da6a2a65727b0e09",
+          "exact_replay": true,
+          "outcomes": {
+            "controller": {
+              "physical_goal_error": 0.24067950248718262,
+              "hand_joint_error_deg": 3.8964059352874756,
+              "wrist_goal_error_cm": 0.001691254903562367,
+              "trajectory_sha256": "7f6a3b498f16b0985a31bed3253a24a2ab8ddac65cce413c1d22a39302874178",
+              "seconds": 0.2500000000509317
+            },
+            "goal_seed": {
+              "physical_goal_error": 0.23064753413200378,
+              "hand_joint_error_deg": 2.9941999912261963,
+              "wrist_goal_error_cm": 0.7948900461196899,
+              "trajectory_sha256": "3f29158fb45f1795a89e50235c87b48111357ca57326788ed99ebd36ae01153b",
+              "seconds": 0.2500000000509317
+            },
+            "direct": {
+              "physical_goal_error": 0.3469932973384857,
+              "hand_joint_error_deg": 2.7903552055358887,
+              "wrist_goal_error_cm": 1.2390332221984863,
+              "trajectory_sha256": "443a2c3d0b060ede7a691240bf89a87096bb6fcf665ca12a739adbf52a885131",
+              "seconds": 0.2500000000509317,
+              "prediction_check": {
+                "predicted_start": 2.0678586959838867,
+                "predicted_selected": 1.793597936630249,
+                "predicted_change_during_search": -0.2742607593536377,
+                "actual_reference": "goal_seed",
+                "actual_change_from_reference": 0.11634576320648193,
+                "interpretation": "The predicted change compares the optimizer own first and selected candidates; synergy first projects the supplied proposal through its learned movement map. Actual error compares the separately executed named reference."
+              }
+            },
+            "synergy": {
+              "physical_goal_error": 0.25079643726348877,
+              "hand_joint_error_deg": 2.919480085372925,
+              "wrist_goal_error_cm": 1.025169849395752,
+              "trajectory_sha256": "04238f9ed4346881350d75de837370122d6b44b90acbf1c38b756a2b0ce01113",
+              "seconds": 0.2500000000509317,
+              "prediction_check": {
+                "predicted_start": 2.0875885486602783,
+                "predicted_selected": 1.9470651149749756,
+                "predicted_change_during_search": -0.14052343368530273,
+                "actual_reference": "goal_seed",
+                "actual_change_from_reference": 0.020148903131484985,
+                "interpretation": "The predicted change compares the optimizer own first and selected candidates; synergy first projects the supplied proposal through its learned movement map. Actual error compares the separately executed named reference."
+              }
+            }
+          }
+        },
+        {
+          "body": 3,
+          "goal": "curl_witness",
+          "witness_trajectory_sha256": "acaf947aa4ffe9eb7432b640644e934fc06a426026f730418212d687849df9f0",
+          "exact_replay": true,
+          "outcomes": {
+            "controller": {
+              "physical_goal_error": 0.4216539263725281,
+              "hand_joint_error_deg": 3.5472257137298584,
+              "wrist_goal_error_cm": 0.0018000586424022913,
+              "trajectory_sha256": "3e51f913ae6f8738e32d67a62568d7d9a3c42fd56370b28d15f13bfc31a7ab4a",
+              "seconds": 0.2500000000509317
+            },
+            "goal_seed": {
+              "physical_goal_error": 1.1054683923721313,
+              "hand_joint_error_deg": 5.31726598739624,
+              "wrist_goal_error_cm": 0.32262638211250305,
+              "trajectory_sha256": "f2c1433805be6a527736448e7052e384574fd4693cdf7a6b7d7420f379783ad6",
+              "seconds": 0.2500000000509317
+            },
+            "direct": {
+              "physical_goal_error": 1.0018943548202515,
+              "hand_joint_error_deg": 5.256319522857666,
+              "wrist_goal_error_cm": 0.6298081874847412,
+              "trajectory_sha256": "06b90475f14fd7cf0f5a6597c6186e27233d1b0a695d2b1ab95eefdeab498c5f",
+              "seconds": 0.2500000000509317,
+              "prediction_check": {
+                "predicted_start": 1.9318311214447021,
+                "predicted_selected": 1.5559957027435303,
+                "predicted_change_during_search": -0.3758354187011719,
+                "actual_reference": "goal_seed",
+                "actual_change_from_reference": -0.10357403755187988,
+                "interpretation": "The predicted change compares the optimizer own first and selected candidates; synergy first projects the supplied proposal through its learned movement map. Actual error compares the separately executed named reference."
+              }
+            },
+            "synergy": {
+              "physical_goal_error": 1.0825825929641724,
+              "hand_joint_error_deg": 5.33622407913208,
+              "wrist_goal_error_cm": 0.7104898691177368,
+              "trajectory_sha256": "84c732ca91774e3f33e2ebbaff169fb3c668096dfcf747a301f5ab078648cd1e",
+              "seconds": 0.2500000000509317,
+              "prediction_check": {
+                "predicted_start": 1.9277374744415283,
+                "predicted_selected": 1.7614564895629883,
+                "predicted_change_during_search": -0.16628098487854004,
+                "actual_reference": "goal_seed",
+                "actual_change_from_reference": -0.022885799407958984,
+                "interpretation": "The predicted change compares the optimizer own first and selected candidates; synergy first projects the supplied proposal through its learned movement map. Actual error compares the separately executed named reference."
+              }
+            }
+          }
+        },
+        {
+          "body": 3,
+          "goal": "extension_witness",
+          "witness_trajectory_sha256": "165e4edf2b883dad40df7d0ef1d416e2ed0d1ec5243d5df36cf11c46a4656148",
+          "exact_replay": true,
+          "outcomes": {
+            "controller": {
+              "physical_goal_error": 0.43668290972709656,
+              "hand_joint_error_deg": 4.02555513381958,
+              "wrist_goal_error_cm": 0.002367995446547866,
+              "trajectory_sha256": "3e51f913ae6f8738e32d67a62568d7d9a3c42fd56370b28d15f13bfc31a7ab4a",
+              "seconds": 0.2500000000509317
+            },
+            "goal_seed": {
+              "physical_goal_error": 0.29244107007980347,
+              "hand_joint_error_deg": 3.322476387023926,
+              "wrist_goal_error_cm": 0.32310301065444946,
+              "trajectory_sha256": "bdbab67c1593e61d744e32e7b38604a37b1fc0db5eb07c8112d24a5870dd790f",
+              "seconds": 0.2500000000509317
+            },
+            "direct": {
+              "physical_goal_error": 0.3143801689147949,
+              "hand_joint_error_deg": 3.753568172454834,
+              "wrist_goal_error_cm": 0.5637568831443787,
+              "trajectory_sha256": "9d0ebd681a36456ec0c91e07baca2ecab4e13754851700152868c27b176be0c3",
+              "seconds": 0.2500000000509317,
+              "prediction_check": {
+                "predicted_start": 1.4553378820419312,
+                "predicted_selected": 1.0741409063339233,
+                "predicted_change_during_search": -0.3811969757080078,
+                "actual_reference": "goal_seed",
+                "actual_change_from_reference": 0.021939098834991455,
+                "interpretation": "The predicted change compares the optimizer own first and selected candidates; synergy first projects the supplied proposal through its learned movement map. Actual error compares the separately executed named reference."
+              }
+            },
+            "synergy": {
+              "physical_goal_error": 0.2969285249710083,
+              "hand_joint_error_deg": 3.732309103012085,
+              "wrist_goal_error_cm": 0.7959468960762024,
+              "trajectory_sha256": "c0cbc945ed2e979354dfb3543c71f567901923e2f874eed4083f821b79a3834f",
+              "seconds": 0.2500000000509317,
+              "prediction_check": {
+                "predicted_start": 1.4463295936584473,
+                "predicted_selected": 1.256049633026123,
+                "predicted_change_during_search": -0.19027996063232422,
+                "actual_reference": "goal_seed",
+                "actual_change_from_reference": 0.004487454891204834,
+                "interpretation": "The predicted change compares the optimizer own first and selected candidates; synergy first projects the supplied proposal through its learned movement map. Actual error compares the separately executed named reference."
+              }
+            }
+          }
+        },
+        {
+          "body": 4,
+          "goal": "curl_witness",
+          "witness_trajectory_sha256": "2da5822f825cd867a887a004ef9925b15c0adc85c842d449ebf84f13c193b6c9",
+          "exact_replay": true,
+          "outcomes": {
+            "controller": {
+              "physical_goal_error": 0.295910507440567,
+              "hand_joint_error_deg": 3.3928000926971436,
+              "wrist_goal_error_cm": 0.0009402178111486137,
+              "trajectory_sha256": "78edbac0a803e5dd01d75d4e820f1e27c26ef323aed6cf238dc1ee4a2b7c9244",
+              "seconds": 0.2500000000509317
+            },
+            "goal_seed": {
+              "physical_goal_error": 1.3463348150253296,
+              "hand_joint_error_deg": 5.675055027008057,
+              "wrist_goal_error_cm": 0.39667943120002747,
+              "trajectory_sha256": "d1783bfc2b9db12fd5374fe309fa972fcbaf50724629ecb74632103427eb78d1",
+              "seconds": 0.2500000000509317
+            },
+            "direct": {
+              "physical_goal_error": 1.0522736310958862,
+              "hand_joint_error_deg": 5.477776050567627,
+              "wrist_goal_error_cm": 0.6568413376808167,
+              "trajectory_sha256": "f6762332877e389ccdccc50e096ce0aeda9ea61178928f91c80895c0df9538da",
+              "seconds": 0.2500000000509317,
+              "prediction_check": {
+                "predicted_start": 2.812446117401123,
+                "predicted_selected": 2.1965932846069336,
+                "predicted_change_during_search": -0.6158528327941895,
+                "actual_reference": "goal_seed",
+                "actual_change_from_reference": -0.29406118392944336,
+                "interpretation": "The predicted change compares the optimizer own first and selected candidates; synergy first projects the supplied proposal through its learned movement map. Actual error compares the separately executed named reference."
+              }
+            },
+            "synergy": {
+              "physical_goal_error": 1.042536735534668,
+              "hand_joint_error_deg": 5.46514892578125,
+              "wrist_goal_error_cm": 0.5839378833770752,
+              "trajectory_sha256": "4503858713c6a1d0fbce344cae3bee5aad9f594be70652518ae25e342baf1711",
+              "seconds": 0.2500000000509317,
+              "prediction_check": {
+                "predicted_start": 2.7926783561706543,
+                "predicted_selected": 2.5650155544281006,
+                "predicted_change_during_search": -0.2276628017425537,
+                "actual_reference": "goal_seed",
+                "actual_change_from_reference": -0.3037980794906616,
+                "interpretation": "The predicted change compares the optimizer own first and selected candidates; synergy first projects the supplied proposal through its learned movement map. Actual error compares the separately executed named reference."
+              }
+            }
+          }
+        },
+        {
+          "body": 4,
+          "goal": "extension_witness",
+          "witness_trajectory_sha256": "0c3523dc8af529dde88d22207637a5646a8d053503e10af5b66a19f064212443",
+          "exact_replay": true,
+          "outcomes": {
+            "controller": {
+              "physical_goal_error": 0.3800119161605835,
+              "hand_joint_error_deg": 3.7368955612182617,
+              "wrist_goal_error_cm": 0.017500557005405426,
+              "trajectory_sha256": "78edbac0a803e5dd01d75d4e820f1e27c26ef323aed6cf238dc1ee4a2b7c9244",
+              "seconds": 0.2500000000509317
+            },
+            "goal_seed": {
+              "physical_goal_error": 0.31129947304725647,
+              "hand_joint_error_deg": 2.889310359954834,
+              "wrist_goal_error_cm": 0.39749500155448914,
+              "trajectory_sha256": "4afc9eaa1251f0ea971ab082bfc9bf4af644081966ae42f0d0119934d5b2a56e",
+              "seconds": 0.2500000000509317
+            },
+            "direct": {
+              "physical_goal_error": 0.40620914101600647,
+              "hand_joint_error_deg": 3.375488042831421,
+              "wrist_goal_error_cm": 0.49849891662597656,
+              "trajectory_sha256": "e183fc0d8d0a83be142d97301f7f79a0960aa2267fa1ed65a874f726f167cd4a",
+              "seconds": 0.2500000000509317,
+              "prediction_check": {
+                "predicted_start": 2.3799571990966797,
+                "predicted_selected": 1.8201417922973633,
+                "predicted_change_during_search": -0.5598154067993164,
+                "actual_reference": "goal_seed",
+                "actual_change_from_reference": 0.09490966796875,
+                "interpretation": "The predicted change compares the optimizer own first and selected candidates; synergy first projects the supplied proposal through its learned movement map. Actual error compares the separately executed named reference."
+              }
+            },
+            "synergy": {
+              "physical_goal_error": 0.43934452533721924,
+              "hand_joint_error_deg": 3.457035779953003,
+              "wrist_goal_error_cm": 0.698103666305542,
+              "trajectory_sha256": "4116f3a4ad6376906356642c4a79ebe0c21aca59d349e386f799518b79435333",
+              "seconds": 0.2500000000509317,
+              "prediction_check": {
+                "predicted_start": 2.3923678398132324,
+                "predicted_selected": 2.1332945823669434,
+                "predicted_change_during_search": -0.25907325744628906,
+                "actual_reference": "goal_seed",
+                "actual_change_from_reference": 0.12804505228996277,
+                "interpretation": "The predicted change compares the optimizer own first and selected candidates; synergy first projects the supplied proposal through its learned movement map. Actual error compares the separately executed named reference."
+              }
+            }
+          }
+        },
+        {
+          "body": 5,
+          "goal": "curl_witness",
+          "witness_trajectory_sha256": "6497b496f2fb457df60e76a085ce640f6163061517755048228672a8cfc83a31",
+          "exact_replay": true,
+          "outcomes": {
+            "controller": {
+              "physical_goal_error": 0.29607653617858887,
+              "hand_joint_error_deg": 4.743619918823242,
+              "wrist_goal_error_cm": 0.0014643854228779674,
+              "trajectory_sha256": "e79565e104b2e722b88c1e5c552586ddcfbb3ff7c17f0c1b2ed4da9815a752b0",
+              "seconds": 0.2500000000509317
+            },
+            "goal_seed": {
+              "physical_goal_error": 1.2273154258728027,
+              "hand_joint_error_deg": 6.799378871917725,
+              "wrist_goal_error_cm": 0.8995559215545654,
+              "trajectory_sha256": "2fa87229015099f02b1cbd829416766216989c864de7f2c082a25451cc873758",
+              "seconds": 0.2500000000509317
+            },
+            "direct": {
+              "physical_goal_error": 1.2552648782730103,
+              "hand_joint_error_deg": 6.5690155029296875,
+              "wrist_goal_error_cm": 1.2573225498199463,
+              "trajectory_sha256": "9f5d998352e2d471d030475c9b7eb6f714223d6a8ee2017580577507693a44c7",
+              "seconds": 0.2500000000509317,
+              "prediction_check": {
+                "predicted_start": 1.3057632446289062,
+                "predicted_selected": 0.8670111298561096,
+                "predicted_change_during_search": -0.43875211477279663,
+                "actual_reference": "goal_seed",
+                "actual_change_from_reference": 0.02794945240020752,
+                "interpretation": "The predicted change compares the optimizer own first and selected candidates; synergy first projects the supplied proposal through its learned movement map. Actual error compares the separately executed named reference."
+              }
+            },
+            "synergy": {
+              "physical_goal_error": 1.1911424398422241,
+              "hand_joint_error_deg": 6.451108932495117,
+              "wrist_goal_error_cm": 1.0618647336959839,
+              "trajectory_sha256": "4efc279f4aceacd4cdcf93341c613f7e0fb6455da3407692ba883efed7181057",
+              "seconds": 0.2500000000509317,
+              "prediction_check": {
+                "predicted_start": 1.326912522315979,
+                "predicted_selected": 1.0040746927261353,
+                "predicted_change_during_search": -0.32283782958984375,
+                "actual_reference": "goal_seed",
+                "actual_change_from_reference": -0.03617298603057861,
+                "interpretation": "The predicted change compares the optimizer own first and selected candidates; synergy first projects the supplied proposal through its learned movement map. Actual error compares the separately executed named reference."
+              }
+            }
+          }
+        },
+        {
+          "body": 5,
+          "goal": "extension_witness",
+          "witness_trajectory_sha256": "4cd9e1f90f78cd0eb87cb3255e0c7ea9e0526dd15eed63b154f393e428a56719",
+          "exact_replay": true,
+          "outcomes": {
+            "controller": {
+              "physical_goal_error": 0.1520387828350067,
+              "hand_joint_error_deg": 2.5169432163238525,
+              "wrist_goal_error_cm": 0.0014796113828197122,
+              "trajectory_sha256": "e79565e104b2e722b88c1e5c552586ddcfbb3ff7c17f0c1b2ed4da9815a752b0",
+              "seconds": 0.2500000000509317
+            },
+            "goal_seed": {
+              "physical_goal_error": 0.1961064338684082,
+              "hand_joint_error_deg": 2.7840936183929443,
+              "wrist_goal_error_cm": 0.8994190692901611,
+              "trajectory_sha256": "d49432720ee70584fe11130c69ce2b4571448c3c9e08562172107d00057aed2a",
+              "seconds": 0.2500000000509317
+            },
+            "direct": {
+              "physical_goal_error": 0.21511352062225342,
+              "hand_joint_error_deg": 3.2603859901428223,
+              "wrist_goal_error_cm": 1.0968953371047974,
+              "trajectory_sha256": "148031d08e476225868ad5f186ecc49bc01bb3ec0b67936cd9b2ac8966e500cd",
+              "seconds": 0.2500000000509317,
+              "prediction_check": {
+                "predicted_start": 1.1177940368652344,
+                "predicted_selected": 0.5882812738418579,
+                "predicted_change_during_search": -0.5295127630233765,
+                "actual_reference": "goal_seed",
+                "actual_change_from_reference": 0.019007086753845215,
+                "interpretation": "The predicted change compares the optimizer own first and selected candidates; synergy first projects the supplied proposal through its learned movement map. Actual error compares the separately executed named reference."
+              }
+            },
+            "synergy": {
+              "physical_goal_error": 0.1986842006444931,
+              "hand_joint_error_deg": 3.30706787109375,
+              "wrist_goal_error_cm": 1.0669134855270386,
+              "trajectory_sha256": "31b8112be7f3197b724da9569b963bc65498dca50c9bd73565399c5881fc988b",
+              "seconds": 0.2500000000509317,
+              "prediction_check": {
+                "predicted_start": 1.1231613159179688,
+                "predicted_selected": 0.7423624992370605,
+                "predicted_change_during_search": -0.3807988166809082,
+                "actual_reference": "goal_seed",
+                "actual_change_from_reference": 0.0025777667760849,
+                "interpretation": "The predicted change compares the optimizer own first and selected candidates; synergy first projects the supplied proposal through its learned movement map. Actual error compares the separately executed named reference."
+              }
+            }
+          }
+        },
+        {
+          "body": 6,
+          "goal": "curl_witness",
+          "witness_trajectory_sha256": "8754be2197f86a8454fa7a4d7a434b21c5ececa2e34aebf5a9a3e7b47ac06fda",
+          "exact_replay": true,
+          "outcomes": {
+            "controller": {
+              "physical_goal_error": 0.15391352772712708,
+              "hand_joint_error_deg": 2.2895922660827637,
+              "wrist_goal_error_cm": 0.00039205796201713383,
+              "trajectory_sha256": "14518e86470ceb64b032b2d67922e3e4f199c1cd1c829ab24a017faea586dd76",
+              "seconds": 0.2500000000509317
+            },
+            "goal_seed": {
+              "physical_goal_error": 0.19936437904834747,
+              "hand_joint_error_deg": 2.369663953781128,
+              "wrist_goal_error_cm": 0.717090368270874,
+              "trajectory_sha256": "d9bc4a70f98ec55f7cb0c4bed0b156b0b8543d410560623fd730cb713e00ac52",
+              "seconds": 0.2500000000509317
+            },
+            "direct": {
+              "physical_goal_error": 0.19207370281219482,
+              "hand_joint_error_deg": 2.847043991088867,
+              "wrist_goal_error_cm": 0.45783066749572754,
+              "trajectory_sha256": "9a170aa19c4902009bda3ff3ba17dc3be61c1f0419b4d9ac0c4497ba9a57e2eb",
+              "seconds": 0.2500000000509317,
+              "prediction_check": {
+                "predicted_start": 1.5753240585327148,
+                "predicted_selected": 0.9496270418167114,
+                "predicted_change_during_search": -0.6256970167160034,
+                "actual_reference": "goal_seed",
+                "actual_change_from_reference": -0.007290676236152649,
+                "interpretation": "The predicted change compares the optimizer own first and selected candidates; synergy first projects the supplied proposal through its learned movement map. Actual error compares the separately executed named reference."
+              }
+            },
+            "synergy": {
+              "physical_goal_error": 0.24028661847114563,
+              "hand_joint_error_deg": 2.8017385005950928,
+              "wrist_goal_error_cm": 0.4274100065231323,
+              "trajectory_sha256": "c9645e84b81acafc66d78aa50f3e24989d9e9e686e5a26cf00fca82c970355f6",
+              "seconds": 0.2500000000509317,
+              "prediction_check": {
+                "predicted_start": 1.5944747924804688,
+                "predicted_selected": 1.2020701169967651,
+                "predicted_change_during_search": -0.3924046754837036,
+                "actual_reference": "goal_seed",
+                "actual_change_from_reference": 0.04092223942279816,
+                "interpretation": "The predicted change compares the optimizer own first and selected candidates; synergy first projects the supplied proposal through its learned movement map. Actual error compares the separately executed named reference."
+              }
+            }
+          }
+        },
+        {
+          "body": 6,
+          "goal": "extension_witness",
+          "witness_trajectory_sha256": "6d1f903d3a679506db7f0f803be57fb0a19728ffd70519d75f7920786db2227a",
+          "exact_replay": true,
+          "outcomes": {
+            "controller": {
+              "physical_goal_error": 0.09692439436912537,
+              "hand_joint_error_deg": 3.356529474258423,
+              "wrist_goal_error_cm": 0.00035411480348557234,
+              "trajectory_sha256": "14518e86470ceb64b032b2d67922e3e4f199c1cd1c829ab24a017faea586dd76",
+              "seconds": 0.2500000000509317
+            },
+            "goal_seed": {
+              "physical_goal_error": 0.1290869414806366,
+              "hand_joint_error_deg": 2.9145150184631348,
+              "wrist_goal_error_cm": 0.7169216871261597,
+              "trajectory_sha256": "56609d3da08a06f5e73113b7a52d817d8a10ef1218cc07eb88f5e37e7a2c3f5a",
+              "seconds": 0.2500000000509317
+            },
+            "direct": {
+              "physical_goal_error": 0.17863695323467255,
+              "hand_joint_error_deg": 3.1455941200256348,
+              "wrist_goal_error_cm": 0.4592471718788147,
+              "trajectory_sha256": "6ef180e1df53ee1ffffcca4c7579f2318c7c56301b3e32bbaa09a8e50f2882dd",
+              "seconds": 0.2500000000509317,
+              "prediction_check": {
+                "predicted_start": 1.6809468269348145,
+                "predicted_selected": 1.0178431272506714,
+                "predicted_change_during_search": -0.6631036996841431,
+                "actual_reference": "goal_seed",
+                "actual_change_from_reference": 0.04955001175403595,
+                "interpretation": "The predicted change compares the optimizer own first and selected candidates; synergy first projects the supplied proposal through its learned movement map. Actual error compares the separately executed named reference."
+              }
+            },
+            "synergy": {
+              "physical_goal_error": 0.20033150911331177,
+              "hand_joint_error_deg": 3.249826669692993,
+              "wrist_goal_error_cm": 0.42351046204566956,
+              "trajectory_sha256": "f5e9a8d6fe5d8ee70da258dbbe75746e9e968cdcb7e603c7d8e721dc75c6f0bb",
+              "seconds": 0.2500000000509317,
+              "prediction_check": {
+                "predicted_start": 1.7094261646270752,
+                "predicted_selected": 1.2956125736236572,
+                "predicted_change_during_search": -0.41381359100341797,
+                "actual_reference": "goal_seed",
+                "actual_change_from_reference": 0.07124456763267517,
+                "interpretation": "The predicted change compares the optimizer own first and selected candidates; synergy first projects the supplied proposal through its learned movement map. Actual error compares the separately executed named reference."
+              }
+            }
+          }
+        },
+        {
+          "body": 7,
+          "goal": "curl_witness",
+          "witness_trajectory_sha256": "1a9c4e722a8d7e580a7f15b93741ca1dd5ad630e4df2b3017606e1748abe692f",
+          "exact_replay": true,
+          "outcomes": {
+            "controller": {
+              "physical_goal_error": 0.6847589612007141,
+              "hand_joint_error_deg": 6.3123016357421875,
+              "wrist_goal_error_cm": 0.0014338940382003784,
+              "trajectory_sha256": "3f2b7999c540df33c481f08bae43e7678b8dfa857ea0217a1a5b150ff1ca80df",
+              "seconds": 0.2500000000509317
+            },
+            "goal_seed": {
+              "physical_goal_error": 1.438490629196167,
+              "hand_joint_error_deg": 7.590048313140869,
+              "wrist_goal_error_cm": 0.8173345327377319,
+              "trajectory_sha256": "d67cf2aca0d229ffc6e6568b73db29262aa57b353bd34a78042bd7a1523ec88f",
+              "seconds": 0.2500000000509317
+            },
+            "direct": {
+              "physical_goal_error": 1.5077413320541382,
+              "hand_joint_error_deg": 8.167562484741211,
+              "wrist_goal_error_cm": 1.139051914215088,
+              "trajectory_sha256": "fa3e1b3c218d19f0c68203bc6e5b6b7839daf0696b62b4e181047b496088d76a",
+              "seconds": 0.2500000000509317,
+              "prediction_check": {
+                "predicted_start": 1.5090656280517578,
+                "predicted_selected": 1.2076963186264038,
+                "predicted_change_during_search": -0.301369309425354,
+                "actual_reference": "goal_seed",
+                "actual_change_from_reference": 0.06925070285797119,
+                "interpretation": "The predicted change compares the optimizer own first and selected candidates; synergy first projects the supplied proposal through its learned movement map. Actual error compares the separately executed named reference."
+              }
+            },
+            "synergy": {
+              "physical_goal_error": 1.5805747509002686,
+              "hand_joint_error_deg": 8.264729499816895,
+              "wrist_goal_error_cm": 0.9905533790588379,
+              "trajectory_sha256": "c87d375cb9dec7b198db0b3808aa19707649852dea7276d71f00ef4c3f4220ef",
+              "seconds": 0.2500000000509317,
+              "prediction_check": {
+                "predicted_start": 1.4677999019622803,
+                "predicted_selected": 1.319516897201538,
+                "predicted_change_during_search": -0.1482830047607422,
+                "actual_reference": "goal_seed",
+                "actual_change_from_reference": 0.14208412170410156,
+                "interpretation": "The predicted change compares the optimizer own first and selected candidates; synergy first projects the supplied proposal through its learned movement map. Actual error compares the separately executed named reference."
+              }
+            }
+          }
+        },
+        {
+          "body": 7,
+          "goal": "extension_witness",
+          "witness_trajectory_sha256": "da578e264e6719c2b49c67c73be742e82d699134d2eb97ecedf201539f9a189f",
+          "exact_replay": true,
+          "outcomes": {
+            "controller": {
+              "physical_goal_error": 0.5480390787124634,
+              "hand_joint_error_deg": 4.476602554321289,
+              "wrist_goal_error_cm": 0.0487251952290535,
+              "trajectory_sha256": "3f2b7999c540df33c481f08bae43e7678b8dfa857ea0217a1a5b150ff1ca80df",
+              "seconds": 0.2500000000509317
+            },
+            "goal_seed": {
+              "physical_goal_error": 0.21710431575775146,
+              "hand_joint_error_deg": 3.2445485591888428,
+              "wrist_goal_error_cm": 0.7899249196052551,
+              "trajectory_sha256": "e1b3f88a0f46d0df1a9d76a21913aab8e23c486f6a2b6a3b850199c7576f8c21",
+              "seconds": 0.2500000000509317
+            },
+            "direct": {
+              "physical_goal_error": 0.27606499195098877,
+              "hand_joint_error_deg": 3.8565146923065186,
+              "wrist_goal_error_cm": 1.0085679292678833,
+              "trajectory_sha256": "e2ed86dd217386c3688252fb5065632d9d6d46a8871153a9b265642e90149800",
+              "seconds": 0.2500000000509317,
+              "prediction_check": {
+                "predicted_start": 1.2551168203353882,
+                "predicted_selected": 0.9265922904014587,
+                "predicted_change_during_search": -0.32852452993392944,
+                "actual_reference": "goal_seed",
+                "actual_change_from_reference": 0.058960676193237305,
+                "interpretation": "The predicted change compares the optimizer own first and selected candidates; synergy first projects the supplied proposal through its learned movement map. Actual error compares the separately executed named reference."
+              }
+            },
+            "synergy": {
+              "physical_goal_error": 0.23405377566814423,
+              "hand_joint_error_deg": 3.4753386974334717,
+              "wrist_goal_error_cm": 0.7898228168487549,
+              "trajectory_sha256": "67c3eea775d333e233a7799a4c9a473edf1377985b591c5a7bba6d9767e2a2c8",
+              "seconds": 0.2500000000509317,
+              "prediction_check": {
+                "predicted_start": 1.2670972347259521,
+                "predicted_selected": 1.0533404350280762,
+                "predicted_change_during_search": -0.21375679969787598,
+                "actual_reference": "goal_seed",
+                "actual_change_from_reference": 0.01694945991039276,
+                "interpretation": "The predicted change compares the optimizer own first and selected candidates; synergy first projects the supplied proposal through its learned movement map. Actual error compares the separately executed named reference."
+              }
+            }
+          }
+        }
+      ]
+    }
+  },
+  "next_experiment": "After visual qualification releases memory, compare per-handle forecasts with both old fixed-world and new wrist-following execution of identical commands; include original unprojected controller. Fit a contract-specific correction only on bodies0-3 and score unchanged held-out bodies4-7 before further search changes."
+}

@@ -1,0 +1,290 @@
+{
+ "verdict": "pass",
+ "held": 16,
+ "total": 16,
+ "cases": [
+  {
+   "case": "N1_real_manifest_refused_without_execution",
+   "expected": "REFUSED with exactly \"M13: no execution authorization: a real launch needs the execution decision for speed_geometry_batch_492800\"",
+   "got": {
+    "verdict": "REFUSED",
+    "problems": [
+     "M13: no execution authorization: a real launch needs the execution decision for speed_geometry_batch_492800"
+    ],
+    "execution": "judged"
+   },
+   "holds": true,
+   "detail": null
+  },
+  {
+   "case": "N2_planted_execution_section_allowed",
+   "expected": "ALLOWED (the scratch mailbox given as execution_mailbox)",
+   "got": {
+    "verdict": "ALLOWED",
+    "problems": [],
+    "execution": "judged"
+   },
+   "holds": true,
+   "detail": []
+  },
+  {
+   "case": "N3_planted_section_outside_the_real_mailbox",
+   "expected": "REFUSED by M13 naming the mailbox",
+   "got": {
+    "verdict": "REFUSED",
+    "problems": [
+     "M13: no execution authorization: the execution decision's message D:\\UEMA_Research\\external\\D\\UEMA_scratch\\speed_10x\\geometry_batch_harness_checks\\package_checks_run1\\mailbox\\check-baseline-planted-execution-n2\\message.json does not lie under the mailbox D:/UEMA_Research/Saved/gof_coordination/mailbox"
+    ],
+    "execution": "judged"
+   },
+   "holds": true,
+   "detail": [
+    "M13: no execution authorization: the execution decision's message D:\\UEMA_Research\\external\\D\\UEMA_scratch\\speed_10x\\geometry_batch_harness_checks\\package_checks_run1\\mailbox\\check-baseline-planted-execution-n2\\message.json does not lie under the mailbox D:/UEMA_Research/Saved/gof_coordination/mailbox"
+   ]
+  },
+  {
+   "case": "N4_preparation_decision_in_execution",
+   "expected": "REFUSED by M13 naming the preparation decision",
+   "got": {
+    "verdict": "REFUSED",
+    "problems": [
+     "M13: no execution authorization: the execution section names the preparation decision device-capture-qualified-shared-geometry-next-20261015, which authorizes preparation and no launch",
+     "M13: no execution authorization: the quoted words do not name the run speed_geometry_batch_492800",
+     "M13: no execution authorization: the quoted words do not name the command file's sha256 e3d16af3108752d9d9551d140e8c5b69697c021cd286608755a9930ad566acc1"
+    ],
+    "execution": "judged"
+   },
+   "holds": true,
+   "detail": [
+    "M13: no execution authorization: the execution section names the preparation decision device-capture-qualified-shared-geometry-next-20261015, which authorizes preparation and no launch",
+    "M13: no execution authorization: the quoted words do not name the run speed_geometry_batch_492800",
+    "M13: no execution authorization: the quoted words do not name the command file's sha256 e3d16af3108752d9d9551d140e8c5b69697c021cd286608755a9930ad566acc1"
+   ]
+  },
+  {
+   "case": "N5_words_without_the_command_sha256",
+   "expected": "REFUSED by M13 naming the command file's sha256",
+   "got": {
+    "verdict": "REFUSED",
+    "problems": [
+     "M13: no execution authorization: the quoted words do not name the command file's sha256 e3d16af3108752d9d9551d140e8c5b69697c021cd286608755a9930ad566acc1"
+    ],
+    "execution": "judged"
+   },
+   "holds": true,
+   "detail": [
+    "M13: no execution authorization: the quoted words do not name the command file's sha256 e3d16af3108752d9d9551d140e8c5b69697c021cd286608755a9930ad566acc1"
+   ]
+  },
+  {
+   "case": "N6_dry_run_copy_not_judged_by_m13",
+   "expected": "no M13 problem; the checked execution reads 'not judged'",
+   "got": {
+    "verdict": "REFUSED",
+    "problems": [
+     "M7: a stand-in trainer is set and the manifest is not a dry-run copy under D:/UEMA_Research/external/D/UEMA_scratch/speed_10x/geometry_batch_harness_checks: a real launch never carries one"
+    ],
+    "execution": "not judged: a dry-run copy (its dry_run section; M7 admits it only with the stand-in)"
+   },
+   "holds": true,
+   "detail": [
+    "M7: a stand-in trainer is set and the manifest is not a dry-run copy under D:/UEMA_Research/external/D/UEMA_scratch/speed_10x/geometry_batch_harness_checks: a real launch never carries one"
+   ]
+  },
+  {
+   "case": "N7_m6_another_commit",
+   "expected": "REFUSED by M6 naming the geometry batch",
+   "got": {
+    "verdict": "REFUSED",
+    "problems": [
+     "M6: the manifest's code names commit c5d38c8b2d7bd0c58b8e2b81ae65e13f3ccaa1ce on base c5d38c8b2d7bd0c58b8e2b81ae65e13f3ccaa1ce with 6 changed files; this validator admits only the geometry batch, commit 34eb85fabb38bfaf564d62ae8b4ca363eb64af2a on base c5d38c8b2d7bd0c58b8e2b81ae65e13f3ccaa1ce with the 6 files of CHANGED_FILES",
+     "M6: tree C:\\Users\\bhart\\Documents\\UEMA_wt\\speed_geometry_batch is at 34eb85fabb38bfaf564d62ae8b4ca363eb64af2a, not the pinned commit c5d38c8b2d7bd0c58b8e2b81ae65e13f3ccaa1ce",
+     "M13: no execution authorization: a real launch needs the execution decision for speed_geometry_batch_492800"
+    ],
+    "execution": "judged"
+   },
+   "holds": true,
+   "detail": [
+    "M6: the manifest's code names commit c5d38c8b2d7bd0c58b8e2b81ae65e13f3ccaa1ce on base c5d38c8b2d7bd0c58b8e2b81ae65e13f3ccaa1ce with 6 changed files; this validator admits only the geometry batch, commit 34eb85fabb38bfaf564d62ae8b4ca363eb64af2a on base c5d38c8b2d7bd0c58b8e2b81ae65e13f3ccaa1ce with the 6 files of CHANGED_FILES",
+    "M6: tree C:\\Users\\bhart\\Documents\\UEMA_wt\\speed_geometry_batch is at 34eb85fabb38bfaf564d62ae8b4ca363eb64af2a, not the pinned commit c5d38c8b2d7bd0c58b8e2b81ae65e13f3ccaa1ce",
+    "M13: no execution authorization: a real launch needs the execution decision for speed_geometry_batch_492800"
+   ]
+  },
+  {
+   "case": "N8_m6_not_the_6_files",
+   "expected": "REFUSED by M6 naming the geometry batch's 6 files",
+   "got": {
+    "verdict": "REFUSED",
+    "problems": [
+     "M6: the manifest's code names commit 34eb85fabb38bfaf564d62ae8b4ca363eb64af2a on base c5d38c8b2d7bd0c58b8e2b81ae65e13f3ccaa1ce with 5 changed files; this validator admits only the geometry batch, commit 34eb85fabb38bfaf564d62ae8b4ca363eb64af2a on base c5d38c8b2d7bd0c58b8e2b81ae65e13f3ccaa1ce with the 6 files of CHANGED_FILES",
+     "M6: the files that differ from candidate 1's code c5d38c8b2d7bd0c58b8e2b81ae65e13f3ccaa1ce are ['Source/Python/lem/model/hand_response.py', 'Source/Python/mimo_bridge/hand_target_control.py', 'Source/Python/mimo_bridge/lem_model.py', 'Source/Python/mimo_bridge/tests/test_hand_geometry_batch.py', 'Source/Python/mimo_bridge/train_mimo.py', 'docs/gain_of_function_v4/speed_geometry_batch/compare_geometry_batch.py'], not the pinned ['Source/Python/lem/model/hand_response.py', 'Source/Python/mimo_bridge/hand_target_control.py', 'Source/Python/mimo_bridge/lem_model.py', 'Source/Python/mimo_bridge/tests/test_hand_geometry_batch.py', 'Source/Python/mimo_bridge/train_mimo.py']",
+     "M13: no execution authorization: a real launch needs the execution decision for speed_geometry_batch_492800"
+    ],
+    "execution": "judged"
+   },
+   "holds": true,
+   "detail": [
+    "M6: the manifest's code names commit 34eb85fabb38bfaf564d62ae8b4ca363eb64af2a on base c5d38c8b2d7bd0c58b8e2b81ae65e13f3ccaa1ce with 5 changed files; this validator admits only the geometry batch, commit 34eb85fabb38bfaf564d62ae8b4ca363eb64af2a on base c5d38c8b2d7bd0c58b8e2b81ae65e13f3ccaa1ce with the 6 files of CHANGED_FILES",
+    "M6: the files that differ from candidate 1's code c5d38c8b2d7bd0c58b8e2b81ae65e13f3ccaa1ce are ['Source/Python/lem/model/hand_response.py', 'Source/Python/mimo_bridge/hand_target_control.py', 'Source/Python/mimo_bridge/lem_model.py', 'Source/Python/mimo_bridge/tests/test_hand_geometry_batch.py', 'Source/Python/mimo_bridge/train_mimo.py', 'docs/gain_of_function_v4/speed_geometry_batch/compare_geometry_batch.py'], not the pinned ['Source/Python/lem/model/hand_response.py', 'Source/Python/mimo_bridge/hand_target_control.py', 'Source/Python/mimo_bridge/lem_model.py', 'Source/Python/mimo_bridge/tests/test_hand_geometry_batch.py', 'Source/Python/mimo_bridge/train_mimo.py']",
+    "M13: no execution authorization: a real launch needs the execution decision for speed_geometry_batch_492800"
+   ]
+  },
+  {
+   "case": "N9_m7_planner_reuse_absent",
+   "expected": "REFUSED by M7 naming the six added flags",
+   "got": {
+    "verdict": "REFUSED",
+    "problems": [
+     "M6: the configuration fingerprint reads d28c6074502ab6dc, not the pinned a69fbe57e81c08ba",
+     "M7: the manifest's added flags read [('--phase-timings', 'on'), ('--hand-call-capture', 'on'), ('--worker-burst', 'on'), ('--profile-trace', 'off'), ('--hand-geometry-batch', 'on')], not the six [('--phase-timings', 'on'), ('--hand-call-capture', 'on'), ('--worker-burst', 'on'), ('--profile-trace', 'off'), ('--planner-reuse', 'on'), ('--hand-geometry-batch', 'on')] in that sequence",
+     "M7: the command's --planner-reuse reads None, not 'on'",
+     "M13: no execution authorization: a real launch needs the execution decision for speed_geometry_batch_492800"
+    ],
+    "execution": "judged"
+   },
+   "holds": true,
+   "detail": [
+    "M6: the configuration fingerprint reads d28c6074502ab6dc, not the pinned a69fbe57e81c08ba",
+    "M7: the manifest's added flags read [('--phase-timings', 'on'), ('--hand-call-capture', 'on'), ('--worker-burst', 'on'), ('--profile-trace', 'off'), ('--hand-geometry-batch', 'on')], not the six [('--phase-timings', 'on'), ('--hand-call-capture', 'on'), ('--worker-burst', 'on'), ('--profile-trace', 'off'), ('--planner-reuse', 'on'), ('--hand-geometry-batch', 'on')] in that sequence",
+    "M7: the command's --planner-reuse reads None, not 'on'",
+    "M13: no execution authorization: a real launch needs the execution decision for speed_geometry_batch_492800"
+   ]
+  },
+  {
+   "case": "N10_m7_worker_burst_off",
+   "expected": "REFUSED by M7 naming --worker-burst",
+   "got": {
+    "verdict": "REFUSED",
+    "problems": [
+     "M6: the configuration fingerprint reads ed0bd4a8404723ea, not the pinned a69fbe57e81c08ba",
+     "M7: the manifest's added flags read [('--phase-timings', 'on'), ('--hand-call-capture', 'on'), ('--worker-burst', 'off'), ('--profile-trace', 'off'), ('--planner-reuse', 'on'), ('--hand-geometry-batch', 'on')], not the six [('--phase-timings', 'on'), ('--hand-call-capture', 'on'), ('--worker-burst', 'on'), ('--profile-trace', 'off'), ('--planner-reuse', 'on'), ('--hand-geometry-batch', 'on')] in that sequence",
+     "M7: the command's --worker-burst reads 'off', not 'on'",
+     "M13: no execution authorization: a real launch needs the execution decision for speed_geometry_batch_492800"
+    ],
+    "execution": "judged"
+   },
+   "holds": true,
+   "detail": [
+    "M6: the configuration fingerprint reads ed0bd4a8404723ea, not the pinned a69fbe57e81c08ba",
+    "M7: the manifest's added flags read [('--phase-timings', 'on'), ('--hand-call-capture', 'on'), ('--worker-burst', 'off'), ('--profile-trace', 'off'), ('--planner-reuse', 'on'), ('--hand-geometry-batch', 'on')], not the six [('--phase-timings', 'on'), ('--hand-call-capture', 'on'), ('--worker-burst', 'on'), ('--profile-trace', 'off'), ('--planner-reuse', 'on'), ('--hand-geometry-batch', 'on')] in that sequence",
+    "M7: the command's --worker-burst reads 'off', not 'on'",
+    "M13: no execution authorization: a real launch needs the execution decision for speed_geometry_batch_492800"
+   ]
+  },
+  {
+   "case": "N11_m7_flags_in_another_sequence",
+   "expected": "REFUSED by M7 naming the sequence",
+   "got": {
+    "verdict": "REFUSED",
+    "problems": [
+     "M7: the manifest's added flags read [('--phase-timings', 'on'), ('--hand-call-capture', 'on'), ('--worker-burst', 'on'), ('--planner-reuse', 'on'), ('--profile-trace', 'off'), ('--hand-geometry-batch', 'on')], not the six [('--phase-timings', 'on'), ('--hand-call-capture', 'on'), ('--worker-burst', 'on'), ('--profile-trace', 'off'), ('--planner-reuse', 'on'), ('--hand-geometry-batch', 'on')] in that sequence",
+     "M13: no execution authorization: a real launch needs the execution decision for speed_geometry_batch_492800"
+    ],
+    "execution": "judged"
+   },
+   "holds": true,
+   "detail": [
+    "M7: the manifest's added flags read [('--phase-timings', 'on'), ('--hand-call-capture', 'on'), ('--worker-burst', 'on'), ('--planner-reuse', 'on'), ('--profile-trace', 'off'), ('--hand-geometry-batch', 'on')], not the six [('--phase-timings', 'on'), ('--hand-call-capture', 'on'), ('--worker-burst', 'on'), ('--profile-trace', 'off'), ('--planner-reuse', 'on'), ('--hand-geometry-batch', 'on')] in that sequence",
+    "M13: no execution authorization: a real launch needs the execution decision for speed_geometry_batch_492800"
+   ]
+  },
+  {
+   "case": "N12_m5_comparison_input_changed",
+   "expected": "REFUSED by M5 naming the comparison's A input",
+   "got": {
+    "verdict": "REFUSED",
+    "problems": [
+     "M5: the comparison's A input D:\\UEMA_Research\\external\\D\\UEMA_scratch\\speed_10x\\candidate1_492800_cost_breakdown.json hashes to e894ad3eb330afb1f7754712029246c498da823d7f1a77eb09d3d052c4570535, not its pinned 0000000000000000000000000000000000000000000000000000000000000000",
+     "M13: no execution authorization: a real launch needs the execution decision for speed_geometry_batch_492800"
+    ],
+    "execution": "judged"
+   },
+   "holds": true,
+   "detail": [
+    "M5: the comparison's A input D:\\UEMA_Research\\external\\D\\UEMA_scratch\\speed_10x\\candidate1_492800_cost_breakdown.json hashes to e894ad3eb330afb1f7754712029246c498da823d7f1a77eb09d3d052c4570535, not its pinned 0000000000000000000000000000000000000000000000000000000000000000",
+    "M13: no execution authorization: a real launch needs the execution decision for speed_geometry_batch_492800"
+   ]
+  },
+  {
+   "case": "N13_bounds_with_the_comparison_step",
+   "expected": "comparison_s 300, comparison_memory_gib 4.0, whole_s 9,580 (9,080 + 300 + 200); the manifest's bounds equal them",
+   "got": {
+    "comparison_s": 300.0,
+    "comparison_memory_gib": 4.0,
+    "whole_s": 9580.0,
+    "manifest_equal": true
+   },
+   "holds": true,
+   "detail": null
+  },
+  {
+   "case": "N14_cleanup_fault_id_names_the_run",
+   "expected": "id speed-geometry-batch-492800-cleanup-fault-driver; the reporter called once; nothing sent",
+   "got": {
+    "id": "speed-geometry-batch-492800-cleanup-fault-driver",
+    "sent": false,
+    "calls": [
+     "speed-geometry-batch-492800-cleanup-fault-driver"
+    ]
+   },
+   "holds": true,
+   "detail": null
+  },
+  {
+   "case": "N15_m7_hand_geometry_batch_absent",
+   "expected": "REFUSED by M7 naming the six added flags",
+   "got": {
+    "verdict": "REFUSED",
+    "problems": [
+     "M6: the configuration fingerprint reads 01cd3b5053413e4e, not the pinned a69fbe57e81c08ba",
+     "M7: the manifest's added flags read [('--phase-timings', 'on'), ('--hand-call-capture', 'on'), ('--worker-burst', 'on'), ('--profile-trace', 'off'), ('--planner-reuse', 'on')], not the six [('--phase-timings', 'on'), ('--hand-call-capture', 'on'), ('--worker-burst', 'on'), ('--profile-trace', 'off'), ('--planner-reuse', 'on'), ('--hand-geometry-batch', 'on')] in that sequence",
+     "M7: the command's --hand-geometry-batch reads None, not 'on'",
+     "M13: no execution authorization: a real launch needs the execution decision for speed_geometry_batch_492800"
+    ],
+    "execution": "judged"
+   },
+   "holds": true,
+   "detail": [
+    "M6: the configuration fingerprint reads 01cd3b5053413e4e, not the pinned a69fbe57e81c08ba",
+    "M7: the manifest's added flags read [('--phase-timings', 'on'), ('--hand-call-capture', 'on'), ('--worker-burst', 'on'), ('--profile-trace', 'off'), ('--planner-reuse', 'on')], not the six [('--phase-timings', 'on'), ('--hand-call-capture', 'on'), ('--worker-burst', 'on'), ('--profile-trace', 'off'), ('--planner-reuse', 'on'), ('--hand-geometry-batch', 'on')] in that sequence",
+    "M7: the command's --hand-geometry-batch reads None, not 'on'",
+    "M13: no execution authorization: a real launch needs the execution decision for speed_geometry_batch_492800"
+   ]
+  },
+  {
+   "case": "N16_m7_hand_geometry_batch_off",
+   "expected": "REFUSED by M7 naming --hand-geometry-batch",
+   "got": {
+    "verdict": "REFUSED",
+    "problems": [
+     "M6: the configuration fingerprint reads 984a893caa78a82a, not the pinned a69fbe57e81c08ba",
+     "M7: the manifest's added flags read [('--phase-timings', 'on'), ('--hand-call-capture', 'on'), ('--worker-burst', 'on'), ('--profile-trace', 'off'), ('--planner-reuse', 'on'), ('--hand-geometry-batch', 'off')], not the six [('--phase-timings', 'on'), ('--hand-call-capture', 'on'), ('--worker-burst', 'on'), ('--profile-trace', 'off'), ('--planner-reuse', 'on'), ('--hand-geometry-batch', 'on')] in that sequence",
+     "M7: the command's --hand-geometry-batch reads 'off', not 'on'",
+     "M13: no execution authorization: a real launch needs the execution decision for speed_geometry_batch_492800"
+    ],
+    "execution": "judged"
+   },
+   "holds": true,
+   "detail": [
+    "M6: the configuration fingerprint reads 984a893caa78a82a, not the pinned a69fbe57e81c08ba",
+    "M7: the manifest's added flags read [('--phase-timings', 'on'), ('--hand-call-capture', 'on'), ('--worker-burst', 'on'), ('--profile-trace', 'off'), ('--planner-reuse', 'on'), ('--hand-geometry-batch', 'off')], not the six [('--phase-timings', 'on'), ('--hand-call-capture', 'on'), ('--worker-burst', 'on'), ('--profile-trace', 'off'), ('--planner-reuse', 'on'), ('--hand-geometry-batch', 'on')] in that sequence",
+    "M7: the command's --hand-geometry-batch reads 'off', not 'on'",
+    "M13: no execution authorization: a real launch needs the execution decision for speed_geometry_batch_492800"
+   ]
+  }
+ ],
+ "manifest": "C:/Users/bhart/Documents/UEMA_wt/speed_geometry_batch_harness/docs/gain_of_function_v4/speed_geometry_batch_harness/package/manifest.json",
+ "manifest_sha256": "e599f763fbc059c0572e40df7519562005adea95d1b56562e2a688821149625d",
+ "cases_scope": "changed",
+ "program": "C:\\Users\\bhart\\Documents\\UEMA_wt\\speed_geometry_batch_harness\\docs\\gain_of_function_v4\\speed_geometry_batch_harness\\check_baseline.py",
+ "program_sha256": "a60446cef4f87704e5aee962a43051689672f701269e6aec294a3ed898e1b2e1",
+ "admission_sha256": "1a0ab1636ef1d7358b1bb1992275cd8291d8745c53f8efcd8d183d60b653271e",
+ "driver_sha256": "9f08e368296fb7d26ed61e4f89380664b790773ad98a774113ecec2efb8b15a4",
+ "breakdown_sha256": "037c11b2fa322b333ac2dc70a4573fe2fb7e07fc650789fa4b0afaf4e859ee29",
+ "reader": "C:\\Users\\bhart\\Documents\\UEMA_wt\\speed_hand_search\\docs\\gain_of_function_v4\\speed_hand_search\\read_phase_timings.py",
+ "reader_sha256": "2de271a979f5959fd45cb4ee7489c24a7f491f1ae4cc1d49a52960c4c83ad53c",
+ "out": "D:\\UEMA_Research\\external\\D\\UEMA_scratch\\speed_10x\\geometry_batch_harness_checks\\package_checks_run1",
+ "fixture_tree": null,
+ "started": "Oct 15, 2026, 07:33:40 PM PDT",
+ "ended": "Oct 15, 2026, 07:34:02 PM PDT"
+}

@@ -1,0 +1,223 @@
+{
+ "version": "attention_cap_experiment_verdict_v3",
+ "written": "2026-10-07 12:56:47 PM",
+ "decided": "the operator's decisions received between 6:35 AM PDT (the coordinator's status before them) and 6:47 AM PDT (the clock after), Oct 6, 2026",
+ "files": {
+  "planner": "D:\\UEMA_Research\\external\\D\\UEMA_scratch\\attention_cap\\qual\\result_planner.json",
+  "swap": "D:\\UEMA_Research\\external\\D\\UEMA_scratch\\attention_cap\\qual\\result_swap.json",
+  "handle": "D:\\UEMA_Research\\external\\D\\UEMA_scratch\\attention_cap\\qual\\result_handle_direction.json",
+  "switching": "D:\\UEMA_Research\\external\\D\\UEMA_scratch\\attention_cap\\qual\\result_switching.json"
+ },
+ "question": "does the cap improve stability while preserving useful prediction",
+ "verdict_word": "NOT SUPPORTED",
+ "verdict": "fail",
+ "stability": {
+  "line_1a": "NOT SHOWN",
+  "line_1b": "PASS",
+  "line_1a_on_C1": "FAIL",
+  "line_1a_on_C2": "FAIL",
+  "line_1b_C2_against_C1": "NOT SHOWN"
+ },
+ "preservation": {
+  "requirement 2 a:every_20/vision": {
+   "L_against_C1": "NOT SHOWN",
+   "C2_against_C1": "NOT SHOWN",
+   "attributable_to_the_cap": false
+  },
+  "requirement 2 a:every_20/proprioception": {
+   "L_against_C1": "PASS",
+   "C2_against_C1": "PASS",
+   "attributable_to_the_cap": false
+  },
+  "requirement 2 a:every_20/vestibular": {
+   "L_against_C1": "NOT SHOWN",
+   "C2_against_C1": "PASS",
+   "attributable_to_the_cap": true
+  },
+  "requirement 2 a:hold_first/vision": {
+   "L_against_C1": "NOT SHOWN",
+   "C2_against_C1": "NOT SHOWN",
+   "attributable_to_the_cap": false
+  },
+  "requirement 2 a:hold_first/proprioception": {
+   "L_against_C1": "PASS",
+   "C2_against_C1": "PASS",
+   "attributable_to_the_cap": false
+  },
+  "requirement 2 a:hold_first/vestibular": {
+   "L_against_C1": "FAIL",
+   "C2_against_C1": "NOT SHOWN",
+   "attributable_to_the_cap": true
+  },
+  "requirement 2 b:vision": {
+   "L_against_C1": "PASS",
+   "C2_against_C1": "PASS",
+   "attributable_to_the_cap": false
+  },
+  "requirement 2 b:tactile": {
+   "L_against_C1": "NOT SHOWN",
+   "C2_against_C1": "NOT SHOWN",
+   "attributable_to_the_cap": false
+  },
+  "requirement 2 b:audio": {
+   "L_against_C1": "PASS",
+   "C2_against_C1": "PASS",
+   "attributable_to_the_cap": false
+  },
+  "requirement 2 b:proprioception": {
+   "L_against_C1": "PASS",
+   "C2_against_C1": "PASS",
+   "attributable_to_the_cap": false
+  },
+  "requirement 2 b:vestibular": {
+   "L_against_C1": "NOT SHOWN",
+   "C2_against_C1": "NOT SHOWN",
+   "attributable_to_the_cap": false
+  },
+  "requirement 3 count": {
+   "L_against_C1": "NOT SHOWN",
+   "C2_against_C1": "NOT SHOWN",
+   "attributable_to_the_cap": false
+  },
+  "requirement 3 pooled_score": {
+   "L_against_C1": "NOT SHOWN",
+   "C2_against_C1": "PASS",
+   "attributable_to_the_cap": true
+  }
+ },
+ "preservation_word": "FAIL on 1 of 13 lines",
+ "preservation_statement": null,
+ "preservation_pass": [
+  "requirement 2 a:every_20/proprioception: PASS (C2 against C1 reads PASS)",
+  "requirement 2 a:hold_first/proprioception: PASS (C2 against C1 reads PASS)",
+  "requirement 2 b:vision: PASS (C2 against C1 reads PASS)",
+  "requirement 2 b:audio: PASS (C2 against C1 reads PASS)",
+  "requirement 2 b:proprioception: PASS (C2 against C1 reads PASS)"
+ ],
+ "not_supported_by": [
+  "requirement 2 a:hold_first/vestibular: a loss beyond its margin attributable to the cap (C2 against C1 reads NOT SHOWN)"
+ ],
+ "unresolved": [
+  "requirement 2 a:every_20/vision: NOT SHOWN (no loss detected, loss not ruled out)",
+  "requirement 2 a:every_20/vestibular: NOT SHOWN (no loss detected, loss not ruled out)",
+  "requirement 2 a:hold_first/vision: NOT SHOWN (no loss detected, loss not ruled out)",
+  "requirement 2 b:tactile: NOT SHOWN (no loss detected, loss not ruled out)",
+  "requirement 2 b:vestibular: NOT SHOWN (no loss detected, loss not ruled out)",
+  "requirement 3 count: NOT SHOWN (no loss detected, loss not ruled out)",
+  "requirement 3 pooled_score: NOT SHOWN (no loss detected, loss not ruled out)",
+  "requirement 4 (1a): NOT SHOWN",
+  "the operator's exception: the motor encoder's 3 attention modules move 11, 19 and 104 in 1,000 of full AdamW steps over the run by an upper bound (row attention_cap_live_signal_481800, the camera's lessons unmeasured); the experiment tests a mostly fixed cap there while the downstream layers train, and does not show those modules can relearn their mappings",
+  "line (1a) is read on these 8 worlds; worlds outside them are not sampled",
+  "not read here: full qualification, planner qualification (requirement 5 is beside), gain of function",
+  "two control runs do not establish the variation across training runs; the false-SUPPORTED rate is conditional on the run-to-run scatter, which they cannot measure; the decisions inside a run are not independent training replications"
+ ],
+ "invalid": [],
+ "beside": {
+  "requirement_1": {
+   "word": "NOT SHOWN",
+   "attribution": {
+    "prediction_jumps_audio": {
+     "L_against_C1": "NOT SHOWN",
+     "C2_against_C1": "NOT SHOWN",
+     "attributable_to_the_cap": false
+    },
+    "prediction_jumps_proprioception": {
+     "L_against_C1": "NOT SHOWN",
+     "C2_against_C1": "NOT SHOWN",
+     "attributable_to_the_cap": false
+    },
+    "prediction_jumps_tactile": {
+     "L_against_C1": "NOT SHOWN",
+     "C2_against_C1": "NOT SHOWN",
+     "attributable_to_the_cap": false
+    },
+    "prediction_jumps_vestibular": {
+     "L_against_C1": "PASS",
+     "C2_against_C1": "NOT SHOWN",
+     "attributable_to_the_cap": true
+    },
+    "prediction_jumps_vision": {
+     "L_against_C1": "PASS",
+     "C2_against_C1": "NOT SHOWN",
+     "attributable_to_the_cap": true
+    }
+   }
+  },
+  "requirement_5": {
+   "word": "NOT SHOWN",
+   "attribution": {
+    "requirement_5_goal_progress": {
+     "L_against_C1": "NOT SHOWN",
+     "C2_against_C1": "NOT SHOWN",
+     "attributable_to_the_cap": false
+    },
+    "requirement_5_guard_over_hold": {
+     "L_against_C1": "NOT SHOWN",
+     "C2_against_C1": "NOT SHOWN",
+     "attributable_to_the_cap": false
+    }
+   }
+  },
+  "line_1a_heaviest_body_share": {
+   "L": 0.6453733197119048,
+   "C1": 0.3001054001305816,
+   "C2": 0.2995545653752082
+  },
+  "requirement_3_improvement": {
+   "verified": {
+    "more_handles_than_C1": "NOT SHOWN",
+    "every_handle_with_an_effect_above_zero": "NOT SHOWN"
+   },
+   "attribution": {
+    "verified_every_handle_with_an_effect_above_zero": {
+     "L_against_C1": "NOT SHOWN",
+     "C2_against_C1": "NOT SHOWN",
+     "attributable_to_the_cap": false
+    },
+    "verified_more_handles_than_C1": {
+     "L_against_C1": "NOT SHOWN",
+     "C2_against_C1": "NOT SHOWN",
+     "attributable_to_the_cap": false
+    }
+   }
+  }
+ },
+ "arms": {
+  "result_planner.json": {
+   "L": "H84_fresh_drivers_20260918_seg41c_1629",
+   "C1": "H84_fresh_drivers_20260918_seg41c_0841",
+   "C2": "H84_fresh_drivers_20260918_seg41c_1433",
+   "steps": {
+    "L": 484675,
+    "C1": 484675,
+    "C2": 484675
+   }
+  },
+  "result_switching.json": {
+   "L": "H84_fresh_drivers_20260918_seg41c_1629",
+   "C1": "H84_fresh_drivers_20260918_seg41c_0841",
+   "C2": "H84_fresh_drivers_20260918_seg41c_1433",
+   "steps": {
+    "L": 484675,
+    "C1": 484675,
+    "C2": 484675
+   }
+  },
+  "result_handle_direction.json": {
+   "L": "H84_fresh_drivers_20260918_seg41c_1629",
+   "C1": "H84_fresh_drivers_20260918_seg41c_0841",
+   "C2": "H84_fresh_drivers_20260918_seg41c_1433",
+   "steps": {
+    "L": 484675,
+    "C1": 484675,
+    "C2": 484675
+   }
+  },
+  "result_swap.json": {
+   "L": "H84_fresh_drivers_20260918_seg41c_1629",
+   "C1": "H84_fresh_drivers_20260918_seg41c_0841",
+   "C2": "H84_fresh_drivers_20260918_seg41c_1433"
+  }
+ },
+ "deployment": "not authorized by this verdict: the question is focused; unresolved items remain"
+}

@@ -1,0 +1,114 @@
+<section id="past-future" aria-labelledby="attention-title">
+<style>
+#past-future .attention-answer{border-left:5px solid #16678c;background:#eaf4fa;padding:18px 22px;margin:18px 0}
+#past-future .attention-terms{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+#past-future .attention-terms article{border:1px solid #b7ccd8;border-radius:6px;padding:16px;background:#f6fafc}
+#past-future .attention-terms h3{margin-top:0}
+#past-future .attention-scroll{overflow-x:auto;border:1px solid #cbdce5;padding:12px;margin:18px 0}
+#past-future .attention-timeline{display:block;width:100%;min-width:850px;height:auto}
+#past-future .attention-matrix{border-collapse:collapse;min-width:850px;width:100%;font-size:1rem}
+#past-future .attention-matrix caption{text-align:left;font-weight:700;padding:8px 0 16px}
+#past-future .attention-matrix th,#past-future .attention-matrix td{padding:12px 9px;border:1px solid #b7ccd8;text-align:center;vertical-align:middle}
+#past-future .attention-matrix tbody th{text-align:left;min-width:190px}
+#past-future .attention-yes{background:#e3f2e9;color:#174d31;font-weight:700}
+#past-future .attention-no{background:#fae6e3;color:#852f25;font-weight:700}
+#past-future .attention-example{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:18px 0}
+#past-future .attention-example article{padding:18px;border:2px solid #91b4c8;border-radius:6px}
+#past-future .attention-example h3{margin-top:0}
+#past-future blockquote{margin:18px 0;padding:15px 20px;background:#f4f6f8;border-left:4px solid #778d9a}
+#past-future code{overflow-wrap:anywhere}
+@media(max-width:760px){#past-future .attention-terms,#past-future .attention-example{grid-template-columns:1fr}}
+</style>
+<h2 id="attention-title">The attention problem: learn from the later result without seeing it early</h2>
+<p class="lead">At the edge of the block, UEMA can predict a fall. It cannot read the actual floor impact before that impact happens. This rule must hold while it moves and while we teach many moments in one training sequence.</p>
+<blockquote><strong>The concern being answered:</strong> “The forward model has a cross-modal attention path without a causal mask. Changing a later observation must not change an earlier prediction.”</blockquote>
+<div class="attention-answer"><strong>Decision:</strong> preserve the current prediction route while testing a successor that enforces this rule for every moment. Add a time-based reading rule to the bridge between senses, and check every other route that could carry a later answer backward. Keep sight and touch from the same available moment connected.</div>
+<p><strong>Status:</strong> this section specifies the repair and its checks. It does not change the model or resume training.</p>
+
+<div class="attention-terms">
+<article><h3>Attention</h3><p>The network chooses which readings to use when making its next estimate.</p></article>
+<article><h3>Cross-modal</h3><p>Different senses share information. Sight can help explain touch, and touch can help explain sight.</p></article>
+<article><h3>Causal mask</h3><p>A rule that blocks information which had not arrived when a choice was made. It does not block all communication between senses.</p></article>
+</div>
+
+<h3>One fall, three different uses of information</h3>
+<p>These times explain the information rule; they are not measured reaction times. Read the diagram from left to right. On a small screen, scroll sideways.</p>
+<div class="attention-scroll" tabindex="0" aria-label="Scrollable timeline of prediction, observation and learning">
+<svg class="attention-timeline" viewBox="0 0 980 410" role="img" aria-labelledby="attention-svg-title attention-svg-desc">
+<title id="attention-svg-title">Predict now, observe later, then learn</title>
+<desc id="attention-svg-desc">At 1.4 seconds, sight and touch already received help choose a command and predict impact. At 2.2 seconds, actual impact readings arrive. Those readings can teach the next prediction but cannot be an input to the earlier prediction. An imagined future is a guess, not a later measured answer.</desc>
+<defs><marker id="attention-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10Z" fill="#16678c"/></marker></defs>
+<g font-family="system-ui, sans-serif" fill="#163346">
+<rect x="15" y="25" width="285" height="190" rx="8" fill="#eaf4fa" stroke="#91b4c8"/>
+<rect x="345" y="25" width="285" height="190" rx="8" fill="#fff3df" stroke="#c8a568"/>
+<rect x="675" y="25" width="290" height="190" rx="8" fill="#e8f4ec" stroke="#91b49d"/>
+<text x="35" y="58" font-size="22" font-weight="700">1.4 s: choose and predict</text>
+<text x="35" y="94" font-size="18">Use received sight and touch.</text>
+<text x="35" y="123" font-size="18">Choose a body command.</text>
+<text x="35" y="152" font-size="18">Guess what contact may follow.</text>
+<text x="35" y="187" font-size="17" font-weight="700">The impact is still unknown.</text>
+<text x="365" y="58" font-size="22" font-weight="700">2.2 s: observe contact</text>
+<text x="365" y="94" font-size="18">The actual readings arrive.</text>
+<text x="365" y="123" font-size="18">Use them for the next move.</text>
+<text x="365" y="152" font-size="18">Compare them with the guess.</text>
+<text x="365" y="187" font-size="17" font-weight="700">An answer to learn from, now.</text>
+<text x="695" y="58" font-size="22" font-weight="700">Afterward: learn</text>
+<text x="695" y="94" font-size="18">Update the learned weights.</text>
+<text x="695" y="123" font-size="18">Improve the next similar choice.</text>
+<text x="695" y="152" font-size="18">Keep the earlier prediction.</text>
+<text x="695" y="187" font-size="17" font-weight="700">Keep its original inputs.</text>
+<path d="M305 120H339" fill="none" stroke="#16678c" stroke-width="3" marker-end="url(#attention-arrow)"/>
+<path d="M635 120H669" fill="none" stroke="#16678c" stroke-width="3" marker-end="url(#attention-arrow)"/><rect x="15" y="245" width="950" height="61" rx="6" fill="#eaf4fa"/>
+<text x="35" y="271" font-size="18" font-weight="700">Allowed at 1.4 s: imagine a possible contact at 2.2 s.</text>
+<text x="35" y="295" font-size="17">That prediction comes from the available past and the proposed command. It may be wrong.</text>
+<rect x="15" y="325" width="950" height="61" rx="6" fill="#fae6e3"/>
+<text x="35" y="351" font-size="18" font-weight="700">Blocked at 1.4 s: read the actual contact measurement from 2.2 s.</text>
+<text x="35" y="375" font-size="17">During training, keep that later measurement on the answer side of the comparison.</text>
+</g></svg></div>
+
+<h3>Exactly which measured readings may each prediction use?</h3>
+<p>Each row below is a prediction made at one moment. Each column is a measured reading. “Yes” means that reading may help the prediction. “No” means the mask must block it. This simple example assumes each reading arrives at the time printed above its column.</p>
+<div class="attention-scroll" tabindex="0" aria-label="Scrollable table showing allowed and blocked attention by time">
+<table class="attention-matrix"><caption>Keep same-time senses connected. Block later measured answers.</caption>
+<thead><tr><th rowspan="2" scope="col">Prediction made at</th><th colspan="2" scope="colgroup">1.0 s readings</th><th colspan="2" scope="colgroup">1.4 s readings</th><th colspan="2" scope="colgroup">2.2 s readings</th></tr><tr><th scope="col">Sight</th><th scope="col">Touch</th><th scope="col">Sight</th><th scope="col">Touch</th><th scope="col">Sight</th><th scope="col">Touch</th></tr></thead>
+<tbody><tr><th scope="row">1.0 s</th><td class="attention-yes">Yes</td><td class="attention-yes">Yes</td><td class="attention-no">No</td><td class="attention-no">No</td><td class="attention-no">No</td><td class="attention-no">No</td></tr>
+<tr><th scope="row">1.4 s: at the edge</th><td class="attention-yes">Yes</td><td class="attention-yes">Yes</td><td class="attention-yes">Yes</td><td class="attention-yes">Yes</td><td class="attention-no">No</td><td class="attention-no">No</td></tr>
+<tr><th scope="row">2.2 s: after contact</th><td class="attention-yes">Yes</td><td class="attention-yes">Yes</td><td class="attention-yes">Yes</td><td class="attention-yes">Yes</td><td class="attention-yes">Yes</td><td class="attention-yes">Yes</td></tr></tbody></table></div>
+<p><strong>Late-arriving readings need special care.</strong> A camera image taken at 1.4 s but received at 1.5 s was not available for the 1.4 s choice. Save when it was taken and when it arrived. The reading rule follows what was available, not just the label on the image.</p>
+
+<h3>What the inspected code does today—and what must change</h3>
+<div class="attention-example"><article><h3>Current route: the newest moment</h3><p>The inspected live and replay routes give the model an already-observed history and use its newest output. At 1.4 s, that input history does not contain the actual 2.2 s impact. The missing bridge mask alone therefore does <strong>not</strong> prove that these current decisions see the future.</p></article>
+<article><h3>Proposed training: many moments together</h3><p>To teach predictions at 1.0, 1.4 and 2.2 s in one batch, all three moments may sit in the same input array. Without the time rule, the 1.4 s output could read the 2.2 s answer. Every connection must obey the matrix above before we use those earlier outputs as forecasts.</p></article></div>
+<p>The concrete defect in that proposed use is <strong>answer leakage</strong>: a prediction is helped by the answer it was supposed to discover. A lower training error would then hide a bad predictor. Masking prevents this shortcut; it does not, by itself, teach accurate motion.</p>
+
+<h3>The test that would settle whether the rule works</h3>
+<div class="attention-answer"><strong>Make two copies of the same example.</strong> Keep the learned weights, earlier readings, proposed command and random choices identical. Change only the later actual impact reading in one copy. Recompute the 1.4 s prediction and command in both copies. Their outputs must stay the same; merely keeping an old log unchanged would not test this. The later answer and the error used for learning may change.</div>
+<p>Also change a touch reading that really was available at 1.4 s. That reading is allowed to affect the 1.4 s estimate. This second check helps catch an incorrect repair that blocks useful senses along with future answers. After a learning update, a new prediction can improve; that is different from changing a prediction already made.</p>
+
+<h3>Why this matters for UEMA’s own wellness</h3>
+<p>UEMA should learn whether a movement preserves its sensing, strength and useful control over time. At the edge it uses <em>predicted</em> consequences to choose. Afterward, actual bodily effects teach how good that prediction and choice were. This keeps the reason for moving inside the model’s wellness objective; the mask neither adds a new reward nor supplies a fall-recovery routine.</p>
+<p>A harmful movement must not look successful because a damaged sensor reports less detail or because the predictor secretly saw the answer. Learn from the experienced senses together with the declared bodily-function evidence. Keep hidden clean simulator readings for auditing, unless the model is explicitly allowed to sense them.</p>
+
+<details><summary>Precise implementation: all attention paths, replay, delayed inputs and caches</summary>
+<p><strong>Inspected source.</strong> In <code>forward_model.py</code>, stage 1 exchanges senses at one time. Stage 2 masks later times within each sense. Stage 3 flattens time and sense into one array and has no time mask. An earlier internal output can therefore depend on a later supplied input. The main inspected prediction heads consume the newest output; this is why the current history-only route and proposed parallel earlier-time outputs require different conclusions. The source review records the exact paths and line references.</p>
+<p><strong>Mask definition.</strong> Give each output a decision cutoff and each measured input its acquisition time, arrival time and validity. Permit an input only when it was available by that cutoff and belongs to its declared context. Do not join unrelated worlds or episodes as consecutive sensor moments. Previously acquired memories may remain available under the declared memory contract. All available senses at the same time may exchange information. Implement time blocks across modalities, rather than a plain lower triangle over serialized sense tokens. A plain triangle would wrongly block a same-time sense merely because it was listed later.</p>
+<p><strong>Close indirect paths too.</strong> Apply the same availability boundary to every cross-time attention layer and any feature that can carry later data: earlier-token states, memory retrieval, bodily self-state, normalization, padding and reused caches. A token with an early timestamp is not safe if an earlier processing stage already mixed future measurements into it. Do not compute sequence-wide normalization from future examples for an earlier prediction. Never reuse a bidirectionally processed cache as a causal past cache.</p>
+<p><strong>Future commands need ordering too.</strong> When replay teaches a sequence, give each predicted transition only the command executed for that transition. Later commands may have been chosen in response to later observations. They must not leak those observations back into earlier predictions. In a second counterfactual check, change only executed commands after transition k: predicted physical states through k must remain unchanged. A proposed future command sequence is allowed for imagination, but a later command cannot physically cause an earlier body state.</p>
+<p><strong>Replay and targets.</strong> Reconstruct the sampled decision from its recorded earlier context and the information available at that decision. Keep later measurements and wellness outcomes in target fields, not acting inputs. The inspected replay route already separates context, current input and the next target; preserve that separation. Store the previous command, active filter, intention, available bodily-condition fields, world identity and timing needed to reproduce the decision. A retrospective teacher may study the completed sequence, but its hindsight is a training target or later weight update—not an early policy observation.</p>
+<p><strong>Imagination.</strong> Predicted future features are allowed within each imagined candidate. Produce them from the available state and proposed actions, advance that candidate’s own state, and keep their predicted provenance distinct from real measurements. Do not insert true next frames between imagined steps and report that result as autonomous prediction. Imagined contact must also advance the predicted bodily-function state and the intrinsic wellness consequences used by the next choice.</p>
+<p><strong>Timestamp ordering.</strong> Declare how simultaneous sensor delivery, a command decision and command dispatch are ordered. A measurement delivered after the decision is unavailable to it even if the acquisition timestamp matches. The same ordering must hold in live inference, replay and parallel training. Reinitialize or rebuild caches after changing the mask semantics; do not carry cached states made under the old mixing rule into the successor without an explicit conversion.</p>
+</details>
+
+<details><summary>Migration and acceptance: preserve learning, prove information flow, then compare ability</summary>
+<ol>
+<li><strong>Preserve the current state and reference route.</strong> Keep weights, optimizer state, replay, memories, worlds, bodily-function state and source/configuration versions. Make the causal successor separately. A new mask changes the model’s meaning; do not silently switch an old checkpoint and call the result equivalent.</li>
+<li><strong>Implement one availability contract.</strong> Add the time-block bridge mask and fix any indirect route that violates it. Expose per-time prediction outputs only after their complete input path obeys that contract.</li>
+<li><strong>Run the counterfactual information check when authorized.</strong> Freeze weights, random state, prefix and proposed actions. Perturb or replace only later measured observations. Earlier forecasts, value inputs and policy outputs must be unchanged within a declared numerical tolerance for the same execution path. Check earlier output derivatives with respect to later measured inputs are zero where differentiable. Control random draws so harmless random-number changes do not masquerade as leakage.</li>
+<li><strong>Check useful information still gets through.</strong> Verify same-time available cross-sense paths are permitted. Use paired inputs where the affected sense is actually used; a trained model need not respond to every possible perturbation. Test delayed arrivals, padding, memory retrieval, self-state and warm caches separately, using the same cutoff.</li>
+<li><strong>Compare against the preserved newest-prefix route.</strong> Record changes in forecasts and choices; identical numerical outputs are not required after a semantic mask change. Judge future prediction on sequences excluded from fitting, including first contact and recovering senses. Retain a free-running test in which only predicted intermediate states are available.</li>
+<li><strong>Judge the motion, not only training loss.</strong> Compare contact timing, body motion, sensory-function predictions, useful control and actual chosen recovery. Keep the current route until the successor passes the declared adoption comparison and retained abilities have been checked.</li>
+</ol>
+<p>These are the specific implementation and acceptance steps proposed here. They have not been executed by this document work. Implementation and training remain paused. The overseer owns the design decision; later execution remains with the project’s authorized coordinator and managed test process.</p>
+<p><a href="../Saved/h84/block_fall_design_20261027/evidence/code_capability_review.txt">Independent source review: current capability and attention paths</a> · <a href="../Saved/h84/block_fall_design_20261027/evidence/revision2/attention_review.txt">Adversarial review of this replacement section</a></p>
+</details>
+</section>

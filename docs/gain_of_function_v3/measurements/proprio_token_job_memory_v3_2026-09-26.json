@@ -1,0 +1,74 @@
+{
+ "what": "Each pause job's whole process tree's commit charge (Windows private bytes, psutil's private, summed over the tree and sampled every 0.5 s; GiB = 1024^3 bytes, the guard's unit), by docs/gain_of_function_v4/tree_memory_peak.py. Round 6 measured what ran before the coordinator's memory hold of 12:46 PM PDT 2026-09-26 (every run over 2 GB held for the memory trial's clean arm): the unit-test job on 149085c80; the continuation job was stopped at the hold before it finished; calibrate, the pace check, measure and grade did not run. From c73213bd2 each job runs inside tree_memory_peak.py in its pinned export and records its own peak to D:/UEMA_Research/external/D/UEMA_scratch/fix/proprio-token-2026-09-25/results/<job>_memory.json. After the hold, light test runs went under tree_memory_peak.py --kill-above 1.9 (from 1:04 PM); the sampler reads every 0.5 s, so a tree can pass the limit for up to 0.5 s before it is ended.",
+ "jobs": {
+  "proprio_token_repair_unit_tests": {
+   "peak_tree_commit_gib": 5.39,
+   "peak_at_s": 121.9,
+   "largest_process_peak_gib": 5.36,
+   "elapsed_s": 142.2,
+   "exit_code": 0,
+   "command": "D:/UEMA_Research/.venv_mimo/Scripts/python.exe D:/UEMA_Research/Source/Python/mimo_bridge/tools/pause_watchdog.py -- D:/UEMA_Research/.venv_mimo/Scripts/python.exe C:/Users/bhart/Documents/UEMA_proprio_fix/docs/gain_of_function_v4/pinned_job.py --commit 149085c805cae898acd8d67b51d3f242346db292 --path Source/Python --path docs/gain_of_function_v4 --path docs/gain_of_function_v3/measurements --path docs/h84_launch_2026-09-18 --path docs/gain_of_function_v3/UEMA_Embodied_Gain_of_Function_Addendum_v3.html --receipt D:/UEMA_Research/external/D/UEMA_scratch/fix/proprio-token-2026-09-25/results/unit_tests_receipt.json -- D:/UEMA_Research/.venv_mimo/Scripts/python.exe -m pytest -q -p no:cacheprovider mimo_bridge/tests/test_proprio_token_repair.py mimo_bridge/tests/test_lesson_probe.py mimo_bridge/tests/test_proprio_token_measurements.py mimo_bridge/tests/test_proprio_repair_watch.py mimo_bridge/tests/test_pinned_job.py mimo_bridge/tests/test_collapse_watch_bodies.py mimo_bridge/tests/test_proprio_heading.py mimo_bridge/tests/test_next_frame_norm.py mimo_bridge/tests/test_deaf_senses.py mimo_bridge/tests/test_h84_hourly_watch.py mimo_bridge/tests/test_gof_probes.py mimo_bridge/tests/test_gof_probe_fixes.py mimo_bridge/tests/test_build_explainer.py::test_the_grading_station_text_matches_the_code mimo_bridge/tests/test_build_explainer.py::test_gof_a_run_with_every_feature_on_draws_each_one mimo_bridge/tests/test_build_explainer.py::test_no_popup_prints_a_raw_range_of_internal_values mimo_bridge/tests/test_dashboard_page_text.py::test_the_now_state_prints_plain_sentences_on_a_fixture --deselect mimo_bridge/tests/test_h84_hourly_watch.py::test_every_printed_line_on_a_real_segment_31_record_has_no_bare_decimal --junitxml D:/UEMA_Research/external/D/UEMA_scratch/fix/proprio-token-2026-09-25/results/unit_tests.xml",
+   "commit": "149085c805ca",
+   "run": "the full job, pinned to 149085c80, 12:43-12:45 PM PDT: 211 passed, 5 skipped, 1 deselected; before the two-thread test (c73213bd2) was added"
+  },
+  "light_tests_after_the_hold": {
+   "peak_tree_commit_gib": 3.064,
+   "peak_at_s": 3.6,
+   "largest_process_peak_gib": 2.113,
+   "elapsed_s": 46.4,
+   "exit_code": 0,
+   "command": "D:/UEMA_Research/.venv_mimo/Scripts/python.exe -m pytest -q -p no:cacheprovider --basetemp=D:/UEMA_Research/external/D/UEMA_scratch/fix/proprio-token-2026-09-25/lane_a/pytest_tmp -m not slow mimo_bridge/tests/test_proprio_token_repair.py mimo_bridge/tests/test_proprio_token_measurements.py mimo_bridge/tests/test_proprio_repair_watch.py",
+   "run": "the three repair test files without their slow tests, from the working tree, 12:53-12:54 PM PDT, after the hold: 55 passed. Its tree peaked at 3.06 GiB for about 4 s at start (the largest process 2.11 GiB); a run over the hold's 2 GB, recorded here"
+  },
+  "mem_em_test": {
+   "peak_tree_commit_gib": 1.447,
+   "peak_at_s": 2.0,
+   "largest_process_peak_gib": 1.446,
+   "elapsed_s": 3.1,
+   "exit_code": 0,
+   "command": "D:/UEMA_Research/.venv_mimo/Scripts/python.exe -m pytest -q -p no:cacheprovider mimo_bridge/tests/test_proprio_token_measurements.py -k switch_test",
+   "ended_above_limit": false,
+   "run": "the switch-test load test alone, 1:04 PM (under --kill-above 1.9)"
+  },
+  "mem_pace_test": {
+   "peak_tree_commit_gib": 1.516,
+   "peak_at_s": 1.5,
+   "largest_process_peak_gib": 1.515,
+   "elapsed_s": 2.0,
+   "exit_code": 0,
+   "command": "D:/UEMA_Research/.venv_mimo/Scripts/python.exe -m pytest -q -p no:cacheprovider mimo_bridge/tests/test_proprio_token_measurements.py -k pace_of_the_lesson",
+   "ended_above_limit": false,
+   "run": "the pace test alone, 1:05 PM (under --kill-above 1.9)"
+  },
+  "mem_meas_tests": {
+   "peak_tree_commit_gib": 1.766,
+   "peak_at_s": 23.0,
+   "largest_process_peak_gib": 1.765,
+   "elapsed_s": 24.0,
+   "exit_code": 0,
+   "command": "D:/UEMA_Research/.venv_mimo/Scripts/python.exe -m pytest -q -p no:cacheprovider mimo_bridge/tests/test_proprio_token_measurements.py mimo_bridge/tests/test_proprio_repair_watch.py",
+   "ended_above_limit": false,
+   "run": "the measurement and watcher test files, 1:06 PM: 34 passed (under --kill-above 1.9)"
+  },
+  "mem_repair_tests": {
+   "peak_tree_commit_gib": 3.029,
+   "peak_at_s": 2.6,
+   "largest_process_peak_gib": 1.722,
+   "elapsed_s": 2.6,
+   "exit_code": 15,
+   "command": "D:/UEMA_Research/.venv_mimo/Scripts/python.exe -m pytest -q -p no:cacheprovider mimo_bridge/tests/test_proprio_token_repair.py -m not slow",
+   "ended_above_limit": true,
+   "run": "the repair test file without slow tests, 1:06 PM: ended by the 1.9-GiB limit when the two-thread test started its second process (under --kill-above 1.9)"
+  },
+  "mem_repair_tests2": {
+   "peak_tree_commit_gib": 1.906,
+   "peak_at_s": 18.4,
+   "largest_process_peak_gib": 1.905,
+   "elapsed_s": 18.4,
+   "exit_code": 15,
+   "command": "D:/UEMA_Research/.venv_mimo/Scripts/python.exe -m pytest -q -p no:cacheprovider mimo_bridge/tests/test_proprio_token_repair.py -m not slow -k not two_threads",
+   "ended_above_limit": true,
+   "run": "the same without the two-thread test, 1:07 PM: ended by the limit after 17 tests (under --kill-above 1.9)"
+  }
+ }
+}

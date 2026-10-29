@@ -1,0 +1,4086 @@
+{
+ "tool": "hand_calibration_admission_v1",
+ "version": "hand_calibration_admission_v1",
+ "question": "From checkpoint 481,800's frozen learner in the saved worlds of held-out bodies 4-7 with --finger-joint-servo on, does the hand stage's choice with the refit predictor bring the finger handles nearer the remembered hand pose at the end of the 250 ms hold than the same decision without the hand stage?",
+ "checkpoint": "C:\\Users\\bhart\\Documents\\UEMA_devA_private\\Saved\\mimo_bridge\\experiments\\H84_fresh_drivers_20260918_seg41o_1431\\checkpoints\\ckpt_step_481800",
+ "checkpoint_step": 481800,
+ "model_sha256": "46c3db2ff1fa5e23faae9ebb1326ca2d58ab74bbcb9b3a2de7637403d10bb6a5",
+ "receipt_path": "D:\\UEMA_scratch\\finger_investigation\\hand_admission\\hand_response_finger_joint_servo_v1_bound_481800.json",
+ "receipt_payload_sha256": "f68754c866483a9e30318bf0697b08c450dd5ad53dd4d996861d67a6a4aeef3c",
+ "receipt_file_sha256": "a7716f55df32cc1a797021a2502b9aad78f1190adcdba47087ae5aa965651501",
+ "candidate": {
+  "rule": "source_model_sha256 names the SHA-256 of the model.safetensors of the checkpoint whose frozen model ran the closed-loop hand-choice comparison; the admission is valid for that checkpoint only: a resume replaces a saved calibration with this one only from a checkpoint whose model.safetensors has that SHA-256 (LemLite._replace_saved_hand_calibration, lem.model.hand_response.admission_check)",
+  "checkpoint": "C:/Users/bhart/Documents/UEMA_devA_private/Saved/mimo_bridge/experiments/H84_fresh_drivers_20260918_seg41o_1431/checkpoints/ckpt_step_481800",
+  "checkpoint_step": 481800,
+  "model_sha256": "46c3db2ff1fa5e23faae9ebb1326ca2d58ab74bbcb9b3a2de7637403d10bb6a5",
+  "candidate_path": "D:\\UEMA_scratch\\finger_investigation\\hand_refit\\run_481800\\candidate_hand_response_finger_joint_servo_v1.json",
+  "candidate_payload_sha256": "bbb7dced708d3a5644c26c78ed26f4821bd6c45b6337f586b27ad1be09d243b4",
+  "candidate_file_sha256": "5ea7985aca121e9cb872f94a6434ed645e81dec34b2791a23694fa732285fb50",
+  "candidate_receipt_status": "candidate, not admitted: written by hand_response_refit_v1; admission is the coordinator's decision after registry row hand_response_refit_on_481800",
+  "candidate_source_model_note": "no learner was built: the holds are the saved worlds' physics driven by the latched commands and the goals; each checkpoint's model sha256 is listed for provenance only",
+  "tool": "hand_calibration_admission_v1",
+  "tool_sha256": "29c7253caa2bf7e54f0965aa875af0ad6505054d71f6a2e6a1ab5d081fae4b67",
+  "written": "Oct 8, 2026 4:40:49 PM PDT"
+ },
+ "admitted_path": "C:/Users/bhart/Documents/UEMA_devA_private/docs/gain_of_function_v3/measurements/hand_response_calibration_380200.json",
+ "admitted_payload_sha256": "fe953beb426f2d403b58761d27b69ba2e3ec61e39b78d777fc2bea2b0fcece9e",
+ "finger_joint_servo": "on",
+ "command_meaning": "finger_joint_servo_v1",
+ "tested_route": "LemLite.step observe -> LemLite._plan_chain hand memory stage -> motor_for_action and hand_joint_goal -> actual physics",
+ "held_out_bodies": [
+  4,
+  5,
+  6,
+  7
+ ],
+ "starts_per_body": 4,
+ "maximum_steps": 300,
+ "arms": [
+  "without",
+  "refit",
+  "admitted_forced"
+ ],
+ "learning": false,
+ "code_hash": "a65cd13b2299c5fcb49c9830bcd8b2f70b3c4881511fae44641b1a4ad4ac2e89",
+ "code": {
+  "commit": "2adfa3f28",
+  "worktree": "C:\\Users\\bhart\\Documents\\UEMA_devA_private",
+  "source_python_dirty": true,
+  "tool_dirty": false
+ },
+ "script": {
+  "path": "C:\\Users\\bhart\\Documents\\UEMA_devA_private\\docs\\gain_of_function_v4\\finger_command_interface\\hand_calibration_admission.py",
+  "sha256": "501952aad4ec06194c93f9976b94838c357778e3c3331be83d4af601cf75db91",
+  "paired_trace_path": "C:\\Users\\bhart\\Documents\\UEMA_devA_private\\docs\\gain_of_function_v4\\finger_command_interface\\finger_servo_paired_trace.py",
+  "paired_trace_sha256": "2bff468cd6247b23873eed71bdaf96ad299381ebf5c6a83ddcbfff286bb98f49"
+ },
+ "threads": 4,
+ "started": "Oct 10, 2026 9:05:06 AM PDT",
+ "load": {
+  "build_s": 2.2,
+  "load_s": 0.7,
+  "step": 481800,
+  "overrides": {
+   "hand_target_mode": "wrist_relative_v1",
+   "hand_goals": "memory",
+   "physical_goals": "off",
+   "synergy_planner": "off",
+   "finger_joint_servo": "on"
+  },
+  "finger_joint_servo": "on"
+ },
+ "episode": {
+  "note": "episode companion restored (8 bodies saved; 0 caregiver recording tape(s) replaced by a plain list)",
+  "load_s": 32.6,
+  "step": 481800,
+  "worlds": 8,
+  "companion_carried_calibration_sha256": "fe953beb426f2d403b58761d27b69ba2e3ec61e39b78d777fc2bea2b0fcece9e",
+  "companion_carried_equals_saved_receipt": true,
+  "in_memory_changes": {
+   "learner_hand_calibration": {
+    "was": "fe953beb426f2d403b58761d27b69ba2e3ec61e39b78d777fc2bea2b0fcece9e",
+    "now": "f68754c866483a9e30318bf0697b08c450dd5ad53dd4d996861d67a6a4aeef3c"
+   },
+   "worlds_finger_joint_servo": {
+    "4": "on",
+    "5": "on",
+    "6": "on",
+    "7": "on"
+   }
+  }
+ },
+ "memory": {
+  "peak_commit_gb": 6.291,
+  "peak_working_set_gb": 3.529
+ },
+ "elapsed_s": 1057.8,
+ "geometry_sha256": "0060bfa4619445667960622d04a8e3e08213f377e40a14de81ec138d21720cd7",
+ "collected": {
+  "4": {
+   "decisions": 4,
+   "model_steps_observed": 31,
+   "skipped": {
+    "without_observed_pose": 0,
+    "without_plan": 0,
+    "not_planner": 0
+   }
+  },
+  "5": {
+   "decisions": 4,
+   "model_steps_observed": 31,
+   "skipped": {
+    "without_observed_pose": 0,
+    "without_plan": 0,
+    "not_planner": 0
+   }
+  },
+  "6": {
+   "decisions": 4,
+   "model_steps_observed": 31,
+   "skipped": {
+    "without_observed_pose": 0,
+    "without_plan": 0,
+    "not_planner": 0
+   }
+  },
+  "7": {
+   "decisions": 4,
+   "model_steps_observed": 31,
+   "skipped": {
+    "without_observed_pose": 0,
+    "without_plan": 0,
+    "not_planner": 0
+   }
+  }
+ },
+ "validity_problems": [],
+ "decisions": [
+  {
+   "body": 4,
+   "start": 0,
+   "difference": -1.105229338989691
+  },
+  {
+   "body": 4,
+   "start": 1,
+   "difference": -0.08993404965728846
+  },
+  {
+   "body": 4,
+   "start": 2,
+   "difference": -0.24401938246519617
+  },
+  {
+   "body": 4,
+   "start": 3,
+   "difference": -0.39110020730825834
+  },
+  {
+   "body": 5,
+   "start": 0,
+   "difference": -0.5424215488189357
+  },
+  {
+   "body": 5,
+   "start": 1,
+   "difference": -0.7113843295391313
+  },
+  {
+   "body": 5,
+   "start": 2,
+   "difference": -0.10478166211686357
+  },
+  {
+   "body": 5,
+   "start": 3,
+   "difference": -0.6308446767799796
+  },
+  {
+   "body": 6,
+   "start": 0,
+   "difference": -0.20921543245131247
+  },
+  {
+   "body": 6,
+   "start": 1,
+   "difference": -2.0352474002777488
+  },
+  {
+   "body": 6,
+   "start": 2,
+   "difference": -0.3131855404539894
+  },
+  {
+   "body": 6,
+   "start": 3,
+   "difference": -0.717658374231712
+  },
+  {
+   "body": 7,
+   "start": 0,
+   "difference": -0.3348207694745371
+  },
+  {
+   "body": 7,
+   "start": 1,
+   "difference": -0.5695490480728753
+  },
+  {
+   "body": 7,
+   "start": 2,
+   "difference": -0.98786035364994
+  },
+  {
+   "body": 7,
+   "start": 3,
+   "difference": -0.3685590263726146
+  }
+ ],
+ "line": {
+  "decisions": 16,
+  "complete": true,
+  "bodies": [
+   4,
+   5,
+   6,
+   7
+  ],
+  "starts_per_body": 4,
+  "mean": -0.5847381962912546,
+  "signflip_count": 2,
+  "signflip_patterns": 65536,
+  "signflip_line": 3276,
+  "body_means": {
+   "4": -0.4575707446051085,
+   "5": -0.49735805431372754,
+   "6": -0.8188266868536906,
+   "7": -0.5651972993924917
+  },
+  "P1": true,
+  "P2": true,
+  "passes": true
+ },
+ "summary": {
+  "arms": {
+   "without": {
+    "hand_shape_error": 4.312815194122484,
+    "finger_position_error_cm": 1.32898860286842,
+    "finger_orientation_error_deg": 31.555741409805524,
+    "closed_share_mean": -0.048984881971902705
+   },
+   "refit": {
+    "hand_shape_error": 3.728076997831229,
+    "finger_position_error_cm": 1.2763217166079452,
+    "finger_orientation_error_deg": 28.835361855762518,
+    "closed_share_mean": 0.11599150653617692
+   },
+   "admitted_forced": {
+    "hand_shape_error": 3.780043970606037,
+    "finger_position_error_cm": 1.276472134595235,
+    "finger_orientation_error_deg": 29.133983262423037,
+    "closed_share_mean": 0.10470250008549001
+   }
+  },
+  "readings_lines": {
+   "admitted_forced_minus_without": {
+    "decisions": 16,
+    "complete": true,
+    "bodies": [
+     4,
+     5,
+     6,
+     7
+    ],
+    "starts_per_body": 4,
+    "mean": -0.5327712235164467,
+    "signflip_count": 2,
+    "signflip_patterns": 65536,
+    "signflip_line": 3276,
+    "body_means": {
+     "4": -0.44121407153359005,
+     "5": -0.472351380209062,
+     "6": -0.7489832634602818,
+     "7": -0.4685361788628529
+    },
+    "P1": true,
+    "P2": true,
+    "passes": true
+   },
+   "refit_minus_admitted_forced": {
+    "decisions": 16,
+    "complete": true,
+    "bodies": [
+     4,
+     5,
+     6,
+     7
+    ],
+    "starts_per_body": 4,
+    "mean": -0.051966972774807926,
+    "signflip_count": 64,
+    "signflip_patterns": 65536,
+    "signflip_line": 3276,
+    "body_means": {
+     "4": -0.016356673071518446,
+     "5": -0.02500667410466556,
+     "6": -0.06984342339340888,
+     "7": -0.09666112052963882
+    },
+    "P1": true,
+    "P2": true,
+    "passes": true
+   }
+  },
+  "start_hand_shape_error_mean": 4.419656330814769,
+  "admitted_rule_reading": {
+   "rule": "compare_hand_memory_route_2026-09-24.py's: every body mean improved and the paired bootstrap 95% interval of the body means of (refit - without) entirely below 0 (reported; the declared line sets the verdict)",
+   "body_means": [
+    -0.4575707446051085,
+    -0.49735805431372754,
+    -0.8188266868536906,
+    -0.5651972993924917
+   ],
+   "bodies_improved": 4,
+   "paired95": [
+    -0.7384595287186999,
+    -0.477464399459418
+   ]
+  }
+ },
+ "rows": [
+  {
+   "where": "body 4 decision 0 (model step offset 0)",
+   "goal": {
+    "ring_index": [
+     86
+    ],
+    "horizon_ms": 250.0
+   },
+   "at_decision": {
+    "hand_shape_error": 3.1222269166784,
+    "finger_position_error_cm": 1.34330431358637,
+    "finger_orientation_error_deg": 30.751917466612497
+   },
+   "detached_check": {
+    "arm": "refit",
+    "end_state_equal": true
+   },
+   "sensory_goals_identical": true,
+   "arms": {
+    "without": {
+     "end": {
+      "hand_shape_error": 5.104193403002352,
+      "finger_position_error_cm": 1.5062686933190652,
+      "finger_orientation_error_deg": 36.96989216847786
+     },
+     "closed_share": -0.6347925820947311,
+     "action_source": "planner",
+     "predictor_sha256": null,
+     "hand_stage": null,
+     "hand_joint_goal": [
+      0.24525205790996552,
+      0.6467851400375366,
+      0.9013773202896118,
+      0.9550442695617676,
+      0.2461594045162201,
+      0.5194170475006104,
+      0.7292463779449463,
+      0.8013210296630859,
+      0.2302270531654358,
+      0.5985780954360962,
+      0.21619337797164917,
+      0.5082514882087708,
+      0.2643318176269531,
+      0.07419885694980621,
+      0.5981758832931519,
+      0.7307850122451782,
+      0.6397649645805359,
+      0.7788668274879456,
+      -0.16211473941802979,
+      0.033167514950037,
+      0.14105448126792908,
+      0.6482645273208618,
+      -0.04476059973239899,
+      0.6718490123748779,
+      0.8119874000549316,
+      0.621837854385376,
+      -0.24735455214977264,
+      0.7792341709136963,
+      0.45021194219589233,
+      0.5803828835487366,
+      -0.2516077160835266,
+      0.8622838854789734,
+      0.4347059428691864,
+      0.48690950870513916,
+      0.1999007910490036,
+      0.02214718796312809,
+      0.8346970677375793,
+      0.3906668424606323,
+      0.581890881061554,
+      0.7880135774612427,
+      -0.419683039188385,
+      -0.10846909135580063,
+      0.0869407057762146,
+      0.845824122428894
+     ],
+     "trajectory_sha256": "d324708b73ca0610d8f5d14d519198be84acb9617733f03fc8e19b6649dd57be",
+     "end_hash": "9f5f2e40ba560266764b12889ea93e25b68557a701d472f1eb48451fee570b61",
+     "start_hash": "2f9b2d465207c0e842648cac8994ca35092dc333ab726622f52f480fb97946f7",
+     "reconstruction_deviation": 0.0
+    },
+    "refit": {
+     "end": {
+      "hand_shape_error": 3.998964064012661,
+      "finger_position_error_cm": 1.3436879267427333,
+      "finger_orientation_error_deg": 33.00746582181707
+     },
+     "closed_share": -0.28080506982080067,
+     "action_source": "planner",
+     "predictor_sha256": "f68754c866483a9e30318bf0697b08c450dd5ad53dd4d996861d67a6a4aeef3c",
+     "hand_stage": {
+      "stopped_by": "completed",
+      "predicted_first": [
+       4.029251960139965
+      ],
+      "predicted_selected": [
+       3.3110085324019716
+      ],
+      "selected_iteration": [
+       3
+      ]
+     },
+     "hand_joint_goal": [
+      0.17805688083171844,
+      0.6467851400375366,
+      0.8341821432113647,
+      0.8878490924835205,
+      0.17896422743797302,
+      0.5194170475006104,
+      0.6620512008666992,
+      0.7341258525848389,
+      0.16303187608718872,
+      0.5985780954360962,
+      0.21619337797164917,
+      0.48197072744369507,
+      0.19850683212280273,
+      0.007003679871559143,
+      0.5981758832931519,
+      0.6635898351669312,
+      0.5725697875022888,
+      0.8460620045661926,
+      -0.22930991649627686,
+      0.05319996178150177,
+      0.20824965834617615,
+      0.7154597043991089,
+      -0.11195576936006546,
+      0.6046538352966309,
+      0.7447922825813293,
+      0.621837854385376,
+      -0.2909623384475708,
+      0.7792341709136963,
+      0.5174071192741394,
+      0.6475780606269836,
+      -0.18441253900527954,
+      0.8622838854789734,
+      0.5019011497497559,
+      0.5541046857833862,
+      0.25451043248176575,
+      0.08934235572814941,
+      0.8346970677375793,
+      0.457861989736557,
+      0.649086058139801,
+      0.8552087545394897,
+      -0.4868782162666321,
+      -0.04127391800284386,
+      0.15413588285446167,
+      0.9130192995071411
+     ],
+     "trajectory_sha256": "ce16b9f229ac6880841d4aecdb5d83ae7608717aa7efaa46f1f13748fe3e0fba",
+     "end_hash": "26530895fe9096665b9f76173129af3bfa35f8414ae44939140b6b13d08f5865",
+     "start_hash": "2f9b2d465207c0e842648cac8994ca35092dc333ab726622f52f480fb97946f7",
+     "reconstruction_deviation": 0.0
+    },
+    "admitted_forced": {
+     "end": {
+      "hand_shape_error": 4.055492413393673,
+      "finger_position_error_cm": 1.3751416257100217,
+      "finger_orientation_error_deg": 33.383185660083804
+     },
+     "closed_share": -0.29891020788076905,
+     "action_source": "planner",
+     "predictor_sha256": "fe953beb426f2d403b58761d27b69ba2e3ec61e39b78d777fc2bea2b0fcece9e",
+     "hand_stage": {
+      "stopped_by": "completed",
+      "predicted_first": [
+       4.026387626107018
+      ],
+      "predicted_selected": [
+       3.61745909492238
+      ],
+      "selected_iteration": [
+       3
+      ]
+     },
+     "hand_joint_goal": [
+      0.17805688083171844,
+      0.6467851400375366,
+      0.8341821432113647,
+      0.9550442695617676,
+      0.17896422743797302,
+      0.5194170475006104,
+      0.6620512008666992,
+      0.7341258525848389,
+      0.16303187608718872,
+      0.5985780954360962,
+      0.21619337797164917,
+      0.48197072744369507,
+      0.19850683212280273,
+      0.007003679871559143,
+      0.5981758832931519,
+      0.6635898351669312,
+      0.5725697875022888,
+      0.8460620045661926,
+      -0.22930991649627686,
+      0.05319996178150177,
+      0.20824965834617615,
+      0.7154597043991089,
+      -0.11195576936006546,
+      0.6718490123748779,
+      0.8791825771331787,
+      0.689033031463623,
+      -0.18015937507152557,
+      0.7792341709136963,
+      0.5174071192741394,
+      0.6475780606269836,
+      -0.18441253900527954,
+      0.8622838854789734,
+      0.5019011497497559,
+      0.5541046857833862,
+      0.25451043248176575,
+      0.08934235572814941,
+      0.8346970677375793,
+      0.457861989736557,
+      0.649086058139801,
+      0.8552087545394897,
+      -0.4868782162666321,
+      -0.10846909135580063,
+      0.15413588285446167,
+      0.9130192995071411
+     ],
+     "trajectory_sha256": "58c0108eac745c42017edc486523964e2d317829e0cc66ebfc8dfde7237f5722",
+     "end_hash": "f0f5f0c6ce8078c942ed4c049d337ffd54ebafbb2ecd1ca5c3dc01e9bd243556",
+     "start_hash": "2f9b2d465207c0e842648cac8994ca35092dc333ab726622f52f480fb97946f7",
+     "reconstruction_deviation": 0.0
+    }
+   },
+   "difference": -1.105229338989691,
+   "difference_admitted_forced": -1.0487009896086787,
+   "difference_refit_minus_admitted_forced": -0.056528349381012255,
+   "body": 4,
+   "start": 0,
+   "offset": 0,
+   "sim_time": 24090.50000041432
+  },
+  {
+   "where": "body 4 decision 1 (model step offset 10)",
+   "goal": {
+    "ring_index": [
+     76
+    ],
+    "horizon_ms": 250.0
+   },
+   "at_decision": {
+    "hand_shape_error": 6.106832409960689,
+    "finger_position_error_cm": 1.2011704374462764,
+    "finger_orientation_error_deg": 41.66388929410391
+   },
+   "detached_check": null,
+   "sensory_goals_identical": true,
+   "arms": {
+    "without": {
+     "end": {
+      "hand_shape_error": 7.712401309058093,
+      "finger_position_error_cm": 1.2364383233465661,
+      "finger_orientation_error_deg": 45.525785893435334
+     },
+     "closed_share": -0.2629135354162664,
+     "action_source": "planner",
+     "predictor_sha256": null,
+     "hand_stage": null,
+     "hand_joint_goal": [
+      -0.19722741842269897,
+      0.23290765285491943,
+      0.6643020510673523,
+      0.40400534868240356,
+      -0.02496810257434845,
+      0.08565670251846313,
+      0.2174082100391388,
+      0.7986640930175781,
+      -0.09215587377548218,
+      0.40606170892715454,
+      0.26175326108932495,
+      1.0184909105300903,
+      0.02072242647409439,
+      -0.18591372668743134,
+      0.39972007274627686,
+      0.16712886095046997,
+      0.5287295579910278,
+      0.9637376070022583,
+      -0.6668720245361328,
+      0.01380131021142006,
+      0.7167421579360962,
+      0.7510252594947815,
+      -0.2081480622291565,
+      0.20018097758293152,
+      0.1705455482006073,
+      0.5142650604248047,
+      -0.11767447739839554,
+      0.4562320113182068,
+      0.18019387125968933,
+      0.3152179718017578,
+      -0.30467942357063293,
+      0.2950599193572998,
+      0.035488978028297424,
+      0.1970040202140808,
+      0.15426939725875854,
+      -0.19228298962116241,
+      0.3627013564109802,
+      0.549324095249176,
+      0.04499584436416626,
+      1.068049669265747,
+      -0.7243797779083252,
+      -0.06830880790948868,
+      0.4509151577949524,
+      1.0059601068496704
+     ],
+     "trajectory_sha256": "55213d23bbd7019506e159f02e3056afd3c53bf2a47cd17307d3c4c071f14b0d",
+     "end_hash": "15d11dbe8fdea9822c5aed1ee081c3800b7a495223434492d8596c03caf328df",
+     "start_hash": "b8feaa0ace0a2af6ee76f41c0b8cd84a846cdb860e79c6395832929b2fae6829",
+     "reconstruction_deviation": 0.0
+    },
+    "refit": {
+     "end": {
+      "hand_shape_error": 7.622467259400804,
+      "finger_position_error_cm": 1.213808236827231,
+      "finger_orientation_error_deg": 45.64773076033519
+     },
+     "closed_share": -0.2481867435837939,
+     "action_source": "planner",
+     "predictor_sha256": "f68754c866483a9e30318bf0697b08c450dd5ad53dd4d996861d67a6a4aeef3c",
+     "hand_stage": {
+      "stopped_by": "completed",
+      "predicted_first": [
+       5.570378476918778
+      ],
+      "predicted_selected": [
+       5.254337127245292
+      ],
+      "selected_iteration": [
+       3
+      ]
+     },
+     "hand_joint_goal": [
+      -0.19722741842269897,
+      0.23290765285491943,
+      0.6643020510673523,
+      0.3368101716041565,
+      -0.02496810257434845,
+      0.08565670251846313,
+      0.28460338711738586,
+      0.8658592700958252,
+      -0.09215587377548218,
+      0.40606170892715454,
+      0.19455809891223907,
+      0.9512957334518433,
+      0.02072242647409439,
+      -0.18591372668743134,
+      0.39972007274627686,
+      0.16712886095046997,
+      0.46153438091278076,
+      0.9637376070022583,
+      -0.6668720245361328,
+      -0.05339386314153671,
+      0.728812575340271,
+      0.7510252594947815,
+      -0.14095288515090942,
+      0.20018097758293152,
+      0.23774071037769318,
+      0.5814602375030518,
+      -0.05247759819030762,
+      0.4562320113182068,
+      0.2473890483379364,
+      0.3824131488800049,
+      -0.23748424649238586,
+      0.2950599193572998,
+      0.1026841551065445,
+      0.2641991972923279,
+      0.22146457433700562,
+      -0.12508781254291534,
+      0.3627013564109802,
+      0.6165192723274231,
+      0.11219102144241333,
+      1.068049669265747,
+      -0.7243797779083252,
+      -0.0011136350221931934,
+      0.5181103348731995,
+      1.0059601068496704
+     ],
+     "trajectory_sha256": "e4d861ab1c82389a3a78728a035bac328fe0c0d5cd33b0130508b8190fc15924",
+     "end_hash": "1c05ced24a2f8c0e1a9ea027b0381afa1b257dbead16e469d9dd378628640c47",
+     "start_hash": "b8feaa0ace0a2af6ee76f41c0b8cd84a846cdb860e79c6395832929b2fae6829",
+     "reconstruction_deviation": 0.0
+    },
+    "admitted_forced": {
+     "end": {
+      "hand_shape_error": 7.596143653970666,
+      "finger_position_error_cm": 1.2099814605910288,
+      "finger_orientation_error_deg": 45.551971479622736
+     },
+     "closed_share": -0.2438762265001413,
+     "action_source": "planner",
+     "predictor_sha256": "fe953beb426f2d403b58761d27b69ba2e3ec61e39b78d777fc2bea2b0fcece9e",
+     "hand_stage": {
+      "stopped_by": "completed",
+      "predicted_first": [
+       5.556752410040908
+      ],
+      "predicted_selected": [
+       5.311554665187524
+      ],
+      "selected_iteration": [
+       3
+      ]
+     },
+     "hand_joint_goal": [
+      -0.19722741842269897,
+      0.23290765285491943,
+      0.6643020510673523,
+      0.47120052576065063,
+      -0.02496810257434845,
+      0.08565670251846313,
+      0.28460338711738586,
+      0.8658592700958252,
+      -0.09215587377548218,
+      0.40606170892715454,
+      0.19455809891223907,
+      0.9512957334518433,
+      0.02072242647409439,
+      -0.18591372668743134,
+      0.39972007274627686,
+      0.16712886095046997,
+      0.46153438091278076,
+      0.9637376070022583,
+      -0.6668720245361328,
+      -0.05339386314153671,
+      0.728812575340271,
+      0.7510252594947815,
+      -0.14095288515090942,
+      0.20018097758293152,
+      0.23774071037769318,
+      0.5814602375030518,
+      -0.05247759819030762,
+      0.4562320113182068,
+      0.2473890483379364,
+      0.3824131488800049,
+      -0.23748424649238586,
+      0.2950599193572998,
+      0.1026841551065445,
+      0.2641991972923279,
+      0.22146457433700562,
+      -0.12508781254291534,
+      0.3627013564109802,
+      0.6165192723274231,
+      0.11219102144241333,
+      1.068049669265747,
+      -0.7243797779083252,
+      -0.0011136350221931934,
+      0.5181103348731995,
+      1.0059601068496704
+     ],
+     "trajectory_sha256": "388a9967aa84251f920a1f6d8445772c7bdd1b028bea2c7792b11f0465beb024",
+     "end_hash": "8a2fbacd66a808277c2527ba910f645f00b49e10dbc3db9ba9f82555cbc3e3b4",
+     "start_hash": "b8feaa0ace0a2af6ee76f41c0b8cd84a846cdb860e79c6395832929b2fae6829",
+     "reconstruction_deviation": 0.0
+    }
+   },
+   "difference": -0.08993404965728846,
+   "difference_admitted_forced": -0.11625765508742703,
+   "difference_refit_minus_admitted_forced": 0.026323605430138564,
+   "body": 4,
+   "start": 1,
+   "offset": 10,
+   "sim_time": 24091.00000041442
+  },
+  {
+   "where": "body 4 decision 2 (model step offset 20)",
+   "goal": {
+    "ring_index": [
+     66
+    ],
+    "horizon_ms": 250.0
+   },
+   "at_decision": {
+    "hand_shape_error": 4.976330391247465,
+    "finger_position_error_cm": 0.9789716869715152,
+    "finger_orientation_error_deg": 36.87853809877916
+   },
+   "detached_check": null,
+   "sensory_goals_identical": true,
+   "arms": {
+    "without": {
+     "end": {
+      "hand_shape_error": 3.869785076348232,
+      "finger_position_error_cm": 1.0936477026992768,
+      "finger_orientation_error_deg": 30.93653535989505
+     },
+     "closed_share": 0.2223617058958668,
+     "action_source": "planner",
+     "predictor_sha256": null,
+     "hand_stage": null,
+     "hand_joint_goal": [
+      -0.344452828168869,
+      0.6484886407852173,
+      0.22463029623031616,
+      1.0177030563354492,
+      -0.23683860898017883,
+      0.3664590120315552,
+      0.5223205089569092,
+      0.6408056616783142,
+      -0.22405403852462769,
+      0.5637737512588501,
+      0.3925614655017853,
+      1.102975845336914,
+      0.1580267995595932,
+      -0.2215103656053543,
+      0.5392017960548401,
+      0.49058443307876587,
+      1.1247308254241943,
+      1.1274497509002686,
+      -0.7679669857025146,
+      0.01774333417415619,
+      0.8954975605010986,
+      0.7853118181228638,
+      -0.08315235376358032,
+      0.8023896217346191,
+      0.5408925414085388,
+      0.043231166899204254,
+      -0.028793804347515106,
+      0.7383937835693359,
+      0.5327867865562439,
+      0.37543147802352905,
+      -0.15776081383228302,
+      0.6045831441879272,
+      0.10145849734544754,
+      -0.07692442834377289,
+      0.06416355073451996,
+      0.194723442196846,
+      0.619024395942688,
+      0.24355074763298035,
+      -0.08043082058429718,
+      1.3469308614730835,
+      -0.5303454399108887,
+      -0.13242164254188538,
+      0.39146238565444946,
+      1.0026566982269287
+     ],
+     "trajectory_sha256": "c0557b499a4c16baa0f7315d67b3eb1d5e6c221831d21074a149ceb57a11384e",
+     "end_hash": "e6b2d8559daa5ab8307f9be31d915fe4db22b41ad11426dc8bb66df9f1e9d74b",
+     "start_hash": "95a7727cbacb1cca1766abdee2e4793aff1994e47f75fdfdd13c5595e4573cdd",
+     "reconstruction_deviation": 0.0
+    },
+    "refit": {
+     "end": {
+      "hand_shape_error": 3.625765693883036,
+      "finger_position_error_cm": 1.0856156790013158,
+      "finger_orientation_error_deg": 30.013984774295125
+     },
+     "closed_share": 0.2713977150190524,
+     "action_source": "planner",
+     "predictor_sha256": "f68754c866483a9e30318bf0697b08c450dd5ad53dd4d996861d67a6a4aeef3c",
+     "hand_stage": {
+      "stopped_by": "completed",
+      "predicted_first": [
+       3.7681965662835024
+      ],
+      "predicted_selected": [
+       3.328124192981701
+      ],
+      "selected_iteration": [
+       6
+      ]
+     },
+     "hand_joint_goal": [
+      -0.344452828168869,
+      0.5812934637069702,
+      0.22463029623031616,
+      0.9505078196525574,
+      -0.23683860898017883,
+      0.2992638349533081,
+      0.5223205089569092,
+      0.5736104846000671,
+      -0.22405403852462769,
+      0.496578574180603,
+      0.35552361607551575,
+      1.035780668258667,
+      0.1580267995595932,
+      -0.2215103656053543,
+      0.4720066487789154,
+      0.4233892560005188,
+      1.0575356483459473,
+      1.1946449279785156,
+      -0.7007718086242676,
+      0.08493851125240326,
+      0.8283023834228516,
+      0.7181166410446167,
+      -0.08315235376358032,
+      0.7351944446563721,
+      0.5408925414085388,
+      0.043231166899204254,
+      0.038401372730731964,
+      0.805588960647583,
+      0.599981963634491,
+      0.4426266551017761,
+      -0.09056563675403595,
+      0.6717782616615295,
+      0.168653666973114,
+      -0.009729251265525818,
+      0.13135872781276703,
+      0.2619186341762543,
+      0.6862195730209351,
+      0.3107459247112274,
+      -0.01323564350605011,
+      1.279735803604126,
+      -0.5616604685783386,
+      -0.0652264729142189,
+      0.45865756273269653,
+      1.0026566982269287
+     ],
+     "trajectory_sha256": "d075761eebec64bccf8d37733e1405364629979a00b2b5e15d167af65d6a88db",
+     "end_hash": "1644a8316e78faf5c71da483f79656061cb7e4722dd428076056ef5664e5efe6",
+     "start_hash": "95a7727cbacb1cca1766abdee2e4793aff1994e47f75fdfdd13c5595e4573cdd",
+     "reconstruction_deviation": 0.0
+    },
+    "admitted_forced": {
+     "end": {
+      "hand_shape_error": 3.632700409833614,
+      "finger_position_error_cm": 1.0856166258715654,
+      "finger_orientation_error_deg": 30.036165000223225
+     },
+     "closed_share": 0.27000417491914763,
+     "action_source": "planner",
+     "predictor_sha256": "fe953beb426f2d403b58761d27b69ba2e3ec61e39b78d777fc2bea2b0fcece9e",
+     "hand_stage": {
+      "stopped_by": "completed",
+      "predicted_first": [
+       4.048058500465201
+      ],
+      "predicted_selected": [
+       3.715818047665875
+      ],
+      "selected_iteration": [
+       9
+      ]
+     },
+     "hand_joint_goal": [
+      -0.344452828168869,
+      0.5812934637069702,
+      0.22463029623031616,
+      1.0177030563354492,
+      -0.23683860898017883,
+      0.2992638349533081,
+      0.5223205089569092,
+      0.5736104846000671,
+      -0.22405403852462769,
+      0.496578574180603,
+      0.35552361607551575,
+      1.035780668258667,
+      0.1580267995595932,
+      -0.2215103656053543,
+      0.4720066487789154,
+      0.4233892560005188,
+      1.0575356483459473,
+      1.1946449279785156,
+      -0.7007718086242676,
+      0.08493851125240326,
+      0.8283023834228516,
+      0.7181166410446167,
+      -0.08315235376358032,
+      0.7351944446563721,
+      0.5408925414085388,
+      0.043231166899204254,
+      0.038401372730731964,
+      0.805588960647583,
+      0.599981963634491,
+      0.4426266551017761,
+      -0.09056563675403595,
+      0.6717782616615295,
+      0.168653666973114,
+      -0.009729251265525818,
+      0.13135872781276703,
+      0.2619186341762543,
+      0.6862195730209351,
+      0.3107459247112274,
+      -0.01323564350605011,
+      1.279735803604126,
+      -0.5616604685783386,
+      -0.0652264729142189,
+      0.45865756273269653,
+      1.0026566982269287
+     ],
+     "trajectory_sha256": "4499e13f62075935d1f4b659e8832aad7a886599cf2b3b284c068f9325c6962d",
+     "end_hash": "b475763712bb910e70845f9e6e3ee4b2506577c25cf0d8430353f19bda7dc9fc",
+     "start_hash": "95a7727cbacb1cca1766abdee2e4793aff1994e47f75fdfdd13c5595e4573cdd",
+     "reconstruction_deviation": 0.0
+    }
+   },
+   "difference": -0.24401938246519617,
+   "difference_admitted_forced": -0.23708466651461801,
+   "difference_refit_minus_admitted_forced": -0.006934715950578152,
+   "body": 4,
+   "start": 2,
+   "offset": 20,
+   "sim_time": 24091.500000414522
+  },
+  {
+   "where": "body 4 decision 3 (model step offset 30)",
+   "goal": {
+    "ring_index": [
+     56
+    ],
+    "horizon_ms": 250.0
+   },
+   "at_decision": {
+    "hand_shape_error": 3.598478421366842,
+    "finger_position_error_cm": 0.9479063668259267,
+    "finger_orientation_error_deg": 29.92624859829263
+   },
+   "detached_check": null,
+   "sensory_goals_identical": true,
+   "arms": {
+    "without": {
+     "end": {
+      "hand_shape_error": 1.8374996989068637,
+      "finger_position_error_cm": 0.8519399676592949,
+      "finger_orientation_error_deg": 21.014465992089974
+     },
+     "closed_share": 0.48936759270355445,
+     "action_source": "planner",
+     "predictor_sha256": null,
+     "hand_stage": null,
+     "hand_joint_goal": [
+      0.16669908165931702,
+      -0.0567823126912117,
+      0.32561299204826355,
+      1.113141417503357,
+      -0.025577396154403687,
+      0.09562863409519196,
+      0.1715192198753357,
+      0.9640287160873413,
+      -0.2716617286205292,
+      0.2315761148929596,
+      0.5846616625785828,
+      0.9724297523498535,
+      0.04224169999361038,
+      0.23376983404159546,
+      0.03134513273835182,
+      0.21287089586257935,
+      0.8573575019836426,
+      0.500594973564148,
+      -0.416401743888855,
+      -0.14331597089767456,
+      0.15736491978168488,
+      0.5417718887329102,
+      -0.21863777935504913,
+      1.1455912590026855,
+      1.0794247388839722,
+      0.07164964079856873,
+      -0.18927030265331268,
+      1.2560603618621826,
+      1.174484133720398,
+      0.2078375518321991,
+      -0.1292692869901657,
+      1.325278401374817,
+      0.9524440765380859,
+      0.26161834597587585,
+      0.14949053525924683,
+      0.1202227920293808,
+      1.3197581768035889,
+      1.0357115268707275,
+      0.15117141604423523,
+      0.6069601774215698,
+      -0.5661860108375549,
+      -0.09666204452514648,
+      0.4776797890663147,
+      1.0871503353118896
+     ],
+     "trajectory_sha256": "5404d371fb823361bd9259f0efe30f5848413ad736ae72e7ff60b4481aaed5e6",
+     "end_hash": "987ab74dd68e7c2c073f4cdae19304f5751fbbe6e102f6337a5a279ba4c30b34",
+     "start_hash": "b82881aa4ef182a8f4895a600d8c9b766167009fad2980a0e8559f4812ab59f5",
+     "reconstruction_deviation": 0.0
+    },
+    "refit": {
+     "end": {
+      "hand_shape_error": 1.4463994915986054,
+      "finger_position_error_cm": 0.8361996849705919,
+      "finger_orientation_error_deg": 18.006241388712674
+     },
+     "closed_share": 0.5980524760103447,
+     "action_source": "planner",
+     "predictor_sha256": "f68754c866483a9e30318bf0697b08c450dd5ad53dd4d996861d67a6a4aeef3c",
+     "hand_stage": {
+      "stopped_by": "completed",
+      "predicted_first": [
+       2.672781308275127
+      ],
+      "predicted_selected": [
+       2.136894490787338
+      ],
+      "selected_iteration": [
+       3
+      ]
+     },
+     "hand_joint_goal": [
+      0.09950391203165054,
+      -0.1112399622797966,
+      0.32561299204826355,
+      1.0459462404251099,
+      -0.09277257323265076,
+      0.15008626878261566,
+      0.23871438205242157,
+      0.9640287160873413,
+      -0.2716617286205292,
+      0.1771184653043747,
+      0.5846616625785828,
+      0.9052345752716064,
+      0.04224169999361038,
+      0.1665746569633484,
+      -0.023112520575523376,
+      0.14567571878433228,
+      0.7901623249053955,
+      0.567790150642395,
+      -0.48359692096710205,
+      -0.07612080127000809,
+      0.22456009685993195,
+      0.6089670658111572,
+      -0.15144260227680206,
+      1.1455912590026855,
+      1.1466199159622192,
+      0.1388448178768158,
+      -0.12207512557506561,
+      1.2560603618621826,
+      1.241679310798645,
+      0.27503272891044617,
+      -0.06207410618662834,
+      1.325278401374817,
+      1.019639253616333,
+      0.3288135230541229,
+      0.2166857123374939,
+      0.18741796910762787,
+      1.3197581768035889,
+      1.1029067039489746,
+      0.2183665931224823,
+      0.6741553544998169,
+      -0.633381187915802,
+      -0.029466865584254265,
+      0.5448749661445618,
+      1.1543455123901367
+     ],
+     "trajectory_sha256": "4e8fef2dff0066725e084b3dde22a8d4a7da8c3b18e7f89f5e5abf1b882ef369",
+     "end_hash": "5342cdf9faabbf643728889e4d694cd2aa8668f48ca79520568fd6ce46258186",
+     "start_hash": "b82881aa4ef182a8f4895a600d8c9b766167009fad2980a0e8559f4812ab59f5",
+     "reconstruction_deviation": 0.0
+    },
+    "admitted_forced": {
+     "end": {
+      "hand_shape_error": 1.4746867239832273,
+      "finger_position_error_cm": 0.841831947269456,
+      "finger_orientation_error_deg": 18.163127884428413
+     },
+     "closed_share": 0.590191588970795,
+     "action_source": "planner",
+     "predictor_sha256": "fe953beb426f2d403b58761d27b69ba2e3ec61e39b78d777fc2bea2b0fcece9e",
+     "hand_stage": {
+      "stopped_by": "completed",
+      "predicted_first": [
+       2.698658175409238
+      ],
+      "predicted_selected": [
+       2.3152124033835237
+      ],
+      "selected_iteration": [
+       4
+      ]
+     },
+     "hand_joint_goal": [
+      0.09950391203165054,
+      -0.12397748976945877,
+      0.32561299204826355,
+      1.180336594581604,
+      -0.09277257323265076,
+      0.11243955790996552,
+      0.23871438205242157,
+      0.9640287160873413,
+      -0.2716617286205292,
+      0.16438093781471252,
+      0.5846616625785828,
+      0.9052345752716064,
+      0.04224169999361038,
+      0.1665746569633484,
+      -0.03585004433989525,
+      0.14567571878433228,
+      0.7901623249053955,
+      0.567790150642395,
+      -0.48359692096710205,
+      -0.07612080127000809,
+      0.22456009685993195,
+      0.6089670658111572,
+      -0.15144260227680206,
+      1.1455912590026855,
+      1.1466199159622192,
+      0.1388448178768158,
+      -0.12207512557506561,
+      1.2560603618621826,
+      1.241679310798645,
+      0.27503272891044617,
+      -0.06207410618662834,
+      1.325278401374817,
+      1.019639253616333,
+      0.3288135230541229,
+      0.2166857123374939,
+      0.18741796910762787,
+      1.3197581768035889,
+      1.1029067039489746,
+      0.2183665931224823,
+      0.6741553544998169,
+      -0.633381187915802,
+      -0.029466865584254265,
+      0.5448749661445618,
+      1.1543455123901367
+     ],
+     "trajectory_sha256": "f5a1e26f98cee81b125b1a517ea5516f063c1aefafad9191df58d18b44475697",
+     "end_hash": "371260f8cf33ba1d41ff600e67174c94829ad1a584a99896380a9256263983c8",
+     "start_hash": "b82881aa4ef182a8f4895a600d8c9b766167009fad2980a0e8559f4812ab59f5",
+     "reconstruction_deviation": 0.0
+    }
+   },
+   "difference": -0.39110020730825834,
+   "difference_admitted_forced": -0.3628129749236364,
+   "difference_refit_minus_admitted_forced": -0.02828723238462194,
+   "body": 4,
+   "start": 3,
+   "offset": 30,
+   "sim_time": 24092.000000414624
+  },
+  {
+   "where": "body 5 decision 0 (model step offset 0)",
+   "goal": {
+    "ring_index": [
+     96
+    ],
+    "horizon_ms": 250.0
+   },
+   "at_decision": {
+    "hand_shape_error": 2.6213034432260995,
+    "finger_position_error_cm": 1.5143154897708455,
+    "finger_orientation_error_deg": 22.4045452588904
+   },
+   "detached_check": {
+    "arm": "refit",
+    "end_state_equal": true
+   },
+   "sensory_goals_identical": true,
+   "arms": {
+    "without": {
+     "end": {
+      "hand_shape_error": 2.6950286178566785,
+      "finger_position_error_cm": 1.576677444311096,
+      "finger_orientation_error_deg": 24.79438927394609
+     },
+     "closed_share": -0.028125387322516016,
+     "action_source": "planner",
+     "predictor_sha256": null,
+     "hand_stage": null,
+     "hand_joint_goal": [
+      -0.005260258913040161,
+      0.5579723715782166,
+      0.3022547662258148,
+      0.35962820053100586,
+      0.016044212505221367,
+      0.8370741605758667,
+      0.17113304138183594,
+      0.20769241452217102,
+      0.08068975806236267,
+      0.724336564540863,
+      0.3617035150527954,
+      0.21380317211151123,
+      0.05796923115849495,
+      0.26084408164024353,
+      0.730030357837677,
+      0.18797579407691956,
+      0.16854718327522278,
+      0.6072999238967896,
+      -0.5768116116523743,
+      -0.07225356251001358,
+      0.6756883859634399,
+      0.8646865487098694,
+      -0.19587430357933044,
+      -0.150370255112648,
+      0.6024810075759888,
+      0.5842446684837341,
+      -0.15381848812103271,
+      0.07829588651657104,
+      0.4493153989315033,
+      0.6669922471046448,
+      -0.2205689251422882,
+      0.09374484419822693,
+      0.17683014273643494,
+      0.7664169073104858,
+      0.5021405816078186,
+      -0.028710249811410904,
+      0.011108867824077606,
+      0.15142521262168884,
+      0.7250831723213196,
+      0.6032060980796814,
+      -0.9506440758705139,
+      -0.037069033831357956,
+      0.5457501411437988,
+      0.6346265077590942
+     ],
+     "trajectory_sha256": "ab942c659456ae79e91061927686d90a0bf21ba6a30061777379189517702ba2",
+     "end_hash": "d321013fff81110e035e9c327e51552ed45ea064a6323f6446f904aa9fe381ed",
+     "start_hash": "d56d8db706f151742e2d386dd849bfa075a945197a4a5f1d5095253b377724ff",
+     "reconstruction_deviation": 0.0
+    },
+    "refit": {
+     "end": {
+      "hand_shape_error": 2.152607069037743,
+      "finger_position_error_cm": 1.4693486922620391,
+      "finger_orientation_error_deg": 22.18753569686093
+     },
+     "closed_share": 0.17880279194671223,
+     "action_source": "planner",
+     "predictor_sha256": "f68754c866483a9e30318bf0697b08c450dd5ad53dd4d996861d67a6a4aeef3c",
+     "hand_stage": {
+      "stopped_by": "completed",
+      "predicted_first": [
+       2.570356698145824
+      ],
+      "predicted_selected": [
+       2.2160009248413535
+      ],
+      "selected_iteration": [
+       3
+      ]
+     },
+     "hand_joint_goal": [
+      -0.005260258913040161,
+      0.6251675486564636,
+      0.3694499433040619,
+      0.42682337760925293,
+      -0.05115095525979996,
+      0.7698789834976196,
+      0.17113304138183594,
+      0.2748875916004181,
+      0.08068975806236267,
+      0.657141387462616,
+      0.3617035150527954,
+      0.21380317211151123,
+      0.05796923115849495,
+      0.19364890456199646,
+      0.6628351807594299,
+      0.18797579407691956,
+      0.16854718327522278,
+      0.6744951009750366,
+      -0.5768116116523743,
+      -0.005058385897427797,
+      0.6756883859634399,
+      0.8646865487098694,
+      -0.19587430357933044,
+      -0.08317508548498154,
+      0.6696761846542358,
+      0.6514398455619812,
+      -0.15381848812103271,
+      0.14549106359481812,
+      0.516510546207428,
+      0.7341874241828918,
+      -0.15337374806404114,
+      0.1609400361776352,
+      0.2440253049135208,
+      0.8336120843887329,
+      0.43494540452957153,
+      0.038484927266836166,
+      0.07830403745174408,
+      0.2186203896999359,
+      0.7922783493995667,
+      0.6704012751579285,
+      -0.9506440758705139,
+      0.030126141384243965,
+      0.6129453182220459,
+      0.6346265077590942
+     ],
+     "trajectory_sha256": "99b5598c94f16fa1613b13de4693ac66122bc9dc53f34c61478f1e0cc7a98e7d",
+     "end_hash": "89ed6ccf81c0dea85ca0cc2191b6e624083da4517d44966df87c5c609c4a13e1",
+     "start_hash": "d56d8db706f151742e2d386dd849bfa075a945197a4a5f1d5095253b377724ff",
+     "reconstruction_deviation": 0.0
+    },
+    "admitted_forced": {
+     "end": {
+      "hand_shape_error": 2.185281273561307,
+      "finger_position_error_cm": 1.4926626040957447,
+      "finger_orientation_error_deg": 22.372523665319235
+     },
+     "closed_share": 0.1663379227580648,
+     "action_source": "planner",
+     "predictor_sha256": "fe953beb426f2d403b58761d27b69ba2e3ec61e39b78d777fc2bea2b0fcece9e",
+     "hand_stage": {
+      "stopped_by": "completed",
+      "predicted_first": [
+       2.9027474887587927
+      ],
+      "predicted_selected": [
+       2.651216283874438
+      ],
+      "selected_iteration": [
+       3
+      ]
+     },
+     "hand_joint_goal": [
+      -0.005260258913040161,
+      0.5579723715782166,
+      0.3694499433040619,
+      0.35962820053100586,
+      -0.05115095525979996,
+      0.8370741605758667,
+      0.17113304138183594,
+      0.20769241452217102,
+      0.08068975806236267,
+      0.724336564540863,
+      0.3617035150527954,
+      0.21380317211151123,
+      0.05796923115849495,
+      0.19364890456199646,
+      0.730030357837677,
+      0.18797579407691956,
+      0.16854718327522278,
+      0.6744951009750366,
+      -0.5768116116523743,
+      -0.005058385897427797,
+      0.6756883859634399,
+      0.8646865487098694,
+      -0.19587430357933044,
+      -0.08317508548498154,
+      0.6696761846542358,
+      0.6514398455619812,
+      -0.15381848812103271,
+      0.14549106359481812,
+      0.516510546207428,
+      0.7341874241828918,
+      -0.15337374806404114,
+      0.1609400361776352,
+      0.2440253049135208,
+      0.8336120843887329,
+      0.5021405816078186,
+      0.038484927266836166,
+      0.07830403745174408,
+      0.2186203896999359,
+      0.7922783493995667,
+      0.6704012751579285,
+      -0.9506440758705139,
+      0.030126141384243965,
+      0.6129453182220459,
+      0.6346265077590942
+     ],
+     "trajectory_sha256": "bc11f2253eb454566b36f121db9cbd5de1aa495b09eeabb9cc9af0c0d28e97a7",
+     "end_hash": "0e48dad7ee2e3cc6accf0c78f34712ea6f9311a70291127949a649f61cc29217",
+     "start_hash": "d56d8db706f151742e2d386dd849bfa075a945197a4a5f1d5095253b377724ff",
+     "reconstruction_deviation": 0.0
+    }
+   },
+   "difference": -0.5424215488189357,
+   "difference_admitted_forced": -0.5097473442953713,
+   "difference_refit_minus_admitted_forced": -0.0326742045235644,
+   "body": 5,
+   "start": 0,
+   "offset": 0,
+   "sim_time": 24090.50000041432
+  },
+  {
+   "where": "body 5 decision 1 (model step offset 10)",
+   "goal": {
+    "ring_index": [
+     86
+    ],
+    "horizon_ms": 250.0
+   },
+   "at_decision": {
+    "hand_shape_error": 2.8874926770146794,
+    "finger_position_error_cm": 1.2660068088756344,
+    "finger_orientation_error_deg": 29.58943572153654
+   },
+   "detached_check": null,
+   "sensory_goals_identical": true,
+   "arms": {
+    "without": {
+     "end": {
+      "hand_shape_error": 3.3671584993137125,
+      "finger_position_error_cm": 1.1908151570544538,
+      "finger_orientation_error_deg": 30.945655116003202
+     },
+     "closed_share": -0.16611845498945121,
+     "action_source": "planner",
+     "predictor_sha256": null,
+     "hand_stage": null,
+     "hand_joint_goal": [
+      -0.24601593613624573,
+      0.2416573166847229,
+      -0.04821686074137688,
+      0.6217254400253296,
+      -0.0012119263410568237,
+      0.6011397838592529,
+      0.07451916486024857,
+      -0.051325976848602295,
+      -0.07985235750675201,
+      0.5016358494758606,
+      -0.07253320515155792,
+      0.02622998133301735,
+      0.5559552907943726,
+      0.13451924920082092,
+      0.5215552449226379,
+      -0.004585016518831253,
+      -0.020584052428603172,
+      0.2795460820198059,
+      -0.8755453824996948,
+      -0.11002563685178757,
+      0.8154745101928711,
+      0.8783620595932007,
+      -0.28352081775665283,
+      0.08190666139125824,
+      -0.01984885334968567,
+      0.5529707074165344,
+      -0.2937055230140686,
+      0.346034973859787,
+      0.08484034240245819,
+      0.43578240275382996,
+      -0.3159966468811035,
+      0.6130595803260803,
+      0.12349236756563187,
+      0.14231887459754944,
+      0.22763074934482574,
+      -0.2890152931213379,
+      0.4831152558326721,
+      0.180047869682312,
+      0.349583238363266,
+      0.7847426533699036,
+      -0.6735685467720032,
+      -0.04089071601629257,
+      0.8316242694854736,
+      0.9452904462814331
+     ],
+     "trajectory_sha256": "880b4b4ec5a04f0c0d78eac06f8ac60aa1c2f135e99ee4f79113dd4477b8915e",
+     "end_hash": "0257f7be66d7731559b8fc0e793f88dc0f09dc0ebee295a7d9162568243b2475",
+     "start_hash": "49f3884c067f7d699d260e50cf2e2f383ed32300f971b4ca7b41f7223ff67a88",
+     "reconstruction_deviation": 0.0
+    },
+    "refit": {
+     "end": {
+      "hand_shape_error": 2.655774169774581,
+      "finger_position_error_cm": 1.173065809375686,
+      "finger_orientation_error_deg": 27.408968423224138
+     },
+     "closed_share": 0.08024903719571241,
+     "action_source": "planner",
+     "predictor_sha256": "f68754c866483a9e30318bf0697b08c450dd5ad53dd4d996861d67a6a4aeef3c",
+     "hand_stage": {
+      "stopped_by": "completed",
+      "predicted_first": [
+       3.5072676643181366
+      ],
+      "predicted_selected": [
+       2.970438238183312
+      ],
+      "selected_iteration": [
+       7
+      ]
+     },
+     "hand_joint_goal": [
+      -0.24601593613624573,
+      0.30791860818862915,
+      0.018978312611579895,
+      0.6889206171035767,
+      -0.0012119263410568237,
+      0.6674010753631592,
+      0.14171433448791504,
+      0.015869194641709328,
+      -0.07985235750675201,
+      0.5678970813751221,
+      -0.0053380317986011505,
+      0.09342515468597412,
+      0.4887601137161255,
+      0.06732407212257385,
+      0.4552939236164093,
+      -0.004585016518831253,
+      -0.020584052428603172,
+      0.346741259098053,
+      -0.8083502054214478,
+      -0.042830463498830795,
+      0.8154745101928711,
+      0.9003876447677612,
+      -0.21632562577724457,
+      0.1491018384695053,
+      0.0473463200032711,
+      0.6201658844947815,
+      -0.22651034593582153,
+      0.41323015093803406,
+      0.15203551948070526,
+      0.5029776096343994,
+      -0.24880145490169525,
+      0.6802547574043274,
+      0.19068753719329834,
+      0.20951403677463531,
+      0.2948259115219116,
+      -0.22182013094425201,
+      0.5503103733062744,
+      0.24724304676055908,
+      0.41677841544151306,
+      0.787771463394165,
+      -0.6091450452804565,
+      0.02630445919930935,
+      0.8316242694854736,
+      0.9452904462814331
+     ],
+     "trajectory_sha256": "91e3f0085959cf033996eba2a43b15ec0318862c4ed1e4d98f677d6c3dca9070",
+     "end_hash": "5fd9610445645f3c871f7d1b535760ffc075d2910043bdaf08264faed331b1be",
+     "start_hash": "49f3884c067f7d699d260e50cf2e2f383ed32300f971b4ca7b41f7223ff67a88",
+     "reconstruction_deviation": 0.0
+    },
+    "admitted_forced": {
+     "end": {
+      "hand_shape_error": 2.6651627027709153,
+      "finger_position_error_cm": 1.1709281964499705,
+      "finger_orientation_error_deg": 27.257984281196002
+     },
+     "closed_share": 0.07699758895098796,
+     "action_source": "planner",
+     "predictor_sha256": "fe953beb426f2d403b58761d27b69ba2e3ec61e39b78d777fc2bea2b0fcece9e",
+     "hand_stage": {
+      "stopped_by": "completed",
+      "predicted_first": [
+       3.1565686334003833
+      ],
+      "predicted_selected": [
+       2.7951713256663355
+      ],
+      "selected_iteration": [
+       3
+      ]
+     },
+     "hand_joint_goal": [
+      -0.24601593613624573,
+      0.30791860818862915,
+      0.018978312611579895,
+      0.6007970571517944,
+      -0.0012119263410568237,
+      0.6674010753631592,
+      0.14171433448791504,
+      0.015869194641709328,
+      -0.07985235750675201,
+      0.5678970813751221,
+      -0.0053380317986011505,
+      0.09342515468597412,
+      0.4887601137161255,
+      0.06732407212257385,
+      0.4552939236164093,
+      -0.004585016518831253,
+      -0.020584052428603172,
+      0.346741259098053,
+      -0.8755453824996948,
+      -0.042830463498830795,
+      0.8154745101928711,
+      0.9455572366714478,
+      -0.21632562577724457,
+      0.1491018384695053,
+      0.0473463200032711,
+      0.6201658844947815,
+      -0.22651034593582153,
+      0.41323015093803406,
+      0.15203551948070526,
+      0.5029776096343994,
+      -0.24880145490169525,
+      0.6802547574043274,
+      0.19068753719329834,
+      0.20951403677463531,
+      0.2948259115219116,
+      -0.22182013094425201,
+      0.5503103733062744,
+      0.24724304676055908,
+      0.41677841544151306,
+      0.7789177894592285,
+      -0.6735685467720032,
+      0.02630445919930935,
+      0.8316242694854736,
+      0.9452904462814331
+     ],
+     "trajectory_sha256": "9ba968740f5d1017237f20324dbeeff97eba8d39624624577e951b3e237e18c3",
+     "end_hash": "e419b68a9dcf3f142ba8e3b8bb88acdf5ba8cad95cf355590ccb3172d57a7aab",
+     "start_hash": "49f3884c067f7d699d260e50cf2e2f383ed32300f971b4ca7b41f7223ff67a88",
+     "reconstruction_deviation": 0.0
+    }
+   },
+   "difference": -0.7113843295391313,
+   "difference_admitted_forced": -0.7019957965427972,
+   "difference_refit_minus_admitted_forced": -0.009388532996334131,
+   "body": 5,
+   "start": 1,
+   "offset": 10,
+   "sim_time": 24091.00000041442
+  },
+  {
+   "where": "body 5 decision 2 (model step offset 20)",
+   "goal": {
+    "ring_index": [
+     76
+    ],
+    "horizon_ms": 250.0
+   },
+   "at_decision": {
+    "hand_shape_error": 3.8540602109699904,
+    "finger_position_error_cm": 0.9938542396296078,
+    "finger_orientation_error_deg": 33.371230120997694
+   },
+   "detached_check": null,
+   "sensory_goals_identical": true,
+   "arms": {
+    "without": {
+     "end": {
+      "hand_shape_error": 1.8609880797503418,
+      "finger_position_error_cm": 0.8267848748318004,
+      "finger_orientation_error_deg": 21.658574385374266
+     },
+     "closed_share": 0.5171357016028642,
+     "action_source": "planner",
+     "predictor_sha256": null,
+     "hand_stage": null,
+     "hand_joint_goal": [
+      -0.2432345747947693,
+      0.6146618127822876,
+      -0.04240091145038605,
+      0.07244234532117844,
+      -0.012818440794944763,
+      0.7428784370422363,
+      0.18089506030082703,
+      0.02841654047369957,
+      0.04133535921573639,
+      0.5335018634796143,
+      0.07741469889879227,
+      0.06793728470802307,
+      0.07999365031719208,
+      -0.05276385694742203,
+      0.5097849369049072,
+      0.11779338866472244,
+      0.0344085693359375,
+      1.0186978578567505,
+      -0.41394564509391785,
+      -0.12473371624946594,
+      0.6311686635017395,
+      0.7228333950042725,
+      -0.2787134051322937,
+      0.5285121202468872,
+      -0.03491240739822388,
+      0.3525366187095642,
+      -0.03397238999605179,
+      0.7974162697792053,
+      0.28190749883651733,
+      0.2850054204463959,
+      -0.15723763406276703,
+      0.6581640243530273,
+      0.2494734525680542,
+      -0.04654627665877342,
+      0.1768258810043335,
+      -0.12257616221904755,
+      0.7570214867591858,
+      0.33665135502815247,
+      -0.07465715706348419,
+      0.9464712142944336,
+      -0.4897124171257019,
+      -0.012139789760112762,
+      0.5041916966438293,
+      1.246010661125183
+     ],
+     "trajectory_sha256": "38decc382548c584871bcd17b27c5a7d0b4d8b53e3553267f35ad63a9b0ffb89",
+     "end_hash": "9f803f37df0b721c653019c45793b3c8b0dfd95a2eac7b5bd6b032efd6b5be56",
+     "start_hash": "e7a4e8e7e0fa7ff0abcfe98adf61010c0b8763643eb38068ba47cbae50694fa5",
+     "reconstruction_deviation": 0.0
+    },
+    "refit": {
+     "end": {
+      "hand_shape_error": 1.7562064176334782,
+      "finger_position_error_cm": 0.909945376902831,
+      "finger_orientation_error_deg": 21.874700132079784
+     },
+     "closed_share": 0.544323045956909,
+     "action_source": "planner",
+     "predictor_sha256": "f68754c866483a9e30318bf0697b08c450dd5ad53dd4d996861d67a6a4aeef3c",
+     "hand_stage": {
+      "stopped_by": "completed",
+      "predicted_first": [
+       2.3946941263979564
+      ],
+      "predicted_selected": [
+       2.094933277317485
+      ],
+      "selected_iteration": [
+       3
+      ]
+     },
+     "hand_joint_goal": [
+      -0.2432345747947693,
+      0.6818569898605347,
+      0.024794261902570724,
+      0.1396375149488449,
+      -0.012818440794944763,
+      0.8100736141204834,
+      0.2480902224779129,
+      0.09561171382665634,
+      0.04133535921573639,
+      0.6006970405578613,
+      0.14460986852645874,
+      0.13513246178627014,
+      0.14718882739543915,
+      -0.05276385694742203,
+      0.5769801139831543,
+      0.18498855829238892,
+      0.10160374641418457,
+      1.0858930349349976,
+      -0.4811408221721649,
+      -0.12473371624946594,
+      0.6311686635017395,
+      0.7900285720825195,
+      -0.21151821315288544,
+      0.5285121202468872,
+      0.032282765954732895,
+      0.4197317957878113,
+      0.03322278708219528,
+      0.7974162697792053,
+      0.3491026759147644,
+      0.35220059752464294,
+      -0.09004244953393936,
+      0.6581640243530273,
+      0.31666862964630127,
+      0.02064889669418335,
+      0.24402105808258057,
+      -0.055380985140800476,
+      0.7570214867591858,
+      0.40384653210639954,
+      -0.007461979985237122,
+      1.0136663913726807,
+      -0.5531577467918396,
+      -0.012139789760112762,
+      0.5713868737220764,
+      1.246010661125183
+     ],
+     "trajectory_sha256": "bf12fd95d04bf8824094f2ead649aacdb9b7476515e6829326a77de3dcd7f3d9",
+     "end_hash": "a3dcfab4e7c21901b7d97da2a9a8e2e3a6c5dce7c7ffb44e05cda8acab59fe2c",
+     "start_hash": "e7a4e8e7e0fa7ff0abcfe98adf61010c0b8763643eb38068ba47cbae50694fa5",
+     "reconstruction_deviation": 0.0
+    },
+    "admitted_forced": {
+     "end": {
+      "hand_shape_error": 1.7538364164108673,
+      "finger_position_error_cm": 0.9064201906643159,
+      "finger_orientation_error_deg": 21.814481703207388
+     },
+     "closed_share": 0.5449379821781608,
+     "action_source": "planner",
+     "predictor_sha256": "fe953beb426f2d403b58761d27b69ba2e3ec61e39b78d777fc2bea2b0fcece9e",
+     "hand_stage": {
+      "stopped_by": "completed",
+      "predicted_first": [
+       2.868117919010021
+      ],
+      "predicted_selected": [
+       2.6142661162725855
+      ],
+      "selected_iteration": [
+       18
+      ]
+     },
+     "hand_joint_goal": [
+      -0.2432345747947693,
+      0.6818569898605347,
+      0.024794261902570724,
+      0.07244234532117844,
+      -0.012818440794944763,
+      0.8100736141204834,
+      0.2480902224779129,
+      0.09561171382665634,
+      0.04133535921573639,
+      0.6006970405578613,
+      0.14460986852645874,
+      0.13513246178627014,
+      0.14718882739543915,
+      -0.05276385694742203,
+      0.5769801139831543,
+      0.18498855829238892,
+      0.10160374641418457,
+      1.0858930349349976,
+      -0.4811408221721649,
+      -0.12473371624946594,
+      0.6311686635017395,
+      0.7900285720825195,
+      -0.21151821315288544,
+      0.5285121202468872,
+      0.032282765954732895,
+      0.4197317957878113,
+      0.03322278708219528,
+      0.7974162697792053,
+      0.3491026759147644,
+      0.35220059752464294,
+      -0.09004244953393936,
+      0.6581640243530273,
+      0.31666862964630127,
+      0.02064889669418335,
+      0.24402105808258057,
+      -0.055380985140800476,
+      0.7570214867591858,
+      0.40384653210639954,
+      -0.007461979985237122,
+      0.9460524916648865,
+      -0.5531577467918396,
+      0.05505538359284401,
+      0.5713868737220764,
+      1.246010661125183
+     ],
+     "trajectory_sha256": "584c90dc0ff333a2deefb38ab98d398a196c5d3f265066fc294961a60a15ad3c",
+     "end_hash": "374e79a2609eff35c7727c55127ae0afadae8feeabfef26feb7bfd686ec7e32b",
+     "start_hash": "e7a4e8e7e0fa7ff0abcfe98adf61010c0b8763643eb38068ba47cbae50694fa5",
+     "reconstruction_deviation": 0.0
+    }
+   },
+   "difference": -0.10478166211686357,
+   "difference_admitted_forced": -0.10715166333947446,
+   "difference_refit_minus_admitted_forced": 0.0023700012226108846,
+   "body": 5,
+   "start": 2,
+   "offset": 20,
+   "sim_time": 24091.500000414522
+  },
+  {
+   "where": "body 5 decision 3 (model step offset 30)",
+   "goal": {
+    "ring_index": [
+     66
+    ],
+    "horizon_ms": 250.0
+   },
+   "at_decision": {
+    "hand_shape_error": 2.628270990943091,
+    "finger_position_error_cm": 1.1217236053644968,
+    "finger_orientation_error_deg": 26.614785517826665
+   },
+   "detached_check": null,
+   "sensory_goals_identical": true,
+   "arms": {
+    "without": {
+     "end": {
+      "hand_shape_error": 2.4434683736714558,
+      "finger_position_error_cm": 0.9142267902227971,
+      "finger_orientation_error_deg": 26.46984707229936
+     },
+     "closed_share": 0.07031338013030508,
+     "action_source": "planner",
+     "predictor_sha256": null,
+     "hand_stage": null,
+     "hand_joint_goal": [
+      -0.06486278772354126,
+      -0.06803435832262039,
+      0.5274079442024231,
+      0.7568416595458984,
+      0.04778401553630829,
+      0.29666048288345337,
+      0.1805122196674347,
+      0.3214438557624817,
+      -0.20510730147361755,
+      0.3024466037750244,
+      0.1285114288330078,
+      0.18698537349700928,
+      0.2530953586101532,
+      0.08200222253799438,
+      0.161081925034523,
+      0.49666744470596313,
+      0.12073128670454025,
+      0.5181412696838379,
+      -0.8153806924819946,
+      -0.11769057810306549,
+      0.9628838300704956,
+      0.9217489361763,
+      -0.2417149543762207,
+      0.45788052678108215,
+      0.2638939619064331,
+      0.4282754063606262,
+      -0.21834616363048553,
+      0.7595185041427612,
+      0.5313500761985779,
+      0.1611977517604828,
+      -0.22504006326198578,
+      0.7803401350975037,
+      0.48382896184921265,
+      0.29635486006736755,
+      0.13791756331920624,
+      -0.15505598485469818,
+      0.7547783255577087,
+      0.3674270510673523,
+      0.06478306651115417,
+      0.8896648287773132,
+      -0.7543575763702393,
+      -0.07881487905979156,
+      0.6408566832542419,
+      0.9889912605285645
+     ],
+     "trajectory_sha256": "7fd7a39c09a8a8dd9c754643aa5ff1d115923bdc3284b1a3017236f32a0a8ed2",
+     "end_hash": "e7d2cb9f9f23ed5a075cc5d20c280fb4d311eb0b0d66101d55ab62afd4653a7b",
+     "start_hash": "0d1d8dbfc28e468c6267903f06448453a99d1ecff0c5174956920760615c89e7",
+     "reconstruction_deviation": 0.0
+    },
+    "refit": {
+     "end": {
+      "hand_shape_error": 1.8126236968914762,
+      "finger_position_error_cm": 0.8420903426338929,
+      "finger_orientation_error_deg": 22.42324174398735
+     },
+     "closed_share": 0.310336071456216,
+     "action_source": "planner",
+     "predictor_sha256": "f68754c866483a9e30318bf0697b08c450dd5ad53dd4d996861d67a6a4aeef3c",
+     "hand_stage": {
+      "stopped_by": "completed",
+      "predicted_first": [
+       2.641088786601712
+      ],
+      "predicted_selected": [
+       2.3544257275610723
+      ],
+      "selected_iteration": [
+       2
+      ]
+     },
+     "hand_joint_goal": [
+      -0.06486278772354126,
+      -0.0008391886949539185,
+      0.5946031212806702,
+      0.8240368366241455,
+      -0.01858615130186081,
+      0.36242178082466125,
+      0.24749010801315308,
+      0.38829851150512695,
+      -0.13791212439537048,
+      0.3114018440246582,
+      0.19456259906291962,
+      0.2530354857444763,
+      0.2530953586101532,
+      0.08200222253799438,
+      0.22212669253349304,
+      0.5628550052642822,
+      0.1869007647037506,
+      0.585336446762085,
+      -0.7482986450195312,
+      -0.0508192740380764,
+      0.8956886529922485,
+      0.8545538187026978,
+      -0.17451977729797363,
+      0.45788052678108215,
+      0.3299742341041565,
+      0.4943591356277466,
+      -0.15115098655223846,
+      0.7595185041427612,
+      0.597482442855835,
+      0.2273312509059906,
+      -0.1578448861837387,
+      0.7803401350975037,
+      0.5499785542488098,
+      0.362504243850708,
+      0.20480382442474365,
+      -0.08807964622974396,
+      0.7547783255577087,
+      0.43373093008995056,
+      0.13106942176818848,
+      0.8224696516990662,
+      -0.6871623992919922,
+      -0.011619700118899345,
+      0.6645376682281494,
+      0.9889912605285645
+     ],
+     "trajectory_sha256": "cf069bd68fd01066e8cc0f06632563898c1eddf6229aed361e05d0c0cc0fe1cb",
+     "end_hash": "b4d065175fa1972e4a59d0c767ac1ae18015d4c74951b0c9e9c8084e4e2c4b11",
+     "start_hash": "0d1d8dbfc28e468c6267903f06448453a99d1ecff0c5174956920760615c89e7",
+     "reconstruction_deviation": 0.0
+    },
+    "admitted_forced": {
+     "end": {
+      "hand_shape_error": 1.8729576570128508,
+      "finger_position_error_cm": 0.7841064674557929,
+      "finger_orientation_error_deg": 22.83273474954434
+     },
+     "closed_share": 0.2873803106806785,
+     "action_source": "planner",
+     "predictor_sha256": "fe953beb426f2d403b58761d27b69ba2e3ec61e39b78d777fc2bea2b0fcece9e",
+     "hand_stage": {
+      "stopped_by": "completed",
+      "predicted_first": [
+       2.7966305425598192
+      ],
+      "predicted_selected": [
+       2.50058691001844
+      ],
+      "selected_iteration": [
+       2
+      ]
+     },
+     "hand_joint_goal": [
+      -0.06486278772354126,
+      -0.006175607442855835,
+      0.5946031212806702,
+      0.6896464824676514,
+      -0.018354147672653198,
+      0.23483353853225708,
+      0.1805122196674347,
+      0.3214438557624817,
+      -0.20510730147361755,
+      0.3114020526409149,
+      0.19453255832195282,
+      0.25300583243370056,
+      0.2530953586101532,
+      0.08200222253799438,
+      0.22212663292884827,
+      0.5628253817558289,
+      0.18686361610889435,
+      0.585336446762085,
+      -0.7481855154037476,
+      -0.11769057810306549,
+      0.9169167280197144,
+      0.8699088096618652,
+      -0.1750192940235138,
+      0.5163325667381287,
+      0.32988816499710083,
+      0.4942713677883148,
+      -0.15115098655223846,
+      0.8179705739021301,
+      0.5974089503288269,
+      0.22725921869277954,
+      -0.22504006326198578,
+      0.8387922048568726,
+      0.549864649772644,
+      0.36239176988601685,
+      0.20408955216407776,
+      -0.09460635483264923,
+      0.8132303357124329,
+      0.43342915177345276,
+      0.1307879239320755,
+      0.8234264254570007,
+      -0.7543575763702393,
+      -0.012136479839682579,
+      0.6645376682281494,
+      0.9889912605285645
+     ],
+     "trajectory_sha256": "88c5d7eb2886f9bcf1458c4e1a81dbead9e789053f96b06d8614e2ce9c3fd0d3",
+     "end_hash": "541aeaeca1a9d47ace7bebae46d601095f36eb6239b9fd570b5bf213dcffcd59",
+     "start_hash": "0d1d8dbfc28e468c6267903f06448453a99d1ecff0c5174956920760615c89e7",
+     "reconstruction_deviation": 0.0
+    }
+   },
+   "difference": -0.6308446767799796,
+   "difference_admitted_forced": -0.570510716658605,
+   "difference_refit_minus_admitted_forced": -0.0603339601213746,
+   "body": 5,
+   "start": 3,
+   "offset": 30,
+   "sim_time": 24092.000000414624
+  },
+  {
+   "where": "body 6 decision 0 (model step offset 0)",
+   "goal": {
+    "ring_index": [
+     56
+    ],
+    "horizon_ms": 250.0
+   },
+   "at_decision": {
+    "hand_shape_error": 4.362688489344245,
+    "finger_position_error_cm": 1.5850976334611726,
+    "finger_orientation_error_deg": 36.093190979047165
+   },
+   "detached_check": {
+    "arm": "refit",
+    "end_state_equal": true
+   },
+   "sensory_goals_identical": true,
+   "arms": {
+    "without": {
+     "end": {
+      "hand_shape_error": 3.326266001275009,
+      "finger_position_error_cm": 1.2705614090079311,
+      "finger_orientation_error_deg": 30.853747902218533
+     },
+     "closed_share": 0.23756509102143575,
+     "action_source": "planner",
+     "predictor_sha256": null,
+     "hand_stage": null,
+     "hand_joint_goal": [
+      -0.11759299039840698,
+      0.5066547989845276,
+      0.10584012418985367,
+      0.23976190388202667,
+      -0.11067663133144379,
+      0.9212658405303955,
+      0.13497456908226013,
+      0.025618188083171844,
+      -0.19788648188114166,
+      0.756941556930542,
+      0.20385226607322693,
+      0.23372165858745575,
+      0.28495246171951294,
+      -0.2173914611339569,
+      0.7384330034255981,
+      0.05728092044591904,
+      0.10733985155820847,
+      1.2014127969741821,
+      -0.7055632472038269,
+      -0.07320038974285126,
+      0.5999422073364258,
+      0.9982231855392456,
+      -0.01893647015094757,
+      -0.016738418489694595,
+      0.47567880153656006,
+      0.9358243346214294,
+      0.00604364275932312,
+      0.38655126094818115,
+      0.5600707530975342,
+      1.2376168966293335,
+      -0.03636816143989563,
+      0.21724388003349304,
+      0.5007178783416748,
+      0.7204603552818298,
+      0.08176319301128387,
+      0.04061409831047058,
+      0.19425912201404572,
+      0.24832361936569214,
+      0.22761505842208862,
+      1.2863950729370117,
+      -0.6783328056335449,
+      -0.07051626592874527,
+      0.937057375907898,
+      1.054133653640747
+     ],
+     "trajectory_sha256": "f5c0aa9ed2ac3c19c226247167b4f41103352d0f94ae7708e7f2c313306c8400",
+     "end_hash": "8498da8c1e6282cd0edb3cc88c89e9d6737f11c31630a2fde3f8d2da02e228c0",
+     "start_hash": "1977168314a6251ba8f08ee1e2dc82a2adcb8cc6cda594fcad3eaa3f3fad43c7",
+     "reconstruction_deviation": 0.0
+    },
+    "refit": {
+     "end": {
+      "hand_shape_error": 3.1170505688236965,
+      "finger_position_error_cm": 1.2320671354355734,
+      "finger_orientation_error_deg": 29.69147926459011
+     },
+     "closed_share": 0.28552071126851875,
+     "action_source": "planner",
+     "predictor_sha256": "f68754c866483a9e30318bf0697b08c450dd5ad53dd4d996861d67a6a4aeef3c",
+     "hand_stage": {
+      "stopped_by": "completed",
+      "predicted_first": [
+       3.480441020149306
+      ],
+      "predicted_selected": [
+       2.9329380050809872
+      ],
+      "selected_iteration": [
+       3
+      ]
+     },
+     "hand_joint_goal": [
+      -0.11759299039840698,
+      0.5738499164581299,
+      0.17303529381752014,
+      0.30695706605911255,
+      -0.11067663133144379,
+      0.8540707230567932,
+      0.202169731259346,
+      0.09281335771083832,
+      -0.19788648188114166,
+      0.8241367340087891,
+      0.271047443151474,
+      0.3009168207645416,
+      0.35214763879776,
+      -0.2173914611339569,
+      0.8056281805038452,
+      0.12447609007358551,
+      0.17453502118587494,
+      1.134217619895935,
+      -0.7055632472038269,
+      -0.07320038974285126,
+      0.6671373248100281,
+      0.9982231855392456,
+      -0.01893647015094757,
+      -0.016738418489694595,
+      0.408483624458313,
+      0.8686291575431824,
+      0.00604364275932312,
+      0.38655126094818115,
+      0.6272659301757812,
+      1.2493969202041626,
+      -0.03636816143989563,
+      0.21724388003349304,
+      0.5679130554199219,
+      0.7876555323600769,
+      0.14895837008953094,
+      0.04061409831047058,
+      0.19425912201404572,
+      0.3155187964439392,
+      0.2948102355003357,
+      1.2191998958587646,
+      -0.6111376285552979,
+      -0.07051626592874527,
+      0.8698621988296509,
+      0.9869384765625
+     ],
+     "trajectory_sha256": "9cf89a908656e60caff548adf9f9982e1c7d0aa21b062eb49d4ed4c0f55c264a",
+     "end_hash": "c18ebb73f6448495cdb132d8fb0a053e0d777fa074a8a0f80a3751f5a44d1dd5",
+     "start_hash": "1977168314a6251ba8f08ee1e2dc82a2adcb8cc6cda594fcad3eaa3f3fad43c7",
+     "reconstruction_deviation": 0.0
+    },
+    "admitted_forced": {
+     "end": {
+      "hand_shape_error": 3.173309183153694,
+      "finger_position_error_cm": 1.2385804353957979,
+      "finger_orientation_error_deg": 30.104418274784962
+     },
+     "closed_share": 0.27262531099701004,
+     "action_source": "planner",
+     "predictor_sha256": "fe953beb426f2d403b58761d27b69ba2e3ec61e39b78d777fc2bea2b0fcece9e",
+     "hand_stage": {
+      "stopped_by": "completed",
+      "predicted_first": [
+       3.1944458406727536
+      ],
+      "predicted_selected": [
+       2.935359456841442
+      ],
+      "selected_iteration": [
+       5
+      ]
+     },
+     "hand_joint_goal": [
+      -0.11759299039840698,
+      0.5738499164581299,
+      0.17303529381752014,
+      0.1725667268037796,
+      -0.11067663133144379,
+      0.8540707230567932,
+      0.202169731259346,
+      0.09281335771083832,
+      -0.19788648188114166,
+      0.8241367340087891,
+      0.271047443151474,
+      0.3009168207645416,
+      0.35214763879776,
+      -0.2173914611339569,
+      0.8056281805038452,
+      0.12447609007358551,
+      0.17453502118587494,
+      1.2014127969741821,
+      -0.7055632472038269,
+      -0.07320038974285126,
+      0.6671373248100281,
+      0.9982231855392456,
+      -0.01893647015094757,
+      -0.016738418489694595,
+      0.408483624458313,
+      0.8686291575431824,
+      0.00604364275932312,
+      0.38655126094818115,
+      0.6272659301757812,
+      1.2493969202041626,
+      -0.03636816143989563,
+      0.21724388003349304,
+      0.5679130554199219,
+      0.7876555323600769,
+      0.14895837008953094,
+      0.04061409831047058,
+      0.19425912201404572,
+      0.3155187964439392,
+      0.2948102355003357,
+      1.2191998958587646,
+      -0.6783328056335449,
+      -0.07051626592874527,
+      1.004252552986145,
+      1.054133653640747
+     ],
+     "trajectory_sha256": "3ec687c61f8fb27ce97f150a1c33149d3f7a976fc183c265e9b383433c34a060",
+     "end_hash": "dbf1fc32eed271654fbd081166cf706d86833ae8c09302ba4c9e2ec34306b335",
+     "start_hash": "1977168314a6251ba8f08ee1e2dc82a2adcb8cc6cda594fcad3eaa3f3fad43c7",
+     "reconstruction_deviation": 0.0
+    }
+   },
+   "difference": -0.20921543245131247,
+   "difference_admitted_forced": -0.15295681812131479,
+   "difference_refit_minus_admitted_forced": -0.05625861432999768,
+   "body": 6,
+   "start": 0,
+   "offset": 0,
+   "sim_time": 24090.50000041432
+  },
+  {
+   "where": "body 6 decision 1 (model step offset 10)",
+   "goal": {
+    "ring_index": [
+     46
+    ],
+    "horizon_ms": 250.0
+   },
+   "at_decision": {
+    "hand_shape_error": 5.530006614918708,
+    "finger_position_error_cm": 1.5850698409325106,
+    "finger_orientation_error_deg": 37.111533027396554
+   },
+   "detached_check": null,
+   "sensory_goals_identical": true,
+   "arms": {
+    "without": {
+     "end": {
+      "hand_shape_error": 9.104572654128866,
+      "finger_position_error_cm": 1.950410623483475,
+      "finger_orientation_error_deg": 49.53202284142944
+     },
+     "closed_share": -0.6463945322536842,
+     "action_source": "planner",
+     "predictor_sha256": null,
+     "hand_stage": null,
+     "hand_joint_goal": [
+      0.0331171452999115,
+      0.16214478015899658,
+      0.18094655871391296,
+      1.1590089797973633,
+      0.2768021523952484,
+      0.12891018390655518,
+      0.4765402674674988,
+      0.8939027786254883,
+      0.09250038862228394,
+      0.4863954782485962,
+      0.5468829274177551,
+      0.5375675559043884,
+      0.30358582735061646,
+      -0.12740007042884827,
+      0.5530692338943481,
+      0.220879465341568,
+      0.481915682554245,
+      0.36912453174591064,
+      -0.27318838238716125,
+      0.09649790823459625,
+      0.05795915424823761,
+      0.5499319434165955,
+      -0.021428093314170837,
+      0.31385886669158936,
+      0.6482893228530884,
+      1.2282918691635132,
+      0.03633072227239609,
+      0.27762141823768616,
+      0.8573194742202759,
+      1.0219745635986328,
+      -0.00011613965034484863,
+      0.5198303461074829,
+      0.9581592082977295,
+      0.4414181113243103,
+      0.3514007329940796,
+      0.06541896611452103,
+      0.6317765116691589,
+      0.9656890630722046,
+      0.5460830926895142,
+      0.6253119707107544,
+      -0.3749537169933319,
+      -0.07924008369445801,
+      0.24345113337039948,
+      0.30234208703041077
+     ],
+     "trajectory_sha256": "70e4a60ca8179c48309972771ea7cc4c4291beb8ea10274e4099443874687ec6",
+     "end_hash": "823f2410f6b8c4e708e84e9a21df66ffc3b6da1dbf4ca2c1950a2ed96a7f9d36",
+     "start_hash": "aa62a29a352341e8876ac63a59925441de247746f6deecf732d9aa21cf591926",
+     "reconstruction_deviation": 0.0
+    },
+    "refit": {
+     "end": {
+      "hand_shape_error": 7.069325253851117,
+      "finger_position_error_cm": 1.8130397595291328,
+      "finger_orientation_error_deg": 43.32116414694222
+     },
+     "closed_share": -0.2783574679241205,
+     "action_source": "planner",
+     "predictor_sha256": "f68754c866483a9e30318bf0697b08c450dd5ad53dd4d996861d67a6a4aeef3c",
+     "hand_stage": {
+      "stopped_by": "completed",
+      "predicted_first": [
+       7.4540199544865
+      ],
+      "predicted_selected": [
+       6.3578204790261585
+      ],
+      "selected_iteration": [
+       3
+      ]
+     },
+     "hand_joint_goal": [
+      -0.03407803177833557,
+      0.22933995723724365,
+      0.24814173579216003,
+      1.1590089797973633,
+      0.20960697531700134,
+      0.19610536098480225,
+      0.5437354445457458,
+      0.9610979557037354,
+      0.025305207818746567,
+      0.5535906553268433,
+      0.6140781044960022,
+      0.6047627329826355,
+      0.30358582735061646,
+      -0.15084877610206604,
+      0.6202644109725952,
+      0.28807464241981506,
+      0.5491108894348145,
+      0.4363197088241577,
+      -0.3403835594654083,
+      0.029302729293704033,
+      0.12515433132648468,
+      0.6171271204948425,
+      -0.08862327039241791,
+      0.25260886549949646,
+      0.5810941457748413,
+      1.1610966920852661,
+      -0.030864454805850983,
+      0.21637141704559326,
+      0.7901242971420288,
+      0.9547793865203857,
+      -0.06731131672859192,
+      0.45858034491539,
+      0.8909640312194824,
+      0.37422293424606323,
+      0.3514007329940796,
+      -0.0017762109637260437,
+      0.6930265426635742,
+      1.0328842401504517,
+      0.6132782697677612,
+      0.6925071477890015,
+      -0.442148894071579,
+      -0.07924008369445801,
+      0.31064629554748535,
+      0.3695372939109802
+     ],
+     "trajectory_sha256": "d01c25a28407ef3e82e9db1cb9e7b394bbab74b2e36b81eb4aba68ecf4f28c75",
+     "end_hash": "eaa867214253b254199cb3c7e199e92bdd78c4ecf7286a8041db4cbd2ae7d9e9",
+     "start_hash": "aa62a29a352341e8876ac63a59925441de247746f6deecf732d9aa21cf591926",
+     "reconstruction_deviation": 0.0
+    },
+    "admitted_forced": {
+     "end": {
+      "hand_shape_error": 7.234776450068496,
+      "finger_position_error_cm": 1.8050916041263783,
+      "finger_orientation_error_deg": 43.47094156491842
+     },
+     "closed_share": -0.3082762741279015,
+     "action_source": "planner",
+     "predictor_sha256": "fe953beb426f2d403b58761d27b69ba2e3ec61e39b78d777fc2bea2b0fcece9e",
+     "hand_stage": {
+      "stopped_by": "completed",
+      "predicted_first": [
+       7.717709877567012
+      ],
+      "predicted_selected": [
+       7.020759218844907
+      ],
+      "selected_iteration": [
+       14
+      ]
+     },
+     "hand_joint_goal": [
+      -0.03407803177833557,
+      0.22933995723724365,
+      0.24814173579216003,
+      1.0918138027191162,
+      0.20960697531700134,
+      0.19610536098480225,
+      0.5437354445457458,
+      0.9610979557037354,
+      0.025305207818746567,
+      0.5535906553268433,
+      0.6140781044960022,
+      0.6047627329826355,
+      0.30358582735061646,
+      -0.15084877610206604,
+      0.6202644109725952,
+      0.28807464241981506,
+      0.5491108894348145,
+      0.4363197088241577,
+      -0.3403835594654083,
+      0.029302729293704033,
+      0.05795915424823761,
+      0.6171271204948425,
+      -0.08862327039241791,
+      0.3192502558231354,
+      0.7154844999313354,
+      1.2282918691635132,
+      -0.030864454805850983,
+      0.21637141704559326,
+      0.7901242971420288,
+      0.9547793865203857,
+      -0.06731131672859192,
+      0.45858034491539,
+      0.8909640312194824,
+      0.37422293424606323,
+      0.3514007329940796,
+      -0.0017762109637260437,
+      0.6930265426635742,
+      1.0328842401504517,
+      0.6132782697677612,
+      0.6925071477890015,
+      -0.442148894071579,
+      -0.07924008369445801,
+      0.31064629554748535,
+      0.3695372939109802
+     ],
+     "trajectory_sha256": "a3f33b2f164292edd7a6f3c6698357c5cf8ebdbe4ab82301a3514a6a62c150a2",
+     "end_hash": "cc1d40b52870d318bc97cdc888c67ac070e81ac69ccf72bc654ef1028ca9b4a7",
+     "start_hash": "aa62a29a352341e8876ac63a59925441de247746f6deecf732d9aa21cf591926",
+     "reconstruction_deviation": 0.0
+    }
+   },
+   "difference": -2.0352474002777488,
+   "difference_admitted_forced": -1.8697962040603695,
+   "difference_refit_minus_admitted_forced": -0.16545119621737925,
+   "body": 6,
+   "start": 1,
+   "offset": 10,
+   "sim_time": 24091.00000041442
+  },
+  {
+   "where": "body 6 decision 2 (model step offset 20)",
+   "goal": {
+    "ring_index": [
+     36
+    ],
+    "horizon_ms": 250.0
+   },
+   "at_decision": {
+    "hand_shape_error": 2.9030920900859343,
+    "finger_position_error_cm": 1.336083327699794,
+    "finger_orientation_error_deg": 29.120504813416677
+   },
+   "detached_check": null,
+   "sensory_goals_identical": true,
+   "arms": {
+    "without": {
+     "end": {
+      "hand_shape_error": 1.880814627306488,
+      "finger_position_error_cm": 1.243953580527236,
+      "finger_orientation_error_deg": 21.54186076587289
+     },
+     "closed_share": 0.3521340112738848,
+     "action_source": "planner",
+     "predictor_sha256": null,
+     "hand_stage": null,
+     "hand_joint_goal": [
+      -0.33349257707595825,
+      0.4471997320652008,
+      0.0989399179816246,
+      0.6550204157829285,
+      -0.20756544172763824,
+      0.7005413770675659,
+      0.4226689040660858,
+      0.297476202249527,
+      -0.10417728126049042,
+      0.7573412656784058,
+      0.28070199489593506,
+      0.753103494644165,
+      0.20186161994934082,
+      -0.1565527617931366,
+      0.63170325756073,
+      0.10182753950357437,
+      0.45247364044189453,
+      1.1937382221221924,
+      -0.6196514368057251,
+      -0.07782987505197525,
+      1.008548378944397,
+      0.9728335738182068,
+      -0.24411922693252563,
+      0.10922694951295853,
+      0.5993252396583557,
+      0.7655625343322754,
+      -0.007473275065422058,
+      0.314477801322937,
+      0.24406877160072327,
+      0.7584483623504639,
+      -0.36276835203170776,
+      0.45273491740226746,
+      0.06582724303007126,
+      0.3163597881793976,
+      0.2202155888080597,
+      -0.30080118775367737,
+      0.5218069553375244,
+      0.12626954913139343,
+      0.5323819518089294,
+      1.6110270023345947,
+      -0.8981561660766602,
+      0.05629975348711014,
+      0.9583573341369629,
+      0.9975143671035767
+     ],
+     "trajectory_sha256": "2b8e34dcec1448a0fd42bdafb2073cc493ac34312d11559260b25d7d48156aef",
+     "end_hash": "74a0869b036670aabb1e355213f93972ee81edc8fe8ad8a304a4dfb813f0db59",
+     "start_hash": "d48da67a59f2da3fa980c45936903d413e4ef0ed6f9b0c67f5a0def075e020b6",
+     "reconstruction_deviation": 0.0
+    },
+    "refit": {
+     "end": {
+      "hand_shape_error": 1.5676290868524987,
+      "finger_position_error_cm": 1.1605360264007474,
+      "finger_orientation_error_deg": 19.648379932377512
+     },
+     "closed_share": 0.4600139994849094,
+     "action_source": "planner",
+     "predictor_sha256": "f68754c866483a9e30318bf0697b08c450dd5ad53dd4d996861d67a6a4aeef3c",
+     "hand_stage": {
+      "stopped_by": "completed",
+      "predicted_first": [
+       2.1504871496261413
+      ],
+      "predicted_selected": [
+       1.6648751713235637
+      ],
+      "selected_iteration": [
+       9
+      ]
+     },
+     "hand_joint_goal": [
+      -0.33349257707595825,
+      0.5143948793411255,
+      0.16613508760929108,
+      0.7222155928611755,
+      -0.20756544172763824,
+      0.767736554145813,
+      0.4898640811443329,
+      0.36467137932777405,
+      -0.10417728126049042,
+      0.8245364427566528,
+      0.34789717197418213,
+      0.8202986717224121,
+      0.2690567970275879,
+      -0.1565527617931366,
+      0.698898434638977,
+      0.16902270913124084,
+      0.5196688175201416,
+      1.1265430450439453,
+      -0.552456259727478,
+      -0.01063469797372818,
+      0.9413532614707947,
+      0.9056384563446045,
+      -0.24411922693252563,
+      0.042031772434711456,
+      0.5993252396583557,
+      0.7655625343322754,
+      -0.007473275065422058,
+      0.24728262424468994,
+      0.24406877160072327,
+      0.6912531852722168,
+      -0.2955731749534607,
+      0.3855397403240204,
+      0.06582724303007126,
+      0.3163597881793976,
+      0.28741076588630676,
+      -0.282784640789032,
+      0.45461180806159973,
+      0.12626954913139343,
+      0.4651867747306824,
+      1.5438318252563477,
+      -0.8309609889984131,
+      -0.010895421728491783,
+      0.8911621570587158,
+      0.9303192496299744
+     ],
+     "trajectory_sha256": "905b32f7da10306361539ed04686e6d1691606a65012f42a9cbb1e677b243c0a",
+     "end_hash": "71b420bae57041c05cb0b22ef9a653f4d0441a09d15c8ff4a0e75332de8e6aa4",
+     "start_hash": "d48da67a59f2da3fa980c45936903d413e4ef0ed6f9b0c67f5a0def075e020b6",
+     "reconstruction_deviation": 0.0
+    },
+    "admitted_forced": {
+     "end": {
+      "hand_shape_error": 1.5783805014337986,
+      "finger_position_error_cm": 1.1751193928344108,
+      "finger_orientation_error_deg": 19.746453121589596
+     },
+     "closed_share": 0.4563105638901461,
+     "action_source": "planner",
+     "predictor_sha256": "fe953beb426f2d403b58761d27b69ba2e3ec61e39b78d777fc2bea2b0fcece9e",
+     "hand_stage": {
+      "stopped_by": "completed",
+      "predicted_first": [
+       1.9831646597010315
+      ],
+      "predicted_selected": [
+       1.6921043631409933
+      ],
+      "selected_iteration": [
+       10
+      ]
+     },
+     "hand_joint_goal": [
+      -0.33349257707595825,
+      0.5143948793411255,
+      0.16613508760929108,
+      0.5878252387046814,
+      -0.20756544172763824,
+      0.7130340337753296,
+      0.4226689040660858,
+      0.297476202249527,
+      -0.10417728126049042,
+      0.8245364427566528,
+      0.34789717197418213,
+      0.8202986717224121,
+      0.2690567970275879,
+      -0.1565527617931366,
+      0.698898434638977,
+      0.16902270913124084,
+      0.5196688175201416,
+      1.1265430450439453,
+      -0.552456259727478,
+      -0.01063469797372818,
+      0.9413532614707947,
+      0.9056384563446045,
+      -0.24411922693252563,
+      0.042031772434711456,
+      0.5993252396583557,
+      0.7655625343322754,
+      -0.007473275065422058,
+      0.24728262424468994,
+      0.24406877160072327,
+      0.6912531852722168,
+      -0.36276835203170776,
+      0.3855397403240204,
+      0.06582724303007126,
+      0.3163597881793976,
+      0.28741076588630676,
+      -0.30080118775367737,
+      0.45461180806159973,
+      0.12626954913139343,
+      0.4651867747306824,
+      1.5438318252563477,
+      -0.8309609889984131,
+      -0.010895421728491783,
+      0.8911621570587158,
+      0.9303192496299744
+     ],
+     "trajectory_sha256": "b55395744d13dc222ce74a495279131f284a6a510343796642bd84f408add24c",
+     "end_hash": "7a2ca5a55517efc5788b0a3dcbd80eaa10a8e26e6e1836dde33ec841e04829d2",
+     "start_hash": "d48da67a59f2da3fa980c45936903d413e4ef0ed6f9b0c67f5a0def075e020b6",
+     "reconstruction_deviation": 0.0
+    }
+   },
+   "difference": -0.3131855404539894,
+   "difference_admitted_forced": -0.3024341258726895,
+   "difference_refit_minus_admitted_forced": -0.010751414581299912,
+   "body": 6,
+   "start": 2,
+   "offset": 20,
+   "sim_time": 24091.500000414522
+  },
+  {
+   "where": "body 6 decision 3 (model step offset 30)",
+   "goal": {
+    "ring_index": [
+     26
+    ],
+    "horizon_ms": 250.0
+   },
+   "at_decision": {
+    "hand_shape_error": 2.056448390250763,
+    "finger_position_error_cm": 1.426924337502976,
+    "finger_orientation_error_deg": 21.46353532362111
+   },
+   "detached_check": null,
+   "sensory_goals_identical": true,
+   "arms": {
+    "without": {
+     "end": {
+      "hand_shape_error": 3.7722257024704904,
+      "finger_position_error_cm": 1.6248400369218068,
+      "finger_orientation_error_deg": 27.603227681457078
+     },
+     "closed_share": -0.8343400789214583,
+     "action_source": "planner",
+     "predictor_sha256": null,
+     "hand_stage": null,
+     "hand_joint_goal": [
+      -0.0025345534086227417,
+      0.06358971446752548,
+      0.7649322152137756,
+      1.3043880462646484,
+      0.00915711373090744,
+      0.09619872272014618,
+      0.21053481101989746,
+      0.7136157155036926,
+      0.045034341514110565,
+      0.30654969811439514,
+      0.6910065412521362,
+      1.0396368503570557,
+      0.06159696355462074,
+      -0.06606525927782059,
+      0.2290409356355667,
+      0.5475420951843262,
+      0.9795518517494202,
+      0.8932642936706543,
+      -0.3789847791194916,
+      -0.023844189941883087,
+      0.5073543787002563,
+      0.760131299495697,
+      -0.1698649525642395,
+      0.631585419178009,
+      0.26100438833236694,
+      0.7208724617958069,
+      -0.182048499584198,
+      0.634895384311676,
+      0.6751748323440552,
+      0.2205602526664734,
+      -0.12210164219141006,
+      0.93968266248703,
+      0.4000629484653473,
+      0.03430134803056717,
+      0.2247115820646286,
+      -0.09143802523612976,
+      1.0170018672943115,
+      0.29259371757507324,
+      0.16592177748680115,
+      1.0547897815704346,
+      -0.7040615081787109,
+      0.05276288092136383,
+      0.057801540940999985,
+      0.9475278854370117
+     ],
+     "trajectory_sha256": "b49231fa05e15f1e16d6cd352865605e8f5656fe45973fa70d6244b4f50ca3df",
+     "end_hash": "1b51848492c8a72dd55a78c013ec817e1c3a64804b6cf7f6540aefc61c668943",
+     "start_hash": "ef238eb9855f3aceadc3aac65dd400ffb0bdd294b47341968b5ea3f3a5d6b5af",
+     "reconstruction_deviation": 0.0
+    },
+    "refit": {
+     "end": {
+      "hand_shape_error": 3.0545673282387784,
+      "finger_position_error_cm": 1.5665122288337145,
+      "finger_orientation_error_deg": 23.19125935829802
+     },
+     "closed_share": -0.48536055790162824,
+     "action_source": "planner",
+     "predictor_sha256": "f68754c866483a9e30318bf0697b08c450dd5ad53dd4d996861d67a6a4aeef3c",
+     "hand_stage": {
+      "stopped_by": "completed",
+      "predicted_first": [
+       2.711438202295686
+      ],
+      "predicted_selected": [
+       2.314994516145728
+      ],
+      "selected_iteration": [
+       20
+      ]
+     },
+     "hand_joint_goal": [
+      -0.0025345534086227417,
+      0.13078489899635315,
+      0.8321273922920227,
+      1.3043880462646484,
+      -0.05803805589675903,
+      0.16339389979839325,
+      0.27772998809814453,
+      0.7808108329772949,
+      -0.022160835564136505,
+      0.3737449049949646,
+      0.7582017183303833,
+      1.1068319082260132,
+      0.12879213690757751,
+      0.0011299103498458862,
+      0.296236127614975,
+      0.6147372722625732,
+      0.9795518517494202,
+      0.9604594707489014,
+      -0.44617995619773865,
+      -0.05885966867208481,
+      0.5745494961738586,
+      0.8273264765739441,
+      -0.1698649525642395,
+      0.6987805962562561,
+      0.328199565410614,
+      0.6536772847175598,
+      -0.182048499584198,
+      0.7020905613899231,
+      0.7423700094223022,
+      0.28775542974472046,
+      -0.12210164219141006,
+      0.8724875450134277,
+      0.4000629484653473,
+      0.03430134803056717,
+      0.29190677404403687,
+      -0.09143802523612976,
+      0.9498066902160645,
+      0.3597888946533203,
+      0.23311695456504822,
+      1.1219849586486816,
+      -0.7040615081787109,
+      -0.01443229615688324,
+      0.12499672174453735,
+      0.9475278854370117
+     ],
+     "trajectory_sha256": "ef7208f3a648634d1bbbc4bb1370ee75d0f907ac3ef1ae184473af244161c712",
+     "end_hash": "42134347a28ac99f5349b33ab6250721ebdceee682cba1f2f896d970c3a5e8b6",
+     "start_hash": "ef238eb9855f3aceadc3aac65dd400ffb0bdd294b47341968b5ea3f3a5d6b5af",
+     "reconstruction_deviation": 0.0
+    },
+    "admitted_forced": {
+     "end": {
+      "hand_shape_error": 3.101479796683737,
+      "finger_position_error_cm": 1.5418333318861661,
+      "finger_orientation_error_deg": 23.688899778764945
+     },
+     "closed_share": -0.50817293124752,
+     "action_source": "planner",
+     "predictor_sha256": "fe953beb426f2d403b58761d27b69ba2e3ec61e39b78d777fc2bea2b0fcece9e",
+     "hand_stage": {
+      "stopped_by": "completed",
+      "predicted_first": [
+       2.273478953240692
+      ],
+      "predicted_selected": [
+       2.0685393617378565
+      ],
+      "selected_iteration": [
+       20
+      ]
+     },
+     "hand_joint_goal": [
+      -0.0025345534086227417,
+      0.13078489899635315,
+      0.8321273922920227,
+      1.2371928691864014,
+      -0.05803805589675903,
+      0.16339389979839325,
+      0.27772998809814453,
+      0.7808108329772949,
+      -0.022160835564136505,
+      0.3737449049949646,
+      0.7582017183303833,
+      1.1068319082260132,
+      0.12879213690757751,
+      -0.07665497809648514,
+      0.296236127614975,
+      0.6147372722625732,
+      0.9795518517494202,
+      0.8260691165924072,
+      -0.44617995619773865,
+      -0.023844189941883087,
+      0.5745494961738586,
+      0.8273264765739441,
+      -0.1698649525642395,
+      0.6987805962562561,
+      0.328199565410614,
+      0.788067638874054,
+      -0.182048499584198,
+      0.7020905613899231,
+      0.6751748323440552,
+      0.28775542974472046,
+      -0.12210164219141006,
+      0.8724875450134277,
+      0.4000629484653473,
+      0.03430134803056717,
+      0.29190677404403687,
+      -0.09143802523612976,
+      1.0435309410095215,
+      0.3597888946533203,
+      0.23311695456504822,
+      1.1219849586486816,
+      -0.7040615081787109,
+      0.02726978249847889,
+      0.12499672174453735,
+      0.9475278854370117
+     ],
+     "trajectory_sha256": "5c2e210c3c9d1d4ee4135717a857574fca2188cfb19734d90ca48169aa4e23af",
+     "end_hash": "297bc3cd448a0e7078df4c784a2823ba7dc0318185338b1305abc80ecc955e98",
+     "start_hash": "ef238eb9855f3aceadc3aac65dd400ffb0bdd294b47341968b5ea3f3a5d6b5af",
+     "reconstruction_deviation": 0.0
+    }
+   },
+   "difference": -0.717658374231712,
+   "difference_admitted_forced": -0.6707459057867533,
+   "difference_refit_minus_admitted_forced": -0.046912468444958666,
+   "body": 6,
+   "start": 3,
+   "offset": 30,
+   "sim_time": 24092.000000414624
+  },
+  {
+   "where": "body 7 decision 0 (model step offset 0)",
+   "goal": {
+    "ring_index": [
+     76
+    ],
+    "horizon_ms": 250.0
+   },
+   "at_decision": {
+    "hand_shape_error": 6.810404373337418,
+    "finger_position_error_cm": 1.9636107620012428,
+    "finger_orientation_error_deg": 35.28807462288006
+   },
+   "detached_check": {
+    "arm": "refit",
+    "end_state_equal": true
+   },
+   "sensory_goals_identical": true,
+   "arms": {
+    "without": {
+     "end": {
+      "hand_shape_error": 5.798832221497966,
+      "finger_position_error_cm": 1.5513880962041204,
+      "finger_orientation_error_deg": 29.030935432944602
+     },
+     "closed_share": 0.14853334638978777,
+     "action_source": "planner",
+     "predictor_sha256": null,
+     "hand_stage": null,
+     "hand_joint_goal": [
+      0.016804343089461327,
+      0.3857419788837433,
+      0.5770568251609802,
+      0.6381840705871582,
+      -0.024024292826652527,
+      0.7234217524528503,
+      0.1119975671172142,
+      1.044416069984436,
+      0.23791006207466125,
+      0.5213403105735779,
+      0.23398268222808838,
+      0.664347231388092,
+      0.3586081564426422,
+      0.3451041579246521,
+      0.38460084795951843,
+      0.17573216557502747,
+      0.9223012924194336,
+      0.385644793510437,
+      -0.5734590291976929,
+      -0.06715469062328339,
+      0.2155139446258545,
+      0.9331886768341064,
+      0.017617056146264076,
+      0.49542903900146484,
+      0.518168568611145,
+      1.1289297342300415,
+      0.0031453296542167664,
+      0.8391568064689636,
+      0.5506735444068909,
+      0.7857232093811035,
+      -0.016490943729877472,
+      0.673076868057251,
+      0.7637163996696472,
+      0.9281142354011536,
+      0.32465988397598267,
+      -0.013319440186023712,
+      0.6385200023651123,
+      0.32234203815460205,
+      0.4521197974681854,
+      0.6570771932601929,
+      -0.6526647210121155,
+      0.06161464750766754,
+      0.06129050627350807,
+      0.747124195098877
+     ],
+     "trajectory_sha256": "7e91a40c5e78bfdadc3ea5835993aec15577e0b6024b0be0f35d376ed4f057ce",
+     "end_hash": "380dfc26fb5f073ab40fc9ba92d3a3bb3d20385282efa0cd8bbfbe8efe9d5eee",
+     "start_hash": "df5fa5d770eea71d9c7493a62ced19ec5e1ad7eb70ecea36a1be104776b5c21a",
+     "reconstruction_deviation": 0.0
+    },
+    "refit": {
+     "end": {
+      "hand_shape_error": 5.464011452023429,
+      "finger_position_error_cm": 1.5138004889665782,
+      "finger_orientation_error_deg": 26.59202137671685
+     },
+     "closed_share": 0.19769647255970402,
+     "action_source": "planner",
+     "predictor_sha256": "f68754c866483a9e30318bf0697b08c450dd5ad53dd4d996861d67a6a4aeef3c",
+     "hand_stage": {
+      "stopped_by": "completed",
+      "predicted_first": [
+       5.186232516363887
+      ],
+      "predicted_selected": [
+       4.771102342275294
+      ],
+      "selected_iteration": [
+       5
+      ]
+     },
+     "hand_joint_goal": [
+      -0.05039083585143089,
+      0.3185468018054962,
+      0.5770568251609802,
+      0.5709888935089111,
+      -0.024024292826652527,
+      0.656226634979248,
+      0.1119975671172142,
+      0.977220892906189,
+      0.17071488499641418,
+      0.52808678150177,
+      0.30117785930633545,
+      0.7315424084663391,
+      0.3586081564426422,
+      0.3451041579246521,
+      0.31740570068359375,
+      0.17573216557502747,
+      0.8551061153411865,
+      0.4528399705886841,
+      -0.6406542062759399,
+      4.048040136694908e-05,
+      0.28270912170410156,
+      1.0003838539123535,
+      -0.04957812279462814,
+      0.49542903900146484,
+      0.45097339153289795,
+      1.0617345571517944,
+      -0.06404983252286911,
+      0.8391568064689636,
+      0.6178687214851379,
+      0.8529183864593506,
+      0.050704225897789,
+      0.673076868057251,
+      0.6965212225914001,
+      0.8609190583229065,
+      0.2610565721988678,
+      0.05387573316693306,
+      0.6385200023651123,
+      0.3895372152328491,
+      0.5193150043487549,
+      0.7242723703384399,
+      -0.7198598980903625,
+      0.06161464750766754,
+      0.12848567962646484,
+      0.8143193125724792
+     ],
+     "trajectory_sha256": "d9e05bf2c2f76c6abfa5985dc6919aba63aed3a73cd7d8d80b99c1ebdd6bbd6a",
+     "end_hash": "c73b3239d86ba0221f541ac2796aa672f36f5cd6a9b738f938916959ff0a6ae9",
+     "start_hash": "df5fa5d770eea71d9c7493a62ced19ec5e1ad7eb70ecea36a1be104776b5c21a",
+     "reconstruction_deviation": 0.0
+    },
+    "admitted_forced": {
+     "end": {
+      "hand_shape_error": 5.639056625443836,
+      "finger_position_error_cm": 1.5297157173133247,
+      "finger_orientation_error_deg": 28.245805000141026
+     },
+     "closed_share": 0.171993861697755,
+     "action_source": "planner",
+     "predictor_sha256": "fe953beb426f2d403b58761d27b69ba2e3ec61e39b78d777fc2bea2b0fcece9e",
+     "hand_stage": {
+      "stopped_by": "completed",
+      "predicted_first": [
+       5.410929171364251
+      ],
+      "predicted_selected": [
+       5.289403640004402
+      ],
+      "selected_iteration": [
+       4
+      ]
+     },
+     "hand_joint_goal": [
+      -0.05039083585143089,
+      0.3857419788837433,
+      0.5770568251609802,
+      0.7053792476654053,
+      0.04317088425159454,
+      0.7234217524528503,
+      0.1119975671172142,
+      0.977220892906189,
+      0.23791006207466125,
+      0.5213403105735779,
+      0.30117785930633545,
+      0.7315424084663391,
+      0.3586081564426422,
+      0.3451041579246521,
+      0.38460084795951843,
+      0.17573216557502747,
+      0.8551061153411865,
+      0.4528399705886841,
+      -0.5062639117240906,
+      4.048040136694908e-05,
+      0.28270912170410156,
+      1.0003838539123535,
+      -0.04957812279462814,
+      0.49542903900146484,
+      0.45097339153289795,
+      1.0617345571517944,
+      -0.06404983252286911,
+      0.8391568064689636,
+      0.5506735444068909,
+      0.8529183864593506,
+      0.050704225897789,
+      0.673076868057251,
+      0.6965212225914001,
+      0.8609190583229065,
+      0.2610565721988678,
+      0.05387573316693306,
+      0.6385200023651123,
+      0.3895372152328491,
+      0.5193150043487549,
+      0.5898820161819458,
+      -0.5854695439338684,
+      0.06161464750766754,
+      0.06129050627350807,
+      0.6799290180206299
+     ],
+     "trajectory_sha256": "753e1e2e03f6a2364e98018f7f5f6e6e7c865f0fb646c9c85f701faaab4c7e47",
+     "end_hash": "b3df87c138a57e61dae797853123abf95f586ddac455ddaae56b65ae8d29f7b8",
+     "start_hash": "df5fa5d770eea71d9c7493a62ced19ec5e1ad7eb70ecea36a1be104776b5c21a",
+     "reconstruction_deviation": 0.0
+    }
+   },
+   "difference": -0.3348207694745371,
+   "difference_admitted_forced": -0.1597755960541294,
+   "difference_refit_minus_admitted_forced": -0.1750451734204077,
+   "body": 7,
+   "start": 0,
+   "offset": 0,
+   "sim_time": 24090.50000041432
+  },
+  {
+   "where": "body 7 decision 1 (model step offset 10)",
+   "goal": {
+    "ring_index": [
+     66
+    ],
+    "horizon_ms": 250.0
+   },
+   "at_decision": {
+    "hand_shape_error": 4.725317505112517,
+    "finger_position_error_cm": 1.1514765736761146,
+    "finger_orientation_error_deg": 30.949382976686717
+   },
+   "detached_check": null,
+   "sensory_goals_identical": true,
+   "arms": {
+    "without": {
+     "end": {
+      "hand_shape_error": 2.650493290989645,
+      "finger_position_error_cm": 0.7342982264703466,
+      "finger_orientation_error_deg": 24.579331487981673
+     },
+     "closed_share": 0.43908673054837766,
+     "action_source": "planner",
+     "predictor_sha256": null,
+     "hand_stage": null,
+     "hand_joint_goal": [
+      -0.25234681367874146,
+      0.5567312240600586,
+      0.21995753049850464,
+      0.857515811920166,
+      -0.14989669620990753,
+      0.3464910387992859,
+      -0.010111019015312195,
+      0.858029842376709,
+      -0.1018667072057724,
+      0.3717210590839386,
+      0.0013065934181213379,
+      1.0740647315979004,
+      0.023364698514342308,
+      -0.20637273788452148,
+      0.47109776735305786,
+      0.050960734486579895,
+      0.5983091592788696,
+      0.6231093406677246,
+      -0.5079259872436523,
+      0.024570949375629425,
+      0.10246971249580383,
+      0.5942211151123047,
+      -0.27386435866355896,
+      0.5999072790145874,
+      0.4171430766582489,
+      0.6421712040901184,
+      -0.22924131155014038,
+      0.685500979423523,
+      0.5186846852302551,
+      0.5616515874862671,
+      -0.18007269501686096,
+      0.7153377532958984,
+      0.5481371879577637,
+      0.024868249893188477,
+      0.15258538722991943,
+      -0.1600043773651123,
+      0.827959418296814,
+      0.8052735328674316,
+      0.018701016902923584,
+      0.856350839138031,
+      -0.4600633680820465,
+      -0.10068520903587341,
+      0.21812154352664948,
+      0.7343900799751282
+     ],
+     "trajectory_sha256": "aea32a8645b9b051ac6adea7c1d04e6318d7458ddc35d02e9cdd77c335550eb2",
+     "end_hash": "6b590a961f264222422d9b93650a980778d49a6529076e8a5bb729ac312b4629",
+     "start_hash": "edd43e6958e8c43774699dab44b29eb3cc761824251bf5e8ad7630a70e49c4f7",
+     "reconstruction_deviation": 0.0
+    },
+    "refit": {
+     "end": {
+      "hand_shape_error": 2.0809442429167695,
+      "finger_position_error_cm": 0.6742161173039685,
+      "finger_orientation_error_deg": 21.041622267881866
+     },
+     "closed_share": 0.5596181122929179,
+     "action_source": "planner",
+     "predictor_sha256": "f68754c866483a9e30318bf0697b08c450dd5ad53dd4d996861d67a6a4aeef3c",
+     "hand_stage": {
+      "stopped_by": "completed",
+      "predicted_first": [
+       3.566350288690056
+      ],
+      "predicted_selected": [
+       3.0728661610407735
+      ],
+      "selected_iteration": [
+       20
+      ]
+     },
+     "hand_joint_goal": [
+      -0.2657471001148224,
+      0.4895361065864563,
+      0.21995753049850464,
+      0.790320634841919,
+      -0.2170918583869934,
+      0.2792958617210388,
+      0.05708415433764458,
+      0.925225019454956,
+      -0.16906186938285828,
+      0.43891623616218567,
+      0.06850177049636841,
+      1.1412599086761475,
+      0.023364698514342308,
+      -0.22933229804039001,
+      0.4039025902748108,
+      0.050960734486579895,
+      0.5311139822006226,
+      0.6903045177459717,
+      -0.5751211643218994,
+      0.07547222822904587,
+      0.1696648895740509,
+      0.6614162921905518,
+      -0.2066691815853119,
+      0.5999072790145874,
+      0.48433825373649597,
+      0.7093663811683655,
+      -0.2438792884349823,
+      0.685500979423523,
+      0.5858798623085022,
+      0.6288467645645142,
+      -0.11287751793861389,
+      0.6481426358222961,
+      0.4809419810771942,
+      0.024868249893188477,
+      0.2197805643081665,
+      -0.1827826201915741,
+      0.827959418296814,
+      0.8724687099456787,
+      0.08589619398117065,
+      0.7891556620597839,
+      -0.5272585153579712,
+      -0.10068520903587341,
+      0.28531670570373535,
+      0.8015852570533752
+     ],
+     "trajectory_sha256": "a0677f495946ec0efc9372afd88fa95bf214ed0b473d998278a17882a2f32aac",
+     "end_hash": "7724da6eb119a6ab14acd7983d8e297a30ade41267ede8ad0de91d3683168d1c",
+     "start_hash": "edd43e6958e8c43774699dab44b29eb3cc761824251bf5e8ad7630a70e49c4f7",
+     "reconstruction_deviation": 0.0
+    },
+    "admitted_forced": {
+     "end": {
+      "hand_shape_error": 2.0976982690573966,
+      "finger_position_error_cm": 0.6719255722035911,
+      "finger_orientation_error_deg": 21.10649326706779
+     },
+     "closed_share": 0.5560725249069909,
+     "action_source": "planner",
+     "predictor_sha256": "fe953beb426f2d403b58761d27b69ba2e3ec61e39b78d777fc2bea2b0fcece9e",
+     "hand_stage": {
+      "stopped_by": "completed",
+      "predicted_first": [
+       4.0498088802295635
+      ],
+      "predicted_selected": [
+       3.6254841886183233
+      ],
+      "selected_iteration": [
+       11
+      ]
+     },
+     "hand_joint_goal": [
+      -0.3195419907569885,
+      0.4895361065864563,
+      0.21995753049850464,
+      0.9247109889984131,
+      -0.2170918583869934,
+      0.2792958617210388,
+      -0.010111019015312195,
+      0.7908346652984619,
+      -0.16906186938285828,
+      0.43891623616218567,
+      0.06850177049636841,
+      1.1412599086761475,
+      0.023364698514342308,
+      -0.22933229804039001,
+      0.4039025902748108,
+      0.050960734486579895,
+      0.5311139822006226,
+      0.6903045177459717,
+      -0.5751211643218994,
+      0.07547222822904587,
+      0.1696648895740509,
+      0.6614162921905518,
+      -0.2066691815853119,
+      0.5999072790145874,
+      0.48433825373649597,
+      0.7093663811683655,
+      -0.2149050533771515,
+      0.685500979423523,
+      0.5858798623085022,
+      0.6288467645645142,
+      -0.11287751793861389,
+      0.6481426358222961,
+      0.4809419810771942,
+      0.024868249893188477,
+      0.2197805643081665,
+      -0.22719955444335938,
+      0.827959418296814,
+      0.8724687099456787,
+      0.08589619398117065,
+      0.7891556620597839,
+      -0.5272585153579712,
+      -0.03349003940820694,
+      0.28531670570373535,
+      0.8015852570533752
+     ],
+     "trajectory_sha256": "a878080ab9bc48b629867962ef9beeb93be204598671d576472cbb55c1a4a39e",
+     "end_hash": "62cb4b8dc668bf5b731fe28610ba84822fbe8713127b4e9b4d8be6ccce00e367",
+     "start_hash": "edd43e6958e8c43774699dab44b29eb3cc761824251bf5e8ad7630a70e49c4f7",
+     "reconstruction_deviation": 0.0
+    }
+   },
+   "difference": -0.5695490480728753,
+   "difference_admitted_forced": -0.5527950219322482,
+   "difference_refit_minus_admitted_forced": -0.016754026140627154,
+   "body": 7,
+   "start": 1,
+   "offset": 10,
+   "sim_time": 24091.00000041442
+  },
+  {
+   "where": "body 7 decision 2 (model step offset 20)",
+   "goal": {
+    "ring_index": [
+     56
+    ],
+    "horizon_ms": 250.0
+   },
+   "at_decision": {
+    "hand_shape_error": 3.1077272123083666,
+    "finger_position_error_cm": 0.9959093235731185,
+    "finger_orientation_error_deg": 25.265927794339397
+   },
+   "detached_check": null,
+   "sensory_goals_identical": true,
+   "arms": {
+    "without": {
+     "end": {
+      "hand_shape_error": 6.398129676628873,
+      "finger_position_error_cm": 1.751108545026073,
+      "finger_orientation_error_deg": 41.49630609427
+     },
+     "closed_share": -1.0587809802895962,
+     "action_source": "planner",
+     "predictor_sha256": null,
+     "hand_stage": null,
+     "hand_joint_goal": [
+      -0.03455834090709686,
+      0.7301164865493774,
+      0.1355498731136322,
+      0.9640712141990662,
+      0.1301080733537674,
+      0.491613507270813,
+      0.8645777702331543,
+      0.8510599136352539,
+      0.12612424790859222,
+      0.4908183217048645,
+      0.5613601207733154,
+      1.1176525354385376,
+      0.31466275453567505,
+      -0.0670914575457573,
+      0.5393869876861572,
+      0.3632875084877014,
+      0.7777755856513977,
+      0.7534661293029785,
+      -0.3102037012577057,
+      -0.0400918647646904,
+      0.13779933750629425,
+      0.45833930373191833,
+      0.22617419064044952,
+      0.9921238422393799,
+      1.1150929927825928,
+      0.19415581226348877,
+      0.28790417313575745,
+      0.8776547312736511,
+      0.696263313293457,
+      0.16183984279632568,
+      0.148321270942688,
+      0.923127293586731,
+      0.6994127035140991,
+      -0.06911639869213104,
+      0.0418463833630085,
+      0.3735460042953491,
+      0.9529472589492798,
+      0.8177327513694763,
+      -0.06825660169124603,
+      0.7183282375335693,
+      -0.22138631343841553,
+      0.08822085708379745,
+      0.13924451172351837,
+      0.49389761686325073
+     ],
+     "trajectory_sha256": "0b65e51e09e869aaf097ec9117b19bd445b15e006dc0444d5ccac7e242575d06",
+     "end_hash": "198e921b8bbb86c818a0b000f31420d365525e4986a9c8d4936ce4987da756b1",
+     "start_hash": "6694669bbf6ca6cb16ec022bffa8ac3c7a858faa7d777b11db1fd88dc5393b71",
+     "reconstruction_deviation": 0.0
+    },
+    "refit": {
+     "end": {
+      "hand_shape_error": 5.410269322978933,
+      "finger_position_error_cm": 1.6767809625803747,
+      "finger_orientation_error_deg": 37.24388354841035
+     },
+     "closed_share": -0.7409086941579655,
+     "action_source": "planner",
+     "predictor_sha256": "f68754c866483a9e30318bf0697b08c450dd5ad53dd4d996861d67a6a4aeef3c",
+     "hand_stage": {
+      "stopped_by": "completed",
+      "predicted_first": [
+       3.255911643441981
+      ],
+      "predicted_selected": [
+       2.5655774597309113
+      ],
+      "selected_iteration": [
+       3
+      ]
+     },
+     "hand_joint_goal": [
+      -0.10175351798534393,
+      0.7301164865493774,
+      0.1355498731136322,
+      0.8968760371208191,
+      0.06291289627552032,
+      0.491613507270813,
+      0.7973825931549072,
+      0.7838647365570068,
+      0.05892906337976456,
+      0.4908183217048645,
+      0.49416494369506836,
+      1.0504573583602905,
+      0.24746757745742798,
+      -0.13428662717342377,
+      0.5393869876861572,
+      0.29609230160713196,
+      0.7105804681777954,
+      0.8206613063812256,
+      -0.37739887833595276,
+      0.02710331231355667,
+      0.20499451458454132,
+      0.5255345106124878,
+      0.15897901356220245,
+      0.9921238422393799,
+      1.1822881698608398,
+      0.26135098934173584,
+      0.22070899605751038,
+      0.8776547312736511,
+      0.754718005657196,
+      0.22903501987457275,
+      0.148321270942688,
+      0.8559321165084839,
+      0.632217526435852,
+      -0.06911639869213104,
+      0.10904155671596527,
+      0.30635082721710205,
+      0.9529472589492798,
+      0.8591018319129944,
+      -0.0010614320635795593,
+      0.7855234146118164,
+      -0.2885814905166626,
+      0.021025681868195534,
+      0.20643968880176544,
+      0.5610927939414978
+     ],
+     "trajectory_sha256": "d673165969f304e8d9a1f62f65db6f4ad6d73114e970e4bb07cfd41b2faf5043",
+     "end_hash": "3aab42021302339d5d422c3fa5ff194e981a27ee27fb8943849b27165dd0b535",
+     "start_hash": "6694669bbf6ca6cb16ec022bffa8ac3c7a858faa7d777b11db1fd88dc5393b71",
+     "reconstruction_deviation": 0.0
+    },
+    "admitted_forced": {
+     "end": {
+      "hand_shape_error": 5.426848949658471,
+      "finger_position_error_cm": 1.6779511555561821,
+      "finger_orientation_error_deg": 37.45185398241386
+     },
+     "closed_share": -0.7462436626242688,
+     "action_source": "planner",
+     "predictor_sha256": "fe953beb426f2d403b58761d27b69ba2e3ec61e39b78d777fc2bea2b0fcece9e",
+     "hand_stage": {
+      "stopped_by": "completed",
+      "predicted_first": [
+       2.754152346449452
+      ],
+      "predicted_selected": [
+       2.370945605765327
+      ],
+      "selected_iteration": [
+       3
+      ]
+     },
+     "hand_joint_goal": [
+      -0.10175351798534393,
+      0.7301164865493774,
+      0.1355498731136322,
+      0.9640712141990662,
+      0.06291289627552032,
+      0.491613507270813,
+      0.7973825931549072,
+      0.7838647365570068,
+      0.05892906337976456,
+      0.4908183217048645,
+      0.49416494369506836,
+      1.0504573583602905,
+      0.24746757745742798,
+      -0.13428662717342377,
+      0.5393869876861572,
+      0.29609230160713196,
+      0.7105804681777954,
+      0.8206613063812256,
+      -0.37739887833595276,
+      0.02710331231355667,
+      0.20499451458454132,
+      0.5255345106124878,
+      0.22617419064044952,
+      0.9921238422393799,
+      1.1822881698608398,
+      0.26135098934173584,
+      0.22070899605751038,
+      0.8776547312736511,
+      0.754718005657196,
+      0.22903501987457275,
+      0.148321270942688,
+      0.8559321165084839,
+      0.632217526435852,
+      -0.06911639869213104,
+      0.10904155671596527,
+      0.30635082721710205,
+      0.9529472589492798,
+      0.8591018319129944,
+      -0.0010614320635795593,
+      0.7855234146118164,
+      -0.2885814905166626,
+      0.021025681868195534,
+      0.20643968880176544,
+      0.5610927939414978
+     ],
+     "trajectory_sha256": "3df7a5626fb9714ffd5cc4484aad0c7ddf2d859960291ce02a9c9ccff829070f",
+     "end_hash": "a93983dcbc342ba43399279cf75a2313a2b66e0a277bfdbb0c0fc3fb60594e5e",
+     "start_hash": "6694669bbf6ca6cb16ec022bffa8ac3c7a858faa7d777b11db1fd88dc5393b71",
+     "reconstruction_deviation": 0.0
+    }
+   },
+   "difference": -0.98786035364994,
+   "difference_admitted_forced": -0.9712807269704022,
+   "difference_refit_minus_admitted_forced": -0.016579626679537718,
+   "body": 7,
+   "start": 2,
+   "offset": 20,
+   "sim_time": 24091.500000414522
+  },
+  {
+   "where": "body 7 decision 3 (model step offset 30)",
+   "goal": {
+    "ring_index": [
+     46
+    ],
+    "horizon_ms": 250.0
+   },
+   "at_decision": {
+    "hand_shape_error": 11.423821156271101,
+    "finger_position_error_cm": 2.25264017919118,
+    "finger_orientation_error_deg": 51.84445900550594
+   },
+   "detached_check": null,
+   "sensory_goals_identical": true,
+   "arms": {
+    "without": {
+     "end": {
+      "hand_shape_error": 7.183185873754671,
+      "finger_position_error_cm": 1.9404581748093814,
+      "finger_orientation_error_deg": 41.939285089193035
+     },
+     "closed_share": 0.37120988017118384,
+     "action_source": "planner",
+     "predictor_sha256": null,
+     "hand_stage": null,
+     "hand_joint_goal": [
+      -0.08539582043886185,
+      0.17284905910491943,
+      0.6327110528945923,
+      0.9883803129196167,
+      -0.0297558456659317,
+      0.1782795786857605,
+      0.20650190114974976,
+      0.963080883026123,
+      -0.23803746700286865,
+      0.305844783782959,
+      0.782961368560791,
+      1.2957684993743896,
+      0.321368008852005,
+      -0.04377134144306183,
+      0.29271039366722107,
+      0.6852099299430847,
+      1.0718640089035034,
+      1.0121811628341675,
+      -0.8398222327232361,
+      -0.021020300686359406,
+      0.6977560520172119,
+      0.8220870494842529,
+      -0.27693086862564087,
+      0.5646908283233643,
+      0.5817042589187622,
+      0.03811175376176834,
+      -0.3041616976261139,
+      0.7065677642822266,
+      0.45089274644851685,
+      0.1203203871846199,
+      -0.11372529715299606,
+      0.6238926649093628,
+      0.3161959946155548,
+      -0.047403596341609955,
+      0.3387431800365448,
+      -0.10901298373937607,
+      0.7268966436386108,
+      0.43112996220588684,
+      -0.0322001650929451,
+      0.8498283624649048,
+      -0.6674195528030396,
+      0.010243486613035202,
+      0.8341600298881531,
+      0.9807672500610352
+     ],
+     "trajectory_sha256": "76ff6cb5698ab1d70ee68ebf64eb6a1b544ce7032f1f805114ba36bab3407537",
+     "end_hash": "dbfa1e7b10eeea51552072c298017c13285d55a827c708c0b70b10cda753687a",
+     "start_hash": "21a605c988a281e3a274fa92c85a4f1c89fd2d0379b16af15d1a1a9383479647",
+     "reconstruction_deviation": 0.0
+    },
+    "refit": {
+     "end": {
+      "hand_shape_error": 6.814626847382057,
+      "finger_position_error_cm": 1.9104329979607158,
+      "finger_orientation_error_deg": 40.06611105567113
+     },
+     "closed_share": 0.40347220477614265,
+     "action_source": "planner",
+     "predictor_sha256": "f68754c866483a9e30318bf0697b08c450dd5ad53dd4d996861d67a6a4aeef3c",
+     "hand_stage": {
+      "stopped_by": "completed",
+      "predicted_first": [
+       4.977428162356424
+      ],
+      "predicted_selected": [
+       3.886219573205793
+      ],
+      "selected_iteration": [
+       5
+      ]
+     },
+     "hand_joint_goal": [
+      -0.08539582043886185,
+      0.10565388202667236,
+      0.5655158758163452,
+      0.9211851358413696,
+      -0.0613657683134079,
+      0.11108440160751343,
+      0.13930672407150269,
+      0.8958857655525208,
+      -0.23803746700286865,
+      0.2386496365070343,
+      0.715766191482544,
+      1.2285733222961426,
+      0.2541728615760803,
+      -0.04377134144306183,
+      0.35990557074546814,
+      0.6180147528648376,
+      1.0046688318252563,
+      1.0121811628341675,
+      -0.8398222327232361,
+      -0.021020300686359406,
+      0.6977560520172119,
+      0.8220870494842529,
+      -0.27693086862564087,
+      0.6318860054016113,
+      0.6488994359970093,
+      0.10530692338943481,
+      -0.3041616976261139,
+      0.7737629413604736,
+      0.5180879235267639,
+      0.18751555681228638,
+      -0.11372529715299606,
+      0.6149038672447205,
+      0.3833911716938019,
+      0.019791578873991966,
+      0.3387431800365448,
+      -0.10901298373937607,
+      0.6815850734710693,
+      0.43112996220588684,
+      -0.0322001650929451,
+      0.7826331853866577,
+      -0.6002243757247925,
+      -0.05695168673992157,
+      0.7669649124145508,
+      0.9135720729827881
+     ],
+     "trajectory_sha256": "c676bdcea602290e4b32681a9b5e72046d80eb1d5d18db158e07ae5579a1741b",
+     "end_hash": "eff518a6d5576c48d720e462ad34c7e63e2abab2f946743d5186d7d28a05d32a",
+     "start_hash": "21a605c988a281e3a274fa92c85a4f1c89fd2d0379b16af15d1a1a9383479647",
+     "reconstruction_deviation": 0.0
+    },
+    "admitted_forced": {
+     "end": {
+      "hand_shape_error": 6.992892503260039,
+      "finger_position_error_cm": 1.9166478261000122,
+      "finger_orientation_error_deg": 40.91669278546292
+     },
+     "closed_share": 0.387867473798704,
+     "action_source": "planner",
+     "predictor_sha256": "fe953beb426f2d403b58761d27b69ba2e3ec61e39b78d777fc2bea2b0fcece9e",
+     "hand_stage": {
+      "stopped_by": "completed",
+      "predicted_first": [
+       4.737725306876228
+      ],
+      "predicted_selected": [
+       4.000559197225664
+      ],
+      "selected_iteration": [
+       7
+      ]
+     },
+     "hand_joint_goal": [
+      -0.018200643360614777,
+      0.10565388202667236,
+      0.5655158758163452,
+      0.9883803129196167,
+      -0.0297558456659317,
+      0.11108440160751343,
+      0.13930672407150269,
+      0.8958857655525208,
+      -0.23803746700286865,
+      0.2386496365070343,
+      0.715766191482544,
+      1.2285733222961426,
+      0.2541728615760803,
+      -0.04377134144306183,
+      0.35990557074546814,
+      0.6180147528648376,
+      1.0046688318252563,
+      1.0121811628341675,
+      -0.8398222327232361,
+      -0.021020300686359406,
+      0.6977560520172119,
+      0.8220870494842529,
+      -0.27693086862564087,
+      0.6318008899688721,
+      0.6488994359970093,
+      0.10530692338943481,
+      -0.27635860443115234,
+      0.7736778259277344,
+      0.5180879235267639,
+      0.18751555681228638,
+      -0.11372529715299606,
+      0.60210120677948,
+      0.3833911716938019,
+      0.019791578873991966,
+      0.3387431800365448,
+      -0.10901298373937607,
+      0.681642472743988,
+      0.43112996220588684,
+      -0.0322001650929451,
+      0.7826331853866577,
+      -0.6674195528030396,
+      -0.05695168673992157,
+      0.8341600298881531,
+      1.0479624271392822
+     ],
+     "trajectory_sha256": "9b48f7885b7078445404c6327e7735e53b0d41e252bdb450209d93e1d7b5408b",
+     "end_hash": "9cd89b312abeb8c66d8be96f37e7d349c53fa6d730af85b45ec82b335a926382",
+     "start_hash": "21a605c988a281e3a274fa92c85a4f1c89fd2d0379b16af15d1a1a9383479647",
+     "reconstruction_deviation": 0.0
+    }
+   },
+   "difference": -0.3685590263726146,
+   "difference_admitted_forced": -0.1902933704946319,
+   "difference_refit_minus_admitted_forced": -0.1782656558779827,
+   "body": 7,
+   "start": 3,
+   "offset": 30,
+   "sim_time": 24092.000000414624
+  }
+ ],
+ "verdict": "pass",
+ "verdict_reason": "P1 and P2 hold",
+ "passed": true,
+ "readings": [
+  {
+   "name": "hand shape error at the end of the hold, refit hand stage minus the same decision without it",
+   "value": -0.5847,
+   "unit": "hand shape error (mean over decisions)",
+   "meaning": "the finger handles' squared distance from the remembered pose in the wrist frame, positions in units of 1.8 cm and turns in units of 11 degrees; below 0 = the hand stage's choice ended nearer the remembered pose; 16 decisions",
+   "baseline": "without 4.3128, refit 3.7281, admitted fit forced 3.78 (end of the hold); at the decision 4.4197",
+   "statistically_clear": "yes",
+   "statistical_basis": "exact two-sided sign-flip count over the decisions 2 of 65536, line 3276; body means {'4': -0.4575707446051085, '5': -0.49735805431372754, '6': -0.8188266868536906, '7': -0.5651972993924917}",
+   "gof_material": "GOF threshold not yet defined"
+  },
+  {
+   "name": "share of the start distance to the remembered pose closed in the hold (without)",
+   "value": -0.049,
+   "unit": "share",
+   "meaning": "1 - end error / start error per decision, mean; 0 = as far as at the decision, 1 = arrived, below 0 = farther",
+   "baseline": "none",
+   "statistically_clear": "not judged",
+   "statistical_basis": "",
+   "gof_material": "GOF threshold not yet defined"
+  },
+  {
+   "name": "share of the start distance to the remembered pose closed in the hold (refit)",
+   "value": 0.116,
+   "unit": "share",
+   "meaning": "1 - end error / start error per decision, mean; 0 = as far as at the decision, 1 = arrived, below 0 = farther",
+   "baseline": "none",
+   "statistically_clear": "not judged",
+   "statistical_basis": "",
+   "gof_material": "GOF threshold not yet defined"
+  },
+  {
+   "name": "share of the start distance to the remembered pose closed in the hold (admitted_forced)",
+   "value": 0.1047,
+   "unit": "share",
+   "meaning": "1 - end error / start error per decision, mean; 0 = as far as at the decision, 1 = arrived, below 0 = farther",
+   "baseline": "none",
+   "statistically_clear": "not judged",
+   "statistical_basis": "",
+   "gof_material": "GOF threshold not yet defined"
+  },
+  {
+   "name": "hand shape error at the end of the hold, admitted pose-servo fit forced as the predictor minus the decision without the hand stage (a reading)",
+   "value": -0.5328,
+   "unit": "hand shape error (mean over decisions)",
+   "meaning": "the same quantity with the predictor fit under the pose servo, put in past the meaning check by this harness only",
+   "baseline": "refit minus admitted forced: -0.052",
+   "statistically_clear": "not judged",
+   "statistical_basis": "exact sign-flip 2 of 65536",
+   "gof_material": "GOF threshold not yet defined"
+  }
+ ],
+ "written": "Oct 10, 2026 9:22:44 AM PDT",
+ "weights_unchanged": true,
+ "exact_replay": true,
+ "nonfinger_commands_unchanged": true,
+ "sensory_goals_identical": true,
+ "hand_stage_completed": true,
+ "sha256": "0d3bb2c7ed69ead98d09637f350466490d5a59976f4ec31c9538781d1abeea2a"
+}

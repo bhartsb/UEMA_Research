@@ -1,0 +1,36 @@
+Independent adversarial iteration2 — October27,2026
+Reviewer: sequence_architecture_review. Five-minute bounded design review; no runtime/model changes.
+
+Reviewed candidate: finite utility dt*(C-D-.05E), healthy-band deficits, separately constrained severe-harm probability/CVaR, persistent plant-owned damage proxy,3s lookahead with short feedback, and versioned real-outcome control catalogue.
+
+HIGH FINDING1 — General skill competence is not current retained control.
+
+If C measures probability that the policy can eventually achieve a catalogue outcome, C can already be high before the hand grasps the object. Staying comfortable while merely able to grasp may beat actually grasping. The catalogue therefore does not yet solve the intended usefulness objective.
+
+Concrete revision: each utility-bearing catalogue entry measures LOCAL retained causal control in the current arrangement. Define two distinct bounded sensory outcome changes and the relationship that must remain (for example an observed hand/object contact relationship). The current learned policy must produce both requested changes within a fixed short probe horizon without an intervening re-acquisition stage, while maintaining that relationship and remaining within physical limits. The requests are generic observed outcome variations, not a hard-coded grasp motion. Success probability minus matched hold/shuffled-command success, with a conservative uncertainty bound and fixed catalogue weights, supplies C. Merely knowing how to grasp later does not count as holding control now. General ability competence remains a separately reported learning measure.
+
+For each entry j, define p_j as the lower confidence estimate of actual conditional success of both alternative requested changes while preserving the relationship; b_j is the upper confidence estimate under matched hold/shuffled control. Set c_j=clip(p_j-b_j,0,1). Then C=sum_j fixed_weight_j*c_j, weights sum1. The actual test records—not the actor's own predicted success—supply labels. A context-conditioned readout can estimate these labels online, but its unsupported predictions cannot mint authoritative capacity evidence. Fix entry definitions, deduplication and weights for an evaluation version; adding/splitting remembered entities cannot increase their total weight. The catalogue horizon is an explicit measurement setting, not a compulsory movement duration.
+
+This capacity signal still needs prospective calibration: while planning, estimate whether the future arrangement would support the same local control tests, using actual-context labels and calibrated uncertainty. Actor exploitation of unsupported capacity predictions is checked by real retained-control outcomes. Freeze the reward teacher/semantic version within a policy block. New skill learning can supply new evidence, but evidence refresh is not an automatic positive reward pulse. Recompute neither old actual reward nor old physical success from newly optimistic actor outputs.
+
+HIGH FINDING2 — 'If none feasible, minimize predicted harm' is not a complete emergency contract.
+
+An unreliable model may rank an arbitrarily dangerous candidate as least harmful; a stationary hold may worsen a fall. Define a bounded emergency candidate set from the qualified feedback controller, continuation, release/reduced-drive and existing actuator-limited alternatives. These are generic control alternatives, not a fall/get-up program. Compare conservative physical harm estimates within hard actuator/energy limits; when forecasts themselves are unusable, invoke the existing physically qualified protection path and mark the event as an intervention/failure. Do not claim that an unseen state always has a safe action. Distinguish hard bounds enforceable by the simulator from predictions of body impact that can be wrong.
+
+HIGH FINDING3 — Risk and CVaR require the right predicted quantities and a finite accounting horizon.
+
+An expected damage-cost critic alone cannot calculate conditional value at risk (CVaR), the mean of a worst-cost tail. Use a cost-distribution/quantile head and a severe-violation probability head, taught by actual future cost/events, with stated tail calibration. Rare severe events make empirical calibration weak; uncertainty cannot be interpreted as low risk.
+
+Do not debit every overlapping3s forecast into the risk ledger. Reserve risk for the forecast, but charge the conservative conditional risk allocated to the interval actually executed. Otherwise one possible impact is counted60times. Conversely, do not renew the risk allowance every50ms. The total allowance is attached to an externally defined finite exposure/evaluation horizon, per body; a goal switch, restart or actor-chosen episode end cannot renew it. A chance limit over an indefinitely continuing episode with nonzero hazard is generally unattainable. Say precisely which finite horizon the budget covers and retain cumulative history outside it. Do not average one body's dangerous actions away with seven healthy bodies.
+
+MEDIUM FINDING4 — Damage proxy aggregation and persistence.
+
+Force, impulse and strain may describe the same impact; summing three normalized exceedances may triple-charge it. Define aggregation per tissue/body-part exposure (for example the maximum calibrated exceedance for a single identified event, followed by a stated accumulation law), with separate sustained overload exposure. This is an engineering model until calibrated, not human injury probability. Persistent damage reduces actual available actuator/body function only through a declared plant mapping. Preserve it and its recovery dynamics through checkpoint/restart. An early physical termination records a failure and an absorbing continuation cost or censored outcome convention; it must not erase the remaining loss so that crashing ends the bill.
+
+MEDIUM FINDING5 — Fixed .05 effort weight is acceptable only as declared design setting.
+
+It has not been measured as an optimal biological tradeoff. Show sensitivity across a small declared interval around it using identical saved windows. Confirm useful controlled motion still outranks inactivity while useless repeated motion loses to retained control. Healthy bands and severity scales should have physical meaning and fixed version; running normalizers must not make sustained harm become normal.
+
+OVERALL
+
+The structure is stronger than a single normalized score: continuous deficit occupancy prevents deliberate recovery farming, separate severe harm prevents curiosity buying injury, and retaining state across resets closes an accounting loophole. Fix C's present-control semantics and the risk/emergency contract before calling this a complete candidate. No task-specific reward or programmed motion sequence is needed for these revisions.

@@ -1,0 +1,485 @@
+{
+ "label": "FIXTURE ONLY: disposable processes, records and stand-ins; no learner, torch, model, world, tensor or card. A PASS here qualifies the dispatch seams of QD1 version 6.2 and its wrapper only.",
+ "verdict": "PASS",
+ "checks": [
+  {
+   "check": "cpu_hiding",
+   "verdict": "PASS",
+   "seconds": 6.7,
+   "items": [
+    {
+     "what": "cpu mode hides the card (parent mask '-1')",
+     "ok": true,
+     "exit_code": 0,
+     "device": {
+      "mode": "cpu",
+      "inherited": "-1",
+      "runner_row": "speed_larger_block_qd1_dispatch_seam_check_20261016",
+      "runner_run": "20261016_074025_21284_549b",
+      "child": "-1",
+      "effective": "hidden (no device visible)"
+     },
+     "log": "CVD='-1'\n"
+    },
+    {
+     "what": "cpu mode hides the card (parent mask '7')",
+     "ok": true,
+     "exit_code": 0,
+     "device": {
+      "mode": "cpu",
+      "inherited": "7",
+      "runner_row": "speed_larger_block_qd1_dispatch_seam_check_20261016",
+      "runner_run": "20261016_074025_21284_549b",
+      "child": "-1",
+      "effective": "hidden (no device visible)"
+     },
+     "log": "CVD='-1'\n"
+    },
+    {
+     "what": "cpu mode hides the card (parent mask '')",
+     "ok": true,
+     "exit_code": 0,
+     "device": {
+      "mode": "cpu",
+      "inherited": "",
+      "runner_row": "speed_larger_block_qd1_dispatch_seam_check_20261016",
+      "runner_run": "20261016_074025_21284_549b",
+      "child": "-1",
+      "effective": "hidden (no device visible)"
+     },
+     "log": "CVD='-1'\n"
+    }
+   ]
+  },
+  {
+   "check": "gpu_inherit",
+   "verdict": "PASS",
+   "seconds": 2.5,
+   "items": [
+    {
+     "what": "gpu-inherit passes a restricted mask unchanged",
+     "ok": true,
+     "exit_code": 0,
+     "device": {
+      "mode": "gpu-inherit",
+      "inherited": "7",
+      "runner_row": "speed_larger_block_qd1_dispatch_seam_check_20261016",
+      "runner_run": "20261016_074025_21284_549b",
+      "child": "7",
+      "effective": "restricted to the devices 7"
+     },
+     "log": "CVD='7'\n"
+    },
+    {
+     "what": "gpu-inherit refuses a hidden mask '-1' and starts nothing",
+     "ok": true,
+     "exit_code": 5,
+     "record_state": "refused",
+     "why": "gpu-inherit received a hidden device mask (CUDA_VISIBLE_DEVICES='-1'); it is not replaced, and nothing runs"
+    },
+    {
+     "what": "gpu-inherit refuses a hidden mask '' and starts nothing",
+     "ok": true,
+     "exit_code": 5,
+     "record_state": "refused",
+     "why": "gpu-inherit received a hidden device mask (CUDA_VISIBLE_DEVICES=''); it is not replaced, and nothing runs"
+    },
+    {
+     "what": "gpu-inherit refuses without the runner's mark",
+     "ok": true,
+     "exit_code": 5,
+     "why": "gpu-inherit outside the registered runner: UEMA_TEST_ROW is absent"
+    },
+    {
+     "what": "device_env leaves an unset mask unset and adds none",
+     "ok": true,
+     "device": {
+      "mode": "gpu-inherit",
+      "inherited": "<unset>",
+      "runner_row": "speed_larger_block_qd1_dispatch_seam_check_20261016",
+      "runner_run": null,
+      "child": "<unset>",
+      "effective": "every device the driver exposes (no mask is set)"
+     }
+    },
+    {
+     "what": "device_env's cpu mode replaces any mask with -1",
+     "ok": true,
+     "device": {
+      "mode": "cpu",
+      "inherited": "0",
+      "runner_row": null,
+      "runner_run": null,
+      "child": "-1",
+      "effective": "hidden (no device visible)"
+     }
+    }
+   ]
+  },
+  {
+   "check": "supervision_exit",
+   "verdict": "PASS",
+   "seconds": 8.7,
+   "items": [
+    {
+     "what": "the command's exit code 7 is the wrapper's",
+     "ok": true,
+     "exit_code": 7
+    },
+    {
+     "what": "a command past its 3-s cap is stopped",
+     "ok": true,
+     "exit_code": 3,
+     "stop_reason": "stopped at its cap of 3 s"
+    },
+    {
+     "what": "a left-behind child is ended as an orphan and verified",
+     "ok": true,
+     "exit_code": 0,
+     "orphans_ended": [
+      30304
+     ],
+     "survivors": []
+    }
+   ]
+  },
+  {
+   "check": "admission_refusals",
+   "verdict": "PASS",
+   "seconds": 0.4,
+   "items": [
+    {
+     "what": "a well-formed set with an ended owner is admitted",
+     "ok": true,
+     "problems": []
+    },
+    {
+     "what": "refused: an owner record that is a folder (unreadable)",
+     "ok": true,
+     "problems": [
+      "owner or interval records that are present but unreadable or malformed: [{'file': 'D:\\\\UEMA_scratch\\\\speed_10x\\\\larger_block_checks\\\\qd1_seam1\\\\fixture_only\\\\admission_refusals\\\\case_00\\\\owner\\\\pkg\\\\owner_state.json', 'why': \"unreadable (PermissionError: [Errno 13] Permission denied: 'D:\\\\\\\\UEMA_scratch\\\\\\\\speed_10x\\\\\\\\larger_block_checks\\\\\\\\qd1_seam1\\\\\\\\fixture_only\\\\\\\\admission_refusals\\\\\\\\case_00\\\\\\\\owner\\\\\\\\pkg\\\\\\\\owner_state.json')\"}]"
+     ]
+    },
+    {
+     "what": "refused: an owner record that is not valid JSON",
+     "ok": true,
+     "problems": [
+      "owner or interval records that are present but unreadable or malformed: [{'file': 'D:\\\\UEMA_scratch\\\\speed_10x\\\\larger_block_checks\\\\qd1_seam1\\\\fixture_only\\\\admission_refusals\\\\case_01\\\\owner\\\\pkg\\\\owner_state.json', 'why': 'not valid JSON (Expecting property name enclosed in double quotes: line 1 column 2 (char 1))'}]"
+     ]
+    },
+    {
+     "what": "refused: an owner record that is not an object",
+     "ok": true,
+     "problems": [
+      "owner or interval records that are present but unreadable or malformed: [{'file': 'D:\\\\UEMA_scratch\\\\speed_10x\\\\larger_block_checks\\\\qd1_seam1\\\\fixture_only\\\\admission_refusals\\\\case_02\\\\owner\\\\pkg\\\\owner_state.json', 'why': 'not a JSON object'}]"
+     ]
+    },
+    {
+     "what": "refused: an owner pid that is not a whole number",
+     "ok": true,
+     "problems": [
+      "owner or interval records that are present but unreadable or malformed: [{'file': 'D:\\\\UEMA_scratch\\\\speed_10x\\\\larger_block_checks\\\\qd1_seam1\\\\fixture_only\\\\admission_refusals\\\\case_03\\\\owner\\\\pkg\\\\owner_state.json', 'why': 'its owner pid is not a whole number'}]"
+     ]
+    },
+    {
+     "what": "refused: a trainer that is neither absent nor an object",
+     "ok": true,
+     "problems": [
+      "owner or interval records that are present but unreadable or malformed: [{'file': 'D:\\\\UEMA_scratch\\\\speed_10x\\\\larger_block_checks\\\\qd1_seam1\\\\fixture_only\\\\admission_refusals\\\\case_04\\\\owner\\\\pkg\\\\owner_state.json', 'why': 'its trainer is neither absent nor an object'}]"
+     ]
+    },
+    {
+     "what": "refused: an interval record without a history list",
+     "ok": true,
+     "problems": [
+      "owner or interval records that are present but unreadable or malformed: [{'file': 'D:\\\\UEMA_scratch\\\\speed_10x\\\\larger_block_checks\\\\qd1_seam1\\\\fixture_only\\\\admission_refusals\\\\case_05\\\\interval\\\\pkg\\\\exclusive_interval.json', 'why': 'no history list whose last entry names a state'}]"
+     ]
+    },
+    {
+     "what": "refused: an interval record with an empty history",
+     "ok": true,
+     "problems": [
+      "owner or interval records that are present but unreadable or malformed: [{'file': 'D:\\\\UEMA_scratch\\\\speed_10x\\\\larger_block_checks\\\\qd1_seam1\\\\fixture_only\\\\admission_refusals\\\\case_06\\\\interval\\\\pkg\\\\exclusive_interval.json', 'why': 'no history list whose last entry names a state'}]"
+     ]
+    },
+    {
+     "what": "refused: an interval whose last entry names no state",
+     "ok": true,
+     "problems": [
+      "owner or interval records that are present but unreadable or malformed: [{'file': 'D:\\\\UEMA_scratch\\\\speed_10x\\\\larger_block_checks\\\\qd1_seam1\\\\fixture_only\\\\admission_refusals\\\\case_07\\\\interval\\\\pkg\\\\exclusive_interval.json', 'why': 'no history list whose last entry names a state'}]"
+     ]
+    },
+    {
+     "what": "refused: an interval record that is not valid JSON",
+     "ok": true,
+     "problems": [
+      "owner or interval records that are present but unreadable or malformed: [{'file': 'D:\\\\UEMA_scratch\\\\speed_10x\\\\larger_block_checks\\\\qd1_seam1\\\\fixture_only\\\\admission_refusals\\\\case_08\\\\interval\\\\pkg\\\\exclusive_interval.json', 'why': 'not valid JSON (Expecting value: line 1 column 1 (char 0))'}]"
+     ]
+    },
+    {
+     "what": "refused: an owner whose state reads unknown",
+     "ok": true,
+     "problems": [
+      "an interval owner's state could not be read: [{'file': 'D:\\\\UEMA_scratch\\\\speed_10x\\\\larger_block_checks\\\\qd1_seam1\\\\fixture_only\\\\admission_refusals\\\\case_09\\\\owner\\\\pkg\\\\owner_state.json', 'role': 'owner', 'pid': 4242, 'state': 'unknown'}, {'file': 'D:\\\\UEMA_scratch\\\\speed_10x\\\\larger_block_checks\\\\qd1_seam1\\\\fixture_only\\\\admission_refusals\\\\case_09\\\\owner\\\\pkg\\\\owner_state.json', 'role': 'guard', 'pid': 4243, 'state': 'unknown'}]"
+     ]
+    },
+    {
+     "what": "refused: an uncertain process listing",
+     "ok": true,
+     "problems": [
+      "process identities that could not be read: [{'pid': 9, 'why': 'fixture'}]"
+     ]
+    },
+    {
+     "what": "refused: a free-space reading that fails",
+     "ok": true,
+     "problems": [
+      "the free space of D:\\UEMA_Research\\external\\D\\UEMA_scratch\\speed_10x\\larger_block_checks\\qd1_seam1\\fixture_only\\admission_refusals\\case_11 could not be read (OSError: fixture: the free space cannot be read)"
+     ]
+    },
+    {
+     "what": "refused: 79 GB free",
+     "ok": true,
+     "problems": [
+      "D:\\UEMA_Research\\external\\D\\UEMA_scratch\\speed_10x\\larger_block_checks\\qd1_seam1\\fixture_only\\admission_refusals\\case_12 has 79.0 GB free, under 80.0 GB"
+     ]
+    },
+    {
+     "what": "refused: a live owner",
+     "ok": true,
+     "problems": [
+      "an interval owner is live: [{'file': 'D:\\\\UEMA_scratch\\\\speed_10x\\\\larger_block_checks\\\\qd1_seam1\\\\fixture_only\\\\admission_refusals\\\\case_13\\\\owner\\\\pkg\\\\owner_state.json', 'role': 'owner', 'pid': 4242}, {'file': 'D:\\\\UEMA_scratch\\\\speed_10x\\\\larger_block_checks\\\\qd1_seam1\\\\fixture_only\\\\admission_refusals\\\\case_13\\\\owner\\\\pkg\\\\owner_state.json', 'role': 'guard', 'pid': 4243}]"
+     ]
+    }
+   ]
+  },
+  {
+   "check": "ended_owner",
+   "verdict": "PASS",
+   "seconds": 2.1,
+   "items": [
+    {
+     "what": "a real process that has exited reads ended",
+     "ok": true,
+     "pid": 30300,
+     "state": "ended"
+    },
+    {
+     "what": "an ended owner is admitted through the real _alive",
+     "ok": true,
+     "problems": []
+    },
+    {
+     "what": "NoSuchProcess reads ended",
+     "ok": true
+    },
+    {
+     "what": "AccessDenied reads unknown",
+     "ok": true
+    },
+    {
+     "what": "another creation time reads ended (a reused pid)",
+     "ok": true
+    },
+    {
+     "what": "the same creation time reads alive",
+     "ok": true
+    },
+    {
+     "what": "a pid that is not a number reads unknown",
+     "ok": true
+    }
+   ]
+  },
+  {
+   "check": "process_identities",
+   "verdict": "PASS",
+   "seconds": 0.0,
+   "items": [
+    {
+     "what": "a denied Python command line and a denied name are uncertain; a denied non-Python command line and an ended process are skipped",
+     "ok": true,
+     "uncertain": [
+      {
+       "pid": 10,
+       "name": "python.exe",
+       "why": "a Python process whose command line could not be read (AccessDenied)"
+      },
+      {
+       "pid": 12,
+       "why": "its name could not be read (AccessDenied)"
+      }
+     ]
+    },
+    {
+     "what": "a train_mimo command line is found",
+     "ok": true,
+     "found": [
+      {
+       "pid": 13,
+       "mark": "train_mimo",
+       "cmdline": "python -m mimo_bridge.train_mimo"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "check": "before_next_arm",
+   "verdict": "PASS",
+   "seconds": 0.0,
+   "items": [
+    {
+     "what": "an uncertain identity stops the arms",
+     "ok": true,
+     "why": "process identities that could not be read before the arm: [{'pid': 9, 'why': 'fixture'}]"
+    },
+    {
+     "what": "a forbidden process stops the arms",
+     "ok": true,
+     "why": "processes this check forbids started: [{'pid': 8, 'mark': 'train_mimo', 'cmdline': 'x'}]"
+    },
+    {
+     "what": "an empty listing lets the arm start",
+     "ok": true
+    }
+   ]
+  },
+  {
+   "check": "cleanup_access",
+   "verdict": "PASS",
+   "seconds": 0.5,
+   "items": [
+    {
+     "what": "a tree that cannot be read is not ended",
+     "ok": true,
+     "result": {
+      "ended": false,
+      "note": "not verified: the tree could not be read (AccessDenied: (pid=50))",
+      "pids": [
+       50
+      ],
+      "survivors": [
+       50
+      ],
+      "failures": [
+       "(pid=50)"
+      ]
+     }
+    },
+    {
+     "what": "a refused stop of a process still there is not ended",
+     "ok": true,
+     "result": {
+      "ended": false,
+      "pids": [
+       51
+      ],
+      "survivors": [
+       51
+      ],
+      "states": {
+       "51": "alive"
+      },
+      "failures": [
+       "pid 51: terminate refused (AccessDenied)",
+       "pid 51: kill refused (AccessDenied)"
+      ]
+     }
+    },
+    {
+     "what": "an unreadable creation time is not ended",
+     "ok": true,
+     "result": {
+      "ended": false,
+      "pids": [
+       52
+      ],
+      "survivors": [
+       52
+      ],
+      "states": {
+       "52": "unknown"
+      },
+      "failures": [
+       "pid 52: creation time unreadable (AccessDenied)"
+      ]
+     }
+    },
+    {
+     "what": "a process that does not exist is ended",
+     "ok": true,
+     "result": {
+      "ended": true,
+      "note": "already ended (no such process)",
+      "pids": [],
+      "survivors": [],
+      "failures": []
+     }
+    },
+    {
+     "what": "a real disposable sleeping process is ended and verified",
+     "ok": true,
+     "result": {
+      "ended": true,
+      "pids": [
+       30084,
+       33772
+      ],
+      "survivors": [],
+      "states": {
+       "30084": "ended",
+       "33772": "ended"
+      },
+      "failures": []
+     }
+    }
+   ]
+  },
+  {
+   "check": "disk_floor",
+   "verdict": "PASS",
+   "seconds": 0.0,
+   "items": [
+    {
+     "what": "a save leaving 15 GB is refused",
+     "ok": true,
+     "error": "disk budget: a save of 5.000 GB to D:\\UEMA_Research\\external\\D\\UEMA_scratch\\speed_10x\\larger_block_checks\\qd1_seam1\\fixture_only\\disk_floor would leave 15.000 GB free, under the 16.0 GB operating reserve"
+    },
+    {
+     "what": "a save leaving 17 GB passes",
+     "ok": true,
+     "after": 17.0
+    },
+    {
+     "what": "an unreadable free space is refused",
+     "ok": true,
+     "error": "disk budget: the free space of D:\\UEMA_Research\\external\\D\\UEMA_scratch\\speed_10x\\larger_block_checks\\qd1_seam1\\fixture_only\\disk_floor could not be read (OSError: fixture: unreadable)"
+    },
+    {
+     "what": "the comparison names a disk-budget INVALID in the measurement phase",
+     "ok": true,
+     "entries": 12
+    }
+   ]
+  }
+ ],
+ "seconds": 21.1,
+ "pins": {
+  "D:\\UEMA_Research\\external\\D\\UEMA_scratch\\speed_10x\\larger_block\\card_qualification\\larger_block_card_qualification.py": {
+   "pinned": "b6e1132ebcfb796f56a6971d7b11a2338e445db62a61fe183759de7d5718b986",
+   "read": "b6e1132ebcfb796f56a6971d7b11a2338e445db62a61fe183759de7d5718b986"
+  },
+  "D:\\UEMA_Research\\external\\D\\UEMA_scratch\\speed_10x\\larger_block\\dispatch\\run_supervised_qd1.py": {
+   "pinned": "2c697c4e1ce63d1e534954a08b30d3186faec34dfda0f39d105da0960fdb6cff",
+   "read": "2c697c4e1ce63d1e534954a08b30d3186faec34dfda0f39d105da0960fdb6cff"
+  },
+  "D:\\UEMA_Research\\external\\D\\UEMA_scratch\\arm_stage_paired_20261013\\package\\supervise.py": {
+   "pinned": "edee5b15829794752d4ce126be4e931c04811383c1533011207fed25af47127a",
+   "read": "edee5b15829794752d4ce126be4e931c04811383c1533011207fed25af47127a"
+  }
+ },
+ "torch_imported": false,
+ "python": "3.13.3 (tags/v3.13.3:6280bb5, Apr  8 2025, 14:47:33) [MSC v.1943 64 bit (AMD64)]",
+ "cuda_visible_devices": "-1"
+}

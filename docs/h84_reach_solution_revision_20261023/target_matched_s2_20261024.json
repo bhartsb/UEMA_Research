@@ -1,0 +1,386 @@
+{
+ "what": "Section 7's numbers for the two-run test of the target candidate (the planner's extra command built from T) at model step 496,250: the s2 matched comparison of October 24, 2026, read 250 ms after the decision (model step 496,255)",
+ "built": "Oct 24, 2026 5:08:12 PM PDT",
+ "builder": {
+  "path": "D:/UEMA_Research/external/D/UEMA_scratch/h84/d1_planner_recovery/target_matched_496250_package_s2_reread/make_page_data.py",
+  "sha256": "13a2f03b377526ba6d21215acd03dc294096d396c84f05ef4aa0705ad8e9af4d"
+ },
+ "sources": {
+  "corrected_result": {
+   "path": "D:/UEMA_Research/external/D/UEMA_scratch/h84/d1_planner_recovery/target_matched_496250_package_s2_reread/corrected_reading_result.json",
+   "sha256": "cb292ecc9ab28498c930504909ed0bfc145b27e2fa73aa837350b88bad7af074"
+  },
+  "original_result": {
+   "path": "D:/UEMA_Research/external/D/UEMA_scratch/h84/d1_planner_recovery/attempts/target_matched_496250_s2_pairing_a1/evidence/result.json",
+   "sha256": "d705126b7697aba9f7f5f82e3973b5458f63b92c74191d623c2777e82cb6fb24"
+  },
+  "capture_off": {
+   "path": "D:/UEMA_Research/external/D/UEMA_scratch/h84/d1_planner_recovery/attempts/target_matched_496250_s2_off_a1/evidence/run/TMATCH_off_496250/causal_chain.jsonl",
+   "sha256": "9a14699fe53fbfef49810614a8213e0d505749411efc6314cf312877b2cde4fa"
+  },
+  "capture_on": {
+   "path": "D:/UEMA_Research/external/D/UEMA_scratch/h84/d1_planner_recovery/attempts/target_matched_496250_s2_on_a1/evidence/run/TMATCH_on_496250/causal_chain.jsonl",
+   "sha256": "05ccc232e5e7f4c01390e401afd314c354d89cb359d263b82da5901469d5a04a"
+  },
+  "body5_report": {
+   "path": "D:/UEMA_Research/external/D/UEMA_scratch/h84/d1_planner_recovery/target_matched_496250_package_s2_reread/body5_analysis/body5_report.txt",
+   "sha256": "284a98a9bccaba1419f615556f2759f8bf9d9f875849a08a44253e971224a898"
+  }
+ },
+ "verdicts": {
+  "original": "fail",
+  "corrected": "pass"
+ },
+ "definitions": {
+  "D": "each hand point's distance from the same point in T, cm (the result's hand_distance_cm: each wrist handle's distance from the goal pose's same handle, cm; forecast: the selected forecast pose (forecast_pose__selected_position_cm) against goal_pose x 200; actual: the capture's physical.wrist_gap_cm.end, the pose after the command's 25 physics steps (250 ms))",
+  "score": "the pose-error score (the capture's units: position: mean over the non-gaze handles and 3 axes of (cm / 1.8)^2; rotation: the same of (degrees / 11)^2; sum: position + rotation, as the forecast's selection compares them; 0 = every handle at the goal)",
+  "predicted": "the body head's forecast for the command that run sent",
+  "measured": "the pose after the command's 250 ms",
+  "start": "the capture's start pose, equal in both runs"
+ },
+ "bodies": [
+  {
+   "body": 0,
+   "outcome": "selected",
+   "reason": null,
+   "candidate_forecast_score": 22.48,
+   "ordinary_forecast_score": 28.32,
+   "ordinary_source": "iteration0",
+   "sent_same_command": false,
+   "start": {
+    "D_left": 17.31,
+    "D_right": 12.18,
+    "score": 23.55
+   },
+   "off": {
+    "predicted": {
+     "D_left": 20.09,
+     "D_right": 11.89,
+     "score": 28.32
+    },
+    "measured": {
+     "D_left": 21.55,
+     "D_right": 16.06,
+     "score": 36.18
+    }
+   },
+   "on": {
+    "predicted": {
+     "D_left": 17.58,
+     "D_right": 9.61,
+     "score": 22.48
+    },
+    "measured": {
+     "D_left": 17.78,
+     "D_right": 11.37,
+     "score": 23.14
+    }
+   }
+  },
+  {
+   "body": 1,
+   "outcome": "selected",
+   "reason": null,
+   "candidate_forecast_score": 8.83,
+   "ordinary_forecast_score": 10.06,
+   "ordinary_source": "search",
+   "sent_same_command": false,
+   "start": {
+    "D_left": 5.84,
+    "D_right": 11.53,
+    "score": 10.37
+   },
+   "off": {
+    "predicted": {
+     "D_left": 6.66,
+     "D_right": 10.8,
+     "score": 10.06
+    },
+    "measured": {
+     "D_left": 5.65,
+     "D_right": 11.12,
+     "score": 9.46
+    }
+   },
+   "on": {
+    "predicted": {
+     "D_left": 7.34,
+     "D_right": 8.79,
+     "score": 8.83
+    },
+    "measured": {
+     "D_left": 4.58,
+     "D_right": 7.59,
+     "score": 5.69
+    }
+   }
+  },
+  {
+   "body": 2,
+   "outcome": "rejected",
+   "reason": "its forecast pose error is not below both the iteration-0 composite's forecast and the measured starting pose's error",
+   "candidate_forecast_score": 9.53,
+   "ordinary_forecast_score": 10.65,
+   "ordinary_source": "iteration0",
+   "sent_same_command": true,
+   "start": {
+    "D_left": 0.96,
+    "D_right": 11.53,
+    "score": 8.23
+   },
+   "off": {
+    "predicted": {
+     "D_left": 4.03,
+     "D_right": 13.58,
+     "score": 10.65
+    },
+    "measured": {
+     "D_left": 6.16,
+     "D_right": 12.93,
+     "score": 9.87
+    }
+   },
+   "on": {
+    "predicted": {
+     "D_left": 4.03,
+     "D_right": 13.58,
+     "score": 10.65
+    },
+    "measured": {
+     "D_left": 6.16,
+     "D_right": 12.93,
+     "score": 9.87
+    }
+   }
+  },
+  {
+   "body": 3,
+   "outcome": "rejected",
+   "reason": "its forecast pose error is not strictly below the ordinary result's (an equal forecast keeps the ordinary result)",
+   "candidate_forecast_score": 4.7,
+   "ordinary_forecast_score": 4.56,
+   "ordinary_source": "search",
+   "sent_same_command": true,
+   "start": {
+    "D_left": 1.81,
+    "D_right": 5.72,
+    "score": 7.58
+   },
+   "off": {
+    "predicted": {
+     "D_left": 1.89,
+     "D_right": 1.98,
+     "score": 4.56
+    },
+    "measured": {
+     "D_left": 2.65,
+     "D_right": 2.41,
+     "score": 4.34
+    }
+   },
+   "on": {
+    "predicted": {
+     "D_left": 1.89,
+     "D_right": 1.98,
+     "score": 4.56
+    },
+    "measured": {
+     "D_left": 2.65,
+     "D_right": 2.41,
+     "score": 4.34
+    }
+   }
+  },
+  {
+   "body": 4,
+   "outcome": "rejected",
+   "reason": "its forecast pose error is not below both the iteration-0 composite's forecast and the measured starting pose's error",
+   "candidate_forecast_score": 3.78,
+   "ordinary_forecast_score": 4.43,
+   "ordinary_source": "iteration0",
+   "sent_same_command": true,
+   "start": {
+    "D_left": 5.41,
+    "D_right": 6.87,
+    "score": 3.31
+   },
+   "off": {
+    "predicted": {
+     "D_left": 7.31,
+     "D_right": 7.61,
+     "score": 4.43
+    },
+    "measured": {
+     "D_left": 5.29,
+     "D_right": 6.43,
+     "score": 2.98
+    }
+   },
+   "on": {
+    "predicted": {
+     "D_left": 7.31,
+     "D_right": 7.61,
+     "score": 4.43
+    },
+    "measured": {
+     "D_left": 5.29,
+     "D_right": 6.43,
+     "score": 2.98
+    }
+   }
+  },
+  {
+   "body": 5,
+   "outcome": "selected",
+   "reason": null,
+   "candidate_forecast_score": 21.25,
+   "ordinary_forecast_score": 23.48,
+   "ordinary_source": "search",
+   "sent_same_command": false,
+   "start": {
+    "D_left": 3.3,
+    "D_right": 22.89,
+    "score": 28.47
+   },
+   "off": {
+    "predicted": {
+     "D_left": 3.81,
+     "D_right": 20.03,
+     "score": 23.48
+    },
+    "measured": {
+     "D_left": 3.82,
+     "D_right": 21.34,
+     "score": 28.11
+    }
+   },
+   "on": {
+    "predicted": {
+     "D_left": 1.75,
+     "D_right": 19.08,
+     "score": 21.25
+    },
+    "measured": {
+     "D_left": 7.41,
+     "D_right": 18.7,
+     "score": 22.66
+    }
+   }
+  },
+  {
+   "body": 6,
+   "outcome": "selected",
+   "reason": null,
+   "candidate_forecast_score": 7.81,
+   "ordinary_forecast_score": 9.3,
+   "ordinary_source": "search",
+   "sent_same_command": false,
+   "start": {
+    "D_left": 1.0,
+    "D_right": 11.49,
+    "score": 10.1
+   },
+   "off": {
+    "predicted": {
+     "D_left": 2.63,
+     "D_right": 11.14,
+     "score": 9.3
+    },
+    "measured": {
+     "D_left": 4.53,
+     "D_right": 10.62,
+     "score": 7.34
+    }
+   },
+   "on": {
+    "predicted": {
+     "D_left": 2.12,
+     "D_right": 9.86,
+     "score": 7.81
+    },
+    "measured": {
+     "D_left": 4.13,
+     "D_right": 7.76,
+     "score": 3.89
+    }
+   }
+  },
+  {
+   "body": 7,
+   "outcome": "rejected",
+   "reason": "its forecast pose error is not strictly below the ordinary result's (an equal forecast keeps the ordinary result)",
+   "candidate_forecast_score": 8.54,
+   "ordinary_forecast_score": 7.85,
+   "ordinary_source": "search",
+   "sent_same_command": true,
+   "start": {
+    "D_left": 11.01,
+    "D_right": 6.04,
+    "score": 11.69
+   },
+   "off": {
+    "predicted": {
+     "D_left": 7.33,
+     "D_right": 5.44,
+     "score": 7.85
+    },
+    "measured": {
+     "D_left": 5.47,
+     "D_right": 11.81,
+     "score": 11.71
+    }
+   },
+   "on": {
+    "predicted": {
+     "D_left": 7.33,
+     "D_right": 5.44,
+     "score": 7.85
+    },
+    "measured": {
+     "D_left": 5.47,
+     "D_right": 11.81,
+     "score": 11.71
+    }
+   }
+  }
+ ],
+ "summary": {
+  "selected_bodies": [
+   0,
+   1,
+   5,
+   6
+  ],
+  "rejected_bodies": [
+   2,
+   3,
+   4,
+   7
+  ],
+  "hands_nearer_with_on_than_off": 7,
+  "hands_nearer_than_start_on": 5,
+  "hands_nearer_than_start_off": 4,
+  "hands_farther_than_start_on": [
+   "body 0 left",
+   "body 5 left",
+   "body 6 left"
+  ],
+  "hands_predicted_nearer_than_start_on": 5,
+  "scores_lower_with_on_than_off": 4,
+  "scores_below_start_on": 4,
+  "scores_below_start_off": 3,
+  "hands_within_2cm_at_250ms_any_run": 0,
+  "hands_within_2cm_at_start": [
+   "body 2 left",
+   "body 3 left",
+   "body 6 left"
+  ],
+  "same_command_bodies": [
+   2,
+   3,
+   4,
+   7
+  ],
+  "same_command_largest_hand_difference_cm": 3e-05
+ }
+}

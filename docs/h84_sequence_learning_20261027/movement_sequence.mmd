@@ -1,0 +1,36 @@
+sequenceDiagram
+    autonumber
+    participant A as A/I Senses and MIMo
+    participant B as B Temporal memory
+    participant C as C Intention and memory
+    participant D as D Motor policy
+    participant E as E Imagination / planner
+    participant F as F Forward model
+    participant G as G Wellness / value
+    participant H as H Command sender
+    participant J as J Real experience / learning
+    A->>B: Images, touch, joints, last sent command and time
+    B->>E: Current state with recent history and previous intention
+    Note over B,G: Copy observed state separately for each candidate, real memory stays unchanged
+    loop Each candidate: 60 predicted steps of 50 ms
+        E->>C: Predicted state and previous intention
+        C->>D: Sample keep-current or memory outcome, pass state and chosen goal
+        D->>F: Sample coordinated body, gaze and individual finger request
+        Note over D,F: Apply the SAME command conversion and filter as dispatch
+        F->>B: Predict next sensory/body/contact state, advance temporal memory
+        B->>E: Updated candidate state becomes the start of its next predicted step
+        B->>G: Predicted consequences and updated wellness history
+        G->>E: Predicted interval usefulness, value after horizon at step 60
+    end
+    E->>H: Highest supported future: send ONLY its first command
+    H->>A: Effective command for next 50 ms, record actual duration
+    Note over A,H: Possible learned motion: support and lean while eyes and reaching hand adjust
+    A->>B: Actual new sight, joint and contact readings replace imagined start
+    Note over A,H: Repeat choice: closer shoulder changes reach, first touch changes each finger command
+    Note over A,H: Repeat choice: opposing fingers retain object, physical test also requires lift and hold
+    A->>J: Timed actual transition, requested/sent command, chosen goal and real wellness
+    J->>F: Train next-state and multi-step prediction against real sequence
+    J->>G: Train value using real utility plus next-state continuation value
+    G->>C: Train goal choices toward higher real-anchored value
+    G->>D: Train motor choices toward higher real-anchored value
+    Note over A,J: Correction uses new observations immediately, it does not wait for a weight update

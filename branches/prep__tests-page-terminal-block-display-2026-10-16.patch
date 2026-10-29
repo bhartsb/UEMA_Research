@@ -1,0 +1,660 @@
+diff --git b/Source/Python/mimo_bridge/tests/test_registry_terminal_block_view.py b/Source/Python/mimo_bridge/tests/test_registry_terminal_block_view.py
+new file mode 100644
+index 0000000..63f1f70
+--- /dev/null
++++ b/Source/Python/mimo_bridge/tests/test_registry_terminal_block_view.py
+@@ -0,0 +1,208 @@
++# Copyright (c) 2026 Mind Machine Learning, Inc. All rights reserved.
++# Licensed under the Mind Machine Learning Noncommercial License 1.0; see the LICENSE file.
++"""THE CARD OF A ROW WHOSE LAST RUN HAS ENDED AND THAT CARRIES A BLOCK (tools/test_registry.py terminal_block,
++added_view). The decision goal-value-b2-row-metadata-accepted-named-row-commit-20261016, DISPLAY DECISION: on a terminal card that carries a block, the current action in
++blocked.waits_on takes visual precedence; the runner's historical next_action stays unchanged in the row and is shown
++under Details; status, outcome, last_run and the refusal stay as they are; no registry field is added.
++
++THE FIXTURE. A temporary registry (never production's) with five complete rows written after the contract's time. A
++runner function of the module ends each run (job_started, finish_job: sealed PASS, FAIL and INVALID records), then a
++hand write adds the block (block_row) or a follow-up (write_follow_up):
++  done_blocked      PASS, then blocked                    (the DONE-plus-blocked case)
++  failed_blocked    FAIL, then blocked                    (the FAILED-plus-blocked case)
++  invalid_followed  INVALID, a follow-up, then blocked     (a block and a follow-up on one row)
++  done_plain        PASS, no block                        (control: the card as before)
++  cancelled_blocked cancelled by hand, then blocked       (control: its refusal names the cancellation)
++Nothing here starts a process beyond this test's own: job_started records this process's id.
++"""
++import hashlib
++import json
++import os
++
++import pytest
++
++from mimo_bridge.tools import test_registry as tr
++from mimo_bridge.tools import test_runner as runner
++from test_run_in_training_pause import complete_row, write_registry
++
++NEW = 'Oct 5, 2026 2:00 AM PDT'                       # after tr.ADDED_FROM: the rows owe the added fields
++DIAGRAM = dict(input='the saved checkpoint 481,800', operation='run the command once',
++               measurement='exit code: 0 or another number', decision='pass keeps the switch off; fail goes back')
++ON_PASS = 'the historical next action written at the PASS: build the next package'
++ON_FAIL = 'the historical next action written at the FAIL: the cause goes to the builder'
++BLOCKS = {
++    'done_blocked': ('Adjudicated by the reviewer: TECHNICAL PASS / ADMISSION-NONCOMPLIANT; the single attempt is '
++                     'consumed and no rerun is authorized',
++                     'Next: the synchronized design package and its independent review; then a separate decision'),
++    'failed_blocked': ('The failure is attributed to the fixture command; a reviewed repair comes before any rerun',
++                       'Next: the reviewed repair of the fixture command'),
++    'invalid_followed': ('The run ended INVALID; the reviewer holds the row until the repair is reviewed',
++                         'Next: the reviewer\'s decision on the repair'),
++    'cancelled_blocked': ('A block written after the cancellation', 'nothing'),
++}
++FOLLOW = 'run it again with the checkpoint path corrected'
++BY = 'the check fixture'
++
++
++def new_row(name, **changes):
++    row = complete_row(name, written_at=NEW, component='TEST_REGISTRY',
++                       gof_link='A test whose row is wrong or missing costs a training pause.',
++                       target_metric='exit code of the command: 0 = ran to its end, any other = did not',
++                       baseline='the command not run: no exit code', statistical_line='one run; the code is exact',
++                       material_gof_line=tr.NOT_YET_DEFINED, diagram=dict(DIAGRAM),
++                       cost=dict(training_stopped=False, memory_gb=1, where='the processor', time_limit_s=120),
++                       on_pass=ON_PASS, on_fail=ON_FAIL)
++    row.update(changes)
++    return row
++
++
++def sha(path):
++    return hashlib.sha256(path.read_bytes()).hexdigest()
++
++
++def rows_by_id(path):
++    return {r['id']: r for r in tr.load(path)['rows']}
++
++
++def views_by_id(root):
++    view = tr.dashboard_view(root, audit=False, rows_in='sections')
++    return view, {v['id']: v for s in view['sections'] for v in s['rows']}
++
++
++@pytest.fixture
++def reg(tmp_path, monkeypatch):
++    monkeypatch.setenv('UEMA_TEST_RUNS_DIR', str(tmp_path / 'runs'))
++    monkeypatch.setattr(tr, 'component_ids', lambda root=None: {'TEST_REGISTRY', 'DASHBOARD', 'EXPLAINER'})
++    monkeypatch.setattr(tr, 'code_state', lambda cwd=None, keep_s=30.0: ('abc123def', False, 'a/test-branch'))
++    names = ('done_blocked', 'failed_blocked', 'invalid_followed', 'done_plain', 'cancelled_blocked')
++    path = write_registry(tmp_path, [new_row(n) for n in names])
++    for name, code in (('done_blocked', 0), ('failed_blocked', 1), ('invalid_followed', 7), ('done_plain', 0)):
++        assert tr.job_started(name, path=path, pid=os.getpid(), runner='the check fixture') is None
++        assert tr.finish_job(name, exit_code=code, path=path, root=tmp_path)[0] is None
++    assert tr.write_follow_up('invalid_followed', FOLLOW, 'the builder', BY, path=path) is None
++    assert tr.cancel_row('cancelled_blocked', 'superseded', BY, path=path) is None
++    for name, (reason, waits_on) in BLOCKS.items():
++        assert tr.block_row(name, reason, waits_on, BY, path=path) is None
++    return dict(path=path, tmp=tmp_path)
++
++
++# ------------------------------------------------------------------------------------------ the fixture is what it says
++def test_the_fixture_holds_sealed_terminal_runs_with_their_blocks(reg):
++    rows = rows_by_id(reg['path'])
++    expected = dict(done_blocked=('done', 'PASS', ON_PASS), failed_blocked=('failed', 'FAIL', ON_FAIL),
++                    done_plain=('done', 'PASS', ON_PASS))
++    for name, (status, outcome, action) in expected.items():
++        row = rows[name]
++        assert (row['status'], row['outcome'], row['next_action']) == (status, outcome, action), name
++        assert tr.sealed(row) and row['last_run']['next_action'] == action, name
++    assert rows['invalid_followed']['outcome'] == 'INVALID' and tr.sealed(rows['invalid_followed'])
++    assert tr.terminal_block(rows['done_plain']) is None
++    assert tr.terminal_block(rows['cancelled_blocked']) is None, 'a cancelled row is left out'
++    for name in ('done_blocked', 'failed_blocked', 'invalid_followed'):
++        assert tr.terminal_block(rows[name])['reason'] == BLOCKS[name][0], name
++
++
++# ------------------------------------------------------------------------------------------ the two cases
++@pytest.mark.parametrize('name,section,outcome,historical', [
++    ('done_blocked', 'DONE', 'PASS', ON_PASS),
++    ('failed_blocked', 'FAILED', 'FAIL', ON_FAIL),
++], ids=['DONE-plus-blocked', 'FAILED-plus-blocked'])
++def test_the_blocks_waits_on_is_the_cards_next_action_and_the_runners_next_action_is_under_details(
++        reg, name, section, outcome, historical):
++    reason, waits_on = BLOCKS[name]
++    _, views = views_by_id(reg['tmp'])
++    v = views[name]
++    card = v['card']
++    # the section and the conclusion are the historical technical outcome, as before
++    assert v['section'] == section and v['outcome'] == outcome
++    assert card['state'] == section
++    assert card['conclusion'] == tr.OUTCOME_MEANINGS[outcome].capitalize() + '.'
++    # the current action of the block takes the card's next action; the adjudication sits beside the conclusion
++    assert card['next_action'] == waits_on + '.'
++    assert card['block'] == reason + '.' and card['block_state'] == 'BLOCKED'
++    assert sorted(card) == ['age', 'block', 'block_state', 'component', 'conclusion', 'direct_target',
++                            'next_action', 'question', 'state']
++    assert historical not in json.dumps(card, ensure_ascii=False), 'the runner\'s next action is not on the card'
++    # the runner's historical next action, unchanged, for Details
++    tb = v['terminal_block']
++    assert tb['runner_next_action'] == historical and tb['follow_up'] is None
++    assert tb['reason'] == reason and tb['waits_on'] == waits_on and tb['by'] == BY and tb['at']
++    assert tb['written_text'] == 'by %s, %s' % (BY, tb['at']) and tb['refusal_text'] == tr.TERMINAL_BLOCK_REFUSAL
++    assert v['next_action'] == historical, 'the view\'s next_action key keeps its meaning'
++    assert v['section_reason'] is None, 'the block is not why the row is in its section'
++    assert not v['follow_up_owed']
++
++
++@pytest.mark.parametrize('name', ['done_blocked', 'failed_blocked'], ids=['DONE-plus-blocked', 'FAILED-plus-blocked'])
++def test_the_view_changes_nothing_in_the_row_and_the_refusal_stays_the_blocks(reg, name):
++    reason, waits_on = BLOCKS[name]
++    before_bytes = sha(reg['path'])
++    before_row = rows_by_id(reg['path'])[name]
++    before_refusal = tr.refusal(name, path=reg['path'], check_rule=False)
++    _, views = views_by_id(reg['tmp'])
++    assert sha(reg['path']) == before_bytes, 'reading the view wrote nothing into the registry'
++    after_row = rows_by_id(reg['path'])[name]
++    assert after_row == before_row
++    for key in ('status', 'outcome', 'last_run', 'next_action', 'result', 'blocked'):
++        assert after_row[key] == before_row[key], key
++    assert tr.sealed(after_row), 'the runner\'s seal still verifies'
++    expected = ('its row is blocked: %s; it waits on: %s (test_runner unblock removes the block)'
++                % (reason.rstrip('.'), waits_on))
++    assert before_refusal == expected
++    assert tr.refusal(name, path=reg['path'], check_rule=False) == expected
++    assert runner.refusal(name, path=reg['path'], check_rule=False, processes=[]) == expected
++    assert tr.refusals([name], path=reg['path'], check_rule=False) == {name: expected}
++    assert views[name]['terminal_block']['refusal'] == expected
++
++
++def test_the_sections_and_their_counts_are_unchanged_by_a_block_after_the_run(reg):
++    view, views = views_by_id(reg['tmp'])
++    assert {k: v['section'] for k, v in views.items()} == dict(
++        done_blocked='DONE', failed_blocked='FAILED', invalid_followed='INVALID', done_plain='DONE',
++        cancelled_blocked='STOPPED')
++    counts = {s['key']: s['count'] for s in view['sections']}
++    assert counts == dict(QUEUED=0, RUNNING=0, BLOCKED=0, FAILED=1, INVALID=1, STOPPED=1, DONE=2)
++    for name, v in views.items():
++        assert tr.section_of(rows_by_id(reg['path'])[name], tr.DEFAULT_REQUIRED) == v['section'], name
++
++
++# ------------------------------------------------------------------------------------------ the controls
++def test_control_a_done_row_without_a_block_keeps_its_card(reg):
++    _, views = views_by_id(reg['tmp'])
++    v = views['done_plain']
++    assert v['terminal_block'] is None
++    assert sorted(v['card']) == ['age', 'component', 'conclusion', 'direct_target', 'next_action', 'question',
++                                 'state']
++    assert v['card']['next_action'] == ON_PASS and v['next_action'] == ON_PASS
++    assert tr.refusal('done_plain', path=reg['path'], check_rule=False) is None
++
++
++def test_control_a_cancelled_row_with_a_block_keeps_its_card_and_its_refusal(reg):
++    _, views = views_by_id(reg['tmp'])
++    v = views['cancelled_blocked']
++    assert v['terminal_block'] is None and 'block' not in v['card']
++    assert v['section_reason'] == 'Cancelled by hand: superseded.'
++    assert v['card']['next_action'] == 'No follow-up is written for this cancelled row.'
++    assert tr.refusal('cancelled_blocked', path=reg['path'], check_rule=False) == \
++        "its row in the test registry says cancelled; set the status to queued to run it"
++
++
++def test_a_follow_up_moves_under_details_beside_the_runners_next_action(reg):
++    reason, waits_on = BLOCKS['invalid_followed']
++    _, views = views_by_id(reg['tmp'])
++    v = views['invalid_followed']
++    assert v['card']['next_action'] == waits_on.rstrip('.') + '.'
++    tb = v['terminal_block']
++    assert tb['follow_up'] == '%s (owner: the builder)' % FOLLOW
++    assert tb['runner_next_action'].startswith('FOLLOW-UP OWED: this run ended INVALID (exit code 7')
++    assert FOLLOW not in json.dumps(v['card'], ensure_ascii=False)
++    assert v['next_action'] == '%s (owner: the builder)' % FOLLOW and not v['follow_up_owed']
++
++
++def test_control_the_check_sees_the_change_when_terminal_block_is_removed(reg, monkeypatch):
++    """The removal: terminal_block() answers None for every row. The card of the DONE-plus-blocked row then reads as
++    before the change (the runner's next action, no block), so the checks above see the change itself."""
++    monkeypatch.setattr(tr, 'terminal_block', lambda row: None)
++    _, views = views_by_id(reg['tmp'])
++    v = views['done_blocked']
++    assert v['card']['next_action'] == ON_PASS and 'block' not in v['card'] and v['terminal_block'] is None
+diff --git b/Source/Python/mimo_bridge/tests/test_tests_page_terminal_block.py b/Source/Python/mimo_bridge/tests/test_tests_page_terminal_block.py
+new file mode 100644
+index 0000000..f85d7ab
+--- /dev/null
++++ b/Source/Python/mimo_bridge/tests/test_tests_page_terminal_block.py
+@@ -0,0 +1,259 @@
++# Copyright (c) 2026 Mind Machine Learning, Inc. All rights reserved.
++# Licensed under the Mind Machine Learning Noncommercial License 1.0; see the LICENSE file.
++"""THE TESTS PAGE'S CARD OF A ROW WHOSE LAST RUN HAS ENDED AND THAT CARRIES A BLOCK, as headless Edge renders it.
++
++The decision goal-value-b2-row-metadata-accepted-named-row-commit-20261016, DISPLAY DECISION: on a terminal card that carries a block, the current action in
++blocked.waits_on takes visual precedence; the runner's historical next_action stays in the row and is shown under
++Details. The data layer of the same change is checked by test_registry_terminal_block_view.py.
++
++THE HARNESS is test_recovery_pages.py's, reused and not copied: its Handler (development_dashboard.Handler serving this
++checkout's page files, with a probe script added to the page) and its render() (headless Edge --dump-dom, one run per
++distinct request). This file adds one route, /narrow390: a wrapper page holding a 390 px wide iframe of the dashboard,
++because headless Edge does not open a window narrower than 496 px. The probe runs inside the iframe and writes its
++reading into the wrapper page, which Edge dumps.
++
++THE FIXTURE. A temporary data checkout with a registry of three rows, each ended by the module's runner functions
++(job_started, finish_job: sealed records), never by hand:
++  page_done_blocked    PASS, then a block (block_row)      the DONE-plus-blocked card
++  page_failed_blocked  FAIL, then a block                  the FAILED-plus-blocked card
++  page_done_plain      PASS, no block                      control: the card as before
++The machine's processes are an empty list (test_runner.scan_processes), as in test_recovery_pages.py.
++
++THE CHECK, at 1280 px, at 600 px (the narrow width of test_recovery_pages.py) and at 390 px (the iframe):
++  - each blocked card shows its section's state and BLOCKED beside it, in a colour of its own;
++  - its facts read, from top to bottom, Direct target, Conclusion (the runner's outcome, unchanged), Blocked (blocked.reason),
++    Next action (blocked.waits_on); the Next action is bold (font weight 600 or more) and heavier than the Conclusion;
++  - the runner's next action is not in the card's visible part and is in Details once Details is opened; Details is
++    closed on load;
++  - no card is wider than its box and the page has no sideways scroll;
++  - the control card has one state, three facts and the runner's next action as its Next action;
++  - the registry file's bytes, and the refusal of each blocked row, are the same after the page was read.
++THE REMOVALS. Each removes one line of what the server sends, and the check must then fail.
++
++Not run by its author. Before it runs, its row is owed in docs/gain_of_function_v4/test_registry.json (the style guide "NO
++TEST RUNS WITHOUT ITS ROW ON THE TESTS PAGE").
++"""
++import hashlib
++import json
++import os
++import threading
++from http.server import ThreadingHTTPServer
++
++import pytest
++
++import test_recovery_pages as P
++from mimo_bridge.tools import test_registry as tr
++from mimo_bridge.tools import test_runner as runner
++from test_run_in_training_pause import complete_row, write_registry
++
++pytestmark = pytest.mark.skipif(not os.path.isfile(P.EDGE), reason="headless Edge is not installed here")
++ON_PASS = "the historical next action written at the PASS: build the next package"
++ON_FAIL = "the historical next action written at the FAIL: the cause goes to the builder"
++BLOCKS = {
++    "page_done_blocked": ("Adjudicated by the reviewer: TECHNICAL PASS / ADMISSION-NONCOMPLIANT; the single attempt "
++                          "is consumed and no rerun is authorized",
++                          "Next: the synchronized design package and its independent review; then a separate decision"),
++    "page_failed_blocked": ("The failure is attributed to the fixture command; a reviewed repair comes before any rerun",
++                            "Next: the reviewed repair of the fixture command"),
++}
++CASES = (("page_done_blocked", "DONE", "PASS", ON_PASS), ("page_failed_blocked", "FAILED", "FAIL", ON_FAIL))
++IDS = [c[0] for c in CASES] + ["page_done_plain"]
++# (label, address, Edge's window width, the page's expected inner width, how far below it the inner width may read:
++# a window's inner width can lose a scroll bar's width; the iframe's is its width attribute exactly)
++WIDTHS = (("desktop", "/#now", 1280, 1280, 20), ("narrow", "/#now", 600, 600, 20),
++          ("phone", "/narrow390", 1280, 390, 0))
++WRAP = ('<!doctype html><html lang="en"><head><meta charset="utf-8"><title>Tests page at 390 px</title>'
++        '<style>body{margin:0;background:#fff}iframe{display:block;border:0}</style></head><body>'
++        '<iframe id="narrow" src="/#now" width="390" height="2300" title="The dashboard at 390 px"></iframe>'
++        '</body></html>')
++
++# what the probe reads, inside the dashboard page (the iframe's page at 390 px): every section opened, then for each row
++# of IDS its state labels, its facts from top to bottom with their classes and font weights, the text of the card outside
++# Details, whether Details was open, and the text of Details once opened; the page's sideways overflow and its width
++PROBE = """<script>
++addEventListener('load',()=>setTimeout(async()=>{
++ const wait=ms=>new Promise(r=>setTimeout(r,ms)),R={e:window.__e,cards:{}};
++ showPage('tests');await wait(8000);
++ for(const d of document.querySelectorAll('#tests-groups .test-section-block'))d.open=true;await wait(300);
++ for(const id of %s){
++  const a=document.getElementById('test-'+id);if(!a){R.cards[id]=null;continue;}
++  const det=a.querySelector('details.test-details');
++  const facts=[...a.querySelectorAll('dl.test-facts > dt')].map(dt=>{const dd=dt.nextElementSibling;
++   return {label:dt.textContent,text:dd.textContent,cls:dd.className,weight:Number(getComputedStyle(dd).fontWeight)};});
++  const states=[...a.querySelectorAll('.test-card-head .test-state')].map(s=>({text:s.textContent,cls:s.className,
++   bg:getComputedStyle(s).backgroundColor}));
++  const card=[...a.children].filter(n=>n!==det).map(n=>n.textContent).join('\\n');
++  const detailsBefore=det?det.open:null;if(det){det.open=true;await wait(400);}
++  R.cards[id]={section:a.dataset.section,hasBlock:a.classList.contains('has-block'),facts,states,card,detailsBefore,
++   details:det?det.innerText:'',overflow:a.scrollWidth>a.clientWidth+1};
++ }
++ R.pageOverflow=document.documentElement.scrollWidth>document.documentElement.clientWidth+1;
++ R.innerWidth=innerWidth;
++ R.names=(document.getElementById('tests-names-body')||{}).textContent||'';
++ const doc=window.top!==window?window.top.document:document;
++ const p=doc.createElement('pre');p.id='R';p.textContent=JSON.stringify(R);doc.body.appendChild(p);
++},4000));</script>""" % json.dumps(IDS)
++
++
++class Handler(P.Handler):
++    def do_GET(self, head=False):
++        if self.path.split("?")[0].split("#")[0] == "/narrow390":
++            return self._send(WRAP, "text/html; charset=utf-8")
++        return super().do_GET(head)
++
++
++def _sha(path):
++    return hashlib.sha256(path.read_bytes()).hexdigest()
++
++
++def _refusal_of(name):
++    reason, waits_on = BLOCKS[name]
++    return "its row is blocked: %s; it waits on: %s (test_runner unblock removes the block)" % (reason.rstrip("."),
++                                                                                                 waits_on)
++
++
++def saved_files(root):
++    """The supervisor's files the top of the dashboard reads, as test_recovery_pages.py writes them: a held run."""
++    saved = root / "Saved/mimo_bridge"
++    run = saved / "experiments" / "H84_fresh_drivers_20260918_seg41o_1431"
++    run.mkdir(parents=True)
++    (run / "args.json").write_text(json.dumps(dict(intention="on", intention_every=10)), encoding="utf-8")
++    (saved / "training_continuation.json").write_text(json.dumps(dict(active_run=str(run))), encoding="utf-8")
++    (saved / "supervisor_control.json").write_text(json.dumps(dict(cmd="pause", reason=P.HOLD)), encoding="utf-8")
++
++
++def build_fixture(root):
++    """The fixture's registry under `root` (the three rows of the module text, each ended by the runner functions,
++    two then blocked by hand) and the supervisor's files; returns the registry's path. The screenshot capture of the
++    same change (docs/gain_of_function_v4/coordinator/tests_page_terminal_block_display_2026-10-16) calls it too."""
++    diagram = dict(P.DIAGRAM)
++    rows = [complete_row(name, component="DASHBOARD", diagram=diagram, on_pass=ON_PASS, on_fail=ON_FAIL)
++            for name in IDS]
++    path = write_registry(root, rows)
++    for name, code in (("page_done_blocked", 0), ("page_failed_blocked", 1), ("page_done_plain", 0)):
++        assert tr.job_started(name, path=path, pid=os.getpid(), runner="the page fixture", commit="abc123def",
++                              commit_dirty=False) is None
++        assert tr.finish_job(name, exit_code=code, path=path, root=root)[0] is None
++    for name, (reason, waits_on) in BLOCKS.items():
++        assert tr.block_row(name, reason, waits_on, "the page fixture", path=path) is None
++    saved_files(root)
++    return path
++
++
++def start_server(root):
++    """This file's Handler serving `root` on a free port of 127.0.0.1, in a thread of this process."""
++    server = ThreadingHTTPServer(("127.0.0.1", 0), Handler)
++    server.root = root
++    threading.Thread(target=server.serve_forever, daemon=True).start()
++    return server
++
++
++@pytest.fixture(scope="module")
++def env(tmp_path_factory):
++    root = tmp_path_factory.mktemp("terminal_block_page")
++    path = build_fixture(root)
++    scan = runner.scan_processes
++    runner.scan_processes = lambda: []          # the audit and the machine mode read the fixture alone
++    server = start_server(root)
++    try:
++        yield dict(root=root, port=server.server_address[1], path=path, sha=_sha(path))
++    finally:
++        server.shutdown()
++        server.server_close()
++        runner.scan_processes = scan
++
++
++class Ctx:
++    def __init__(self, env):
++        self.env, self.edits = env, dict(js={}, css={})
++
++    def edit(self, kind, name, old, new):
++        self.edits[kind].setdefault(name, []).append((old, new))
++
++    def read(self, url_path, window, inner, slack):
++        R = P.render(self.env, url_path, "dashboard", PROBE, json.loads(json.dumps(self.edits)), window)
++        assert inner - slack <= R["innerWidth"] <= inner, ("the page was not laid out at %d px" % inner,
++                                                           R["innerWidth"])
++        return R
++
++
++@pytest.fixture
++def ctx(env):
++    return Ctx(env)
++
++
++# ------------------------------------------------------------------------------------------ the check
++def check_the_blocks_current_action_leads_the_card_and_the_runners_next_action_is_under_details(c):
++    for label, url_path, window, inner, slack in WIDTHS:
++        R = c.read(url_path, window, inner, slack)
++        assert R["e"] == [], (label, R["e"])
++        assert not R["pageOverflow"], (label, "the page scrolls sideways")
++        for name, section, outcome, historical in CASES:
++            reason, waits_on = BLOCKS[name]
++            card = R["cards"][name]
++            assert card and card["section"] == section and card["hasBlock"], (label, name, card)
++            assert [s["text"] for s in card["states"]] == [section, "BLOCKED"], (label, name, card["states"])
++            assert "block-state" in card["states"][1]["cls"], (label, name, card["states"])
++            assert card["states"][1]["bg"] != card["states"][0]["bg"], (label, name, "BLOCKED has no colour of its own")
++            assert [f["label"] for f in card["facts"]] == ["Direct target", "Conclusion", "Blocked", "Next action"], \
++                (label, name, [f["label"] for f in card["facts"]])
++            facts = {f["label"]: f for f in card["facts"]}
++            assert facts["Conclusion"]["text"] == tr.OUTCOME_MEANINGS[outcome].capitalize() + ".", (label, name)
++            assert facts["Blocked"]["text"] == reason + ".", (label, name, facts["Blocked"])
++            assert facts["Next action"]["text"] == waits_on + ".", (label, name, facts["Next action"])
++            assert "block-next" in facts["Next action"]["cls"], (label, name, facts["Next action"])
++            assert facts["Next action"]["weight"] >= 600, (label, name, facts["Next action"]["weight"])
++            assert facts["Next action"]["weight"] > facts["Conclusion"]["weight"], (label, name)
++            assert historical not in card["card"], (label, name, "the runner's next action is on the card")
++            assert card["detailsBefore"] is False, (label, name, "Details is open on load")
++            assert ("Next action the runner wrote at the run’s end: " + historical) in card["details"], \
++                (label, name, card["details"][:400])
++            assert ("While the block is in the row: " + tr.TERMINAL_BLOCK_REFUSAL) in card["details"], (label, name)
++            assert not card["overflow"], (label, name, "the card is wider than its box")
++        plain = R["cards"]["page_done_plain"]
++        assert [s["text"] for s in plain["states"]] == ["DONE"] and not plain["hasBlock"], (label, plain["states"])
++        assert [f["label"] for f in plain["facts"]] == ["Direct target", "Conclusion", "Next action"], label
++        assert plain["facts"][2]["text"] == ON_PASS, (label, plain["facts"][2])
++        assert "Blocked" in R["names"], (label, "the label Blocked is not defined on the page")
++    # reading the page changed nothing in the registry, and every blocked row is refused as before
++    assert _sha(c.env["path"]) == c.env["sha"], "the registry file changed while the page was read"
++    for name, *_ in CASES:
++        assert tr.refusal(name, path=c.env["path"], check_rule=False) == _refusal_of(name), name
++        row = next(r for r in tr.load(c.env["path"])["rows"] if r["id"] == name)
++        assert tr.sealed(row) and row["status"] == ("done" if name == "page_done_blocked" else "failed"), name
++
++
++# ------------------------------------------------------------------------------------------ the removals
++def remove_the_blocked_state(c):
++    c.edit("js", "development_dashboard.js",
++           "if(c.block_state){a.classList.add('has-block');head.firstChild.after(el('span','test-state block-state',"
++           "c.block_state));}", "")
++
++
++def remove_the_blocked_fact(c):
++    c.edit("js", "development_dashboard.js", "if(c.block)fact('Blocked',c.block,'block-reason','b');", "")
++
++
++def remove_the_bold_next_action(c):
++    c.edit("css", "development_dashboard.css", ".test-card.has-block dl.test-facts dd.block-next{font-weight:650}", "")
++
++
++def remove_the_runners_next_action_from_details(c):
++    c.edit("js", "development_dashboard.js",
++           "line('Next action the runner wrote at the run’s end',tb.runner_next_action);", "")
++
++
++REMOVALS = [remove_the_blocked_state, remove_the_blocked_fact, remove_the_bold_next_action,
++            remove_the_runners_next_action_from_details]
++
++
++def test_the_control_holds(ctx):
++    check_the_blocks_current_action_leads_the_card_and_the_runners_next_action_is_under_details(ctx)
++
++
++@pytest.mark.parametrize("removal", REMOVALS, ids=[r.__name__ for r in REMOVALS])
++def test_the_check_fails_when_its_control_is_removed(ctx, removal):
++    removal(ctx)
++    with pytest.raises(AssertionError) as failed:
++        check_the_blocks_current_action_leads_the_card_and_the_runners_next_action_is_under_details(ctx)
++    print("REMOVED %s: the check failed at: %s" % (removal.__name__, str(failed.value).splitlines()[0][:220]))
+diff --git a/Source/Python/mimo_bridge/tools/development_dashboard.css b/Source/Python/mimo_bridge/tools/development_dashboard.css
+index 9e722ad..d058ead 100644
+--- a/Source/Python/mimo_bridge/tools/development_dashboard.css
++++ b/Source/Python/mimo_bridge/tools/development_dashboard.css
+@@ -331,6 +331,10 @@ dl.names-vocab dd{margin:0;color:var(--ink);max-width:120ch}
+ .test-state{font-size:11.5px;font-weight:700;letter-spacing:.4px;padding:2px 8px;border-radius:4px;background:#e9eeee;color:var(--ink)}
+ .tone-running .test-state{background:var(--tint);color:var(--teal)}.tone-blocked .test-state{background:var(--sand);color:var(--amber)}
+ .tone-failed .test-state{background:#fff4f0;color:#963d29}.tone-done .test-state{background:#e8f3ee;color:#2f6b52}
++/* a row whose last run has ended and that carries a block (test_registry.py terminal_block): BLOCKED in the BLOCKED
++   section's colours beside the section's state, and the card's Next action, which is what the block waits on, in bold */
++.test-card .test-state.block-state{background:var(--sand);color:var(--amber)}
++.test-card.has-block dl.test-facts dd.block-next{font-weight:650}
+ .test-age{font-size:12.5px;color:var(--muted)}
+ .test-component{margin-left:auto;display:inline-flex;flex-wrap:wrap;gap:0 6px;align-items:baseline;font-size:12.5px;text-decoration:none;border:1px solid #b9d9d2;border-radius:4px;padding:2px 8px;background:var(--tint);color:var(--teal);max-width:100%}
+ .test-component:hover{background:#d8ece7}
+diff --git a/Source/Python/mimo_bridge/tools/development_dashboard.js b/Source/Python/mimo_bridge/tools/development_dashboard.js
+index b532a2f..eda8b35 100644
+--- a/Source/Python/mimo_bridge/tools/development_dashboard.js
++++ b/Source/Python/mimo_bridge/tools/development_dashboard.js
+@@ -1065,7 +1065,10 @@ setInterval(()=>{if(!$('observer').hidden&&obsShow==='now')loadObserver();},6000
+ //  - one card per row: question, component (a link that opens that component in the Architecture tab of the
+ //    explainer), state, age, direct target, conclusion and next action, and for a row whose section is not DONE its
+ //    diagram (input, operation, measurement, decision); the rest of the row, the runner's record and the raw
+-//    result sit behind Details, which is drawn when it is opened.
++//    result sit behind Details, which is drawn when it is opened. A row whose last run has ended and that carries a
++//    block keeps its section and its conclusion; its card adds BLOCKED and the block's reason, and its Next action is
++//    what the block waits on, the runner's next action moving under Details (the decision
++//    goal-value-b2-row-metadata-accepted-named-row-commit-20261016, DISPLAY DECISION).
+ // ---------------------------------------------------------------- the aliases in data text (finding F7)
+ // A row's own text, the supervisor's pause reason and the other records are printed as they were written. Each
+ // forbidden alias of the component manifest in them (GET /api/names, forbidden_aliases) is followed by its mark
+@@ -1121,11 +1124,15 @@ const CARD_TERMS=[
+  ['Age','since the run started (a row in RUNNING), since its last run ended (after a run), else since the row was written'],
+  ['Direct target','the real quantity the test should improve, with its two ends (the row’s target_metric field)'],
+  ['Conclusion','the outcome of the last run in the runner’s record, in words; a verdict typed into the row is shown here only when it holds no number, because a number without its two judgements stays under Details'],
+- ['Next action','what happens next: the follow-up written for the last run, else the next action the runner wrote at that run’s end, else one sentence for the row’s section'],
++ ['Next action','what happens next: on a card whose last run has ended and whose row carries a block, what the block waits on (the row’s blocked.waits_on); else the follow-up written for the last run, else the next action the runner wrote at that run’s end, else one sentence for the row’s section'],
+  ['Diagram','four phrases of the row, shown on every card whose section is not DONE: what goes in (input), what is computed (operation), what is measured (measurement), and what happens on pass and on fail (decision)']];
+ const JUDGEMENT_TERMS=[
+  ['Statistically clear?','whether a reading’s difference from its baseline is told apart from run-to-run noise: yes, no, or not judged, with the basis of a yes or a no'],
+  ['Large enough to matter for gain of function?','whether the difference is as large as the row’s material line for gain of function: yes, no, or GOF threshold not yet defined']];
++// the label of a card whose last run has ended and whose row carries a block (test_registry.py terminal_block), defined
++// when at least one card shows it
++const BLOCK_TERMS=[
++ ['Blocked','on a card in DONE, FAILED, INVALID or STOPPED: the reason of the block written into the row (the row’s blocked.reason), beside the BLOCKED label. While the block is in the row every runner refuses another run of it. The card’s Next action is then what the block waits on; the next action the runner wrote at the run’s end stays in the row and is shown under Details']];
+ const testKey=v=>(v.id||'')+'|'+v.position;
+ function explainerHref(component){
+  const base=String(state?.explainer?.url||'/files/Saved/mimo_bridge/explainer.html').split('#')[0];
+@@ -1250,6 +1257,11 @@ function detailsBody(v){
+  line('Why it matters',v.why);
+  for(const t of [v.incomplete_text,v.refused_text])if(t)body.append(el('p','ability-results-warning',t));
+  line('Why it is in this section',v.section_reason);
++ // a row whose last run has ended and that carries a block (test_registry.py terminal_block): who wrote the block and
++ // when, what it refuses, then what the card's Next action shows in place of: the runner's next action and a follow-up
++ const tb=v.terminal_block;
++ if(tb){line('Block written into the row',tb.written_text);line('While the block is in the row',tb.refusal_text);
++  line('Next action the runner wrote at the run’s end',tb.runner_next_action);line('Follow-up written for the last run',tb.follow_up);}
+  if(v.process&&v.process.state&&v.process.state!=='RUNNING')line('Process state',v.process.state+(v.process.held_text?': '+v.process.held_text:''));
+  if(v.gaps?.length)line('Fields of the directive’s section 6 this row does not fill',v.gaps.join(', '));
+  if(v.readings?.length){body.append(el('h4','details-head','Readings of the last run, each with its two judgements'));body.append(readingTable(v.readings));}
+@@ -1273,13 +1285,17 @@ function testCard(v,open){
+  a.id='test-'+(v.id||'row-'+v.position);
+  const head=el('div','test-card-head');
+  head.append(el('span','test-state',c.state||section),el('span','test-age',c.age||'no time on record'),componentLink(v));
++ // a row whose last run has ended and that carries a block: BLOCKED beside the section's state, the block's reason
++ // after the conclusion, and what the block waits on as the Next action (test_registry.py terminal_block)
++ if(c.block_state){a.classList.add('has-block');head.firstChild.after(el('span','test-state block-state',c.block_state));}
+  a.append(head);
+  a.append(...longText('p','test-q',c.question||v.title||'',testKey(v)+'|q',300));
+  const facts=el('dl','test-facts');
+  const fact=(label,text,cls,key)=>{const dd=el('dd',cls);dd.append(...longText('span','',text,testKey(v)+'|'+key,240));facts.append(el('dt','',label),dd);};
+  fact('Direct target',c.direct_target||'Not written in the row: a row written before Oct 5, 2026 1:23 AM PDT does not owe it.',c.direct_target?'':'missing','t');
+  fact('Conclusion',c.conclusion||'No conclusion is written.','','c');
+- fact('Next action',c.next_action||'No next action is written in the row.','','n');
++ if(c.block)fact('Blocked',c.block,'block-reason','b');
++ fact('Next action',c.next_action||'No next action is written in the row.',c.block?'block-next':'','n');
+  a.append(facts);
+  if(section!=='DONE')a.append(v.diagram?diagramStrip(v.diagram):el('p','test-no-diagram','No diagram is written in the row (listed under Errors).'));
+  a.append(testDetails(v,open));
+@@ -1314,6 +1330,7 @@ function namesBlock(d){
+  for(const n of d.names_used||[])if(n.kind!=='section'&&n.kind!=='component')add(n.name,n.definition);
+  for(const [name,definition] of CARD_TERMS)add(name,definition);
+  if((d.sections||[]).some(s=>(s.rows||[]).some(v=>(v.readings||[]).length)))for(const [name,definition] of JUDGEMENT_TERMS)add(name,definition);
++ if((d.sections||[]).some(s=>(s.rows||[]).some(v=>v.card?.block)))for(const [name,definition] of BLOCK_TERMS)add(name,definition);
+  // the investigations section's own terms, built by the server (tools/elimination.py NAMES), when it shows a diagram
+  if((invData?.investigations||[]).some(i=>!i.refused))for(const n of invData.names||[])add(n.name,n.definition);
+  const named=(d.names_used||[]).filter(n=>n.kind==='component');
+diff --git a/Source/Python/mimo_bridge/tools/test_registry.py b/Source/Python/mimo_bridge/tools/test_registry.py
+index 157ae4a..7adb81b 100644
+--- a/Source/Python/mimo_bridge/tools/test_registry.py
++++ b/Source/Python/mimo_bridge/tools/test_registry.py
+@@ -1238,6 +1238,23 @@ def is_blocked(row):
+     return block if isinstance(block, dict) and not empty(block.get("reason")) else None
+ 
+ 
++# the Tests page's sentence for a row whose last run has ended and that carries a block (terminal_block)
++TERMINAL_BLOCK_REFUSAL = ("every runner refuses another run of this row (refusal reads block_refusal); test_runner "
++                          "unblock removes the block; the row's status, outcome, last run and next action stay as the "
++                          "runner wrote them")
++
++
++def terminal_block(row):
++    """The block of a row whose last run has ended, or None. For status done or failed (a runner wrote the run's end;
++    section_of puts the row in DONE, FAILED, INVALID or STOPPED by that run) this is the row's block (is_blocked). The
++    block does not move the row out of its section and changes nothing the runner wrote; refusal() reads the same
++    block and refuses another run of the row (block_refusal), so the Tests page shows it on the row's card
++    (added_view). A cancelled row is left out: its refusal names the cancellation."""
++    if not isinstance(row, dict) or row.get("status") not in ("done", "failed"):
++        return None
++    return is_blocked(row)
++
++
+ def section_of(row, required=None, rule_block=None) -> str:
+     """The Tests page's section of a row, one of SECTIONS, computed and never typed: RUNNING for status running; for
+     status done or failed the section of the outcome in the runner's record (recorded_outcome: PASS: DONE, FAIL:
+@@ -1529,6 +1546,15 @@ def added_view(row, required, now=None, rule_block=None) -> dict:
+                        conclusion (card_conclusion: never a number without its two judgements) and next_action (the
+                        row's next_action above, else one sentence for its section: waits to be run, the block's
+                        reason, the runner writes it at the run's end, a decision is under Details, or none is written)
++    terminal_block     for a row whose last run has ended and that carries a block (terminal_block()), else None:
++                       {reason, waits_on, by, at, refusal (block_refusal: the sentence the runners refuse another run
++                       with), written_text, refusal_text, runner_next_action (the next action the runner wrote at the
++                       last run's end, when it is still the row's), follow_up (the follow-up of the last run, with its
++                       owner)}. The card of such a row also carries block (the block's reason) and block_state
++                       ("BLOCKED"), and its next_action is what the block waits on; the section, the conclusion and
++                       every field of the row stay as they are, and runner_next_action and follow_up are shown under
++                       Details (the decision goal-value-b2-row-metadata-accepted-named-row-commit-20261016,
++                       DISPLAY DECISION)
+     """
+     now = time.time() if now is None else float(now)
+     problems = row_problems(row, required)
+@@ -1591,6 +1617,25 @@ def added_view(row, required, now=None, rule_block=None) -> dict:
+         "No next action is written in the row.")
+     state_text = (section if outcome is None or SECTION_OF_OUTCOME.get(outcome) == section else
+                   "%s (last run: %s)" % (section, outcome))
++    # A ROW WHOSE LAST RUN HAS ENDED AND THAT CARRIES A BLOCK: the block's reason and what it waits on go on the card,
++    # the waits_on as its next action; what the next action was before (the runner's, or a follow-up) goes under
++    # Details. Nothing of the row is changed, and refusal() reads the same block as before.
++    held = terminal_block(row)
++    terminal = None
++    if held:
++        waits = "; ".join(_lines(held.get("waits_on")))
++        runner_action = ("; ".join(_lines(row.get("next_action"))) or None
++                         if outcome is not None and last.get("next_action") == row.get("next_action") else None)
++        by = "; ".join(_lines(held.get("by")))
++        at = "; ".join(_lines(held.get("at")))
++        terminal = dict(reason="; ".join(_lines(held.get("reason"))), waits_on=waits or None, by=by or None,
++                        at=at or None, refusal=block_refusal(row),
++                        written_text="by %s, %s" % (by or "a writer the block does not name",
++                                                    at or "at a time the block does not record"),
++                        refusal_text=TERMINAL_BLOCK_REFUSAL, runner_next_action=runner_action,
++                        follow_up=("%s (owner: %s)" % (str(follow["text"]).rstrip("."), follow.get("owner")
++                                                       or "not named") if follow else None))
++        card_action = ("%s." % waits.rstrip(".") if waits else "The row's block does not say what it waits on.")
+     run = None
+     if last:
+         run = dict(state=run_state(row), started=last.get("started"), ended=last.get("ended"),
+@@ -1599,16 +1644,18 @@ def added_view(row, required, now=None, rule_block=None) -> dict:
+                    resource_class=last.get("resource_class"), device=last.get("device"), pid=last.get("pid"),
+                    runner=last.get("runner"), run_id=last.get("run_id"), judged_by=last.get("judged_by"),
+                    result_file=last.get("result_file"), log=last.get("log"), sealed=sealed(row))
++    card = dict(question="; ".join(_lines(row.get("question"))) or "; ".join(_lines(row.get("title"))),
++                component=component, state=state_text, age=age_text,
++                direct_target="; ".join(_lines(row.get("target_metric"))) or None,
++                conclusion=conclusion, next_action=card_action)
++    if terminal:
++        card.update(block="%s." % terminal["reason"].rstrip("."), block_state="BLOCKED")
+     return dict(section=section, section_reason=reason, component=component, diagram=diagram,
+                 diagram_missing=section != "DONE" and diagram is None,
+                 component_missing=section != "DONE" and component is None,
+                 outcome=outcome, run=run, next_action=action, follow_up_owed=bool(owed), readings=readings,
+                 unjudged_result=bool(unjudged), result_from_earlier_run=not result_is_current,
+-                gaps=gaps(row), age_s=age, age_text=age_text,
+-                card=dict(question="; ".join(_lines(row.get("question"))) or "; ".join(_lines(row.get("title"))),
+-                          component=component, state=state_text, age=age_text,
+-                          direct_target="; ".join(_lines(row.get("target_metric"))) or None,
+-                          conclusion=conclusion, next_action=card_action))
++                gaps=gaps(row), age_s=age, age_text=age_text, terminal_block=terminal, card=card)
+ 
+ 
+ def scheduler_gaps(root, data):

@@ -1,0 +1,3541 @@
+{
+  "purpose": "Pictures of the three selected a2 outcomes: real saved MIMo states (earlier goal, actual start, actual end) and the per-part forecasts (first and selected) drawn as independent markers over the real start, with the arm fitter's connected arm as a labelled illustration",
+  "owner": "the builder render program, for the report (the overseer retains the HTML)",
+  "decision": "the overseer, the operator's proxy, a2-saved-record-repair-diagnosis-20261023, item 3 (three selected examples rendered from the saved data)",
+  "version": "a2_record_diagnosis_render_v2",
+  "physics_steps": 0,
+  "training_updates": 0,
+  "started": {
+    "iso": "2026-10-23T05:10:10-07:00",
+    "clock": "Oct 23, 2026 5:10:10 AM PDT"
+  },
+  "deadline_s": 240.0,
+  "run": "D:\\UEMA_Research\\external\\D\\UEMA_preserved\\s4r_pose_learning_S4R_pose_learning_a2_496250\\run",
+  "examples_json": "D:\\UEMA_Research\\external\\D\\UEMA_scratch\\h84\\d1_planner_recovery\\attempts\\a2_record_diagnosis_d1\\evidence\\analysis\\examples.json",
+  "out_dir": "D:\\UEMA_Research\\external\\D\\UEMA_scratch\\h84\\d1_planner_recovery\\attempts\\a2_record_diagnosis_d1\\evidence\\renders",
+  "working_folder_at_call": "D:\\UEMA_Research\\external\\D\\UEMA_scratch\\h84\\d1_planner_recovery\\attempts\\a2_record_diagnosis_d1\\evidence",
+  "out_dir_entries_at_start": [],
+  "camera_rule": "One camera per example, the same for all five panels: the existing renderer's front view (BODY_VIEWS \"front\": azimuth 180 degrees, elevation -8 degrees) in the start pose's upper-body coordinates (_Body.set_frame(start): the renderer's trunk body at the start; x toward the belly, y toward the infant's left, z toward the head; the infant faces the camera, so the picture's right is the infant's left), placed by _Body.fit so that both arms, the head, the chest and the upper body at each pose drawn and every drawn marker within 1 m of the start's trunk fit the 480 x 560 pixel picture, at the fitted distance times 1.18 (render_learning.py's factor). The goal and the end are drawn in the start's coordinates, so a move of the whole body shows as a shift.",
+  "caption_template": {
+    "common": "{example}, body {body}, the command planned at model step {plan}. Panel {n} of 5, {panel}: ",
+    "goal": "a real MIMo render of the saved joint positions of model step {goal_step} ({goal_meaning}), {goal_relation}. Not a prediction and not a fitted pose. Green squares: the goal palm points, from {goal_source}. Orange rings: this record's own palm points, {ring} from the green squares.{lag} Shoulder, elbow and palm point are the origins of the upper-arm, forearm and hand bodies; the palm point, the hand body's origin, lies inside the palm. Camera: the front view fixed on the start pose's upper body, the same for all five panels.",
+    "start": "a real MIMo render of the saved joint positions of model step {start_step} ({start_meaning}). Palm point to goal palm point (green squares): left {L}, right {R}.{gap}{lag} Not a prediction.",
+    "prediction": "not a simulator state. Purple dots: the forecast world position of each arm part (shoulder, elbow, palm point) for {which}; purple diamond: the forecast chest. Each forecast part is that part's world pose after the command's 5 model steps (250 ms), at the actual end ({end_step}, 5 model steps after the start record). Each part is forecast separately, so no line joins them; each purple arrow shows the forecast direction of that part's long axis (3.5 cm long, not a limb). They are drawn over the real start render, faded. The fitted arm, grey rings joined by a dashed grey line, is the forward kinematics of one set of the arm's 7 hinge angles inside their ranges, the set the fitter's solve returned as nearest the three forecast parts, placed on the forecast chest; a fitted illustration, not a result. Red lines: forecast part to the fitted arm's place for it: {mismatch}. Forecast palm point to goal palm point: left {L}, right {R}.{to_end}{same}",
+    "end": "a real MIMo render of the saved joint positions of model step {end_step} ({end_meaning}), {end_relation}. Palm point to goal palm point (green squares): left {L}, right {R}.{gap}{lag} Not a prediction.",
+    "tail": " Every distance printed is a straight-line distance in space, not a length on the picture. The infant faces the camera, so the picture's right is the infant's left."
+  },
+  "sources": {
+    "D:\\UEMA_Research\\external\\D\\UEMA_scratch\\h84\\d1_planner_recovery\\attempts\\a2_record_diagnosis_d1\\evidence\\analysis\\examples.json": "37df2ce0cedb4100e7b74b60e1c50282f90e40be84e445b37ece8175d11497fd",
+    "D:\\UEMA_Research\\external\\D\\UEMA_scratch\\h84\\d1_planner_recovery\\pose_return_checks\\a2_record_diagnosis_render.py": "dfc0d2544411762517a666b5f5a67da48410f88c2f6bc59dd198024bf3d2370a",
+    "D:\\UEMA_Research\\docs\\h84_body_repair_20261021\\render_saved.py": "34396849cfe299436f33f94d1faa9b7268c5417d086105bb481f862bac81579b",
+    "D:\\UEMA_Research\\external\\D\\UEMA_preserved\\s4r_pose_learning_S4R_pose_learning_a2_496250\\run\\observer\\world\\b1\\header_30100_1792749219975.json": "5ae0348cad2c2bd83412aa5b7ac660ca41639ac514c7ee3dd414826f969d89ac",
+    "D:\\UEMA_Research\\external\\D\\UEMA_preserved\\s4r_pose_learning_S4R_pose_learning_a2_496250\\run\\observer\\world\\models\\5aff7b57135ab6431aae071e6a4a6680.mjb.gz": "786b49c57e4e4ab2e9f5a30ff9d646f29ca16b6e9ebfc3790a07bf867d9748d9",
+    "D:\\UEMA_Research\\external\\D\\UEMA_preserved\\s4r_pose_learning_S4R_pose_learning_a2_496250\\run\\observer\\world\\b6\\header_17576_1792749219975.json": "184fceba1ee39380e2de9e5afd314b0c335eef0ebe62aae16c711cc4aa4203ab",
+    "D:\\UEMA_Research\\external\\D\\UEMA_preserved\\s4r_pose_learning_S4R_pose_learning_a2_496250\\run\\observer\\world\\b5\\header_33696_1792749219976.json": "d56f1e6546347180fb5c3542ffc07e10b254124791b00c4d7b854a2b5199f565"
+  },
+  "committed_renderer": {
+    "commit": "ebea657cd055f3f6a9466867a0fdf3f1343e326a",
+    "files": {
+      "Source/Python/mimo_bridge/limb_target_control.py": "a549a8e9d40fdfd5760707bb19e27e80bb62de20c2f6c899c0cfa137b79077ec",
+      "Source/Python/mimo_bridge/arm_reach.py": "5022e1aacaf177626496e0808089c9884ee00070c4f5a6dc7380e2bcfc54a5bd",
+      "Source/Python/mimo_bridge/tools/movement_viewer/pose_geometry.py": "ff9ebc3d50878cd8a1a68a10bc1529673c01ae3eea6d8469d7ac894fd5a29d06",
+      "Source/Python/mimo_bridge/tools/movement_viewer/render.py": "edd2a64db41345f823d08e8754eac309e1414c7fe160b5080095f4503cc8ce42"
+    },
+    "loaded_by": "D:\\UEMA_Research\\docs\\h84_body_repair_20261021\\render_saved.py",
+    "render_version": "movement_render_v17"
+  },
+  "working_tree_modules": {
+    "mimo_bridge": {
+      "path": "D:\\UEMA_Research\\Source\\Python\\mimo_bridge\\__init__.py",
+      "sha256": "a405c51f5123e2ddd6852f40ba07d50c4e7136fa9a9ca14abb9a8cb1e3893929"
+    },
+    "mimo_bridge.observer_record": {
+      "path": "D:\\UEMA_Research\\Source\\Python\\mimo_bridge\\observer_record.py",
+      "sha256": "56fbf70710fd4b5f8de98d00516b54028c23117c80e202172d9f6a7a873cb9cb"
+    },
+    "mimo_bridge.tools.movement_viewer": {
+      "path": "D:\\UEMA_Research\\Source\\Python\\mimo_bridge\\tools\\movement_viewer\\__init__.py",
+      "sha256": "7b79e912a12a9b4df935830dc42fc30d7bdb71f404d70d4eca88b3aac9da3ef5"
+    },
+    "mimo_bridge.tools.movement_viewer.commands": {
+      "path": "D:\\UEMA_Research\\Source\\Python\\mimo_bridge\\tools\\movement_viewer\\commands.py",
+      "sha256": "4f343a152032721217c83fc948f410cce973418f30a051bae3219c988ed81f54"
+    },
+    "mimo_bridge.tools.movement_viewer.render": {
+      "path": "D:\\UEMA_Research\\Source\\Python\\mimo_bridge\\tools\\movement_viewer\\render.py",
+      "sha256": "7ffaefe1e5b222f74d44033487976f7939449b27e3224f7dda5a8a54f293e550"
+    },
+    "mimo_bridge.tools.movement_viewer.sources": {
+      "path": "D:\\UEMA_Research\\Source\\Python\\mimo_bridge\\tools\\movement_viewer\\sources.py",
+      "sha256": "64d3a0d2adc8c53bd8ae3a056894023d2c2267d38c0c3609d6f0d94eab8ade0c"
+    },
+    "mimo_bridge.tools.observer": {
+      "path": "D:\\UEMA_Research\\Source\\Python\\mimo_bridge\\tools\\observer\\__init__.py",
+      "sha256": "cb3d47a5f8934eefefc78037eeda241d0b6a0f34e86fde65bbbe19ab9baebaea"
+    },
+    "mimo_bridge.tools.observer.kinematics": {
+      "path": "D:\\UEMA_Research\\Source\\Python\\mimo_bridge\\tools\\observer\\kinematics.py",
+      "sha256": "66a6e0ecb817708b3902afbccc630239b7474342c1d2e273671545cd021904ea"
+    }
+  },
+  "examples": {
+    "typical_improving": {
+      "rule": "among the usable outcomes whose measured pose error at the order's end is below its start (actual_pose_error.end.sum < actual_pose_error.start.sum, the reading's numbers in the forecast's units), sorted by the actual decrease (start sum minus end sum) ascending, ties by (model step, body): the outcome at index floor((n - 1) / 2), the median-ranked one (the lower middle one when n is even)",
+      "step": 496340,
+      "body": 1,
+      "model_steps": {
+        "goal": 496196,
+        "start": 496339,
+        "end": 496344
+      },
+      "links": {
+        "first": {
+          "L": {
+            "shoulder_link_cm": 0.39332961504512476,
+            "upperarm_link_cm": 1.5871767950739974,
+            "elbow_off_axis_deg": 5.255519140257379,
+            "elbow_beyond_scene_range_deg": 0.0,
+            "forearm_to_hand_cm": 13.324387386504435,
+            "forearm_to_hand_beyond_model_range_cm": 0.9925891045916657,
+            "forearm_to_hand_beyond_measured_range_cm": 0.993233802922056,
+            "elbow_on_axis_deg": -19.021110712315014
+          },
+          "R": {
+            "shoulder_link_cm": 0.4123747878751735,
+            "upperarm_link_cm": 0.46583199925138297,
+            "elbow_off_axis_deg": 5.085071679103272,
+            "elbow_beyond_scene_range_deg": 0.0,
+            "forearm_to_hand_cm": 11.64035431118391,
+            "forearm_to_hand_beyond_model_range_cm": 0.0,
+            "forearm_to_hand_beyond_measured_range_cm": 0.413612359478984,
+            "elbow_on_axis_deg": -21.59254391662154
+          },
+          "below_floor_plane_cm": {
+            "chest": 0.0,
+            "upperarm_L": 0.0,
+            "lowerarm_L": 0.0,
+            "wrist_L": 0.0,
+            "upperarm_R": 0.0,
+            "lowerarm_R": 0.0,
+            "wrist_R": 0.0
+          },
+          "below_floor_plane_max_cm": 0.0
+        },
+        "selected": {
+          "L": {
+            "shoulder_link_cm": 0.386443453372433,
+            "upperarm_link_cm": 1.5612035864020848,
+            "elbow_off_axis_deg": 5.454146080486802,
+            "elbow_beyond_scene_range_deg": 0.0,
+            "forearm_to_hand_cm": 13.290425465486294,
+            "forearm_to_hand_beyond_model_range_cm": 0.9586271835735243,
+            "forearm_to_hand_beyond_measured_range_cm": 0.9592718819039145,
+            "elbow_on_axis_deg": -19.848630253170562
+          },
+          "R": {
+            "shoulder_link_cm": 0.4165986249793994,
+            "upperarm_link_cm": 0.7649772434024003,
+            "elbow_off_axis_deg": 9.64754392817795,
+            "elbow_beyond_scene_range_deg": 0.0,
+            "forearm_to_hand_cm": 11.295701279915765,
+            "forearm_to_hand_beyond_model_range_cm": 0.0,
+            "forearm_to_hand_beyond_measured_range_cm": 0.7582653907471286,
+            "elbow_on_axis_deg": -27.562916554001454
+          },
+          "below_floor_plane_cm": {
+            "chest": 0.0,
+            "upperarm_L": 0.0,
+            "lowerarm_L": 0.0,
+            "wrist_L": 0.0,
+            "upperarm_R": 0.0,
+            "lowerarm_R": 0.0,
+            "wrist_R": 0.0
+          },
+          "below_floor_plane_max_cm": 0.0
+        },
+        "end": {
+          "L": {
+            "shoulder_link_cm": 1.318651225299387e-06,
+            "upperarm_link_cm": 8.002174794471973e-07,
+            "elbow_off_axis_deg": 2.607477764502993e-06,
+            "elbow_beyond_scene_range_deg": 0.0,
+            "forearm_to_hand_cm": 12.174578701007569,
+            "forearm_to_hand_beyond_model_range_cm": 0.0,
+            "forearm_to_hand_beyond_measured_range_cm": 0.0,
+            "elbow_on_axis_deg": -47.77613863221323
+          },
+          "R": {
+            "shoulder_link_cm": 7.960269247927672e-07,
+            "upperarm_link_cm": 1.164714167774096e-06,
+            "elbow_off_axis_deg": 2.227992595994976e-06,
+            "elbow_beyond_scene_range_deg": 0.0,
+            "forearm_to_hand_cm": 12.207718911893533,
+            "forearm_to_hand_beyond_model_range_cm": 0.0,
+            "forearm_to_hand_beyond_measured_range_cm": 0.0,
+            "elbow_on_axis_deg": -24.71420869673904
+          },
+          "below_floor_plane_cm": {
+            "chest": 0.0,
+            "upperarm_L": 0.0,
+            "lowerarm_L": 0.0,
+            "wrist_L": 0.0,
+            "upperarm_R": 0.0,
+            "lowerarm_R": 0.0,
+            "wrist_R": 0.0
+          },
+          "below_floor_plane_max_cm": 0.0
+        }
+      },
+      "optional_fields": {
+        "plan_step": 496340,
+        "plan_steps_given": {
+          "goal": 496340,
+          "start": 496340,
+          "end": 496340
+        },
+        "analysis_meanings": {
+          "goal": "the world record s - age - 1 = 496196, the body's state when the goal moment s - age = 496197 (age 143 model steps, inferred from the goal ring's age, its basis prior_history_unverified) read the goal pose; the stored goal pose lags that state by one 5 ms physics substep (it is read from the body positions and orientations MuJoCo leaves at the start of its last substep), so the two differ by that substep's motion: stored_pose_gap_cm (the largest position difference over the 25 non-gaze rows), stored_pose_gap_deg (the largest turn over those rows, degrees) and palm_gap_cm (the two palm rows) are the measured gap between the record's rebuilt pose and the stored pose (null when the goal join did not read that record); qpos given only when that record is confirmed by content (LAST_SUBSTEP_NOTE: (i) every row within twice its storage bound plus the previous record's storage bound plus the row's motion over the model step, and (ii) no neighbouring record nearer the stored goal pose beyond the two records' largest storage bounds)",
+          "start": "the world record s - 1, the body's state when the plan step s read its start pose; the stored start pose lags that state by one 5 ms physics substep (it is read from the body positions and orientations MuJoCo leaves at the start of its last substep), so the two differ by that substep's motion: stored_pose_gap_cm (the largest position difference over the 25 non-gaze rows), stored_pose_gap_deg (the largest turn over those rows, degrees) and palm_gap_cm (the two palm rows) are the measured gap between the record's rebuilt pose and the stored pose",
+          "end": "the world record s + 4 (hold 5 model steps), the body's state when model step s + 5 read the end pose; the stored end pose lags that state by one 5 ms physics substep (it is read from the body positions and orientations MuJoCo leaves at the start of its last substep), so the two differ by that substep's motion: stored_pose_gap_cm (the largest position difference over the 25 non-gaze rows), stored_pose_gap_deg (the largest turn over those rows, degrees) and palm_gap_cm (the two palm rows) are the measured gap between the record's rebuilt pose and the stored pose"
+        },
+        "substep_lag": {
+          "goal": {
+            "stored_pose_gap_cm": 0.15645524421444035,
+            "stored_pose_gap_deg": 1.1976647238901683,
+            "palm_gap_cm": {
+              "L": 0.1454735741524637,
+              "R": 0.10578971617809974
+            }
+          },
+          "start": {
+            "stored_pose_gap_cm": 0.15577552463605043,
+            "stored_pose_gap_deg": 0.6489666679557201,
+            "palm_gap_cm": {
+              "L": 0.12495752222641439,
+              "R": 0.10588548384206477
+            }
+          },
+          "end": {
+            "stored_pose_gap_cm": 0.1725302355081485,
+            "stored_pose_gap_deg": 0.8821054305509821,
+            "palm_gap_cm": {
+              "L": 0.12170356661444806,
+              "R": 0.03333046249398854
+            }
+          }
+        },
+        "body_gap_cm": {
+          "start": 6.870102,
+          "end": 6.90441
+        },
+        "pose_error": {
+          "start": {
+            "position": 6.753017,
+            "rotation": 5.766379,
+            "sum": 12.5194
+          },
+          "end": {
+            "position": 6.070012,
+            "rotation": 4.388111,
+            "sum": 10.45812
+          },
+          "first_forecast": {
+            "position": 4.693669,
+            "rotation": 4.913529,
+            "sum": 9.607198
+          },
+          "selected_forecast": {
+            "position": 3.463106,
+            "rotation": 4.365923,
+            "sum": 7.829029
+          },
+          "meaning": "the pose error in the forecast's units: position = mean over the 25 non-gaze handles and 3 axes of (cm / 1.80)^2, rotation = the same of (degrees / 11.0)^2, sum = both; start and end measured, first and selected forecast"
+        },
+        "analysis_note": null,
+        "fallback": false,
+        "meaning": "analysis_meanings, pose_error and analysis_note are the analysis file's own text, kept here only: captions and drawn text use this program's wording"
+      },
+      "setup_seconds": 1.9965630999067798,
+      "model_structure_fingerprint": "5aff7b57135ab6431aae071e6a4a66804495f0b6eba4f395184266ccea5291c3",
+      "header": "D:\\UEMA_Research\\external\\D\\UEMA_preserved\\s4r_pose_learning_S4R_pose_learning_a2_496250\\run\\observer\\world\\b1\\header_30100_1792749219975.json"
+    },
+    "typical_worsening": {
+      "rule": "among the usable outcomes whose measured pose error at the order's end is above its start, sorted by the actual increase (end sum minus start sum) ascending, ties by (model step, body): the outcome at index floor((n - 1) / 2)",
+      "step": 496300,
+      "body": 6,
+      "model_steps": {
+        "goal": 496122,
+        "start": 496299,
+        "end": 496304
+      },
+      "links": {
+        "first": {
+          "L": {
+            "shoulder_link_cm": 0.29890918700582453,
+            "upperarm_link_cm": 1.665327821605459,
+            "elbow_off_axis_deg": 5.73572973107325,
+            "elbow_beyond_scene_range_deg": 0.0,
+            "forearm_to_hand_cm": 13.07521087061797,
+            "forearm_to_hand_beyond_model_range_cm": 0.7434125887052012,
+            "forearm_to_hand_beyond_measured_range_cm": 0.7440572870355915,
+            "elbow_on_axis_deg": -43.035549787308916
+          },
+          "R": {
+            "shoulder_link_cm": 0.3002333075367373,
+            "upperarm_link_cm": 0.7381971115013635,
+            "elbow_off_axis_deg": 11.489721979990204,
+            "elbow_beyond_scene_range_deg": 0.0,
+            "forearm_to_hand_cm": 11.58971491269349,
+            "forearm_to_hand_beyond_model_range_cm": 0.0,
+            "forearm_to_hand_beyond_measured_range_cm": 0.46425175796940366,
+            "elbow_on_axis_deg": -62.496247209412466
+          },
+          "below_floor_plane_cm": {
+            "chest": 0.0,
+            "upperarm_L": 0.0,
+            "lowerarm_L": 0.0,
+            "wrist_L": 0.0,
+            "upperarm_R": 0.0,
+            "lowerarm_R": 0.0,
+            "wrist_R": 0.0
+          },
+          "below_floor_plane_max_cm": 0.0
+        },
+        "selected": {
+          "L": {
+            "shoulder_link_cm": 0.29890918700582453,
+            "upperarm_link_cm": 1.665327821605459,
+            "elbow_off_axis_deg": 5.73572973107325,
+            "elbow_beyond_scene_range_deg": 0.0,
+            "forearm_to_hand_cm": 13.07521087061797,
+            "forearm_to_hand_beyond_model_range_cm": 0.7434125887052012,
+            "forearm_to_hand_beyond_measured_range_cm": 0.7440572870355915,
+            "elbow_on_axis_deg": -43.035549787308916
+          },
+          "R": {
+            "shoulder_link_cm": 0.3002333075367373,
+            "upperarm_link_cm": 0.7381971115013635,
+            "elbow_off_axis_deg": 11.489721979990204,
+            "elbow_beyond_scene_range_deg": 0.0,
+            "forearm_to_hand_cm": 11.58971491269349,
+            "forearm_to_hand_beyond_model_range_cm": 0.0,
+            "forearm_to_hand_beyond_measured_range_cm": 0.46425175796940366,
+            "elbow_on_axis_deg": -62.496247209412466
+          },
+          "below_floor_plane_cm": {
+            "chest": 0.0,
+            "upperarm_L": 0.0,
+            "lowerarm_L": 0.0,
+            "wrist_L": 0.0,
+            "upperarm_R": 0.0,
+            "lowerarm_R": 0.0,
+            "wrist_R": 0.0
+          },
+          "below_floor_plane_max_cm": 0.0
+        },
+        "end": {
+          "L": {
+            "shoulder_link_cm": 2.718722507683483e-06,
+            "upperarm_link_cm": 1.2038215619412632e-06,
+            "elbow_off_axis_deg": 2.0371903655719732e-06,
+            "elbow_beyond_scene_range_deg": 0.0,
+            "forearm_to_hand_cm": 12.201969787758168,
+            "forearm_to_hand_beyond_model_range_cm": 0.0,
+            "forearm_to_hand_beyond_measured_range_cm": 0.0,
+            "elbow_on_axis_deg": -26.99526754379169
+          },
+          "R": {
+            "shoulder_link_cm": 3.2548704548308077e-06,
+            "upperarm_link_cm": 4.492905317271732e-06,
+            "elbow_off_axis_deg": 1.5939546442998614e-06,
+            "elbow_beyond_scene_range_deg": 0.0,
+            "forearm_to_hand_cm": 12.179978542711332,
+            "forearm_to_hand_beyond_model_range_cm": 0.0,
+            "forearm_to_hand_beyond_measured_range_cm": 0.0,
+            "elbow_on_axis_deg": -74.66074112074904
+          },
+          "below_floor_plane_cm": {
+            "chest": 0.0,
+            "upperarm_L": 0.0,
+            "lowerarm_L": 0.0,
+            "wrist_L": 0.0,
+            "upperarm_R": 0.0,
+            "lowerarm_R": 0.0,
+            "wrist_R": 0.0
+          },
+          "below_floor_plane_max_cm": 0.0
+        }
+      },
+      "optional_fields": {
+        "plan_step": 496300,
+        "plan_steps_given": {
+          "goal": 496300,
+          "start": 496300,
+          "end": 496300
+        },
+        "analysis_meanings": {
+          "goal": "the world record s - age - 1 = 496122, the body's state when the goal moment s - age = 496123 (age 177 model steps, inferred from the goal ring's age, its basis prior_history_unverified) read the goal pose; the stored goal pose lags that state by one 5 ms physics substep (it is read from the body positions and orientations MuJoCo leaves at the start of its last substep), so the two differ by that substep's motion: stored_pose_gap_cm (the largest position difference over the 25 non-gaze rows), stored_pose_gap_deg (the largest turn over those rows, degrees) and palm_gap_cm (the two palm rows) are the measured gap between the record's rebuilt pose and the stored pose (null when the goal join did not read that record); qpos given only when that record is confirmed by content (LAST_SUBSTEP_NOTE: (i) every row within twice its storage bound plus the previous record's storage bound plus the row's motion over the model step, and (ii) no neighbouring record nearer the stored goal pose beyond the two records' largest storage bounds)",
+          "start": "the world record s - 1, the body's state when the plan step s read its start pose; the stored start pose lags that state by one 5 ms physics substep (it is read from the body positions and orientations MuJoCo leaves at the start of its last substep), so the two differ by that substep's motion: stored_pose_gap_cm (the largest position difference over the 25 non-gaze rows), stored_pose_gap_deg (the largest turn over those rows, degrees) and palm_gap_cm (the two palm rows) are the measured gap between the record's rebuilt pose and the stored pose",
+          "end": "the world record s + 4 (hold 5 model steps), the body's state when model step s + 5 read the end pose; the stored end pose lags that state by one 5 ms physics substep (it is read from the body positions and orientations MuJoCo leaves at the start of its last substep), so the two differ by that substep's motion: stored_pose_gap_cm (the largest position difference over the 25 non-gaze rows), stored_pose_gap_deg (the largest turn over those rows, degrees) and palm_gap_cm (the two palm rows) are the measured gap between the record's rebuilt pose and the stored pose"
+        },
+        "substep_lag": {
+          "goal": {
+            "stored_pose_gap_cm": 0.3326463619557316,
+            "stored_pose_gap_deg": 1.2149554035021133,
+            "palm_gap_cm": {
+              "L": 0.26382137741525574,
+              "R": 0.1052063284006368
+            }
+          },
+          "start": {
+            "stored_pose_gap_cm": 0.04853501865794529,
+            "stored_pose_gap_deg": 0.5344781130653822,
+            "palm_gap_cm": {
+              "L": 0.014621668468368657,
+              "R": 0.017504059624566855
+            }
+          },
+          "end": {
+            "stored_pose_gap_cm": 0.0699783397368305,
+            "stored_pose_gap_deg": 0.5699318521985017,
+            "palm_gap_cm": {
+              "L": 0.02305686254868062,
+              "R": 0.048102735421826755
+            }
+          }
+        },
+        "body_gap_cm": {
+          "start": 3.389163,
+          "end": 4.17738
+        },
+        "pose_error": {
+          "start": {
+            "position": 1.500623,
+            "rotation": 1.687826,
+            "sum": 3.188448
+          },
+          "end": {
+            "position": 2.513971,
+            "rotation": 1.522787,
+            "sum": 4.036757
+          },
+          "first_forecast": {
+            "position": 2.878103,
+            "rotation": 2.289121,
+            "sum": 5.167224
+          },
+          "selected_forecast": {
+            "position": 2.878103,
+            "rotation": 2.289121,
+            "sum": 5.167224
+          },
+          "meaning": "the pose error in the forecast's units: position = mean over the 25 non-gaze handles and 3 axes of (cm / 1.80)^2, rotation = the same of (degrees / 11.0)^2, sum = both; start and end measured, first and selected forecast"
+        },
+        "analysis_note": "fallback: the search kept the iteration-0 composite (no predicted improving pose command); the first and the selected forecasts are the same arrays, so the first and selected predictions show the same pose",
+        "fallback": true,
+        "meaning": "analysis_meanings, pose_error and analysis_note are the analysis file's own text, kept here only: captions and drawn text use this program's wording"
+      },
+      "setup_seconds": 1.3617726999800652,
+      "model_structure_fingerprint": "5aff7b57135ab6431aae071e6a4a66804495f0b6eba4f395184266ccea5291c3",
+      "header": "D:\\UEMA_Research\\external\\D\\UEMA_preserved\\s4r_pose_learning_S4R_pose_learning_a2_496250\\run\\observer\\world\\b6\\header_17576_1792749219975.json"
+    },
+    "largest_disagreement": {
+      "rule": "the usable outcome with the largest |selected forecast sum - actual end sum| (search.selected_forecast.sum minus actual_pose_error.end.sum), ties by the lowest (model step, body)",
+      "step": 496280,
+      "body": 5,
+      "model_steps": {
+        "goal": 496106,
+        "start": 496279,
+        "end": 496284
+      },
+      "links": {
+        "first": {
+          "L": {
+            "shoulder_link_cm": 0.35645130145257065,
+            "upperarm_link_cm": 1.196226199759107,
+            "elbow_off_axis_deg": 1.0290526028059488,
+            "elbow_beyond_scene_range_deg": 0.0,
+            "forearm_to_hand_cm": 12.394816050834363,
+            "forearm_to_hand_beyond_model_range_cm": 0.06301776892159339,
+            "forearm_to_hand_beyond_measured_range_cm": 0.06366246725198366,
+            "elbow_on_axis_deg": -21.48241034047694
+          },
+          "R": {
+            "shoulder_link_cm": 0.42076901858465354,
+            "upperarm_link_cm": 2.4598822649493775,
+            "elbow_off_axis_deg": 6.960391142270529,
+            "elbow_beyond_scene_range_deg": 0.0,
+            "forearm_to_hand_cm": 10.744546540290422,
+            "forearm_to_hand_beyond_model_range_cm": 0.02971512399176568,
+            "forearm_to_hand_beyond_measured_range_cm": 1.3094201303724713,
+            "elbow_on_axis_deg": -94.15160825716865
+          },
+          "below_floor_plane_cm": {
+            "chest": 0.0,
+            "upperarm_L": 0.0,
+            "lowerarm_L": 0.0,
+            "wrist_L": 0.0,
+            "upperarm_R": 0.0,
+            "lowerarm_R": 0.0,
+            "wrist_R": 0.0
+          },
+          "below_floor_plane_max_cm": 0.0
+        },
+        "selected": {
+          "L": {
+            "shoulder_link_cm": 0.3219613547759259,
+            "upperarm_link_cm": 1.1288148580961483,
+            "elbow_off_axis_deg": 3.6404947902636633,
+            "elbow_beyond_scene_range_deg": 0.0,
+            "forearm_to_hand_cm": 13.17670974290067,
+            "forearm_to_hand_beyond_model_range_cm": 0.8449114609879,
+            "forearm_to_hand_beyond_measured_range_cm": 0.8455561593182903,
+            "elbow_on_axis_deg": -18.064992388639144
+          },
+          "R": {
+            "shoulder_link_cm": 0.3583094872032996,
+            "upperarm_link_cm": 2.4102566532487812,
+            "elbow_off_axis_deg": 16.721426316868264,
+            "elbow_beyond_scene_range_deg": 0.0,
+            "forearm_to_hand_cm": 10.054279084913768,
+            "forearm_to_hand_beyond_model_range_cm": 0.7199825793684198,
+            "forearm_to_hand_beyond_measured_range_cm": 1.9996875857491254,
+            "elbow_on_axis_deg": -92.63432154887367
+          },
+          "below_floor_plane_cm": {
+            "chest": 0.0,
+            "upperarm_L": 0.0,
+            "lowerarm_L": 0.0,
+            "wrist_L": 0.0,
+            "upperarm_R": 0.0,
+            "lowerarm_R": 0.0,
+            "wrist_R": 0.0
+          },
+          "below_floor_plane_max_cm": 0.0
+        },
+        "end": {
+          "L": {
+            "shoulder_link_cm": 1.8965157982579858e-06,
+            "upperarm_link_cm": 4.4984007967038496e-06,
+            "elbow_off_axis_deg": 1.862984365211796e-06,
+            "elbow_beyond_scene_range_deg": 0.0,
+            "forearm_to_hand_cm": 12.29520937242469,
+            "forearm_to_hand_beyond_model_range_cm": 0.0,
+            "forearm_to_hand_beyond_measured_range_cm": 0.0,
+            "elbow_on_axis_deg": -26.566755131994352
+          },
+          "R": {
+            "shoulder_link_cm": 1.9283894750636216e-06,
+            "upperarm_link_cm": 1.4470814511564227e-06,
+            "elbow_off_axis_deg": 3.7152090718903917e-06,
+            "elbow_beyond_scene_range_deg": 0.0,
+            "forearm_to_hand_cm": 12.157556663650714,
+            "forearm_to_hand_beyond_model_range_cm": 0.0,
+            "forearm_to_hand_beyond_measured_range_cm": 0.0,
+            "elbow_on_axis_deg": -106.38503700316356
+          },
+          "below_floor_plane_cm": {
+            "chest": 0.0,
+            "upperarm_L": 0.0,
+            "lowerarm_L": 0.0,
+            "wrist_L": 0.0,
+            "upperarm_R": 0.0,
+            "lowerarm_R": 0.0,
+            "wrist_R": 0.0
+          },
+          "below_floor_plane_max_cm": 0.0
+        }
+      },
+      "optional_fields": {
+        "plan_step": 496280,
+        "plan_steps_given": {
+          "goal": 496280,
+          "start": 496280,
+          "end": 496280
+        },
+        "analysis_meanings": {
+          "goal": "the world record s - age - 1 = 496106, the body's state when the goal moment s - age = 496107 (age 173 model steps, inferred from the goal ring's age, its basis prior_history_unverified) read the goal pose; the stored goal pose lags that state by one 5 ms physics substep (it is read from the body positions and orientations MuJoCo leaves at the start of its last substep), so the two differ by that substep's motion: stored_pose_gap_cm (the largest position difference over the 25 non-gaze rows), stored_pose_gap_deg (the largest turn over those rows, degrees) and palm_gap_cm (the two palm rows) are the measured gap between the record's rebuilt pose and the stored pose (null when the goal join did not read that record); qpos given only when that record is confirmed by content (LAST_SUBSTEP_NOTE: (i) every row within twice its storage bound plus the previous record's storage bound plus the row's motion over the model step, and (ii) no neighbouring record nearer the stored goal pose beyond the two records' largest storage bounds)",
+          "start": "the world record s - 1, the body's state when the plan step s read its start pose; the stored start pose lags that state by one 5 ms physics substep (it is read from the body positions and orientations MuJoCo leaves at the start of its last substep), so the two differ by that substep's motion: stored_pose_gap_cm (the largest position difference over the 25 non-gaze rows), stored_pose_gap_deg (the largest turn over those rows, degrees) and palm_gap_cm (the two palm rows) are the measured gap between the record's rebuilt pose and the stored pose",
+          "end": "the world record s + 4 (hold 5 model steps), the body's state when model step s + 5 read the end pose; the stored end pose lags that state by one 5 ms physics substep (it is read from the body positions and orientations MuJoCo leaves at the start of its last substep), so the two differ by that substep's motion: stored_pose_gap_cm (the largest position difference over the 25 non-gaze rows), stored_pose_gap_deg (the largest turn over those rows, degrees) and palm_gap_cm (the two palm rows) are the measured gap between the record's rebuilt pose and the stored pose"
+        },
+        "substep_lag": {
+          "goal": {
+            "stored_pose_gap_cm": 0.28459118453981325,
+            "stored_pose_gap_deg": 1.0815894676800772,
+            "palm_gap_cm": {
+              "L": 0.22870501420214856,
+              "R": 0.17588548349987582
+            }
+          },
+          "start": {
+            "stored_pose_gap_cm": 0.047985461757705315,
+            "stored_pose_gap_deg": 0.5596776893706031,
+            "palm_gap_cm": {
+              "L": 0.0263679663866018,
+              "R": 0.04571729461952614
+            }
+          },
+          "end": {
+            "stored_pose_gap_cm": 0.0465870276033839,
+            "stored_pose_gap_deg": 0.8695112879590462,
+            "palm_gap_cm": {
+              "L": 0.010017140496685674,
+              "R": 0.007677999449596217
+            }
+          }
+        },
+        "body_gap_cm": {
+          "start": 7.821001,
+          "end": 10.336
+        },
+        "pose_error": {
+          "start": {
+            "position": 14.50506,
+            "rotation": 11.18921,
+            "sum": 25.69427
+          },
+          "end": {
+            "position": 22.62501,
+            "rotation": 15.8842,
+            "sum": 38.50921
+          },
+          "first_forecast": {
+            "position": 14.00867,
+            "rotation": 10.86586,
+            "sum": 24.87453
+          },
+          "selected_forecast": {
+            "position": 11.35752,
+            "rotation": 10.23113,
+            "sum": 21.58865
+          },
+          "meaning": "the pose error in the forecast's units: position = mean over the 25 non-gaze handles and 3 axes of (cm / 1.80)^2, rotation = the same of (degrees / 11.0)^2, sum = both; start and end measured, first and selected forecast"
+        },
+        "analysis_note": null,
+        "fallback": false,
+        "meaning": "analysis_meanings, pose_error and analysis_note are the analysis file's own text, kept here only: captions and drawn text use this program's wording"
+      },
+      "setup_seconds": 1.332420299993828,
+      "model_structure_fingerprint": "5aff7b57135ab6431aae071e6a4a66804495f0b6eba4f395184266ccea5291c3",
+      "header": "D:\\UEMA_Research\\external\\D\\UEMA_preserved\\s4r_pose_learning_S4R_pose_learning_a2_496250\\run\\observer\\world\\b5\\header_33696_1792749219976.json"
+    }
+  },
+  "cameras": {
+    "typical_improving": {
+      "rule": "One camera per example, the same for all five panels: the existing renderer's front view (BODY_VIEWS \"front\": azimuth 180 degrees, elevation -8 degrees) in the start pose's upper-body coordinates (_Body.set_frame(start): the renderer's trunk body at the start; x toward the belly, y toward the infant's left, z toward the head; the infant faces the camera, so the picture's right is the infant's left), placed by _Body.fit so that both arms, the head, the chest and the upper body at each pose drawn and every drawn marker within 1 m of the start's trunk fit the 480 x 560 pixel picture, at the fitted distance times 1.18 (render_learning.py's factor). The goal and the end are drawn in the start's coordinates, so a move of the whole body shows as a shift.",
+      "view": "front",
+      "azimuth_deg": 180.0,
+      "elevation_deg": -8.0,
+      "look_at_m_in_start_trunk_coordinates": [
+        0.02937169510011606,
+        0.03065084554747641,
+        0.12698969694748852
+      ],
+      "distance_m": 1.206430218254906,
+      "distance_factor": 1.18,
+      "trunk_body": "upper_body",
+      "trunk_origin_world_m": [
+        -0.10805333236331069,
+        -0.2924778492205363,
+        0.047860513747808905
+      ],
+      "trunk_axes_world": [
+        [
+          -0.033570150582122094,
+          0.6898026084319177,
+          0.7232187818291334
+        ],
+        [
+          -0.030964846474161978,
+          -0.7239971099027752,
+          0.6891076571445566
+        ],
+        [
+          0.9989565672604213,
+          0.0007390892710665842,
+          0.04566432386802821
+        ]
+      ],
+      "fit_bodies": [
+        "chest",
+        "head",
+        "left_eye",
+        "left_ffdistal",
+        "left_ffknuckle",
+        "left_ffmiddle",
+        "left_hand",
+        "left_lfdistal",
+        "left_lfknuckle",
+        "left_lfmetacarpal",
+        "left_lfmiddle",
+        "left_lower_arm",
+        "left_mfdistal",
+        "left_mfknuckle",
+        "left_mfmiddle",
+        "left_rfdistal",
+        "left_rfknuckle",
+        "left_rfmiddle",
+        "left_thbase",
+        "left_thdistal",
+        "left_thhub",
+        "left_upper_arm",
+        "right_eye",
+        "right_ffdistal",
+        "right_ffknuckle",
+        "right_ffmiddle",
+        "right_hand",
+        "right_lfdistal",
+        "right_lfknuckle",
+        "right_lfmetacarpal",
+        "right_lfmiddle",
+        "right_lower_arm",
+        "right_mfdistal",
+        "right_mfknuckle",
+        "right_mfmiddle",
+        "right_rfdistal",
+        "right_rfknuckle",
+        "right_rfmiddle",
+        "right_thbase",
+        "right_thdistal",
+        "right_thhub",
+        "right_upper_arm",
+        "upper_body"
+      ],
+      "markers_in_fit": 40,
+      "markers_left_out": []
+    },
+    "typical_worsening": {
+      "rule": "One camera per example, the same for all five panels: the existing renderer's front view (BODY_VIEWS \"front\": azimuth 180 degrees, elevation -8 degrees) in the start pose's upper-body coordinates (_Body.set_frame(start): the renderer's trunk body at the start; x toward the belly, y toward the infant's left, z toward the head; the infant faces the camera, so the picture's right is the infant's left), placed by _Body.fit so that both arms, the head, the chest and the upper body at each pose drawn and every drawn marker within 1 m of the start's trunk fit the 480 x 560 pixel picture, at the fitted distance times 1.18 (render_learning.py's factor). The goal and the end are drawn in the start's coordinates, so a move of the whole body shows as a shift.",
+      "view": "front",
+      "azimuth_deg": 180.0,
+      "elevation_deg": -8.0,
+      "look_at_m_in_start_trunk_coordinates": [
+        0.03258354927407137,
+        0.08234531430576841,
+        0.09909558509795659
+      ],
+      "distance_m": 1.1216984986039027,
+      "distance_factor": 1.18,
+      "trunk_body": "upper_body",
+      "trunk_origin_world_m": [
+        0.4412301679316982,
+        0.11499685007078005,
+        0.06023564302886475
+      ],
+      "trunk_axes_world": [
+        [
+          -0.029662089463381586,
+          -0.8612453778839364,
+          -0.507322934157545
+        ],
+        [
+          0.034276232842429366,
+          0.5063713613588833,
+          -0.8616340199050184
+        ],
+        [
+          0.9989721218886926,
+          -0.04294698440060429,
+          0.014500214484494373
+        ]
+      ],
+      "fit_bodies": [
+        "chest",
+        "head",
+        "left_eye",
+        "left_ffdistal",
+        "left_ffknuckle",
+        "left_ffmiddle",
+        "left_hand",
+        "left_lfdistal",
+        "left_lfknuckle",
+        "left_lfmetacarpal",
+        "left_lfmiddle",
+        "left_lower_arm",
+        "left_mfdistal",
+        "left_mfknuckle",
+        "left_mfmiddle",
+        "left_rfdistal",
+        "left_rfknuckle",
+        "left_rfmiddle",
+        "left_thbase",
+        "left_thdistal",
+        "left_thhub",
+        "left_upper_arm",
+        "right_eye",
+        "right_ffdistal",
+        "right_ffknuckle",
+        "right_ffmiddle",
+        "right_hand",
+        "right_lfdistal",
+        "right_lfknuckle",
+        "right_lfmetacarpal",
+        "right_lfmiddle",
+        "right_lower_arm",
+        "right_mfdistal",
+        "right_mfknuckle",
+        "right_mfmiddle",
+        "right_rfdistal",
+        "right_rfknuckle",
+        "right_rfmiddle",
+        "right_thbase",
+        "right_thdistal",
+        "right_thhub",
+        "right_upper_arm",
+        "upper_body"
+      ],
+      "markers_in_fit": 40,
+      "markers_left_out": []
+    },
+    "largest_disagreement": {
+      "rule": "One camera per example, the same for all five panels: the existing renderer's front view (BODY_VIEWS \"front\": azimuth 180 degrees, elevation -8 degrees) in the start pose's upper-body coordinates (_Body.set_frame(start): the renderer's trunk body at the start; x toward the belly, y toward the infant's left, z toward the head; the infant faces the camera, so the picture's right is the infant's left), placed by _Body.fit so that both arms, the head, the chest and the upper body at each pose drawn and every drawn marker within 1 m of the start's trunk fit the 480 x 560 pixel picture, at the fitted distance times 1.18 (render_learning.py's factor). The goal and the end are drawn in the start's coordinates, so a move of the whole body shows as a shift.",
+      "view": "front",
+      "azimuth_deg": 180.0,
+      "elevation_deg": -8.0,
+      "look_at_m_in_start_trunk_coordinates": [
+        0.0414957852937517,
+        0.025820432446547387,
+        0.10785521691093075
+      ],
+      "distance_m": 1.4108617319977919,
+      "distance_factor": 1.18,
+      "trunk_body": "upper_body",
+      "trunk_origin_world_m": [
+        -0.09250025267327039,
+        -0.2559231608346881,
+        0.047636429423042366
+      ],
+      "trunk_axes_world": [
+        [
+          0.005899870018352571,
+          -0.05144879258720967,
+          0.9986582064325539
+        ],
+        [
+          0.02385955267474387,
+          -0.9983840326446047,
+          -0.051575625119413514
+        ],
+        [
+          0.9996979110110854,
+          0.02413182756476257,
+          -0.004662790844215392
+        ]
+      ],
+      "fit_bodies": [
+        "chest",
+        "head",
+        "left_eye",
+        "left_ffdistal",
+        "left_ffknuckle",
+        "left_ffmiddle",
+        "left_hand",
+        "left_lfdistal",
+        "left_lfknuckle",
+        "left_lfmetacarpal",
+        "left_lfmiddle",
+        "left_lower_arm",
+        "left_mfdistal",
+        "left_mfknuckle",
+        "left_mfmiddle",
+        "left_rfdistal",
+        "left_rfknuckle",
+        "left_rfmiddle",
+        "left_thbase",
+        "left_thdistal",
+        "left_thhub",
+        "left_upper_arm",
+        "right_eye",
+        "right_ffdistal",
+        "right_ffknuckle",
+        "right_ffmiddle",
+        "right_hand",
+        "right_lfdistal",
+        "right_lfknuckle",
+        "right_lfmetacarpal",
+        "right_lfmiddle",
+        "right_lower_arm",
+        "right_mfdistal",
+        "right_mfknuckle",
+        "right_mfmiddle",
+        "right_rfdistal",
+        "right_rfknuckle",
+        "right_rfmiddle",
+        "right_thbase",
+        "right_thdistal",
+        "right_thhub",
+        "right_upper_arm",
+        "upper_body"
+      ],
+      "markers_in_fit": 40,
+      "markers_left_out": []
+    }
+  },
+  "images": {
+    "a2diag_typical_improving_1_goal.png": "d68fd523e9b2b868fb7b9f8b63e7ee7c56d832ca177a7d35f9479f6e27b77432",
+    "a2diag_typical_improving_2_start.png": "10d1756e0cba687cdd7d31cd907e5658efd098b47f9ba8a6e30561bd0df12c66",
+    "a2diag_typical_improving_3_first_prediction.png": "13efa5085cdc02a3aa0dc86384b673805435f8655f185159e15585992beae93c",
+    "a2diag_typical_improving_4_selected_prediction.png": "3dc66d64c637489dc28007c4ddd1dfd9f3403a2fac0335bdc81aca2cc01afcfc",
+    "a2diag_typical_improving_5_end.png": "77f55af3405cf7d4641c5baf7b1279fd6d1a40a9ccfbe32f731dbd9488387735",
+    "a2diag_typical_worsening_1_goal.png": "b6ef13d73cd2a7731238de0c595ff13bfb65f4a4943f4b60a9984815a0459fb3",
+    "a2diag_typical_worsening_2_start.png": "1e14c94864a6ca2e33918aa86a9924813a844b8b836b609639019c78e67761b0",
+    "a2diag_typical_worsening_3_first_prediction.png": "e6de91b7d5e709c30216b2c7a91d4f7a45937967359216d2471a0ba601af974a",
+    "a2diag_typical_worsening_4_selected_prediction.png": "9ffc69c518fdea6ad6b851998e7a584dc34d29beb851c0c97b51992b34b2aac3",
+    "a2diag_typical_worsening_5_end.png": "615dec07a4ee9f743ff405616e4c3e4c1e8a48518d95659c453abac46cfdac72",
+    "a2diag_largest_disagreement_1_goal.png": "88172e7b62dce34e725f59e9e52a2ec3dff216c6ded5d508c9682e2d6f5d05c4",
+    "a2diag_largest_disagreement_2_start.png": "22107b3a57328922a2e4f9d0172110629b78e6fa1622ba5c8eed22b520ca8b21",
+    "a2diag_largest_disagreement_3_first_prediction.png": "aaec61a9308223be7cae02ee465d169b00254cd35a4aeca19c07a7bef2ccf9e1",
+    "a2diag_largest_disagreement_4_selected_prediction.png": "8e4111aca173a43fecd14e5d0fc55040d1e23f7f38e7cd6d3ef1bae0a3115914",
+    "a2diag_largest_disagreement_5_end.png": "f6a45e5ecfce47bb01f4a39926ba2aef4afaab946e7c07d9fab6f163535e9843"
+  },
+  "captions": {
+    "a2diag_typical_improving_1_goal.png": "Typical improving outcome, body 1, the command planned at model step 496,340. Panel 1 of 5, earlier goal: a real MIMo render of the saved joint positions of model step 496,196 (the goal's saved record, 144 model steps before the plan step), 143 model steps before the start record. Not a prediction and not a fitted pose. Green squares: the goal palm points, from the stored goal pose that the search's forecast pose error is measured against. Orange rings: this record's own palm points, left 0.15 cm, right 0.11 cm from the green squares. The stored pose, which the printed distances use, was saved one 5 ms physics substep before these joint positions; here the palm points differ by 0.145 cm on the left and 0.106 cm on the right between the two. Shoulder, elbow and palm point are the origins of the upper-arm, forearm and hand bodies; the palm point, the hand body's origin, lies inside the palm. Camera: the front view fixed on the start pose's upper body, the same for all five panels. Every distance printed is a straight-line distance in space, not a length on the picture. The infant faces the camera, so the picture's right is the infant's left.",
+    "a2diag_typical_improving_2_start.png": "Typical improving outcome, body 1, the command planned at model step 496,340. Panel 2 of 5, actual start: a real MIMo render of the saved joint positions of model step 496,339 (the start's saved record, 1 model step before the plan step). Palm point to goal palm point (green squares): left 7.29 cm, right 10.51 cm. The analysis's body gap at the start (mean distance of the 25 body parts from the goal pose): 6.87 cm. The stored pose, which the printed distances use, was saved one 5 ms physics substep before these joint positions; here the palm points differ by 0.125 cm on the left and 0.106 cm on the right between the two. Not a prediction. Every distance printed is a straight-line distance in space, not a length on the picture. The infant faces the camera, so the picture's right is the infant's left.",
+    "a2diag_typical_improving_3_first_prediction.png": "Typical improving outcome, body 1, the command planned at model step 496,340. Panel 3 of 5, first prediction: not a simulator state. Purple dots: the forecast world position of each arm part (shoulder, elbow, palm point) for the first command of the search; purple diamond: the forecast chest. Each forecast part is that part's world pose after the command's 5 model steps (250 ms), at the actual end (model step 496,344, 5 model steps after the start record). Each part is forecast separately, so no line joins them; each purple arrow shows the forecast direction of that part's long axis (3.5 cm long, not a limb). They are drawn over the real start render, faded. The fitted arm, grey rings joined by a dashed grey line, is the forward kinematics of one set of the arm's 7 hinge angles inside their ranges, the set the fitter's solve returned as nearest the three forecast parts, placed on the forecast chest; a fitted illustration, not a result. Red lines: forecast part to the fitted arm's place for it: left shoulder 0.39 cm, elbow 0.91 cm, palm point 0.58 cm; right shoulder 0.41 cm, elbow 0.66 cm, palm point 1.00 cm. Forecast palm point to goal palm point: left 5.29 cm, right 8.52 cm. Every distance printed is a straight-line distance in space, not a length on the picture. The infant faces the camera, so the picture's right is the infant's left.",
+    "a2diag_typical_improving_4_selected_prediction.png": "Typical improving outcome, body 1, the command planned at model step 496,340. Panel 4 of 5, selected prediction: not a simulator state. Purple dots: the forecast world position of each arm part (shoulder, elbow, palm point) for the selected command; purple diamond: the forecast chest. Each forecast part is that part's world pose after the command's 5 model steps (250 ms), at the actual end (model step 496,344, 5 model steps after the start record). Each part is forecast separately, so no line joins them; each purple arrow shows the forecast direction of that part's long axis (3.5 cm long, not a limb). They are drawn over the real start render, faded. The fitted arm, grey rings joined by a dashed grey line, is the forward kinematics of one set of the arm's 7 hinge angles inside their ranges, the set the fitter's solve returned as nearest the three forecast parts, placed on the forecast chest; a fitted illustration, not a result. Red lines: forecast part to the fitted arm's place for it: left shoulder 0.39 cm, elbow 0.87 cm, palm point 0.62 cm; right shoulder 0.42 cm, elbow 0.84 cm, palm point 1.41 cm. Forecast palm point to goal palm point: left 4.74 cm, right 6.93 cm. Forecast part to the same part at the actual end (model step 496,344): left shoulder 1.46 cm, elbow 2.73 cm, palm point 4.75 cm; right shoulder 1.40 cm, elbow 1.60 cm, palm point 3.33 cm. Every distance printed is a straight-line distance in space, not a length on the picture. The infant faces the camera, so the picture's right is the infant's left.",
+    "a2diag_typical_improving_5_end.png": "Typical improving outcome, body 1, the command planned at model step 496,340. Panel 5 of 5, actual end: a real MIMo render of the saved joint positions of model step 496,344 (the end's saved record, 4 model steps after the plan step), 5 model steps (250 ms) after the start record (model step 496,339). Palm point to goal palm point (green squares): left 7.99 cm, right 8.34 cm. The analysis's body gap at the end (mean distance of the 25 body parts from the goal pose): 6.90 cm. The stored pose, which the printed distances use, was saved one 5 ms physics substep before these joint positions; here the palm points differ by 0.122 cm on the left and 0.033 cm on the right between the two. Not a prediction. Every distance printed is a straight-line distance in space, not a length on the picture. The infant faces the camera, so the picture's right is the infant's left.",
+    "a2diag_typical_worsening_1_goal.png": "Typical worsening outcome, body 6, the command planned at model step 496,300. Panel 1 of 5, earlier goal: a real MIMo render of the saved joint positions of model step 496,122 (the goal's saved record, 178 model steps before the plan step), 177 model steps before the start record. Not a prediction and not a fitted pose. Green squares: the goal palm points, from the stored goal pose that the search's forecast pose error is measured against. Orange rings: this record's own palm points, left 0.26 cm, right 0.11 cm from the green squares. The stored pose, which the printed distances use, was saved one 5 ms physics substep before these joint positions; here the palm points differ by 0.264 cm on the left and 0.105 cm on the right between the two. Shoulder, elbow and palm point are the origins of the upper-arm, forearm and hand bodies; the palm point, the hand body's origin, lies inside the palm. Camera: the front view fixed on the start pose's upper body, the same for all five panels. Every distance printed is a straight-line distance in space, not a length on the picture. The infant faces the camera, so the picture's right is the infant's left.",
+    "a2diag_typical_worsening_2_start.png": "Typical worsening outcome, body 6, the command planned at model step 496,300. Panel 2 of 5, actual start: a real MIMo render of the saved joint positions of model step 496,299 (the start's saved record, 1 model step before the plan step). Palm point to goal palm point (green squares): left 1.59 cm, right 6.95 cm. The analysis's body gap at the start (mean distance of the 25 body parts from the goal pose): 3.39 cm. The stored pose, which the printed distances use, was saved one 5 ms physics substep before these joint positions; here the palm points differ by 0.015 cm on the left and 0.018 cm on the right between the two. Not a prediction. Every distance printed is a straight-line distance in space, not a length on the picture. The infant faces the camera, so the picture's right is the infant's left.",
+    "a2diag_typical_worsening_3_first_prediction.png": "Typical worsening outcome, body 6, the command planned at model step 496,300. Panel 3 of 5, first prediction: not a simulator state. Purple dots: the forecast world position of each arm part (shoulder, elbow, palm point) for the first command of the search; purple diamond: the forecast chest. Each forecast part is that part's world pose after the command's 5 model steps (250 ms), at the actual end (model step 496,304, 5 model steps after the start record). Each part is forecast separately, so no line joins them; each purple arrow shows the forecast direction of that part's long axis (3.5 cm long, not a limb). They are drawn over the real start render, faded. The fitted arm, grey rings joined by a dashed grey line, is the forward kinematics of one set of the arm's 7 hinge angles inside their ranges, the set the fitter's solve returned as nearest the three forecast parts, placed on the forecast chest; a fitted illustration, not a result. Red lines: forecast part to the fitted arm's place for it: left shoulder 0.30 cm, elbow 0.47 cm, palm point 1.33 cm; right shoulder 0.30 cm, elbow 0.80 cm, palm point 0.43 cm. Forecast palm point to goal palm point: left 2.34 cm, right 9.62 cm. Every distance printed is a straight-line distance in space, not a length on the picture. The infant faces the camera, so the picture's right is the infant's left.",
+    "a2diag_typical_worsening_4_selected_prediction.png": "Typical worsening outcome, body 6, the command planned at model step 496,300. Panel 4 of 5, selected prediction: not a simulator state. Purple dots: the forecast world position of each arm part (shoulder, elbow, palm point) for the selected command; purple diamond: the forecast chest. Each forecast part is that part's world pose after the command's 5 model steps (250 ms), at the actual end (model step 496,304, 5 model steps after the start record). Each part is forecast separately, so no line joins them; each purple arrow shows the forecast direction of that part's long axis (3.5 cm long, not a limb). They are drawn over the real start render, faded. The fitted arm, grey rings joined by a dashed grey line, is the forward kinematics of one set of the arm's 7 hinge angles inside their ranges, the set the fitter's solve returned as nearest the three forecast parts, placed on the forecast chest; a fitted illustration, not a result. Red lines: forecast part to the fitted arm's place for it: left shoulder 0.30 cm, elbow 0.47 cm, palm point 1.33 cm; right shoulder 0.30 cm, elbow 0.80 cm, palm point 0.43 cm. Forecast palm point to goal palm point: left 2.34 cm, right 9.62 cm. Forecast part to the same part at the actual end (model step 496,304): left shoulder 0.71 cm, elbow 1.29 cm, palm point 1.23 cm; right shoulder 0.45 cm, elbow 1.93 cm, palm point 2.19 cm. This command is a fallback: the command sent was the search's first command. The selected forecast equals the first forecast (the same arrays). Every distance printed is a straight-line distance in space, not a length on the picture. The infant faces the camera, so the picture's right is the infant's left.",
+    "a2diag_typical_worsening_5_end.png": "Typical worsening outcome, body 6, the command planned at model step 496,300. Panel 5 of 5, actual end: a real MIMo render of the saved joint positions of model step 496,304 (the end's saved record, 4 model steps after the plan step), 5 model steps (250 ms) after the start record (model step 496,299). Palm point to goal palm point (green squares): left 1.66 cm, right 9.08 cm. The analysis's body gap at the end (mean distance of the 25 body parts from the goal pose): 4.18 cm. The stored pose, which the printed distances use, was saved one 5 ms physics substep before these joint positions; here the palm points differ by 0.023 cm on the left and 0.048 cm on the right between the two. Not a prediction. Every distance printed is a straight-line distance in space, not a length on the picture. The infant faces the camera, so the picture's right is the infant's left.",
+    "a2diag_largest_disagreement_1_goal.png": "Largest prediction disagreement, body 5, the command planned at model step 496,280. Panel 1 of 5, earlier goal: a real MIMo render of the saved joint positions of model step 496,106 (the goal's saved record, 174 model steps before the plan step), 173 model steps before the start record. Not a prediction and not a fitted pose. Green squares: the goal palm points, from the stored goal pose that the search's forecast pose error is measured against. Orange rings: this record's own palm points, left 0.23 cm, right 0.18 cm from the green squares. The stored pose, which the printed distances use, was saved one 5 ms physics substep before these joint positions; here the palm points differ by 0.229 cm on the left and 0.176 cm on the right between the two. Shoulder, elbow and palm point are the origins of the upper-arm, forearm and hand bodies; the palm point, the hand body's origin, lies inside the palm. Camera: the front view fixed on the start pose's upper body, the same for all five panels. Every distance printed is a straight-line distance in space, not a length on the picture. The infant faces the camera, so the picture's right is the infant's left.",
+    "a2diag_largest_disagreement_2_start.png": "Largest prediction disagreement, body 5, the command planned at model step 496,280. Panel 2 of 5, actual start: a real MIMo render of the saved joint positions of model step 496,279 (the start's saved record, 1 model step before the plan step). Palm point to goal palm point (green squares): left 4.84 cm, right 19.48 cm. The analysis's body gap at the start (mean distance of the 25 body parts from the goal pose): 7.82 cm. The stored pose, which the printed distances use, was saved one 5 ms physics substep before these joint positions; here the palm points differ by 0.026 cm on the left and 0.046 cm on the right between the two. Not a prediction. Every distance printed is a straight-line distance in space, not a length on the picture. The infant faces the camera, so the picture's right is the infant's left.",
+    "a2diag_largest_disagreement_3_first_prediction.png": "Largest prediction disagreement, body 5, the command planned at model step 496,280. Panel 3 of 5, first prediction: not a simulator state. Purple dots: the forecast world position of each arm part (shoulder, elbow, palm point) for the first command of the search; purple diamond: the forecast chest. Each forecast part is that part's world pose after the command's 5 model steps (250 ms), at the actual end (model step 496,284, 5 model steps after the start record). Each part is forecast separately, so no line joins them; each purple arrow shows the forecast direction of that part's long axis (3.5 cm long, not a limb). They are drawn over the real start render, faded. The fitted arm, grey rings joined by a dashed grey line, is the forward kinematics of one set of the arm's 7 hinge angles inside their ranges, the set the fitter's solve returned as nearest the three forecast parts, placed on the forecast chest; a fitted illustration, not a result. Red lines: forecast part to the fitted arm's place for it: left shoulder 0.36 cm, elbow 0.65 cm, palm point 0.83 cm; right shoulder 0.42 cm, elbow 1.29 cm, palm point 1.64 cm. Forecast palm point to goal palm point: left 6.82 cm, right 18.21 cm. Every distance printed is a straight-line distance in space, not a length on the picture. The infant faces the camera, so the picture's right is the infant's left.",
+    "a2diag_largest_disagreement_4_selected_prediction.png": "Largest prediction disagreement, body 5, the command planned at model step 496,280. Panel 4 of 5, selected prediction: not a simulator state. Purple dots: the forecast world position of each arm part (shoulder, elbow, palm point) for the selected command; purple diamond: the forecast chest. Each forecast part is that part's world pose after the command's 5 model steps (250 ms), at the actual end (model step 496,284, 5 model steps after the start record). Each part is forecast separately, so no line joins them; each purple arrow shows the forecast direction of that part's long axis (3.5 cm long, not a limb). They are drawn over the real start render, faded. The fitted arm, grey rings joined by a dashed grey line, is the forward kinematics of one set of the arm's 7 hinge angles inside their ranges, the set the fitter's solve returned as nearest the three forecast parts, placed on the forecast chest; a fitted illustration, not a result. Red lines: forecast part to the fitted arm's place for it: left shoulder 0.32 cm, elbow 0.69 cm, palm point 0.94 cm; right shoulder 0.36 cm, elbow 1.54 cm, palm point 1.88 cm. Forecast palm point to goal palm point: left 5.24 cm, right 16.62 cm. Forecast part to the same part at the actual end (model step 496,284): left shoulder 0.90 cm, elbow 1.46 cm, palm point 3.57 cm; right shoulder 0.67 cm, elbow 2.58 cm, palm point 7.49 cm. Every distance printed is a straight-line distance in space, not a length on the picture. The infant faces the camera, so the picture's right is the infant's left.",
+    "a2diag_largest_disagreement_5_end.png": "Largest prediction disagreement, body 5, the command planned at model step 496,280. Panel 5 of 5, actual end: a real MIMo render of the saved joint positions of model step 496,284 (the end's saved record, 4 model steps after the plan step), 5 model steps (250 ms) after the start record (model step 496,279). Palm point to goal palm point (green squares): left 8.75 cm, right 23.63 cm. The analysis's body gap at the end (mean distance of the 25 body parts from the goal pose): 10.34 cm. The stored pose, which the printed distances use, was saved one 5 ms physics substep before these joint positions; here the palm points differ by 0.010 cm on the left and 0.008 cm on the right between the two. Not a prediction. Every distance printed is a straight-line distance in space, not a length on the picture. The infant faces the camera, so the picture's right is the infant's left."
+  },
+  "overlays": {
+    "a2diag_typical_improving_1_goal.png": {
+      "render_offset_px": [
+        196,
+        70
+      ],
+      "render_size_px": [
+        480,
+        560
+      ],
+      "picture_size_px": [
+        872,
+        920
+      ],
+      "points_render_px": {
+        "left shoulder": [
+          260.346,
+          312.143
+        ],
+        "left elbow": [
+          313.214,
+          338.464
+        ],
+        "left palm point": [
+          378.327,
+          350.655
+        ],
+        "left goal palm point": [
+          378.251,
+          350.577
+        ],
+        "right shoulder": [
+          159.267,
+          278.974
+        ],
+        "right elbow": [
+          131.239,
+          223.517
+        ],
+        "right palm point": [
+          157.643,
+          165.079
+        ],
+        "right goal palm point": [
+          157.849,
+          165.64
+        ]
+      }
+    },
+    "a2diag_typical_improving_2_start.png": {
+      "render_offset_px": [
+        196,
+        70
+      ],
+      "render_size_px": [
+        480,
+        560
+      ],
+      "picture_size_px": [
+        872,
+        920
+      ],
+      "points_render_px": {
+        "left shoulder": [
+          275.632,
+          291.571
+        ],
+        "left elbow": [
+          301.942,
+          347.072
+        ],
+        "left palm point": [
+          355.934,
+          383.405
+        ],
+        "left goal palm point": [
+          378.251,
+          350.577
+        ],
+        "right shoulder": [
+          170.775,
+          301.338
+        ],
+        "right elbow": [
+          138.038,
+          244.994
+        ],
+        "right palm point": [
+          104.551,
+          186.046
+        ],
+        "right goal palm point": [
+          157.849,
+          165.64
+        ]
+      }
+    },
+    "a2diag_typical_improving_3_first_prediction.png": {
+      "render_offset_px": [
+        196,
+        70
+      ],
+      "render_size_px": [
+        480,
+        560
+      ],
+      "picture_size_px": [
+        872,
+        920
+      ],
+      "points_render_px": {
+        "left shoulder (forecast)": [
+          274.465,
+          292.81
+        ],
+        "left elbow (forecast)": [
+          309.351,
+          342.797
+        ],
+        "left palm point (forecast)": [
+          371.72,
+          377.964
+        ],
+        "left shoulder (forecast) arrow tip": [
+          286.438,
+          306.219
+        ],
+        "left elbow (forecast) arrow tip": [
+          325.262,
+          352.598
+        ],
+        "left palm point (forecast) arrow tip": [
+          388.667,
+          386.125
+        ],
+        "left shoulder (fitted arm)": [
+          275.617,
+          294.606
+        ],
+        "left elbow (fitted arm)": [
+          313.982,
+          343.203
+        ],
+        "left palm point (fitted arm)": [
+          369.919,
+          375.785
+        ],
+        "left goal palm point": [
+          378.251,
+          350.577
+        ],
+        "right shoulder (forecast)": [
+          171.554,
+          301.561
+        ],
+        "right elbow (forecast)": [
+          139.537,
+          243.027
+        ],
+        "right palm point (forecast)": [
+          114.029,
+          184.495
+        ],
+        "right shoulder (forecast) arrow tip": [
+          162.896,
+          284.671
+        ],
+        "right elbow (forecast) arrow tip": [
+          132.618,
+          225.545
+        ],
+        "right palm point (forecast) arrow tip": [
+          103.021,
+          167.619
+        ],
+        "right shoulder (fitted arm)": [
+          170.487,
+          299.603
+        ],
+        "right elbow (fitted arm)": [
+          139.844,
+          241.629
+        ],
+        "right palm point (fitted arm)": [
+          110.313,
+          180.717
+        ],
+        "right goal palm point": [
+          157.849,
+          165.64
+        ],
+        "chest (forecast)": [
+          223.254,
+          297.095
+        ]
+      }
+    },
+    "a2diag_typical_improving_4_selected_prediction.png": {
+      "render_offset_px": [
+        196,
+        70
+      ],
+      "render_size_px": [
+        480,
+        560
+      ],
+      "picture_size_px": [
+        872,
+        920
+      ],
+      "points_render_px": {
+        "left shoulder (forecast)": [
+          274.702,
+          292.588
+        ],
+        "left elbow (forecast)": [
+          310.858,
+          342.429
+        ],
+        "left palm point (forecast)": [
+          374.288,
+          375.671
+        ],
+        "left shoulder (forecast) arrow tip": [
+          286.905,
+          305.889
+        ],
+        "left elbow (forecast) arrow tip": [
+          327.173,
+          351.592
+        ],
+        "left palm point (forecast) arrow tip": [
+          391.497,
+          383.236
+        ],
+        "left shoulder (fitted arm)": [
+          275.895,
+          294.276
+        ],
+        "left elbow (fitted arm)": [
+          315.257,
+          342.35
+        ],
+        "left palm point (fitted arm)": [
+          372.34,
+          373.307
+        ],
+        "left goal palm point": [
+          378.251,
+          350.577
+        ],
+        "right shoulder (forecast)": [
+          171.749,
+          302.002
+        ],
+        "right elbow (forecast)": [
+          141.067,
+          240.732
+        ],
+        "right palm point (forecast)": [
+          124.193,
+          183.434
+        ],
+        "right shoulder (forecast) arrow tip": [
+          163.896,
+          284.633
+        ],
+        "right elbow (forecast) arrow tip": [
+          135.683,
+          223.321
+        ],
+        "right palm point (forecast) arrow tip": [
+          114.112,
+          166.067
+        ],
+        "right shoulder (fitted arm)": [
+          170.824,
+          300.074
+        ],
+        "right elbow (fitted arm)": [
+          142.524,
+          240.524
+        ],
+        "right palm point (fitted arm)": [
+          118.069,
+          178.909
+        ],
+        "right goal palm point": [
+          157.849,
+          165.64
+        ],
+        "chest (forecast)": [
+          223.574,
+          297.163
+        ]
+      }
+    },
+    "a2diag_typical_improving_5_end.png": {
+      "render_offset_px": [
+        196,
+        70
+      ],
+      "render_size_px": [
+        480,
+        560
+      ],
+      "picture_size_px": [
+        872,
+        920
+      ],
+      "points_render_px": {
+        "left shoulder": [
+          276.584,
+          298.091
+        ],
+        "left elbow": [
+          300.837,
+          351.722
+        ],
+        "left palm point": [
+          356.77,
+          386.033
+        ],
+        "left goal palm point": [
+          378.251,
+          350.577
+        ],
+        "right shoulder": [
+          171.501,
+          296.41
+        ],
+        "right elbow": [
+          143.327,
+          238.751
+        ],
+        "right palm point": [
+          113.511,
+          179.637
+        ],
+        "right goal palm point": [
+          157.849,
+          165.64
+        ]
+      }
+    },
+    "a2diag_typical_worsening_1_goal.png": {
+      "render_offset_px": [
+        196,
+        70
+      ],
+      "render_size_px": [
+        480,
+        560
+      ],
+      "picture_size_px": [
+        872,
+        954
+      ],
+      "points_render_px": {
+        "left shoulder": [
+          254.883,
+          296.619
+        ],
+        "left elbow": [
+          317.971,
+          268.546
+        ],
+        "left palm point": [
+          369.247,
+          218.095
+        ],
+        "left goal palm point": [
+          368.667,
+          217.266
+        ],
+        "right shoulder": [
+          144.856,
+          270.472
+        ],
+        "right elbow": [
+          105.029,
+          328.381
+        ],
+        "right palm point": [
+          83.178,
+          352.632
+        ],
+        "right goal palm point": [
+          82.903,
+          352.009
+        ]
+      }
+    },
+    "a2diag_typical_worsening_2_start.png": {
+      "render_offset_px": [
+        196,
+        70
+      ],
+      "render_size_px": [
+        480,
+        560
+      ],
+      "picture_size_px": [
+        872,
+        954
+      ],
+      "points_render_px": {
+        "left shoulder": [
+          248.125,
+          280.765
+        ],
+        "left elbow": [
+          313.032,
+          269.988
+        ],
+        "left palm point": [
+          368.662,
+          226.298
+        ],
+        "left goal palm point": [
+          368.667,
+          217.266
+        ],
+        "right shoulder": [
+          136.394,
+          281.693
+        ],
+        "right elbow": [
+          109.538,
+          342.781
+        ],
+        "right palm point": [
+          86.564,
+          383.727
+        ],
+        "right goal palm point": [
+          82.903,
+          352.009
+        ]
+      }
+    },
+    "a2diag_typical_worsening_3_first_prediction.png": {
+      "render_offset_px": [
+        196,
+        70
+      ],
+      "render_size_px": [
+        480,
+        560
+      ],
+      "picture_size_px": [
+        872,
+        954
+      ],
+      "points_render_px": {
+        "left shoulder (forecast)": [
+          247.779,
+          280.795
+        ],
+        "left elbow (forecast)": [
+          315.364,
+          270.448
+        ],
+        "left palm point (forecast)": [
+          377.767,
+          227.657
+        ],
+        "left shoulder (forecast) arrow tip": [
+          266.689,
+          280.1
+        ],
+        "left elbow (forecast) arrow tip": [
+          332.145,
+          259.606
+        ],
+        "left palm point (forecast) arrow tip": [
+          395.109,
+          215.383
+        ],
+        "left shoulder (fitted arm)": [
+          248.36,
+          279.183
+        ],
+        "left elbow (fitted arm)": [
+          312.783,
+          270.781
+        ],
+        "left palm point (fitted arm)": [
+          371.907,
+          232.241
+        ],
+        "left goal palm point": [
+          368.667,
+          217.266
+        ],
+        "right shoulder (forecast)": [
+          136.664,
+          281.726
+        ],
+        "right elbow (forecast)": [
+          104.265,
+          341.831
+        ],
+        "right palm point (forecast)": [
+          82.605,
+          389.28
+        ],
+        "right shoulder (forecast) arrow tip": [
+          127.293,
+          298.59
+        ],
+        "right elbow (forecast) arrow tip": [
+          98.333,
+          355.657
+        ],
+        "right palm point (forecast) arrow tip": [
+          79.308,
+          405.757
+        ],
+        "right shoulder (fitted arm)": [
+          136.25,
+          283.416
+        ],
+        "right elbow (fitted arm)": [
+          108.832,
+          341.634
+        ],
+        "right palm point (fitted arm)": [
+          82.328,
+          390.891
+        ],
+        "right goal palm point": [
+          82.903,
+          352.009
+        ],
+        "chest (forecast)": [
+          191.969,
+          281.312
+        ]
+      }
+    },
+    "a2diag_typical_worsening_4_selected_prediction.png": {
+      "render_offset_px": [
+        196,
+        70
+      ],
+      "render_size_px": [
+        480,
+        560
+      ],
+      "picture_size_px": [
+        872,
+        954
+      ],
+      "points_render_px": {
+        "left shoulder (forecast)": [
+          247.779,
+          280.795
+        ],
+        "left elbow (forecast)": [
+          315.364,
+          270.448
+        ],
+        "left palm point (forecast)": [
+          377.767,
+          227.657
+        ],
+        "left shoulder (forecast) arrow tip": [
+          266.689,
+          280.1
+        ],
+        "left elbow (forecast) arrow tip": [
+          332.145,
+          259.606
+        ],
+        "left palm point (forecast) arrow tip": [
+          395.109,
+          215.383
+        ],
+        "left shoulder (fitted arm)": [
+          248.36,
+          279.183
+        ],
+        "left elbow (fitted arm)": [
+          312.783,
+          270.781
+        ],
+        "left palm point (fitted arm)": [
+          371.907,
+          232.241
+        ],
+        "left goal palm point": [
+          368.667,
+          217.266
+        ],
+        "right shoulder (forecast)": [
+          136.664,
+          281.726
+        ],
+        "right elbow (forecast)": [
+          104.265,
+          341.831
+        ],
+        "right palm point (forecast)": [
+          82.605,
+          389.28
+        ],
+        "right shoulder (forecast) arrow tip": [
+          127.293,
+          298.59
+        ],
+        "right elbow (forecast) arrow tip": [
+          98.333,
+          355.657
+        ],
+        "right palm point (forecast) arrow tip": [
+          79.308,
+          405.757
+        ],
+        "right shoulder (fitted arm)": [
+          136.25,
+          283.416
+        ],
+        "right elbow (fitted arm)": [
+          108.832,
+          341.634
+        ],
+        "right palm point (fitted arm)": [
+          82.328,
+          390.891
+        ],
+        "right goal palm point": [
+          82.903,
+          352.009
+        ],
+        "chest (forecast)": [
+          191.969,
+          281.312
+        ]
+      }
+    },
+    "a2diag_typical_worsening_5_end.png": {
+      "render_offset_px": [
+        196,
+        70
+      ],
+      "render_size_px": [
+        480,
+        560
+      ],
+      "picture_size_px": [
+        872,
+        954
+      ],
+      "points_render_px": {
+        "left shoulder": [
+          249.893,
+          283.095
+        ],
+        "left elbow": [
+          314.664,
+          264.58
+        ],
+        "left palm point": [
+          373.684,
+          224.203
+        ],
+        "left goal palm point": [
+          368.667,
+          217.266
+        ],
+        "right shoulder": [
+          137.252,
+          279.964
+        ],
+        "right elbow": [
+          112.484,
+          335.543
+        ],
+        "right palm point": [
+          95.125,
+          383.575
+        ],
+        "right goal palm point": [
+          82.903,
+          352.009
+        ]
+      }
+    },
+    "a2diag_largest_disagreement_1_goal.png": {
+      "render_offset_px": [
+        196,
+        70
+      ],
+      "render_size_px": [
+        480,
+        560
+      ],
+      "picture_size_px": [
+        872,
+        920
+      ],
+      "points_render_px": {
+        "left shoulder": [
+          279.335,
+          283.368
+        ],
+        "left elbow": [
+          330.201,
+          303.868
+        ],
+        "left palm point": [
+          383.719,
+          321.58
+        ],
+        "left goal palm point": [
+          384.012,
+          321.646
+        ],
+        "right shoulder": [
+          190.062,
+          287.158
+        ],
+        "right elbow": [
+          139.725,
+          301.617
+        ],
+        "right palm point": [
+          88.043,
+          284.11
+        ],
+        "right goal palm point": [
+          88.062,
+          283.472
+        ]
+      }
+    },
+    "a2diag_largest_disagreement_2_start.png": {
+      "render_offset_px": [
+        196,
+        70
+      ],
+      "render_size_px": [
+        480,
+        560
+      ],
+      "picture_size_px": [
+        872,
+        920
+      ],
+      "points_render_px": {
+        "left shoulder": [
+          272.229,
+          282.558
+        ],
+        "left elbow": [
+          314.468,
+          316.534
+        ],
+        "left palm point": [
+          368.066,
+          336.6
+        ],
+        "left goal palm point": [
+          384.012,
+          321.646
+        ],
+        "right shoulder": [
+          183.018,
+          286.344
+        ],
+        "right elbow": [
+          145.873,
+          320.067
+        ],
+        "right palm point": [
+          144.306,
+          355.251
+        ],
+        "right goal palm point": [
+          88.062,
+          283.472
+        ]
+      }
+    },
+    "a2diag_largest_disagreement_3_first_prediction.png": {
+      "render_offset_px": [
+        196,
+        70
+      ],
+      "render_size_px": [
+        480,
+        560
+      ],
+      "picture_size_px": [
+        872,
+        920
+      ],
+      "points_render_px": {
+        "left shoulder (forecast)": [
+          272.871,
+          282.914
+        ],
+        "left elbow (forecast)": [
+          309.542,
+          316.142
+        ],
+        "left palm point (forecast)": [
+          360.345,
+          342.142
+        ],
+        "left shoulder (forecast) arrow tip": [
+          283.654,
+          293.917
+        ],
+        "left elbow (forecast) arrow tip": [
+          323.609,
+          323.774
+        ],
+        "left palm point (forecast) arrow tip": [
+          370.672,
+          354.578
+        ],
+        "left shoulder (fitted arm)": [
+          272.614,
+          282.354
+        ],
+        "left elbow (fitted arm)": [
+          311.317,
+          318.009
+        ],
+        "left palm point (fitted arm)": [
+          360.53,
+          345.581
+        ],
+        "left goal palm point": [
+          384.012,
+          321.646
+        ],
+        "right shoulder (forecast)": [
+          183.035,
+          287.674
+        ],
+        "right elbow (forecast)": [
+          149.822,
+          314.203
+        ],
+        "right palm point (forecast)": [
+          152.119,
+          341.052
+        ],
+        "right shoulder (forecast) arrow tip": [
+          170.603,
+          296.442
+        ],
+        "right elbow (forecast) arrow tip": [
+          149.713,
+          321.649
+        ],
+        "right palm point (forecast) arrow tip": [
+          156.078,
+          351.569
+        ],
+        "right shoulder (fitted arm)": [
+          183.429,
+          288.48
+        ],
+        "right elbow (fitted arm)": [
+          144.771,
+          317.011
+        ],
+        "right palm point (fitted arm)": [
+          148.487,
+          344.885
+        ],
+        "right goal palm point": [
+          88.062,
+          283.472
+        ],
+        "chest (forecast)": [
+          228.335,
+          285.395
+        ]
+      }
+    },
+    "a2diag_largest_disagreement_4_selected_prediction.png": {
+      "render_offset_px": [
+        196,
+        70
+      ],
+      "render_size_px": [
+        480,
+        560
+      ],
+      "picture_size_px": [
+        872,
+        920
+      ],
+      "points_render_px": {
+        "left shoulder (forecast)": [
+          272.503,
+          282.669
+        ],
+        "left elbow (forecast)": [
+          311.372,
+          314.925
+        ],
+        "left palm point (forecast)": [
+          367.339,
+          339.162
+        ],
+        "left shoulder (forecast) arrow tip": [
+          284.024,
+          293.188
+        ],
+        "left elbow (forecast) arrow tip": [
+          325.714,
+          322.121
+        ],
+        "left palm point (forecast) arrow tip": [
+          378.006,
+          351.491
+        ],
+        "left shoulder (fitted arm)": [
+          272.485,
+          282.36
+        ],
+        "left elbow (fitted arm)": [
+          314.149,
+          316.091
+        ],
+        "left palm point (fitted arm)": [
+          364.531,
+          342.023
+        ],
+        "left goal palm point": [
+          384.012,
+          321.646
+        ],
+        "right shoulder (forecast)": [
+          183.216,
+          287.993
+        ],
+        "right elbow (forecast)": [
+          148.621,
+          312.097
+        ],
+        "right palm point (forecast)": [
+          144.678,
+          337.755
+        ],
+        "right shoulder (forecast) arrow tip": [
+          170.076,
+          295.834
+        ],
+        "right elbow (forecast) arrow tip": [
+          147.518,
+          319.481
+        ],
+        "right palm point (forecast) arrow tip": [
+          147.42,
+          347.909
+        ],
+        "right shoulder (fitted arm)": [
+          183.36,
+          288.429
+        ],
+        "right elbow (fitted arm)": [
+          143.521,
+          315.502
+        ],
+        "right palm point (fitted arm)": [
+          143.573,
+          343.952
+        ],
+        "right goal palm point": [
+          88.062,
+          283.472
+        ],
+        "chest (forecast)": [
+          228.256,
+          285.372
+        ]
+      }
+    },
+    "a2diag_largest_disagreement_5_end.png": {
+      "render_offset_px": [
+        196,
+        70
+      ],
+      "render_size_px": [
+        480,
+        560
+      ],
+      "picture_size_px": [
+        872,
+        920
+      ],
+      "points_render_px": {
+        "left shoulder": [
+          272.32,
+          284.385
+        ],
+        "left elbow": [
+          310.01,
+          320.364
+        ],
+        "left palm point": [
+          357.242,
+          351.953
+        ],
+        "left goal palm point": [
+          384.012,
+          321.646
+        ],
+        "right shoulder": [
+          182.667,
+          286.434
+        ],
+        "right elbow": [
+          148.207,
+          323.826
+        ],
+        "right palm point": [
+          178.86,
+          349.692
+        ],
+        "right goal palm point": [
+          88.062,
+          283.472
+        ]
+      }
+    }
+  },
+  "printed": {
+    "a2diag_typical_improving_1_goal.png": {
+      "left palm point to goal palm point cm": 0.14547357415246376,
+      "right palm point to goal palm point cm": 0.10578971617809987
+    },
+    "a2diag_typical_improving_2_start.png": {
+      "left palm point to goal palm point cm": 7.292968654913899,
+      "right palm point to goal palm point cm": 10.508965332101965
+    },
+    "a2diag_typical_improving_3_first_prediction.png": {
+      "left forecast palm point to goal palm point cm": 5.287804452544691,
+      "left shoulder forecast to fitted arm cm": 0.39332961504512226,
+      "left shoulder forecast to fitted arm deg": 4.679617567111154,
+      "left elbow forecast to fitted arm cm": 0.9061433093477249,
+      "left elbow forecast to fitted arm deg": 2.283087610008153,
+      "left palm point forecast to fitted arm cm": 0.5832239111634588,
+      "left palm point forecast to fitted arm deg": 0.3044170909285397,
+      "right forecast palm point to goal palm point cm": 8.51676129742904,
+      "right shoulder forecast to fitted arm cm": 0.4123747878751739,
+      "right shoulder forecast to fitted arm deg": 4.25363610994063,
+      "right elbow forecast to fitted arm cm": 0.6612211046197416,
+      "right elbow forecast to fitted arm deg": 4.461653906240488,
+      "right palm point forecast to fitted arm cm": 1.001670661737927,
+      "right palm point forecast to fitted arm deg": 0.2051257040014272
+    },
+    "a2diag_typical_improving_4_selected_prediction.png": {
+      "left forecast palm point to goal palm point cm": 4.744954778292957,
+      "left shoulder forecast to fitted arm cm": 0.38644345337243796,
+      "left shoulder forecast to fitted arm deg": 4.581642101179342,
+      "left elbow forecast to fitted arm cm": 0.865453920562288,
+      "left elbow forecast to fitted arm deg": 2.977332332024744,
+      "left palm point forecast to fitted arm cm": 0.6221151083743004,
+      "left palm point forecast to fitted arm deg": 0.3327807763606185,
+      "right forecast palm point to goal palm point cm": 6.934331377977504,
+      "right shoulder forecast to fitted arm cm": 0.41659862497940026,
+      "right shoulder forecast to fitted arm deg": 7.004534178735779,
+      "right elbow forecast to fitted arm cm": 0.8383656336938834,
+      "right elbow forecast to fitted arm deg": 5.060027640654695,
+      "right palm point forecast to fitted arm cm": 1.4082889901905455,
+      "right palm point forecast to fitted arm deg": 0.49683707651146264,
+      "left shoulder forecast to actual end cm": 1.4597626133458779,
+      "left elbow forecast to actual end cm": 2.733684439974116,
+      "left palm point forecast to actual end cm": 4.749092118953171,
+      "right shoulder forecast to actual end cm": 1.4015881048288865,
+      "right elbow forecast to actual end cm": 1.5998084069064602,
+      "right palm point forecast to actual end cm": 3.3335064457637453
+    },
+    "a2diag_typical_improving_5_end.png": {
+      "left palm point to goal palm point cm": 7.993178850369759,
+      "right palm point to goal palm point cm": 8.343660233360035
+    },
+    "a2diag_typical_worsening_1_goal.png": {
+      "left palm point to goal palm point cm": 0.26382137741525596,
+      "right palm point to goal palm point cm": 0.10520632840063666
+    },
+    "a2diag_typical_worsening_2_start.png": {
+      "left palm point to goal palm point cm": 1.586770719741568,
+      "right palm point to goal palm point cm": 6.949580780329087
+    },
+    "a2diag_typical_worsening_3_first_prediction.png": {
+      "left forecast palm point to goal palm point cm": 2.337354789213619,
+      "left shoulder forecast to fitted arm cm": 0.29890918700582747,
+      "left shoulder forecast to fitted arm deg": 5.859447197701968,
+      "left elbow forecast to fitted arm cm": 0.4686070338382169,
+      "left elbow forecast to fitted arm deg": 3.681024905293525,
+      "left palm point forecast to fitted arm cm": 1.3303488259942728,
+      "left palm point forecast to fitted arm deg": 0.23794858914880349,
+      "right forecast palm point to goal palm point cm": 9.615423940906927,
+      "right shoulder forecast to fitted arm cm": 0.3002333075367434,
+      "right shoulder forecast to fitted arm deg": 3.9912966512766515,
+      "right elbow forecast to fitted arm cm": 0.8044555115404778,
+      "right elbow forecast to fitted arm deg": 7.31987457423329,
+      "right palm point forecast to fitted arm cm": 0.4348184693575609,
+      "right palm point forecast to fitted arm deg": 0.06944421017993203
+    },
+    "a2diag_typical_worsening_4_selected_prediction.png": {
+      "left forecast palm point to goal palm point cm": 2.337354789213619,
+      "left shoulder forecast to fitted arm cm": 0.29890918700582747,
+      "left shoulder forecast to fitted arm deg": 5.859447197701968,
+      "left elbow forecast to fitted arm cm": 0.4686070338382169,
+      "left elbow forecast to fitted arm deg": 3.681024905293525,
+      "left palm point forecast to fitted arm cm": 1.3303488259942728,
+      "left palm point forecast to fitted arm deg": 0.23794858914880349,
+      "right forecast palm point to goal palm point cm": 9.615423940906927,
+      "right shoulder forecast to fitted arm cm": 0.3002333075367434,
+      "right shoulder forecast to fitted arm deg": 3.9912966512766515,
+      "right elbow forecast to fitted arm cm": 0.8044555115404778,
+      "right elbow forecast to fitted arm deg": 7.31987457423329,
+      "right palm point forecast to fitted arm cm": 0.4348184693575609,
+      "right palm point forecast to fitted arm deg": 0.06944421017993203,
+      "left shoulder forecast to actual end cm": 0.7133638312578299,
+      "left elbow forecast to actual end cm": 1.2896833114786523,
+      "left palm point forecast to actual end cm": 1.2284267479489253,
+      "right shoulder forecast to actual end cm": 0.44712339916959104,
+      "right elbow forecast to actual end cm": 1.9280838362303365,
+      "right palm point forecast to actual end cm": 2.1854049435191487
+    },
+    "a2diag_typical_worsening_5_end.png": {
+      "left palm point to goal palm point cm": 1.660786897598409,
+      "right palm point to goal palm point cm": 9.077057697731668
+    },
+    "a2diag_largest_disagreement_1_goal.png": {
+      "left palm point to goal palm point cm": 0.2287050142021486,
+      "right palm point to goal palm point cm": 0.17588548349987562
+    },
+    "a2diag_largest_disagreement_2_start.png": {
+      "left palm point to goal palm point cm": 4.842890147388882,
+      "right palm point to goal palm point cm": 19.48333028722298
+    },
+    "a2diag_largest_disagreement_3_first_prediction.png": {
+      "left forecast palm point to goal palm point cm": 6.821329813586371,
+      "left shoulder forecast to fitted arm cm": 0.3564513014525682,
+      "left shoulder forecast to fitted arm deg": 2.908141806857507,
+      "left elbow forecast to fitted arm cm": 0.6459892832986244,
+      "left elbow forecast to fitted arm deg": 2.4935261763819123,
+      "left palm point forecast to fitted arm cm": 0.8296503202739823,
+      "left palm point forecast to fitted arm deg": 0.5296941259254118,
+      "right forecast palm point to goal palm point cm": 18.20949629832818,
+      "right shoulder forecast to fitted arm cm": 0.420769018584652,
+      "right shoulder forecast to fitted arm deg": 7.037573397522279,
+      "right elbow forecast to fitted arm cm": 1.2919817203299744,
+      "right elbow forecast to fitted arm deg": 3.5140203715306066,
+      "right palm point forecast to fitted arm cm": 1.6366848082289682,
+      "right palm point forecast to fitted arm deg": 0.8767520874219396
+    },
+    "a2diag_largest_disagreement_4_selected_prediction.png": {
+      "left forecast palm point to goal palm point cm": 5.23509991943231,
+      "left shoulder forecast to fitted arm cm": 0.3219613547759258,
+      "left shoulder forecast to fitted arm deg": 4.134511480449541,
+      "left elbow forecast to fitted arm cm": 0.6911536354778773,
+      "left elbow forecast to fitted arm deg": 3.6404017016874657,
+      "left palm point forecast to fitted arm cm": 0.9373397138873648,
+      "left palm point forecast to fitted arm deg": 0.6542509630550121,
+      "right forecast palm point to goal palm point cm": 16.622518573881184,
+      "right shoulder forecast to fitted arm cm": 0.35830948720329997,
+      "right shoulder forecast to fitted arm deg": 8.544780763828895,
+      "right elbow forecast to fitted arm cm": 1.5396012021843477,
+      "right elbow forecast to fitted arm deg": 8.420623334716831,
+      "right palm point forecast to fitted arm cm": 1.881259378653889,
+      "right palm point forecast to fitted arm deg": 0.8130140988772614,
+      "left shoulder forecast to actual end cm": 0.897877174810259,
+      "left elbow forecast to actual end cm": 1.4562270597726585,
+      "left palm point forecast to actual end cm": 3.567683273050222,
+      "right shoulder forecast to actual end cm": 0.6742324775563684,
+      "right elbow forecast to actual end cm": 2.5780202849529243,
+      "right palm point forecast to actual end cm": 7.489338557662559
+    },
+    "a2diag_largest_disagreement_5_end.png": {
+      "left palm point to goal palm point cm": 8.74694478412842,
+      "right palm point to goal palm point cm": 23.63481922727328
+    }
+  },
+  "readings": {
+    "typical_improving": {
+      "pose_vs_forward_kinematics": {
+        "goal": {
+          "compared": true,
+          "rows": 25,
+          "max_position_cm": 0.15645524421444035,
+          "max_turn_deg": 1.1976647238899645,
+          "stored_pose_gap_cm_given": 0.15645524421444035,
+          "allowance_cm": 0.16645524421444036,
+          "stored_pose_gap_deg_given": 1.1976647238901683,
+          "allowance_deg": 1.2976647238901684
+        },
+        "start": {
+          "compared": true,
+          "rows": 25,
+          "max_position_cm": 0.15577552463605043,
+          "max_turn_deg": 0.6489666679562618,
+          "stored_pose_gap_cm_given": 0.15577552463605043,
+          "allowance_cm": 0.16577552463605044,
+          "stored_pose_gap_deg_given": 0.6489666679557201,
+          "allowance_deg": 0.7489666679557201
+        },
+        "end": {
+          "compared": true,
+          "rows": 25,
+          "max_position_cm": 0.1725302355081485,
+          "max_turn_deg": 0.8821054305549954,
+          "stored_pose_gap_cm_given": 0.1725302355081485,
+          "allowance_cm": 0.1825302355081485,
+          "stored_pose_gap_deg_given": 0.8821054305509821,
+          "allowance_deg": 0.9821054305509821
+        }
+      },
+      "palm_to_goal_cm": {
+        "L": {
+          "goal": {
+            "given": null,
+            "recomputed": 0.14547357415246376,
+            "difference": null,
+            "palm_gap_cm_given": 0.1454735741524637,
+            "meaning": "the goal record's own palm point (forward kinematics of its joint positions) to the goal palm point"
+          },
+          "start": {
+            "given": 7.292968654913899,
+            "recomputed": 7.407181859755535,
+            "difference": 0.11421320484163555,
+            "palm_gap_cm_given": 0.12495752222641439,
+            "allowance_cm": 0.13495752222641438
+          },
+          "first": {
+            "given": 5.287804452544691,
+            "recomputed": 5.287804452544691,
+            "difference": 0.0,
+            "palm_gap_cm_given": null,
+            "allowance_cm": 0.01
+          },
+          "selected": {
+            "given": 4.744954778292957,
+            "recomputed": 4.744954778292957,
+            "difference": 0.0,
+            "palm_gap_cm_given": null,
+            "allowance_cm": 0.01
+          },
+          "end": {
+            "given": 7.993178850369759,
+            "recomputed": 8.038737929240694,
+            "difference": 0.045559078870935465,
+            "palm_gap_cm_given": 0.12170356661444806,
+            "allowance_cm": 0.13170356661444807
+          }
+        },
+        "R": {
+          "goal": {
+            "given": null,
+            "recomputed": 0.10578971617809987,
+            "difference": null,
+            "palm_gap_cm_given": 0.10578971617809974,
+            "meaning": "the goal record's own palm point (forward kinematics of its joint positions) to the goal palm point"
+          },
+          "start": {
+            "given": 10.508965332101965,
+            "recomputed": 10.40576081374643,
+            "difference": 0.10320451835553612,
+            "palm_gap_cm_given": 0.10588548384206477,
+            "allowance_cm": 0.11588548384206476
+          },
+          "first": {
+            "given": 8.51676129742904,
+            "recomputed": 8.51676129742904,
+            "difference": 0.0,
+            "palm_gap_cm_given": null,
+            "allowance_cm": 0.01
+          },
+          "selected": {
+            "given": 6.934331377977504,
+            "recomputed": 6.934331377977504,
+            "difference": 0.0,
+            "palm_gap_cm_given": null,
+            "allowance_cm": 0.01
+          },
+          "end": {
+            "given": 8.343660233360035,
+            "recomputed": 8.361937360287861,
+            "difference": 0.018277126927825904,
+            "palm_gap_cm_given": 0.03333046249398854,
+            "allowance_cm": 0.043330462493988545
+          }
+        }
+      },
+      "fit_residuals": {
+        "fit_first": {
+          "L": {
+            "status": "fitted_tolerance_uncalibrated",
+            "status_words": "fitted; no calibrated tolerance",
+            "parts": {
+              "upperarm": {
+                "residual_cm_given": 0.39332961504512226,
+                "drawn_line_cm": 0.39332961504512226,
+                "difference": 0.0,
+                "residual_deg_given": 4.679617567111154
+              },
+              "lowerarm": {
+                "residual_cm_given": 0.9061433093477249,
+                "drawn_line_cm": 0.9061433093477249,
+                "difference": 0.0,
+                "residual_deg_given": 2.283087610008153
+              },
+              "wrist": {
+                "residual_cm_given": 0.5832239111634588,
+                "drawn_line_cm": 0.5832239111634588,
+                "difference": 0.0,
+                "residual_deg_given": 0.3044170909285397
+              }
+            }
+          },
+          "R": {
+            "status": "fitted_tolerance_uncalibrated",
+            "status_words": "fitted; no calibrated tolerance",
+            "parts": {
+              "upperarm": {
+                "residual_cm_given": 0.4123747878751739,
+                "drawn_line_cm": 0.4123747878751739,
+                "difference": 0.0,
+                "residual_deg_given": 4.25363610994063
+              },
+              "lowerarm": {
+                "residual_cm_given": 0.6612211046197416,
+                "drawn_line_cm": 0.6612211046197416,
+                "difference": 0.0,
+                "residual_deg_given": 4.461653906240488
+              },
+              "wrist": {
+                "residual_cm_given": 1.001670661737927,
+                "drawn_line_cm": 1.001670661737927,
+                "difference": 0.0,
+                "residual_deg_given": 0.2051257040014272
+              }
+            }
+          }
+        },
+        "fit_selected": {
+          "L": {
+            "status": "fitted_tolerance_uncalibrated",
+            "status_words": "fitted; no calibrated tolerance",
+            "parts": {
+              "upperarm": {
+                "residual_cm_given": 0.38644345337243796,
+                "drawn_line_cm": 0.38644345337243796,
+                "difference": 0.0,
+                "residual_deg_given": 4.581642101179342
+              },
+              "lowerarm": {
+                "residual_cm_given": 0.865453920562288,
+                "drawn_line_cm": 0.865453920562288,
+                "difference": 0.0,
+                "residual_deg_given": 2.977332332024744
+              },
+              "wrist": {
+                "residual_cm_given": 0.6221151083743004,
+                "drawn_line_cm": 0.6221151083743004,
+                "difference": 0.0,
+                "residual_deg_given": 0.3327807763606185
+              }
+            }
+          },
+          "R": {
+            "status": "fitted_tolerance_uncalibrated",
+            "status_words": "fitted; no calibrated tolerance",
+            "parts": {
+              "upperarm": {
+                "residual_cm_given": 0.41659862497940026,
+                "drawn_line_cm": 0.41659862497940026,
+                "difference": 0.0,
+                "residual_deg_given": 7.004534178735779
+              },
+              "lowerarm": {
+                "residual_cm_given": 0.8383656336938834,
+                "drawn_line_cm": 0.8383656336938834,
+                "difference": 0.0,
+                "residual_deg_given": 5.060027640654695
+              },
+              "wrist": {
+                "residual_cm_given": 1.4082889901905455,
+                "drawn_line_cm": 1.4082889901905455,
+                "difference": 0.0,
+                "residual_deg_given": 0.49683707651146264
+              }
+            }
+          }
+        }
+      },
+      "goal_palm_point_source": "goal_pose",
+      "states_not_given": {},
+      "selected_forecast_equals_first": false,
+      "render_checks": {
+        "start_raw": {
+          "body_pixels": 40306,
+          "body_pixel_share": 0.14994791666666665,
+          "points_on_body": {},
+          "rgb_under_point": {},
+          "meaning": "body_pixels: pixels whose colour differs from the renderer's background colour (the infant's); points_on_body: a body pixel within 2 pixels of the named point; rgb_under_point: the colour of the pixel under the point (the part groups' colours are in render.PART_GROUPS, shaded by the light)"
+        },
+        "goal": {
+          "body_pixels": 39872,
+          "body_pixel_share": 0.14833333333333334,
+          "points_on_body": {
+            "left shoulder": true,
+            "left elbow": true,
+            "left palm point": true,
+            "right shoulder": true,
+            "right elbow": true,
+            "right palm point": true
+          },
+          "rgb_under_point": {
+            "left shoulder": [
+              38,
+              105,
+              205
+            ],
+            "left elbow": [
+              38,
+              104,
+              204
+            ],
+            "left palm point": [
+              42,
+              115,
+              224
+            ],
+            "right shoulder": [
+              219,
+              127,
+              29
+            ],
+            "right elbow": [
+              237,
+              138,
+              31
+            ],
+            "right palm point": [
+              109,
+              64,
+              15
+            ]
+          },
+          "meaning": "body_pixels: pixels whose colour differs from the renderer's background colour (the infant's); points_on_body: a body pixel within 2 pixels of the named point; rgb_under_point: the colour of the pixel under the point (the part groups' colours are in render.PART_GROUPS, shaded by the light)"
+        },
+        "start": {
+          "body_pixels": 40306,
+          "body_pixel_share": 0.14994791666666665,
+          "points_on_body": {
+            "left shoulder": true,
+            "left elbow": true,
+            "left palm point": true,
+            "right shoulder": true,
+            "right elbow": true,
+            "right palm point": true
+          },
+          "rgb_under_point": {
+            "left shoulder": [
+              37,
+              102,
+              200
+            ],
+            "left elbow": [
+              34,
+              94,
+              184
+            ],
+            "left palm point": [
+              31,
+              84,
+              164
+            ],
+            "right shoulder": [
+              226,
+              131,
+              30
+            ],
+            "right elbow": [
+              230,
+              134,
+              30
+            ],
+            "right palm point": [
+              246,
+              143,
+              33
+            ]
+          },
+          "meaning": "body_pixels: pixels whose colour differs from the renderer's background colour (the infant's); points_on_body: a body pixel within 2 pixels of the named point; rgb_under_point: the colour of the pixel under the point (the part groups' colours are in render.PART_GROUPS, shaded by the light)"
+        },
+        "end": {
+          "body_pixels": 40376,
+          "body_pixel_share": 0.15020833333333333,
+          "points_on_body": {
+            "left shoulder": true,
+            "left elbow": true,
+            "left palm point": true,
+            "right shoulder": true,
+            "right elbow": true,
+            "right palm point": true
+          },
+          "rgb_under_point": {
+            "left shoulder": [
+              38,
+              105,
+              205
+            ],
+            "left elbow": [
+              32,
+              89,
+              174
+            ],
+            "left palm point": [
+              25,
+              68,
+              133
+            ],
+            "right shoulder": [
+              226,
+              132,
+              30
+            ],
+            "right elbow": [
+              231,
+              135,
+              30
+            ],
+            "right palm point": [
+              200,
+              117,
+              26
+            ]
+          },
+          "meaning": "body_pixels: pixels whose colour differs from the renderer's background colour (the infant's); points_on_body: a body pixel within 2 pixels of the named point; rgb_under_point: the colour of the pixel under the point (the part groups' colours are in render.PART_GROUPS, shaded by the light)"
+        }
+      }
+    },
+    "typical_worsening": {
+      "pose_vs_forward_kinematics": {
+        "goal": {
+          "compared": true,
+          "rows": 25,
+          "max_position_cm": 0.3326463619557316,
+          "max_turn_deg": 1.2149554035019676,
+          "stored_pose_gap_cm_given": 0.3326463619557316,
+          "allowance_cm": 0.3426463619557316,
+          "stored_pose_gap_deg_given": 1.2149554035021133,
+          "allowance_deg": 1.3149554035021134
+        },
+        "start": {
+          "compared": true,
+          "rows": 25,
+          "max_position_cm": 0.04853501865794529,
+          "max_turn_deg": 0.5344781130664455,
+          "stored_pose_gap_cm_given": 0.04853501865794529,
+          "allowance_cm": 0.05853501865794529,
+          "stored_pose_gap_deg_given": 0.5344781130653822,
+          "allowance_deg": 0.6344781130653822
+        },
+        "end": {
+          "compared": true,
+          "rows": 25,
+          "max_position_cm": 0.0699783397368305,
+          "max_turn_deg": 0.569931852195614,
+          "stored_pose_gap_cm_given": 0.0699783397368305,
+          "allowance_cm": 0.0799783397368305,
+          "stored_pose_gap_deg_given": 0.5699318521985017,
+          "allowance_deg": 0.6699318521985017
+        }
+      },
+      "palm_to_goal_cm": {
+        "L": {
+          "goal": {
+            "given": null,
+            "recomputed": 0.26382137741525596,
+            "difference": null,
+            "palm_gap_cm_given": 0.26382137741525574,
+            "meaning": "the goal record's own palm point (forward kinematics of its joint positions) to the goal palm point"
+          },
+          "start": {
+            "given": 1.586770719741568,
+            "recomputed": 1.5996545287955661,
+            "difference": 0.012883809053998219,
+            "palm_gap_cm_given": 0.014621668468368657,
+            "allowance_cm": 0.024621668468368656
+          },
+          "first": {
+            "given": 2.337354789213619,
+            "recomputed": 2.337354789213619,
+            "difference": 0.0,
+            "palm_gap_cm_given": null,
+            "allowance_cm": 0.01
+          },
+          "selected": {
+            "given": 2.337354789213619,
+            "recomputed": 2.337354789213619,
+            "difference": 0.0,
+            "palm_gap_cm_given": null,
+            "allowance_cm": 0.01
+          },
+          "end": {
+            "given": 1.660786897598409,
+            "recomputed": 1.6479218820105546,
+            "difference": 0.012865015587854467,
+            "palm_gap_cm_given": 0.02305686254868062,
+            "allowance_cm": 0.03305686254868062
+          }
+        },
+        "R": {
+          "goal": {
+            "given": null,
+            "recomputed": 0.10520632840063666,
+            "difference": null,
+            "palm_gap_cm_given": 0.1052063284006368,
+            "meaning": "the goal record's own palm point (forward kinematics of its joint positions) to the goal palm point"
+          },
+          "start": {
+            "given": 6.949580780329087,
+            "recomputed": 6.943137328248897,
+            "difference": 0.0064434520801901485,
+            "palm_gap_cm_given": 0.017504059624566855,
+            "allowance_cm": 0.027504059624566854
+          },
+          "first": {
+            "given": 9.615423940906927,
+            "recomputed": 9.615423940906927,
+            "difference": 0.0,
+            "palm_gap_cm_given": null,
+            "allowance_cm": 0.01
+          },
+          "selected": {
+            "given": 9.615423940906927,
+            "recomputed": 9.615423940906927,
+            "difference": 0.0,
+            "palm_gap_cm_given": null,
+            "allowance_cm": 0.01
+          },
+          "end": {
+            "given": 9.077057697731668,
+            "recomputed": 9.117988851072633,
+            "difference": 0.04093115334096531,
+            "palm_gap_cm_given": 0.048102735421826755,
+            "allowance_cm": 0.05810273542182676
+          }
+        }
+      },
+      "fit_residuals": {
+        "fit_first": {
+          "L": {
+            "status": "fitted_tolerance_uncalibrated",
+            "status_words": "fitted; no calibrated tolerance",
+            "parts": {
+              "upperarm": {
+                "residual_cm_given": 0.29890918700582747,
+                "drawn_line_cm": 0.29890918700582747,
+                "difference": 0.0,
+                "residual_deg_given": 5.859447197701968
+              },
+              "lowerarm": {
+                "residual_cm_given": 0.4686070338382169,
+                "drawn_line_cm": 0.4686070338382169,
+                "difference": 0.0,
+                "residual_deg_given": 3.681024905293525
+              },
+              "wrist": {
+                "residual_cm_given": 1.3303488259942728,
+                "drawn_line_cm": 1.3303488259942728,
+                "difference": 0.0,
+                "residual_deg_given": 0.23794858914880349
+              }
+            }
+          },
+          "R": {
+            "status": "fitted_tolerance_uncalibrated",
+            "status_words": "fitted; no calibrated tolerance",
+            "parts": {
+              "upperarm": {
+                "residual_cm_given": 0.3002333075367434,
+                "drawn_line_cm": 0.3002333075367434,
+                "difference": 0.0,
+                "residual_deg_given": 3.9912966512766515
+              },
+              "lowerarm": {
+                "residual_cm_given": 0.8044555115404778,
+                "drawn_line_cm": 0.8044555115404778,
+                "difference": 0.0,
+                "residual_deg_given": 7.31987457423329
+              },
+              "wrist": {
+                "residual_cm_given": 0.4348184693575609,
+                "drawn_line_cm": 0.4348184693575609,
+                "difference": 0.0,
+                "residual_deg_given": 0.06944421017993203
+              }
+            }
+          }
+        },
+        "fit_selected": {
+          "L": {
+            "status": "fitted_tolerance_uncalibrated",
+            "status_words": "fitted; no calibrated tolerance",
+            "parts": {
+              "upperarm": {
+                "residual_cm_given": 0.29890918700582747,
+                "drawn_line_cm": 0.29890918700582747,
+                "difference": 0.0,
+                "residual_deg_given": 5.859447197701968
+              },
+              "lowerarm": {
+                "residual_cm_given": 0.4686070338382169,
+                "drawn_line_cm": 0.4686070338382169,
+                "difference": 0.0,
+                "residual_deg_given": 3.681024905293525
+              },
+              "wrist": {
+                "residual_cm_given": 1.3303488259942728,
+                "drawn_line_cm": 1.3303488259942728,
+                "difference": 0.0,
+                "residual_deg_given": 0.23794858914880349
+              }
+            }
+          },
+          "R": {
+            "status": "fitted_tolerance_uncalibrated",
+            "status_words": "fitted; no calibrated tolerance",
+            "parts": {
+              "upperarm": {
+                "residual_cm_given": 0.3002333075367434,
+                "drawn_line_cm": 0.3002333075367434,
+                "difference": 0.0,
+                "residual_deg_given": 3.9912966512766515
+              },
+              "lowerarm": {
+                "residual_cm_given": 0.8044555115404778,
+                "drawn_line_cm": 0.8044555115404778,
+                "difference": 0.0,
+                "residual_deg_given": 7.31987457423329
+              },
+              "wrist": {
+                "residual_cm_given": 0.4348184693575609,
+                "drawn_line_cm": 0.4348184693575609,
+                "difference": 0.0,
+                "residual_deg_given": 0.06944421017993203
+              }
+            }
+          }
+        }
+      },
+      "goal_palm_point_source": "goal_pose",
+      "states_not_given": {},
+      "selected_forecast_equals_first": true,
+      "render_checks": {
+        "start_raw": {
+          "body_pixels": 44952,
+          "body_pixel_share": 0.16723214285714286,
+          "points_on_body": {},
+          "rgb_under_point": {},
+          "meaning": "body_pixels: pixels whose colour differs from the renderer's background colour (the infant's); points_on_body: a body pixel within 2 pixels of the named point; rgb_under_point: the colour of the pixel under the point (the part groups' colours are in render.PART_GROUPS, shaded by the light)"
+        },
+        "goal": {
+          "body_pixels": 44927,
+          "body_pixel_share": 0.1671391369047619,
+          "points_on_body": {
+            "left shoulder": true,
+            "left elbow": true,
+            "left palm point": true,
+            "right shoulder": true,
+            "right elbow": true,
+            "right palm point": true
+          },
+          "rgb_under_point": {
+            "left shoulder": [
+              38,
+              103,
+              202
+            ],
+            "left elbow": [
+              39,
+              107,
+              210
+            ],
+            "left palm point": [
+              30,
+              81,
+              159
+            ],
+            "right shoulder": [
+              223,
+              130,
+              29
+            ],
+            "right elbow": [
+              243,
+              142,
+              32
+            ],
+            "right palm point": [
+              253,
+              149,
+              34
+            ]
+          },
+          "meaning": "body_pixels: pixels whose colour differs from the renderer's background colour (the infant's); points_on_body: a body pixel within 2 pixels of the named point; rgb_under_point: the colour of the pixel under the point (the part groups' colours are in render.PART_GROUPS, shaded by the light)"
+        },
+        "start": {
+          "body_pixels": 44952,
+          "body_pixel_share": 0.16723214285714286,
+          "points_on_body": {
+            "left shoulder": true,
+            "left elbow": true,
+            "left palm point": true,
+            "right shoulder": true,
+            "right elbow": true,
+            "right palm point": true
+          },
+          "rgb_under_point": {
+            "left shoulder": [
+              37,
+              102,
+              200
+            ],
+            "left elbow": [
+              40,
+              111,
+              217
+            ],
+            "left palm point": [
+              28,
+              76,
+              148
+            ],
+            "right shoulder": [
+              218,
+              127,
+              29
+            ],
+            "right elbow": [
+              255,
+              152,
+              34
+            ],
+            "right palm point": [
+              170,
+              99,
+              22
+            ]
+          },
+          "meaning": "body_pixels: pixels whose colour differs from the renderer's background colour (the infant's); points_on_body: a body pixel within 2 pixels of the named point; rgb_under_point: the colour of the pixel under the point (the part groups' colours are in render.PART_GROUPS, shaded by the light)"
+        },
+        "end": {
+          "body_pixels": 44861,
+          "body_pixel_share": 0.1668936011904762,
+          "points_on_body": {
+            "left shoulder": true,
+            "left elbow": true,
+            "left palm point": true,
+            "right shoulder": true,
+            "right elbow": true,
+            "right palm point": true
+          },
+          "rgb_under_point": {
+            "left shoulder": [
+              38,
+              104,
+              204
+            ],
+            "left elbow": [
+              40,
+              109,
+              213
+            ],
+            "left palm point": [
+              27,
+              75,
+              147
+            ],
+            "right shoulder": [
+              221,
+              128,
+              29
+            ],
+            "right elbow": [
+              255,
+              155,
+              35
+            ],
+            "right palm point": [
+              232,
+              135,
+              31
+            ]
+          },
+          "meaning": "body_pixels: pixels whose colour differs from the renderer's background colour (the infant's); points_on_body: a body pixel within 2 pixels of the named point; rgb_under_point: the colour of the pixel under the point (the part groups' colours are in render.PART_GROUPS, shaded by the light)"
+        }
+      }
+    },
+    "largest_disagreement": {
+      "pose_vs_forward_kinematics": {
+        "goal": {
+          "compared": true,
+          "rows": 25,
+          "max_position_cm": 0.28459118453981325,
+          "max_turn_deg": 1.0815894676792372,
+          "stored_pose_gap_cm_given": 0.28459118453981325,
+          "allowance_cm": 0.29459118453981326,
+          "stored_pose_gap_deg_given": 1.0815894676800772,
+          "allowance_deg": 1.1815894676800773
+        },
+        "start": {
+          "compared": true,
+          "rows": 25,
+          "max_position_cm": 0.047985461757705315,
+          "max_turn_deg": 0.5596776893643448,
+          "stored_pose_gap_cm_given": 0.047985461757705315,
+          "allowance_cm": 0.05798546175770532,
+          "stored_pose_gap_deg_given": 0.5596776893706031,
+          "allowance_deg": 0.6596776893706031
+        },
+        "end": {
+          "compared": true,
+          "rows": 25,
+          "max_position_cm": 0.0465870276033839,
+          "max_turn_deg": 0.869511287963294,
+          "stored_pose_gap_cm_given": 0.0465870276033839,
+          "allowance_cm": 0.0565870276033839,
+          "stored_pose_gap_deg_given": 0.8695112879590462,
+          "allowance_deg": 0.9695112879590462
+        }
+      },
+      "palm_to_goal_cm": {
+        "L": {
+          "goal": {
+            "given": null,
+            "recomputed": 0.2287050142021486,
+            "difference": null,
+            "palm_gap_cm_given": 0.22870501420214856,
+            "meaning": "the goal record's own palm point (forward kinematics of its joint positions) to the goal palm point"
+          },
+          "start": {
+            "given": 4.842890147388882,
+            "recomputed": 4.84358168802923,
+            "difference": 0.0006915406403482649,
+            "palm_gap_cm_given": 0.0263679663866018,
+            "allowance_cm": 0.0363679663866018
+          },
+          "first": {
+            "given": 6.821329813586371,
+            "recomputed": 6.821329813586371,
+            "difference": 0.0,
+            "palm_gap_cm_given": null,
+            "allowance_cm": 0.01
+          },
+          "selected": {
+            "given": 5.23509991943231,
+            "recomputed": 5.23509991943231,
+            "difference": 0.0,
+            "palm_gap_cm_given": null,
+            "allowance_cm": 0.01
+          },
+          "end": {
+            "given": 8.74694478412842,
+            "recomputed": 8.754369073755019,
+            "difference": 0.007424289626598579,
+            "palm_gap_cm_given": 0.010017140496685674,
+            "allowance_cm": 0.020017140496685674
+          }
+        },
+        "R": {
+          "goal": {
+            "given": null,
+            "recomputed": 0.17588548349987562,
+            "difference": null,
+            "palm_gap_cm_given": 0.17588548349987582,
+            "meaning": "the goal record's own palm point (forward kinematics of its joint positions) to the goal palm point"
+          },
+          "start": {
+            "given": 19.48333028722298,
+            "recomputed": 19.453632478310045,
+            "difference": 0.029697808912935386,
+            "palm_gap_cm_given": 0.04571729461952614,
+            "allowance_cm": 0.05571729461952614
+          },
+          "first": {
+            "given": 18.20949629832818,
+            "recomputed": 18.20949629832818,
+            "difference": 0.0,
+            "palm_gap_cm_given": null,
+            "allowance_cm": 0.01
+          },
+          "selected": {
+            "given": 16.622518573881184,
+            "recomputed": 16.622518573881184,
+            "difference": 0.0,
+            "palm_gap_cm_given": null,
+            "allowance_cm": 0.01
+          },
+          "end": {
+            "given": 23.63481922727328,
+            "recomputed": 23.63815394326176,
+            "difference": 0.003334715988479786,
+            "palm_gap_cm_given": 0.007677999449596217,
+            "allowance_cm": 0.017677999449596218
+          }
+        }
+      },
+      "fit_residuals": {
+        "fit_first": {
+          "L": {
+            "status": "fitted_tolerance_uncalibrated",
+            "status_words": "fitted; no calibrated tolerance",
+            "parts": {
+              "upperarm": {
+                "residual_cm_given": 0.3564513014525682,
+                "drawn_line_cm": 0.3564513014525682,
+                "difference": 0.0,
+                "residual_deg_given": 2.908141806857507
+              },
+              "lowerarm": {
+                "residual_cm_given": 0.6459892832986244,
+                "drawn_line_cm": 0.6459892832986244,
+                "difference": 0.0,
+                "residual_deg_given": 2.4935261763819123
+              },
+              "wrist": {
+                "residual_cm_given": 0.8296503202739823,
+                "drawn_line_cm": 0.8296503202739823,
+                "difference": 0.0,
+                "residual_deg_given": 0.5296941259254118
+              }
+            }
+          },
+          "R": {
+            "status": "fitted_tolerance_uncalibrated",
+            "status_words": "fitted; no calibrated tolerance",
+            "parts": {
+              "upperarm": {
+                "residual_cm_given": 0.420769018584652,
+                "drawn_line_cm": 0.420769018584652,
+                "difference": 0.0,
+                "residual_deg_given": 7.037573397522279
+              },
+              "lowerarm": {
+                "residual_cm_given": 1.2919817203299744,
+                "drawn_line_cm": 1.2919817203299744,
+                "difference": 0.0,
+                "residual_deg_given": 3.5140203715306066
+              },
+              "wrist": {
+                "residual_cm_given": 1.6366848082289682,
+                "drawn_line_cm": 1.6366848082289682,
+                "difference": 0.0,
+                "residual_deg_given": 0.8767520874219396
+              }
+            }
+          }
+        },
+        "fit_selected": {
+          "L": {
+            "status": "fitted_tolerance_uncalibrated",
+            "status_words": "fitted; no calibrated tolerance",
+            "parts": {
+              "upperarm": {
+                "residual_cm_given": 0.3219613547759258,
+                "drawn_line_cm": 0.3219613547759258,
+                "difference": 0.0,
+                "residual_deg_given": 4.134511480449541
+              },
+              "lowerarm": {
+                "residual_cm_given": 0.6911536354778773,
+                "drawn_line_cm": 0.6911536354778773,
+                "difference": 0.0,
+                "residual_deg_given": 3.6404017016874657
+              },
+              "wrist": {
+                "residual_cm_given": 0.9373397138873648,
+                "drawn_line_cm": 0.9373397138873648,
+                "difference": 0.0,
+                "residual_deg_given": 0.6542509630550121
+              }
+            }
+          },
+          "R": {
+            "status": "fitted_tolerance_uncalibrated",
+            "status_words": "fitted; no calibrated tolerance",
+            "parts": {
+              "upperarm": {
+                "residual_cm_given": 0.35830948720329997,
+                "drawn_line_cm": 0.35830948720329997,
+                "difference": 0.0,
+                "residual_deg_given": 8.544780763828895
+              },
+              "lowerarm": {
+                "residual_cm_given": 1.5396012021843477,
+                "drawn_line_cm": 1.5396012021843477,
+                "difference": 0.0,
+                "residual_deg_given": 8.420623334716831
+              },
+              "wrist": {
+                "residual_cm_given": 1.881259378653889,
+                "drawn_line_cm": 1.881259378653889,
+                "difference": 0.0,
+                "residual_deg_given": 0.8130140988772614
+              }
+            }
+          }
+        }
+      },
+      "goal_palm_point_source": "goal_pose",
+      "states_not_given": {},
+      "selected_forecast_equals_first": false,
+      "render_checks": {
+        "start_raw": {
+          "body_pixels": 31373,
+          "body_pixel_share": 0.11671502976190476,
+          "points_on_body": {},
+          "rgb_under_point": {},
+          "meaning": "body_pixels: pixels whose colour differs from the renderer's background colour (the infant's); points_on_body: a body pixel within 2 pixels of the named point; rgb_under_point: the colour of the pixel under the point (the part groups' colours are in render.PART_GROUPS, shaded by the light)"
+        },
+        "goal": {
+          "body_pixels": 31624,
+          "body_pixel_share": 0.11764880952380953,
+          "points_on_body": {
+            "left shoulder": true,
+            "left elbow": true,
+            "left palm point": true,
+            "right shoulder": true,
+            "right elbow": true,
+            "right palm point": true
+          },
+          "rgb_under_point": {
+            "left shoulder": [
+              37,
+              103,
+              201
+            ],
+            "left elbow": [
+              37,
+              102,
+              198
+            ],
+            "left palm point": [
+              38,
+              105,
+              205
+            ],
+            "right shoulder": [
+              220,
+              128,
+              29
+            ],
+            "right elbow": [
+              183,
+              107,
+              24
+            ],
+            "right palm point": [
+              150,
+              87,
+              20
+            ]
+          },
+          "meaning": "body_pixels: pixels whose colour differs from the renderer's background colour (the infant's); points_on_body: a body pixel within 2 pixels of the named point; rgb_under_point: the colour of the pixel under the point (the part groups' colours are in render.PART_GROUPS, shaded by the light)"
+        },
+        "start": {
+          "body_pixels": 31373,
+          "body_pixel_share": 0.11671502976190476,
+          "points_on_body": {
+            "left shoulder": true,
+            "left elbow": true,
+            "left palm point": true,
+            "right shoulder": true,
+            "right elbow": true,
+            "right palm point": true
+          },
+          "rgb_under_point": {
+            "left shoulder": [
+              36,
+              100,
+              195
+            ],
+            "left elbow": [
+              36,
+              98,
+              191
+            ],
+            "left palm point": [
+              20,
+              56,
+              109
+            ],
+            "right shoulder": [
+              222,
+              129,
+              29
+            ],
+            "right elbow": [
+              255,
+              152,
+              34
+            ],
+            "right palm point": [
+              154,
+              90,
+              20
+            ]
+          },
+          "meaning": "body_pixels: pixels whose colour differs from the renderer's background colour (the infant's); points_on_body: a body pixel within 2 pixels of the named point; rgb_under_point: the colour of the pixel under the point (the part groups' colours are in render.PART_GROUPS, shaded by the light)"
+        },
+        "end": {
+          "body_pixels": 30928,
+          "body_pixel_share": 0.1150595238095238,
+          "points_on_body": {
+            "left shoulder": true,
+            "left elbow": true,
+            "left palm point": true,
+            "right shoulder": true,
+            "right elbow": true,
+            "right palm point": true
+          },
+          "rgb_under_point": {
+            "left shoulder": [
+              38,
+              103,
+              202
+            ],
+            "left elbow": [
+              36,
+              99,
+              193
+            ],
+            "left palm point": [
+              41,
+              112,
+              219
+            ],
+            "right shoulder": [
+              224,
+              130,
+              30
+            ],
+            "right elbow": [
+              216,
+              126,
+              28
+            ],
+            "right palm point": [
+              171,
+              99,
+              23
+            ]
+          },
+          "meaning": "body_pixels: pixels whose colour differs from the renderer's background colour (the infant's); points_on_body: a body pixel within 2 pixels of the named point; rgb_under_point: the colour of the pixel under the point (the part groups' colours are in render.PART_GROUPS, shaded by the light)"
+        }
+      }
+    }
+  },
+  "geometry": {
+    "typical_improving": {
+      "joint_anchor_offsets_cm_at_start": {
+        "left": {
+          "robot:left_shoulder_horizontal": {
+            "named_point": "shoulder",
+            "cm": 0.0
+          },
+          "robot:left_shoulder_ad_ab": {
+            "named_point": "shoulder",
+            "cm": 0.0
+          },
+          "robot:left_shoulder_rotation": {
+            "named_point": "shoulder",
+            "cm": 0.0
+          },
+          "robot:left_elbow": {
+            "named_point": "elbow",
+            "cm": 0.0
+          },
+          "robot:left_hand1": {
+            "named_point": "palm point",
+            "cm": 1.4337478533163992
+          },
+          "robot:left_hand2": {
+            "named_point": "palm point",
+            "cm": 1.6967769487271516
+          },
+          "robot:left_hand3": {
+            "named_point": "palm point",
+            "cm": 1.9944178094289242
+          }
+        },
+        "right": {
+          "robot:right_shoulder_horizontal": {
+            "named_point": "shoulder",
+            "cm": 0.0
+          },
+          "robot:right_shoulder_ad_ab": {
+            "named_point": "shoulder",
+            "cm": 0.0
+          },
+          "robot:right_shoulder_rotation": {
+            "named_point": "shoulder",
+            "cm": 0.0
+          },
+          "robot:right_elbow": {
+            "named_point": "elbow",
+            "cm": 0.0
+          },
+          "robot:right_hand1": {
+            "named_point": "palm point",
+            "cm": 1.3352034175209873
+          },
+          "robot:right_hand2": {
+            "named_point": "palm point",
+            "cm": 1.6535188351347052
+          },
+          "robot:right_hand3": {
+            "named_point": "palm point",
+            "cm": 1.9944178094289264
+          }
+        }
+      },
+      "spans": {
+        "left": {
+          "bone_shoulder_to_elbow_cm": 12.041704678069431,
+          "goal_shoulder_to_elbow_cm": 12.04170467806943,
+          "goal_elbow_to_palm_point_cm": 12.252763354627467,
+          "start_shoulder_to_elbow_cm": 12.041704678069426,
+          "start_elbow_to_palm_point_cm": 12.05399068413262,
+          "end_shoulder_to_elbow_cm": 12.041704678069424,
+          "end_elbow_to_palm_point_cm": 12.177755433232482,
+          "first_prediction_shoulder_to_elbow_cm": 11.790025792487809,
+          "first_prediction_elbow_to_palm_point_cm": 13.324387386504435,
+          "selected_prediction_shoulder_to_elbow_cm": 11.848031359414257,
+          "selected_prediction_elbow_to_palm_point_cm": 13.290425465486294
+        },
+        "right": {
+          "bone_shoulder_to_elbow_cm": 12.041704678069431,
+          "goal_shoulder_to_elbow_cm": 12.041704678069427,
+          "goal_elbow_to_palm_point_cm": 12.175495051223674,
+          "start_shoulder_to_elbow_cm": 12.041704678069426,
+          "start_elbow_to_palm_point_cm": 12.200408169429721,
+          "end_shoulder_to_elbow_cm": 12.041704678069422,
+          "end_elbow_to_palm_point_cm": 12.208276888839272,
+          "first_prediction_shoulder_to_elbow_cm": 12.362444048047202,
+          "first_prediction_elbow_to_palm_point_cm": 11.64035431118391,
+          "selected_prediction_shoulder_to_elbow_cm": 12.629213659308704,
+          "selected_prediction_elbow_to_palm_point_cm": 11.295701279915765
+        }
+      },
+      "meaning": "joint_anchor_offsets_cm_at_start: per arm hinge, the distance at the start pose between its anchor and the named point of its body (shoulder: upper-arm origin; elbow: forearm origin; palm point: hand origin). spans: distances between named points (cm); bone_shoulder_to_elbow_cm is the forearm body's fixed offset in the upper arm, the same for every joint configuration"
+    },
+    "typical_worsening": {
+      "joint_anchor_offsets_cm_at_start": {
+        "left": {
+          "robot:left_shoulder_horizontal": {
+            "named_point": "shoulder",
+            "cm": 0.0
+          },
+          "robot:left_shoulder_ad_ab": {
+            "named_point": "shoulder",
+            "cm": 0.0
+          },
+          "robot:left_shoulder_rotation": {
+            "named_point": "shoulder",
+            "cm": 0.0
+          },
+          "robot:left_elbow": {
+            "named_point": "elbow",
+            "cm": 0.0
+          },
+          "robot:left_hand1": {
+            "named_point": "palm point",
+            "cm": 1.3491973645317834
+          },
+          "robot:left_hand2": {
+            "named_point": "palm point",
+            "cm": 1.6616445285189254
+          },
+          "robot:left_hand3": {
+            "named_point": "palm point",
+            "cm": 1.994417809428926
+          }
+        },
+        "right": {
+          "robot:right_shoulder_horizontal": {
+            "named_point": "shoulder",
+            "cm": 0.0
+          },
+          "robot:right_shoulder_ad_ab": {
+            "named_point": "shoulder",
+            "cm": 0.0
+          },
+          "robot:right_shoulder_rotation": {
+            "named_point": "shoulder",
+            "cm": 0.0
+          },
+          "robot:right_elbow": {
+            "named_point": "elbow",
+            "cm": 0.0
+          },
+          "robot:right_hand1": {
+            "named_point": "palm point",
+            "cm": 1.3335198240112918
+          },
+          "robot:right_hand2": {
+            "named_point": "palm point",
+            "cm": 1.6528481319643418
+          },
+          "robot:right_hand3": {
+            "named_point": "palm point",
+            "cm": 1.994417809428927
+          }
+        }
+      },
+      "spans": {
+        "left": {
+          "bone_shoulder_to_elbow_cm": 12.041704678069431,
+          "goal_shoulder_to_elbow_cm": 12.041704678069433,
+          "goal_elbow_to_palm_point_cm": 12.239097560494633,
+          "start_shoulder_to_elbow_cm": 12.04170467806943,
+          "start_elbow_to_palm_point_cm": 12.18892389534133,
+          "end_shoulder_to_elbow_cm": 12.041704678069438,
+          "end_elbow_to_palm_point_cm": 12.202202780159476,
+          "first_prediction_shoulder_to_elbow_cm": 12.611645331726834,
+          "first_prediction_elbow_to_palm_point_cm": 13.07521087061797,
+          "selected_prediction_shoulder_to_elbow_cm": 12.611645331726834,
+          "selected_prediction_elbow_to_palm_point_cm": 13.07521087061797
+        },
+        "right": {
+          "bone_shoulder_to_elbow_cm": 12.041704678069431,
+          "goal_shoulder_to_elbow_cm": 12.041704678069427,
+          "goal_elbow_to_palm_point_cm": 12.281624835927284,
+          "start_shoulder_to_elbow_cm": 12.04170467806943,
+          "start_elbow_to_palm_point_cm": 12.20301115913157,
+          "end_shoulder_to_elbow_cm": 12.041704678069436,
+          "end_elbow_to_palm_point_cm": 12.179513770176516,
+          "first_prediction_shoulder_to_elbow_cm": 12.724890994750137,
+          "first_prediction_elbow_to_palm_point_cm": 11.58971491269349,
+          "selected_prediction_shoulder_to_elbow_cm": 12.724890994750137,
+          "selected_prediction_elbow_to_palm_point_cm": 11.58971491269349
+        }
+      },
+      "meaning": "joint_anchor_offsets_cm_at_start: per arm hinge, the distance at the start pose between its anchor and the named point of its body (shoulder: upper-arm origin; elbow: forearm origin; palm point: hand origin). spans: distances between named points (cm); bone_shoulder_to_elbow_cm is the forearm body's fixed offset in the upper arm, the same for every joint configuration"
+    },
+    "largest_disagreement": {
+      "joint_anchor_offsets_cm_at_start": {
+        "left": {
+          "robot:left_shoulder_horizontal": {
+            "named_point": "shoulder",
+            "cm": 0.0
+          },
+          "robot:left_shoulder_ad_ab": {
+            "named_point": "shoulder",
+            "cm": 0.0
+          },
+          "robot:left_shoulder_rotation": {
+            "named_point": "shoulder",
+            "cm": 0.0
+          },
+          "robot:left_elbow": {
+            "named_point": "elbow",
+            "cm": 0.0
+          },
+          "robot:left_hand1": {
+            "named_point": "palm point",
+            "cm": 1.2715650595799022
+          },
+          "robot:left_hand2": {
+            "named_point": "palm point",
+            "cm": 1.6256780366661006
+          },
+          "robot:left_hand3": {
+            "named_point": "palm point",
+            "cm": 1.9944178094289315
+          }
+        },
+        "right": {
+          "robot:right_shoulder_horizontal": {
+            "named_point": "shoulder",
+            "cm": 0.0
+          },
+          "robot:right_shoulder_ad_ab": {
+            "named_point": "shoulder",
+            "cm": 0.0
+          },
+          "robot:right_shoulder_rotation": {
+            "named_point": "shoulder",
+            "cm": 0.0
+          },
+          "robot:right_elbow": {
+            "named_point": "elbow",
+            "cm": 0.0
+          },
+          "robot:right_hand1": {
+            "named_point": "palm point",
+            "cm": 1.375329209873808
+          },
+          "robot:right_hand2": {
+            "named_point": "palm point",
+            "cm": 1.6665399590914425
+          },
+          "robot:right_hand3": {
+            "named_point": "palm point",
+            "cm": 1.9944178094289264
+          }
+        }
+      },
+      "spans": {
+        "left": {
+          "bone_shoulder_to_elbow_cm": 12.041704678069431,
+          "goal_shoulder_to_elbow_cm": 12.041704678069436,
+          "goal_elbow_to_palm_point_cm": 12.151546728125929,
+          "start_shoulder_to_elbow_cm": 12.041704678069436,
+          "start_elbow_to_palm_point_cm": 12.284696376516683,
+          "end_shoulder_to_elbow_cm": 12.04170467806943,
+          "end_elbow_to_palm_point_cm": 12.29502498358608,
+          "first_prediction_shoulder_to_elbow_cm": 11.206094412988914,
+          "first_prediction_elbow_to_palm_point_cm": 12.394816050834363,
+          "selected_prediction_shoulder_to_elbow_cm": 11.272222188665213,
+          "selected_prediction_elbow_to_palm_point_cm": 13.17670974290067
+        },
+        "right": {
+          "bone_shoulder_to_elbow_cm": 12.041704678069431,
+          "goal_shoulder_to_elbow_cm": 12.041704678069436,
+          "goal_elbow_to_palm_point_cm": 12.234458999947496,
+          "start_shoulder_to_elbow_cm": 12.041704678069436,
+          "start_elbow_to_palm_point_cm": 12.124353343242117,
+          "end_shoulder_to_elbow_cm": 12.04170467806943,
+          "end_elbow_to_palm_point_cm": 12.158928562416571,
+          "first_prediction_shoulder_to_elbow_cm": 11.078612636507449,
+          "first_prediction_elbow_to_palm_point_cm": 10.744546540290422,
+          "selected_prediction_shoulder_to_elbow_cm": 10.69688049546499,
+          "selected_prediction_elbow_to_palm_point_cm": 10.054279084913768
+        }
+      },
+      "meaning": "joint_anchor_offsets_cm_at_start: per arm hinge, the distance at the start pose between its anchor and the named point of its body (shoulder: upper-arm origin; elbow: forearm origin; palm point: hand origin). spans: distances between named points (cm); bone_shoulder_to_elbow_cm is the forearm body's fixed offset in the upper arm, the same for every joint configuration"
+    }
+  },
+  "panel_seconds": {
+    "a2diag_typical_improving_1_goal.png": 0.22852849995251745,
+    "a2diag_typical_improving_2_start.png": 0.143901800038293,
+    "a2diag_typical_improving_3_first_prediction.png": 0.24233470007311553,
+    "a2diag_typical_improving_4_selected_prediction.png": 0.25885029998607934,
+    "a2diag_typical_improving_5_end.png": 0.1981847999850288,
+    "a2diag_typical_worsening_1_goal.png": 0.1940453000133857,
+    "a2diag_typical_worsening_2_start.png": 0.1433749001007527,
+    "a2diag_typical_worsening_3_first_prediction.png": 0.21866110002156347,
+    "a2diag_typical_worsening_4_selected_prediction.png": 0.2507240999257192,
+    "a2diag_typical_worsening_5_end.png": 0.1776775000616908,
+    "a2diag_largest_disagreement_1_goal.png": 0.18362849997356534,
+    "a2diag_largest_disagreement_2_start.png": 0.14701219997368753,
+    "a2diag_largest_disagreement_3_first_prediction.png": 0.2194147000554949,
+    "a2diag_largest_disagreement_4_selected_prediction.png": 0.23389570007566363,
+    "a2diag_largest_disagreement_5_end.png": 0.19395619991701096
+  },
+  "not_rendered": [],
+  "warnings": [],
+  "render_notes": [],
+  "mujoco_log": null,
+  "versions": {
+    "python": "3.13.3",
+    "numpy": "2.2.6",
+    "platform": "Windows-11-10.0.26200-SP0",
+    "mujoco": "3.3.0",
+    "pillow": "12.3.0"
+  },
+  "memory_mb": {
+    "before": 101.94921875,
+    "after": 712.15234375
+  },
+  "fonts": {
+    "title": {
+      "file": "C:/Windows/Fonts/arialbd.ttf",
+      "size": 18,
+      "sha256": "e8f4e3baf6cc35fed6fcce3a540e8b39e8f6cda1d22a28f2ec8f526fef7a43f5"
+    },
+    "sub": {
+      "file": "C:/Windows/Fonts/arial.ttf",
+      "size": 13,
+      "sha256": "b3658eadae55e682b5f69eb64c439c1ecc8f196c0bb8d4756d145d13bc86476a"
+    },
+    "label": {
+      "file": "C:/Windows/Fonts/arial.ttf",
+      "size": 13,
+      "sha256": "b3658eadae55e682b5f69eb64c439c1ecc8f196c0bb8d4756d145d13bc86476a"
+    },
+    "label_b": {
+      "file": "C:/Windows/Fonts/arialbd.ttf",
+      "size": 13,
+      "sha256": "e8f4e3baf6cc35fed6fcce3a540e8b39e8f6cda1d22a28f2ec8f526fef7a43f5"
+    },
+    "foot": {
+      "file": "C:/Windows/Fonts/arial.ttf",
+      "size": 13,
+      "sha256": "b3658eadae55e682b5f69eb64c439c1ecc8f196c0bb8d4756d145d13bc86476a"
+    },
+    "badge": {
+      "file": "C:/Windows/Fonts/arialbd.ttf",
+      "size": 12,
+      "sha256": "e8f4e3baf6cc35fed6fcce3a540e8b39e8f6cda1d22a28f2ec8f526fef7a43f5"
+    }
+  },
+  "status": "complete",
+  "seconds": 7.994882499915548,
+  "finished": {
+    "iso": "2026-10-23T05:10:18-07:00",
+    "clock": "Oct 23, 2026 5:10:18 AM PDT"
+  },
+  "html_review": {
+    "reviewer": "a2_lesson_review",
+    "scope": "new diagnosis and consistency-lesson sections, gallery captions; desktop/narrow screenshots",
+    "findings_fixed": [
+      "name fixed table case",
+      "define combined score",
+      "show unchanged first-command fallback",
+      "correct45of72 body distance",
+      "learning benefit stated as hypothesis",
+      "reporting checkpoint05:50PDT",
+      "simplify timing exception",
+      "phone swipe instruction before image",
+      "dense baked technical notes available at full-size link"
+    ],
+    "browser_receipt": "browser_checks.json",
+    "html_sha256": "021b36a96c9a9c243bb2590adacf860246caf9bb7622928dcef6af533e725fab"
+  }
+}

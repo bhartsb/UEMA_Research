@@ -1,0 +1,121 @@
+training is held (supervisor control = pause, no trainer process): hold limits, 4 threads, 5.0 GB of RAM and 9.0 GB committed per process
+.............................................................F.......... [ 11%]
+........................................................................ [ 22%]
+........................................................................ [ 33%]
+..............................s......................................... [ 44%]
+........................................................................ [ 55%]
+........................................................................ [ 67%]
+..F.........................................s........................... [ 78%]
+........................................................................ [ 89%]
+s.........................s...................s....................      [100%]
+================================== FAILURES ===================================
+_________ test_a_row_cancelled_during_the_pause_refuses_its_job_alone _________
+
+outside = {'module': <module 'run_in_training_pause_under_test' from 'C:\\Users\\bhart\\Documents\\UEMA_wt\\dashboard_recheck\\d...ytest-89/test_a_row_cancelled_during_th0/Saved/mimo_bridge/experiments/H84_x_seg41/checkpoints/ckpt_step_411350'), ...}
+
+    def test_a_row_cancelled_during_the_pause_refuses_its_job_alone(outside):
+        cancel = ('import json,pathlib,sys; p=pathlib.Path(sys.argv[1]); d=json.loads(p.read_text(encoding="utf-8")); '
+                  '[r.update(status="cancelled") for r in d["rows"] if r["id"]=="look"]; '
+                  'p.write_text(json.dumps(d), encoding="utf-8")')
+        jobs_file(outside, dict(name='probe', cmd=['PY', '-c', cancel, str(outside['registry'])]),
+                  dict(name='look', cmd=['PY', '-c', 'print("must not run")']))
+        assert outside['module'].main() == 0
+        receipt = json.loads(next((outside['tmp']/'pauses').glob('*/receipt.json')).read_text(encoding='utf-8'))
+        probe, look = receipt['jobs']
+        assert probe['status'] == 'done' and probe['exit_code'] == 0
+>       assert look['status'] == 'refused by the test registry' and 'says cancelled' in look['reason']
+E       AssertionError: assert ('done' == 'refused by the test registry'
+E         
+E         - refused by the test registry
+E         + done)
+
+mimo_bridge\tests\test_test_registry.py:247: AssertionError
+---------------------------- Captured stdout call -----------------------------
+{
+  "run": "D:\\UEMA_Research\\external\\D\\UEMA_scratch\\dashboard_review\\pytest_tmp\\pytest-of-bhart\\pytest-89\\test_a_row_cancelled_during_th0\\Saved\\mimo_bridge\\experiments\\H84_x_seg41",
+  "jobs": [
+    "probe",
+    "look"
+  ],
+  "refusals": [],
+  "registry_refusals": {},
+  "review_hold": false,
+  "candidate": null
+}
+{"name": "probe", "status": "done", "seconds": 0.2, "exit_code": 0}
+{"name": "look", "status": "done", "seconds": 0.1, "exit_code": 0}
+receipt: D:\UEMA_Research\external\D\UEMA_scratch\dashboard_review\pytest_tmp\pytest-of-bhart\pytest-89\test_a_row_cancelled_during_th0\pauses\20261005_141615\receipt.json | training relaunched
+___ test_the_page_in_headless_edge_has_no_script_error_and_no_bare_decimal ____
+
+tmp_path = WindowsPath('D:/UEMA_Research/external/D/UEMA_scratch/dashboard_review/pytest_tmp/pytest-of-bhart/pytest-89/test_the_page_in_headless_edge0')
+
+    @pytest.mark.skipif(not os.path.isfile(EDGE), reason="headless Edge is not installed here")
+    def test_the_page_in_headless_edge_has_no_script_error_and_no_bare_decimal(tmp_path):
+        """The page as a browser renders it, on a fixture lineage served by this test's own server
+        thread (never the running dashboard server): every text node of Now, Over time (every card and
+        every collapsed part opened) and Live."""
+        from http.server import ThreadingHTTPServer
+        _lineage(tmp_path, child_args={"causal_chain": "on"}, records=rich_record())
+        _write(tmp_path / "docs/development_dashboard/evidence.json", {"schema": 1, "abilities": [], "records": []})
+        probe = """<script>window.__e=[];addEventListener('error',e=>__e.push(e.message));
+    function T(n){const o=[];if(!n)return o;const w=document.createTreeWalker(n,NodeFilter.SHOW_TEXT);let t;
+    while((t=w.nextNode())){const p=t.parentNode;if(!p||p.nodeName==='SCRIPT'||p.nodeName==='STYLE'||p.closest('code'))continue;
+    const s=(t.nodeValue||'').trim();if(s)o.push(s);}return o.join(' ');}
+    addEventListener('load',()=>setTimeout(()=>{
+    const R={e:__e,initialWords:document.getElementById('now').innerText.trim().split(/\\s+/).length,
+     compact:!document.getElementById('gof-overview').open&&!document.getElementById('now-evidence').open,
+     healthTitle:document.getElementById('liveness-title').textContent};
+    for(const d of document.querySelectorAll('details'))d.open=true;
+    renderGof();renderLiveness();
+    R.keepsOpen=[...document.querySelectorAll('#gof-items details,#liveness-lines details')].every(d=>d.open);
+    R.now=T(document.getElementById('now'));R.cards=[...document.querySelectorAll('.gof-item')].map(a=>T(a));
+    showPage('history');setTimeout(()=>{for(const d of document.querySelectorAll('details'))d.open=true;
+    setTimeout(()=>{R.history=T(document.getElementById('history'));R.gauges=[...document.querySelectorAll('.gauge-card')].map(a=>T(a));
+    showPage('live');R.live=T(document.getElementById('live'));const p=document.createElement('pre');p.id='R';p.textContent=JSON.stringify(R);
+    document.body.appendChild(p);},6000);},4000);},3000));</script>"""
+    
+        class H(dd.Handler):
+            def do_GET(self, head=False):
+                if self.path.split("?")[0].split("#")[0] == "/":
+                    page = (dd.ASSETS / "development_dashboard.html").read_text(encoding="utf-8")
+                    data = page.replace("<body>", "<body>" + probe, 1).encode("utf-8")
+                    self.send_response(200)
+                    self.send_header("Content-Type", "text/html; charset=utf-8")
+                    self.send_header("Content-Length", str(len(data)))
+                    self.end_headers()
+                    self.wfile.write(data)
+                    return
+                return super().do_GET(head)
+    
+        server = ThreadingHTTPServer(("127.0.0.1", 0), H)
+        server.root = tmp_path
+        threading.Thread(target=server.serve_forever, daemon=True).start()
+        work = tempfile.mkdtemp(prefix="dash_test_edge_")
+        try:
+            proc = subprocess.run([EDGE, "--headless=new", "--disable-gpu", "--no-first-run", "--no-default-browser-check",
+                                   "--disable-extensions", "--user-data-dir=" + os.path.join(work, "p"),
+                                   "--window-size=1280,2000", "--virtual-time-budget=30000", "--dump-dom",
+                                   f"http://127.0.0.1:{server.server_address[1]}/#now"], capture_output=True, timeout=240)
+        finally:
+            server.shutdown()
+            shutil.rmtree(work, ignore_errors=True)
+        m = re.search(r'<pre id="R">(.*?)</pre>', proc.stdout.decode("utf-8", "replace"), re.S)
+        assert m, "the page did not finish rendering"
+        R = json.loads(_html.unescape(m.group(1)))
+        assert R["e"] == [], R["e"]
+        assert R["compact"] and R["keepsOpen"], R
+        assert R["initialWords"] < 800, R["initialWords"]
+        assert "stopped responding" not in R["healthTitle"]
+        assert len(R["cards"]) == 10 and len(R["gauges"]) >= 12
+        for where in ("now", "history", "live"):
+>           assert not bare_decimals(R[where]), (where, bare_decimals(R[where])[:5])
+E           AssertionError: ('now', [('0.86', "ute cosine between two handles' changes 0.86 predicted, 0.45 real, 0.23 in the motor"), ('0.45', "e...or token; 1 = one"), ('0.23', "les' changes 0.86 predicted, 0.45 real, 0.23 in the motor token; 1 = one line, 0 = a")])
+E           assert not [('0.86', "ute cosine between two handles' changes 0.86 predicted, 0.45 real, 0.23 in the motor"), ('0.45', "en two ha...tor token; 1 = one"), ('0.23', "les' changes 0.86 predicted, 0.45 real, 0.23 in the motor token; 1 = one line, 0 = a")]
+E            +  where [('0.86', "ute cosine between two handles' changes 0.86 predicted, 0.45 real, 0.23 in the motor"), ('0.45', "en two ha...tor token; 1 = one"), ('0.23', "les' changes 0.86 predicted, 0.45 real, 0.23 in the motor token; 1 = one line, 0 = a")] = bare_decimals('Gain-of-function scoreboard What can the model reliably do now that it could not do before? No gain of function demon... recorded for the paired movement tests. See progress over time Watch recordings Read the takeover review (2026-09-23)')
+
+mimo_bridge\tests\test_dashboard_page_text.py:1081: AssertionError
+=========================== short test summary info ===========================
+FAILED mimo_bridge/tests/test_test_registry.py::test_a_row_cancelled_during_the_pause_refuses_its_job_alone
+FAILED mimo_bridge/tests/test_dashboard_page_text.py::test_the_page_in_headless_edge_has_no_script_error_and_no_bare_decimal
+2 failed, 636 passed, 5 skipped in 357.58s (0:05:57)
+exit 1 after 359 s; largest RAM of one process 0.70 GB (limit 5.00); most committed by one process 1.11 GB (limit 9.0); commit room at the start 45.6 GB; 415 of 423 processes held to the RAM limit; at most 2 above 200 MB at once

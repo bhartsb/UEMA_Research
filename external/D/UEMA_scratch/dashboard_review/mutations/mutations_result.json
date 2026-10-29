@@ -1,0 +1,276 @@
+{
+ "verdict": "fail",
+ "read_at": "2026-10-05 11:41:21",
+ "not_seen_by_acceptance": [
+  "M3",
+  "M4",
+  "M5",
+  "M6",
+  "M9",
+  "M10"
+ ],
+ "not_seen_by_any_test": [
+  "M9"
+ ],
+ "mutations": [
+  {
+   "id": "M1",
+   "removal": "a row written after the contract's time no longer owes the added fields (test_registry.owes_added_fields returns False)",
+   "control": "row_required",
+   "acceptance": {
+    "exit": 1,
+    "seen": true,
+    "judged": true,
+    "applied": true,
+    "summary": "FAILED mimo_bridge/tests/test_recovery_acceptance.py::test_the_control_holds[row_required] | !!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!! | 1 failed in 0.26s",
+    "seconds": 0.5
+   },
+   "unit": {
+    "test_test_registry.py": {
+     "exit": 1,
+     "seen": true,
+     "judged": true,
+     "applied": true,
+     "summary": "FAILED mimo_bridge/tests/test_test_registry.py::test_a_row_cancelled_during_the_pause_refuses_its_job_alone | !!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!! | 1 failed, 23 passed in 4.20s",
+     "seconds": 4.5
+    },
+    "test_test_runner.py": {
+     "exit": 1,
+     "seen": true,
+     "judged": true,
+     "applied": true,
+     "summary": "FAILED mimo_bridge/tests/test_test_runner.py::test_a_row_written_after_the_contracts_time_is_refused_without_each_added_field[component] | !!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!! | 1 failed in 5.60s",
+     "seconds": 5.8
+    }
+   }
+  },
+  {
+   "id": "M2",
+   "removal": "a job that exits with a code other than 0 and 1 reads FAIL instead of INVALID (test_registry.read_outcome)",
+   "control": "outcomes_written",
+   "acceptance": {
+    "exit": 1,
+    "seen": true,
+    "judged": true,
+    "applied": true,
+    "summary": "FAILED mimo_bridge/tests/test_recovery_acceptance.py::test_the_control_holds[outcomes_written] | !!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!! | 1 failed in 0.49s",
+    "seconds": 0.7
+   },
+   "unit": {
+    "test_test_registry.py": {
+     "exit": 1,
+     "seen": true,
+     "judged": true,
+     "applied": true,
+     "summary": "FAILED mimo_bridge/tests/test_test_registry.py::test_jobs_with_complete_rows_run_and_get_their_status_and_last_run_written | !!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!! | 1 failed, 22 passed in 3.94s",
+     "seconds": 4.2
+    },
+    "test_test_runner.py": {
+     "exit": 1,
+     "seen": true,
+     "judged": true,
+     "applied": true,
+     "summary": "FAILED mimo_bridge/tests/test_test_runner.py::test_the_four_outcomes_write_the_result_and_the_next_action | !!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!! | 1 failed, 16 passed in 1.44s",
+     "seconds": 1.7
+    }
+   }
+  },
+  {
+   "id": "M3",
+   "removal": "pytest is no longer a test signature (test_runner.signature_of)",
+   "control": "orphan_unmarked_process",
+   "acceptance": {
+    "exit": 0,
+    "seen": false,
+    "judged": true,
+    "applied": true,
+    "summary": "REVIEW MUTATION M3 applied: pytest is no longer a test signature (test_runner.signature_of) | .                                                                        [100%] | 1 passed in 2.35s",
+    "seconds": 2.6
+   },
+   "unit": {
+    "test_test_runner.py": {
+     "exit": 1,
+     "seen": true,
+     "judged": true,
+     "applied": true,
+     "summary": "FAILED mimo_bridge/tests/test_test_runner.py::test_the_runners_own_processes_are_never_test_processes_and_a_wrapper_is_judged_by_its_own_arguments | !!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!! | 1 failed, 37 passed in 8.39s",
+     "seconds": 8.6
+    }
+   }
+  },
+  {
+   "id": "M4",
+   "removal": "a process id reused by another process counts as the row's process (test_runner.alive ignores creation times)",
+   "control": "orphan_running_row",
+   "acceptance": {
+    "exit": 0,
+    "seen": false,
+    "judged": true,
+    "applied": true,
+    "summary": "REVIEW MUTATION M4 applied: a process id reused by another process counts as the row's process (test_runner.alive ignores creation times) | .                                                                        [100%] | 1 passed in 0.23s",
+    "seconds": 0.5
+   },
+   "unit": {
+    "test_test_runner.py": {
+     "exit": 1,
+     "seen": true,
+     "judged": true,
+     "applied": true,
+     "summary": "FAILED mimo_bridge/tests/test_test_runner.py::test_a_planted_orphan_running_row_is_detected | !!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!! | 1 failed, 28 passed in 6.92s",
+     "seconds": 7.2
+    }
+   }
+  },
+  {
+   "id": "M5",
+   "removal": "a defect's idle time is counted from its finding, whatever work followed (defect_register.rule_state)",
+   "control": "twelve_hours",
+   "acceptance": {
+    "exit": 0,
+    "seen": false,
+    "judged": true,
+    "applied": true,
+    "summary": "REVIEW MUTATION M5 applied: a defect's idle time is counted from its finding, whatever work followed (defect_register.rule_state) | .                                                                        [100%] | 1 passed in 0.45s",
+    "seconds": 0.7
+   },
+   "unit": {
+    "test_defect_register.py": {
+     "exit": 1,
+     "seen": true,
+     "judged": true,
+     "applied": true,
+     "summary": "FAILED mimo_bridge/tests/test_defect_register.py::test_a_gof_blocker_goes_to_the_top_at_12_hours_and_needs_an_explanation_at_24[11.9-False-False] | !!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!! | 1 failed, 2 passed in 0.10s",
+     "seconds": 0.3
+    }
+   }
+  },
+  {
+   "id": "M6",
+   "removal": "a reading that is not statistically clear, or not large enough, no longer stops a row from holding as scoreboard evidence (gof_scoreboard.row_holds)",
+   "control": "typed_pass",
+   "acceptance": {
+    "exit": 0,
+    "seen": false,
+    "judged": true,
+    "applied": true,
+    "summary": "REVIEW MUTATION M6 applied: a reading that is not statistically clear, or not large enough, no longer stops a row from holding as scoreboard evidence (gof_scoreboard.row_holds) | .                                                                        [100%] | 1 passed in 0.20s",
+    "seconds": 0.4
+   },
+   "unit": {
+    "test_machine_mode_and_scoreboard.py": {
+     "exit": 1,
+     "seen": true,
+     "judged": true,
+     "applied": true,
+     "summary": "FAILED mimo_bridge/tests/test_machine_mode_and_scoreboard.py::test_a_stage_is_demonstrated_only_by_a_runners_pass_with_both_judgements_and_no_open_blocker | !!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!! | 1 failed, 9 passed in 3.08s",
+     "seconds": 3.3
+    }
+   }
+  },
+  {
+   "id": "M7",
+   "removal": "QA STALE reads only mapped whole files, not mapped functions (component_manifest.changed_parts)",
+   "control": "qa_stale",
+   "acceptance": {
+    "exit": 1,
+    "seen": true,
+    "judged": true,
+    "applied": true,
+    "summary": "FAILED mimo_bridge/tests/test_recovery_acceptance.py::test_the_control_holds[qa_stale] | !!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!! | 1 failed in 1.33s",
+    "seconds": 1.6
+   },
+   "unit": {
+    "test_component_manifest.py": {
+     "exit": 1,
+     "seen": true,
+     "judged": true,
+     "applied": true,
+     "summary": "FAILED mimo_bridge/tests/test_component_manifest.py::test_a_fresh_manifest_passes_and_an_edit_of_a_mapped_function_fails_only_its_component | !!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!! | 1 failed, 2 passed in 3.28s",
+     "seconds": 3.5
+    }
+   }
+  },
+  {
+   "id": "M8",
+   "removal": "a HELD production segment stays in RUNNING on the Tests page; only LOST rows move (test_registry.apply_process_states)",
+   "control": "held_segment",
+   "acceptance": {
+    "exit": 1,
+    "seen": true,
+    "judged": true,
+    "applied": true,
+    "summary": "FAILED mimo_bridge/tests/test_recovery_acceptance.py::test_the_control_holds[held_segment] | !!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!! | 1 failed in 0.24s",
+    "seconds": 0.5
+   },
+   "unit": {
+    "test_test_registry.py": {
+     "exit": 0,
+     "seen": false,
+     "judged": true,
+     "applied": true,
+     "summary": "REVIEW MUTATION M8 applied: a HELD production segment stays in RUNNING on the Tests page; only LOST rows move (test_registry.apply_process_states) | .....................................                                    [100%] | 37 passed in 12.02s",
+     "seconds": 12.3
+    },
+    "test_test_runner.py": {
+     "exit": 0,
+     "seen": false,
+     "judged": true,
+     "applied": true,
+     "summary": "REVIEW MUTATION M8 applied: a HELD production segment stays in RUNNING on the Tests page; only LOST rows move (test_registry.apply_process_states) | ......................................                                   [100%] | 38 passed in 7.71s",
+     "seconds": 8.0
+    }
+   }
+  },
+  {
+   "id": "M9",
+   "removal": "the top of the Now page prints each GOF-BLOCKER as 'ID: fixed' (development_dashboard.js renderTop)",
+   "control": "names (pages)",
+   "acceptance": {
+    "exit": 0,
+    "seen": false,
+    "judged": true,
+    "applied": true,
+    "summary": "REVIEW MUTATION M9 applied: the top of the Now page prints each GOF-BLOCKER as 'ID: fixed' (development_dashboard.js renderTop) | .                                                                        [100%] | 1 passed in 6.77s",
+    "seconds": 7.3
+   },
+   "unit": {}
+  },
+  {
+   "id": "M9b",
+   "removal": "the same with 'ID: FIXED' in capitals (a control: the name check sees capitals)",
+   "control": "names (pages), control",
+   "acceptance": {
+    "exit": 1,
+    "seen": true,
+    "judged": true,
+    "applied": true,
+    "summary": "FAILED mimo_bridge/tests/test_recovery_pages.py::test_the_control_holds[names] | !!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!! | 1 failed in 6.26s",
+    "seconds": 6.8
+   },
+   "unit": {}
+  },
+  {
+   "id": "M10",
+   "removal": "the oldest registry row that gives a verdict decides a stage instead of the newest (elimination.decide)",
+   "control": "verdict_follows_result",
+   "acceptance": {
+    "exit": 0,
+    "seen": false,
+    "judged": true,
+    "applied": true,
+    "summary": "REVIEW MUTATION M10 applied: the oldest registry row that gives a verdict decides a stage instead of the newest (elimination.decide) | .                                                                        [100%] | 1 passed in 0.60s",
+    "seconds": 0.8
+   },
+   "unit": {
+    "test_elimination.py": {
+     "exit": 1,
+     "seen": true,
+     "judged": true,
+     "applied": true,
+     "summary": "FAILED mimo_bridge/tests/test_elimination.py::test_the_newest_row_that_answers_decides_and_the_older_one_is_history | !!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!! | 1 failed, 2 passed in 0.33s",
+     "seconds": 0.6
+    }
+   }
+  }
+ ]
+}

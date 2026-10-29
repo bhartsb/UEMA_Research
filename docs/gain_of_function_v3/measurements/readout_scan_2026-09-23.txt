@@ -1,0 +1,163 @@
+Readout scan of every page a person reads - 2026-09-23 (fix-scanner)
+
+What was checked: every number on the pages listed below, with
+Source/Python/mimo_bridge/tools/check_no_bare_decimals.py (readout_problems), as extended today.
+A hit is a number a reader cannot place. There are four kinds:
+  - a score below 1 with no unit, such as 'direction match 0.14' (the rule the pages already had);
+  - a score of 1 or more with no unit, such as 'error ratio 1.003' (new today);
+  - a multiplier with nothing named after it, such as 'drift x1.0' (new today;
+    '4.2 times its first value' passes);
+  - a raw input value of a hidden unit, such as 'their inputs ranged from -32.9 to -7.1' (new today).
+A number passes when it is a count ('32 of every 100'), carries a real unit (cm, degrees, s, GB,
+steps, per second), is a percentage, or names the end of a scale ('1.0 = one millimetre').
+
+Pages read, and how many hits each gave:
+  - Development dashboard, Now tab: tools/development_dashboard.build_state on the live lineage,
+    every sentence of its state plus each gain-of-function card's item_text (Python-side, as
+    tests/test_dashboard_page_text.py renders it; lineage caches in the scratchpad): 663 texts read,
+    5 hits.
+  - Development dashboard, Over-time tab: tools/lineage_series.build(keys='all') on the live
+    lineage, every card, panel and gauge sentence (Python-side; caches in the scratchpad): 412 texts
+    read, 5 hits.
+  - Old dashboard: tools/dashboard.build() written to the scratchpad, its page text and every popup:
+    337 texts read, 8 hits.
+  - Lifetime page: tools/lifetime.build(force=True) written to the scratchpad: 1 text read, 0 hits.
+  - Explainer: built from segment 31 with tools/build_explainer.py into the scratchpad, opened in
+    headless Edge by tools/check_explainer_page.py with the extra states of
+    verify_fix_explainer/extended_scan.py (every tab, popup, box, tour slide, snapshot, select
+    option, slider end and hover): 8,314 texts read, 5 hits.
+  - Probe headlines: Saved/mimo_bridge/gof_probes/index.jsonl, the newest line per probe, every
+    sentence of its headline: 15 texts read, 4 hits.
+  - Hourly watcher: docs/h84_launch_2026-09-18/hourly_watch.py's printed lines on segment 31's last
+    hour of records, run as tests/test_h84_hourly_watch.py runs it: 30 texts read, 0 hits.
+  - The addendum (docs/gain_of_function_v3/UEMA_Embodied_Gain_of_Function_Addendum_v3.html) and the
+    dashboard's static page (development_dashboard.html): 2 texts read, 4 hits.
+  - Build progress page: docs/build_status.html opened in headless Edge through this scan's own file
+    server, reading Saved/mimo_bridge/build_status.json: 148 texts read, 0 hits.
+
+Excused, as the page check excuses a typed '--flag 0.05': 11 launch-setting values
+the Now tab prints in a code box beside their flag name. Left out: 10 values the Over-time tab never
+prints (it prints each launch change as the command line writes it: '--flag 0.1 (was --flag 0.0)').
+
+Total: 31 hits. They are grouped below by the file that writes the sentence. A page that shows
+another file's sentence as written (the probes' headlines) is listed under that file, with the page named
+in brackets. The same sentence shown on several pages is listed once per page.
+
+== Source/Python/mimo_bridge/tools/gof_probe_body.py (the body probe's headline, stored in Saved/mimo_bridge/gof_probes/index.jsonl and shown as written)  (14 hits)
+  [explainer (built from segment 31) | probes tab / Checkpoint ckpt_step_344400 (lineage step 344,400, run H84_fresh_drive]
+    a raw input value of a hidden unit: -3
+    ...of its 256 hidden units responded (a unit responds when its input rises above -3; the highest input any unit received was -7)....
+  [explainer (built from segment 31) | probes tab / Checkpoint ckpt_step_344400 (lineage step 344,400, run H84_fresh_drive]
+    a raw input value of a hidden unit: -7
+    ...(a unit responds when its input rises above -3; the highest input any unit received was -7)....
+  [development dashboard /api/progress | now.gain_of_function.items[7].lines[3].text]
+    a raw input value of a hidden unit: -3
+    ...of its 256 hidden units responded (a unit responds when its input rises above -3; the highest input any unit received was -7)....
+  [development dashboard /api/progress | now.gain_of_function.items[7].lines[3].text]
+    a raw input value of a hidden unit: -7
+    ...(a unit responds when its input rises above -3; the highest input any unit received was -7)....
+  [development dashboard /api/progress | now gof item 8 item_text]
+    a raw input value of a hidden unit: -3
+    ...of its 256 hidden units responded (a unit responds when its input rises above -3; the highest input any unit received was -7). What would me...
+  [development dashboard /api/progress | now gof item 8 item_text]
+    a raw input value of a hidden unit: -7
+    ...(a unit responds when its input rises above -3; the highest input any unit received was -7). What would measure its goal line: a physics-only ceiling:...
+  [development dashboard /api/lineage?all=1 | overtime.probes.items.8[0].latest.lived]
+    a raw input value of a hidden unit: -3
+    ...of its 256 hidden units responded (a unit responds when its input rises above -3; the highest input any unit received was -7)....
+  [development dashboard /api/lineage?all=1 | overtime.probes.items.8[0].latest.lived]
+    a raw input value of a hidden unit: -7
+    ...(a unit responds when its input rises above -3; the highest input any unit received was -7)....
+  [development dashboard /api/lineage?all=1 | overtime.probes.items.8[0].latest.reader_liveness.lived]
+    a raw input value of a hidden unit: -3
+    ...rder, 100% = every unit responds). A unit responds when its input rises above -3; the highest input any unit received was -7, below that lin...
+  [development dashboard /api/lineage?all=1 | overtime.probes.items.8[0].latest.reader_liveness.lived]
+    a raw input value of a hidden unit: -7
+    ...A unit responds when its input rises above -3; the highest input any unit received was -7, below that line....
+  [gof_probes/index.jsonl | probe body (2026-09-23 03:50:45) headline.lived]
+    a raw input value of a hidden unit: -3
+    ...of its 256 hidden units responded (a unit responds when its input rises above -3; the highest input any unit received was -7)....
+  [gof_probes/index.jsonl | probe body (2026-09-23 03:50:45) headline.lived]
+    a raw input value of a hidden unit: -7
+    ...(a unit responds when its input rises above -3; the highest input any unit received was -7)....
+  [gof_probes/index.jsonl | probe body (2026-09-23 03:50:45) headline.reader_liveness.lived]
+    a raw input value of a hidden unit: -3
+    ...rder, 100% = every unit responds). A unit responds when its input rises above -3; the highest input any unit received was -7, below that lin...
+  [gof_probes/index.jsonl | probe body (2026-09-23 03:50:45) headline.reader_liveness.lived]
+    a raw input value of a hidden unit: -7
+    ...A unit responds when its input rises above -3; the highest input any unit received was -7, below that line....
+
+== Source/Python/mimo_bridge/tools/dashboard.py  (8 hits)
+  [old dashboard (dashboard_legacy.html) | popup chip:causal.f]
+    a multiplier with nothing named after it: 48x
+    ...well, and on a frozen body plain persistence beat the model 48x. It can rise simply because the body started moving, which...
+  [old dashboard (dashboard_legacy.html) | popup chip:reconfault.w]
+    a multiplier with nothing named after it: 2.45 times
+    ...esent for free - so above 1 time is expected there (1.16 to 2.45 times on the undamaged runs H36 and H43), and damage shows instea...
+  [old dashboard (dashboard_legacy.html) | popup chip:reconfault.f]
+    a multiplier with nothing named after it: 1.16x
+    ...error): H22 36-39, H28 26-59, H31 26-99 (residual off); H36 1.16x, H43 2.45x (residual on, the decoders trained at their floo...
+  [old dashboard (dashboard_legacy.html) | popup chip:gates.f]
+    a multiplier with nothing named after it: 12x
+    ...h that decides everything: intention alone moved body speed 12x, and imagination - which changes no behaviour whatsoever -...
+  [old dashboard (dashboard_legacy.html) | popup Situation dependence (controlled test).h]
+    a multiplier with nothing named after it: 1.0x
+    ...the bootstrap 95% interval of relevant-over-jitter clear of 1.0x, zero slot effect, zero determinism floor. First establishe...
+  [old dashboard (dashboard_legacy.html) | popup Situation dependence (controlled test).h]
+    a multiplier with nothing named after it: 1.40x
+    ...ero determinism floor. First established 2026-09-03 on H65 (1.40x, CI [1.15,1.72])....
+  [old dashboard (dashboard_legacy.html) | popup Situation dependence (controlled test).f]
+    a multiplier with nothing named after it: 1.4x
+    ...rrelation channel: a controlled yes/no with its own floors. 1.4x is a floor that should grow as vision’s credit compounds....
+  [old dashboard (dashboard_legacy.html) | popup Machine load (memory, card, step time).f]
+    a multiplier with nothing named after it: 3.2x
+    ...Nothing about learning. Segment 31 slowed 3.2x at 14:16 on 2026-09-22 with nothing recording these; a spil...
+
+== docs/gain_of_function_v3/UEMA_Embodied_Gain_of_Function_Addendum_v3.html  (4 hits)
+  [docs/gain_of_function_v3/UEMA_Embodied_Gain_of_Function_Addendum_v3.html | page]
+    a raw input value of a hidden unit: −29
+    ...n; at most 0.75% at 50 ms; the pose head's 256 units all at inputs of −29 to −6.5, where they output nothing; limbs turned 6.5° to 12...
+  [docs/gain_of_function_v3/UEMA_Embodied_Gain_of_Function_Addendum_v3.html | page]
+    a raw input value of a hidden unit: −3
+    ...ut of every 100 units of a layer, how many responded: their input rose above −3 on some moment (0 = the layer outputs a constant whatever i...
+  [docs/gain_of_function_v3/UEMA_Embodied_Gain_of_Function_Addendum_v3.html | page]
+    a raw input value of a hidden unit: −17
+    ...tly against that shared part, which alone puts every unit's input near −17, far below the −3 line; all 256 units sit at −29 to −5.5, w...
+  [docs/gain_of_function_v3/UEMA_Embodied_Gain_of_Function_Addendum_v3.html | page]
+    a raw input value of a hidden unit: −29
+    ...every unit's input near −17, far below the −3 line; all 256 units sit at −29 to −5.5, where the activation function (GELU) outputs 0 and...
+
+== Source/Python/mimo_bridge/explainer/schema.py  (1 hit)
+  [explainer (built from segment 31) | popup term.liveness]
+    a raw input value of a hidden unit: -3
+    ...ut of every 100 hidden units of a layer, how many had their input rise above -3 on some lived moment (a unit below -3 outputs about nothing...
+
+== Source/Python/mimo_bridge/explainer/viewer.js  (1 hit)
+  [explainer (built from segment 31) | probes tab]
+    a raw input value of a hidden unit: -3
+    ...CPU, 24 lived moments each). A unit counts as live when its input rose above -3 on some moment; below that its activation outputs nothing a...
+
+== Source/Python/mimo_bridge/tools/build_explainer.py  (1 hit)
+  [explainer (built from segment 31) | popup chart.liveness]
+    a raw input value of a hidden unit: -3
+    ...of every 100 hidden units of each layer, how many had their input rise above -3 on the window's samples (0 = the layer is dead: it outputs...
+
+== Source/Python/mimo_bridge/tools/development_dashboard.py  (1 hit)
+  [development dashboard /api/progress | now.liveness.lines[0].text]
+    a raw input value of a hidden unit: -3
+    ...2026-09-22, 24 lived moments, CPU; a unit responds when its input rises above -3):...
+
+== Source/Python/mimo_bridge/tools/lineage_series.py  (1 hit)
+  [development dashboard /api/lineage?all=1 | overtime.cards[10].what]
+    a raw input value of a hidden unit: -3
+    ...under half their units responding (a unit responds when its input rises above -3 on the window's samples), and each new module's least-respo...
+
+Not yet held by any test: the page tests still call bare_decimals alone, which passes every hit above
+except the first kind. Switching a page's test to readout_problems makes it fail until that page's
+hits are rewritten. Whether the tests of the fixture pages (test_dashboard_page_text and the others)
+pass readout_problems today is not measured here.
+
+Made by docs/gain_of_function_v3/measurements/readout_scan_2026-09-23/: collect_texts.py PART DIR for
+each page (probes, now, overtime, old, lifetime, watcher, static, explainer, buildstatus), then
+scan_texts.py DIR, then write_report.py DIR OUT. One page alone:
+python -m mimo_bridge.tools.check_no_bare_decimals PAGE.html

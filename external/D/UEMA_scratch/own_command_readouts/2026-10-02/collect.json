@@ -1,0 +1,264 @@
+{
+  "version": "own_command_readouts_v1",
+  "checkpoint": "D:\\UEMA_Research\\Saved\\mimo_bridge\\experiments\\H84_fresh_drivers_20260918_seg41s_1146_resume_20261001_213502\\checkpoints\\ckpt_step_455800",
+  "checkpoint_step": 455800,
+  "bodies": 8,
+  "steps_per_body": 250,
+  "hold": 5,
+  "commands": [
+    "own",
+    "absolute_roll",
+    "size_matched",
+    "noise"
+  ],
+  "conditions": [
+    "production_bf16",
+    "heads_fp32",
+    "offset_subtracted",
+    "offset_subtracted_mean_matched"
+  ],
+  "senses": [
+    "vision",
+    "tactile",
+    "audio",
+    "proprioception",
+    "vestibular"
+  ],
+  "rules": {
+    "version": "own_command_readouts_v1",
+    "centring": "Read on the size_matched swap, pooled over bodies 0, 1, 3, 4, 5, 6 and 7 (body 2 left out by the operator's decision of Sep 25), for each of vision, tactile, audio and proprioception whose real next-token change is measurable at that phase, at each of the 5 hold phases, under heads_fp32, offset_subtracted and offset_subtracted_mean_matched: MET when the condition's own-command reading AND its paired difference from the production_bf16 reading on the same transitions are each above z times their bootstrap standard error, where z is the one-sided normal line for 5 in 100 shared over the comparisons made (at most 4 senses x 5 phases x 3 forms = 60, z = 3.14). Met by any one: the repair is centring the prediction heads' input.",
+    "motor_token": "The motor token's held-out R^2 for the asked position change or the asked turn (the 25 body handles pooled, bodies 0, 1, 3, 4, 5, 6 and 7, each held out in turn) above both the 97.5th percentile of the same R^2 over 100 row permutations of the targets (5 in 100 shared over the two groups) and 0.04, one handle's share of the 25 pooled handles: the motor token carries the command. Not above both lines for either group: the motor token's R^2 is near its shuffled control (at most one handle's share), so the repair is the motor encoder or a direct command input. Judged only when the positive control (the motor encoder's input position columns: achieved and command position of the 26 handles) reaches R^2 0.9 on the asked position change.",
+    "neither": "Neither rule points to a repair (the centring rule not met and the motor token carrying the command): the contrast-loss route, a loss on the main route that is lower when the own command's error is below the size_matched command's, with its margin set from this run's measured size_matched reading and its noise before it is demanded. Both met: both repairs are indicated and recorded.",
+    "reported_not_judged": "The production_bf16 reading at every phase (the hold-phase effect behind the analysis's first finding), the absolute_roll and noise swaps, the per-body readings, the command shift share, the heads' attention weights, and the R^2 of the transformer's motor slot and of every head's input (where the command is lost between the motor token and the heads).",
+    "reachability": "8 bodies x 250 transitions = 400 transitions a phase, 350 in the decision pool. From the live audit's window spread (40 transitions a window), the standard error at 350 is 0.000164 for proprioception, 0.000626 for audio, 1.76e-06 for tactile and 0.0268 for vision, so the smallest rise the rule can declare (z = 3.14 times it) is 0.00052, 0.002, 5.5e-06 and 0.084 of the reading's 0-to-1 scale. H71's pooled proprioception reading of 0.08 is 155 times proprioception's line, so a dependence of H71's size at any phase is declared; today's live reading at phase 4 (proprioception -0.00007) is not. The motor token: the position columns of the encoder's input hold the asked position change as a linear function (200 x (command position / 200 cm minus achieved position / 200 cm)), and a training fold's 300 distinct commands (each held 5 model steps) determine its 78 command-position columns, so the positive control reaches R^2 near 1 (the tests: above 0.99 on a fixture of independent commands, at least 0.9 on a fixture with 5-model-step holds); a token that kept one handle's command of the 25 reaches 1/25 = 0.04 of the pooled group's variance when the 25 handles' asked changes are of equal size, the rule's size line; the permuted control at 1,750 rows and 192 features had a 97.5th percentile of 0.00004 to 0.00005 on a token without information (Oct 2, this code), so the control line alone would credit a token that reads 0.00004."
+  },
+  "count_arithmetic": {
+    "transitions_per_body": 250,
+    "transitions_per_phase_all_bodies": 400,
+    "transitions_per_phase_decision_pool": 350,
+    "family_tests": 60,
+    "family_line_z": 3.143980287069073,
+    "senses": {
+      "vision": {
+        "window_sd": 0.0792816,
+        "expected_se": 0.02680207262467374,
+        "expected_half_width_95": 0.05253206234436053,
+        "smallest_declared_rise": 0.08426518798456789
+      },
+      "tactile": {
+        "window_sd": 5.20899e-06,
+        "expected_se": 1.760960024535318e-06,
+        "expected_half_width_95": 3.4514816480892233e-06,
+        "smallest_declared_rise": 5.536423603455711e-06
+      },
+      "audio": {
+        "window_sd": 0.00185226,
+        "expected_se": 0.0006261781679453768,
+        "expected_half_width_95": 0.0012273092091729385,
+        "smallest_declared_rise": 0.001968691816213292
+      },
+      "proprioception": {
+        "window_sd": 0.000485936,
+        "expected_se": 0.00016427635117030256,
+        "expected_half_width_95": 0.00032198164829379304,
+        "smallest_declared_rise": 0.0005164816097110677
+      },
+      "vestibular": {
+        "window_sd": 0.00283229,
+        "expected_se": 0.000957488777650012,
+        "expected_half_width_95": 0.0018766780041940235,
+        "smallest_declared_rise": 0.0030103258420215006
+      }
+    }
+  },
+  "noise_sd_fraction": 1.0,
+  "noise_seed": 20261002,
+  "boot_draws": 2000,
+  "route_tolerance_abs": 0.001,
+  "motor_check_tol": 0.0001,
+  "script_sha256": "16f9883f0c04c08219d7e8f2ca2bf7c2590fae4d904ff3c8d34af1e580924364",
+  "learning": false,
+  "threads": 8,
+  "guard": {
+    "committed_gb": 26.974056243896484,
+    "limit_gb": 84.39546585083008,
+    "need_gb": 19.0,
+    "reserve_gb": 6.0
+  },
+  "checkpoint_episode": "episode companion restored (8 bodies saved; 0 caregiver recording tape(s) replaced by a plain list)",
+  "bodies_run": [
+    {
+      "body": 0,
+      "start": "episode companion, body 0 of 8 at step 455800",
+      "seconds": 296.2,
+      "full_contexts": 1
+    },
+    {
+      "body": 1,
+      "start": "episode companion, body 1 of 8 at step 455800",
+      "seconds": 302.5,
+      "full_contexts": 1
+    },
+    {
+      "body": 2,
+      "start": "episode companion, body 2 of 8 at step 455800",
+      "seconds": 277.9,
+      "full_contexts": 1
+    },
+    {
+      "body": 3,
+      "start": "episode companion, body 3 of 8 at step 455800",
+      "seconds": 276.3,
+      "full_contexts": 1
+    },
+    {
+      "body": 4,
+      "start": "episode companion, body 4 of 8 at step 455800",
+      "seconds": 277.9,
+      "full_contexts": 1
+    },
+    {
+      "body": 5,
+      "start": "episode companion, body 5 of 8 at step 455800",
+      "seconds": 270.7,
+      "full_contexts": 1
+    },
+    {
+      "body": 6,
+      "start": "episode companion, body 6 of 8 at step 455800",
+      "seconds": 275.7,
+      "full_contexts": 1
+    },
+    {
+      "body": 7,
+      "start": "episode companion, body 7 of 8 at step 455800",
+      "seconds": 277.4,
+      "full_contexts": 1
+    }
+  ],
+  "transitions": 2000,
+  "phase_label_check": {
+    "latched_changes": 392,
+    "excluded_rows": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11
+    ],
+    "passed": true
+  },
+  "motor_capture_largest_deviation": 0.0,
+  "route_check": {
+    "largest_deviation_by_sense": {
+      "vision": 9.417533874511719e-06,
+      "tactile": 2.384185791015625e-07,
+      "audio": 2.332031726837158e-06,
+      "proprioception": 2.384185791015625e-07,
+      "vestibular": 2.384185791015625e-07
+    },
+    "tolerance_abs": 0.001,
+    "passed": true
+  },
+  "swap_check_smallest": {
+    "absolute_roll": 6.434967041015625,
+    "size_matched": 6.648837089538574,
+    "noise": 51.90972137451172
+  },
+  "offset_check": {
+    "largest_deviation": 9.5367431640625e-07,
+    "line": 0.006366810913085938,
+    "constant_rms": [
+      106.68523406982422,
+      267.8841247558594,
+      5.35814905166626,
+      207.7797088623047,
+      128.44674682617188,
+      6.5435099601745605
+    ],
+    "input_rms_after": [
+      6.547886848449707,
+      6.768695831298828,
+      6.547787666320801,
+      6.785841464996338,
+      6.817821025848389,
+      6.265336036682129
+    ]
+  },
+  "constant_rms_per_slot": {
+    "vision": 106.68523406982422,
+    "tactile": 267.8841247558594,
+    "audio": 5.35814905166626,
+    "proprioception": 207.7797088623047,
+    "motor": 128.44674682617188,
+    "vestibular": 6.5435099601745605
+  },
+  "noise_sd_per_column": [
+    37.38507843017578,
+    34.320560455322266,
+    12.409822463989258,
+    0.4174831211566925,
+    0.45451924204826355,
+    0.5876063704490662,
+    0.48604410886764526,
+    0.2936646044254303,
+    0.12380987405776978
+  ],
+  "mean_matched_shift_rms": {
+    "vision": 0.01891273446381092,
+    "tactile": 0.0004031153512187302,
+    "audio": 0.6857003569602966,
+    "proprioception": 0.009879093617200851,
+    "vestibular": 0.00020199897699058056
+  },
+  "bf16_emulation_check": {
+    "senses": {
+      "vision": {
+        "grid_vs_autocast": 0.12524174780014016,
+        "fp32_vs_autocast": 0.11566077697319395,
+        "grid_vs_autocast_largest": 0.26865671641791045,
+        "fp32_vs_autocast_largest": 0.2095673973880597
+      },
+      "tactile": {
+        "grid_vs_autocast": 0.03921259692404718,
+        "fp32_vs_autocast": 6.155873272119895,
+        "grid_vs_autocast_largest": 0.0031446444310005437,
+        "fp32_vs_autocast_largest": 0.0039062380041334876
+      },
+      "audio": {
+        "grid_vs_autocast": 0.0016667675317154648,
+        "fp32_vs_autocast": 0.0037937625661753492,
+        "grid_vs_autocast_largest": 0.004098360655737705,
+        "fp32_vs_autocast_largest": 0.006844942686987705
+      },
+      "proprioception": {
+        "grid_vs_autocast": 0.005161315595066101,
+        "fp32_vs_autocast": 0.006776394006354462,
+        "grid_vs_autocast_largest": 0.0072992700729927005,
+        "fp32_vs_autocast_largest": 0.005807695597627737
+      },
+      "vestibular": {
+        "grid_vs_autocast": 0.0054650112051075435,
+        "fp32_vs_autocast": 1.4233045363864016,
+        "grid_vs_autocast_largest": 0.0051813471502590676,
+        "fp32_vs_autocast_largest": 0.12182237694300518
+      }
+    },
+    "seconds": 1.4,
+    "meaning": "grid_vs_autocast and fp32_vs_autocast: mean absolute deviation over the batch divided by the predictions' spread over the bodies (0 = identical to true bf16 autocast); the grid should sit far closer to autocast than fp32 does. *_largest: the largest deviation over the largest predicted change from the current token"
+  },
+  "readout_seconds": 382.5,
+  "weights_unchanged": true,
+  "memory": {
+    "peak_private_commit_gib": 16.982044219970703
+  },
+  "collect_seconds": 2565.6,
+  "elapsed_s": 2959.0
+}

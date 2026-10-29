@@ -1,0 +1,721 @@
+{
+ "layer": "body_mlp.0",
+ "block": "efference",
+ "watcher_key": "efference.lesson.body_mlp.0",
+ "part": "body head",
+ "what": "forecasts of how far body parts move",
+ "metric_words": {
+  "cm": "its forecast of how far body parts move over the next 50 ms, mean miss in cm",
+  "deg": "its forecast of how far body parts turn over the next 50 ms, mean miss in degrees"
+ },
+ "reference_words": "guessing \"no movement\"",
+ "width": 256,
+ "rows": 800,
+ "definition": "idle = the unit's pre-activation at or under -3 on every one of the 800 rows (the liveness report's rule, lem/model/efference.py window_liveness); switched off = its output after GELU set to 0",
+ "idle": 146,
+ "idle_units": [
+  1,
+  2,
+  4,
+  6,
+  7,
+  9,
+  12,
+  14,
+  15,
+  16,
+  19,
+  20,
+  22,
+  23,
+  26,
+  27,
+  29,
+  30,
+  33,
+  37,
+  38,
+  39,
+  41,
+  42,
+  43,
+  47,
+  48,
+  51,
+  52,
+  53,
+  55,
+  56,
+  58,
+  64,
+  65,
+  66,
+  67,
+  68,
+  72,
+  73,
+  75,
+  78,
+  81,
+  82,
+  83,
+  86,
+  88,
+  90,
+  91,
+  95,
+  96,
+  99,
+  100,
+  103,
+  105,
+  106,
+  109,
+  111,
+  113,
+  115,
+  117,
+  118,
+  119,
+  120,
+  121,
+  124,
+  125,
+  128,
+  130,
+  131,
+  132,
+  134,
+  135,
+  136,
+  140,
+  141,
+  145,
+  146,
+  148,
+  149,
+  150,
+  151,
+  153,
+  154,
+  156,
+  157,
+  158,
+  159,
+  160,
+  161,
+  162,
+  164,
+  165,
+  166,
+  167,
+  170,
+  172,
+  173,
+  174,
+  176,
+  180,
+  181,
+  182,
+  185,
+  186,
+  187,
+  188,
+  190,
+  191,
+  192,
+  194,
+  196,
+  197,
+  198,
+  200,
+  201,
+  205,
+  206,
+  207,
+  208,
+  209,
+  210,
+  212,
+  213,
+  214,
+  215,
+  220,
+  221,
+  222,
+  223,
+  224,
+  229,
+  230,
+  231,
+  232,
+  233,
+  234,
+  236,
+  237,
+  241,
+  242,
+  243,
+  249,
+  252,
+  253,
+  254
+ ],
+ "responding_share_on_rows": 0.4297,
+ "varying_units_on_rows": 110,
+ "idle_units_largest_output": 0.002683212049305439,
+ "idle_units_largest_input": -3.136296272277832,
+ "lines": {
+  "fraction": 0.05,
+  "reference_floor": 0.01,
+  "rule": "NO COST when the 95% interval of the error change (switched off minus full, paired over bodies) lies at or under fraction x scale, scale = max(|reference - full|, reference_floor x reference); COST when it lies wholly above; UNDECIDED otherwise"
+ },
+ "checks": {
+  "check_rebuilt_output_vs_captured": 4.0531158447265625e-06,
+  "check_rebuilt_preactivation_vs_captured": 2.574920654296875e-05
+ },
+ "result": {
+  "cm": {
+   "bodies": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7
+   ],
+   "rows": 800,
+   "full": 0.6890098008699715,
+   "zeroed": 0.6890097658894956,
+   "reference": 0.8231247953884303,
+   "full_per_body": [
+    0.817664521932602,
+    0.8339109455049037,
+    0.5212272474169731,
+    0.6620385399460793,
+    0.6572533850371838,
+    0.7248221403360366,
+    0.6142202407121659,
+    0.6809413860738277
+   ],
+   "zeroed_per_body": [
+    0.817664451599121,
+    0.8339108555018901,
+    0.5212272474169731,
+    0.6620385313034057,
+    0.6572532741725445,
+    0.7248221403360366,
+    0.614220243692398,
+    0.6809413830935955
+   ],
+   "reference_per_body": [
+    0.9767554372549057,
+    0.9817441841959953,
+    0.5505950462818145,
+    0.8141195149719715,
+    0.8444760802388191,
+    0.8911117865145206,
+    0.7789365491271019,
+    0.747259764522314
+   ],
+   "change": -3.498047591865561e-08,
+   "change_sd_over_bodies": 4.727079896209849e-08,
+   "change_95": [
+    -7.450613262278404e-08,
+    4.545180785472819e-09
+   ],
+   "interval_includes_0": true,
+   "gap_to_reference": 0.13411499451845876,
+   "scale": 0.13411499451845876,
+   "line": 0.0067057497259229385,
+   "change_share_of_scale": -2.6082449650207537e-07,
+   "verdict": "NO COST"
+  },
+  "deg": {
+   "bodies": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7
+   ],
+   "rows": 800,
+   "full": 4.035278377532959,
+   "zeroed": 4.03527862906456,
+   "reference": 4.555156329572201,
+   "full_per_body": [
+    4.454458184242249,
+    4.336357905864715,
+    4.134281685352326,
+    3.891580203771591,
+    3.8096091496944426,
+    3.7260654616355895,
+    3.9482006311416624,
+    3.981673798561096
+   ],
+   "zeroed_per_body": [
+    4.454457967281342,
+    4.336357583999634,
+    4.134281685352326,
+    3.8915803372859954,
+    3.8096115481853485,
+    3.7260654616355895,
+    3.94820063829422,
+    3.9816738104820253
+   ],
+   "reference_per_body": [
+    4.799073417186737,
+    4.7578657078742985,
+    4.273687185049057,
+    4.55399040222168,
+    4.612215995788574,
+    4.2280486536026,
+    4.648846206665039,
+    4.567523068189621
+   ],
+   "change": 2.5153160110313877e-07,
+   "change_sd_over_bodies": 8.795536192796311e-07,
+   "change_95": [
+    -4.839104724779474e-07,
+    9.869736746842248e-07
+   ],
+   "interval_includes_0": true,
+   "gap_to_reference": 0.5198779520392423,
+   "scale": 0.5198779520392423,
+   "line": 0.025993897601962114,
+   "change_share_of_scale": 4.838281756641071e-07,
+   "verdict": "NO COST"
+  },
+  "largest_change_cm": 5.2377265092218295e-05,
+  "largest_change_deg": 0.00034099892945960164,
+  "verdict": "NO COST"
+ },
+ "verdict": "NO COST",
+ "ladder": [
+  {
+   "k": 146,
+   "largest_input_among_switched_off": -3.136296272277832,
+   "verdict": "NO COST",
+   "metrics": {
+    "cm": {
+     "change": -3.498047591865561e-08,
+     "change_95": [
+      -7.450613262278404e-08,
+      4.545180785472819e-09
+     ],
+     "line": 0.0067057497259229385,
+     "verdict": "NO COST"
+    },
+    "deg": {
+     "change": 2.5153160110313877e-07,
+     "change_95": [
+      -4.839104724779474e-07,
+      9.869736746842248e-07
+     ],
+     "line": 0.025993897601962114,
+     "verdict": "NO COST"
+    }
+   }
+  },
+  {
+   "k": 152,
+   "largest_input_among_switched_off": -2.4522314071655273,
+   "verdict": "NO COST",
+   "metrics": {
+    "cm": {
+     "change": -1.7412006855788142e-07,
+     "change_95": [
+      -7.498840255157436e-07,
+      4.016438883999808e-07
+     ],
+     "line": 0.0067057497259229385,
+     "verdict": "NO COST"
+    },
+    "deg": {
+     "change": 5.111098290710991e-07,
+     "change_95": [
+      -1.3886080840588587e-06,
+      2.4108277422010567e-06
+     ],
+     "line": 0.025993897601962114,
+     "verdict": "NO COST"
+    }
+   }
+  },
+  {
+   "k": 160,
+   "largest_input_among_switched_off": -0.8351516723632812,
+   "verdict": "NO COST",
+   "metrics": {
+    "cm": {
+     "change": 2.1192803978942187e-06,
+     "change_95": [
+      -2.0647299251708744e-06,
+      6.303290720959312e-06
+     ],
+     "line": 0.0067057497259229385,
+     "verdict": "NO COST"
+    },
+    "deg": {
+     "change": 2.1305978298247208e-05,
+     "change_95": [
+      -1.4682519972229044e-05,
+      5.729447656872346e-05
+     ],
+     "line": 0.025993897601962114,
+     "verdict": "NO COST"
+    }
+   }
+  },
+  {
+   "k": 168,
+   "largest_input_among_switched_off": 0.5100193023681641,
+   "verdict": "NO COST",
+   "metrics": {
+    "cm": {
+     "change": -1.5414133668067986e-06,
+     "change_95": [
+      -8.540491954532141e-06,
+      5.4576652209185444e-06
+     ],
+     "line": 0.0067057497259229385,
+     "verdict": "NO COST"
+    },
+    "deg": {
+     "change": -1.122802495867603e-06,
+     "change_95": [
+      -5.210072842388129e-05,
+      4.9855123432146085e-05
+     ],
+     "line": 0.025993897601962114,
+     "verdict": "NO COST"
+    }
+   }
+  },
+  {
+   "k": 176,
+   "largest_input_among_switched_off": 2.859537124633789,
+   "verdict": "NO COST",
+   "metrics": {
+    "cm": {
+     "change": 2.1575205028045996e-05,
+     "change_95": [
+      -9.184666128989243e-05,
+      0.00013499707134598444
+     ],
+     "line": 0.0067057497259229385,
+     "verdict": "NO COST"
+    },
+    "deg": {
+     "change": 7.119372487074394e-05,
+     "change_95": [
+      -0.0002551876658722854,
+      0.0003975751156137733
+     ],
+     "line": 0.025993897601962114,
+     "verdict": "NO COST"
+    }
+   }
+  },
+  {
+   "k": 184,
+   "largest_input_among_switched_off": 6.198049545288086,
+   "verdict": "NO COST",
+   "metrics": {
+    "cm": {
+     "change": 7.44840689003573e-05,
+     "change_95": [
+      -0.00035918043666708364,
+      0.0005081485744677982
+     ],
+     "line": 0.0067057497259229385,
+     "verdict": "NO COST"
+    },
+    "deg": {
+     "change": 0.0009575472772122562,
+     "change_95": [
+      -0.0006595525419085108,
+      0.0025746470963330234
+     ],
+     "line": 0.025993897601962114,
+     "verdict": "NO COST"
+    }
+   }
+  },
+  {
+   "k": 192,
+   "largest_input_among_switched_off": 9.448294639587402,
+   "verdict": "NO COST",
+   "metrics": {
+    "cm": {
+     "change": 0.0028651444986462354,
+     "change_95": [
+      0.0011930708249988894,
+      0.004537218172293581
+     ],
+     "line": 0.0067057497259229385,
+     "verdict": "NO COST"
+    },
+    "deg": {
+     "change": 0.01599399372935295,
+     "change_95": [
+      0.009182421534711112,
+      0.02280556592399479
+     ],
+     "line": 0.025993897601962114,
+     "verdict": "NO COST"
+    }
+   }
+  },
+  {
+   "k": 200,
+   "largest_input_among_switched_off": 12.672155380249023,
+   "verdict": "UNDECIDED",
+   "metrics": {
+    "cm": {
+     "change": 0.007834585290402166,
+     "change_95": [
+      0.0006522328706375976,
+      0.015016937710166734
+     ],
+     "line": 0.0067057497259229385,
+     "verdict": "UNDECIDED"
+    },
+    "deg": {
+     "change": 0.0528428880870343,
+     "change_95": [
+      0.012930207336336923,
+      0.09275556883773167
+     ],
+     "line": 0.025993897601962114,
+     "verdict": "UNDECIDED"
+    }
+   }
+  },
+  {
+   "k": 208,
+   "largest_input_among_switched_off": 13.488341331481934,
+   "verdict": "COST",
+   "metrics": {
+    "cm": {
+     "change": 0.016370746064931135,
+     "change_95": [
+      0.0065386563685462945,
+      0.026202835761315976
+     ],
+     "line": 0.0067057497259229385,
+     "verdict": "UNDECIDED"
+    },
+    "deg": {
+     "change": 0.12416144430637371,
+     "change_95": [
+      0.06136868506222798,
+      0.18695420355051945
+     ],
+     "line": 0.025993897601962114,
+     "verdict": "COST"
+    }
+   }
+  },
+  {
+   "k": 216,
+   "largest_input_among_switched_off": 14.733919143676758,
+   "verdict": "COST",
+   "metrics": {
+    "cm": {
+     "change": 0.029111845884472118,
+     "change_95": [
+      0.01179386154477743,
+      0.0464298302241668
+     ],
+     "line": 0.0067057497259229385,
+     "verdict": "COST"
+    },
+    "deg": {
+     "change": 0.16981670454144504,
+     "change_95": [
+      0.07717183451408702,
+      0.26246157456880304
+     ],
+     "line": 0.025993897601962114,
+     "verdict": "COST"
+    }
+   }
+  },
+  {
+   "k": 224,
+   "largest_input_among_switched_off": 16.697420120239258,
+   "verdict": "COST",
+   "metrics": {
+    "cm": {
+     "change": 0.04294733935967088,
+     "change_95": [
+      0.01857000319052082,
+      0.06732467552882093
+     ],
+     "line": 0.0067057497259229385,
+     "verdict": "COST"
+    },
+    "deg": {
+     "change": 0.24713190302252785,
+     "change_95": [
+      0.13712296660583684,
+      0.35714083943921887
+     ],
+     "line": 0.025993897601962114,
+     "verdict": "COST"
+    }
+   }
+  },
+  {
+   "k": 232,
+   "largest_input_among_switched_off": 18.178735733032227,
+   "verdict": "COST",
+   "metrics": {
+    "cm": {
+     "change": 0.06770779632031919,
+     "change_95": [
+      0.03452029776651933,
+      0.10089529487411905
+     ],
+     "line": 0.0067057497259229385,
+     "verdict": "COST"
+    },
+    "deg": {
+     "change": 0.34846914529800416,
+     "change_95": [
+      0.18446049382882626,
+      0.5124777967671821
+     ],
+     "line": 0.025993897601962114,
+     "verdict": "COST"
+    }
+   }
+  },
+  {
+   "k": 240,
+   "largest_input_among_switched_off": 19.13980484008789,
+   "verdict": "COST",
+   "metrics": {
+    "cm": {
+     "change": 0.1125540754944086,
+     "change_95": [
+      0.07745407398650253,
+      0.14765407700231467
+     ],
+     "line": 0.0067057497259229385,
+     "verdict": "COST"
+    },
+    "deg": {
+     "change": 0.4587456955015661,
+     "change_95": [
+      0.2581421642396683,
+      0.6593492267634639
+     ],
+     "line": 0.025993897601962114,
+     "verdict": "COST"
+    }
+   }
+  },
+  {
+   "k": 248,
+   "largest_input_among_switched_off": 22.384296417236328,
+   "verdict": "COST",
+   "metrics": {
+    "cm": {
+     "change": 0.15100943436846137,
+     "change_95": [
+      0.12506817769548353,
+      0.1769506910414392
+     ],
+     "line": 0.0067057497259229385,
+     "verdict": "COST"
+    },
+    "deg": {
+     "change": 0.6473142981529236,
+     "change_95": [
+      0.48028978423951363,
+      0.8143388120663336
+     ],
+     "line": 0.025993897601962114,
+     "verdict": "COST"
+    }
+   }
+  },
+  {
+   "k": 256,
+   "largest_input_among_switched_off": 28.30977439880371,
+   "verdict": "COST",
+   "metrics": {
+    "cm": {
+     "change": 0.1417808924615383,
+     "change_95": [
+      0.09643535025684633,
+      0.18712643466623027
+     ],
+     "line": 0.0067057497259229385,
+     "verdict": "COST"
+    },
+    "deg": {
+     "change": 0.5326764760911464,
+     "change_95": [
+      0.3535724231702789,
+      0.7117805290120139
+     ],
+     "line": 0.025993897601962114,
+     "verdict": "COST"
+    }
+   }
+  }
+ ],
+ "covered_units": 192,
+ "checkpoint": "D:\\UEMA_Research\\Saved\\mimo_bridge\\experiments\\H84_fresh_drivers_20260918_seg41m_2030_resume_20260930_225714\\checkpoints\\ckpt_step_447350",
+ "step": 447350,
+ "capture": "D:\\UEMA_Research\\external\\D\\UEMA_scratch\\idle_units\\H84_fresh_drivers_20260918_seg41m_2030_resume_20260930_225714__ckpt_step_447350\\capture.pt",
+ "stats": "D:\\UEMA_Research\\Saved\\mimo_bridge\\experiments\\H84_fresh_drivers_20260918_seg41m_2030_resume_20260930_225714\\replay_training_stats.jsonl",
+ "report_readings": {
+  "reports": 9,
+  "steps": [
+   446500,
+   447300
+  ],
+  "shares": [
+   0.5078,
+   0.4766,
+   0.5,
+   0.4922,
+   0.4922,
+   0.4922,
+   0.4883,
+   0.5078,
+   0.4766
+  ],
+  "idle_counts": [
+   126,
+   134,
+   128,
+   130,
+   130,
+   130,
+   131,
+   126,
+   134
+  ],
+  "idle_newest": 134,
+  "idle_min": 126,
+  "idle_median": 130,
+  "idle_max": 134
+ },
+ "capture_seconds": 117.7,
+ "capture_peak_commit_gb": 9.5,
+ "code_commit": "30a4e851af91f3920202f8ad156a7871c42cdcc3",
+ "tool_commit": "30a4e851af91f3920202f8ad156a7871c42cdcc3",
+ "measured_at": "2026-09-30 11:42:33 PM",
+ "seconds": 0.1,
+ "peak_commit_gb": 1.42
+}

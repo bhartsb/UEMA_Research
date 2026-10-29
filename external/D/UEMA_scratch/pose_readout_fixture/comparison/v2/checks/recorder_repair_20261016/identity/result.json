@@ -1,0 +1,684 @@
+{
+ "tool": "pose_execution_identity_seam_check_v1",
+ "verdict": "pass",
+ "seconds": 3.3,
+ "cases": [
+  {
+   "name": "positive",
+   "expected": "P",
+   "held": true,
+   "steps": [
+    {
+     "step": "record B",
+     "outcome": "written",
+     "execution": {
+      "id": "seam-check-decision-ok",
+      "text_sha256": "33e81cabf4b71ffd47e45745a6376cce0d8610aa40c2385bc21738ab5cf502ac",
+      "author": "the overseer",
+      "created_at": "2026-10-16T09:00:00+00:00",
+      "recorded_at": "Oct 16, 2026 09:00:01 AM PDT",
+      "by": "the seam check, first caller"
+     }
+    },
+    {
+     "step": "record A",
+     "outcome": "written",
+     "execution": {
+      "id": "seam-check-decision-ok",
+      "text_sha256": "33e81cabf4b71ffd47e45745a6376cce0d8610aa40c2385bc21738ab5cf502ac",
+      "author": "the overseer",
+      "created_at": "2026-10-16T09:00:00+00:00",
+      "recorded_at": "Oct 16, 2026 09:00:59 AM PDT",
+      "by": "the seam check, second caller"
+     }
+    },
+    {
+     "step": "route",
+     "outcome": "composed",
+     "execution": {
+      "id": "seam-check-decision-ok",
+      "text_sha256": "33e81cabf4b71ffd47e45745a6376cce0d8610aa40c2385bc21738ab5cf502ac",
+      "author": "the overseer"
+     },
+     "tool_problems": [],
+     "tool_mailbox": "D:\\UEMA_Research\\external\\D\\UEMA_scratch\\POSE_READOUT_FIXTURE\\COMPARISON\\V2\\checks\\recorder_repair_20261016\\identity\\work\\positive\\repo\\Saved\\gof_coordination\\mailbox"
+    },
+    {
+     "step": "admission",
+     "outcome": "admitted",
+     "problems": []
+    }
+   ]
+  },
+  {
+   "name": "overwrite",
+   "expected": "R",
+   "held": true,
+   "steps": [
+    {
+     "step": "record B",
+     "outcome": "refused",
+     "why": "refused: an execution decision is recorded: {'id': 'seam-check-decision-ok', 'text_sha256': '33e81cabf4b71ffd47e45745a6376cce0d8610aa40c2385bc21738ab5cf502ac', 'author': \"the overseer\", 'created_at': '2026-10-16T09:00:00+00:00', 'recorded_at': 'Oct 16, 2026 09:00:01 AM PDT', 'by': 'the seam check, first caller'}"
+    }
+   ]
+  },
+  {
+   "name": "missing_author",
+   "expected": "R",
+   "held": true,
+   "steps": [
+    {
+     "step": "record B",
+     "outcome": "written",
+     "execution": {
+      "id": "seam-check-decision-ok",
+      "text_sha256": "7f32ab0232178963c5ed6adc2b0685656e6ffaad0c6ad6237780e65d7c9bb024",
+      "created_at": "2026-10-16T09:00:00+00:00",
+      "recorded_at": "Oct 16, 2026 09:02:01 AM PDT",
+      "by": "the seam check, first caller"
+     }
+    },
+    {
+     "step": "record A",
+     "outcome": "written",
+     "execution": {
+      "id": "seam-check-decision-ok",
+      "text_sha256": "7f32ab0232178963c5ed6adc2b0685656e6ffaad0c6ad6237780e65d7c9bb024",
+      "created_at": "2026-10-16T09:00:00+00:00",
+      "recorded_at": "Oct 16, 2026 09:02:59 AM PDT",
+      "by": "the seam check, second caller"
+     }
+    },
+    {
+     "step": "route",
+     "outcome": "refused",
+     "why": "refused: package A's execution lacks ['author'] (read {'id': 'seam-check-decision-ok', 'text_sha256': '7f32ab0232178963c5ed6adc2b0685656e6ffaad0c6ad6237780e65d7c9bb024', 'created_at': '2026-10-16T09:00:00+00:00', 'recorded_at': 'Oct 16, 2026 09:02:59 AM PDT', 'by': 'the seam check, second caller'}); package B's execution lacks ['author'] (read {'id': 'seam-check-decision-ok', 'text_sha256': '7f32ab0232178963c5ed6adc2b0685656e6ffaad0c6ad6237780e65d7c9bb024', 'created_at': '2026-10-16T09:00:00+00:00', 'recorded_at': 'Oct 16, 2026 09:02:01 AM PDT', 'by': 'the seam check, first caller'})"
+    },
+    {
+     "step": "admission",
+     "outcome": "refused",
+     "problems": [
+      "package B's execution lacks ['author'] (read {'id': 'seam-check-decision-ok', 'text_sha256': '7f32ab0232178963c5ed6adc2b0685656e6ffaad0c6ad6237780e65d7c9bb024', 'created_at': '2026-10-16T09:00:00+00:00', 'recorded_at': 'Oct 16, 2026 09:02:01 AM PDT', 'by': 'the seam check, first caller'})",
+      "package A's execution lacks ['author'] (read {'id': 'seam-check-decision-ok', 'text_sha256': '7f32ab0232178963c5ed6adc2b0685656e6ffaad0c6ad6237780e65d7c9bb024', 'created_at': '2026-10-16T09:00:00+00:00', 'recorded_at': 'Oct 16, 2026 09:02:59 AM PDT', 'by': 'the seam check, second caller'})"
+     ]
+    }
+   ]
+  },
+  {
+   "name": "wrong_author",
+   "expected": "R",
+   "held": true,
+   "steps": [
+    {
+     "step": "record B",
+     "outcome": "written",
+     "execution": {
+      "id": "seam-check-decision-ok",
+      "text_sha256": "1e9b465a5f077e0a05ba2135954ce67e2404895cab972a353fff780054c79cda",
+      "author": "the overseer",
+      "created_at": "2026-10-16T09:00:00+00:00",
+      "recorded_at": "Oct 16, 2026 09:03:01 AM PDT",
+      "by": "first"
+     }
+    },
+    {
+     "step": "record A",
+     "outcome": "written",
+     "execution": {
+      "id": "seam-check-decision-ok",
+      "text_sha256": "1e9b465a5f077e0a05ba2135954ce67e2404895cab972a353fff780054c79cda",
+      "author": "the overseer",
+      "created_at": "2026-10-16T09:00:00+00:00",
+      "recorded_at": "Oct 16, 2026 09:03:59 AM PDT",
+      "by": "second"
+     }
+    },
+    {
+     "step": "change package B's recorded ['author']",
+     "outcome": "changed"
+    },
+    {
+     "step": "route",
+     "outcome": "refused",
+     "why": "refused: package B's execution author reads 'the overseer', not \"the overseer\"; the two packages record different execution identities: {'id': 'seam-check-decision-ok', 'text_sha256': '1e9b465a5f077e0a05ba2135954ce67e2404895cab972a353fff780054c79cda', 'author': 'the overseer'} against {'id': 'seam-check-decision-ok', 'text_sha256': '1e9b465a5f077e0a05ba2135954ce67e2404895cab972a353fff780054c79cda', 'author': \"the overseer\"}"
+    },
+    {
+     "step": "admission",
+     "outcome": "refused",
+     "problems": [
+      "the two packages record different execution identities: {'id': 'seam-check-decision-ok', 'text_sha256': '1e9b465a5f077e0a05ba2135954ce67e2404895cab972a353fff780054c79cda', 'author': 'the overseer'} against {'id': 'seam-check-decision-ok', 'text_sha256': '1e9b465a5f077e0a05ba2135954ce67e2404895cab972a353fff780054c79cda', 'author': \"the overseer\"}"
+     ]
+    }
+   ]
+  },
+  {
+   "name": "wrong_id",
+   "expected": "R",
+   "held": true,
+   "steps": [
+    {
+     "step": "record B",
+     "outcome": "written",
+     "execution": {
+      "id": "seam-check-decision-ok",
+      "text_sha256": "b8bb7a9a7ffc45ed2477e2735265672b27dec06b1ef9f350130aa928467f6d78",
+      "author": "the overseer",
+      "created_at": "2026-10-16T09:00:00+00:00",
+      "recorded_at": "Oct 16, 2026 09:04:01 AM PDT",
+      "by": "first"
+     }
+    },
+    {
+     "step": "record A",
+     "outcome": "written",
+     "execution": {
+      "id": "seam-check-decision-other",
+      "text_sha256": "b8bb7a9a7ffc45ed2477e2735265672b27dec06b1ef9f350130aa928467f6d78",
+      "author": "the overseer",
+      "created_at": "2026-10-16T09:00:00+00:00",
+      "recorded_at": "Oct 16, 2026 09:04:59 AM PDT",
+      "by": "second"
+     }
+    },
+    {
+     "step": "route",
+     "outcome": "refused",
+     "why": "refused: the two packages record different execution identities: {'id': 'seam-check-decision-ok', 'text_sha256': 'b8bb7a9a7ffc45ed2477e2735265672b27dec06b1ef9f350130aa928467f6d78', 'author': \"the overseer\"} against {'id': 'seam-check-decision-other', 'text_sha256': 'b8bb7a9a7ffc45ed2477e2735265672b27dec06b1ef9f350130aa928467f6d78', 'author': \"the overseer\"}"
+    },
+    {
+     "step": "admission",
+     "outcome": "refused",
+     "problems": [
+      "the two packages record different execution identities: {'id': 'seam-check-decision-ok', 'text_sha256': 'b8bb7a9a7ffc45ed2477e2735265672b27dec06b1ef9f350130aa928467f6d78', 'author': \"the overseer\"} against {'id': 'seam-check-decision-other', 'text_sha256': 'b8bb7a9a7ffc45ed2477e2735265672b27dec06b1ef9f350130aa928467f6d78', 'author': \"the overseer\"}"
+     ]
+    }
+   ]
+  },
+  {
+   "name": "wrong_hash",
+   "expected": "R",
+   "held": true,
+   "steps": [
+    {
+     "step": "record B",
+     "outcome": "written",
+     "execution": {
+      "id": "seam-check-decision-ok",
+      "text_sha256": "64e4dbccda9a17c5b8b07365863e9733f1b9781082a6e5dda38621455a6d0aab",
+      "author": "the overseer",
+      "created_at": "2026-10-16T09:00:00+00:00",
+      "recorded_at": "Oct 16, 2026 09:05:01 AM PDT",
+      "by": "first"
+     }
+    },
+    {
+     "step": "record A",
+     "outcome": "written",
+     "execution": {
+      "id": "seam-check-decision-ok",
+      "text_sha256": "64e4dbccda9a17c5b8b07365863e9733f1b9781082a6e5dda38621455a6d0aab",
+      "author": "the overseer",
+      "created_at": "2026-10-16T09:00:00+00:00",
+      "recorded_at": "Oct 16, 2026 09:05:59 AM PDT",
+      "by": "second"
+     }
+    },
+    {
+     "step": "change package B's recorded ['text_sha256']",
+     "outcome": "changed"
+    },
+    {
+     "step": "change package A's recorded ['text_sha256']",
+     "outcome": "changed"
+    },
+    {
+     "step": "route",
+     "outcome": "composed",
+     "execution": {
+      "id": "seam-check-decision-ok",
+      "text_sha256": "4895ecc6f0c011072af486ea30a1239caa1b297fb61ecaca8ac94d9c2071be22",
+      "author": "the overseer"
+     },
+     "tool_problems": [
+      "the execution decision: the authorizing decision's text hashes 64e4dbccda9a17c5b8b07365863e9733f1b9781082a6e5dda38621455a6d0aab, not the pinned 4895ecc6f0c011072af486ea30a1239caa1b297fb61ecaca8ac94d9c2071be22"
+     ],
+     "tool_mailbox": "D:\\UEMA_Research\\external\\D\\UEMA_scratch\\POSE_READOUT_FIXTURE\\COMPARISON\\V2\\checks\\recorder_repair_20261016\\identity\\work\\wrong_hash\\repo\\Saved\\gof_coordination\\mailbox"
+    },
+    {
+     "step": "admission",
+     "outcome": "refused",
+     "problems": [
+      "the execution decision's text does not hash to 4895ecc6f0c011072af486ea30a1239caa1b297fb61ecaca8ac94d9c2071be22"
+     ]
+    }
+   ]
+  },
+  {
+   "name": "malformed_hash",
+   "expected": "R",
+   "held": true,
+   "steps": [
+    {
+     "step": "record B",
+     "outcome": "written",
+     "execution": {
+      "id": "seam-check-decision-ok",
+      "text_sha256": "90853e6a699dc0b265084c9d18441ffa945216033fe2162ee154c4577d72ce43",
+      "author": "the overseer",
+      "created_at": "2026-10-16T09:00:00+00:00",
+      "recorded_at": "Oct 16, 2026 09:06:01 AM PDT",
+      "by": "first"
+     }
+    },
+    {
+     "step": "record A",
+     "outcome": "written",
+     "execution": {
+      "id": "seam-check-decision-ok",
+      "text_sha256": "90853e6a699dc0b265084c9d18441ffa945216033fe2162ee154c4577d72ce43",
+      "author": "the overseer",
+      "created_at": "2026-10-16T09:00:00+00:00",
+      "recorded_at": "Oct 16, 2026 09:06:59 AM PDT",
+      "by": "second"
+     }
+    },
+    {
+     "step": "change package B's recorded ['text_sha256']",
+     "outcome": "changed"
+    },
+    {
+     "step": "change package A's recorded ['text_sha256']",
+     "outcome": "changed"
+    },
+    {
+     "step": "route",
+     "outcome": "refused",
+     "why": "refused: package A's execution text_sha256 'not-a-hash' is not 64 lowercase hex characters; package B's execution text_sha256 'not-a-hash' is not 64 lowercase hex characters"
+    },
+    {
+     "step": "admission",
+     "outcome": "refused",
+     "problems": [
+      "package B's execution text_sha256 'not-a-hash' is not 64 lowercase hex characters",
+      "package A's execution text_sha256 'not-a-hash' is not 64 lowercase hex characters"
+     ]
+    }
+   ]
+  },
+  {
+   "name": "wrong_scope",
+   "expected": "R",
+   "held": true,
+   "steps": [
+    {
+     "step": "record B",
+     "outcome": "written",
+     "execution": {
+      "id": "seam-check-decision-ok",
+      "text_sha256": "feb3d78f2dbea9a83b6edcb5f2ad993010cb8fa97620bf6dfa95b2c47672f933",
+      "author": "the overseer",
+      "created_at": "2026-10-16T09:00:00+00:00",
+      "recorded_at": "Oct 16, 2026 09:07:01 AM PDT",
+      "by": "first"
+     }
+    },
+    {
+     "step": "record A",
+     "outcome": "written",
+     "execution": {
+      "id": "seam-check-decision-ok",
+      "text_sha256": "feb3d78f2dbea9a83b6edcb5f2ad993010cb8fa97620bf6dfa95b2c47672f933",
+      "author": "the overseer",
+      "created_at": "2026-10-16T09:00:00+00:00",
+      "recorded_at": "Oct 16, 2026 09:07:59 AM PDT",
+      "by": "second"
+     }
+    },
+    {
+     "step": "route",
+     "outcome": "composed",
+     "execution": {
+      "id": "seam-check-decision-ok",
+      "text_sha256": "feb3d78f2dbea9a83b6edcb5f2ad993010cb8fa97620bf6dfa95b2c47672f933",
+      "author": "the overseer"
+     },
+     "tool_problems": [
+      "the execution decision's text does not name ['D:/UEMA_Research/external/D/UEMA_scratch/pose_readout_fixture/comparison/v2/checks/recorder_repair_20261016/identity/work/wrong_scope/pkg_B', 'D:/UEMA_Research/external/D/UEMA_scratch/pose_readout_fixture/comparison/v2/checks/recorder_repair_20261016/identity/work/wrong_scope/pkg_A'] (both arms' fingerprints and package folders)"
+     ],
+     "tool_mailbox": "D:\\UEMA_Research\\external\\D\\UEMA_scratch\\POSE_READOUT_FIXTURE\\COMPARISON\\V2\\checks\\recorder_repair_20261016\\identity\\work\\wrong_scope\\repo\\Saved\\gof_coordination\\mailbox"
+    },
+    {
+     "step": "admission",
+     "outcome": "refused",
+     "problems": [
+      "the execution decision's text does not name ['D:/UEMA_Research/external/D/UEMA_scratch/pose_readout_fixture/comparison/v2/checks/recorder_repair_20261016/identity/work/wrong_scope/pkg_B', 'D:/UEMA_Research/external/D/UEMA_scratch/pose_readout_fixture/comparison/v2/checks/recorder_repair_20261016/identity/work/wrong_scope/pkg_A']"
+     ]
+    }
+   ]
+  },
+  {
+   "name": "wrong_sender",
+   "expected": "R",
+   "held": true,
+   "steps": [
+    {
+     "step": "record B",
+     "outcome": "written",
+     "execution": {
+      "id": "seam-check-decision-ok",
+      "text_sha256": "eb8450e188366197e868738ca30d737f64659f04ddf0e7e30b56ac9545311a82",
+      "author": "the overseer",
+      "created_at": "2026-10-16T09:00:00+00:00",
+      "recorded_at": "Oct 16, 2026 09:08:01 AM PDT",
+      "by": "first"
+     }
+    },
+    {
+     "step": "record A",
+     "outcome": "written",
+     "execution": {
+      "id": "seam-check-decision-ok",
+      "text_sha256": "eb8450e188366197e868738ca30d737f64659f04ddf0e7e30b56ac9545311a82",
+      "author": "the overseer",
+      "created_at": "2026-10-16T09:00:00+00:00",
+      "recorded_at": "Oct 16, 2026 09:08:59 AM PDT",
+      "by": "second"
+     }
+    },
+    {
+     "step": "route",
+     "outcome": "composed",
+     "execution": {
+      "id": "seam-check-decision-ok",
+      "text_sha256": "eb8450e188366197e868738ca30d737f64659f04ddf0e7e30b56ac9545311a82",
+      "author": "the overseer"
+     },
+     "tool_problems": [],
+     "tool_mailbox": "D:\\UEMA_Research\\external\\D\\UEMA_scratch\\POSE_READOUT_FIXTURE\\COMPARISON\\V2\\checks\\recorder_repair_20261016\\identity\\work\\wrong_sender\\repo\\Saved\\gof_coordination\\mailbox"
+    },
+    {
+     "step": "admission",
+     "outcome": "refused",
+     "problems": [
+      "the execution decision's message is from 'the builder', not the overseer"
+     ]
+    }
+   ]
+  },
+  {
+   "name": "missing_author_line",
+   "expected": "R",
+   "held": true,
+   "steps": [
+    {
+     "step": "record B",
+     "outcome": "refused",
+     "why": "refused: the message D:\\UEMA_Research\\external\\D\\UEMA_scratch\\pose_readout_fixture\\comparison\\v2\\checks\\recorder_repair_20261016\\identity\\work\\missing_author_line\\repo\\Saved\\gof_coordination\\mailbox\\seam-check-decision-ok does not name seam-check-decision-ok with the author line"
+    }
+   ]
+  },
+  {
+   "name": "wrong_message_id",
+   "expected": "R",
+   "held": true,
+   "steps": [
+    {
+     "step": "record B",
+     "outcome": "refused",
+     "why": "refused: the message D:\\UEMA_Research\\external\\D\\UEMA_scratch\\pose_readout_fixture\\comparison\\v2\\checks\\recorder_repair_20261016\\identity\\work\\wrong_message_id\\repo\\Saved\\gof_coordination\\mailbox\\seam-check-decision-ok does not name seam-check-decision-ok with the author line"
+    }
+   ]
+  },
+  {
+   "name": "one_sided",
+   "expected": "R",
+   "held": true,
+   "steps": [
+    {
+     "step": "record B",
+     "outcome": "written",
+     "execution": {
+      "id": "seam-check-decision-ok",
+      "text_sha256": "d465e74769bfa6db92b0077bf8f52564c63439947ae0ef77a5e4e1b8407d55d4",
+      "author": "the overseer",
+      "created_at": "2026-10-16T09:00:00+00:00",
+      "recorded_at": "Oct 16, 2026 09:11:01 AM PDT",
+      "by": "first"
+     }
+    },
+    {
+     "step": "route",
+     "outcome": "refused",
+     "why": "refused: only package ['B'] records an execution decision; package ['A'] records none"
+    },
+    {
+     "step": "admission",
+     "outcome": "refused",
+     "problems": [
+      "both packages must record the execution decision as {id, text_sha256, author} (read {'B': {'id': 'seam-check-decision-ok', 'text_sha256': 'd465e74769bfa6db92b0077bf8f52564c63439947ae0ef77a5e4e1b8407d55d4', 'author': \"the overseer\", 'created_at': '2026-10-16T09:00:00+00:00', 'recorded_at': 'Oct 16, 2026 09:11:01 AM PDT', 'by': 'first'}, 'A': None})"
+     ]
+    }
+   ]
+  },
+  {
+   "name": "implementation_id",
+   "expected": "R",
+   "held": true,
+   "steps": [
+    {
+     "step": "record B",
+     "outcome": "written",
+     "execution": {
+      "id": "pose-v2-implementation-cleared-20261015",
+      "text_sha256": "63910b8daa1a33505577dda212ccbfbcbba69e39dd18155bcfa7cfef8c17b7f4",
+      "author": "the overseer",
+      "created_at": "2026-10-16T09:00:00+00:00",
+      "recorded_at": "Oct 16, 2026 09:12:01 AM PDT",
+      "by": "first"
+     }
+    },
+    {
+     "step": "record A",
+     "outcome": "written",
+     "execution": {
+      "id": "pose-v2-implementation-cleared-20261015",
+      "text_sha256": "63910b8daa1a33505577dda212ccbfbcbba69e39dd18155bcfa7cfef8c17b7f4",
+      "author": "the overseer",
+      "created_at": "2026-10-16T09:00:00+00:00",
+      "recorded_at": "Oct 16, 2026 09:12:59 AM PDT",
+      "by": "second"
+     }
+    },
+    {
+     "step": "route",
+     "outcome": "composed",
+     "execution": {
+      "id": "pose-v2-implementation-cleared-20261015",
+      "text_sha256": "63910b8daa1a33505577dda212ccbfbcbba69e39dd18155bcfa7cfef8c17b7f4",
+      "author": "the overseer"
+     },
+     "tool_problems": [
+      "the route's execution decision pose-v2-implementation-cleared-20261015 is its implementation decision"
+     ],
+     "tool_mailbox": "D:\\UEMA_Research\\external\\D\\UEMA_scratch\\POSE_READOUT_FIXTURE\\COMPARISON\\V2\\checks\\recorder_repair_20261016\\identity\\work\\implementation_id\\repo\\Saved\\gof_coordination\\mailbox"
+    },
+    {
+     "step": "admission",
+     "outcome": "refused",
+     "problems": [
+      "the execution decision pose-v2-implementation-cleared-20261015 is the implementation or preparation decision"
+     ]
+    }
+   ]
+  },
+  {
+   "name": "none_recorded",
+   "expected": "R",
+   "held": true,
+   "steps": [
+    {
+     "step": "route",
+     "outcome": "composed",
+     "execution": null,
+     "tool_problems": [
+      "the route names no execution decision: a launch of experiment pose_readout_comparison_494025 in the production preflight folder needs the exact execution decision; the route's decision pose-v2-implementation-cleared-20261015 authorizes writing the records only"
+     ],
+     "tool_mailbox": "D:\\UEMA_Research\\external\\D\\UEMA_scratch\\POSE_READOUT_FIXTURE\\COMPARISON\\V2\\checks\\recorder_repair_20261016\\identity\\work\\none_recorded\\repo\\Saved\\gof_coordination\\mailbox"
+    },
+    {
+     "step": "admission",
+     "outcome": "refused",
+     "problems": [
+      "both packages must record the execution decision as {id, text_sha256, author} (read {'B': None, 'A': None})"
+     ]
+    }
+   ]
+  }
+ ],
+ "error": null,
+ "sources": {
+  "D:\\UEMA_Research\\external\\D\\UEMA_scratch\\pose_comparison_B_494025\\record_execution.py": "aaf93fd0035162a2ec9e07fd92fc5ba69df0950c250d507d1abadbd78672d9bd",
+  "D:\\UEMA_Research\\external\\D\\UEMA_scratch\\pose_comparison_A_494025\\record_execution.py": "bdf71bd35957f1d0c1a1445f3d88d037bf0ab6774b17b809e8d881ef2362722f",
+  "D:\\UEMA_Research\\external\\D\\UEMA_scratch\\pose_comparison_B_494025_build_888b94469\\record_execution.py": "8ce0f8c2b22950d2526cb15047bdbb8bb1831a8154a3a1eb2c2d660cd7c60802",
+  "D:\\UEMA_Research\\external\\D\\UEMA_scratch\\pose_comparison_A_494025_build_888b94469\\record_execution.py": "b635ac8c96f6e5cf6cc506ed94e6bd2780c638eb207ddb6740c24b19e33b8213",
+  "D:\\UEMA_Research\\external\\D\\UEMA_scratch\\pose_readout_fixture\\comparison\\v2\\preflight_route\\make_route_branch.py": "5dc1ac97f22b6c7e2d0740e0bd4ba32b17380117014576f57fb18bca8671c26f",
+  "D:\\UEMA_Research\\external\\D\\UEMA_scratch\\pose_readout_fixture\\comparison\\v2\\preflight_route\\pose_admit.py": "5297f99714b6ffba067b27009920365f1205c33d6398d902db73c59c15c17eee",
+  "C:\\Users\\bhart\\Documents\\UEMA_wt\\pose_preflight_merged\\Source\\Python\\mimo_bridge\\tools\\training_preflight.py": "e3953a43a75b5ffda059be1de2d3bf53af8e0a2c452f7dcb6b030440516efde4",
+  "D:\\UEMA_Research\\external\\D\\UEMA_scratch\\pose_readout_fixture\\comparison\\v2\\recorder_repair\\execution_identity_check.py": "53e850d67020ad49ae42a136b3f5c451565aa10d1c6b82b2c126671ef609a1fe"
+ },
+ "guard": {
+  "held": true,
+  "before": {
+   "files": {
+    "D:\\UEMA_Research\\external\\D\\UEMA_scratch\\pose_comparison_B_494025\\arm_continuation.json": "c4126c7f517c20422e93cafb42bd08da23a05c7c3dd35831fde2d512ca1680d2",
+    "D:\\UEMA_Research\\external\\D\\UEMA_scratch\\pose_comparison_B_494025\\record_execution.py": "aaf93fd0035162a2ec9e07fd92fc5ba69df0950c250d507d1abadbd78672d9bd",
+    "D:\\UEMA_Research\\external\\D\\UEMA_scratch\\pose_comparison_A_494025\\arm_continuation.json": "478b6759529166a84da2299b26778d5037e17dc9a930420a0ae0c300062c6921",
+    "D:\\UEMA_Research\\external\\D\\UEMA_scratch\\pose_comparison_A_494025\\record_execution.py": "bdf71bd35957f1d0c1a1445f3d88d037bf0ab6774b17b809e8d881ef2362722f",
+    "D:\\UEMA_Research\\Source\\Python\\mimo_bridge\\tools\\training_preflight.py": "e3953a43a75b5ffda059be1de2d3bf53af8e0a2c452f7dcb6b030440516efde4",
+    "C:\\Users\\bhart\\Documents\\UEMA_wt\\pose_preflight_merged\\Source\\Python\\mimo_bridge\\tools\\training_preflight.py": "e3953a43a75b5ffda059be1de2d3bf53af8e0a2c452f7dcb6b030440516efde4"
+   },
+   "production_preflight_entries": [
+    "14d7ea147cae11f1.json",
+    "2c3d82ca4ab4a870.json",
+    "2c3d82ca4ab4a870.json",
+    "3693d6efffcb32f9.json",
+    "441a730d88b11ff7.json",
+    "4ba33dfc88ced223",
+    "4ba33dfc88ced223.json",
+    "50372bae86b0724a.json",
+    "50372bae86b0724a.json",
+    "adoptions",
+    "body1_excluded_vs_pushon_481800.json",
+    "c007d2bb5af08224.json",
+    "c02c8947283b0b02.json",
+    "c02c8947283b0b02.json",
+    "d713121529ffd4b3.json",
+    "eea1e8bc7f446fb6.json",
+    "eea1e8bc7f446fb6.json",
+    "eea1e8bc7f446fb6.json",
+    "eea1e8bc7f446fb6.json",
+    "extensions",
+    "fb4042699f77030a.json",
+    "instances",
+    "links",
+    "recoveries",
+    "reference_configuration.json"
+   ]
+  },
+  "after": {
+   "files": {
+    "D:\\UEMA_Research\\external\\D\\UEMA_scratch\\pose_comparison_B_494025\\arm_continuation.json": "c4126c7f517c20422e93cafb42bd08da23a05c7c3dd35831fde2d512ca1680d2",
+    "D:\\UEMA_Research\\external\\D\\UEMA_scratch\\pose_comparison_B_494025\\record_execution.py": "aaf93fd0035162a2ec9e07fd92fc5ba69df0950c250d507d1abadbd78672d9bd",
+    "D:\\UEMA_Research\\external\\D\\UEMA_scratch\\pose_comparison_A_494025\\arm_continuation.json": "478b6759529166a84da2299b26778d5037e17dc9a930420a0ae0c300062c6921",
+    "D:\\UEMA_Research\\external\\D\\UEMA_scratch\\pose_comparison_A_494025\\record_execution.py": "bdf71bd35957f1d0c1a1445f3d88d037bf0ab6774b17b809e8d881ef2362722f",
+    "D:\\UEMA_Research\\Source\\Python\\mimo_bridge\\tools\\training_preflight.py": "e3953a43a75b5ffda059be1de2d3bf53af8e0a2c452f7dcb6b030440516efde4",
+    "C:\\Users\\bhart\\Documents\\UEMA_wt\\pose_preflight_merged\\Source\\Python\\mimo_bridge\\tools\\training_preflight.py": "e3953a43a75b5ffda059be1de2d3bf53af8e0a2c452f7dcb6b030440516efde4"
+   },
+   "production_preflight_entries": [
+    "14d7ea147cae11f1.json",
+    "2c3d82ca4ab4a870.json",
+    "2c3d82ca4ab4a870.json",
+    "3693d6efffcb32f9.json",
+    "441a730d88b11ff7.json",
+    "4ba33dfc88ced223",
+    "4ba33dfc88ced223.json",
+    "50372bae86b0724a.json",
+    "50372bae86b0724a.json",
+    "adoptions",
+    "body1_excluded_vs_pushon_481800.json",
+    "c007d2bb5af08224.json",
+    "c02c8947283b0b02.json",
+    "c02c8947283b0b02.json",
+    "d713121529ffd4b3.json",
+    "eea1e8bc7f446fb6.json",
+    "eea1e8bc7f446fb6.json",
+    "eea1e8bc7f446fb6.json",
+    "eea1e8bc7f446fb6.json",
+    "extensions",
+    "fb4042699f77030a.json",
+    "instances",
+    "links",
+    "recoveries",
+    "reference_configuration.json"
+   ]
+  }
+ },
+ "summary": {
+  "positive": [
+   "P",
+   true
+  ],
+  "overwrite": [
+   "R",
+   true
+  ],
+  "missing_author": [
+   "R",
+   true
+  ],
+  "wrong_author": [
+   "R",
+   true
+  ],
+  "wrong_id": [
+   "R",
+   true
+  ],
+  "wrong_hash": [
+   "R",
+   true
+  ],
+  "malformed_hash": [
+   "R",
+   true
+  ],
+  "wrong_scope": [
+   "R",
+   true
+  ],
+  "wrong_sender": [
+   "R",
+   true
+  ],
+  "missing_author_line": [
+   "R",
+   true
+  ],
+  "wrong_message_id": [
+   "R",
+   true
+  ],
+  "one_sided": [
+   "R",
+   true
+  ],
+  "implementation_id": [
+   "R",
+   true
+  ],
+  "none_recorded": [
+   "R",
+   true
+  ]
+ }
+}

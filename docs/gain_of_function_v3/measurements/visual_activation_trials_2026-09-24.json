@@ -1,0 +1,60 @@
+{
+  "status": "Measured candidate; full embodied recovery qualification pending",
+  "source_step": 380200,
+  "training_examples": 32,
+  "evaluation_examples": 32,
+  "updates": 100,
+  "comparison_set_used_to_select_candidate": true,
+  "precision": "Private optimizer comparisons useFP32; candidate initial forward/input-gradient equivalence also verified on actualCUDA bf16 head.",
+  "trials": {
+    "visual_copy_response": {
+      "evidence": "Saved\\gof_takeover_20260924\\repair\\visual_copy_response\\result.json",
+      "sha256": "b2891dd05c94a80a13b6ecbfba4f4c8573cfb0c02a9b0892a79cd1006041c2dc",
+      "held_out_last20_mean": 0.005885701416991651,
+      "held_out_last50_mean": 0.005995372012257576,
+      "held_out_maximum": 0.10449397563934326,
+      "initial_response_share": 0.3828125,
+      "final_response_share": 0.421875,
+      "initial_inactive_gradient_norm": 0.01242765597999096,
+      "response_grouping_valid": true
+    },
+    "visual_copy_activation": {
+      "evidence": "Saved\\gof_takeover_20260924\\repair\\visual_copy_activation\\result.json",
+      "sha256": "b72abccd6ecfa4793bc5054a8eee40d5e320a5241e4f07e5ed0575537ee01acb",
+      "held_out_last20_mean": 0.02453211136162281,
+      "held_out_last50_mean": 0.0297742073610425,
+      "held_out_maximum": 0.24145859479904175,
+      "initial_response_share": 1.0,
+      "final_response_share": 0.96875,
+      "initial_inactive_gradient_norm": 0.0,
+      "response_grouping_valid": false
+    },
+    "visual_copy_activation_ramp800": {
+      "evidence": "Saved\\gof_takeover_20260924\\repair\\visual_copy_activation_ramp800\\result.json",
+      "sha256": "c7276fe45216993296fa20c9de396787710cbf8837442226e20a3e3020b0f792",
+      "held_out_last20_mean": 0.022960392921231688,
+      "held_out_last50_mean": 0.029871657444164156,
+      "held_out_maximum": 0.26836949586868286,
+      "initial_response_share": 0.3828125,
+      "final_response_share": 1.0,
+      "initial_inactive_gradient_norm": 0.01242765597999096,
+      "response_grouping_valid": true
+    },
+    "visual_copy_activation_matched": {
+      "evidence": "Saved\\gof_takeover_20260924\\repair\\visual_copy_activation_matched\\result.json",
+      "sha256": "d75df1c4aef985f41ae04df09fb96f75da04efa17cf5e22461cafc6270eb28fe",
+      "held_out_last20_mean": 0.00670305578969419,
+      "held_out_last50_mean": 0.007968758149072528,
+      "held_out_maximum": 0.1507563591003418,
+      "initial_response_share": 1.0,
+      "final_response_share": 1.0,
+      "initial_inactive_gradient_norm": 0.05457014963030815,
+      "response_grouping_valid": true
+    }
+  },
+  "selected": "visual_copy_activation_matched",
+  "selection_reason": "Unscaled and ramped shifts oscillate. Matching revived sensitivity to existing responsive units restores response while keeping the last20 and last50 prediction means below the original pre-regression reference.",
+  "production_unchanged": true,
+  "pre_regression_same32_evaluation_mse": 0.008444149978458881,
+  "pre_regression_all64_mse": 0.009744150564074516
+}

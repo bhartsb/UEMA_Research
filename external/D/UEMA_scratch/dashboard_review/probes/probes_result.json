@@ -1,0 +1,853 @@
+{
+ "verdict": "fail",
+ "read_at": "Oct 5, 2026 11:39 AM PDT",
+ "reviewed_commit": "55cdf86cb",
+ "counts": {
+  "probes": 15,
+  "broken": 15,
+  "withstood": 0,
+  "errors": 0
+ },
+ "broken": [
+  "p01_blocked_row_starts_under_the_other_runners",
+  "p02_24_hour_rule_held_only_by_test_runner",
+  "p03_a_lost_rows_pass_typed_by_hand_is_sealed_and_readings_typed_after_it_demonstrate_a_stage",
+  "p04_a_back_dated_typed_status_reads_unverified_not_an_error",
+  "p05_a_test_process_outside_the_signatures_or_under_dev_reads_as_no_error",
+  "p06_a_lost_row_reads_running_while_its_runner_lives",
+  "p07_timeout_overrides_the_rows_time_limit_unrecorded",
+  "p08_freshness_misses_code_outside_the_mapped_functions",
+  "p09_repair_wiring_outside_the_repairs_mapping",
+  "p10_twelve_hour_rule_reads_another_defects_commit_as_this_ones_work",
+  "p11_a_closed_gof_blocker_needs_no_evidence",
+  "p12_status_check_misses_states_not_in_capitals_and_quoted_aliases",
+  "p13_machine_mode_reads_test_window_during_an_operator_hold",
+  "p14_a_hand_written_result_flips_the_first_box_of_the_26_handle_diagram",
+  "p15_a_sealed_runs_box_is_decided_by_values_typed_after_the_run"
+ ],
+ "errors": [],
+ "probes": [
+  {
+   "claim": "A blocked row is not able to start (the Tests page's BLOCKED meaning; test_registry.block_row: 'the runner refuses to start it').",
+   "attack": "block_row on a complete row, then ask each runner's refusal: test_runner.refusal (test_runner run), test_registry.refusal (run_in_training_pause.py before each job) and test_registry.refusals (the pause runners' and the ability scheduler's check before a pause or a cycle).",
+   "observed": {
+    "section": "BLOCKED",
+    "section_meaning": "written and not able to start now: a block written into the row, an incomplete row, or the 24-hour rule of the defect register",
+    "test_runner_refusal": "its row is blocked: the reviewer holds it; it waits on: nothing (test_runner unblock removes the block)",
+    "pause_runner_refusal_before_each_job": null,
+    "pause_runners_and_scheduler_refusals": {}
+   },
+   "broken": true,
+   "id": "p01_blocked_row_starts_under_the_other_runners",
+   "error": null,
+   "seconds": 0.8
+  },
+  {
+   "claim": "At 24 hours an open GOF-BLOCKER with no explanation holds back every test that serves no open GOF-BLOCKER (directive section 5; DASHBOARD_DATA_LAYER section 4.6).",
+   "attack": "A register with one GOF-BLOCKER found 30 hours ago, no work and no explanation; a DASHBOARD row; ask the refusal of test_runner and of the registry functions the pause runners and the scheduler call.",
+   "observed": {
+    "test_runner_refusal": "the defect register holds back every test that serves no open GOF-BLOCKER: STALE_BLOCKER (a stale blocker of the review) has had no meaningful work for 30 hours 0 minutes and carries no explanation with a named next action written in the last 24 hours. The coordinator writes one with `python -m mimo_bridge.tools.defect_register explain STALE_BLOCKER`",
+    "pause_runner_refusal_before_each_job": null,
+    "pause_runners_and_scheduler_refusals": {}
+   },
+   "broken": true,
+   "id": "p02_24_hour_rule_held_only_by_test_runner",
+   "error": null,
+   "seconds": 0.0
+  },
+  {
+   "claim": "A PASS typed by hand demonstrates no scoreboard stage (acceptance control typed_pass); a stage needs a PASS written by a runner and readings that say yes to both judgements.",
+   "attack": "A row's run whose processes are gone (LOST); `test_runner finish ROW --outcome PASS` by hand; then the registry's hand writer adds evidence_for and a result carrying the run's run_id and one reading that says yes to both judgements; the scoreboard read with no open defect.",
+   "observed": {
+    "process_state_before": "LOST",
+    "finish_wrote": "PASS",
+    "sealed": true,
+    "recorded_outcome": "PASS",
+    "section": "DONE",
+    "planner_stage": "DEMONSTRATED",
+    "planner_reasons": [],
+    "stages_held_by_an_open_gof_blocker_today": [
+     "ACTION_CAUSALITY",
+     "INTENTIONAL_FUNCTION",
+     "PLANNER",
+     "PREDICTION",
+     "SENSING"
+    ]
+   },
+   "broken": true,
+   "id": "p03_a_lost_rows_pass_typed_by_hand_is_sealed_and_readings_typed_after_it_demonstrate_a_stage",
+   "error": null,
+   "seconds": 0.3
+  },
+  {
+   "claim": "No manually written status may override the runner's state; after the merge's baseline (seal_required_from) a runner status without a verified seal is an error, not 'unverified' (DASHBOARD_DATA_LAYER sections 3 and 13).",
+   "attack": "A baseline whose seal_required_from is an hour ago; status done and an unsealed last_run typed into the file past every writer, once with times of Oct 1 and once with the time now.",
+   "observed": {
+    "mismatches": [
+     [
+      "status without the runner's record",
+      "typed_now"
+     ]
+    ],
+    "unverified": [
+     "typed_old"
+    ],
+    "sections": {
+     "typed_old": "DONE",
+     "typed_now": "DONE"
+    },
+    "rows_with_a_page_error": [
+     "typed_now"
+    ]
+   },
+   "broken": true,
+   "id": "p04_a_back_dated_typed_status_reads_unverified_not_an_error",
+   "error": null,
+   "seconds": 0.0
+  },
+  {
+   "claim": "Every live test process has a running row; a mismatch is a hard dashboard error (directive 7A, 8); the audit's sentence when it finds none: 'every live test process has a running row'.",
+   "attack": "(a) a probe script in a scratch folder started by hand; (b) a script in docs/gain_of_function_v4/ started with a development-run mark; (c) control: the same kind of script with no mark.",
+   "observed": {
+    "scratch_script": {
+     "ok": true,
+     "sentence": "Every running row has a live process and every live test process has a running row (0 running, 0 test processes, 0 development runs).",
+     "test_processes": 0
+    },
+    "dev_marked_script": {
+     "ok": true,
+     "sentence": "Every running row has a live process and every live test process has a running row (0 running, 0 test processes, 1 development runs).",
+     "development_runs": 1
+    },
+    "control_unmarked_script": {
+     "ok": false,
+     "kinds": [
+      "test process without a row"
+     ]
+    }
+   },
+   "broken": true,
+   "id": "p05_a_test_process_outside_the_signatures_or_under_dev_reads_as_no_error",
+   "error": null,
+   "seconds": 2.6
+  },
+  {
+   "claim": "A running row whose process does not exist never reads as running (apply_process_states; the audit's LOST state).",
+   "attack": "Two rows of one pause-runner process: job_a's job process ended about 41 minutes ago and its end was never written; job_b runs now under the same runner process.",
+   "observed": {
+    "states": {
+     "job_a": [
+      "RUNNING",
+      "its runner process 900001 is alive (the job process 900010 is gone: the runner is writing its end)"
+     ],
+     "job_b": [
+      "RUNNING",
+      "its job process 900002 is alive"
+     ]
+    },
+    "mismatches": []
+   },
+   "broken": true,
+   "id": "p06_a_lost_row_reads_running_while_its_runner_lives",
+   "error": null,
+   "seconds": 0.1
+  },
+  {
+   "claim": "A row's cost.time_limit_s is the job's limit (directive section 6: 'Maximum cost'); the runner ends the job at it.",
+   "attack": "A row whose time limit is 1 s; `run` with --timeout 30 and a job of 3 s.",
+   "observed": {
+    "state": "PASS",
+    "exit": 0,
+    "last_run_keys_about_a_limit": []
+   },
+   "broken": true,
+   "id": "p07_timeout_overrides_the_rows_time_limit_unrecorded",
+   "error": null,
+   "seconds": 3.2
+  },
+  {
+   "claim": "Mapped model code cannot change without the manifest check failing (directive 7C, 9; acceptance control manifest_fresh).",
+   "attack": "lem_model.py is mapped by functions only; a line added inside a LemLite method that no component maps (LemLite._migrate_contact_order_scales), and a module-level line changed (line 63).",
+   "observed": {
+    "check_ok_before": true,
+    "lem_model_lines": 9576,
+    "lem_model_lines_inside_mapped_definitions": 8631,
+    "unmapped_lemlite_methods": 17,
+    "unmapped_method_names": [
+     "LemLite._centre_left_as_saved",
+     "LemLite._convert_memory_eye_rows",
+     "LemLite._convert_order_averages",
+     "LemLite._ctrl_gaze_for_ring",
+     "LemLite._eff_window",
+     "LemLite._eye_contract_bit",
+     "LemLite._forget_efference_and_causal",
+     "LemLite._migrate_contact_order_scales",
+     "LemLite._migrate_efference_scales",
+     "LemLite._migrate_touch_push_scale",
+     "LemLite._motor_interface_changes",
+     "LemLite._plan_parameter_versions",
+     "LemLite._probe_term",
+     "LemLite._rank_channel_names",
+     "LemLite.configure_calf_projection",
+     "LemLite.convert_stored_eye_rows",
+     "LemLite.wellness_channels_cost_window"
+    ],
+    "unmapped_methods_with_training_code": [
+     "LemLite._migrate_contact_order_scales",
+     "LemLite._migrate_efference_scales",
+     "LemLite._migrate_touch_push_scale"
+    ],
+    "module_level_line": "MOTOR_ACHIEVED_F = 10",
+    "whole_file_mappers": [],
+    "results": {
+     "inside the unmapped method": {
+      "components_mapping_the_file": 40,
+      "stale": [],
+      "check_ok": true,
+      "check_sentence": "Every model code file is mapped and every entry matches its code (79 components)."
+     },
+     "a module-level line": {
+      "components_mapping_the_file": 40,
+      "stale": [],
+      "check_ok": true,
+      "check_sentence": "Every model code file is mapped and every entry matches its code (79 components)."
+     }
+    }
+   },
+   "broken": true,
+   "id": "p08_freshness_misses_code_outside_the_mapped_functions",
+   "error": null,
+   "seconds": 2.7
+  },
+  {
+   "claim": "Changing mapped code makes that component's QA stale and moves its last code change (directive 7C, 9).",
+   "attack": "For three repairs, find the definitions of the trainer's code (at the repair's branch when it has one) that name the repair's own code, outside the files and functions the repair's entry maps; then record a review of MOTOR_ENCODER_REPAIR at this commit and change line 2660 of lem_model.py (inside LemLite.step, the line 'if getattr(self, \"motor_asked_change\", None) is not None:').",
+   "observed": {
+    "repairs": {
+     "MOTOR_ENCODER_REPAIR": {
+      "mapped": [
+       "Source/Python/lem/model/motor_asked_change.py"
+      ],
+      "ref": null,
+      "wiring_outside_its_mapping": [
+       {
+        "file": "Source/Python/lem/model/efference.py",
+        "definition": "asked_change",
+        "mapped_by": [
+         "EFFERENCE_HEADS"
+        ]
+       },
+       {
+        "file": "Source/Python/lem/model/efference.py",
+        "definition": "EfferenceHeads.body",
+        "mapped_by": [
+         "EFFERENCE_HEADS"
+        ]
+       },
+       {
+        "file": "Source/Python/lem/model/efference.py",
+        "definition": "stamp",
+        "mapped_by": [
+         "EFFERENCE_HEADS"
+        ]
+       },
+       {
+        "file": "Source/Python/lem/model/encoder_registry.py",
+        "definition": "imagined_motor_token",
+        "mapped_by": [
+         "ENCODER_REGISTRY"
+        ]
+       },
+       {
+        "file": "Source/Python/lem/model/heads_all_slot_path.py",
+        "definition": "output_gain",
+        "mapped_by": [
+         "PREDICTOR_REPAIR",
+         "TACTILE_OFFSET_FIX"
+        ]
+       },
+       {
+        "file": "Source/Python/mimo_bridge/lem_model.py",
+        "definition": "LemLite.__init__",
+        "mapped_by": [
+         "TOP_DOWN_GATE",
+         "TENURE_HEADS",
+         "RECONSTRUCTION_DECODERS",
+         "IMAGINATION_CHAIN",
+         "TRAINER"
+        ]
+       },
+       {
+        "file": "Source/Python/mimo_bridge/lem_model.py",
+        "definition": "LemLite.step",
+        "mapped_by": [
+         "TOP_DOWN_GATE",
+         "TENURE_HEADS",
+         "RECONSTRUCTION_DECODERS",
+         "IMAGINATION_CHAIN",
+         "BABBLE",
+         "PLANNER_GOAL_SELECTION",
+         "GOAL_RING",
+         "TRAINER"
+        ]
+       },
+       {
+        "file": "Source/Python/mimo_bridge/lem_model.py",
+        "definition": "LemLite._clip_training_gradients",
+        "mapped_by": [
+         "LOSSES"
+        ]
+       },
+       {
+        "file": "Source/Python/mimo_bridge/lem_model.py",
+        "definition": "LemLite._side_modules",
+        "mapped_by": [
+         "TRAINER"
+        ]
+       },
+       {
+        "file": "Source/Python/mimo_bridge/lem_model.py",
+        "definition": "LemLite.load_checkpoint",
+        "mapped_by": [
+         "TRAINER"
+        ]
+       },
+       {
+        "file": "Source/Python/mimo_bridge/train_mimo.py",
+        "definition": "parse_args",
+        "mapped_by": [
+         "TRAINER"
+        ]
+       },
+       {
+        "file": "Source/Python/mimo_bridge/train_mimo.py",
+        "definition": "build_learner",
+        "mapped_by": [
+         "TRAINER"
+        ]
+       },
+       {
+        "file": "Source/Python/mimo_bridge/train_mimo.py",
+        "definition": "acting_configuration",
+        "mapped_by": [
+         "TRAINER"
+        ]
+       },
+       {
+        "file": "Source/Python/mimo_bridge/train_mimo.py",
+        "definition": "main",
+        "mapped_by": [
+         "TRAINER"
+        ]
+       }
+      ]
+     },
+     "HEAD_TILT_REPAIR": {
+      "mapped": [
+       "Source/Python/lem/model/vestibular_input_path.py"
+      ],
+      "ref": "fix/vestibular_token_readouts-2026-10-03",
+      "wiring_outside_its_mapping": [
+       {
+        "file": "Source/Python/mimo_bridge/lem_model.py",
+        "definition": "LemLite.__init__",
+        "mapped_by": [
+         "TOP_DOWN_GATE",
+         "TENURE_HEADS",
+         "RECONSTRUCTION_DECODERS",
+         "IMAGINATION_CHAIN",
+         "TRAINER"
+        ]
+       },
+       {
+        "file": "Source/Python/mimo_bridge/lem_model.py",
+        "definition": "LemLite.step",
+        "mapped_by": [
+         "TOP_DOWN_GATE",
+         "TENURE_HEADS",
+         "RECONSTRUCTION_DECODERS",
+         "IMAGINATION_CHAIN",
+         "BABBLE",
+         "PLANNER_GOAL_SELECTION",
+         "GOAL_RING",
+         "TRAINER"
+        ]
+       },
+       {
+        "file": "Source/Python/mimo_bridge/lem_model.py",
+        "definition": "LemLite._clip_training_gradients",
+        "mapped_by": [
+         "LOSSES"
+        ]
+       },
+       {
+        "file": "Source/Python/mimo_bridge/lem_model.py",
+        "definition": "LemLite._side_modules",
+        "mapped_by": [
+         "TRAINER"
+        ]
+       },
+       {
+        "file": "Source/Python/mimo_bridge/lem_model.py",
+        "definition": "LemLite.load_checkpoint",
+        "mapped_by": [
+         "TRAINER"
+        ]
+       },
+       {
+        "file": "Source/Python/mimo_bridge/train_mimo.py",
+        "definition": "parse_args",
+        "mapped_by": [
+         "TRAINER"
+        ]
+       },
+       {
+        "file": "Source/Python/mimo_bridge/train_mimo.py",
+        "definition": "build_learner",
+        "mapped_by": [
+         "TRAINER"
+        ]
+       },
+       {
+        "file": "Source/Python/mimo_bridge/train_mimo.py",
+        "definition": "acting_configuration",
+        "mapped_by": [
+         "TRAINER"
+        ]
+       },
+       {
+        "file": "Source/Python/mimo_bridge/train_mimo.py",
+        "definition": "main",
+        "mapped_by": [
+         "TRAINER"
+        ]
+       }
+      ]
+     },
+     "PREDICTOR_REPAIR": {
+      "mapped": [
+       "Source/Python/lem/model/heads_all_slot_path.py",
+       "Source/Python/lem/model/prediction_heads.py::PredictionHeads._all_slot_outputs",
+       "Source/Python/mimo_bridge/lem_model.py::LemLite.heads_all_slot_path_report"
+      ],
+      "ref": null,
+      "wiring_outside_its_mapping": [
+       {
+        "file": "Source/Python/lem/model/prediction_heads.py",
+        "definition": "PredictionHeads.forward",
+        "mapped_by": [
+         "PREDICTION_HEADS"
+        ]
+       },
+       {
+        "file": "Source/Python/lem/model/prediction_heads.py",
+        "definition": "PredictionHeads.forward_stacked",
+        "mapped_by": [
+         "PREDICTION_HEADS"
+        ]
+       },
+       {
+        "file": "Source/Python/lem/model/predictive_state.py",
+        "definition": "transition",
+        "mapped_by": [
+         "PREDICTIVE_TRANSITION"
+        ]
+       },
+       {
+        "file": "Source/Python/mimo_bridge/lem_model.py",
+        "definition": "LemLite.__init__",
+        "mapped_by": [
+         "TOP_DOWN_GATE",
+         "TENURE_HEADS",
+         "RECONSTRUCTION_DECODERS",
+         "IMAGINATION_CHAIN",
+         "TRAINER"
+        ]
+       },
+       {
+        "file": "Source/Python/mimo_bridge/lem_model.py",
+        "definition": "LemLite.step",
+        "mapped_by": [
+         "TOP_DOWN_GATE",
+         "TENURE_HEADS",
+         "RECONSTRUCTION_DECODERS",
+         "IMAGINATION_CHAIN",
+         "BABBLE",
+         "PLANNER_GOAL_SELECTION",
+         "GOAL_RING",
+         "TRAINER"
+        ]
+       },
+       {
+        "file": "Source/Python/mimo_bridge/lem_model.py",
+        "definition": "LemLite._clip_training_gradients",
+        "mapped_by": [
+         "LOSSES"
+        ]
+       },
+       {
+        "file": "Source/Python/mimo_bridge/lem_model.py",
+        "definition": "LemLite._side_modules",
+        "mapped_by": [
+         "TRAINER"
+        ]
+       },
+       {
+        "file": "Source/Python/mimo_bridge/lem_model.py",
+        "definition": "LemLite.load_checkpoint",
+        "mapped_by": [
+         "TRAINER"
+        ]
+       },
+       {
+        "file": "Source/Python/mimo_bridge/train_mimo.py",
+        "definition": "parse_args",
+        "mapped_by": [
+         "TRAINER"
+        ]
+       },
+       {
+        "file": "Source/Python/mimo_bridge/train_mimo.py",
+        "definition": "build_learner",
+        "mapped_by": [
+         "TRAINER"
+        ]
+       },
+       {
+        "file": "Source/Python/mimo_bridge/train_mimo.py",
+        "definition": "acting_configuration",
+        "mapped_by": [
+         "TRAINER"
+        ]
+       },
+       {
+        "file": "Source/Python/mimo_bridge/train_mimo.py",
+        "definition": "main",
+        "mapped_by": [
+         "TRAINER"
+        ]
+       }
+      ]
+     }
+    },
+    "lem_model_commits_on_the_head_tilt_branch_after_its_reviewed_commit": "470b6569c 2026-10-04 17:11:29 -0700 Vestibular input path version 2, the flag's values as the coordinator decided after the reviewer's long bench (Oct 4 5:11 PM PDT): on = the wiring without the exception (the delayed lesson trains neither the encoder's own layers nor the path); on_delayed_encoder_only = the exception, still selectable. Module, model, trainer flag, tests, watch text, lockstep and bench arms renamed; a watch test's filter corrected. Tests and identity check run on this commit next\naaca16876 2026-10-04 16:53:10 -0700 Work in progress, Oct 4 4:53 PM PDT, after the independent review: the flag's two on values (on: the delayed lesson trains the encoder's part alone; on_delayed_detached: it trains neither part), the weight held at the cap on training steps (path version 2), the watch's standing lines (T1, the change slope, the weight size) and M6 stated as what it is, the benches' two-wiring arms; tests and lockstep not yet run on this commit",
+    "motor_encoder_repair_qa_after_its_wiring_changed": {
+     "stale": false,
+     "text": null
+    },
+    "entries_the_manifest_check_reads_stale": [
+     "TOP_DOWN_GATE",
+     "TENURE_HEADS",
+     "RECONSTRUCTION_DECODERS",
+     "IMAGINATION_CHAIN",
+     "BABBLE",
+     "PLANNER_GOAL_SELECTION",
+     "GOAL_RING",
+     "TRAINER"
+    ]
+   },
+   "broken": true,
+   "id": "p09_repair_wiring_outside_the_repairs_mapping",
+   "error": null,
+   "seconds": 6.6
+  },
+  {
+   "claim": "A GOF-BLOCKER with no meaningful work for 12 hours moves to the top; its last meaningful work is the newest commit of its branch, a linked test's run, or stated work (directive section 5).",
+   "attack": "Read the register's computed view on production's data now; list each open GOF-BLOCKER's last work and the newest commit of its branch.",
+   "observed": {
+    "read_at": "Oct 5, 2026 11:39 AM PDT",
+    "sentence": "23 open defects, 12 of them GOF-BLOCKER. 6 GOF-BLOCKER have had no meaningful work for 12 hours or more.",
+    "top": [
+     "GOAL_VALUE_HAND_PRESSING_FLAG",
+     "PLANNER_ONE_STEP_LOOKAHEAD",
+     "PLANNER_NO_REAL_GAIN",
+     "MOTOR_TOKEN_ASKED_CHANGE",
+     "TACTILE_VESTIBULAR_PREDICTIONS",
+     "VESTIBULAR_TOKEN_NO_HEAD_TILT"
+    ],
+    "holding": [],
+    "open_gof_blockers": [
+     {
+      "id": "GOAL_VALUE_HAND_PRESSING_FLAG",
+      "branch": "fix/caused_change_consequence-2026-10-02",
+      "basis": "branch commit",
+      "what": "commit d6cf2739e, the newest of branch fix/caused_change_consequence-2026-10-02",
+      "idle": "3 days 6 hours since its last meaningful work (commit d6cf2739e, the newest of branch fix/caused_change_consequence-2026-10-02)",
+      "top": true,
+      "needs_explanation": false,
+      "newest_commit_of_its_branch": "d6cf2739e 2026-10-02 05:12:45 -0700 Caused change: the consequence channel rebuilt the way contact_control works, behind --consequence-mode (default flags = production)"
+     },
+     {
+      "id": "PLANNER_ONE_STEP_LOOKAHEAD",
+      "branch": null,
+      "basis": null,
+      "what": null,
+      "idle": "28 hours 13 minutes since it was found; no meaningful work is on record",
+      "top": true,
+      "needs_explanation": false,
+      "newest_commit_of_its_branch": null
+     },
+     {
+      "id": "PLANNER_NO_REAL_GAIN",
+      "branch": null,
+      "basis": "test run",
+      "what": "test planner_weaknesses_before_479350 ended",
+      "idle": "24 hours 11 minutes since its last meaningful work (test planner_weaknesses_before_479350 ended)",
+      "top": true,
+      "needs_explanation": false,
+      "newest_commit_of_its_branch": null
+     },
+     {
+      "id": "MOTOR_TOKEN_ASKED_CHANGE",
+      "branch": "restart/candidate-motor-2026-10-03",
+      "basis": "test run",
+      "what": "test motor_asked_change_lesson_forces ended",
+      "idle": "20 hours 23 minutes since its last meaningful work (test motor_asked_change_lesson_forces ended)",
+      "top": true,
+      "needs_explanation": false,
+      "newest_commit_of_its_branch": null
+     },
+     {
+      "id": "TACTILE_VESTIBULAR_PREDICTIONS",
+      "branch": "restart/candidate-heads2-2026-10-04",
+      "basis": "branch commit",
+      "what": "commit 0af08c8b2, the newest of branch restart/candidate-heads2-2026-10-04",
+      "idle": "18 hours 50 minutes since its last meaningful work (commit 0af08c8b2, the newest of branch restart/candidate-heads2-2026-10-04)",
+      "top": true,
+      "needs_explanation": false,
+      "newest_commit_of_its_branch": "0af08c8b2 2026-10-04 16:49:40 -0700 Merge commit '0bbc51f4fb81a3750fb2f5674fa5c350c967e0b6' into restart/candidate-heads2-2026-10-04"
+     },
+     {
+      "id": "VESTIBULAR_TOKEN_NO_HEAD_TILT",
+      "branch": "fix/vestibular_token_readouts-2026-10-03",
+      "basis": "branch commit",
+      "what": "commit fe276c7de, the newest of branch fix/vestibular_token_readouts-2026-10-03",
+      "idle": "18 hours 15 minutes since its last meaningful work (commit fe276c7de, the newest of branch fix/vestibular_token_readouts-2026-10-03)",
+      "top": true,
+      "needs_explanation": false,
+      "newest_commit_of_its_branch": "fe276c7de 2026-10-04 17:24:08 -0700 The vestibular input path after the independent review, ready and not deployed (Oct 4 5:24 PM PDT): the record brought to path version 2 (the two flag values, on = the wiring without the exception by the coordinator's decision after the reviewer's long bench; the weight held at the cap; the watch's standing lines; M6 stated as what it is; the checkpoint kept past the measured horizon), with what no run has verified (version 2 and the wiring on with the whole model). Tests 266 passed and the identity check passed on 470b6569c"
+     },
+     {
+      "id": "PLANNER_GOAL_DISTANCE_EQUAL_WEIGHTS",
+      "branch": "planner/corrections-2026-10-05",
+      "basis": "branch commit",
+      "what": "commit fbe4a0d1b, the newest of branch planner/corrections-2026-10-05",
+      "idle": "4 hours 58 minutes since its last meaningful work (commit fbe4a0d1b, the newest of branch planner/corrections-2026-10-05)",
+      "top": false,
+      "needs_explanation": false,
+      "newest_commit_of_its_branch": "fbe4a0d1b 2026-10-05 06:41:27 -0700 Planner corrections record: the stop of 6:39 AM PDT (the coordinator, with the operator's permission, stopped the job chain and the prospective term's gate reading at 19 of 32 decisions; no result used; the paired gate's mechanics and the watch's cost did not start) in sections 0, 5, 6 and 9"
+     },
+     {
+      "id": "PLANNER_GOAL_OLD_AND_FAR",
+      "branch": "planner/corrections-2026-10-05",
+      "basis": "branch commit",
+      "what": "commit fbe4a0d1b, the newest of branch planner/corrections-2026-10-05",
+      "idle": "4 hours 58 minutes since its last meaningful work (commit fbe4a0d1b, the newest of branch planner/corrections-2026-10-05)",
+      "top": false,
+      "needs_explanation": false,
+      "newest_commit_of_its_branch": "fbe4a0d1b 2026-10-05 06:41:27 -0700 Planner corrections record: the stop of 6:39 AM PDT (the coordinator, with the operator's permission, stopped the job chain and the prospective term's gate reading at 19 of 32 decisions; no result used; the paired gate's mechanics and the watch's cost did not start) in sections 0, 5, 6 and 9"
+     },
+     {
+      "id": "PLANNER_PREDICTED_WELLNESS_NOT_RANKING",
+      "branch": "planner/corrections-2026-10-05",
+      "basis": "branch commit",
+      "what": "commit fbe4a0d1b, the newest of branch planner/corrections-2026-10-05",
+      "idle": "4 hours 58 minutes since its last meaningful work (commit fbe4a0d1b, the newest of branch planner/corrections-2026-10-05)",
+      "top": false,
+      "needs_explanation": false,
+      "newest_commit_of_its_branch": "fbe4a0d1b 2026-10-05 06:41:27 -0700 Planner corrections record: the stop of 6:39 AM PDT (the coordinator, with the operator's permission, stopped the job chain and the prospective term's gate reading at 19 of 32 decisions; no result used; the paired gate's mechanics and the watch's cost did not start) in sections 0, 5, 6 and 9"
+     },
+     {
+      "id": "PREDICTION_HANDLE_DIRECTION_LOST",
+      "branch": "investigate/wellness-gradient-motor-pool-2026-10-05",
+      "basis": "branch commit",
+      "what": "commit fb865025c, the newest of branch investigate/wellness-gradient-motor-pool-2026-10-05",
+      "idle": "2 hours 56 minutes since its last meaningful work (commit fb865025c, the newest of branch investigate/wellness-gradient-motor-pool-2026-10-05)",
+      "top": false,
+      "needs_explanation": false,
+      "newest_commit_of_its_branch": "fb865025c 2026-10-05 08:43:42 -0700 Investigation of Oct 5: question 3 answered NO by the declared lines (row investigate_motor_handle_reach_481800): every handle's command reaches the motor token and changes the predicted next proprioception in all 4 conditions, but for 19 of 26 handles the predicted change does not point at the handle's own real consequence; the predicted changes of different handles lie along nearly one direction (mean absolute cosine 0.86 against 0.23 for the token); the saved-data analysis script"
+     },
+     {
+      "id": "PLANNER_SEARCH_UNSTABLE",
+      "branch": "planner/search-2026-10-05",
+      "basis": "branch commit",
+      "what": "commit dbe705329, the newest of branch planner/search-2026-10-05",
+      "idle": "50 minutes since its last meaningful work (commit dbe705329, the newest of branch planner/search-2026-10-05)",
+      "top": false,
+      "needs_explanation": false,
+      "newest_commit_of_its_branch": "dbe705329 2026-10-05 10:49:07 -0700 PLANNER_SEARCH_REPAIR record: the design-3 rule's answer, none (no form within the outcome line reaches the held-out trial's smallest showable gain)"
+     },
+     {
+      "id": "PREDICTOR_ATTENTION_SWITCHING",
+      "branch": "planner/search-2026-10-05",
+      "basis": "branch commit",
+      "what": "commit dbe705329, the newest of branch planner/search-2026-10-05",
+      "idle": "50 minutes since its last meaningful work (commit dbe705329, the newest of branch planner/search-2026-10-05)",
+      "top": false,
+      "needs_explanation": false,
+      "newest_commit_of_its_branch": "dbe705329 2026-10-05 10:49:07 -0700 PLANNER_SEARCH_REPAIR record: the design-3 rule's answer, none (no form within the outcome line reaches the held-out trial's smallest showable gain)"
+     }
+    ],
+    "branches_named_by_more_than_one_open_gof_blocker": {
+     "planner/corrections-2026-10-05": 3,
+     "planner/search-2026-10-05": 2
+    }
+   },
+   "broken": true,
+   "id": "p10_twelve_hour_rule_reads_another_defects_commit_as_this_ones_work",
+   "error": null,
+   "seconds": 1.1
+  },
+  {
+   "claim": "Only VERIFIED may be called fixed; the register's own severity rule closes an entry 'as FAILED/SUPERSEDED with the evidence'.",
+   "attack": "A GOF-BLOCKER of the PLANNER stage, state FOUND, with a 'closed' entry typed into the file and its closing test never run.",
+   "observed": {
+    "register_problems": [],
+    "status_lines": [],
+    "top": [],
+    "planner_blocking": []
+   },
+   "broken": true,
+   "id": "p11_a_closed_gof_blocker_needs_no_evidence",
+   "error": null,
+   "seconds": 0.1
+  },
+  {
+   "claim": "A forbidden alias in operator-facing status fails the output check; a status is NAME: STATE with one of the eight states; only VERIFIED may be called fixed (directive 4, 10, 7D).",
+   "attack": "Six status lines through reply_lint.name_problems and reply_lint.check (the reply hook's whole check).",
+   "observed": {
+    "name_problems": {
+     "lower_case_fixed": [],
+     "is_fixed": [],
+     "mixed_case": [],
+     "quoted_alias": [],
+     "control_capitals": [
+      "status 'HEAD_TILT_REPAIR: READY' - the state is not one of FOUND, CAUSE KNOWN, BUILT/OFF, REVIEWED, QUALIFIED/OFF, IN TRAINING, VERIFIED, FAILED/SUPERSEDED (directive of Oct 5, section 4)"
+     ],
+     "control_alias": [
+      "forbidden alias 'head repair' - write the canonical name HEAD_TILT_REPAIR or PREDICTOR_REPAIR (directive of Oct 5, section 10: one component, one name): '...Status: the head repair is switched on....'"
+     ]
+    },
+    "whole_check": {
+     "lower_case_fixed": [],
+     "is_fixed": [],
+     "mixed_case": [],
+     "quoted_alias": [],
+     "control_capitals": [
+      "status 'HEAD_TILT_REPAIR: READY' - the state is not one of FOUND, CAUSE KNOWN, BUILT/OFF, REVIEWED, QUALIFIED/OFF, IN TRAINING, VERIFIED, FAILED/SUPERSEDED (directive of Oct 5, section 4)"
+     ],
+     "control_alias": [
+      "forbidden alias 'head repair' - write the canonical name HEAD_TILT_REPAIR or PREDICTOR_REPAIR (directive of Oct 5, section 10: one component, one name): '...Status: the head repair is switched on....'"
+     ]
+    },
+    "missed": [
+     "lower_case_fixed",
+     "is_fixed",
+     "mixed_case",
+     "quoted_alias"
+    ]
+   },
+   "broken": true,
+   "id": "p12_status_check_misses_states_not_in_capitals_and_quoted_aliases",
+   "error": null,
+   "seconds": 0.0
+  },
+  {
+   "claim": "The top of the dashboard shows exactly one machine mode; PAUSED FOR OPERATOR = training waits for a person's word; TEST WINDOW = training stopped for tests (directive section 12).",
+   "attack": "Training held by the operator (supervisor pause with that reason) and one live test whose resource class says it can run beside training.",
+   "observed": {
+    "mode": "TEST WINDOW",
+    "sentence": "TEST WINDOW: no production trainer process is alive and 1 test is live: unit_tests_beside.",
+    "reason": "the operator holds training until the preflight passes"
+   },
+   "broken": true,
+   "id": "p13_machine_mode_reads_test_window_during_an_operator_hold",
+   "error": null,
+   "seconds": 0.0
+  },
+  {
+   "claim": "Nobody types a box's verdict by hand: the diagram is computed from the rows' runner records and results (the style guide, the operator's rule of Oct 5).",
+   "attack": "On a copy of production's registry, the registry's own hand writer (update_row, which accepts the field 'result') sets row motor_encoder_asked_change_stages_455800's result verdict to fail.",
+   "observed": {
+    "hand_write_accepted": true,
+    "first_box_provenance": "a runner record of the older kind (motor_encoder_asked_change_registry.py run), not sealed",
+    "before": [
+     [
+      "raw_input",
+      "PASS"
+     ],
+     [
+      "per_handle_encoder",
+      "UNKNOWN"
+     ],
+     [
+      "pool",
+      "PASS"
+     ],
+     [
+      "repaired_path",
+      "PASS"
+     ],
+     [
+      "transformer",
+      "FAIL"
+     ],
+     [
+      "predictor_routing",
+      "UNKNOWN"
+     ]
+    ],
+    "after": [
+     [
+      "raw_input",
+      "FAIL"
+     ],
+     [
+      "per_handle_encoder",
+      "UNKNOWN"
+     ],
+     [
+      "pool",
+      "PASS"
+     ],
+     [
+      "repaired_path",
+      "PASS"
+     ],
+     [
+      "transformer",
+      "FAIL"
+     ],
+     [
+      "predictor_routing",
+      "UNKNOWN"
+     ]
+    ],
+    "located_before": "The fault lies after 'repaired motor path' (MOTOR_ENCODER_REPAIR, PASS) and at or before 'transformer' (TRANSFORMER, FAIL).",
+    "located_after": "The fault lies at or before 'raw motor-encoder input' (SENSE_MOTOR, FAIL), the first stage of the walk that reads it.",
+    "walk_after": [
+     "raw_input"
+    ]
+   },
+   "broken": true,
+   "id": "p14_a_hand_written_result_flips_the_first_box_of_the_26_handle_diagram",
+   "error": null,
+   "seconds": 0.9
+  },
+  {
+   "claim": "A box's verdict follows its row's result as the runner wrote it (ELIMINATION_DIAGRAMS section 2: a sealed run's verdict and its result's verdict word must agree).",
+   "attack": "A row run by the runner (exit 0: sealed PASS); a stage reading the key 'failing' of the row's result; the registry's hand writer then adds failing = [] and later failing = ['typed'] to the result.",
+   "observed": {
+    "run": "PASS",
+    "sealed_after_the_writes": true,
+    "verdict_after_the_run": "UNKNOWN",
+    "verdict_after_typing_an_empty_list": "PASS",
+    "verdict_after_typing_one_item": "FAIL"
+   },
+   "broken": true,
+   "id": "p15_a_sealed_runs_box_is_decided_by_values_typed_after_the_run",
+   "error": null,
+   "seconds": 0.2
+  }
+ ]
+}

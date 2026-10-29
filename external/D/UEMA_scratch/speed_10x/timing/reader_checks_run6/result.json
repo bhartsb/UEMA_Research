@@ -1,0 +1,462 @@
+{
+ "verdict": "pass",
+ "held": 36,
+ "total": 36,
+ "cases": [
+  {
+   "case": "good",
+   "expected": "pass",
+   "expected_problem": null,
+   "verdict": "pass",
+   "problems": [],
+   "holds": true
+  },
+  {
+   "case": "arm_missing",
+   "expected": "invalid",
+   "expected_problem": "declared",
+   "verdict": "invalid",
+   "problems": [
+    "arms read ['old'], declared ['new', 'old']"
+   ],
+   "holds": true
+  },
+  {
+   "case": "arm_undeclared",
+   "expected": "invalid",
+   "expected_problem": "declared",
+   "verdict": "invalid",
+   "problems": [
+    "arms read ['new', 'old', 'old2'], declared ['new', 'old']"
+   ],
+   "holds": true
+  },
+  {
+   "case": "rerun_appended",
+   "expected": "invalid",
+   "expected_problem": "model step lines",
+   "verdict": "invalid",
+   "problems": [
+    "new: 203 model step lines, not the 200 model steps 492800 to 492999 once each in order (repeated [492800, 492801, 492802], missing [], outside [])"
+   ],
+   "holds": true
+  },
+  {
+   "case": "step_gap",
+   "expected": "invalid",
+   "expected_problem": "model step lines",
+   "verdict": "invalid",
+   "problems": [
+    "new: 199 model step lines, not the 200 model steps 492800 to 492999 once each in order (repeated [], missing [492900], outside [])"
+   ],
+   "holds": true
+  },
+  {
+   "case": "steps_minus_one",
+   "expected": "invalid",
+   "expected_problem": "model step lines",
+   "verdict": "invalid",
+   "problems": [
+    "new: the end line names model step 492999, not 493000",
+    "new: 199 model step lines, not the 200 model steps 492800 to 492999 once each in order (repeated [], missing [492999], outside [])"
+   ],
+   "holds": true
+  },
+  {
+   "case": "end_step_wrong",
+   "expected": "invalid",
+   "expected_problem": "end line names",
+   "verdict": "invalid",
+   "problems": [
+    "new: the end line names model step 493001, not 493000"
+   ],
+   "holds": true
+  },
+  {
+   "case": "timing_not_finite",
+   "expected": "invalid",
+   "expected_problem": "field problems",
+   "verdict": "invalid",
+   "problems": [
+    "new: 1 field problems, first ['loop at 492920=nan']"
+   ],
+   "holds": true
+  },
+  {
+   "case": "timing_negative",
+   "expected": "invalid",
+   "expected_problem": "field problems",
+   "verdict": "invalid",
+   "problems": [
+    "new: 1 field problems, first ['env at 492930=-1.0']"
+   ],
+   "holds": true
+  },
+  {
+   "case": "required_field_absent",
+   "expected": "invalid",
+   "expected_problem": "field problems",
+   "verdict": "invalid",
+   "problems": [
+    "new: 1 field problems, first ['shadow at 492940=None']"
+   ],
+   "holds": true
+  },
+  {
+   "case": "no_hand_kept",
+   "expected": "invalid",
+   "expected_problem": "no hand",
+   "verdict": "invalid",
+   "problems": [
+    "new: no hand in the 150 kept model steps"
+   ],
+   "holds": true
+  },
+  {
+   "case": "no_replay_kept",
+   "expected": "invalid",
+   "expected_problem": "no replay",
+   "verdict": "invalid",
+   "problems": [
+    "new: no replay in the 150 kept model steps"
+   ],
+   "holds": true
+  },
+  {
+   "case": "skipped_update_new",
+   "expected": "invalid",
+   "expected_problem": "new skipped optimizer updates",
+   "verdict": "invalid",
+   "problems": [
+    "new: new skipped optimizer updates (start 3, end 4, model steps [492950, 492951, 492952, 492953, 492954, 492955, 492956, 492957, 492958, 492959])"
+   ],
+   "holds": true
+  },
+  {
+   "case": "loss_not_finite",
+   "expected": "invalid",
+   "expected_problem": "non-finite live loss",
+   "verdict": "invalid",
+   "problems": [
+    "new: non-finite live loss at model steps [492860]"
+   ],
+   "holds": true
+  },
+  {
+   "case": "nan_steps_in_stats",
+   "expected": "invalid",
+   "expected_problem": "nan_steps 1",
+   "verdict": "invalid",
+   "problems": [
+    "new: 2 stats records, nan_steps 1"
+   ],
+   "holds": true
+  },
+  {
+   "case": "owner_end_missing",
+   "expected": "invalid",
+   "expected_problem": "no trainer end",
+   "verdict": "invalid",
+   "problems": [
+    "new: the owner log holds no trainer end with exit code 0"
+   ],
+   "holds": true
+  },
+  {
+   "case": "trainer_exit_nonzero",
+   "expected": "invalid",
+   "expected_problem": "no trainer end",
+   "verdict": "invalid",
+   "problems": [
+    "new: the owner log holds no trainer end with exit code 0"
+   ],
+   "holds": true
+  },
+  {
+   "case": "summary_not_ok",
+   "expected": "invalid",
+   "expected_problem": "summary.json",
+   "verdict": "invalid",
+   "problems": [
+    "new: summary.json does not read ok true"
+   ],
+   "holds": true
+  },
+  {
+   "case": "parse_error",
+   "expected": "invalid",
+   "expected_problem": "is not JSON",
+   "verdict": "invalid",
+   "problems": [
+    "new: phase_timings.jsonl line 205 is not JSON (Expecting property name enclosed in double quotes: line 1 column 2 (char 1))"
+   ],
+   "holds": true
+  },
+  {
+   "case": "planned_without_plan_time",
+   "expected": "invalid",
+   "expected_problem": "field problems",
+   "verdict": "invalid",
+   "problems": [
+    "new: 1 field problems, first ['planned True with learner_plan False at 492870']"
+   ],
+   "holds": true
+  },
+  {
+   "case": "two_open_lines",
+   "expected": "invalid",
+   "expected_problem": "2 phase_file_open lines",
+   "verdict": "invalid",
+   "problems": [
+    "new: 2 phase_file_open lines, not 1"
+   ],
+   "holds": true
+  },
+  {
+   "case": "first_step_wrong",
+   "expected": "invalid",
+   "expected_problem": "first_model_step line names",
+   "verdict": "invalid",
+   "problems": [
+    "new: the first_model_step line names model step 492801, not the start 492800"
+   ],
+   "holds": true
+  },
+  {
+   "case": "stage_done_wrong_end",
+   "expected": "invalid",
+   "expected_problem": "stage_done.json",
+   "verdict": "invalid",
+   "problems": [
+    "new: stage_done.json does not read ok true with steps 493000"
+   ],
+   "holds": true
+  },
+  {
+   "case": "stage_done_not_ok",
+   "expected": "invalid",
+   "expected_problem": "stage_done.json",
+   "verdict": "invalid",
+   "problems": [
+    "new: stage_done.json does not read ok true with steps 493000"
+   ],
+   "holds": true
+  },
+  {
+   "case": "stage_done_missing",
+   "expected": "invalid",
+   "expected_problem": "stage_done.json",
+   "verdict": "invalid",
+   "problems": [
+    "new: stage_done.json does not read ok true with steps 493000",
+    "new: stage_done.json names the final checkpoint None, not D:\\UEMA_Research\\external\\D\\UEMA_scratch\\speed_10x\\timing\\reader_checks_run6\\stage_done_missing\\run\\new\\checkpoints\\ckpt_step_493000"
+   ],
+   "holds": true
+  },
+  {
+   "case": "one_arm_good",
+   "expected": "pass",
+   "expected_problem": null,
+   "verdict": "pass",
+   "problems": [],
+   "holds": true
+  },
+  {
+   "case": "final_checkpoint_missing",
+   "expected": "invalid",
+   "expected_problem": "final checkpoint",
+   "verdict": "invalid",
+   "problems": [
+    "new: stage_done.json names the final checkpoint None, not D:\\UEMA_Research\\external\\D\\UEMA_scratch\\speed_10x\\timing\\reader_checks_run6\\final_checkpoint_missing\\run\\new\\checkpoints\\ckpt_step_493000"
+   ],
+   "holds": true
+  },
+  {
+   "case": "final_checkpoint_other_step",
+   "expected": "invalid",
+   "expected_problem": "final checkpoint",
+   "verdict": "invalid",
+   "problems": [
+    "new: stage_done.json names the final checkpoint D:\\UEMA_Research\\external\\D\\UEMA_scratch\\speed_10x\\timing\\reader_checks_run6\\final_checkpoint_other_step\\run\\new\\checkpoints\\ckpt_step_492975, not D:\\UEMA_Research\\external\\D\\UEMA_scratch\\speed_10x\\timing\\reader_checks_run6\\final_checkpoint_other_step\\run\\new\\checkpoints\\ckpt_step_493000"
+   ],
+   "holds": true
+  },
+  {
+   "case": "companion_missing",
+   "expected": "invalid",
+   "expected_problem": "world companion",
+   "verdict": "invalid",
+   "problems": [
+    "new: the final checkpoint's world companion D:\\UEMA_Research\\external\\D\\UEMA_scratch\\speed_10x\\timing\\reader_checks_run6\\companion_missing\\run\\new\\caregiver\\checkpoint_state\\new\\ckpt_step_493000_fixture.pt.gz (named by D:\\UEMA_Research\\external\\D\\UEMA_scratch\\speed_10x\\timing\\reader_checks_run6\\companion_missing\\run\\new\\checkpoints\\ckpt_step_493000\\episode_state.json) is missing"
+   ],
+   "holds": true
+  },
+  {
+   "case": "companion_sha256_wrong",
+   "expected": "invalid",
+   "expected_problem": "world companion",
+   "verdict": "invalid",
+   "problems": [
+    "new: the final checkpoint's world companion D:\\UEMA_Research\\external\\D\\UEMA_scratch\\speed_10x\\timing\\reader_checks_run6\\companion_sha256_wrong\\run\\new\\caregiver\\checkpoint_state\\new\\ckpt_step_493000_fixture.pt.gz does not hash to the sha256 its episode_state.json records (ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff)"
+   ],
+   "holds": true
+  },
+  {
+   "case": "trainer_stopped",
+   "expected": "invalid",
+   "expected_problem": "stopped",
+   "verdict": "invalid",
+   "problems": [
+    "new: the owner log's trainer end reads stopped 'stopped at its cap of 1380 s' and cleanup_verified True: a trainer the supervisor stopped, or whose process tree was not verified ended, is no complete arm"
+   ],
+   "holds": true
+  },
+  {
+   "case": "cleanup_not_verified",
+   "expected": "invalid",
+   "expected_problem": "cleanup_verified",
+   "verdict": "invalid",
+   "problems": [
+    "new: the owner log's trainer end reads stopped None and cleanup_verified False: a trainer the supervisor stopped, or whose process tree was not verified ended, is no complete arm"
+   ],
+   "holds": true
+  },
+  {
+   "case": "exchange_absent",
+   "expected": "invalid",
+   "expected_problem": "field problems",
+   "verdict": "invalid",
+   "problems": [
+    "new: 1 field problems, first ['exchange at 492940=None']"
+   ],
+   "holds": true
+  },
+  {
+   "case": "end_event_without_cleanup_field",
+   "expected": "invalid",
+   "expected_problem": "cleanup_verified",
+   "verdict": "invalid",
+   "problems": [
+    "new: the owner log's trainer end reads stopped None and cleanup_verified 'absent': a trainer the supervisor stopped, or whose process tree was not verified ended, is no complete arm"
+   ],
+   "holds": true
+  },
+  {
+   "case": "stage_done_without_final_checkpoint",
+   "expected": "invalid",
+   "expected_problem": "final checkpoint",
+   "verdict": "invalid",
+   "problems": [
+    "new: stage_done.json names the final checkpoint None, not D:\\UEMA_Research\\external\\D\\UEMA_scratch\\speed_10x\\timing\\reader_checks_run6\\stage_done_without_final_checkpoint\\run\\new\\checkpoints\\ckpt_step_493000"
+   ],
+   "holds": true
+  },
+  {
+   "case": "checkpoint_file_removed_after_receipt",
+   "expected": "invalid",
+   "expected_problem": "not complete now",
+   "verdict": "invalid",
+   "problems": [
+    "new: the final checkpoint D:\\UEMA_Research\\external\\D\\UEMA_scratch\\speed_10x\\timing\\reader_checks_run6\\checkpoint_file_removed_after_receipt\\run\\new\\checkpoints\\ckpt_step_493000 is not complete now by training_continuation.complete_candidates (meta.json naming its model step; model.safetensors, optimizer.pt, runtime_state.pt and model_receipt.json not empty; episode_state.json for an episode continuation)"
+   ],
+   "holds": true
+  }
+ ],
+ "mutants_caught": 6,
+ "mutants_total": 6,
+ "mutants": [
+  {
+   "mutant": "stage_done_check_removed",
+   "file": "D:\\UEMA_Research\\external\\D\\UEMA_scratch\\speed_10x\\timing\\reader_checks_run6\\mutants\\stage_done_check_removed\\read_phase_timings.py",
+   "sha256": "bca8350edc051ae32038c7d054c1bd60c8fd969e760865384fb5838408a73207",
+   "cases_that_catch_it": [
+    "stage_done_wrong_end",
+    "stage_done_not_ok"
+   ],
+   "cases_where_it_raised": [],
+   "caught": true
+  },
+  {
+   "mutant": "end_state_check_removed",
+   "file": "D:\\UEMA_Research\\external\\D\\UEMA_scratch\\speed_10x\\timing\\reader_checks_run6\\mutants\\end_state_check_removed\\read_phase_timings.py",
+   "sha256": "caf12f066aae24dcb23483678f8ef6c9bb778527162d40e41bdac2d13797dd4d",
+   "cases_that_catch_it": [
+    "final_checkpoint_missing",
+    "final_checkpoint_other_step",
+    "companion_missing",
+    "companion_sha256_wrong",
+    "stage_done_without_final_checkpoint",
+    "checkpoint_file_removed_after_receipt"
+   ],
+   "cases_where_it_raised": [],
+   "caught": true
+  },
+  {
+   "mutant": "completeness_check_removed",
+   "file": "D:\\UEMA_Research\\external\\D\\UEMA_scratch\\speed_10x\\timing\\reader_checks_run6\\mutants\\completeness_check_removed\\read_phase_timings.py",
+   "sha256": "76c75e7a004d0ed4caefab12f25c1bebf49ba8e5a3dca536b60c1122f36d1d2b",
+   "cases_that_catch_it": [
+    "checkpoint_file_removed_after_receipt"
+   ],
+   "cases_where_it_raised": [],
+   "caught": true
+  },
+  {
+   "mutant": "supervisor_end_fields_removed",
+   "file": "D:\\UEMA_Research\\external\\D\\UEMA_scratch\\speed_10x\\timing\\reader_checks_run6\\mutants\\supervisor_end_fields_removed\\read_phase_timings.py",
+   "sha256": "13739681582d4c9566e9486332100dde6a142b1e3c0bdd63cfab731bf0b2990c",
+   "cases_that_catch_it": [
+    "trainer_stopped",
+    "cleanup_not_verified",
+    "end_event_without_cleanup_field"
+   ],
+   "cases_where_it_raised": [],
+   "caught": true
+  },
+  {
+   "mutant": "exchange_optional_not_required",
+   "file": "D:\\UEMA_Research\\external\\D\\UEMA_scratch\\speed_10x\\timing\\reader_checks_run6\\mutants\\exchange_optional_not_required\\read_phase_timings.py",
+   "sha256": "435becd8a40686128e92ae8f62bd813312b895386b5c17122e058085f5ba5713",
+   "cases_that_catch_it": [
+    "exchange_absent"
+   ],
+   "cases_where_it_raised": [],
+   "caught": true
+  },
+  {
+   "mutant": "reviewer_stage_done_deleted",
+   "file": "D:\\UEMA_Research\\external\\D\\UEMA_scratch\\speed_10x\\timing\\reviewer_mutant_20261013\\read_phase_timings.py",
+   "sha256": "431bc443a6bc80caf0a6c13c09ac90b3f8c79e9063e3b5dee280ab43414d2eee",
+   "cases_that_catch_it": [
+    "stage_done_wrong_end",
+    "stage_done_not_ok",
+    "stage_done_missing",
+    "final_checkpoint_missing",
+    "final_checkpoint_other_step",
+    "companion_missing",
+    "companion_sha256_wrong",
+    "trainer_stopped",
+    "cleanup_not_verified",
+    "exchange_absent",
+    "end_event_without_cleanup_field",
+    "stage_done_without_final_checkpoint",
+    "checkpoint_file_removed_after_receipt"
+   ],
+   "cases_where_it_raised": [],
+   "caught": true
+  }
+ ],
+ "reader": "C:\\Users\\bhart\\Documents\\UEMA_wt\\speed_hand_search\\docs\\gain_of_function_v4\\speed_hand_search\\read_phase_timings.py",
+ "reader_sha256": "2de271a979f5959fd45cb4ee7489c24a7f491f1ae4cc1d49a52960c4c83ad53c",
+ "check": "C:\\Users\\bhart\\Documents\\UEMA_wt\\speed_hand_search\\docs\\gain_of_function_v4\\speed_hand_search\\check_read_phase_timings.py",
+ "check_sha256": "53e751262a139b10c37706cad64bcc0b81f97608e51806bf9175aacb64487283",
+ "out": "D:\\UEMA_Research\\external\\D\\UEMA_scratch\\speed_10x\\timing\\reader_checks_run6",
+ "trainer_src": "C:\\Users\\bhart\\Documents\\UEMA_wt\\speed_hand_search\\Source\\Python",
+ "stage_done_writer": {
+  "path": "C:\\Users\\bhart\\Documents\\UEMA_wt\\speed_hand_search\\Source\\Python\\mimo_bridge\\tools\\training_continuation.py",
+  "sha256": "56654dde7486402fce62c7e7c180a862c75c0922a2ee6f9cff163a4cbbb6d32c",
+  "function": "write_stage_done"
+ },
+ "started": "Oct 13, 2026, 10:43:45 PM PDT",
+ "ended": "Oct 13, 2026, 10:44:06 PM PDT"
+}

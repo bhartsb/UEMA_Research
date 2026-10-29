@@ -1,0 +1,130 @@
+{
+ "declaration": "docs/body_sequence_study_2026-09-10/declaration.md (committed before collection)",
+ "data_sha256": "0af4bd7d167e4182020a34a1b5d7e17d31a38c3c878b3ef2dd80badd98fcbebe",
+ "source_sha256": "42661e2c87a4b040586b7e57e2a4e23eefdbae6102234259cb2d78a6161c12ca",
+ "train_worlds": [
+  0,
+  1,
+  2,
+  3,
+  4,
+  5,
+  100,
+  101,
+  102,
+  103,
+  104,
+  105,
+  106,
+  107,
+  108,
+  200,
+  201,
+  202,
+  203,
+  204,
+  205,
+  206,
+  207,
+  208
+ ],
+ "eval_worlds": [
+  6,
+  7,
+  8
+ ],
+ "resting_start_fraction": 0.3958333333333333,
+ "sequence_hp": {
+  "lam": 0.1,
+  "width": 2.0,
+  "cv": 0.691976332430506
+ },
+ "linear_hp": {
+  "lam": 0.1,
+  "cv": 0.7032630339822642
+ },
+ "per_world": {
+  "6": {
+   "sequence": 0.7566247188948955,
+   "linear_comparator": 0.8225886562410573,
+   "replay_floor_mean": 1.081637599702972e-10
+  },
+  "7": {
+   "sequence": 0.7184758596032023,
+   "linear_comparator": 0.7417061754652353,
+   "replay_floor_mean": 1.5265354181343622e-12
+  },
+  "8": {
+   "sequence": 0.7080726555448749,
+   "linear_comparator": 0.7348356822206461,
+   "replay_floor_mean": 2.5141351667047464e-07
+  }
+ },
+ "absolute_final_frame": {
+  "6": {
+   "model": 0.05281541662316921,
+   "no_movement": 0.07185204905147019,
+   "constant_velocity": 15.15950105579304
+  },
+  "7": {
+   "model": 0.039424685668312864,
+   "no_movement": 0.0773925892346698,
+   "constant_velocity": 16.690456647506522
+  },
+  "8": {
+   "model": 0.04501199824235011,
+   "no_movement": 0.07660546721166296,
+   "constant_velocity": 7.7223178658410525
+  }
+ },
+ "shuffled_min_per_world": {
+  "6": 0.9905828180418159,
+  "7": 0.9724304116683825,
+  "8": 0.9829431531208894
+ },
+ "learning_curve": {
+  "24": {
+   "train_cv": 0.9500719546065102,
+   "eval": {
+    "6": 0.9782645357745496,
+    "7": 0.9589384890556327,
+    "8": 0.9185824236357194
+   }
+  },
+  "48": {
+   "train_cv": 0.8974541515166727,
+   "eval": {
+    "6": 0.8641876497856578,
+    "7": 0.9041576310616253,
+    "8": 0.8952472696735182
+   }
+  },
+  "96": {
+   "train_cv": 0.8039201941606889,
+   "eval": {
+    "6": 0.8384651310316226,
+    "7": 0.8225782347725521,
+    "8": 0.8060388931140168
+   }
+  },
+  "192": {
+   "train_cv": 0.7374368106550433,
+   "eval": {
+    "6": 0.8111058310014295,
+    "7": 0.7246412890617129,
+    "8": 0.7887823664179833
+   }
+  },
+  "384": {
+   "train_cv": 0.691976332430506,
+   "eval": {
+    "6": 0.7566247188948955,
+    "7": 0.7184758596032023,
+    "8": 0.7080726555448749
+   }
+  }
+ },
+ "gate": "PASS",
+ "gate_rule": "every evaluation world: sequence < linear comparator (action effects) AND < no-movement AND < constant-velocity (absolute, final frame) AND < all 8 shuffled fits",
+ "scale": "action-effect score: 1 = predicting no difference between actions, 0 = exact; absolute errors are squared cm-normalized path displacements"
+}

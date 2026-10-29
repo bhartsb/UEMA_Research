@@ -1,0 +1,45 @@
+{
+ "worktree": "C:\\Users\\bhart\\Documents\\UEMA_wt\\pose_runtime",
+ "commit_pinned": "888b944697c0aa7e120f8aeb2ea3505676496532",
+ "files": [
+  "mimo_bridge/tests/test_pose_record.py",
+  "mimo_bridge/tests/test_pose_state_map.py",
+  "mimo_bridge/tests/test_pose_readers.py"
+ ],
+ "started": "Oct 15, 2026 03:53:54 PM",
+ "before": {
+  "head": "888b944697c0aa7e120f8aeb2ea3505676496532",
+  "clean": true
+ },
+ "exit_code": 1,
+ "seconds": 14.8,
+ "tail": "..........................F........................                      [100%]\n================================== FAILURES ===================================\n_ test_the_forward_mirrors_may_advance_and_a_backward_only_change_is_refused __\n\n    def test_the_forward_mirrors_may_advance_and_a_backward_only_change_is_refused():\n        x = MemLearner(0.25)\n        mem = x.persistent_memory\n        before = SM.module_field_digests(x)\n        with torch.no_grad():                                                     # _update_centre and _update_moments\n            mem.event_centre_weight.fill_(0.5)\n            mem.state_centre_weight.fill_(0.5)\n            mem.moment_weight.fill_(0.5)\n        mem._event_w = mem._state_w = mem._moment_w = 0.5\n        changed = SM.changed_fields(before, SM.module_field_digests(x))\n>       assert changed == {\"ADVANCE\": [\"persistent_memory._event_w\", \"persistent_memory._moment_w\",\n                                       \"persistent_memory._state_w\"]}\nE       AssertionError: assert {'ADVANCE': [...ry._state_w']} == {'ADVANCE': [...ry._state_w']}\nE         \nE         Differing items:\nE         {'ADVANCE': ['persistent_memory._event_w', 'persistent_memory._state_w']} != {'ADVANCE': ['persistent_memory._event_w', 'persistent_memory._moment_w', 'persistent_memory._state_w']}\nE         Use -v to get more diff\n\nmimo_bridge\\tests\\test_pose_state_map.py:360: AssertionError\n=========================== short test summary info ===========================\nFAILED mimo_bridge/tests/test_pose_state_map.py::test_the_forward_mirrors_may_advance_and_a_backward_only_change_is_refused\n1 failed, 50 passed in 13.98s\n",
+ "per_file": {
+  "mimo_bridge.tests": {
+   "collected": 51,
+   "passed": 50,
+   "failed": 1,
+   "errors": 0,
+   "skipped": 0
+  }
+ },
+ "failures": [
+  {
+   "test": "mimo_bridge.tests.test_pose_state_map::test_the_forward_mirrors_may_advance_and_a_backward_only_change_is_refused",
+   "kind": "failure",
+   "message": "AssertionError: assert {'ADVANCE': [...ry._state_w']} == {'ADVANCE': [...ry._state_w']}\n  \n  Differing items:\n  {'ADVANCE': ['persistent_memory._event_w', 'persistent_memory._state_w']} != {'ADVANCE': ['persistent_memory._event_w', 'persistent_memory._moment_w', 'persistent_memory._state_w']}\n  Use -v to get more diff"
+  }
+ ],
+ "after": {
+  "head": "888b944697c0aa7e120f8aeb2ea3505676496532",
+  "clean": true
+ },
+ "totals": {
+  "collected": 51,
+  "passed": 50,
+  "failed": 1,
+  "errors": 0,
+  "skipped": 0
+ },
+ "verdict": "fail"
+}

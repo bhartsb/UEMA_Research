@@ -1,0 +1,109 @@
+{
+  "probe": "planner_candidates_v3",
+  "checkpoint": "D:\\UEMA_Research\\external\\D\\UEMA_preserved\\s4_control_S4C_skip13_494225\\run\\checkpoints\\ckpt_step_496225",
+  "script_sha256": "1389f9db39ad78e326f17e1dc3096045e1ecb0dfa1249fafbc3cf36933082a62",
+  "depth_pose": "executed",
+  "depth_pose_rule": "depth 1 reads the decision's achieved pose; depth d > 1 reads the candidate's own achieved pose after d - 1 executed model steps of its branch; the depth comparison's selections and the planner's ranks keep the decision-pose predictions (a planner at the decision has no later pose)",
+  "noise_floor_rule": "a sense is measurable at a depth only when its real difference between candidates, summed over all pairs, exceeds its float32 floor summed over the same pairs; a pair's floor is the mean over the token's d numbers of (d x the float32 grid step at that number)^2, the grid step averaged over the two candidates' real tokens (numpy.spacing); below it the captured share is 'not measurable'",
+  "executed_pose_depth1_tolerance": 1e-06,
+  "source_sha256": {
+    "Source/Python/mimo_bridge/lem_model.py": "bb9798c5173771a5e092ecf6d2f69ea938351d95d77fed7a80c0ad1080315793",
+    "Source/Python/mimo_bridge/causal_chain.py": "46a6b7e0e023b52eb594943766862fa7fc1ad5736b0601df401c21f790deaec0",
+    "Source/Python/mimo_bridge/tools/gof_probe_harness.py": "9a609d8c9a51f074de20a0e3cc89128b568105233447b3f39fe8096dff853436",
+    "Source/Python/lem/model/predictive_state.py": "9ec2371ac07679225a6630e30a3f86b16f35d2ddba4b552dbd7a67dd8750c5f6",
+    "Source/Python/lem/model/wellness.py": "c0db86fdfc1cd8d426cafb27124afd2105a7816a6e47f029970af0c40006a8f7",
+    "Source/Python/lem/model/intention_generator.py": "6e0f21f22856035c15dafd83003073dbce4139316817fcbc595654f7e8d3ed29",
+    "Source/Python/mimo_bridge/hand_target_control.py": "c439393331179e87f86db1032e93ea9e5a3de40f66307eaa14ddf753a1fa5b41",
+    "Source/Python/lem/model/physical_goal.py": "463950448e14d9de8199105adb60abc92b85c038723d0ad9b0e622ebb7e03630",
+    "Source/Python/lem/model/efference.py": "6028d62a578a85931da17dc7da094059a3dffdd2e79e29e1c4aa4dc515d0473d"
+  },
+  "bodies": 1,
+  "starts_per_body": 1,
+  "spacing_steps": 10,
+  "candidates": [
+    "chosen",
+    "hold",
+    "reflex",
+    "perturb_1",
+    "perturb_2"
+  ],
+  "depths": [
+    1,
+    2,
+    3
+  ],
+  "learning": false,
+  "production_adoption": false,
+  "candidate_definition": "LemLite._causal_plan_record's candidates at the saved planning event: the planner's chosen first order, hold (every handle where it is, the eyes at the last realised eye command), the controller's own proposal, and two perturbations of the chosen order at the babble's sizes from the production seed",
+  "execution": "each candidate through the decision's own execution transform, smoother and hand path; held for the order's tenure (motor_hold moments) with the eyes at its gaze command; the saved world's reflex and saccades run as in production; every branch replayed and its physical trace required bit-identical",
+  "rules": {
+    "forward_model_flat": "flat unless BOTH the slope of Judge B's predicted-outcome difference on its actual-outcome difference AND the pooled captured share of the between-candidate token difference over Judge B's four senses (planner route, 50 ms) have 95% body intervals entirely above 0",
+    "evaluator_flat": "flat unless the slope of Judge B's actual-outcome difference on the grounded wellness difference (50 ms) has a 95% body interval entirely above 0",
+    "planner_ignores_predicted_wellness": "the planner's objective gives predicted wellness weight 0 (intention_gen._wellness_w) and the chosen order's mean rank by predicted wellness is not better than chance (the interval's upper end is not below (K + 1) / 2)",
+    "depth_claim": "looking further ahead causes a better physical decision only when the order selected by predicted wellness at 150 ms beats the order selected at 50 ms in actual grounded wellness averaged over the order's tenure, paired over the same starts, 95% body interval above 0"
+  },
+  "production_tie_band": 0.0734,
+  "ranking_rules": {
+    "statistic": "of all pairs of candidate commands tried from the same saved state, how many in 100 the forecast's order picks the pair's actual winner (lower = better for both); 50 = chance, 80 to 90 = a ranking a planner can optimize",
+    "ties": "a pair whose actual outcomes differ by no more than 1 in 100 of that start's actual standard deviation has no winner and is left out; a pair the forecast scores exactly equal counts half right",
+    "interval": "95%, whole bodies resampled with replacement, 5000 draws",
+    "spread_ratio": "median over starts of the standard deviation of the candidates' forecasts over that of their actual outcomes: 0 = the forecast gives every command the same outcome, 1 = it separates them as much as reality does",
+    "case": "better than chance when the interval's lower end is above 50: then case_3_planner_not_better when a planner's command does not beat the reference command its search started from in the actual outcome (paired body interval of planner minus reference not entirely below 0), else ranking_used (better_than_chance without a planner comparison). Below chance (the interval's upper end under 50): case_2_wrong_order. Otherwise case_1_under_separated when the spread ratio is below 1 and case_2_wrong_order when it is 1 or more; undetermined with fewer than two bodies or no pair with an actual winner",
+    "outcomes": {
+      "goal_distance_50ms": "the planner's predicted distance to its goal 50 ms ahead against the actual distance 50 ms after each command ran from the same saved state",
+      "goal_distance_end": "the same forecast against the actual distance to the goal at the end of the order's tenure",
+      "wellness_50ms": "the planner route's predicted wellness 50 ms ahead (Judge B's five-term sum) against the grounded wellness 50 ms after each command",
+      "wellness_tenure": "the same forecast against the grounded wellness averaged over the order's tenure"
+    },
+    "planner": "chosen",
+    "reference": "reflex",
+    "notes": {
+      "planner_comparison": "case 3 compares the chosen order with the controller's own proposal for the goal distances always, and for wellness only when the planner's objective weighs predicted wellness (planner_wellness_weight above 0): a planner that does not search on wellness cannot be faulted for not improving it",
+      "without_chosen": "each outcome's without_chosen block is the same statistic over the four candidates the planner did not choose (6 pairs a start): the chosen order was selected by searching this forecast, so the pairs containing it favor the forecast's own errors"
+    }
+  },
+  "physical_head_rule": "physical_head (draft, not in the verdict): per candidate, the cost --physical-goals memory would apply at this decision with its selected pose (lem/model/physical_goal.py PhysicalGoalCost on the depth-1 transition latent of each token route, the candidates' command_for_encoder orders and the decision's start pose), beside the same pose_error_per_body score (position plus rotation, gaze left out) of each branch's pose after the tenure; the planner itself used this cost only when physical_goals was memory; the predicted, sent and first-step ledger eye rows and the largest sent-minus-predicted body row are recorded per candidate; descriptive per start, ties kept, no chance verdict or adoption line; a missing input is recorded as a fallback with its reason, never synthesized",
+  "guard": {
+    "committed_gb": 39.028499603271484,
+    "limit_gb": 84.39546585083008,
+    "need_gb": 12.0,
+    "reserve_gb": 6.0
+  },
+  "memory_budget_note": "12 GiB declared from the sibling probes' budget (the harness measured the v4 probe suite at 8.24 GB peak private commit); this run records its own peak",
+  "mode": "physical_rescore",
+  "rescore_rule": "physical_rescore (draft v4; option A of the overnight-physical-rank-result-next-decision-20261022 as amended by overnight-physical-rank-closeout-accepted-20261022; descriptive, in no verdict of the suite). PREFIX: a fresh Session restores the first run's body (the checkpoint's episode companion) and next_decision(session, 0) repeats: observe; stop at the first planning event with a recorded plan for that model step; otherwise policy_act (the model's own command, latched every motor_hold model steps, the eyes at its gaze output). The first run's advanced_steps policy_act calls (advanced_steps + 1 observes) are required. GATE, before any input changes: the model step, the goal's ring index, every saved current and goal token array, the ten recorded predicted physical scores, the recorded sent eye rows and the recorded largest sent-minus-predicted body-row differences (lines RESCORE_*_TOL). THEN, with no physics and no depth/wellness suite: the goal pose and the start pose (achieved units: position x 200 = cm, quaternion x y z w in fields 3:7) and the start pose's own score against the goal pose; the full predicted and sent command rows; per finger handle the sign-free rotation angle 2 acos |q1.q2| in degrees (both quaternions normalized, the absolute dot product clamped to [0, 1]); and three declared input changes (RESCORE_CHANGES), each read three ways (RESCORE_READINGS) on both token routes. eye_row_as_ledger: the eye row replaced by the first run's recorded first-step ledger eye row; this is the trainer's first-step form (train_mimo.py writes the ledger as gaze_to_handle of the command as sent, motor_for_action, whose finger rows come from assemble_world like the predicted rows; in the first run's checkpoint the limb flags are off, rest_control is choice, and limp and random actions are off, so no other command replaces it), so its learning-route latent_and_head_command reading is the one nearest training (still different: the memory-bias site and the prefix below). finger_rows_as_sent: the finger handles' rows replaced by the probe harness's sent rows (MuJoCo FK and SciPy quaternions, Session.exec_order); this moves away from the trained form and measures the head's sensitivity to the finger representation. finger_and_eye: both, the probe harness's first-step ledger form (Session.act). head_command_only: the changed command in the body head's explicit command input, the original depth-1 latent; latent_only: the depth-1 transition latent recomputed with the changed command, the original explicit input; latent_and_head_command: both. The actual scores are the first run's, reused; nothing is replayed. NOT CHANGED: in the last advanced_steps observes of the prefix the harness fed the model its own ledger (finger rows in the sent form; the first observe reads the episode companion's trainer ledger) where training feeds the assemble_world form; the difference is the same in both runs and is not measured here",
+  "rescore_from": "D:\\UEMA_Research\\external\\D\\UEMA_scratch\\h84\\d1_planner_recovery\\attempts\\physical_rank_496225_a1\\evidence\\probe",
+  "rescore_first_run_script_sha256": "dd097f5ef39388d42575c97e6953ff51193ba52bae59d29b1ce40f079c1939f3",
+  "rescore_recorded_step": 496230,
+  "rescore_recorded_advanced_steps": 5,
+  "rescore_recorded_start_note": "episode companion, body 0 of 8 at step 496225",
+  "rescore_thread_env": {
+    "OMP_NUM_THREADS": "3",
+    "MKL_NUM_THREADS": "3",
+    "OPENBLAS_NUM_THREADS": "3",
+    "NUMEXPR_NUM_THREADS": "3",
+    "CUDA_VISIBLE_DEVICES": "-1"
+  },
+  "rescore_lines": {
+    "token": 1e-05,
+    "score": 0.0001,
+    "row": 1e-05,
+    "latent": 1e-06
+  },
+  "rescore_changes": [
+    "finger_rows_as_sent",
+    "eye_row_as_ledger",
+    "finger_and_eye"
+  ],
+  "rescore_readings": [
+    "head_command_only",
+    "latent_only",
+    "latent_and_head_command"
+  ],
+  "verdict": "pass",
+  "why_not": [],
+  "weights_unchanged": true,
+  "rescore_file": "D:\\UEMA_Research\\external\\D\\UEMA_scratch\\h84\\d1_planner_recovery\\attempts\\physical_rescore_496230_a1\\evidence\\probe\\rescore.json",
+  "peak_private_commit_gib": 4.343936920166016,
+  "elapsed_s": 58.398483991622925
+}

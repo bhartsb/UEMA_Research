@@ -1,0 +1,191 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>How MIMo will reach the target</title><style>
+*{box-sizing:border-box}body{margin:0;background:#edf2f5;color:#183044;font:18px/1.5 system-ui,sans-serif}main{max-width:1240px;margin:auto;background:white;padding:30px 40px}h1{font-size:2.1rem;line-height:1.15;margin:8px 0 14px}h2{font-size:1.45rem;line-height:1.25;margin:0 0 10px}h3{font-size:1.15rem;margin:22px 0 8px}section{border-top:2px solid #d5e0e6;padding:24px 0;scroll-margin-top:12px}p{margin:10px 0 14px}.eyebrow{text-transform:uppercase;letter-spacing:.1em;font-size:.8rem;font-weight:bold;color:#1765ba}
+.grid{display:grid;gap:14px}.g2{grid-template-columns:1fr 1fr}.g3{grid-template-columns:repeat(3,1fr)}.g4{grid-template-columns:repeat(4,1fr)}.g5{grid-template-columns:repeat(5,1fr)}.g6{grid-template-columns:repeat(6,1fr)}.grid figure{margin:0}.grid img,.strip img{display:block;width:100%;border:1px solid #cbd9e2;border-radius:4px}figcaption{font-size:.9rem;color:#2b4a60;margin-top:6px}
+.strip{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.strip figure{margin:0}.strip figcaption{font-size:.8rem}.babble img{border:3px solid #c34b11}.tframe img{border:3px solid #08783e}.win img{border:3px solid #08783e}
+.key{font-size:.95rem;background:#f3f7fa;border-left:5px solid #1765ba;padding:12px 16px;margin:12px 0}.verdict{font-size:1.05rem;font-weight:600;background:#edf8f1;border-left:5px solid #08783e;padding:12px 16px;margin:12px 0}
+table{border-collapse:collapse;width:100%;font-size:.95rem}td,th{padding:8px 10px;border-bottom:1px solid #d2dee6;text-align:left;vertical-align:top}th{background:#eaf1f5}.table-scroll{overflow-x:auto}td.n,th.n{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+.diagram{overflow-x:auto}.diagram svg{min-width:900px;display:block}svg.tl{width:100%;height:auto;display:block;min-width:700px}.tlwrap{overflow-x:auto}nav{display:flex;flex-wrap:wrap;gap:8px 18px;margin:10px 0 4px;font-size:.9rem}a{color:#125793}p,li,figcaption{overflow-wrap:anywhere}td{overflow-wrap:normal}li{margin:6px 0}
+.badge{display:inline-block;padding:1px 8px;border-radius:10px;font-size:.8rem;font-weight:700;color:#fff;vertical-align:middle}.b1{background:#c34b11}.b2{background:#1765ba}.b3{background:#7a3fb0}
+@media(max-width:800px){.strip{grid-template-columns:repeat(2,1fr)}.g2,.g3,.g4,.g5,.g6{grid-template-columns:1fr}main{padding:20px 14px}h1{font-size:1.6rem}table{font-size:.85rem}}
+th.n{white-space:normal}td.n{white-space:nowrap}th{line-height:1.25}figure.tframe img{border:3px solid #2b4a60}.nonoise img{border:3px dashed #c34b11}</style></head><body><main>
+<header id="top"><div class="eyebrow">UEMA on the MIMo infant body &bull; the solution for reaching &bull; October 24, 2026</div>
+<h1>How MIMo will reach the target, step by step</h1>
+<p><strong>The task.</strong> MIMo is a simulated infant body moved by the physics program MuJoCo; UEMA is the learning program that controls it. UEMA picks a target T, a pose the body held earlier. The job is to bring both hands to where they are in T and keep them there.</p>
+<div class="key"><strong>How to read every picture.</strong> A picture is a real saved state of MIMo unless its caption starts with "Drawn". MIMo lies on its back; the renderer draws it upright without the floor, so gravity points into the picture (the grey "down" arrow; the angle off the line of sight is in each picture's label or caption). The picture's right is MIMo's left: the orange arm is MIMo's right arm, the blue arm its left. Orange ring = <strong>hand point</strong>, a fixed point inside the palm. Green square = where that hand point is in T. The <strong>gap</strong> = the distance between them, in cm, printed in each caption; the dashed line is the gap as seen from the camera. A model step is 50 ms. <strong>Arrived</strong> = both gaps at or under 2 cm at some model step 1 to 40; <strong>stayed</strong> = still so at each of the 20 model steps after the first model step both are inside.</div>
+<div class="grid g2" style="max-width:900px">
+<figure><img src="h84_reach_plan_visual_20261023/start_b1.png" alt="Body 1 at its start pose"><figcaption><strong>Start.</strong> Body 1. Gap: left 6.7 cm, right 10.5 cm.</figcaption></figure>
+<figure><img src="h84_reach_plan_visual_20261023/done_b1.png" alt="The target with 2 cm rings"><figcaption><strong>Target T, and "done".</strong> Body 1's T is its own pose 63 model steps earlier. <strong>Done</strong> = both hand points inside the green rings (2 cm around T's hand points): arrived and stayed, from a learning run's own commands, from step 1's eight starts and then from new starts.</figcaption></figure>
+</div>
+<nav><a href="#parts">1 The parts</a><a href="#now">2 What happens now</a><a href="#why">3 Why</a><a href="#step1">4 Step 1, measured</a><a href="#pick">5 The sequence</a><a href="#repairE">6 The repairs</a><a href="#sources">7 Sources</a></nav></header>
+<section id="parts"><div class="eyebrow">1 &bull; The parts of UEMA, and where each step of the solution acts</div>
+<div class="diagram"><svg viewBox="-12 -8 1062 538" role="img" aria-label="The parts of UEMA with the solution's steps marked">
+<defs><marker id="ah" markerUnits="userSpaceOnUse" markerWidth="12" markerHeight="12" refX="11" refY="6" orient="auto"><path d="M0,0 L12,6 L0,12 z" fill="#1765ba"/></marker><marker id="ahs" markerUnits="userSpaceOnUse" markerWidth="12" markerHeight="12" refX="1" refY="6" orient="auto"><path d="M12,0 L0,6 L12,12 z" fill="#1765ba"/></marker></defs>
+<rect x="-12" y="-8" width="1062" height="538" fill="#f5f8fa"/>
+<g font-size="15" text-anchor="middle">
+<rect x="20" y="20" width="180" height="70" rx="8" fill="#fff" stroke="#90a8b9" stroke-width="2"/><text x="110" y="48" font-weight="bold">1 MIMo's senses</text><text x="110" y="70" font-size="13">five senses, every 50 ms</text>
+<rect x="230" y="20" width="180" height="70" rx="8" fill="#fff" stroke="#90a8b9" stroke-width="2"/><text x="320" y="48" font-weight="bold">2 encoders</text><text x="320" y="70" font-size="13">readings in, tokens out</text>
+<rect x="440" y="20" width="180" height="70" rx="8" fill="#fff" stroke="#90a8b9" stroke-width="2"/><text x="530" y="48" font-weight="bold">3 transformer</text><text x="530" y="70" font-size="13">the core network</text>
+<rect x="650" y="20" width="180" height="70" rx="8" fill="#fff" stroke="#90a8b9" stroke-width="2"/><text x="740" y="48" font-weight="bold">4 the heads</text><text x="740" y="70" font-size="13">prediction heads, body head</text>
+<rect x="20" y="150" width="180" height="70" rx="8" fill="#ececec" stroke="#90a8b9" stroke-width="2" stroke-dasharray="6 4"/><text x="110" y="178" font-weight="bold">wellness</text><text x="110" y="200" font-size="13">14 channels, harm; gradient</text>
+<rect x="230" y="150" width="180" height="70" rx="8" fill="#eaf4ff" stroke="#1765ba" stroke-width="2"/><text x="320" y="178" font-weight="bold">5 goal ring</text><text x="320" y="200" font-size="13">200 model steps</text>
+<rect x="440" y="150" width="180" height="70" rx="8" fill="#eaf4ff" stroke="#1765ba" stroke-width="2"/><text x="530" y="178" font-weight="bold">6 goal selection</text><text x="530" y="200" font-size="13">picks the target T</text>
+<rect x="20" y="280" width="180" height="70" rx="8" fill="#fff" stroke="#90a8b9" stroke-width="2"/><text x="110" y="308" font-weight="bold">7 motor controller</text><text x="110" y="330" font-size="13">the first command</text>
+<rect x="230" y="280" width="180" height="70" rx="8" fill="#eaf4ff" stroke="#1765ba" stroke-width="2"/><text x="320" y="308" font-weight="bold">8 planner search</text><text x="320" y="330" font-size="13">20 changes, lowest pose error</text>
+<rect x="440" y="280" width="180" height="70" rx="8" fill="#fff" stroke="#90a8b9" stroke-width="2"/><text x="530" y="308" font-weight="bold">smoothing</text><text x="530" y="330" font-size="13">0.35 new + 0.65 previous</text>
+<rect x="650" y="280" width="180" height="70" rx="8" fill="#fff6e5" stroke="#c34b11" stroke-width="2"/><text x="740" y="308" font-weight="bold">the command</text><text x="740" y="330" font-size="13">26 rows &times; 9 numbers</text>
+<rect x="860" y="280" width="180" height="70" rx="8" fill="#fff" stroke="#90a8b9" stroke-width="2"/><text x="950" y="308" font-weight="bold">9 execution path</text><text x="950" y="330" font-size="13">motor controls</text>
+<rect x="650" y="410" width="180" height="70" rx="8" fill="#ececec" stroke="#90a8b9" stroke-width="2" stroke-dasharray="6 4"/><text x="740" y="438" font-weight="bold">simulated world</text><text x="740" y="460" font-size="13">MuJoCo moves the body</text>
+<rect x="860" y="410" width="180" height="70" rx="8" fill="#ececec" stroke="#90a8b9" stroke-width="2" stroke-dasharray="6 4"/><text x="950" y="438" font-weight="bold">observer recorder</text><text x="950" y="460" font-size="13">saves every record</text>
+</g>
+<g stroke="#1765ba" stroke-width="2.5" fill="none" marker-end="url(#ah)">
+<path d="M200 55 H228"/><path d="M410 55 H438"/><path d="M620 55 H648"/>
+<path d="M60 90 V148"/><path d="M320 90 V148"/><path d="M180 90 V118 H300 V148"/>
+<path d="M200 185 H228"/><path d="M410 185 H438"/>
+<path d="M530 220 V250 H280 V278"/>
+<path d="M500 90 V105 H326 A6 6 0 0 0 314 105 H212 V112 A6 6 0 0 1 212 124 V179 A6 6 0 0 1 212 191 V265 H150 V278"/>
+<path d="M110 220 V278"/>
+<path d="M200 315 H228"/><path d="M410 315 H438"/><path d="M620 315 H648"/><path d="M830 315 H858"/>
+<path d="M150 350 V365 H530 V352"/>
+<path d="M950 350 V380 H740 V408"/><path d="M830 445 H858"/>
+<path d="M740 480 V500 H-7 V55 H18"/><path d="M-7 315 H18"/>
+</g>
+<path d="M405 280 V262 H635 V120" stroke="#1765ba" stroke-width="2.5" fill="none" stroke-dasharray="7 5" marker-end="url(#ah)" marker-start="url(#ahs)"/><circle cx="635" cy="106" r="8" fill="#fff" stroke="#1765ba" stroke-width="2.5"/>
+<g font-size="13" fill="#415d70"><text x="68" y="122">readings</text><text x="337" y="122">tokens</text><text x="222" y="134">pose</text><text x="540" y="245">target T</text><text x="118" y="244">gradient</text><text x="218" y="240">from part 3</text><text x="835" y="374" text-anchor="middle">motor controls</text><text x="330" y="491" text-anchor="middle">the body's readings, every model step</text><text x="232" y="398">part 7's command, with noise while a babble bout is on,</text><text x="232" y="414">every second command</text><text x="650" y="111">the loop drawn below (parts 2, 3, 4)</text></g>
+<g font-size="12" font-weight="bold" fill="#fff" text-anchor="middle">
+<rect x="655" y="257" width="70" height="20" rx="10" fill="#c34b11"/><text x="690" y="271">STEP 1</text>
+<rect x="160" y="386" width="64" height="20" rx="10" fill="#1765ba"/><text x="192" y="400">STEP 2</text>
+<rect x="300" y="257" width="80" height="20" rx="10" fill="#7a3fb0"/><text x="340" y="271">REPAIR E</text>
+<rect x="655" y="-7" width="100" height="18" rx="9" fill="#7a3fb0"/><text x="705" y="6">REPAIR A, C</text>
+<rect x="865" y="257" width="80" height="20" rx="10" fill="#7a3fb0"/><text x="905" y="271">REPAIR B</text>
+<rect x="635" y="388" width="80" height="20" rx="10" fill="#7a3fb0"/><text x="675" y="402">REPAIR D</text>
+</g>
+</svg></div>
+<div class="diagram" style="margin-top:8px"><svg viewBox="0 0 1050 90" role="img" aria-label="The loop of part 8, 21 times per decision"><rect width="1050" height="90" fill="#f5f8fa"/>
+<g font-size="14" text-anchor="middle">
+<rect x="20" y="20" width="190" height="50" rx="8" fill="#eaf4ff" stroke="#1765ba" stroke-width="2"/><text x="115" y="41" font-weight="bold">8 planner search</text><text x="115" y="60" font-size="13">one version of the command</text>
+<rect x="240" y="20" width="190" height="50" rx="8" fill="#fff" stroke="#90a8b9" stroke-width="2"/><text x="335" y="41" font-weight="bold">2 encoders</text><text x="335" y="60" font-size="13">its motor token</text>
+<rect x="460" y="20" width="190" height="50" rx="8" fill="#fff" stroke="#90a8b9" stroke-width="2"/><text x="555" y="41" font-weight="bold">3 transformer</text><text x="555" y="60" font-size="13">one list of numbers per token</text>
+<rect x="680" y="20" width="190" height="50" rx="8" fill="#fff" stroke="#90a8b9" stroke-width="2"/><text x="775" y="41" font-weight="bold">4 the heads' body head</text><text x="775" y="60" font-size="13">the predicted pose, 250 ms</text>
+<rect x="900" y="20" width="130" height="50" rx="8" fill="#eaf4ff" stroke="#1765ba" stroke-width="2"/><text x="965" y="41" font-weight="bold">8 again</text><text x="965" y="60" font-size="13">its pose error</text>
+</g>
+<g stroke="#1765ba" stroke-width="2.5" fill="none" marker-end="url(#ah)" stroke-dasharray="7 5"><path d="M210 45 H238"/><path d="M430 45 H458"/><path d="M650 45 H678"/><path d="M870 45 H898"/></g>
+<text x="525" y="84" font-size="12" fill="#415d70" text-anchor="middle">the dashed loop above, 21 times per decision: the first command, then each of the 20 updated versions, with the present pose read from the body</text>
+</svg></div>
+<div class="key">The numbered boxes are the parts this page refers to; the grey dashed boxes are not steps of the loop. <span class="badge b1">STEP 1</span> the <strong>direct command</strong>: T's own rows put straight into the command box, parts 5 to 8 skipped. <span class="badge b2">STEP 2</span> every command comes from part 8; today every second command skips it (section 2). <span class="badge b3">REPAIR E</span> gives part 8 a second starting point: T's own rows, step 1's direct command. <span class="badge b3">REPAIR A, C</span> change what part 4 predicts: its predicted pose error is the score that decides whether repair E's candidate is sent. <span class="badge b3">REPAIR B</span> corrects the command before part 9 reads it. <span class="badge b3">REPAIR D</span> is the motors and the physics.</div></section>
+<section id="now"><div class="eyebrow">2 &bull; What happens now: the hands wander and never arrive</div>
+<h2>Body 1 in the run of October 23: T, the start, then the end of each of the first 17 commands (4.25 s). The same T throughout. Gravity <span id="seqgrav">&hellip;</span> from the line of sight.</h2>
+<p>Planner commands come from part 8 and last 5 model steps. Between two planner commands the body receives part 7's command, with random noise added while a <strong>babble bout</strong> is on (a <strong>babble command</strong>, <span style="color:#c34b11;font-weight:700">orange border</span>) and without noise while it is off (orange dashed border). Step 2 removes every orange-bordered frame: the planner sends the command in their place.</p>
+<div id="tframe" class="strip" style="grid-template-columns:calc((100% - 16px) / 3);margin-bottom:8px"></div>
+<div class="strip" id="strip"></div>
+<div class="verdict"><ul style="margin:0;padding-left:20px"><li>Neither hand arrived and stayed. Left hand's gap: 6.7 cm at the start, 1.5 cm at best, 8.0 cm at the end. Right hand's gap: never below 8.0 cm.</li><li>The command between two planner commands moves the hands as much as a planner command, and in a random direction (nearer in 54 of 108 readings, farther in 54).</li></ul></div></section>
+<section id="why"><div class="eyebrow">3 &bull; Why: part 4's prediction is wrong, part 8 cannot produce a command at T</div>
+<h2>Body 5, at one of the run's own decisions, 21 model steps after step 1's rebuilt start.</h2>
+<div class="grid g2">
+<figure><img src="h84_reach_plan_visual_20261023/b5_T.png" alt="Body 5 target T"><figcaption><strong>T</strong>. The orange rings sit on the green squares.</figcaption></figure>
+<figure><img src="h84_reach_plan_visual_20261023/b5_start.png" alt="Body 5 start"><figcaption><strong>Start</strong>. Gap: right 19.3 cm, left 4.9 cm.</figcaption></figure>
+<figure><img src="h84_reach_plan_visual_20261023/b5_prediction.png" alt="Drawn: the predicted parts"><figcaption><strong>Drawn: what part 4 predicted for the chosen command</strong>, over the start pose. Purple dots = the predicted shoulder, elbow and hand of each arm; grey rings and dashed line = the <strong>fitted arm</strong>, the nearest arm a jointed body can make. Enlarged under repair A.</figcaption></figure>
+<figure><img src="h84_reach_plan_visual_20261023/b5_end.png" alt="Body 5 measured end"><figcaption><strong>What the body did</strong> (250 ms later). Gap: right 23.5 cm, left 8.7 cm. The prediction said the right hand would end 2.8 cm nearer; it ended 4.2 cm farther.</figcaption></figure>
+</div>
+<div class="grid g3">
+<figure><img src="h84_reach_plan_visual_20261023/base_b5_region.png" alt="Body 5 at the rebuilt start with the search's bound"><figcaption><strong>Why part 8 cannot choose a command at T.</strong> Body 5 at the rebuilt start of step 1. The first command's request (blue dot) is farther from T than the hand is. T's row (green square) is out of reach of every version.</figcaption></figure>
+<figure><img src="h84_reach_plan_visual_20261023/base_b5_region_hand.png" alt="The search's bound, enlarged"><figcaption><strong>The right hand, enlarged 4&times;.</strong> The green arrow points toward T's row; the bound is enlarged at right.</figcaption></figure>
+<figure><img src="h84_reach_plan_visual_20261023/base_b5_region_bound.png" alt="The bound, enlarged 12 times"><figcaption><strong>The bound at 12&times;.</strong> After smoothing the search can move a row at most 0.63 cm from the smoothed request (purple ring); the row sent (dark dot) sits on the square's corner.</figcaption></figure>
+</div>
+</div></section>
+<section id="step1"><div class="eyebrow">4 &bull; Step 1, the baseline: run October 23. Told the exact pose, the body reaches T in 2 bodies of 8.</div>
+<h2>From each of eight saved starts, one command was held for 60 model steps (3 s): the <strong>direct command</strong> (T's own rows) and, from the same rebuilt start, the <strong>planner command</strong> the run sent. <strong>Pose error</strong> is part 8's score (0 = every body part at T).</h2>
+<h3>Body 5: the direct command brings both hands to T; the planner command does not (gravity <span id="b5grav">&hellip;</span> from the line of sight)</h3>
+<div class="grid g3" id="b5strip"></div>
+<h3>The other seven bodies: the start, T, the direct command at 3 s, the planner command at 3 s</h3>
+<div id="basegrid"></div>
+<div class="verdict" id="verdict1"><ul style="margin:0;padding-left:20px"><li>Direct command: both hands arrived and stayed in bodies 2 and 5; the planner command in none. In all 16 hands the direct command's gap was smaller than the planner command's at 250 ms and at 3 s.</li><li>Five hands missed by 2.0 to 4.0 cm (bodies 0, 1, 4, 7); bodies 3 and 6 arrived and then a hand left; none explained yet (section 5, item 3).</li></ul></div></section>
+<section id="pick"><div class="eyebrow">5 &bull; The sequence, from today to done</div>
+<h2>One at a time; the overseer decides each step. The reading for the keep lines of repair E, step 2, repair B and repair D: arrived and stayed, the gap per hand, by more than the spread; a kept repair is then read again from new starts, the second half of done.</h2>
+<ol style="padding-left:22px">
+<li><strong>The change that stops mixing the new body-position request with the previous one: built and reviewed, switched off by default.</strong> In the completed comparison, that mixing left the requested hand positions 5 to 15 cm from their targets. Its comparison run: Not run: memory shortage, preparation overruns and insufficient verified remaining time.</li>
+</ol><h3>Later steps, chosen from the results</h3><ol start="2" style="padding-left:22px">
+<li><strong>Step 2</strong>: the planner picks every command (plan every 5 model steps instead of every 10), removing the commands between planner commands (the orange-bordered frames of section 2); read against two runs of the unchanged schedule from the same saved state.</li>
+<li><strong>The rerun with motor controls recorded</strong>, for the bodies step 1's direct command did not bring to T (0, 1, 3, 4, 6, 7): step 1 recorded no motor controls, so whether a motor at its limit stopped them is unmeasured (what it records: repair D's first picture).</li>
+<li><strong>Repair B</strong> if the planner's commands contain rows no joint can make.</li>
+<li><strong>Repair A</strong> (section 6), so part 4's score sends repair E's candidate on more bodies.</li>
+<li><strong>Repair C</strong>: retrain part 4 on captured outcomes, whole bodies held out.</li>
+<li><strong>Repair D</strong> for any body the rerun shows stalled at a motor's limit: find the joint, motor or contact and change one thing at a time.</li>
+</ol></section>
+<section id="repairE"><div class="eyebrow">6 &bull; The repairs, each in pictures</div>
+<h3><span class="badge b3">REPAIR E</span> Give part 8 a second starting point: T's own rows</h3>
+<p><strong>What it changes.</strong> One more candidate is scored beside the search's winner: the first command with its rows set to T's own. It is not clipped by the bound of section 3; it is scored once by the same body head after the same smoothing, and sent only if its pose error is below the search winner's, the first command's and the start pose's.</p>
+<div class="grid g2">
+<figure><img src="h84_reach_plan_visual_20261023/base_b5_candidate.png" alt="Drawn: the row if the candidate wins one decision"><figcaption><strong>Drawn: what the candidate does to one decision</strong> (body 5 at the rebuilt start of step 1).</figcaption></figure>
+<figure><img src="h84_reach_plan_visual_20261023/base_b5_candidate_hand.png" alt="Drawn: the candidate's effect, enlarged"><figcaption><strong>Drawn: the right hand, enlarged.</strong> The green arrow points toward T's row.</figcaption></figure>
+</div>
+<h3>What the comparison showed (October 24, the tested version, switch off against on): the 4 of 8 bodies sent the candidate, each hand enlarged with its two 250 ms positions.</h3>
+<div class="grid g3" style="margin-bottom:14px">
+<figure><img src="h84_reach_plan_visual_20261023/matched_b0_start.png" alt="body 0 at the decision"><figcaption><strong>Body 0 at the decision</strong> (gravity 6&deg; in this row). Gap: left 17.8 cm, right 13.1 cm.</figcaption></figure>
+<figure><img src="h84_reach_plan_visual_20261023/matched_b0_hand_L.png" alt="body 0, left hand, switch off against on"><figcaption><strong>Left hand.</strong></figcaption></figure>
+<figure><img src="h84_reach_plan_visual_20261023/matched_b0_hand_R.png" alt="body 0, right hand, switch off against on"><figcaption><strong>Right hand.</strong></figcaption></figure>
+</div>
+<div class="grid g3" style="margin-bottom:14px">
+<figure><img src="h84_reach_plan_visual_20261023/matched_b1_start.png" alt="body 1 at the decision"><figcaption><strong>Body 1 at the decision</strong> (gravity 7&deg; in this row). Gap: left 5.9 cm, right 11.6 cm.</figcaption></figure>
+<figure><img src="h84_reach_plan_visual_20261023/matched_b1_hand_L.png" alt="body 1, left hand, switch off against on"><figcaption><strong>Left hand.</strong></figcaption></figure>
+<figure><img src="h84_reach_plan_visual_20261023/matched_b1_hand_R.png" alt="body 1, right hand, switch off against on"><figcaption><strong>Right hand.</strong></figcaption></figure>
+</div>
+<div class="grid g3" style="margin-bottom:14px">
+<figure><img src="h84_reach_plan_visual_20261023/matched_b5_start.png" alt="body 5 at the decision"><figcaption><strong>Body 5 at the decision</strong> (gravity 6&deg; in this row). Gap: left 3.0 cm, right 22.7 cm.</figcaption></figure>
+<figure><img src="h84_reach_plan_visual_20261023/matched_b5_hand_L.png" alt="body 5, left hand, switch off against on"><figcaption><strong>Left hand.</strong></figcaption></figure>
+<figure><img src="h84_reach_plan_visual_20261023/matched_b5_hand_R.png" alt="body 5, right hand, switch off against on"><figcaption><strong>Right hand.</strong></figcaption></figure>
+</div>
+<div class="grid g3" style="margin-bottom:14px">
+<figure><img src="h84_reach_plan_visual_20261023/matched_b6_start.png" alt="body 6 at the decision"><figcaption><strong>Body 6 at the decision</strong> (gravity 7&deg; in this row). Gap: left 1.1 cm, right 11.7 cm.</figcaption></figure>
+<figure><img src="h84_reach_plan_visual_20261023/matched_b6_hand_L.png" alt="body 6, left hand, switch off against on"><figcaption><strong>Left hand.</strong></figcaption></figure>
+<figure><img src="h84_reach_plan_visual_20261023/matched_b6_hand_R.png" alt="body 6, right hand, switch off against on"><figcaption><strong>Right hand.</strong></figcaption></figure>
+</div>
+<div class="verdict"><ul style="margin:0;padding-left:20px"><li>In the 4 bodies sent the candidate, the pose error at 250 ms was lower with the switch on in 4 of 4, and 7 of their 8 hands ended nearer T than with the switch off.</li><li>No hand was within 2 cm at 250 ms in either run; arriving and staying were not measured.</li><li>This version remains switched off by default. The next change is still being built and reviewed.</li></ul></div>
+<h3 id="repairA"><span class="badge b3">REPAIR A</span> Make part 4 predict an arm that is joined</h3>
+<p><strong>What it changes.</strong> A new loss term reads four gaps on each predicted arm (how far each predicted part sits off a jointed arm); a jointed arm reads 0 on all four, so lowering the term pulls the predicted parts onto a joined arm.</p>
+<div class="grid g3">
+<figure><img src="h84_reach_plan_visual_20261023/b5_afterA.png" alt="Drawn: after repair A"><figcaption><strong>Drawn: after repair A</strong> (body 5's prediction of section 3). Hollow rings = the predicted parts now; filled dots = the same parts on a joined arm.</figcaption></figure>
+<figure><img src="h84_reach_plan_visual_20261023/b5_afterA_right_arm.png" alt="Right arm after repair A, enlarged"><figcaption><strong>Drawn: the right arm at 4&times; after repair A</strong>: each ring's move to the joined arm, labelled with its length.</figcaption></figure>
+<figure><img src="h84_reach_plan_visual_20261023/b5_afterA_left_arm.png" alt="Left arm after repair A, enlarged"><figcaption><strong>Drawn: the left arm at 3&times; after repair A</strong>.</figcaption></figure>
+</div>
+<p><strong>Kept if</strong>, with the term on, the predicted arm is nearer a jointed one in at least 45 of 69 examples and the forecast and the body's movement are no worse.</p>
+<h3 id="repairB"><span class="badge b3">REPAIR B</span> Correct the command before part 9 so every row is possible</h3>
+<p><strong>What it changes.</strong> Each requested arm row is turned to a direction its joint can make (repair D's body 3 pictures show the fault). The one body it was tried on is below.</p>
+<div class="grid g2">
+<figure><img src="h84_reach_plan_visual_20261023/cmp_rods.png" alt="Original and corrected requested directions"><figcaption><strong>The start, with both commands' requests</strong> (run seg41j, body 5; gravity 6&deg;). Blue rods = the original command's directions for the upper arm (U), forearm (F) and hand (H, at 3&times;); purple rods from the same origins = the corrected command's. Gap: left 3.1 cm, right 6.6 cm.</figcaption></figure>
+<figure><img src="h84_reach_plan_visual_20261023/cmp_rods_right_arm.png" alt="Right arm rods, enlarged"><figcaption><strong>The right arm (the picture's left), enlarged</strong>: each purple line is the turn from the original direction to the corrected one, labelled in degrees.</figcaption></figure>
+<figure><img src="h84_reach_plan_visual_20261023/cmp_original_250ms.png" alt="Original command at 250 ms"><figcaption><strong>Original command, 250 ms.</strong> Gap: left 2.7 cm, right 12.9 cm; pose error 11.6.</figcaption></figure>
+<figure><img src="h84_reach_plan_visual_20261023/cmp_corrected_250ms.png" alt="Corrected command at 250 ms"><figcaption><strong>Corrected command, 250 ms.</strong> Gap: left 3.2 cm, right 12.8 cm; pose error 11.5. On this body the correction alone did not reach T.</figcaption></figure>
+</div>
+<h3 id="repairC"><span class="badge b3">REPAIR C</span> Teach part 4 from what the body actually did</h3>
+<p><strong>What it changes.</strong> Today part 4 learns only from the one version that was sent. Repair C captures, at each decision of the next learning run, the exact start, replays all 21 versions from it for 250 ms each, records what each did, and retrains part 4 on those pairs with whole bodies held out.</p>
+<div class="grid g3" id="repairCcapture">
+<figure><img src="h84_reach_plan_visual_20261023/repairC_capture.png" alt="What repair C captures, body 5"><figcaption><strong>What repair C captures:</strong> body 5 at the start of the decision, with the two of the 21 versions the record holds.</figcaption></figure>
+<figure><img src="h84_reach_plan_visual_20261023/repairC_capture_hand_L.png" alt="left hand of the capture, enlarged"><figcaption><strong>Left hand, enlarged.</strong> The real end of version 21 is 1.9 cm from where part 4 put it.</figcaption></figure>
+<figure><img src="h84_reach_plan_visual_20261023/repairC_capture_hand_R.png" alt="right hand of the capture, enlarged"><figcaption><strong>Right hand, enlarged.</strong> The real end of version 21 is 2.8 cm from where part 4 put it.</figcaption></figure>
+</div>
+<div class="grid g3" id="repairCgrid">
+<figure><img src="h84_reach_plan_visual_20261023/b5_afterC.png" alt="Drawn: predicted parts after repair C"><figcaption><strong>Drawn: after repair C</strong>, on the measured end state. Hollow rings = the predicted parts now; filled dots = the real parts.</figcaption></figure>
+<figure><img src="h84_reach_plan_visual_20261023/b5_afterC_right_arm.png" alt="Right arm after repair C, enlarged"><figcaption><strong>Drawn: the right arm at 4&times;</strong>; each ring's move to the real part, with its length.</figcaption></figure>
+<figure><img src="h84_reach_plan_visual_20261023/b5_afterC_left_arm.png" alt="Left arm after repair C, enlarged"><figcaption><strong>Drawn: the left arm at 3&times;</strong>; the same, with its lengths.</figcaption></figure>
+</div>
+<p><strong>Kept if</strong>: on the held-out bodies the predicted gap misses the measured gap by less than today, by more than the spread.</p>
+<h3 id="repairD"><span class="badge b3">REPAIR D</span> The motors and the physics: for a body whose direct command stalls</h3>
+<div class="grid g2">
+<figure><img src="h84_reach_plan_visual_20261023/b3_rods.png" alt="Body 3: the command's requested directions"><figcaption><strong>What repair D inspects, on body 3 of the October 21 run, not step 1's body 3:</strong> the contacts, each arm part against its requested direction (gravity 16&deg;). Blue rods = the directions the command requested for the left upper arm (U), forearm (F) and hand (H, drawn at 3&times;); blue ball = where it asked the hand to go; yellow dots = floor contacts. Purple rod = the nearest forearm direction the elbow can reach with the upper arm as requested. Gap: left 9.3 cm, right 1.6 cm.</figcaption></figure>
+<figure><img src="h84_reach_plan_visual_20261023/b3_end.png" alt="Body 3 at the command's end"><figcaption><strong>What that body did</strong> (the command's end; gravity 16&deg;). The rods drawn again from where each part now is; yellow dots = contacts. Gap: left 14.6 cm, right 5.8 cm. The left hand followed the blue ball's direction, away from T.</figcaption></figure>
+</div>
+<p><strong>For a body the rerun of section 5 shows stalled</strong>, repair D reads: each joint's angle against its angle in T, each motor's control (&minus;1 to 1; a motor at &plusmn;1 is at its limit, as body 3's shoulder motor is above), and the contact points (the yellow dots above). <strong>What changes:</strong> one motor gain, strength or support change at a time, after the cause is found. <strong>Kept if</strong>: the direct command then arrives and stays from the same start.</p></section>
+<section id="sources"><div class="eyebrow">7 &bull; Sources</div><ul>
+<li>Every number in a caption and the hash of every picture: <a href="h84_reach_plan_visual_20261023/plan_pictures.json">plan_pictures.json</a> and <a href="h84_reach_plan_visual_20261023/matched_pictures.json">matched_pictures.json</a>.</li>
+<li>The 72-command readings: <a href="h84_body_repair_v2_20261023/three_way_72.json">three_way_72.json</a>. Body 3: <a href="h84_body_repair_v2_20261023/gizmo_detail.json">gizmo_detail.json</a> and <a href="h84_body_repair_20261021/provenance.json">provenance.json</a>. The long form with every decision: <a href="H84_REACH_SOLUTION_REVISED_2026-10-23.html">H84_REACH_SOLUTION_REVISED_2026-10-23.html</a>.</li>
+</ul></section>
+</main>
+<script src="h84_reach_plan_visual_20261023/plan_pictures.js"></script><script>
+(()=>{const P='h84_reach_plan_visual_20261023/',N=window.H84_PLAN,f1=x=>x.toFixed(1),f2=x=>x.toFixed(2),gr=g=>g.min===g.max?g.min+'&deg;':g.min+'&deg; to '+g.max+'&deg;';document.getElementById('seqgrav').innerHTML=gr(N.sequence_grav);document.getElementById('b5grav').innerHTML=gr(N.b5strip_grav);
+const t=`<figure class="tframe"><img src="${P}seq_b1_target.png" alt="body 1's target, same crop"><figcaption><strong>T</strong> (model step ${N.target_step_body1.toLocaleString()}), same crop as the strip below</figcaption></figure>`;
+document.getElementById('tframe').innerHTML=t;document.getElementById('strip').innerHTML=N.sequence.map(f=>{const babble=f.what.indexOf('babble')>=0;return `<figure class="${babble?'babble':(f.what.indexOf('no noise')>=0?'nonoise':'')}"><img src="${P}seq_b1_${f.step}.png" alt="body 1 at model step ${f.step}"><figcaption><strong>${f.what.replace('end of ','After ').replace('before the first command','The start, before planner command 1')}</strong> (model step ${f.step.toLocaleString()})<br>left ${f1(f.L)} cm, right ${f1(f.R)} cm</figcaption></figure>`}).join('');
+const B=N.baseline,b5=B['5'];
+document.getElementById('b5strip').innerHTML=[['T','T',null],['start','Start','0'],['D5','Direct command, 250 ms','5'],['D20','Direct command, 1 s','20'],['D60','Direct command, 3 s','60'],['P60','Planner command, 3 s','60']].map(([k,lab,at])=>{if(k==='T')return `<figure><img src="${P}base_b5_T.png" alt="${lab}"><figcaption><strong>${lab}.</strong> The orange rings sit on the green squares.</figcaption></figure>`;const a=k[0]==='P'?b5.at.P[at]:b5.at.D[at];return `<figure class="${k==='D60'?'win':''}"><img src="${P}base_b5_${k}.png" alt="${lab}"><figcaption><strong>${lab}.</strong> Gap: left ${f1(a.L)} cm, right ${f1(a.R)} cm; pose error ${f1(a.E)}.</figcaption></figure>`}).join('');
+document.getElementById('basegrid').innerHTML=Object.keys(B).filter(b=>b!=='5').map(b=>{const v=B[b],d=v.at.D,p=v.at.P,win=v.flags.D.both.arrived&&v.flags.D.both.stayed;return `<div class="grid g2" style="margin-bottom:14px"><figure><img src="${P}base_b${b}_start.png" alt="body ${b} start"><figcaption><strong>Body ${b}, start</strong> (gravity ${gr(v.grav)} from the line of sight in this row). Gap: left ${f1(d['0'].L)} cm, right ${f1(d['0'].R)} cm.</figcaption></figure><figure><img src="${P}base_b${b}_T.png" alt="body ${b} target"><figcaption><strong>T</strong>.</figcaption></figure><figure class="${win?'win':''}"><img src="${P}base_b${b}_D60.png" alt="body ${b} direct command at 3 s"><figcaption><strong>Direct command, 3 s.</strong> Gap: left ${f1(d['60'].L)} cm, right ${f1(d['60'].R)} cm${win?' (both hands arrived and stayed)':''}.</figcaption></figure><figure><img src="${P}base_b${b}_P60.png" alt="body ${b} planner command at 3 s"><figcaption><strong>Planner command, 3 s.</strong> Gap: left ${f1(p['60'].L)} cm, right ${f1(p['60'].R)} cm.</figcaption></figure></div>`}).join('');
+})();
+</script></body></html>

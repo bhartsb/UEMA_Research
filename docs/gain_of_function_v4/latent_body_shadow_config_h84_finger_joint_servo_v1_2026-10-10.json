@@ -1,0 +1,59 @@
+{
+ "architecture": {
+  "latent_dim": 8,
+  "hidden": 128,
+  "message_dim": 8
+ },
+ "scales": {
+  "state": [
+   15.231095336140948,
+   14.68903529221066,
+   5.706070566703361,
+   0.38270112592972166,
+   0.4467439225379843,
+   0.6552705968758759,
+   0.47389892640778025,
+   18.01630798061044,
+   19.234792995709842,
+   16.613741148359377,
+   0.45522003671940353,
+   0.3334041591422239
+  ],
+  "change": [
+   0.8609632563210122,
+   0.9237897891307904,
+   0.7763439153296732,
+   0.06745912241447653,
+   0.06781836140592121,
+   0.06451000532222499
+  ],
+  "action": [
+   5.754410543226773,
+   5.843775822590063,
+   5.8633056807383745,
+   0.3034069528647824,
+   0.28892349192666394,
+   0.271912017288369,
+   0.5717594948090725,
+   0.466394550747864
+  ]
+ },
+ "weights": {
+  "future": 1.0,
+  "contact": 1.0,
+  "action": 1.0,
+  "child": 1.0,
+  "consistency": 1.0,
+  "latent": 0.001
+ },
+ "learning_rate": 0.003,
+ "gradient_clip": 10.0,
+ "duration_s": 0.05,
+ "action_contract": "wrist_relative_joint_v1+finger_joint_servo_v1",
+ "seed": 7,
+ "measurement": "A SEPARATE DATASET for the repaired finger servo (declared Oct 10, 2026; branch fix/latent-shadow-finger-contract-2026-10-10, docs/gain_of_function_v4/latent_contract_repair/LATENT_CONTRACT_REPAIR.md): rows recorded with --finger-joint-servo on, whose command contract the trainer writes as wrist_relative_joint_v1+finger_joint_servo_v1 (limb_target_control.action_contract_parts appends finger_joint_servo_v1). Every other value is copied unchanged from C:\\Users\\bhart\\Documents\\UEMA_devA_private\\docs\\gain_of_function_v4\\latent_body_shadow_config_h84_2026-09-30.json (sha256 8c2c05e6971ce2aeaa2976d8b8bcf8f493415f4d95a05f78e51ea84efc7813ca). Its scales were measured Sep 30, 2026 (mimo_bridge.tools.latent_body_split) under wrist_relative_joint_v1 only: root mean square of each channel over 20000 random training examples of D:\\UEMA_latent_body\\seg41\\trajectory.jsonl, finger commands on the actual wrist; future loss 1.0 = 'nothing moves', action loss 1.0 = 'command zero'. They are not measured on rows of this contract (none existed when this file was written); they are kept equal so that weights learned under the old contract can be named as a starting state. Codes bounded by tanh.",
+ "data_quality": "plumbing",
+ "substrate_receipt": "",
+ "code_bound": "tanh",
+ "hand_action_frame": "actual_wrist"
+}

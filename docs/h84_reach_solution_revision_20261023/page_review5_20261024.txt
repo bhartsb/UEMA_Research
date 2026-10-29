@@ -1,0 +1,404 @@
+INDEPENDENT HOSTILE READ (review 5): the update of 8:58 PM PDT, October 24, 2026 to
+docs/H84_REACH_SOLUTION_REVISED_2026-10-23.html (page sha256 b38e97f0d853a004..., file time 8:58 PM PDT)
+
+Reader: a the builder subagent that wrote neither the page nor the change. Written 9:17 PM PDT, October 24, 2026 (clock).
+Edited nothing but this file. Read entirely: the style guide; the writing guide's sections 1 to 8 (sections 5 and 8 applied);
+the whole page once from the top; the git word diff of the page against commit b5569e720 (11 lines inserted, 10
+removed: the eyebrow, section 7's subsection "The next comparison: built, reviewed, not run", "The state at 8:58 PM PDT, October 24",
+section 8's new item "Section 7's next comparison" and the "The blend's code" sentence); the decision
+reach-target-unblended-build-decision-20261024 (message.json, created_at 2026-10-25T01:11:05 UTC = 6:11 PM PDT); the
+5:08 PM decision (reach-target-corrected-outcome-decision-20261024) and the builder's 6:09 PM proposal message
+(reach-target-hands16-proposal-page-20261024); both review reports; the package's README.md, CONDITIONS.json,
+TIMING_LEDGER.json and MANIFEST.json (all 139 pins re-hashed: 0 mismatches); the budget ledger (all 17 lines); the
+commit 46e0c8363 (message and stat) and lem_model.py / physical_goal.py / action_decoder.py at a48cac796 and 46e0c8363
+at the cited lines; dev_checks/integration_3 (result.json, both JUnit files parsed with an XML parser); the D1 key
+unblended_build_20261024; the author's own read page_selfread4_20261024.txt.
+Run here (CPU, made-up data, after commit_guard --need-gb 2.5 allowed; the branch checkout's git status stayed empty):
+the pairing reader's tests (30 passed in 6.94 s); the three focused test files at 46e0c8363 (42 passed in 14.63 s,
+run ending by 9:06:53 PM PDT); their collection (10 in test_target_candidate_unblended.py, 22 in
+test_target_candidate.py, 10 in test_s1_planned_live_identity.py).
+Claim ledger for this report: 46 entries, "CLAIM LEDGER: 46 of 46 verified" (.agent/hooks/claim_check.py; the
+ledger is in the session scratchpad, ledger_review5.json).
+
+Weights: HIGH = a reader is misled about what was built, what will run, a number's meaning or a decision.
+MEDIUM = a status or term the reader cannot judge or decode from the page. LOW = wording, repetition, minor gaps.
+
+======================================================================================================================
+FINDINGS
+======================================================================================================================
+
+1. HIGH. Two switches, one name; the new switch is never named.
+   Sentences: "The change (branch commit 46e0c8363, behind a switch that is off by default): ..." / "The comparison it
+   prepares: one run with the switch on, from the same complete saved state of model step 496,250 with all eight
+   worlds, compared with the saved on run." / (state) "the decision of 5:08 PM accepted the corrected result: the
+   switch stays a tested experimental option, off by default ..."
+   What fails: the page named only one switch before this point ("A switch, --planner-target-candidate, turns it on;
+   it is off by default."), and the on run already had that switch on. A newcomer therefore reads "one run with the
+   switch on ... compared with the saved on run" as a rerun of the on run. The new switch is
+   --planner-target-candidate-unblended; the package's command is the on run's command with
+   "--planner-target-candidate-unblended on" appended and four output folders moved (README.md; command_u.json holds
+   --planner-target-candidate on and --planner-target-candidate-unblended on). In the state paragraph below, "the
+   switch" means the old switch again. One name, two things (the style guide ONE WORD PER THING).
+   Fix: at first mention, "behind a new switch, --planner-target-candidate-unblended, off by default (refused unless
+   --planner-target-candidate is on)"; "one run with both switches on: the on run's settings plus
+   --planner-target-candidate-unblended on, with only the four output folders moved"; in the state paragraph,
+   "--planner-target-candidate stays a tested experimental option".
+
+2. HIGH. The cost number's meaning is misstated, and its purpose and arithmetic are missing.
+   Sentence: "Its cost and budget: the second attempt's own measured steps add to 242.0 s."
+   What fails: the second attempt's own steps add to 418.9 s, not 242.0 s (TIMING_LEDGER.json: s2_unsuspended_s_at_close
+   532.504 minus s2_opening_s 113.612). The 241.985 s are "the s2 execution's measured intervals that u's steps repeat
+   (the s2 ON branch's for the branch)": everything except the off run's admission, trainer and close (176.9 s). The
+   sentence also does not say what the number is for (the measured cost basis of the new run against a fresh 900 s
+   budget) or whether the run fits (README.md: "E at the branch's admission in that basis: 58.501 s; the rule allows at
+   most 470 s there ... Every limit taken whole on top of that E: 488.501 s."). The 6:04 PM version listed the steps
+   behind its basis (the on run's trainer, its close, the tests, the closing record) and gave the 430 s admission
+   arithmetic; the 8:58 PM version removed both (the review record lists "a proposal without its budget arithmetic"
+   among the findings of the read before the 6:04 PM version).
+   Fix: "Its cost: the October 24 second attempt's steps that this run repeats (all except the off run's admission,
+   trainer and close) took 242.0 s; with every time limit used in full the run would use at most 488.5 s. The run owner
+   admits the trainer only while the seconds used plus 430 s stay within 900 s; at the measured basis it would be
+   admitted at 58.5 s. It needs a fresh budget of at most 900 s; the decision granted none."
+
+3. HIGH. The comparison's question is not stated, and the limit on what it can show is left out.
+   Sentences: the whole bullet "The comparison it prepares: ..." (no question), and the opening paragraph.
+   What fails: guide rule 9 (an experiment starts with the question it answers). The bullet "Sizes" just above ends
+   "Whether a command without the blend would move the hands nearer T is unmeasured", so a newcomer takes the next
+   comparison as the measurement of that. The overseer limited that reading and asked for the limit to be said: "If the question is the
+   effect of this repaired POLICY, say so; it does not isolate biomechanics from a changed selection." The package
+   says it ("It is the effect of the repaired POLICY: the real chooser may select different bodies, so it does not
+   separate the movement's mechanics from a changed selection"); the page does not.
+   Fix: open the bullet with "The question: from the same saved start, does sending the extra version's body-pose
+   numbers without the blend change where the hands are 250 ms later, compared with the on run? Because the bodies
+   that choose the extra version may change, the run measures the changed rule as a whole (its score and its choice),
+   not the blend's effect on movement alone."
+
+4. HIGH. The decision's scope is overstated in the first sentence.
+   Sentence: "... and authorized building and reviewing, not running, a change that removes the blend from the extra
+   version, with five corrections to the proposal first made here."
+   What fails: the overseer authorized "a target-candidate BODY-POSE blending change" and wrote, in correction 2, "Do not set a
+   global smoothing weight1 that silently also unblends strengths or hands." The change keeps the blend on the extra
+   version's strengths (review A3: "strength (column 8, still 0.35/0.65 blended)"). "Removes the blend from the extra
+   version" states the reading the overseer excluded; the next bullet corrects it, but the reader meets the wrong version
+   first.
+   Fix: "a change that sends the extra version's body-pose numbers (the positions of its 4 position rows and the turns
+   of its 15 body rows) without the blend, and every other number of it as before".
+
+5. MEDIUM. The test status misattributes its count and leaves out failures and times.
+   Sentence: "Its tests and review: the change's own tests passed 42 of 42 (run with the target-candidate and
+   planned-versus-live test files), and the package's 32 tests and the new pairing reader's 30 passed, on made-up data
+   only."
+   What fails: (a) the change's own tests are 10 (test_target_candidate_unblended.py, U1 to U9; collected here: 10, 22
+   and 10 in the three files). 42 is the three files together. Section 8's new item names the change's tests as that
+   one file, so the page contradicts itself. (b) The wider run reported in the commit and the D1 record is left out:
+   "283 tests, 280 passed, 2 passed again with a shorter temporary path, 1 the known failure on the code before". For
+   the earlier change the page did report its wider set with its failures; a set of tests is stated with its passes
+   AND failures (the style guide NEVER NAME A CHECK ... WITHOUT ITS FACTS). (c) No time is given for any of the three runs
+   (the package's 32 at 8:47:10 PM and the reader's 30 at 8:47:24 PM in dev_checks/integration_3; the reviewer's
+   reruns 8:48 to 8:54 PM). (d) One of the change's 10 tests ends with an assertion that "compares a function with
+   itself and cannot fail" (review M7, package finding 13); "passed" overstates what that test shows.
+   Fix: "The change's 10 tests, run with the 22 tests of the earlier extra-version change and the 10 tests that the
+   planned command equals the command the live step forms: 42 passed, 0 failed (reported in the commit of 6:27 PM;
+   the reviewer's rerun passed). A wider run of 283 planner, dispatch and hand tests: 280 passed, 3 failed; 2 passed
+   again with a shorter temporary folder path (Windows' path-length limit) and 1 fails the same way on the code
+   before the change. One of the 10 has a last assertion that cannot fail (package finding 13). The package's 32
+   tests and the pairing reader's 30 passed at 8:47 PM, on made-up data only."
+
+6. MEDIUM. The review's verdict on the code change is missing; only the package verdict is given.
+   Sentence: "One independent review (a the builder subagent that wrote neither) found the package ready with one required
+   change: ..."
+   What fails: the overseer required the review to check five points of the code change ("require defaultoff identity,
+   candidate scoring before selection, unchanged ordinary/finger/gaze/strength behavior, exact sent-equals-scored, and
+   both selection outcomes"). The review reports "The code change meets the five review requirements: default-off
+   identity, candidate scoring before the selection, ...". The page reports none of them, so the reader cannot tell
+   whether the switch-off state was shown to equal the code before the change (for the earlier change the page did
+   say so: "In 3 test scenarios the reviewer ran, the outputs with the switch off matched the code before the
+   change").
+   Fix: "The review found the five points the overseer required met: with the switch off, the planner's outputs equal the
+   code before the change bit for bit (two probe cases); the extra version is scored before the choice; the search,
+   finger, eye and strength numbers are formed as before; the command sent equals the command scored; and a body
+   newly chosen and a body no longer chosen each behave as designed."
+
+7. MEDIUM. "Five corrections" is a label without its facts, and "the proposal first made here" points to text that is
+   no longer on the page.
+   Sentence: "... with five corrections to the proposal first made here."
+   What fails: the five corrections are not listed as such; the reader cannot map them to the bullets. The proposal
+   (with its 0.00003 cm success line) was removed in this update, so "first made here" refers to nothing a newcomer
+   can see. The same applies to "line 6808, which the first version of this proposal cited".
+   Fix: drop the clause, or list them in five plain lines: (1) the extra version is scored without the blend before
+   the choice, the search's result scored as before; (2) only its body-pose numbers change; (3) a different set of
+   chosen bodies is a result, not a failure; (4) the on run is reused only if the identity check passes, otherwise
+   no comparison is claimed and no new control run is made; (5) no 0.00003 cm success line. Name the proposal's
+   origin ("the builder's proposal of 6:09 PM").
+
+8. MEDIUM. The eyebrow's claim is false for this update.
+   Sentence (eyebrow): "last updated in place at 8:58 PM PDT, October 24 (section 7: the test of October 24 and the
+   change built after it); every update is listed in section 8's review record"
+   What fails: the review record's last entry is "October 24, 5:19 PM to 6:04 PM PDT"; no entry lists the 8:58 PM
+   update, and no browser-check receipt for this version exists (the newest, browser_checks_plan_revised_20261024b.json,
+   is from 6:05 PM). Guide checklist: "The review record on the page says who read it, when, what they found and what
+   was done."
+   Fix: add the 8:58 PM entry (the own read's 5 items, this read and its result, the browser check of the version
+   sent), or remove the claim until it holds.
+
+9. MEDIUM. "Closed" has no why, and the jump from 532.5 s to 638.2 s is unexplained.
+   Sentence: "The 900 s budget of the October 24 comparison closed at 638.2 s used."
+   What fails: (a) the reason no run can use the 261.8 s left is not on the page any more: the overseer, 6:11 PM: "No new run
+   fits its remaining261.840seconds under the existing430second admission reserve. Do not reset that clock". (b) The
+   same section says "The closing record was written at 3:58:26 PM, 532.5 s into the budget." A reader sees two
+   closings with two numbers. The budget ledger shows the 105.7 s between them: the body 5 analysis (77.072 s), the
+   corrected reading (5.64 s), file checks, the 16-hand reading (0.284 s) and two browser checks of this page
+   (3.645 s and 3.64 s).
+   Fix: "638.2 s of the 900 s are used: the runs' closing record at 532.5 s, then the body 5 analysis (77.1 s), the
+   corrected reading (5.6 s), the 16-hand reading (0.3 s), two browser checks (7.3 s) and other counted steps
+   (15.4 s) (budget_ledger.jsonl).
+   No run fits the 261.8 s left: the run owner admits a trainer only while the seconds used plus 430 s stay within
+   900 s.: 'Do not reset that clock'."
+
+10. MEDIUM. A code-citation sentence in the body fails the fifth-grader test and adds nothing for the reader.
+    Sentence: "The scoring step of these runs is candidate_execution (lem_model.py line 6720 at commit a48cac796)
+    wrapped by the trust region's masking (line 6847); line 6808, which the first version of this proposal cited,
+    belongs to another search that these runs did not use."
+    What fails: "candidate_execution" is a code name with no definition; "the trust region" is a second name for what
+    the page calls "the box" ("the code calls the box PhysicalTrustRegion"); "masking" is not defined (it is the box's
+    step that holds every number the motors ignore at the first command's values: physical_goal.py masked_execution,
+    "The decision's execution transform with the decoder-inert numbers held"); "these runs" has no antecedent in a
+    bullet about one future run; the 6808 clause corrects removed text. The facts are correct (line 6720 is
+    "def candidate_execution", line 6847 is "_execution = _space.masked_execution(_execution)", line 6808 is inside the
+    branch opened at line 6792 for searches other than Adam, and the command holds --planner-search adam).
+    Fix: in the body, "Its score passes through the same steps as the search's versions (the box's step that holds the
+    ignored numbers at the first command's values) except the blend on its body-pose numbers." Move the line numbers
+    and the 6808 correction to section 8 (they are already in the "The blend's code" sentence) or the review record.
+
+11. MEDIUM. "The reach limit" is used without a definition.
+    Sentence: "Strengths, radii, the eyes' row, the finger rows, the reach limit and every number the motors ignore are
+    formed as before."
+    What fails: no earlier sentence defines it. In the code (lem_model.py 4596 to 4599 at 46e0c8363) each requested
+    position is moved to lie at most 40 cm (times the developmental range factor) from the part's present position
+    along each of x, y and z; review A3 confirms it runs before the blend on both paths.
+    Fix: "the reach limit (a requested position is moved to lie at most 40 cm from the part's present position along
+    each of x, y and z)", or drop it from the list.
+
+12. MEDIUM. "Sealed" conflicts with the package's own MANIFEST.
+    Sentence: "The package is sealed: the sha256 of each of its files is pinned in its MANIFEST.json (sha256
+    fc753c00...)"
+    What fails: by the page's definition of "sealed" (each file's sha256 recorded) the sentence holds: MANIFEST.json
+    hashes to fc753c00e860ee35... and all 139 pins hold. But the MANIFEST itself reads "stage": "unsealed: no
+    AUTHORIZATION.json (or no final route)", and the package calls seal_authorization.py "the seal". A reader who opens
+    the named file finds the opposite word.
+    Fix: "Every file's sha256 is pinned in MANIFEST.json (fc753c00...); the package's stage reads 'unsealed' until a
+    decision of the overseer that authorizes the run is sealed into it." End the bullet with a period.
+
+13. MEDIUM. Three conditions of the 6:11 PM decision that bear on the future run are left out.
+    What fails: (a) item 4: "Reuse the saved s2ON control only if genuine pre-treatment identity and ordinary-winner
+    checks pass; otherwise report no matched claim, no automatic replacement control run." The page gives the "only
+    if" and not the "otherwise". (b) "Any subsequent proposal ... must demonstrate why it answers a new physical
+    question instead of repeating the completed test." (c) "No alteration of predictor weights, training recipe, goal
+    locality or planner frequency in this repair." (The planner frequency is the plan's step 2; a reader may ask
+    whether this run touches it.)
+    Fix: one sentence each in the comparison bullet and the state paragraph.
+
+14. MEDIUM. The package's written findings that limit the reading are not mentioned.
+    Sentence: "... the reviewer's nine recommended items were applied or written into the package as findings."
+    What fails: "findings" is undefined, and the two that change how the result will be read are absent. Finding 1:
+    on a model step without a plan the eyes' command is the motor controller's, and that controller's inputs (for a
+    body sent the extra version) and the shared weights (after the learning update of 496,251) differ between the
+    runs, "so the eye commands from 496,252 can differ inside the 250 ms window in every body, the bodies sent the same
+    command included". Finding 2: "A raise ends the trainer non-zero" (the command-sent check stops the whole run).
+    Fix: "The package lists 14 open findings; two bear on the reading: the eyes' commands and the learning updates
+    differ between the runs after 496,251, so even bodies sent the same command can end at different places (on
+    October 24 such bodies agreed to 0.00003 cm); and a sent-versus-scored difference stops the trainer with an
+    error, so a complete run means none occurred."
+
+15. LOW. "Second attempt" names two different things in the new text.
+    Sentences: "the second attempt's own measured steps add to 242.0 s" (the October 24 test's second attempt) and
+    "second attempt of the arm-consistency test" (state paragraph).
+    Fix: "the October 24 test's second attempt".
+
+16. LOW. The state paragraph's list is attributed to the 6:11 PM decision, but two of its items are the 5:08 PM
+    decision's words.
+    Sentence: "Its decision of 6:11 PM authorized building and reviewing the change above and nothing more: no
+    training, model loading, physics, replay, second attempt of the arm-consistency test, or run of the package."
+    What fails: 6:11 PM says "No model/physics now", "no adoption/r2" and "this message grants NO fresh execution
+    budget and no launch"; "training" and "replay" come from 5:08 PM ("No training, model loading, physics, new replay
+    or r2 launch."). The summary is fair; the attribution is not exact. "Its" follows a sentence whose subject is
+    "Both runs' complete saved states".
+    Fix: "the overseer's decisions of 5:08 PM and 6:11 PM allow no training, ..." or quote 6:11 PM's words.
+
+17. LOW. "The model step stops with an error" understates the effect.
+    Sentence: "... and the model step stops with an error if the command sent differs from the command scored on any
+    number the motors use."
+    What fails: the check raises inside the trainer and ends the run (CONDITIONS.json finding 2: "A raise ends the
+    trainer non-zero"). It compares the 25 body rows' decoder-active numbers.
+    Fix: "the run stops with an error if, on any number of the 25 body rows that the motors use, the command sent
+    differs from the command scored".
+
+18. LOW. "(a the builder subagent that wrote neither)": neither of what? The sentence before names the change, the package
+    and the reader. Fix: "that wrote neither the change nor the package".
+
+19. LOW. "the 16-hand analysis and this page's update": section 8 calls it "the 16-hand reading"; "this page's update"
+    does not say which (the 6:04 PM version). Fix: one name; "this page's update of 6:04 PM".
+
+20. LOW. Terms a newcomer cannot decode: "calibrated error bound" (say "a measured limit on how far two runs of the same
+    command can differ"); "planned-versus-live test files" (see finding 5's fix); "never forced back" (say "the new
+    run is not made to choose the extra version for the same bodies as the on run"); "pinned" (say "recorded").
+
+21. LOW. "the finger rows ... are formed as before" can be read as "unchanged". The finger rows' positions follow the
+    unblended wrist rows (review A3: "The finger rows' world numbers follow the unblended wrist rows through
+    assemble_world"); only the procedure is unchanged. Fix: "the finger rows are rebuilt as before on the unblended
+    wrist positions".
+
+22. LOW. Three rules without their why (guide rule 10):
+    - "the extra version is scored for every body before the planner compares it with its own result" (why: so that
+      whether a body's version is blended never depends on whether it was chosen; the overseer item 1, "Avoid circular
+      selection"). The trailing clause "with the numbers it sets left unblended" also attaches ambiguously to "its own
+      result".
+    - "Strengths, radii, ... are formed as before" (why: so the run changes one thing; the overseer item 2).
+    - "The on run is used as the comparison only if the identity check shows the two runs equal before the decision"
+      (why: otherwise a difference could come from something other than the change).
+
+23. LOW. Repetition: the state paragraph's last sentence, "The package runs only on a later decision of the overseer, with a
+    budget of its own.", repeats the cost bullet's "the decision granted none, and the package runs only on a
+    later decision." Cover it and nothing is lost (guide rule 12). Fix: keep one.
+
+24. LOW. Section 7's heading (h2) still summarizes only step 1 and the October 24 test; the eyebrow and the new
+    subsection add "the change built after it". Rule 13: a heading is understood from the headings above it. Fix: add
+    "; a change that sends the extra version without the blend on its body-pose numbers is built and reviewed, not
+    run" to the h2.
+
+25. LOW. The new run's own facts are only implied: its length appears only in "Arriving and staying are not measured
+    in 6 model steps", and that learning stays on (the package keeps the on run's lessons) is not stated. The report
+    is described as "every hand's D in cm", not as the three-way form the plan uses everywhere (the reader reports
+    start, predicted and measured in both runs). Fix: "one run of 6 model steps with learning on, as in the on run";
+    "each hand's D three ways (start, predicted, measured) in both runs".
+
+26. LOW. The added identity-check part can compare zero bodies: "When no body is chosen in neither run, part (f)
+    compares no body" (review 2, O1); with the on run's choice in bodies 0, 1, 5 and 6, this happens if the new run
+    chooses the extra version for all of bodies 2, 3, 4 and 7. Fix: one clause after "It was made".
+
+27. LOW. "the overseer rejected 0.00003 cm as one": the page no longer says who proposed it (the builder's 6:09 PM proposal and the
+    page's 6:04 PM version). Fix: "the builder's proposal used 0.00003 cm as the success line; the overseer rejected it, because
+    ...".
+
+28. LOW. Section 8's new item, "the D1 key's unblended_build_20261024", gives a partial path; the full key is
+    reach_baseline_20261023.target_candidate_repair_20261023.runtime_decision_20261024.unblended_build_20261024 (it
+    exists, uncommitted, at line 14584 of d1_planner_recovery.json). The planner action record's
+    target_unblended_build_2026_10_24 exists in both issues (lines 74 and 176, uncommitted).
+
+29. LOW. Missing period at the end of the tests bullet ("(sha256 fc753c00...)"). Bullet labels put the colon inside
+    the bold in "Sizes:" and outside it in "The comparison it prepares:" and "Its tests and review:".
+
+Observation outside the changed parts (not contradicted by the new text; reported because the new text's
+"5.30 to 14.98 cm" depends on it): the review's M1 found that under --smooth-source proposal the blend's 0.65 term
+is the smoother's memory, "the running blend of every proposal since the last latch", which at 496,250 would be
+0.179 parts the command last sent and 0.821 parts proposals that were never sent (if the run that saved the start
+used the same smoother). The package and reader texts were corrected; the page's earlier sections still say "the
+command before (the blended command of the model step before)", which is accurate but invites the reading "the
+command last sent". One clause there would close it.
+
+======================================================================================================================
+NUMBER CHECKS (43 checked: 41 PASS, 2 FAIL)
+======================================================================================================================
+Eyebrow
+ 1. 8:58 PM PDT, October 24: page file time 20:58, Oct 24. PASS
+"The next comparison" subsection
+ 2. 6:11 PM: decision created_at 2026-10-25T01:11:05.929 UTC = 6:11 PM PDT. PASS
+ 3. 16-hand: decision "Accept the16hand reading". PASS
+ 4. five corrections: decision items 1 to 5. PASS (count; facts not listed: finding 7)
+ 5. 5.30 to 14.98 cm: decision "blending placed requests5.30-14.98cm". PASS
+ 6. 46e0c8363: branch HEAD 46e0c83630250f7a..., git status empty. PASS
+ 7. 4 position rows: physical_goal.target_candidate_rows (non-finger body rows outside inert_position_rows);
+    POSITION_HANDLES minus fingers = wrist_L, wrist_R, head, lower_trunk; no --position-rows in command_u.json. PASS
+ 8. 15 body rows other than the fingers: turn rows = free_body (every non-finger body row). PASS
+ 9. line 6720 at a48cac796: "def candidate_execution(cmd, dev_limits, handle_state=None):". PASS
+10. line 6847: "_execution = _space.masked_execution(_execution)"; _space is a PhysicalTrustRegion (6780/6783). PASS
+11. line 6808 belongs to another search: inside "if getattr(self, 'planner_search', 'adam') != 'adam':" (6792);
+    command_u.json --planner-search adam. PASS
+12. model step 496,250: README START ckpt_step_496250. PASS
+13. all eight worlds: README. PASS
+14. all 8 bodies: decision "ALL8bodies". PASS
+15. 0.00003 cm: decision "0.000030cm". PASS
+16. 6 model steps: CONDITIONS --max-steps 496256, "6 model steps, 496,250 to 496,255". PASS
+17. 42 of 42, "the change's own tests": count PASS (commit "Focused run: 42 of 42"; review 1 "42 passed"; this
+    review's run "42 passed in 14.63s"); attribution FAIL (the change's own file holds 10 tests). FAIL
+18. 32 package tests: integration_3 result.json tests 32, failures 0, errors 0, skipped 0 (8:47:10 PM). PASS
+19. 30 reader tests: integration_3 reader_tests.xml tests=30 failures=0 (8:47:24 PM); review 2 "30 passed"; this
+    review's run "30 passed in 6.94s". PASS
+20. one required change: review 1 "REQUIRED (1)". PASS
+21. nine recommended items, applied or written as findings: review 1 nine items M1 to M9; review 2: M1, M2, M3, M8,
+    M9 done, M4 to M7 findings 10 to 13 (M1's record string finding 9). PASS
+22. fc753c00...: sha256 of MANIFEST.json now fc753c00e860ee35220108b4765f79d3be6bcc3b8972150cfe68a8e952037d57; 139 of
+    139 pins hold. PASS
+23. 242.0 s, "the second attempt's own measured steps": value PASS (TIMING_LEDGER sum_s 241.985); meaning FAIL (the
+    second attempt's own steps: 532.504 - 113.612 = 418.892 s; 241.985 s is the subset the new run repeats). FAIL
+24. at most 900 s: decision "at most15minutes total". PASS
+"The state at 8:58 PM PDT"
+25. 8:58 PM PDT: file time. PASS
+26. 5:08 PM: decision created_at 2026-10-25T00:08:09 UTC = 5:08 PM PDT. PASS
+27. quote "there is measured benefit to retain, and a regression to resolve before production adoption": exact in
+    the 5:08 PM text. PASS
+28. 6:11 PM: as 2. PASS
+29. 900 s budget, 638.2 s used: budget_ledger.jsonl last line used_after_s 638.16, left_after_s 261.84; decision
+    "retain its638.160second expenditure". PASS (why missing: finding 9)
+Section 8, new item
+30. branch repair/target-candidate-20261023: git rev-parse in D:/UEMA_wt/target_candidate_20261023. PASS
+31. commit 46e0c8363. PASS
+32. D:/UEMA_wt/target_candidate_20261023. PASS
+33. Source/Python/mimo_bridge/tests/test_target_candidate_unblended.py exists at 46e0c8363 (in the commit's stat). PASS
+34. package folder and named files (MANIFEST.json, README.md, CONDITIONS.json, TIMING_LEDGER.json, policy_exec.py,
+    reader/read_policy_pair.py, training_preflight_route_u_draft.py and .diff, preflight_record_u_draft.json). PASS
+35. fc753c00...: as 22. PASS
+36. 242.0 s: as 23 (value). PASS
+37. links unblended_review_20261024.txt and unblended_review2_20261024.txt (relative to docs/): both exist. PASS
+38. link to the 6:11 PM decision: exists. PASS
+39. D1 key unblended_build_20261024 and planner key target_unblended_build_2026_10_24: both exist (uncommitted). PASS
+"The blend's code" sentence (section 8, "Section 7's test result")
+40. lines 4630 to 4640 at a48cac796: 4630 "elif self.smooth_actions > 0.0:", 4639 "mfa = self.smooth_blend(mfa,
+    self._last_smooth_prev, self.smooth_actions)", 4640 "self._prev_mfa = mfa.clone()". PASS
+41. line 6720: as 9. PASS
+42. line 6847: as 10. PASS
+43. lines 4422 and 4428: 4422 "plan, imeta = self._plan_chain(", 4428 'self._last_plan_inputs["plan0"] = ('. PASS
+
+Statements attributed to the overseer in the changed parts, against the decision texts:
+ - accepted the 16-hand analysis and this page's update ("Accept the16hand reading and page receipt"): PASS
+ - authorized building and reviewing, not running: PASS ("isolated preparation and focused independent review";
+   "grants NO fresh execution budget and no launch")
+ - "a change that removes the blend from the extra version": scope overstated (finding 4)
+ - five corrections: PASS (count); not listed (finding 7)
+ - the decision states the blend placed the sent positions 5.30 to 14.98 cm from T; the body head's predicted end
+   points also missed; neither distance divides the final miss; changing the requested position may improve movement,
+   the next question, not this test's result: PASS (each matches "Interpretation to carry into the existing
+   page/records")
+ - identity requirements and the four reporting groups, never forced back: PASS (items 3 and 4)
+ - every hand's D, median and largest increase, pose-error score, contacts and falls in all 8 bodies, no success line:
+   PASS (item 5)
+ - "the overseer rejected 0.00003 cm as one, because it is one observed repeat difference of an unchanged command, not a
+   calibrated error bound": PASS
+ - "the decision granted none": PASS
+ - 5:08 PM: switch stays a tested experimental option, off by default, with the quoted reason: PASS; both states kept,
+   neither used for further training ("Both complete learned states remain preserved; neither is promoted"): PASS
+ - 6:11 PM "nothing more: no training, model loading, physics, replay, ...": partly 5:08 PM's words (finding 16)
+ - left out: the policy caveat (finding 3), the "otherwise" of item 4, the new-physical-question condition, the
+   no-change list (finding 13)
+Causal claims beyond the evidence: none found in the changed parts. Software described as a person: none found.
+Time estimates: none. Banned words (the style guide list) scanned in the changed parts: none.
+
+======================================================================================================================
+COGNITIVE LOAD OF THE CHANGED PARTS: 5 of 10
+======================================================================================================================
+727 words in the two subsections with their headings; four bullets of 40 to 167 words; sentences up to about 60
+words; one code name (candidate_execution), three line numbers and two references to removed text in the body; one
+name for two switches; a cost number whose meaning is wrong; no stated question.
+
+The three changes that would most lower it:
+1. Open "The next comparison" with its question and its limit in plain words, and name the new switch: "One run with
+   --planner-target-candidate and the new --planner-target-candidate-unblended both on asks: does sending the extra
+   version's body-pose numbers without the blend change where the hands are 250 ms later, compared with the on run?
+   It measures the changed rule as a whole, not the blend's effect alone, because the chosen bodies may change
+  ." Use "--planner-target-candidate" by name in the state paragraph.
+2. Replace "five corrections to the proposal first made here" and the code-line sentence with the five corrections as
+   five short plain lines (finding 7), and move the line numbers and the 6808 correction to section 8.
+3. Rewrite the tests and cost bullets and the budget sentence as standalone status lines with their facts: 10 own
+   tests plus 22 plus 10 = 42 passed, the wider run's 3 failures and their causes, the review's five checks, the
+   times; "242.0 s for the steps this run repeats, at most 488.5 s with every limit, a fresh 900 s budget not yet
+   granted"; and "638.2 s used, with the bridge from 532.5 s and the 430 s admission rule that leaves no room".

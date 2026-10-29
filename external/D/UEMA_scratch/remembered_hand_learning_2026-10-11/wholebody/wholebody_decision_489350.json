@@ -1,0 +1,619 @@
+{
+ "schema": "rhl_wholebody_v2",
+ "verdict": "pass",
+ "written": "6:36 PM PDT, Oct 11, 2026",
+ "code": {
+  "file": "D:\\UEMA_Research\\docs\\gain_of_function_v4\\remembered_hand_learning_2026-10-11\\wholebody.py",
+  "sha256": "fc75de5d0cea7a5fef8f4c6d261fa6e9f47a394a398099d26b34871e82d0d154",
+  "commit": "7619fc141390ae9feef4587950ddf5c3b4be8ccf",
+  "dirty": false
+ },
+ "baseline": "D:/UEMA_Research/external/D/UEMA_scratch/remembered_hand_learning_2026-10-11/wholebody/wholebody_baseline_seg41j_1526.json",
+ "endpoint": "D:/UEMA_Research/external/D/UEMA_scratch/remembered_hand_learning_2026-10-11/wholebody/wholebody_endpoint_489350.json",
+ "decision": {
+  "rule": [
+   "1. Readings: this reader on the endpoint window (model steps 488,350 to 489,349 of the continuation) and on the baseline window (483,675 to 484,674) of the repaired run (seg41j_1526, the continuation's start) and of its matched sibling from the same start 481,800 (seg41u_1718, the old finger rule). The same code, the same definitions; the rule below is frozen before the endpoint is read. `decide` refuses (exit 4) unless both files' verdicts read pass, the windows are exactly those, the three detector versions are equal, the code (its sha256) that read both files and that decides is the same, and every row of every reading has 8 bodies.",
+   "2. Per row entering the decision and per body, the quantity is occasions per 1,000 opportunity model steps. A body is COMPARABLE only where all three readings have opportunity.",
+   "3. Per comparable body: 'higher than both baseline readings' when the endpoint rate is above both baseline rates (the repaired run's and the sibling's); 'lower than both' when below both; otherwise 'within the recorded range'. The two baseline rates are two related models over the same 50 s window per body: their difference is a recorded spread, not a confidence interval and not a pass line.",
+   "4. Repeated at the endpoint: 3 or more endpoint occasions on at least one body (the count half of the tracker's repeated stage).",
+   "5. Selectable: at least 6 comparable bodies, at least 6 of them 'higher than both', and rule 4. Why 6: if nothing changed, a body's three readings are exchangeable, so the endpoint is the largest of the three 1 time in 3 (a tie reads 'within', which only lowers this). With 8 comparable bodies the chance that 6 or more read 'higher than both' by chance is C(8,6)(1/3)^6(2/3)^2 + C(8,7)(1/3)^7(2/3) + (1/3)^8 = (112 + 16 + 1) / 6561 = 129/6561, about 2 in 100 per row; with 7 comparable bodies 15/2187 (about 0.7 in 100); with 6, 1/729 (about 0.14 in 100). The rule of Oct 11, 4:07 AM PDT (1 body of 8) made a row selectable by chance 1 - (2/3)^8 = 96 times in 100 (independent review, note 18). Across the 12 rows entering the decision the chance that any is selectable by chance is at most 12 x 129/6561 = 0.24 (the sum bounds the union). The arithmetic treats the 8 bodies as independent; they share one learned model, so it describes the rule's strictness, not a probability of the result.",
+   "6. Among selectable rows: the most bodies 'higher than both'; ties go to the most bodies higher minus lower, then to the larger mean change across comparable bodies (endpoint minus the mean of the two baseline rates, every body weighted equally), then to the catalogue's row sequence (capability_catalog.json order: H04, H05, H06, B01, R01, R02, recontact, P02, P03, P04, O07, O08).",
+   "7. Opportunity is shown beside every rate (endpoint against baseline opportunity steps per body), so a change in how often the world offered the act is read apart from a change in success per opportunity.",
+   "8. Every row entering the decision carries a status: 'selectable', or its observed failure, the first of: 'no opportunity' (zero endpoint opportunity on every body), 'no comparable body' (endpoint opportunity, but no body with opportunity in all three readings), 'too few bodies with opportunity' (1 to 5 comparable bodies), 'no success' (zero endpoint occasions on every body), 'no repeated success' (rule 4 fails), 'successes without a clear change' (fewer than 6 bodies 'higher than both'). The other layers the plan names - no useful goal chosen, inaccurate movement prediction, incorrect execution - are read by the goal/command/movement reader of the same plan, not by this reader."
+  ],
+  "rows": {
+   "H04": {
+    "labels": {
+     "0": "within the recorded range",
+     "1": "within the recorded range",
+     "2": "within the recorded range",
+     "3": "within the recorded range",
+     "4": "higher than both baseline readings",
+     "5": "higher than both baseline readings",
+     "6": "higher than both baseline readings",
+     "7": "within the recorded range"
+    },
+    "comparable_bodies": 8,
+    "higher": 3,
+    "lower": 0,
+    "repeated_at_endpoint": true,
+    "mean_change_per_1000": 0.25,
+    "endpoint_occasions": {
+     "0": 0,
+     "1": 0,
+     "2": 0,
+     "3": 0,
+     "4": 3,
+     "5": 1,
+     "6": 1,
+     "7": 0
+    },
+    "endpoint_opportunity_steps": {
+     "0": 2000,
+     "1": 2000,
+     "2": 2000,
+     "3": 2000,
+     "4": 2000,
+     "5": 2000,
+     "6": 2000,
+     "7": 2000
+    },
+    "baseline_opportunity_steps": {
+     "0": 2000,
+     "1": 2000,
+     "2": 1552,
+     "3": 2000,
+     "4": 2000,
+     "5": 2000,
+     "6": 2000,
+     "7": 2000
+    },
+    "status": "successes without a clear change"
+   },
+   "H05": {
+    "labels": {
+     "0": "lower than both baseline readings",
+     "1": "higher than both baseline readings",
+     "2": "higher than both baseline readings",
+     "3": "within the recorded range",
+     "4": "lower than both baseline readings",
+     "5": "lower than both baseline readings",
+     "6": "higher than both baseline readings",
+     "7": "within the recorded range"
+    },
+    "comparable_bodies": 8,
+    "higher": 3,
+    "lower": 3,
+    "repeated_at_endpoint": true,
+    "mean_change_per_1000": 0.35415408321550634,
+    "endpoint_occasions": {
+     "0": 46,
+     "1": 49,
+     "2": 32,
+     "3": 37,
+     "4": 37,
+     "5": 46,
+     "6": 52,
+     "7": 41
+    },
+    "endpoint_opportunity_steps": {
+     "0": 2000,
+     "1": 2000,
+     "2": 2000,
+     "3": 2000,
+     "4": 2000,
+     "5": 2000,
+     "6": 2000,
+     "7": 2000
+    },
+    "baseline_opportunity_steps": {
+     "0": 2000,
+     "1": 2000,
+     "2": 1552,
+     "3": 2000,
+     "4": 2000,
+     "5": 2000,
+     "6": 2000,
+     "7": 2000
+    },
+    "status": "successes without a clear change"
+   },
+   "H06": {
+    "labels": {
+     "0": "within the recorded range",
+     "1": "within the recorded range",
+     "2": "higher than both baseline readings",
+     "3": "within the recorded range",
+     "4": "lower than both baseline readings",
+     "5": "lower than both baseline readings",
+     "6": "within the recorded range",
+     "7": "lower than both baseline readings"
+    },
+    "comparable_bodies": 8,
+    "higher": 1,
+    "lower": 3,
+    "repeated_at_endpoint": true,
+    "mean_change_per_1000": -1.276895410929757,
+    "endpoint_occasions": {
+     "0": 6,
+     "1": 7,
+     "2": 8,
+     "3": 9,
+     "4": 6,
+     "5": 6,
+     "6": 9,
+     "7": 6
+    },
+    "endpoint_opportunity_steps": {
+     "0": 2000,
+     "1": 2000,
+     "2": 2000,
+     "3": 2000,
+     "4": 2000,
+     "5": 2000,
+     "6": 2000,
+     "7": 2000
+    },
+    "baseline_opportunity_steps": {
+     "0": 2000,
+     "1": 2000,
+     "2": 1552,
+     "3": 2000,
+     "4": 2000,
+     "5": 2000,
+     "6": 2000,
+     "7": 2000
+    },
+    "status": "successes without a clear change"
+   },
+   "R01": {
+    "labels": {
+     "0": "higher than both baseline readings",
+     "1": "lower than both baseline readings",
+     "2": "higher than both baseline readings",
+     "3": "higher than both baseline readings",
+     "4": "higher than both baseline readings",
+     "5": "higher than both baseline readings",
+     "6": "lower than both baseline readings",
+     "7": "within the recorded range"
+    },
+    "comparable_bodies": 8,
+    "higher": 5,
+    "lower": 2,
+    "repeated_at_endpoint": true,
+    "mean_change_per_1000": 0.25328254488960067,
+    "endpoint_occasions": {
+     "0": 32,
+     "1": 31,
+     "2": 10,
+     "3": 47,
+     "4": 46,
+     "5": 38,
+     "6": 29,
+     "7": 36
+    },
+    "endpoint_opportunity_steps": {
+     "0": 1528,
+     "1": 1975,
+     "2": 2000,
+     "3": 2000,
+     "4": 1900,
+     "5": 1616,
+     "6": 2000,
+     "7": 1690
+    },
+    "baseline_opportunity_steps": {
+     "0": 1413,
+     "1": 1553,
+     "2": 1552,
+     "3": 1893,
+     "4": 1941,
+     "5": 1911,
+     "6": 2000,
+     "7": 1251
+    },
+    "status": "successes without a clear change"
+   },
+   "R02": {
+    "labels": {
+     "0": "within the recorded range",
+     "1": "within the recorded range",
+     "2": "within the recorded range",
+     "3": "within the recorded range",
+     "4": "lower than both baseline readings",
+     "5": "higher than both baseline readings",
+     "6": "within the recorded range",
+     "7": "within the recorded range"
+    },
+    "comparable_bodies": 8,
+    "higher": 1,
+    "lower": 1,
+    "repeated_at_endpoint": true,
+    "mean_change_per_1000": -0.2724236634444136,
+    "endpoint_occasions": {
+     "0": 0,
+     "1": 0,
+     "2": 0,
+     "3": 0,
+     "4": 0,
+     "5": 7,
+     "6": 0,
+     "7": 0
+    },
+    "endpoint_opportunity_steps": {
+     "0": 1383,
+     "1": 1970,
+     "2": 2000,
+     "3": 1997,
+     "4": 1893,
+     "5": 1535,
+     "6": 2000,
+     "7": 1591
+    },
+    "baseline_opportunity_steps": {
+     "0": 1412,
+     "1": 1549,
+     "2": 1552,
+     "3": 1887,
+     "4": 1941,
+     "5": 1838,
+     "6": 2000,
+     "7": 1006
+    },
+    "status": "successes without a clear change"
+   },
+   "R02_recontact": {
+    "labels": {
+     "0": "within the recorded range",
+     "1": "within the recorded range",
+     "2": "within the recorded range",
+     "3": "within the recorded range",
+     "4": "lower than both baseline readings",
+     "5": "higher than both baseline readings",
+     "6": "within the recorded range",
+     "7": "within the recorded range"
+    },
+    "comparable_bodies": 8,
+    "higher": 1,
+    "lower": 1,
+    "repeated_at_endpoint": true,
+    "mean_change_per_1000": -0.08499664902024628,
+    "endpoint_occasions": {
+     "0": 0,
+     "1": 0,
+     "2": 0,
+     "3": 0,
+     "4": 0,
+     "5": 6,
+     "6": 0,
+     "7": 0
+    },
+    "endpoint_opportunity_steps": {
+     "0": 1383,
+     "1": 1970,
+     "2": 2000,
+     "3": 1997,
+     "4": 1893,
+     "5": 1535,
+     "6": 2000,
+     "7": 1591
+    },
+    "baseline_opportunity_steps": {
+     "0": 1412,
+     "1": 1549,
+     "2": 1552,
+     "3": 1887,
+     "4": 1941,
+     "5": 1838,
+     "6": 2000,
+     "7": 1006
+    },
+    "status": "successes without a clear change"
+   },
+   "B01": {
+    "labels": {
+     "0": "within the recorded range",
+     "1": "within the recorded range",
+     "2": "within the recorded range",
+     "3": "within the recorded range",
+     "4": "within the recorded range",
+     "5": "within the recorded range",
+     "6": "within the recorded range",
+     "7": "within the recorded range"
+    },
+    "comparable_bodies": 8,
+    "higher": 0,
+    "lower": 0,
+    "repeated_at_endpoint": false,
+    "mean_change_per_1000": 0.0,
+    "endpoint_occasions": {
+     "0": 0,
+     "1": 0,
+     "2": 0,
+     "3": 0,
+     "4": 0,
+     "5": 0,
+     "6": 0,
+     "7": 0
+    },
+    "endpoint_opportunity_steps": {
+     "0": 1000,
+     "1": 1000,
+     "2": 1000,
+     "3": 1000,
+     "4": 1000,
+     "5": 1000,
+     "6": 1000,
+     "7": 1000
+    },
+    "baseline_opportunity_steps": {
+     "0": 1000,
+     "1": 1000,
+     "2": 776,
+     "3": 1000,
+     "4": 1000,
+     "5": 1000,
+     "6": 1000,
+     "7": 1000
+    },
+    "status": "no success"
+   },
+   "O07": {
+    "labels": {
+     "0": null,
+     "1": null,
+     "2": null,
+     "3": "within the recorded range",
+     "4": "within the recorded range",
+     "5": null,
+     "6": "within the recorded range",
+     "7": "within the recorded range"
+    },
+    "comparable_bodies": 4,
+    "higher": 0,
+    "lower": 0,
+    "repeated_at_endpoint": false,
+    "mean_change_per_1000": 0.0,
+    "endpoint_occasions": {
+     "0": 0,
+     "1": 0,
+     "2": 0,
+     "3": 0,
+     "4": 0,
+     "5": 0,
+     "6": 0,
+     "7": 0
+    },
+    "endpoint_opportunity_steps": {
+     "0": 0,
+     "1": 0,
+     "2": 0,
+     "3": 120,
+     "4": 327,
+     "5": 3,
+     "6": 1000,
+     "7": 463
+    },
+    "baseline_opportunity_steps": {
+     "0": 0,
+     "1": 0,
+     "2": 0,
+     "3": 255,
+     "4": 10,
+     "5": 0,
+     "6": 1000,
+     "7": 6
+    },
+    "status": "too few bodies with opportunity"
+   },
+   "O08": {
+    "labels": {
+     "0": null,
+     "1": null,
+     "2": null,
+     "3": "within the recorded range",
+     "4": "within the recorded range",
+     "5": null,
+     "6": "within the recorded range",
+     "7": "within the recorded range"
+    },
+    "comparable_bodies": 4,
+    "higher": 0,
+    "lower": 0,
+    "repeated_at_endpoint": false,
+    "mean_change_per_1000": 0.0,
+    "endpoint_occasions": {
+     "0": 0,
+     "1": 0,
+     "2": 0,
+     "3": 0,
+     "4": 0,
+     "5": 0,
+     "6": 0,
+     "7": 0
+    },
+    "endpoint_opportunity_steps": {
+     "0": 0,
+     "1": 0,
+     "2": 0,
+     "3": 120,
+     "4": 327,
+     "5": 3,
+     "6": 1000,
+     "7": 463
+    },
+    "baseline_opportunity_steps": {
+     "0": 0,
+     "1": 0,
+     "2": 0,
+     "3": 255,
+     "4": 10,
+     "5": 0,
+     "6": 1000,
+     "7": 6
+    },
+    "status": "too few bodies with opportunity"
+   },
+   "P02": {
+    "labels": {
+     "0": "within the recorded range",
+     "1": "within the recorded range",
+     "2": null,
+     "3": "within the recorded range",
+     "4": "within the recorded range",
+     "5": "within the recorded range",
+     "6": "within the recorded range",
+     "7": "within the recorded range"
+    },
+    "comparable_bodies": 7,
+    "higher": 0,
+    "lower": 0,
+    "repeated_at_endpoint": false,
+    "mean_change_per_1000": 0.0,
+    "endpoint_occasions": {
+     "0": 0,
+     "1": 0,
+     "2": 0,
+     "3": 0,
+     "4": 0,
+     "5": 0,
+     "6": 0,
+     "7": 0
+    },
+    "endpoint_opportunity_steps": {
+     "0": 1000,
+     "1": 1000,
+     "2": 0,
+     "3": 1000,
+     "4": 1000,
+     "5": 1000,
+     "6": 1000,
+     "7": 1000
+    },
+    "baseline_opportunity_steps": {
+     "0": 1000,
+     "1": 1000,
+     "2": 0,
+     "3": 1000,
+     "4": 1000,
+     "5": 1000,
+     "6": 1000,
+     "7": 1000
+    },
+    "status": "no success"
+   },
+   "P03": {
+    "labels": {
+     "0": null,
+     "1": null,
+     "2": null,
+     "3": null,
+     "4": null,
+     "5": null,
+     "6": null,
+     "7": null
+    },
+    "comparable_bodies": 0,
+    "higher": 0,
+    "lower": 0,
+    "repeated_at_endpoint": false,
+    "mean_change_per_1000": null,
+    "endpoint_occasions": {
+     "0": 0,
+     "1": 0,
+     "2": 0,
+     "3": 0,
+     "4": 0,
+     "5": 0,
+     "6": 0,
+     "7": 0
+    },
+    "endpoint_opportunity_steps": {
+     "0": 0,
+     "1": 0,
+     "2": 0,
+     "3": 0,
+     "4": 0,
+     "5": 0,
+     "6": 0,
+     "7": 0
+    },
+    "baseline_opportunity_steps": {
+     "0": 0,
+     "1": 0,
+     "2": 0,
+     "3": 0,
+     "4": 0,
+     "5": 0,
+     "6": 0,
+     "7": 0
+    },
+    "status": "no opportunity"
+   },
+   "P04": {
+    "labels": {
+     "0": "within the recorded range",
+     "1": "within the recorded range",
+     "2": null,
+     "3": "within the recorded range",
+     "4": "within the recorded range",
+     "5": "within the recorded range",
+     "6": "within the recorded range",
+     "7": "within the recorded range"
+    },
+    "comparable_bodies": 7,
+    "higher": 0,
+    "lower": 0,
+    "repeated_at_endpoint": false,
+    "mean_change_per_1000": 0.0,
+    "endpoint_occasions": {
+     "0": 0,
+     "1": 0,
+     "2": 0,
+     "3": 0,
+     "4": 0,
+     "5": 0,
+     "6": 0,
+     "7": 0
+    },
+    "endpoint_opportunity_steps": {
+     "0": 1000,
+     "1": 1000,
+     "2": 0,
+     "3": 1000,
+     "4": 1000,
+     "5": 1000,
+     "6": 1000,
+     "7": 1000
+    },
+    "baseline_opportunity_steps": {
+     "0": 1000,
+     "1": 1000,
+     "2": 0,
+     "3": 1000,
+     "4": 1000,
+     "5": 1000,
+     "6": 1000,
+     "7": 1000
+    },
+    "status": "no success"
+   }
+  },
+  "selected": null,
+  "selected_examples": null,
+  "failures": {
+   "H04": "successes without a clear change",
+   "H05": "successes without a clear change",
+   "H06": "successes without a clear change",
+   "R01": "successes without a clear change",
+   "R02": "successes without a clear change",
+   "R02_recontact": "successes without a clear change",
+   "B01": "no success",
+   "O07": "too few bodies with opportunity",
+   "O08": "too few bodies with opportunity",
+   "P02": "no success",
+   "P03": "no opportunity",
+   "P04": "no success"
+  }
+ }
+}

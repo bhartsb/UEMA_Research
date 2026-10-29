@@ -1,0 +1,68 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1"><title>UEMA takeover review — 23 September 2026</title>
+<style>body{font:16px/1.55 system-ui,sans-serif;color:#182532;background:#f5f7fa;margin:0}
+main{max-width:940px;margin:auto;padding:32px 22px 64px}h1{font-size:30px;line-height:1.2}
+h2{font-size:22px;margin-top:30px}a{color:#214ead}table{width:100%;border-collapse:collapse;background:white}
+th,td{padding:10px;border-bottom:1px solid #d8dee6;text-align:left;vertical-align:top}
+.state{background:#fff7e5;border-left:4px solid #b7801e;padding:14px}code{background:#e9edf2;padding:2px 4px}
+.muted{color:#536374}li{margin:7px 0}@media print{body{background:white}main{max-width:none;padding:0}}</style></head><body><main>
+<h1>UEMA gain-of-function: takeover review</h1><p class="muted">23 September 2026. Independent review, repairs and qualification.</p>
+<p class="state"><b>Training resumed after verified repairs.</b> Planner selection, eye-command prediction
+and exploration rotations are corrected; the learner and all eight worlds are preserved.
+Moving-wrist finger targets improved physical accuracy. Synergy and the body-prediction shortcut failed
+their movement comparisons, so they were not enabled. Rolling and object tests now have concrete
+follow-up experiments. The <a href="http://127.0.0.1:8766/">live dashboard</a> shows progress toward
+the next body-prediction recheck at step 375250.</p>
+<p><a href="MOTOR_CONTROL_REVIEW_2026-09-23.md">Current findings, training impact and actions</a> &middot;
+<a href="HAND_CAPABILITY_PROGRAM_2026-09-23.md">Hand capability programme</a> &middot;
+<a href="EYE_PROGRESS_2026-09-23.md">Eye progress</a> &middot;
+<a href="UEMA_Embodied_Gain_of_Function_Addendum_v3.html">Addendum v3</a></p>
+<p>The earlier perfect dashboard score is withdrawn. The redesigned overview shows capability stages,
+repair history and upcoming tests; detailed evidence and definitions open on demand.</p>
+<details><summary>Earlier takeover results and the original synergy comparison</summary>
+<p>These are historical measurements from the first integration. Current results supersede their
+operational status and next-action descriptions.</p>
+<h2>What the concerning result actually says</h2>
+<table><tr><th>Configuration in the previous review</th><th>Median movement per ordered part</th><th>Following above chance</th></tr>
+<tr><td>Existing controller and proposal smoothing</td><td>15.8 degrees</td><td>22 additional parts ending closer per 100 orders</td></tr>
+<tr><td>Fresh synergy, synergy exploration, executed-order smoothing</td><td>4.6 degrees</td><td>9 additional parts ending closer per 100 orders</td></tr>
+<tr><td>Previously fitted synergy, proposal smoothing</td><td>See the original trial record</td><td>32 additional parts ending closer per 100 orders</td></tr></table>
+<p>The first two movement numbers measure how far the body moved, not how accurately it obeyed.
+The following counts measure whether it ended closer to each ordered orientation, minus a random-direction
+control. These trials covered two bodies for 7.5 seconds each, with learning disabled.
+<a href="reviews/b5-synergy.md">Original synergy review and methods</a>.</p>
+<p>The synergy planner began its search from a zero intention, which its decoder defines as holding the
+current pose. Predictions that ignore the order provide no useful direction for that search.
+Changing the smoother at the same time also slowed the body's response. Both changes need separate tests.</p>
+<h2>What changed</h2><ul>
+<li>The movement map can now learn while its planner and exploration remain off. The bootstrap retains
+proposal smoothing. Giving the map control requires a paired physical comparison.</li>
+<li>When enabled, the synergy planner starts from the encoded controller proposal. This is still a projection
+through the learned map; a fresh map is not assumed ready to control.</li>
+<li>Following now counts completed executed orders by author, with requested and realized turns and a
+random-axis geometric control. Stillness receives no following credit. This control is not a physical replay.</li>
+<li>The five unfinished model lanes were integrated. Merge interactions in controllability fields,
+vestibular loss weighting, resume settings and copied probe state were repaired.</li>
+<li>Non-finite synergy exploration falls back to independent exploration. Non-finite gradients in added
+modules now reach the existing optimizer skip guard.</li>
+<li>A real-checkpoint test exposed a one-window liveness repair: units active only during startup escaped
+repair forever. The repair now keeps observing unrepaired units and never resets a previously repaired unit.</li>
+<li>Dashboard, explainer and watcher readers were brought into line with the integrated producers.
+The movement map's reconstruction is no longer counted in the shared-model loss-share denominator.</li></ul>
+<h2>Recorded qualification</h2><ul><li>Eight bodies trained for 400 model steps on a private copy: passed. <a href="../../Saved/gof_takeover_20260923/proof_400/result.json">Operational checks</a>.</li><li>All nine repaired layers were observed at least 100 training steps after their first repair. The latest readings had 79–100 responding units per 100, above the required 50. <a href="../../Saved/gof_takeover_20260923/proof_400/liveness_assessment.json">Liveness evidence</a>.</li><li>Focused suites and browser checks are recorded in the detailed review. The original checkpoint and recording tapes were preserved.</li></ul><table><tr><th>Saved-upgrade probe</th><th>Result</th></tr><tr><td>gaze</td><td>When only the eye command changed (10 degrees left or right, 8 up or down, each against holding the eyes still from the same moment), the picture the model imagined 150 ms ahead, on the imagination route the planner uses, moved 0.0724% (7 in every ten thousand) of the way the real picture moved; on the trained route (the prediction its next-moment lesson grades), 50 ms ahead, 0.181% (2 in every thousand). 0% = the prediction ignores where the eyes are sent, 100% = it foresees the whole change. The imagined picture for a command differed from the imagined picture for holding the eyes still by 0.546% of how much the real pictures differed. Of 24 pairs of different commands, 20 stood above their noise line (twice the spread of the pair&#x27;s predicted difference over 3 nearby eye starts) and 18 of those were told apart correctly; 4 were undecided (their predictions differed by less than that line) and 0 gave exactly the same prediction for both commands. Distance to goal unmeasured.</td></tr><tr><td>body</td><td>When one limb was ordered to turn 20 degrees (finger, wrist, elbow, shoulder, knee) and the rest held still, the commanded part ended 9.4 degrees away from where holding still left it, after 250 ms; the model&#x27;s 250 ms prediction of where every body part would be (its efference body head) foresaw 0.153% (2 in every thousand) of the real difference the order made (0% = it ignores the order, 100% = it foresees the whole change). Distance to goal unmeasured. The efference body head&#x27;s hidden layers: 100% and 100% of units responded; a layer under 50% is not responding. A unit responds when its input leaves the flat low end of its activation function (GELU, the curve that turns a unit&#x27;s input into its output). In that flat end, a change in the input moves the output by less than 1.2% of the change; for a large input the output moves as much as the input (100%).</td></tr><tr><td>binding</td><td>The right hand was sent into view in 2 of 2 start moments. At the step it entered the eyes&#x27; field the model&#x27;s next-moment prediction for continuing the order, against its prediction for stopping the hand where it was, moved -0.246% (2 in every thousand; minus: the prediction moved the wrong way) of the way the real picture differed between continuing and stopping (0% = the prediction does not depend on the order, 100% = it foresees the whole difference). Measured the first way - how far the prediction moved along the real change, which a model that only extends the hand&#x27;s motion also scores - it read 0.056% (6 in every ten thousand). Distance to goal unmeasured. At the onset of a scripted self-touch, the touch prediction for the touching order against holding still moved 0.295% (3 in every thousand) of the way the real touch differed. Both sides of a self-touch foreseen above the hold order (contact head): 0 of 1 onsets. A head whose answer does not depend on the order scores none of them, a coin flip for each side would score 1 of every 4, and a head that foresees every touch scores all of them.</td></tr><tr><td>posture</td><td>When only the head was ordered to turn or tilt 15 degrees, it ended 2.7 degrees away from where holding still left it; the model&#x27;s next-moment prediction of its balance sense (vestibular) foresaw 0% of the real difference (0% = it ignores the order, 100% = it foresees the whole change). Distance to goal unmeasured. A head turn the body made itself against the same turn pushed from outside: the pushed turn&#x27;s next-moment error was larger than the self-made turn&#x27;s by +0.2%, -3.0% (one per start moment; 0% = no difference, above 0% = its own turn predicted better): no consistent difference over the start moments. The weight-shift orders rolled the chest at least half as far as asked in 0 of 2 start moments. Lifting the head took 1.67 N m of neck torque on average against 0.08 N m holding still; the model has no effort prediction to compare.</td></tr></table>
+<h2>What would establish faster, better gain of function</h2>
+<p>The model must predict the consequences of its orders, use those predictions to choose effective actions,
+and repeat, retain and transfer the resulting abilities. More motion, a lower loss or responsive units alone
+does not demonstrate that chain.</p>
+<p>The next comparison must train the upgrade and the previous configuration with matched experience and
+wall-clock budgets. Before either synergy control switch is enabled, test each switch separately from the
+same checkpoint and world starts, with uncertainty across whole orders and bodies.</p>
+<p>No result in this takeover yet establishes faster acquisition, retention or transfer. Imagination loss
+remains outside the next-frame normalization change; its contribution and representation quality still need
+measurement during learning. The learning-progress score can also move when world conditions change with
+frozen weights; without a same-moment control, that score cannot establish learning.</p>
+<p><a href="RESTART_CRITERIA.md">Exact restart and adoption criteria</a> ·
+<a href="TAKEOVER_REVIEW_2026-09-23.md">Detailed review and test records</a> ·
+<a href="deploy_qualified_bootstrap.py">Guarded restart script</a> ·
+<a href="UEMA_Embodied_Gain_of_Function_Addendum_v3.html">Addendum v3</a></p>
+</details></main></body></html>

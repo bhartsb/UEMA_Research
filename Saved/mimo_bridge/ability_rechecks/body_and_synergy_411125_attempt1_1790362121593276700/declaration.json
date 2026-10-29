@@ -1,0 +1,41 @@
+{
+  "checkpoint": "D:\\UEMA_Research\\Saved\\mimo_bridge\\experiments\\H84_fresh_drivers_20260918_seg40_resume_20260925_112146\\checkpoints\\ckpt_step_411125",
+  "bodies": 8,
+  "goals": [
+    "curl_witness",
+    "extension_witness",
+    "wrist_reach_witness",
+    "supported_trunk_turn_witness",
+    "elbow_flex_witness"
+  ],
+  "goal_suite": "hand_and_body",
+  "contract": "wrist_relative_joint_v1",
+  "learning": false,
+  "production_changed": false,
+  "hold_seconds": 0.25,
+  "initializer": "controller",
+  "compare_execution_contracts": false,
+  "goal_source": "Observed endpoint of a same-state physical reference: compatible curl/extension, a left-wrist reach, a coordinated trunk turn or a left-elbow flex. Every reference retains ordinary force and gaze settings.",
+  "witness_rule": "A witness is informative for a body when its request moved the requested part beyond the controller's endpoint in the requested direction AND further along that direction than the mirrored request (the same change from the controller's request, reversed) did: the difference is the request's doing, not a push that happens whatever is asked. A mirror the body cannot follow (a joint at its limit, a wrist on the mat) stays near the controller's endpoint and does not count against the witness. Each is an endpoint minus the controller's endpoint, projected on the executed request (the witness's executed command minus the controller's, after the smoother). For the elbow the measured quantity is the elbow joint's own angle (flexion positive), so shoulder motion cannot count. requested_raw is the request before the smoother, requested_executed after it, mirror_requested_executed the mirror's executed request on the same direction (negative when it asks for the reverse; mirror_request_blocked when it does not), achieved_beyond_controller the witness's projection and mirror_beyond_controller the mirrored request's, achieved_share and mirror_share the two over requested_executed (1 = the whole executed request happened, 0 = the body ended where the controller took it), separation_from_controller the whole difference between the witness's and the controller's endpoints and moved_from_start the witness endpoint's distance from the saved start; sizes are root mean squares over the requested parts, in cm for a position, degrees for a turn or a joint.",
+  "ranking_rules": {
+    "statistic": "of all pairs of candidate commands tried from the same saved state, how many in 100 the forecast's order picks the pair's actual winner (lower = better for both); 50 = chance, 80 to 90 = a ranking a planner can optimize",
+    "ties": "a pair whose actual outcomes differ by no more than 1 in 100 of that start's actual standard deviation has no winner and is left out; a pair the forecast scores exactly equal counts half right",
+    "interval": "95%, whole bodies resampled with replacement, 5000 draws",
+    "spread_ratio": "median over starts of the standard deviation of the candidates' forecasts over that of their actual outcomes: 0 = the forecast gives every command the same outcome, 1 = it separates them as much as reality does",
+    "case": "better than chance when the interval's lower end is above 50: then case_3_planner_not_better when a planner's command does not beat the reference command its search started from in the actual outcome (paired body interval of planner minus reference not entirely below 0), else ranking_used (better_than_chance without a planner comparison). Below chance (the interval's upper end under 50): case_2_wrong_order. Otherwise case_1_under_separated when the spread ratio is below 1 and case_2_wrong_order when it is 1 or more; undetermined with fewer than two bodies or no pair with an actual winner"
+  },
+  "ranking_forecast": "each arm's forecast goal error (the planners' own held-order pose forecast against the goal pose) against its actual goal error 0.25 seconds after the command, over the arms of each trial",
+  "comparison": "Starting controller, direct feasible-hand planner, composed learned-synergy/feasible-hand planner. Strength and gaze are fixed to the controller inside both searches.",
+  "gaze_scope": "Body-stage mechanism comparison: visual gaze optimization is deliberately held fixed in every arm; this does not qualify the combined visual/body policy.",
+  "hand_memory_scope": "The separate calibrated hand-memory choice stage is disabled in this physical-body planner comparison; its learned calibration remains preserved.",
+  "adoption": "Compare common physical-goal error and hand-joint error across independent bodies; no switch is changed by this experiment.",
+  "script_sha256": "100274508542c6771fe8d140e0f4830f4ef4d2113680f52e8a7f40dcd40b0876",
+  "source_sha256": {
+    "Source\\Python\\mimo_bridge\\hand_target_control.py": "f40c645e81efc8fab58f2286e074dfb944e77aa71c6143e6d931a7ac22f89053",
+    "Source\\Python\\mimo_bridge\\lem_model.py": "9ad1b54563dab22b66e58752c515c8eeb62d4cde0958b9693e7982d561ae3fe8",
+    "Source\\Python\\lem\\model\\physical_goal.py": "654cf36e63f29fdda64d365a07a6d09dd1f66a8612074357f4dcd913770cd53a",
+    "Source\\Python\\mimo_bridge\\env.py": "fbb0c07bf4f28204a3d74f03998584e6a289fd9e71d941bf2c59dc694e18bd0b",
+    "Source\\Python\\mimo_bridge\\tools\\gof_probe_harness.py": "e5557fe9938d81276496c302b1d073e63256c2172cfad0861b65b5ed8483e598"
+  },
+  "seed": 0
+}

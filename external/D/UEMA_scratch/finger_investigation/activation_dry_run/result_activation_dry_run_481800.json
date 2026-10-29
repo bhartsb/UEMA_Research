@@ -1,0 +1,460 @@
+{
+ "verdict": "pass",
+ "verdict_reason": "all 17 items hold",
+ "judged": "Oct 09, 2026 12:10:23 AM PDT",
+ "root": "D:\\UEMA_Research\\external\\D\\UEMA_scratch\\finger_investigation\\activation_dry_run",
+ "items": [
+  {
+   "id": "P1",
+   "title": "the start copy equals 481,800 byte for byte",
+   "state": "held",
+   "evidence": {
+    "files": {
+     "model.safetensors": "46c3db2ff1fa5e23faae9ebb1326ca2d58ab74bbcb9b3a2de7637403d10bb6a5",
+     "optimizer.pt": "1079d41bd060fed26f62916b7bd52c42d91ab83b71baa7df7cc1463ebafca1ef",
+     "runtime_state.pt": "428def1f722511ad6fde211666c35614de01ff50525876234f6fa3f8056bf2d6",
+     "model_receipt.json": "ccf4a8f9a452396819ff5a73b5a190f277d85b1d7cc7a7d04fd7adc2234e5c4f",
+     "meta.json": "697ab9afbbaffdf65f8aec417319f2dff28f14ae286e7b2c95e66d4b7f2fc9a3",
+     "episode_state.json": "d660954467d688eeda557bab93db2c21b8d71dade444e5939a4ba85283f5251b",
+     "lineage.json": "e5e36331da11926e7ad1cbf78c366b4de2c6125a96c1a8ba776bf3e65a21efc3"
+    },
+    "why": ""
+   }
+  },
+  {
+   "id": "A0",
+   "title": "run A: verify ok immediately before the launch, the same code (git HEAD, trainer code hash, MIMo HEAD and clean) at the verify, the launch and the end, the supervisor paused and its record unchanged, nothing written in the protected places",
+   "state": "held",
+   "evidence": {
+    "verify_at": "Oct 09, 2026 12:05:19 AM PDT",
+    "launch_at": "Oct 09, 2026 12:05:21 AM PDT",
+    "git_head": "ebac031bf2052622e163fa51b422aefcc9a2f5e4",
+    "source_tree": "0e53260fdbb0339cbcbd7e07379bacb821ae1890",
+    "code_hash": "add5725e7806b7fc9a6b0e5541f33816cf1bfb11589e4b3172db6e428df4ac4a",
+    "commit_peak_gb": 59.72,
+    "commit_base_gb": 37.26,
+    "gpu_peak_mib": 2178.0,
+    "why": ""
+   }
+  },
+  {
+   "id": "B0",
+   "title": "run B: verify ok immediately before the launch, the same code (git HEAD, trainer code hash, MIMo HEAD and clean) at the verify, the launch and the end, the supervisor paused and its record unchanged, nothing written in the protected places",
+   "state": "held",
+   "evidence": {
+    "verify_at": "Oct 09, 2026 12:07:36 AM PDT",
+    "launch_at": "Oct 09, 2026 12:07:38 AM PDT",
+    "git_head": "287965d56064429da018540e602b36522f9cb214",
+    "source_tree": "0e53260fdbb0339cbcbd7e07379bacb821ae1890",
+    "code_hash": "add5725e7806b7fc9a6b0e5541f33816cf1bfb11589e4b3172db6e428df4ac4a",
+    "commit_peak_gb": 67.95,
+    "commit_base_gb": 36.98,
+    "gpu_peak_mib": 4340.0,
+    "why": ""
+   }
+  },
+  {
+   "id": "A1",
+   "title": "the run ended by itself with learning off (zero model steps: --max-steps equals the resumed step)",
+   "state": "held",
+   "evidence": {
+    "ok": true,
+    "steps": 481800,
+    "exception": "",
+    "exit_code": 0,
+    "seconds": 134.8,
+    "why": ""
+   }
+  },
+  {
+   "id": "A2",
+   "title": "train_mimo.main wrote the stats record hand_calibration_replacement after the worlds' hand geometry check (world_geometry_sha256 set), naming the refit as replacing the admitted fit",
+   "state": "held",
+   "evidence": {
+    "records": 1,
+    "why": ""
+   }
+  },
+  {
+   "id": "A3",
+   "title": "zero model steps: no report record, the launch record at 481,800",
+   "state": "held",
+   "evidence": {
+    "record_types": {
+     "launch": 1,
+     "persistent_memory_switch": 1,
+     "hand_calibration_replacement": 1
+    },
+    "launch_step": 481800,
+    "why": ""
+   }
+  },
+  {
+   "id": "A4",
+   "title": "the first checkpoint's model_receipt.json holds the refit under hand_response and the replacement under hand_calibration_replacements",
+   "state": "held",
+   "evidence": {
+    "hand_response_sha256": "f68754c866483a9e30318bf0697b08c450dd5ad53dd4d996861d67a6a4aeef3c",
+    "hand_response_file_sha256": "a7716f55df32cc1a797021a2502b9aad78f1190adcdba47087ae5aa965651501",
+    "hand_response_meaning": "finger_joint_servo_v1",
+    "replacements": 1,
+    "why": ""
+   }
+  },
+  {
+   "id": "A5",
+   "title": "the first checkpoint's episode companion holds the refit (_hand_response_calibration) after restore_learner put the admitted fit back and configure_hand_geometry put the refit back; its 8 worlds carry --finger-joint-servo on",
+   "state": "held",
+   "evidence": {
+    "calibration_sha256": "f68754c866483a9e30318bf0697b08c450dd5ad53dd4d996861d67a6a4aeef3c",
+    "calibration_file_sha256": "a7716f55df32cc1a797021a2502b9aad78f1190adcdba47087ae5aa965651501",
+    "trainer_step": 481800,
+    "worlds": 8,
+    "finger_rules": [
+     "on",
+     "on",
+     "on",
+     "on",
+     "on",
+     "on",
+     "on",
+     "on"
+    ],
+    "hand_modes": [
+     "wrist_relative_v1",
+     "wrist_relative_v1",
+     "wrist_relative_v1",
+     "wrist_relative_v1",
+     "wrist_relative_v1",
+     "wrist_relative_v1",
+     "wrist_relative_v1",
+     "wrist_relative_v1"
+    ],
+    "storage_path": "D:\\UEMA_Research\\external\\D\\UEMA_scratch\\finger_investigation\\activation_dry_run\\caregiver_A\\checkpoint_state\\A_resume_481800\\ckpt_step_481800_b5dcbbf9e0d84e0ba1576a0a62d7ed30.pt.gz",
+    "companion_sha256": "851288b76e73313d3a2e218936784efb8e8d7c9306345384d3ce41923bc16696",
+    "why": ""
+   }
+  },
+  {
+   "id": "A6",
+   "title": "no weight changed: every parameter and every optimizer tensor of the end checkpoint equals 481,800's bit for bit (and every buffer)",
+   "state": "held",
+   "evidence": {
+    "model": {
+     "tensors": 802,
+     "missing": [],
+     "extra": [],
+     "differing": [],
+     "shape_changes": [],
+     "parameters": 676,
+     "buffers": 126,
+     "unclassified": [],
+     "file_sha256_equal": true
+    },
+    "optimizer": {
+     "states": 597,
+     "tensors": 1791,
+     "missing": [],
+     "extra": [],
+     "param_groups_equal": true,
+     "param_group_params_equal": true
+    },
+    "optimizer_differing": [],
+    "why": ""
+   }
+  },
+  {
+   "id": "B1",
+   "title": "the run ended by itself with learning off (--eval-only: model.step(train=False) for every model step)",
+   "state": "held",
+   "evidence": {
+    "ok": true,
+    "steps": 26,
+    "exception": "",
+    "exit_code": 0,
+    "seconds": 118.8,
+    "why": ""
+   }
+  },
+  {
+   "id": "B2",
+   "title": "train_mimo.main wrote the stats record hand_calibration_replacement after the worlds' hand geometry check (world_geometry_sha256 set), naming the refit as replacing the admitted fit",
+   "state": "held",
+   "evidence": {
+    "records": 1,
+    "why": ""
+   }
+  },
+  {
+   "id": "B3",
+   "title": "no gradient step: every training report's gradient norm is 0 and no replay ran",
+   "state": "held",
+   "evidence": {
+    "gradient_norms": [
+     0.0
+    ],
+    "why": ""
+   }
+  },
+  {
+   "id": "B4",
+   "title": "planning decisions: the hand stage completed on all 8 bodies with calibration_sha256 = the refit (causal chain lines and the reports' latest plans)",
+   "state": "held",
+   "evidence": {
+    "complete_plans_steps": [
+     20
+    ],
+    "complete_latest_plans_steps": [
+     20
+    ],
+    "other_calibrations": [],
+    "decisions": 1,
+    "latest_plan_calibrations": [
+     "f68754c866483a9e30318bf0697b08c450dd5ad53dd4d996861d67a6a4aeef3c"
+    ],
+    "why": ""
+   }
+  },
+  {
+   "id": "W1",
+   "title": "the hourly watcher's planner monitor (planner_integrity) accepts B's recorded decisions with the refit's hash in its contract; under the inherited contract (seg37's hand_calibration_sha256) it names a stop, read here, deciding nothing",
+   "state": "held",
+   "evidence": {
+    "contract": "D:\\UEMA_Research\\Saved\\mimo_bridge\\experiments\\H84_fresh_drivers_20260918_seg37_hand_vision\\continuation_receipt.json",
+    "inherited_hash": "fe953beb426f2d403b58761d27b69ba2e3ec61e39b78d777fc2bea2b0fcece9e",
+    "required_schema": true,
+    "required_hand": true,
+    "under_inherited": {
+     "stop_reason": "Hand search at step 20 lacks its qualified contract or complete body comparisons. Save and repair required.",
+     "status": "repair_required",
+     "hand_searches": 0,
+     "hand_malformed": 1,
+     "body_comparisons": 8
+    },
+    "under_refit": {
+     "stop_reason": null,
+     "status": "search_checked",
+     "hand_searches": 1,
+     "hand_malformed": 0,
+     "body_comparisons": 8
+    },
+    "why": ""
+   }
+  },
+  {
+   "id": "B5",
+   "title": "the worlds report finger_joint_servo_v1 after their bursts (motor_contract of every body in every report)",
+   "state": "held",
+   "evidence": {
+    "contracts": [
+     "ancestor_arm_axes_signed_limits_v3+finger_joint_servo_v1"
+    ],
+    "reports": 1,
+    "why": ""
+   }
+  },
+  {
+   "id": "B6",
+   "title": "the end checkpoint's receipt and (fresh-world) episode companion hold the refit",
+   "state": "held",
+   "evidence": {
+    "receipt": {
+     "hand_response_sha256": "f68754c866483a9e30318bf0697b08c450dd5ad53dd4d996861d67a6a4aeef3c",
+     "hand_response_file_sha256": "a7716f55df32cc1a797021a2502b9aad78f1190adcdba47087ae5aa965651501",
+     "hand_response_meaning": "finger_joint_servo_v1",
+     "replacements": 1
+    },
+    "companion": {
+     "calibration_sha256": "f68754c866483a9e30318bf0697b08c450dd5ad53dd4d996861d67a6a4aeef3c",
+     "calibration_file_sha256": "a7716f55df32cc1a797021a2502b9aad78f1190adcdba47087ae5aa965651501",
+     "trainer_step": 26,
+     "worlds": 8,
+     "finger_rules": [
+      "on",
+      "on",
+      "on",
+      "on",
+      "on",
+      "on",
+      "on",
+      "on"
+     ],
+     "hand_modes": [
+      "wrist_relative_v1",
+      "wrist_relative_v1",
+      "wrist_relative_v1",
+      "wrist_relative_v1",
+      "wrist_relative_v1",
+      "wrist_relative_v1",
+      "wrist_relative_v1",
+      "wrist_relative_v1"
+     ],
+     "storage_path": "D:\\UEMA_Research\\external\\D\\UEMA_scratch\\finger_investigation\\activation_dry_run\\caregiver_B\\checkpoint_state\\B_eval_only_481800\\ckpt_step_26_fd12647a58c8484bb001f5177124fbfd.pt.gz",
+     "companion_sha256": "4c2c0b48a1846bfff3e82369fca5f68d6c303c2a02ef0dd80dce8f379f3dd467"
+    },
+    "why": ""
+   }
+  },
+  {
+   "id": "B7",
+   "title": "no weight changed: every parameter and every optimizer tensor of the end checkpoint equals 481,800's bit for bit (buffers too, except the declared running statistics)",
+   "state": "held",
+   "evidence": {
+    "model": {
+     "tensors": 802,
+     "missing": [],
+     "extra": [],
+     "differing": [
+      {
+       "name": "heads_all_slot_path.centre_mean",
+       "kind": "buffer",
+       "allowed": true,
+       "max_abs_change": 0.2247323989868164,
+       "max_abs_before": 33.71989440917969,
+       "finite_after": true
+      },
+      {
+       "name": "heads_all_slot_path.centre_weight",
+       "kind": "buffer",
+       "allowed": true,
+       "max_abs_change": 0.0011769620003142522,
+       "max_abs_before": 0.9532651846008426,
+       "finite_after": true
+      },
+      {
+       "name": "persistent_memory.codes_moment",
+       "kind": "buffer",
+       "allowed": true,
+       "max_abs_change": 0.13523201644420624,
+       "max_abs_before": 1.0,
+       "finite_after": true
+      },
+      {
+       "name": "persistent_memory.event_centre",
+       "kind": "buffer",
+       "allowed": true,
+       "max_abs_change": 0.013712465763092041,
+       "max_abs_before": 3.289604425430298,
+       "finite_after": true
+      },
+      {
+       "name": "persistent_memory.hidden_moment",
+       "kind": "buffer",
+       "allowed": true,
+       "max_abs_change": 0.12122464179992676,
+       "max_abs_before": 1.0,
+       "finite_after": true
+      },
+      {
+       "name": "persistent_memory.state_centre",
+       "kind": "buffer",
+       "allowed": true,
+       "max_abs_change": 0.014608442783355713,
+       "max_abs_before": 0.98457270860672,
+       "finite_after": true
+      }
+     ],
+     "shape_changes": [],
+     "parameters": 676,
+     "buffers": 126,
+     "unclassified": [],
+     "file_sha256_equal": false
+    },
+    "optimizer": {
+     "states": 597,
+     "tensors": 1791,
+     "missing": [],
+     "extra": [],
+     "param_groups_equal": true,
+     "param_group_params_equal": true
+    },
+    "optimizer_differing": [],
+    "why": ""
+   }
+  }
+ ],
+ "readings": [
+  {
+   "name": "parameters changed (A)",
+   "value": 0,
+   "unit": "tensors of 676",
+   "meaning": "0 = no weight changed; the end checkpoint's parameters against 481,800's, bit for bit",
+   "baseline": "none",
+   "statistically_clear": "not judged",
+   "statistical_basis": "",
+   "gof_material": "no"
+  },
+  {
+   "name": "parameters changed (B)",
+   "value": 0,
+   "unit": "tensors of 676",
+   "meaning": "0 = no weight changed; the end checkpoint's parameters against 481,800's, bit for bit",
+   "baseline": "none",
+   "statistically_clear": "not judged",
+   "statistical_basis": "",
+   "gof_material": "no"
+  },
+  {
+   "name": "running statistics moved without learning (B)",
+   "value": 6,
+   "unit": "buffers of 9 declared",
+   "meaning": "the persistent memory's centres and moments and the all-slot path's centre move in every forward pass; largest change 0.2247323989868164",
+   "baseline": "none",
+   "statistically_clear": "not judged",
+   "statistical_basis": "",
+   "gof_material": "no"
+  },
+  {
+   "name": "planning decisions with the refit's calibration, hand stage completed on all 8 bodies (B)",
+   "value": 1,
+   "unit": "decisions",
+   "meaning": "planning decisions at model steps [20] (causal chain [20], reports [20])",
+   "baseline": "none",
+   "statistically_clear": "not judged",
+   "statistical_basis": "",
+   "gof_material": "no"
+  },
+  {
+   "name": "peak commit charge while run A lived",
+   "value": 59.72,
+   "unit": "GB",
+   "meaning": "Windows' committed memory, sampled every second; base before the run 37.26 GB",
+   "baseline": "none",
+   "statistically_clear": "not judged",
+   "statistical_basis": "",
+   "gof_material": "no"
+  },
+  {
+   "name": "peak commit charge while run B lived",
+   "value": 67.95,
+   "unit": "GB",
+   "meaning": "Windows' committed memory, sampled every second; base before the run 36.98 GB",
+   "baseline": "none",
+   "statistically_clear": "not judged",
+   "statistical_basis": "",
+   "gof_material": "no"
+  }
+ ],
+ "expected": {
+  "refit_payload": "f68754c866483a9e30318bf0697b08c450dd5ad53dd4d996861d67a6a4aeef3c",
+  "refit_file": "a7716f55df32cc1a797021a2502b9aad78f1190adcdba47087ae5aa965651501",
+  "admitted_payload": "fe953beb426f2d403b58761d27b69ba2e3ec61e39b78d777fc2bea2b0fcece9e",
+  "model": "46c3db2ff1fa5e23faae9ebb1326ca2d58ab74bbcb9b3a2de7637403d10bb6a5",
+  "geometry": "0060bfa4619445667960622d04a8e3e08213f377e40a14de81ec138d21720cd7",
+  "record_file": "01c4eb4ba1c4e69fe69fe739509ed0f01e87fcefe422edf7dd5b50474677b050",
+  "code_hash": "add5725e7806b7fc9a6b0e5541f33816cf1bfb11589e4b3172db6e428df4ac4a",
+  "servo": "finger_joint_servo_v1",
+  "pose_meaning": "finger_pose_servo"
+ },
+ "running_statistics": [
+  "persistent_memory.event_centre",
+  "persistent_memory.event_centre_weight",
+  "persistent_memory.state_centre",
+  "persistent_memory.state_centre_weight",
+  "persistent_memory.codes_moment",
+  "persistent_memory.hidden_moment",
+  "persistent_memory.moment_weight",
+  "heads_all_slot_path.centre_mean",
+  "heads_all_slot_path.centre_weight"
+ ]
+}

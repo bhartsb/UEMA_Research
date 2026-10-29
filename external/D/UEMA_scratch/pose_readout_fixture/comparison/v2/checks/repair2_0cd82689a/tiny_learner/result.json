@@ -1,0 +1,43 @@
+{
+ "worktree": "C:\\Users\\bhart\\Documents\\UEMA_wt\\pose_runtime_repair1",
+ "commit_pinned": "0cd82689a03331df7626d86ff7a1f03324327a73",
+ "files": [
+  "mimo_bridge/tests/test_pose_replay_tiny.py"
+ ],
+ "started": "Oct 15, 2026 05:44:02 PM",
+ "before": {
+  "head": "0cd82689a03331df7626d86ff7a1f03324327a73",
+  "clean": true
+ },
+ "exit_code": 1,
+ "seconds": 43.4,
+ "tail": "..F.                                                                     [100%]\n================================== FAILURES ===================================\n_ test_another_model_rebuilt_on_the_owners_record_installs_over_the_owners_end _\n\nworld = <mimo_bridge.datasource.SingleEnvSource object at 0x0000017F8450D590>\ntmp_path = WindowsPath('D:/UEMA_Research/external/D/UEMA_scratch/pytest/pytest-of-bhart/pytest-4889/test_another_model_rebuilt_on_0')\n\n    def test_another_model_rebuilt_on_the_owners_record_installs_over_the_owners_end(world, tmp_path):\n        record, x_start, x_end = _owner_run(world, tmp_path, 'x')\n        # M: X's checkpoints, then one more training step on its end, saved again as M's end (other parameters)\n        m = make_model(tmp_path / 'm' / 'ckpt')\n        m.load_checkpoint(x_end)\n        CS.restore_learner(m, CS.load(x_end)['learner'])\n        frames = world.reset()\n        # the paired transition reset the trainer makes after every world reset (the overseer's\n        # pose-state-ownership-repair-and-scoped-checks-20261015, item 3): the restored self history ends at X's step E-1 in\n        # X's episode, and the self-state guard refuses a step across that body/time boundary without it; learned values stay\n        m.reset_transition_state()\n        m.step(frames, m.dev_limits(0), train=True, step_index=E, executed_action=None)\n        m_end = m.save_checkpoint(E)                      # the rebuild reads only M's end weights and runtime items\n        _r, rec, state = _rebuild(record, x_start, m_end, tmp_path, 'rm')\n        assert state is not None, rec['reasons']\n        ref = make_model(tmp_path / 'ref')\n        ref.load_checkpoint(m_end, load_optimizer=False)\n        assert state['parameter_digest'] == SM.parameter_digest(ref)\n        # Phase P's install over X's restored end learner\n        z = make_model(tmp_path / 'z')\n        z.load_checkpoint(x_end, load_optimizer=False)\n        CS.restore_learner(z, dict(CS.load(x_end)['learner'], cuda_rng=None))\n        phys = SM.snapshot_physical(z)\n        want = (torch.rand(1).item(), np.random.random())\n        SM.apply_physical(z, phys)\n        got = SM.install_evaluation_state(z, state)\n>       assert got['parameters_equal'] and got['module_digests_equal'] and got['uncovered_differing'] == []\nE       AssertionError: assert (True and True and ['curiosity_m...n_audit_rows'] == []\nE         \nE         Left contains 2 more items, first extra item: 'curiosity_measured'\nE         Use -v to get more diff)\n\nmimo_bridge\\tests\\test_pose_replay_tiny.py:200: AssertionError\n=========================== short test summary info ===========================\nFAILED mimo_bridge/tests/test_pose_replay_tiny.py::test_another_model_rebuilt_on_the_owners_record_installs_over_the_owners_end\n1 failed, 3 passed in 42.62s\n",
+ "per_file": {
+  "mimo_bridge.tests": {
+   "collected": 4,
+   "passed": 3,
+   "failed": 1,
+   "errors": 0,
+   "skipped": 0
+  }
+ },
+ "failures": [
+  {
+   "test": "mimo_bridge.tests.test_pose_replay_tiny::test_another_model_rebuilt_on_the_owners_record_installs_over_the_owners_end",
+   "kind": "failure",
+   "message": "AssertionError: assert (True and True and ['curiosity_m...n_audit_rows'] == []\n  \n  Left contains 2 more items, first extra item: 'curiosity_measured'\n  Use -v to get more diff)"
+  }
+ ],
+ "after": {
+  "head": "0cd82689a03331df7626d86ff7a1f03324327a73",
+  "clean": true
+ },
+ "totals": {
+  "collected": 4,
+  "passed": 3,
+  "failed": 1,
+  "errors": 0,
+  "skipped": 0
+ },
+ "verdict": "fail"
+}

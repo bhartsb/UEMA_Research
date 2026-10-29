@@ -1,0 +1,337 @@
+{
+ "tool": "check_m6_policy.py",
+ "script_sha256": "fecf2defa9f6ea7fa1a19200dcff47fccd4559ac4337e229d75ef3d2e6b05669",
+ "wrapper_sha256": "14137b8344b14a3e0d2a7b5cb11033d27986fbf988dc5d69aee76b7df909b81f",
+ "rule_sha256": "c7e67cda095e0b83a856333173683d3c3817d9e0acc824c11b8e8ed9df13f7c9",
+ "fixtures_sha256": "2a04c1ad2047bf89969bdcbdd8e46cc9df111d439c83f394cd560cfa3e98ca2a",
+ "at": "Oct 13, 2026 09:33:25 PM PDT",
+ "cases": [
+  {
+   "name": "C1 a finite proprioception crossing alone is an alert, recorded and printed once; the gauge kept; the unchanged rule stops",
+   "held": true,
+   "facts": {
+    "policy": {
+     "stop": null,
+     "line_state": "crossed, an alert for this run",
+     "alerts": [
+      "M6-alert-for-this-run:H84_switch:M6@479900:proprioception"
+     ],
+     "gauge_newest": {
+      "step": 480000,
+      "head": "vestibular",
+      "output_rms": 0.0013,
+      "real_change": 0.065,
+      "share_of_line": 0.019999999999999997,
+      "shares": {
+       "vision": 0.014444444444444444,
+       "tactile": 0.008125,
+       "audio": 0.0065,
+       "proprioception": 0.01625,
+       "vestibular": 0.019999999999999997
+      }
+     }
+    },
+    "breach_twice": [
+     null,
+     null
+    ],
+    "recorded_ids": [
+     "M6-alert-for-this-run:H84_switch:M6@479900:proprioception"
+    ],
+    "printed_first": "roposal-reconciled-20261013, item 1: for this continuation only, a FINITE proprioception M6 magnitude crossing is an alert, its gauge and every crossing recorded; a non-finite output, an M6 crossing of any other sense (also in the same report as a proprioception crossing) and M9 stay stops): heads' all-slot paths: at model step 479,900 the proprioception path's output reads 10% of one token unit, 130% of that sense's real change per number between two model steps (8.0% of one token unit); above 100% the path adds more than the whole change it predicts, which no prediction of that change needs\n",
+    "printed_second": "",
+    "without_policy": {
+     "stop_id": "M6@479900",
+     "stop": "heads' all-slot paths: at model step 479,900 the proprioception path's output reads 10% of one token unit, 130% of that sense's real change per number between two model steps (8.0% of one token unit); above 100% the path adds more than the whole change it predicts, which no prediction of that change needs"
+    }
+   }
+  },
+  {
+   "name": "C2 a simultaneous vision crossing stops even where proprioception's share is larger (the unchanged rule names proprioception)",
+   "held": true,
+   "facts": {
+    "policy": {
+     "stop_id": "M6@479900",
+     "stop": "heads' all-slot paths: at model step 479,900 the vision path's output reads 11% of one token unit, 120% of that sense's real change per number between two model steps (9.0% of one token unit); above 100% the path adds more than the whole change it predicts, which no prediction of that change needs",
+     "alerts": [
+      "M6-alert-for-this-run:H84_switch:M6@479900:proprioception"
+     ],
+     "line_state": "crossed"
+    },
+    "without_policy": {
+     "stop_id": "M6@479900",
+     "stop": "heads' all-slot paths: at model step 479,900 the proprioception path's output reads 12% of one token unit, 150% of that sense's real change per number between two model steps (8.0% of one token unit); above 100% the path adds more than the whole change it predicts, which no prediction of that change needs"
+    }
+   }
+  },
+  {
+   "name": "C3 a non-finite proprioception output (NaN, +infinity) stops, with and without the policy",
+   "held": true,
+   "facts": {
+    "nan": {
+     "policy": {
+      "stop_id": "M6@479900",
+      "stop": "heads' all-slot paths: at model step 479900 the largest path output is not a finite number"
+     },
+     "without_policy": {
+      "stop_id": "M6@479900"
+     }
+    },
+    "inf": {
+     "policy": {
+      "stop_id": "M6@479900",
+      "stop": "heads' all-slot paths: at model step 479900 the largest path output is not a finite number"
+     },
+     "without_policy": {
+      "stop_id": "M6@479900"
+     }
+    }
+   }
+  },
+  {
+   "name": "C4 another sense alone (tactile) stops with the same words, with and without the policy",
+   "held": true,
+   "facts": {
+    "policy": {
+     "stop_id": "M6@479900",
+     "stop": "heads' all-slot paths: at model step 479,900 the tactile path's output reads 19% of one token unit, 120% of that sense's real change per number between two model steps (16% of one token unit); above 100% the path adds more than the whole change it predicts, which no prediction of that change needs"
+    },
+    "without_policy": {
+     "stop_id": "M6@479900",
+     "stop": "heads' all-slot paths: at model step 479,900 the tactile path's output reads 19% of one token unit, 120% of that sense's real change per number between two model steps (16% of one token unit); above 100% the path adds more than the whole change it predicts, which no prediction of that change needs"
+    }
+   }
+  },
+  {
+   "name": "C5 a proprioception alert, then a later audio crossing: the stop is at the audio report",
+   "held": true,
+   "facts": {
+    "stop_id": "M6@480000",
+    "stop": "heads' all-slot paths: at model step 480,000 the audio path's output reads 22% of one token unit, 110% of that sense's real change per number between two model steps (20% of one token unit); above 100% the path adds more than the whole change it predicts, which no prediction of that change needs",
+    "alerts": [
+     "M6-alert-for-this-run:H84_switch:M6@479700:proprioception"
+    ]
+   }
+  },
+  {
+   "name": "C6 each proprioception crossing is recorded with its own id and numbers; no stop",
+   "held": true,
+   "facts": {
+    "ids": [
+     "M6-alert-for-this-run:H84_switch:M6@479700:proprioception",
+     "M6-alert-for-this-run:H84_switch:M6@479800:proprioception"
+    ],
+    "recorded": [
+     {
+      "id": "M6-alert-for-this-run:H84_switch:M6@479700:proprioception",
+      "step": 479700,
+      "output_rms": 0.096,
+      "real_change": 0.08,
+      "share_of_line": 1.2
+     },
+     {
+      "id": "M6-alert-for-this-run:H84_switch:M6@479800:proprioception",
+      "step": 479800,
+      "output_rms": 0.096,
+      "real_change": 0.08,
+      "share_of_line": 1.2
+     }
+    ]
+   }
+  },
+  {
+   "name": "C7 M9 (proprioception's fixed vector against the old head's) stops with the policy",
+   "held": true,
+   "facts": {
+    "stop_id": "M9@479900",
+    "stop": "heads' all-slot paths: at model step 479,900 the proprioception path adds one fixed vector to every row that is 60% of the sense's real change per number, and the old head adds a fixed vector pointing the other way (cosine between the two -95%, where -100% is exactly opposite): the pair that grew against each other in the first segment"
+   }
+  },
+  {
+   "name": "C8 with the policy, M3 with the alert table stays an alert and M4 still stops",
+   "held": true,
+   "facts": {
+    "m3": {
+     "stop": null,
+     "state": "crossed, an alert for this run"
+    },
+    "m4": {
+     "stop_id": "M4:w0",
+     "stop": "heads' all-slot paths: over the 20 full reports 2-21 after the switch (model steps 479600 to 481500), proprioception's median next-model-step error ratio reached 189% of its level before the switch (110% of its stop line, 132% of its alert line) (the stop line: the sense's level before the switch, the larger of its median over the 20 and over the 30 full reports before it, times the highest a 20-report median reached over that level on the lineage's record with nothing switched, 143% of the level for tactile, audio and proprioception and 329% for vision; times 120% for the stop line and 100% for the alert line)"
+    }
+   }
+  },
+  {
+   "name": "C9 proprioception at 0.8 of its real change: no crossing, no alert",
+   "held": true,
+   "facts": {
+    "stop": null,
+    "line_state": "held"
+   }
+  },
+  {
+   "name": "C10 after a taken tactile stop, a later proprioception crossing is an alert and the taken stop is not repeated",
+   "held": true,
+   "facts": {
+    "first_stop": "heads' all-slot paths: at model step 479,900 the tactile path's output reads 19% of one token unit, 120% of that sense's real change per number between two model steps (16% of one token unit); above 100% the path adds more than the whole change it predicts, which no prediction of that change needs",
+    "after_taken": {
+     "stop": null,
+     "alerts": [
+      "M6-alert-for-this-run:H84_switch:M6@480000:proprioception"
+     ],
+     "line_state": "crossed, an alert for this run"
+    }
+   }
+  },
+  {
+   "name": "C11 applied once per instance; a folder the horizon spec does not match is not patched",
+   "held": true,
+   "facts": {
+    "same_function": true,
+    "horizon_match": "other"
+   }
+  },
+  {
+   "name": "R1 the real start context with the policy: M6 judges 492,800 only (M6@492700 taken), held; no stop",
+   "held": true,
+   "facts": {
+    "stop": null,
+    "m6_line": {
+     "state": "held",
+     "newest": {
+      "step": 492800,
+      "head": "proprioception",
+      "output_rms": 0.062320321798324585,
+      "real_change": 0.0735635779445236,
+      "share_of_line": 0.8471627337827712,
+      "shares": {
+       "vision": 0.09504225259056885,
+       "tactile": 0.24214026112001483,
+       "audio": 0.11168811843673927,
+       "proprioception": 0.8471627337827712,
+       "vestibular": 0.16593343309087233
+      }
+     },
+     "alerts_for_this_run": []
+    },
+    "carried_taken": {
+     "held": true,
+     "crossings": [
+      {
+       "id": "M6@492700",
+       "step": 492700,
+       "owner": "B1R_skip13_489625",
+       "timeline_owner": "B1R_skip13_489625",
+       "taken_after": 492800
+      }
+     ],
+     "chain": [
+      "H84_fresh_drivers_20260918_seg41o_1431",
+      "B1LO_skip13_481800",
+      "B1C_skip13_484675",
+      "body1_extension_B1E_skip13_485975",
+      "b1_adopt_B1A_skip13_489350",
+      "B1R_skip13_489625",
+      "B1K_skip13_492800"
+     ],
+     "taken": {
+      "M3@485900": 485975,
+      "M6@492700": 492800
+     }
+    },
+    "gauge": {
+     "492700": {
+      "run": "B1R_skip13_489625",
+      "shares": {
+       "vision": 0.08716730504602814,
+       "tactile": 0.23685987166386824,
+       "audio": 0.1638814133248212,
+       "proprioception": 1.0396299331789671,
+       "vestibular": 0.22952780194355188
+      },
+      "largest": "proprioception"
+     },
+     "492800": {
+      "run": "B1R_skip13_489625",
+      "shares": {
+       "vision": 0.09504225259056885,
+       "tactile": 0.24214026112001483,
+       "audio": 0.11168811843673927,
+       "proprioception": 0.8471627337827712,
+       "vestibular": 0.16593343309087233
+      },
+      "largest": "proprioception"
+     }
+    }
+   }
+  },
+  {
+   "name": "R2 the unchanged rule on the same records: M6 held (its taken crossing stands)",
+   "held": true,
+   "facts": {
+    "stop": "heads' all-slot paths: a path's hidden layer had 83% of its units responding (the lower of the whole-model monitor's reading and the path's own reading on the commanded rows), under the line of 90%, in 2 full reports with a reading running, up to model step 486800",
+    "lines": {
+     "M1": "held",
+     "M2": "held",
+     "M3": "crossed",
+     "M6": "held",
+     "M4_early": "held",
+     "M4": "held",
+     "M5": "held",
+     "M7": "held",
+     "M8": "held",
+     "M9": "held"
+    },
+    "note": "the unchanged rule without the alert table and without the policy"
+   }
+  },
+  {
+   "name": "R3 naming the preserved copy as the parent would re-judge the carried crossing (the reason for the original folder)",
+   "held": true,
+   "facts": {
+    "parent": "D:\\UEMA_Research\\external\\D\\UEMA_preserved\\b1_recover_B1R_skip13_489625\\run",
+    "carried_taken": {
+     "held": false,
+     "crossings": [
+      {
+       "id": "M6@492700",
+       "step": 492700,
+       "owner": "B1R_skip13_489625",
+       "timeline_owner": "run",
+       "taken_after": null
+      }
+     ],
+     "chain": [
+      "H84_fresh_drivers_20260918_seg41o_1431",
+      "B1LO_skip13_481800",
+      "B1C_skip13_484675",
+      "body1_extension_B1E_skip13_485975",
+      "b1_adopt_B1A_skip13_489350",
+      "b1_recover_B1R_skip13_489625",
+      "B1K_skip13_492800"
+     ],
+     "taken": {
+      "M3@485900": 485975
+     }
+    },
+    "with_policy": {
+     "stop": null,
+     "m6_state": "crossed, an alert for this run",
+     "alerts": [
+      "M6-alert-for-this-run:B1K_skip13_492800:M6@492700:proprioception"
+     ]
+    },
+    "without_policy": {
+     "stop_id": "M6@492700",
+     "stop": "heads' all-slot paths: at model step 492,700 the proprioception path's output reads 7.6% of one token unit, 104% of that sense's real change per number between two model steps (7.3% of one token unit); above 100% the path adds more than the whole change it predicts, which no prediction of that change needs"
+    },
+    "reading": "through the preserved copy the recovery run's records are tagged 'run' and its taken crossing (owner B1R_skip13_489625) reads as rolled back: the policy re-reads it as an alert, the unchanged rule as a fresh stop. The package names the ORIGINAL folder (R1)."
+   }
+  }
+ ],
+ "held": 14,
+ "of": 14,
+ "verdict": "pass",
+ "seconds": 26.7,
+ "writes": "only under D:\\UEMA_Research\\external\\D\\UEMA_scratch\\b1_continue_492800\\verify\\m6_policy\\run2"
+}

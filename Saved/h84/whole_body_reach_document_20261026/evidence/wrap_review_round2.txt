@@ -1,0 +1,47 @@
+Independent document-illustration review: wrap round 2
+Owner: the overseer independent reviewer /root/physical_delta_review
+Purpose: decide whether the illustrated hand wrap and approach are clear and geometrically credible for the document.
+Started: 2026-10-26 18:21:22 UTC. Reporting limit: 300 seconds. Completion estimate unavailable.
+Review file verified: 2026-10-26 18:25:53 UTC; measured elapsed to verification: 271 seconds. Result: revisions required for camera clarity and approach continuity; saved findings and captions below.
+Scope: existing images, source, and recorded static geometry only. No simulation, physics step, model load, or asset edit was performed. PowerShell parsed existing JSON and calculated differences between recorded positions.
+
+DECISION: revise before accepting the illustration. The fingers are now visibly bent around the ball, and the geometry record supports near-contact around multiple sides. The selected cameras still obscure actual thumb opposition, and the saved approach contains a large one-frame wrist excursion. These are separate defects; positive sampled clearances do not settle either.
+
+1. APPROACH CONTINUITY -- blocking animation defect
+Evidence: pose_geometry.json wrist positions at frames 38/39/40/41. Between 1.90 and 1.95 seconds the right wrist moves 47.1007 mm; between 1.95 and 2.00 seconds it moves 48.8231 mm; the next 50 ms interval moves only 0.0000929 mm. The sphere diameter is 38 mm. qpos[16] changes -8.1227 degrees and then +10.7651 degrees at the same two intervals. These are recorded geometric changes, not a measured physical velocity or performance claim.
+Producing code: render_scene.py lines 151-159 projects each intermediate pose separately using arm+fingers as optimization variables. The comment says it reduces finger closure, but the variables also allow arm motion. Collision-free samples therefore can jump away from, then back toward, the endpoint despite smoothstep interpolation before projection.
+Consequence: the approach can visibly snap by more than a ball diameter just before closure. A smooth reach narrative would misrepresent the actual rendered sequence.
+Next action: repair the posed approach with continuity-preserving collision avoidance, then inspect frames 38-41 and the full approach from both fixed cameras. Recheck saved wrist and joint increments against the neighboring trajectory; do not merely rerun the minimum-gap assertion. Trigger: before accepting or publishing the replacement animation.
+
+2. THUMB OPPOSITION IS OBSCURED IN THE SELECTED CLOSE-UPS -- blocking presentation defect
+Evidence: palm_050.webp shows four fingers curling at the left/lower edge of the red ball, but the pink thumb appears as a hook above the gold palm. Its near-ball surface is hard to see. In thumb_050.webp the forearm/palm hide almost all of the pink thumb; the prominent teal digit bending down the right side is the LITTLE FINGER, not the thumb. Both images have the identical generic heading 'Hand close-up', with no digit legend.
+The source palette is unambiguous: pink=thumb, blue=index, yellow=middle, purple=ring, teal=little. Existing diagnostic wrap_palm.png and wrap_top.png expose pink thumb versus opposing fingers more clearly than the chosen pair, though wrap_top.png obscures much of the sphere with the palm. wrap_thumb.png has the same occlusion problem as the selected thumb view.
+Consequence: a reader can mistake the teal little finger for the opposing thumb or read the pink thumb as folded away from the object. This fails the operator's request for a visibly convincing wrap even if the saved surfaces are close.
+Next action: choose an oblique view that shows the pink thumb's ball-facing surface together with at least two opposing finger surfaces; retain a complementary fixed view. Add a compact digit key and distinct camera labels. The parent should rerender/review the existing static pose before deciding whether its articulation itself needs changing. Trigger: replacement final close-ups, reviewed at document display size.
+
+3. WHAT THE RECORDED GEOMETRY SUPPORTS
+At frame 50 (2.50 seconds), distal-segment/ball surface gaps in index, middle, ring, little, thumb order are 0.4056, 0.4009, 0.4015, 0.3983, 0.3869 mm. The minimum over all checked hand/ball pairs is 0.1997 mm there, and 0.1500 mm across the 61 sampled frames. The final recorded checked self-pair minimum is 0.1049 mm. All four fingers have bent knuckle/middle/distal joints. Thumb-to-finger closest-surface direction angles are 74.82, 106.24, 140.07, and 162.57 degrees; opposition is strongest to the ring/little side, not uniformly opposite every finger.
+These quantities support a near-contact, curved hand arrangement around the ball. They are distal capsule surface distances, not independently identified fingertip-pad contacts. No actual ball/palm penetration is demonstrated by these inspected images; the recorded tested hand/ball geometry has positive separation. The two final camera images are generated from the same frame's qpos, so there is no source-level independent reposing between them.
+
+4. REMAINING GEOMETRY BLIND SPOTS -- do not label the whole scene collision-free
+- The stand, seat, and side support are render-only extra_box objects (render_scene.py 127-135), not model geoms included in mj_geomDistance. Finger/stand penetration is therefore not checked. The stand also hides part of the lower ball/finger interface in the final images. Add/check their actual geometry or report their clearance separately before making an all-scene nonpenetration claim.
+- Distinct digits are checked against each other. Palm checks add distal geoms plus the thumb hub only. Same-digit nonadjacent links and other middle/proximal-palm combinations are not comprehensively covered. Exclude legitimate adjacent joint overlap explicitly, then check the remaining relevant nonadjacent pairs. A single 'minimum_interfinger_gap' also mixes in distal/palm pairs and should be named accordingly.
+- Opposed closest-point directions and bent joints do not establish pad orientation. Identify the ball-facing distal surfaces in the final camera choice; do not call every closest point a fingertip-pad contact.
+- The report samples every 50 ms. It does not check swept clearance between samples. This matters particularly at the measured 47-49 mm excursion.
+- fit_wrap.py's obj() and cons() are defined, but the executed optimizer is least_squares(residual,...). Its residual uses soft penalties. Some statements in obj() about thumb direction/curvature are not constraints of that solve. Final renderer assertions support the recorded sampled gaps, not every unused objective statement.
+
+SUITABLE CAPTIONS AFTER THE VISUAL/PATH FIX
+Final pair: 'Illustrated right-hand wrap around a ball supported by a stand. Pink: thumb; blue: index; yellow: middle; purple: ring; teal: little. Both views show the same posed geometry.'
+Approach: 'Staged reach and closure: the open hand approaches, the fingers and thumb curve around the stationary ball, and the final pose is held. Times label the illustration sequence.'
+Evidence detail: 'Static geometry at 2.50 s: checked distal-segment surfaces lie about 0.39-0.41 mm from the ball. The ball remains supported by the stand.'
+Avoid captions claiming the ball was lifted, a load was supported by the hand, a physical contact force was measured, or the sequence was learned.
+
+INPUT IDENTITIES (SHA256)
+palm_050.webp AAE9B9730093D0308F7D541FAA3C1AD9B795359A232A54854542903B5D2A5188
+thumb_050.webp A531BDF03F84BE691A1C989B6D9EBCB5F4E39249788AA501C6966AF8B9AF0EFA
+render_scene.py 666A73A24456436EAE31F6DBD21CED958EE0A9642F82553132226805D0AFB473
+fit_wrap.py 8E34B4104876D207F8745A253B01F0A17C0ACC4AE71472182DA6B160FA5DC6FB
+wrap_pose.json 58993537273770D2291EA51B8C18F9A2121566A92BC29F3D7E080B314D173699
+pose_geometry.json 1E56C91DF42788427E00C7C58EB6AD04D2ACE65D61D2BD6E152B77403D0607DA
+
+File disposition: this review is unique review evidence, retained with the work item. No temporary files were created or deleted. The parent owns the camera/path repairs and a renewed image review; geometry and animation acceptance remain open until those actions complete.

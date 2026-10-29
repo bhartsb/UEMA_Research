@@ -1,0 +1,2333 @@
+{
+ "tool": "preflight_continue/link_mutations.py",
+ "row": "preflight_link_route_mutations_20261013",
+ "script_sha256": "5b5784bfba04dcb13744540d1f135f7746d912c8670560f6a999774e45a8a867",
+ "at": "Oct 13, 2026 09:51:36 PM PDT",
+ "branch": "C:\\Users\\bhart\\Documents\\UEMA_wt\\preflight_continue",
+ "commit": "c0af11c4b44618ccf2900f4e82d1b23b3d83ede9",
+ "branch_dirty": null,
+ "branch_files": {
+  "lem/__init__.py": "c4fc334a90bfc620d56feeb395fe2468a1838cc0c446734028a8835b70a12232",
+  "lem/trainer_code.py": "64fd1b6a76fd39bfda187e87cf162363be27193bc3359c35dbd275177c63abc6",
+  "mimo_bridge/__init__.py": "c79f456292c935fe28e5f7c4b921ab09145dac5718bc98d401aeccd4254994e9",
+  "mimo_bridge/tools/training_preflight.py": "dffb0653aa633ba088742c5561a46bbc0b9929d01d484e17a6c99b3c538ece7b",
+  "mimo_bridge/tools/test_registry.py": "793a8b732f1ae2d0a91f8dc5052fca4144273096e927021a2f01976676f0da3a",
+  "mimo_bridge/tests/conftest.py": "1c52c4c6b6df96f2241187929c3252eda9de1424b79744b832847a68b83fd5a3",
+  "mimo_bridge/tests/test_preflight_recovery.py": "f9d97430db3e7b61f27e0dace3f0fd37512e909b98da463cf02801fcdfcff897",
+  "mimo_bridge/tests/test_preflight_link.py": "522bcc5e1bb607bd2380345a817e718cf12f218f5a670e10c99cb87c24c2331d"
+ },
+ "test_file": "mimo_bridge/tests/test_preflight_link.py",
+ "control_before": {
+  "exit": 0,
+  "summary": "220 passed in 382.71s (0:06:22)",
+  "failed": [],
+  "seconds": 383.0,
+  "guard": "ALLOWED: 36.3 of 84.4 GB committed (Windows' limit 84.4 GB; the guard never counts on the page file growing into the last 12 GB of its drive), 9.4 GB RAM free; this work needs 4.0 GB and 6.0 GB must stay free under the limit"
+ },
+ "control_after": {
+  "exit": 0,
+  "summary": "220 passed in 304.63s (0:05:04)",
+  "failed": [],
+  "seconds": 304.9,
+  "guard": "ALLOWED: 38.3 of 84.4 GB committed (Windows' limit 84.4 GB; the guard never counts on the page file growing into the last 12 GB of its drive), 6.8 GB RAM free; this work needs 4.0 GB and 6.0 GB must stay free under the limit"
+ },
+ "copy_restored_byte_for_byte": true,
+ "mutations": {
+  "LR1": {
+   "condition": "the route admits only the configurations LINK_ROUTES names",
+   "designated": [
+    "test_a_configuration_the_route_does_not_name_is_refused"
+   ],
+   "exit": 1,
+   "summary": "1 failed in 3.04s",
+   "failed": [
+    "test_a_configuration_the_route_does_not_name_is_refused"
+   ],
+   "designated_failed": true,
+   "designated_not_failed": [],
+   "seconds": 3.3
+  },
+  "LR2": {
+   "condition": "the start, rollback and predecessor's checkpoint are the stopped recovery run's preserved end",
+   "designated": [
+    "test_each_pinned_value_is_compared_exactly[checkpoint]",
+    "test_the_original_end_checkpoint_instead_of_its_preserved_copy_is_refused",
+    "test_an_earlier_start_is_refused[the-recoverys-start]",
+    "test_an_earlier_start_is_refused[the-adoptions-start]",
+    "test_the_rollback_checkpoint_is_the_start"
+   ],
+   "exit": 1,
+   "summary": "5 failed in 59.87s",
+   "failed": [
+    "test_an_earlier_start_is_refused[the-adoptions-start]",
+    "test_an_earlier_start_is_refused[the-recoverys-start]",
+    "test_each_pinned_value_is_compared_exactly[checkpoint]",
+    "test_the_original_end_checkpoint_instead_of_its_preserved_copy_is_refused",
+    "test_the_rollback_checkpoint_is_the_start"
+   ],
+   "designated_failed": true,
+   "designated_not_failed": [],
+   "seconds": 60.2
+  },
+  "LR3": {
+   "condition": "the route pins the MANIFEST, the preserved run, the recovery's run and the two receipts' paths",
+   "designated": [
+    "test_each_pinned_value_is_compared_exactly[manifest]",
+    "test_each_pinned_value_is_compared_exactly[predecessor_run]",
+    "test_each_pinned_value_is_compared_exactly[recovery_run]",
+    "test_each_pinned_value_is_compared_exactly[stopped_receipt]",
+    "test_each_pinned_value_is_compared_exactly[outcome_receipt]"
+   ],
+   "exit": 1,
+   "summary": "5 failed in 7.54s",
+   "failed": [
+    "test_each_pinned_value_is_compared_exactly[manifest]",
+    "test_each_pinned_value_is_compared_exactly[outcome_receipt]",
+    "test_each_pinned_value_is_compared_exactly[predecessor_run]",
+    "test_each_pinned_value_is_compared_exactly[recovery_run]",
+    "test_each_pinned_value_is_compared_exactly[stopped_receipt]"
+   ],
+   "designated_failed": true,
+   "designated_not_failed": [],
+   "seconds": 7.8
+  },
+  "LR4": {
+   "condition": "the route pins the MANIFEST's, model's, companion's, receipts' and both earlier files' sha256",
+   "designated": [
+    "test_each_pinned_value_is_compared_exactly[manifest_sha256]",
+    "test_each_pinned_value_is_compared_exactly[model_sha256]",
+    "test_each_pinned_value_is_compared_exactly[companion_sha256]",
+    "test_each_pinned_value_is_compared_exactly[outcome_receipt_sha256]",
+    "test_each_pinned_value_is_compared_exactly[stopped_receipt_sha256]",
+    "test_each_pinned_value_is_compared_exactly[recovery_sha256]",
+    "test_each_pinned_value_is_compared_exactly[adoption_sha256]"
+   ],
+   "exit": 1,
+   "summary": "7 failed in 10.86s",
+   "failed": [
+    "test_each_pinned_value_is_compared_exactly[adoption_sha256]",
+    "test_each_pinned_value_is_compared_exactly[companion_sha256]",
+    "test_each_pinned_value_is_compared_exactly[manifest_sha256]",
+    "test_each_pinned_value_is_compared_exactly[model_sha256]",
+    "test_each_pinned_value_is_compared_exactly[outcome_receipt_sha256]",
+    "test_each_pinned_value_is_compared_exactly[recovery_sha256]",
+    "test_each_pinned_value_is_compared_exactly[stopped_receipt_sha256]"
+   ],
+   "designated_failed": true,
+   "designated_not_failed": [],
+   "seconds": 11.2
+  },
+  "LR5": {
+   "condition": "the route pins the used recovery's decision (the block's)",
+   "designated": [
+    "test_the_recoverys_decision_is_pinned"
+   ],
+   "exit": 1,
+   "summary": "1 failed in 2.59s",
+   "failed": [
+    "test_the_recoverys_decision_is_pinned"
+   ],
+   "designated_failed": true,
+   "designated_not_failed": [],
+   "seconds": 2.8
+  },
+  "LR6": {
+   "condition": "the route pins the stop step",
+   "designated": [
+    "test_each_pinned_value_is_compared_exactly[start]"
+   ],
+   "exit": 1,
+   "summary": "1 failed in 2.96s",
+   "failed": [
+    "test_each_pinned_value_is_compared_exactly[start]"
+   ],
+   "designated_failed": true,
+   "designated_not_failed": [],
+   "seconds": 3.2
+  },
+  "LR7": {
+   "condition": "the route pins the decision's id",
+   "designated": [
+    "test_each_pinned_value_is_compared_exactly[decision]"
+   ],
+   "exit": 1,
+   "summary": "1 failed in 3.00s",
+   "failed": [
+    "test_each_pinned_value_is_compared_exactly[decision]"
+   ],
+   "designated_failed": true,
+   "designated_not_failed": [],
+   "seconds": 3.3
+  },
+  "LR8": {
+   "condition": "the route pins the decision message's text sha256",
+   "designated": [
+    "test_each_pinned_value_is_compared_exactly[decision_text_sha256]"
+   ],
+   "exit": 1,
+   "summary": "1 failed in 2.49s",
+   "failed": [
+    "test_each_pinned_value_is_compared_exactly[decision_text_sha256]"
+   ],
+   "designated_failed": true,
+   "designated_not_failed": [],
+   "seconds": 2.7
+  },
+  "LR9": {
+   "condition": "the route pins the decision's author",
+   "designated": [
+    "test_each_pinned_value_is_compared_exactly[decision_author]"
+   ],
+   "exit": 1,
+   "summary": "1 failed in 1.83s",
+   "failed": [
+    "test_each_pinned_value_is_compared_exactly[decision_author]"
+   ],
+   "designated_failed": true,
+   "designated_not_failed": [],
+   "seconds": 2.3
+  },
+  "LR10": {
+   "condition": "the route pins the decision's time",
+   "designated": [
+    "test_each_pinned_value_is_compared_exactly[authorized_at]"
+   ],
+   "exit": 1,
+   "summary": "1 failed in 1.57s",
+   "failed": [
+    "test_each_pinned_value_is_compared_exactly[authorized_at]"
+   ],
+   "designated_failed": true,
+   "designated_not_failed": [],
+   "seconds": 1.9
+  },
+  "LR11": {
+   "condition": "the route pins the remaining wall cap",
+   "designated": [
+    "test_each_pinned_value_is_compared_exactly[wall_cap_s]",
+    "test_a_wall_cap_above_the_remaining_time_is_refused[one-second-more]",
+    "test_a_wall_cap_above_the_remaining_time_is_refused[the-recoverys-cap]",
+    "test_a_wall_cap_above_the_remaining_time_is_refused[the-adoptions-cap]",
+    "test_a_wall_cap_above_the_remaining_time_is_refused[huge]"
+   ],
+   "exit": 1,
+   "summary": "5 failed in 7.51s",
+   "failed": [
+    "test_a_wall_cap_above_the_remaining_time_is_refused[huge]",
+    "test_a_wall_cap_above_the_remaining_time_is_refused[one-second-more]",
+    "test_a_wall_cap_above_the_remaining_time_is_refused[the-adoptions-cap]",
+    "test_a_wall_cap_above_the_remaining_time_is_refused[the-recoverys-cap]",
+    "test_each_pinned_value_is_compared_exactly[wall_cap_s]"
+   ],
+   "designated_failed": true,
+   "designated_not_failed": [],
+   "seconds": 7.8
+  },
+  "LR12": {
+   "condition": "the route pins the start step",
+   "designated": [
+    "test_a_start_step_other_than_the_stop_is_refused"
+   ],
+   "exit": 1,
+   "summary": "1 failed in 2.09s",
+   "failed": [
+    "test_a_start_step_other_than_the_stop_is_refused"
+   ],
+   "designated_failed": true,
+   "designated_not_failed": [],
+   "seconds": 2.3
+  },
+  "LR13": {
+   "condition": "the route pins the end step",
+   "designated": [
+    "test_each_pinned_value_is_compared_exactly[end]",
+    "test_an_end_beyond_the_adoptions_is_refused"
+   ],
+   "exit": 1,
+   "summary": "2 failed in 3.65s",
+   "failed": [
+    "test_an_end_beyond_the_adoptions_is_refused",
+    "test_each_pinned_value_is_compared_exactly[end]"
+   ],
+   "designated_failed": true,
+   "designated_not_failed": [],
+   "seconds": 3.9
+  },
+  "LR14": {
+   "condition": "only the pinned training row launches",
+   "designated": [
+    "test_each_pinned_value_is_compared_exactly[run_row]"
+   ],
+   "exit": 1,
+   "summary": "1 failed in 2.57s",
+   "failed": [
+    "test_each_pinned_value_is_compared_exactly[run_row]"
+   ],
+   "designated_failed": true,
+   "designated_not_failed": [],
+   "seconds": 2.8
+  },
+  "LR15": {
+   "condition": "the route pins the completion row",
+   "designated": [
+    "test_each_pinned_value_is_compared_exactly[completion_row]"
+   ],
+   "exit": 1,
+   "summary": "1 failed in 1.96s",
+   "failed": [
+    "test_each_pinned_value_is_compared_exactly[completion_row]"
+   ],
+   "designated_failed": true,
+   "designated_not_failed": [],
+   "seconds": 2.2
+  },
+  "LR16": {
+   "condition": "the block names the pinned commit of the trainer code",
+   "designated": [
+    "test_each_pinned_value_is_compared_exactly[code_commit]"
+   ],
+   "exit": 1,
+   "summary": "1 failed in 1.82s",
+   "failed": [
+    "test_each_pinned_value_is_compared_exactly[code_commit]"
+   ],
+   "designated_failed": true,
+   "designated_not_failed": [],
+   "seconds": 2.1
+  },
+  "LR17": {
+   "condition": "the route pins the latent body state the run resumes",
+   "designated": [
+    "test_each_pinned_value_is_compared_exactly[latent_sha256]",
+    "test_a_latent_body_state_other_than_the_stopped_runs_is_refused"
+   ],
+   "exit": 1,
+   "summary": "2 failed in 3.04s",
+   "failed": [
+    "test_a_latent_body_state_other_than_the_stopped_runs_is_refused",
+    "test_each_pinned_value_is_compared_exactly[latent_sha256]"
+   ],
+   "designated_failed": true,
+   "designated_not_failed": [],
+   "seconds": 3.3
+  },
+  "LB1": {
+   "condition": "each run owner's log holds one start and one end event at the pinned times",
+   "designated": [
+    "test_the_wall_cap_is_read_from_both_run_owners_receipts[recovery-no-end]",
+    "test_the_wall_cap_is_read_from_both_run_owners_receipts[recovery-two-ends]",
+    "test_the_wall_cap_is_read_from_both_run_owners_receipts[recovery-another-start]",
+    "test_the_wall_cap_is_read_from_both_run_owners_receipts[adoption-no-end]"
+   ],
+   "exit": 1,
+   "summary": "4 failed in 4.74s",
+   "failed": [
+    "test_the_wall_cap_is_read_from_both_run_owners_receipts[adoption-no-end]",
+    "test_the_wall_cap_is_read_from_both_run_owners_receipts[recovery-another-start]",
+    "test_the_wall_cap_is_read_from_both_run_owners_receipts[recovery-no-end]",
+    "test_the_wall_cap_is_read_from_both_run_owners_receipts[recovery-two-ends]"
+   ],
+   "designated_failed": true,
+   "designated_not_failed": [],
+   "seconds": 5.0
+  },
+  "LB2": {
+   "condition": "a run owner's log that cannot be read refuses",
+   "designated": [
+    "test_a_missing_run_owner_log_is_refused"
+   ],
+   "exit": 1,
+   "summary": "1 failed in 1.50s",
+   "failed": [
+    "test_a_missing_run_owner_log_is_refused"
+   ],
+   "designated_failed": true,
+   "designated_not_failed": [],
+   "seconds": 1.7
+  },
+  "LB3": {
+   "condition": "the wall cap is the adoption's cap less both lifetimes, rounded down",
+   "designated": [
+    "test_a_route_wall_cap_that_is_not_the_remaining_time_is_refused"
+   ],
+   "exit": 1,
+   "summary": "1 failed in 1.66s",
+   "failed": [
+    "test_a_route_wall_cap_that_is_not_the_remaining_time_is_refused"
+   ],
+   "designated_failed": true,
+   "designated_not_failed": [],
+   "seconds": 1.9
+  },
+  "LB4": {
+   "condition": "the recovery's cap is the adoption's cap less the first lifetime, rounded down",
+   "designated": [
+    "test_the_recoverys_cap_is_pinned"
+   ],
+   "exit": 1,
+   "summary": "1 failed in 2.04s",
+   "failed": [
+    "test_the_recoverys_cap_is_pinned"
+   ],
+   "designated_failed": true,
+   "designated_not_failed": [],
+   "seconds": 2.3
+  },
+  "LB5": {
+   "condition": "each trainer lifetime is above 0 s",
+   "designated": [
+    "test_a_trainer_lifetime_that_is_not_above_zero_is_refused"
+   ],
+   "exit": 1,
+   "summary": "1 failed in 1.87s",
+   "failed": [
+    "test_a_trainer_lifetime_that_is_not_above_zero_is_refused"
+   ],
+   "designated_failed": true,
+   "designated_not_failed": [],
+   "seconds": 2.2
+  },
+  "LP1": {
+   "condition": "the predecessor names the configuration's own recovery and adoption files",
+   "designated": [
+    "test_a_block_naming_another_earlier_file_is_refused[recovery]",
+    "test_a_block_naming_another_earlier_file_is_refused[adoption]"
+   ],
+   "exit": 1,
+   "summary": "2 failed in 2.94s",
+   "failed": [
+    "test_a_block_naming_another_earlier_file_is_refused[adoption]",
+    "test_a_block_naming_another_earlier_file_is_refused[recovery]"
+   ],
+   "designated_failed": true,
+   "designated_not_failed": [],
+   "seconds": 3.2
+  },
+  "LP2": {
+   "condition": "the used recovery's and adoption's files read their pinned sha256",
+   "designated": [
+    "test_a_used_recovery_file_whose_sha256_differs_is_refused",
+    "test_a_used_adoption_file_whose_sha256_differs_is_refused"
+   ],
+   "exit": 1,
+   "summary": "2 failed in 3.24s",
+   "failed": [
+    "test_a_used_adoption_file_whose_sha256_differs_is_refused",
+    "test_a_used_recovery_file_whose_sha256_differs_is_refused"
+   ],
+   "designated_failed": true,
+   "designated_not_failed": [],
+   "seconds": 3.5
+  },
+  "LP3": {
+   "condition": "the recovery was used",
+   "designated": [
+    "test_a_recovery_that_was_never_used_is_refused"
+   ],
+   "exit": 1,
+   "summary": "1 failed in 1.62s",
+   "failed": [
+    "test_a_recovery_that_was_never_used_is_refused"
+   ],
+   "designated_failed": true,
+   "designated_not_failed": [],
+   "seconds": 1.9
+  },
+  "LP4": {
+   "condition": "the recovery's marked launch is the pinned run",
+   "designated": [
+    "test_a_recovery_launched_for_another_run_is_refused"
+   ],
+   "exit": 1,
+   "summary": "1 failed in 1.79s",
+   "failed": [
+    "test_a_recovery_launched_for_another_run_is_refused"
+   ],
+   "designated_failed": true,
+   "designated_not_failed": [],
+   "seconds": 2.0
+  },
+  "LP5": {
+   "condition": "the recovery names the pinned decision",
+   "designated": [
+    "test_the_recoverys_decision_is_pinned"
+   ],
+   "exit": 1,
+   "summary": "1 failed in 1.75s",
+   "failed": [
+    "test_the_recoverys_decision_is_pinned"
+   ],
+   "designated_failed": true,
+   "designated_not_failed": [],
+   "seconds": 2.0
+  },
+  "LP6": {
+   "condition": "the recovery was written against the pinned record",
+   "designated": [
+    "test_the_recovery_was_written_against_the_pinned_record"
+   ],
+   "exit": 1,
+   "summary": "1 failed in 2.23s",
+   "failed": [
+    "test_the_recovery_was_written_against_the_pinned_record"
+   ],
+   "designated_failed": true,
+   "designated_not_failed": [],
+   "seconds": 2.5
+  },
+  "LP7": {
+   "condition": "the recovery's span is the pinned one",
+   "designated": [
+    "test_the_recoverys_span_row_and_code_are_pinned[recovery-start]"
+   ],
+   "exit": 1,
+   "summary": "1 failed in 1.56s",
+   "failed": [
+    "test_the_recoverys_span_row_and_code_are_pinned[recovery-start]"
+   ],
+   "designated_failed": true,
+   "designated_not_failed": [],
+   "seconds": 1.8
+  },
+  "LP8": {
+   "condition": "the recovery's cap is the pinned one",
+   "designated": [
+    "test_the_recoverys_cap_is_pinned"
+   ],
+   "exit": 1,
+   "summary": "1 failed in 1.43s",
+   "failed": [
+    "test_the_recoverys_cap_is_pinned"
+   ],
+   "designated_failed": true,
+   "designated_not_failed": [],
+   "seconds": 1.7
+  },
+  "LP9": {
+   "condition": "the recovery's training row is the pinned one",
+   "designated": [
+    "test_the_recoverys_span_row_and_code_are_pinned[recovery-row]"
+   ],
+   "exit": 1,
+   "summary": "1 failed in 1.53s",
+   "failed": [
+    "test_the_recoverys_span_row_and_code_are_pinned[recovery-row]"
+   ],
+   "designated_failed": true,
+   "designated_not_failed": [],
+   "seconds": 1.8
+  },
+  "LP10": {
+   "condition": "the recovery ran the pinned commit",
+   "designated": [
+    "test_the_recoverys_span_row_and_code_are_pinned[code-commit]"
+   ],
+   "exit": 1,
+   "summary": "1 failed in 1.71s",
+   "failed": [
+    "test_the_recoverys_span_row_and_code_are_pinned[code-commit]"
+   ],
+   "designated_failed": true,
+   "designated_not_failed": [],
+   "seconds": 2.0
+  },
+  "LP11": {
+   "condition": "the adoption was used, its launch the run the recovery names",
+   "designated": [
+    "test_an_adoption_launched_for_another_run_is_refused"
+   ],
+   "exit": 1,
+   "summary": "1 failed in 1.60s",
+   "failed": [
+    "test_an_adoption_launched_for_another_run_is_refused"
+   ],
+   "designated_failed": true,
+   "designated_not_failed": [],
+   "seconds": 1.8
+  },
+  "LP12": {
+   "condition": "the adoption keeps the original cap",
+   "designated": [
+    "test_the_adoptions_original_cap_is_pinned"
+   ],
+   "exit": 1,
+   "summary": "1 failed in 1.49s",
+   "failed": [
+    "test_the_adoptions_original_cap_is_pinned"
+   ],
+   "designated_failed": true,
+   "designated_not_failed": [],
+   "seconds": 1.7
+  },
+  "LP13": {
+   "condition": "the record reads its pinned sha256",
+   "designated": [
+    "test_a_record_judged_again_since_the_recovery_is_refused"
+   ],
+   "exit": 1,
+   "summary": "1 failed in 1.78s",
+   "failed": [
+    "test_a_record_judged_again_since_the_recovery_is_refused"
+   ],
+   "designated_failed": true,
+   "designated_not_failed": [],
+   "seconds": 2.1
+  },
+  "LP14": {
+   "condition": "the block's code hash is the record's",
+   "designated": [
+    "test_the_blocks_code_hash_is_the_records"
+   ],
+   "exit": 1,
+   "summary": "1 failed in 1.66s",
+   "failed": [
+    "test_the_blocks_code_hash_is_the_records"
+   ],
+   "designated_failed": true,
+   "designated_not_failed": [],
+   "seconds": 1.9
+  },
+  "LP15": {
+   "condition": "the stop criteria are the recovery's",
+   "designated": [
+    "test_the_stop_criteria_are_the_recoverys"
+   ],
+   "exit": 1,
+   "summary": "1 failed in 1.53s",
+   "failed": [
+    "test_the_stop_criteria_are_the_recoverys"
+   ],
+   "designated_failed": true,
+   "designated_not_failed": [],
+   "seconds": 1.8
+  },
+  "LP16": {
+   "condition": "the authorized time is neither earlier block's",
+   "designated": [
+    "test_an_earlier_blocks_authorized_time_is_refused[recovery]",
+    "test_an_earlier_blocks_authorized_time_is_refused[adoption]"
+   ],
+   "exit": 1,
+   "summary": "2 failed in 2.81s",
+   "failed": [
+    "test_an_earlier_blocks_authorized_time_is_refused[adoption]",
+    "test_an_earlier_blocks_authorized_time_is_refused[recovery]"
+   ],
+   "designated_failed": true,
+   "designated_not_failed": [],
+   "seconds": 3.2
+  },
+  "LP17": {
+   "condition": "the start continues the recovery's start and the record's first state",
+   "designated": [
+    "test_a_start_whose_lineage_does_not_reach_the_recoverys_start_is_refused"
+   ],
+   "exit": 1,
+   "summary": "1 failed in 1.86s",
+   "failed": [
+    "test_a_start_whose_lineage_does_not_reach_the_recoverys_start_is_refused"
+   ],
+   "designated_failed": true,
+   "designated_not_failed": [],
+   "seconds": 2.1
+  },
+  "LP18": {
+   "condition": "the MANIFEST's source is the recovery run at the stop step",
+   "designated": [
+    "test_the_preservation_names_the_stopped_runs_end_and_its_worlds[source]",
+    "test_the_preservation_names_the_stopped_runs_end_and_its_worlds[step]"
+   ],
+   "exit": 1,
+   "summary": "2 failed in 2.83s",
+   "failed": [
+    "test_the_preservation_names_the_stopped_runs_end_and_its_worlds[source]",
+    "test_the_preservation_names_the_stopped_runs_end_and_its_worlds[step]"
+   ],
+   "designated_failed": true,
+   "designated_not_failed": [],
+   "seconds": 3.1
+  },
+  "LP19": {
+   "condition": "the preservation passed",
+   "designated": [
+    "test_the_preservation_names_the_stopped_runs_end_and_its_worlds[verdict]"
+   ],
+   "exit": 1,
+   "summary": "1 failed in 1.55s",
+   "failed": [
+    "test_the_preservation_names_the_stopped_runs_end_and_its_worlds[verdict]"
+   ],
+   "designated_failed": true,
+   "designated_not_failed": [],
+   "seconds": 1.8
+  },
+  "LP20": {
+   "condition": "the MANIFEST records the pinned worlds companion",
+   "designated": [
+    "test_the_preservation_names_the_stopped_runs_end_and_its_worlds[companion]",
+    "test_the_preservation_names_the_stopped_runs_end_and_its_worlds[companion-equal]",
+    "test_the_preservation_names_the_stopped_runs_end_and_its_worlds[companion-in-episode-state]",
+    "test_a_companion_file_other_than_the_pinned_is_refused"
+   ],
+   "exit": 1,
+   "summary": "4 failed in 5.99s",
+   "failed": [
+    "test_a_companion_file_other_than_the_pinned_is_refused",
+    "test_the_preservation_names_the_stopped_runs_end_and_its_worlds[companion-equal]",
+    "test_the_preservation_names_the_stopped_runs_end_and_its_worlds[companion-in-episode-state]",
+    "test_the_preservation_names_the_stopped_runs_end_and_its_worlds[companion]"
+   ],
+   "designated_failed": true,
+   "designated_not_failed": [],
+   "seconds": 6.2
+  },
+  "LP21": {
+   "condition": "the preserved args.json is the file the MANIFEST records",
+   "designated": [
+    "test_the_preserved_args_json_is_the_one_the_manifest_records"
+   ],
+   "exit": 1,
+   "summary": "1 failed in 1.86s",
+   "failed": [
+    "test_the_preserved_args_json_is_the_one_the_manifest_records"
+   ],
+   "designated_failed": true,
+   "designated_not_failed": [],
+   "seconds": 2.1
+  },
+  "LP22": {
+   "condition": "the preserved run resumed the recovery's start and was launched for the end",
+   "designated": [
+    "test_a_preserved_run_launched_for_another_end_is_refused"
+   ],
+   "exit": 1,
+   "summary": "1 failed in 1.83s",
+   "failed": [
+    "test_a_preserved_run_launched_for_another_end_is_refused"
+   ],
+   "designated_failed": true,
+   "designated_not_failed": [],
+   "seconds": 2.1
+  },
+  "LP23": {
+   "condition": "a stopped receipt reads the sha256 named for it",
+   "designated": [
+    "test_a_stopped_receipt_whose_sha256_differs_is_refused",
+    "test_the_adoptions_receipts_read_as_the_recovery_names_them[adoption-stopped-receipt]"
+   ],
+   "exit": 1,
+   "summary": "2 failed in 3.53s",
+   "failed": [
+    "test_a_stopped_receipt_whose_sha256_differs_is_refused",
+    "test_the_adoptions_receipts_read_as_the_recovery_names_them[adoption-stopped-receipt]"
+   ],
+   "designated_failed": true,
+   "designated_not_failed": [],
+   "seconds": 3.8
+  },
+  "LP24": {
+   "condition": "a stopped receipt reads a stop at the step with its end preserved",
+   "designated": [
+    "test_the_stopped_receipt_reads_a_stop_at_the_start_with_its_end_preserved[completed]",
+    "test_the_stopped_receipt_reads_a_stop_at_the_start_with_its_end_preserved[exit-code]",
+    "test_the_stopped_receipt_reads_a_stop_at_the_start_with_its_end_preserved[preservation]",
+    "test_the_stopped_receipt_reads_a_stop_at_the_start_with_its_end_preserved[run]",
+    "test_the_stopped_receipt_reads_a_stop_at_the_start_with_its_end_preserved[preserved-checkpoint]"
+   ],
+   "exit": 1,
+   "summary": "5 failed in 7.08s",
+   "failed": [
+    "test_the_stopped_receipt_reads_a_stop_at_the_start_with_its_end_preserved[completed]",
+    "test_the_stopped_receipt_reads_a_stop_at_the_start_with_its_end_preserved[exit-code]",
+    "test_the_stopped_receipt_reads_a_stop_at_the_start_with_its_end_preserved[preservation]",
+    "test_the_stopped_receipt_reads_a_stop_at_the_start_with_its_end_preserved[preserved-checkpoint]",
+    "test_the_stopped_receipt_reads_a_stop_at_the_start_with_its_end_preserved[run]"
+   ],
+   "designated_failed": true,
+   "designated_not_failed": [],
+   "seconds": 7.3
+  },
+  "LP25": {
+   "condition": "an outcome receipt reads the sha256 named for it",
+   "designated": [
+    "test_an_outcome_receipt_whose_sha256_differs_is_refused",
+    "test_the_adoptions_receipts_read_as_the_recovery_names_them[adoption-outcome-receipt]"
+   ],
+   "exit": 1,
+   "summary": "2 failed in 3.12s",
+   "failed": [
+    "test_an_outcome_receipt_whose_sha256_differs_is_refused",
+    "test_the_adoptions_receipts_read_as_the_recovery_names_them[adoption-outcome-receipt]"
+   ],
+   "designated_failed": true,
+   "designated_not_failed": [],
+   "seconds": 3.4
+  },
+  "LP26": {
+   "condition": "an outcome stays INCOMPLETE",
+   "designated": [
+    "test_an_outcome_that_is_not_INCOMPLETE_is_refused",
+    "test_the_adoptions_outcome_stays_INCOMPLETE"
+   ],
+   "exit": 1,
+   "summary": "2 failed in 3.04s",
+   "failed": [
+    "test_an_outcome_that_is_not_INCOMPLETE_is_refused",
+    "test_the_adoptions_outcome_stays_INCOMPLETE"
+   ],
+   "designated_failed": true,
+   "designated_not_failed": [],
+   "seconds": 3.3
+  },
+  "LP27": {
+   "condition": "the stopped recovery run's own stopped receipt is read",
+   "designated": [
+    "test_the_stopped_receipt_reads_a_stop_at_the_start_with_its_end_preserved[completed]",
+    "test_a_stopped_receipt_whose_sha256_differs_is_refused"
+   ],
+   "exit": 1,
+   "summary": "2 failed in 3.45s",
+   "failed": [
+    "test_a_stopped_receipt_whose_sha256_differs_is_refused",
+    "test_the_stopped_receipt_reads_a_stop_at_the_start_with_its_end_preserved[completed]"
+   ],
+   "designated_failed": true,
+   "designated_not_failed": [],
+   "seconds": 3.7
+  },
+  "LP28": {
+   "condition": "the adoption run's stopped receipt is read as the recovery names it",
+   "designated": [
+    "test_the_adoptions_receipts_read_as_the_recovery_names_them[adoption-stopped-receipt]"
+   ],
+   "exit": 1,
+   "summary": "1 failed in 1.82s",
+   "failed": [
+    "test_the_adoptions_receipts_read_as_the_recovery_names_them[adoption-stopped-receipt]"
+   ],
+   "designated_failed": true,
+   "designated_not_failed": [],
+   "seconds": 2.1
+  },
+  "LP29": {
+   "condition": "the stopped recovery run's own outcome is read",
+   "designated": [
+    "test_an_outcome_that_is_not_INCOMPLETE_is_refused",
+    "test_an_outcome_receipt_whose_sha256_differs_is_refused"
+   ],
+   "exit": 1,
+   "summary": "2 failed in 4.08s",
+   "failed": [
+    "test_an_outcome_receipt_whose_sha256_differs_is_refused",
+    "test_an_outcome_that_is_not_INCOMPLETE_is_refused"
+   ],
+   "designated_failed": true,
+   "designated_not_failed": [],
+   "seconds": 4.3
+  },
+  "LP30": {
+   "condition": "the adoption run's outcome is read as the recovery names it",
+   "designated": [
+    "test_the_adoptions_receipts_read_as_the_recovery_names_them[adoption-outcome-receipt]",
+    "test_the_adoptions_outcome_stays_INCOMPLETE"
+   ],
+   "exit": 1,
+   "summary": "2 failed in 3.02s",
+   "failed": [
+    "test_the_adoptions_outcome_stays_INCOMPLETE",
+    "test_the_adoptions_receipts_read_as_the_recovery_names_them[adoption-outcome-receipt]"
+   ],
+   "designated_failed": true,
+   "designated_not_failed": [],
+   "seconds": 3.3
+  },
+  "LP31": {
+   "condition": "each earlier block's training row is in the registry",
+   "designated": [
+    "test_the_earlier_blocks_rows_must_exist[recovery-training]",
+    "test_the_earlier_blocks_rows_must_exist[adoption-training]"
+   ],
+   "exit": 1,
+   "summary": "2 failed in 3.04s",
+   "failed": [
+    "test_the_earlier_blocks_rows_must_exist[adoption-training]",
+    "test_the_earlier_blocks_rows_must_exist[recovery-training]"
+   ],
+   "designated_failed": true,
+   "designated_not_failed": [],
+   "seconds": 3.3
+  },
+  "LP32": {
+   "condition": "each earlier block's training row records its launch of its run",
+   "designated": [
+    "test_the_earlier_blocks_rows_keep_their_ends[recovery-record-removed]",
+    "test_the_earlier_blocks_rows_keep_their_ends[adoption-record-removed]"
+   ],
+   "exit": 1,
+   "summary": "2 failed in 3.20s",
+   "failed": [
+    "test_the_earlier_blocks_rows_keep_their_ends[adoption-record-removed]",
+    "test_the_earlier_blocks_rows_keep_their_ends[recovery-record-removed]"
+   ],
+   "designated_failed": true,
+   "designated_not_failed": [],
+   "seconds": 3.5
+  },
+  "LP33": {
+   "condition": "each earlier block's training row reads failed, STOPPED",
+   "designated": [
+    "test_the_earlier_blocks_rows_keep_their_ends[recovery-requeued]",
+    "test_the_earlier_blocks_rows_keep_their_ends[recovery-pass]",
+    "test_the_earlier_blocks_rows_keep_their_ends[adoption-requeued]"
+   ],
+   "exit": 1,
+   "summary": "3 failed in 4.08s",
+   "failed": [
+    "test_the_earlier_blocks_rows_keep_their_ends[adoption-requeued]",
+    "test_the_earlier_blocks_rows_keep_their_ends[recovery-pass]",
+    "test_the_earlier_blocks_rows_keep_their_ends[recovery-requeued]"
+   ],
+   "designated_failed": true,
+   "designated_not_failed": [],
+   "seconds": 4.3
+  },
+  "LP34": {
+   "condition": "each earlier block's completion row is in the registry",
+   "designated": [
+    "test_the_earlier_blocks_rows_must_exist[recovery-completion]",
+    "test_the_earlier_blocks_rows_must_exist[adoption-completion]"
+   ],
+   "exit": 1,
+   "summary": "2 failed in 3.24s",
+   "failed": [
+    "test_the_earlier_blocks_rows_must_exist[adoption-completion]",
+    "test_the_earlier_blocks_rows_must_exist[recovery-completion]"
+   ],
+   "designated_failed": true,
+   "designated_not_failed": [],
+   "seconds": 3.5
+  },
+  "LP35": {
+   "condition": "each earlier block's completion row reads failed",
+   "designated": [
+    "test_the_earlier_blocks_rows_keep_their_ends[recovery-completion-done]",
+    "test_the_earlier_blocks_rows_keep_their_ends[adoption-completion-done]"
+   ],
+   "exit": 1,
+   "summary": "2 failed in 3.19s",
+   "failed": [
+    "test_the_earlier_blocks_rows_keep_their_ends[adoption-completion-done]",
+    "test_the_earlier_blocks_rows_keep_their_ends[recovery-completion-done]"
+   ],
+   "designated_failed": true,
+   "designated_not_failed": [],
+   "seconds": 3.4
+  },
+  "LP36": {
+   "condition": "the link's rows are neither earlier block's",
+   "designated": [
+    "test_the_completion_row_is_never_an_earlier_blocks[recovery-completion]",
+    "test_the_completion_row_is_never_an_earlier_blocks[adoption-completion]",
+    "test_the_completion_row_is_never_an_earlier_blocks[recovery-training]",
+    "test_the_training_row_is_never_an_earlier_blocks"
+   ],
+   "exit": 1,
+   "summary": "4 failed in 5.89s",
+   "failed": [
+    "test_the_completion_row_is_never_an_earlier_blocks[adoption-completion]",
+    "test_the_completion_row_is_never_an_earlier_blocks[recovery-completion]",
+    "test_the_completion_row_is_never_an_earlier_blocks[recovery-training]",
+    "test_the_training_row_is_never_an_earlier_blocks"
+   ],
+   "designated_failed": true,
+   "designated_not_failed": [],
+   "seconds": 6.2
+  },
+  "LC1": {
+   "condition": "the carried runs are the pinned ones, in order",
+   "designated": [
+    "test_the_carried_clock_is_the_pinned_one[a-run-left-out]",
+    "test_the_carried_clock_is_the_pinned_one[another-order]"
+   ],
+   "exit": 1,
+   "summary": "2 failed in 3.02s",
+   "failed": [
+    "test_the_carried_clock_is_the_pinned_one[a-run-left-out]",
+    "test_the_carried_clock_is_the_pinned_one[another-order]"
+   ],
+   "designated_failed": true,
+   "designated_not_failed": [],
+   "seconds": 3.2
+  },
+  "LC2": {
+   "condition": "the carried seconds are the pinned ones",
+   "designated": [
+    "test_the_carried_clock_is_the_pinned_one[more-seconds]"
+   ],
+   "exit": 1,
+   "summary": "1 failed in 2.00s",
+   "failed": [
+    "test_the_carried_clock_is_the_pinned_one[more-seconds]"
+   ],
+   "designated_failed": true,
+   "designated_not_failed": [],
+   "seconds": 2.3
+  },
+  "LC3": {
+   "condition": "each carried run is a preserved copy",
+   "designated": [
+    "test_a_carried_run_without_records_or_outside_the_preservations_is_refused"
+   ],
+   "exit": 1,
+   "summary": "1 failed in 3.33s",
+   "failed": [
+    "test_a_carried_run_without_records_or_outside_the_preservations_is_refused"
+   ],
+   "designated_failed": true,
+   "designated_not_failed": [],
+   "seconds": 3.6
+  },
+  "LC4": {
+   "condition": "each carried run holds a record with its training seconds",
+   "designated": [
+    "test_a_carried_run_without_records_or_outside_the_preservations_is_refused"
+   ],
+   "exit": 1,
+   "summary": "1 failed in 2.01s",
+   "failed": [
+    "test_a_carried_run_without_records_or_outside_the_preservations_is_refused"
+   ],
+   "designated_failed": true,
+   "designated_not_failed": [],
+   "seconds": 2.2
+  },
+  "LC5": {
+   "condition": "the pinned seconds are the carried runs' sum",
+   "designated": [
+    "test_the_pinned_carried_seconds_are_the_preserved_runs_sum"
+   ],
+   "exit": 1,
+   "summary": "1 failed in 1.77s",
+   "failed": [
+    "test_the_pinned_carried_seconds_are_the_preserved_runs_sum"
+   ],
+   "designated_failed": true,
+   "designated_not_failed": [],
+   "seconds": 2.0
+  },
+  "LC6": {
+   "condition": "the carried clock is checked",
+   "designated": [
+    "test_the_carried_clock_is_the_pinned_one[a-run-left-out]",
+    "test_the_carried_clock_is_the_pinned_one[more-seconds]",
+    "test_the_pinned_carried_seconds_are_the_preserved_runs_sum"
+   ],
+   "exit": 1,
+   "summary": "3 failed in 4.05s",
+   "failed": [
+    "test_the_carried_clock_is_the_pinned_one[a-run-left-out]",
+    "test_the_carried_clock_is_the_pinned_one[more-seconds]",
+    "test_the_pinned_carried_seconds_are_the_preserved_runs_sum"
+   ],
+   "designated_failed": true,
+   "designated_not_failed": [],
+   "seconds": 4.3
+  },
+  "LC7": {
+   "condition": "every stop line is first judged before the end",
+   "designated": [
+    "test_with_no_carried_clock_a_line_judged_after_the_end_is_refused"
+   ],
+   "exit": 1,
+   "summary": "1 failed in 1.52s",
+   "failed": [
+    "test_with_no_carried_clock_a_line_judged_after_the_end_is_refused"
+   ],
+   "designated_failed": true,
+   "designated_not_failed": [],
+   "seconds": 1.8
+  },
+  "LC8": {
+   "condition": "the block's reachability is read on the route's carried clock",
+   "designated": [
+    "test_the_link_admits_exactly_its_launch_and_keeps_every_earlier_record"
+   ],
+   "exit": 1,
+   "summary": "1 failed in 2.08s",
+   "failed": [
+    "test_the_link_admits_exactly_its_launch_and_keeps_every_earlier_record"
+   ],
+   "designated_failed": true,
+   "designated_not_failed": [],
+   "seconds": 2.3
+  },
+  "LC9": {
+   "condition": "the carried seconds move a from_run_hour earlier",
+   "designated": [
+    "test_the_link_admits_exactly_its_launch_and_keeps_every_earlier_record",
+    "test_the_carried_clock_lets_the_short_run_judge_its_quarter_hour_line"
+   ],
+   "exit": 1,
+   "summary": "2 failed in 3.33s",
+   "failed": [
+    "test_the_carried_clock_lets_the_short_run_judge_its_quarter_hour_line",
+    "test_the_link_admits_exactly_its_launch_and_keeps_every_earlier_record"
+   ],
+   "designated_failed": true,
+   "designated_not_failed": [],
+   "seconds": 3.6
+  },
+  "LC10": {
+   "condition": "a line first judged at or after the end refuses",
+   "designated": [
+    "test_with_no_carried_clock_a_line_judged_after_the_end_is_refused"
+   ],
+   "exit": 1,
+   "summary": "1 failed in 2.31s",
+   "failed": [
+    "test_with_no_carried_clock_a_line_judged_after_the_end_is_refused"
+   ],
+   "designated_failed": true,
+   "designated_not_failed": [],
+   "seconds": 2.8
+  },
+  "LC11": {
+   "condition": "the carried clock is a block",
+   "designated": [
+    "test_the_carried_clocks_form[not-a-block]"
+   ],
+   "exit": 1,
+   "summary": "1 failed in 1.82s",
+   "failed": [
+    "test_the_carried_clocks_form[not-a-block]"
+   ],
+   "designated_failed": true,
+   "designated_not_failed": [],
+   "seconds": 2.1
+  },
+  "LC12": {
+   "condition": "the carried runs are a list of text",
+   "designated": [
+    "test_the_carried_clocks_form[runs-text]"
+   ],
+   "exit": 1,
+   "summary": "1 failed in 2.56s",
+   "failed": [
+    "test_the_carried_clocks_form[runs-text]"
+   ],
+   "designated_failed": true,
+   "designated_not_failed": [],
+   "seconds": 2.8
+  },
+  "LC13": {
+   "condition": "the carried seconds are a number, 0 or more",
+   "designated": [
+    "test_the_carried_clocks_form[negative]"
+   ],
+   "exit": 1,
+   "summary": "1 failed in 1.83s",
+   "failed": [
+    "test_the_carried_clocks_form[negative]"
+   ],
+   "designated_failed": true,
+   "designated_not_failed": [],
+   "seconds": 2.1
+  },
+  "LC14": {
+   "condition": "the carried clock names its basis",
+   "designated": [
+    "test_the_carried_clocks_form[no-basis]"
+   ],
+   "exit": 1,
+   "summary": "1 failed in 1.69s",
+   "failed": [
+    "test_the_carried_clocks_form[no-basis]"
+   ],
+   "designated_failed": true,
+   "designated_not_failed": [],
+   "seconds": 1.9
+  },
+  "LY1": {
+   "condition": "the stop-policy exception is a block",
+   "designated": [
+    "test_the_stop_policy_exception_is_one_scoped_exception"
+   ],
+   "exit": 1,
+   "summary": "1 failed in 1.91s",
+   "failed": [
+    "test_the_stop_policy_exception_is_one_scoped_exception"
+   ],
+   "designated_failed": true,
+   "designated_not_failed": [],
+   "seconds": 2.2
+  },
+  "LY2": {
+   "condition": "each of its fields is text",
+   "designated": [
+    "test_the_stop_policy_exception_says_what_still_stops_and_where_it_applies[still_stops]",
+    "test_the_stop_policy_exception_says_what_still_stops_and_where_it_applies[applicability]"
+   ],
+   "exit": 1,
+   "summary": "2 failed in 2.69s",
+   "failed": [
+    "test_the_stop_policy_exception_says_what_still_stops_and_where_it_applies[applicability]",
+    "test_the_stop_policy_exception_says_what_still_stops_and_where_it_applies[still_stops]"
+   ],
+   "designated_failed": true,
+   "designated_not_failed": [],
+   "seconds": 2.9
+  },
+  "LY3": {
+   "condition": "its rule, watch, sense, crossing, mode and words are the pinned ones",
+   "designated": [
+    "test_the_stop_policy_exception_is_the_pinned_one[rule]",
+    "test_the_stop_policy_exception_is_the_pinned_one[sense]",
+    "test_the_stop_policy_exception_is_the_pinned_one[crossing]",
+    "test_the_stop_policy_exception_is_the_pinned_one[mode]",
+    "test_the_stop_policy_exception_is_the_pinned_one[watch]",
+    "test_the_stop_policy_exception_is_the_pinned_one[decision-words]"
+   ],
+   "exit": 1,
+   "summary": "6 failed in 8.05s",
+   "failed": [
+    "test_the_stop_policy_exception_is_the_pinned_one[crossing]",
+    "test_the_stop_policy_exception_is_the_pinned_one[decision-words]",
+    "test_the_stop_policy_exception_is_the_pinned_one[mode]",
+    "test_the_stop_policy_exception_is_the_pinned_one[rule]",
+    "test_the_stop_policy_exception_is_the_pinned_one[sense]",
+    "test_the_stop_policy_exception_is_the_pinned_one[watch]"
+   ],
+   "designated_failed": true,
+   "designated_not_failed": [],
+   "seconds": 8.3
+  },
+  "LY4": {
+   "condition": "it names no field beyond its own",
+   "designated": [
+    "test_the_stop_policy_exception_is_one_scoped_exception"
+   ],
+   "exit": 1,
+   "summary": "1 failed in 1.88s",
+   "failed": [
+    "test_the_stop_policy_exception_is_one_scoped_exception"
+   ],
+   "designated_failed": true,
+   "designated_not_failed": [],
+   "seconds": 2.1
+  },
+  "LY5": {
+   "condition": "its words are in the decision message's text",
+   "designated": [
+    "test_the_stop_policy_words_are_the_decisions"
+   ],
+   "exit": 1,
+   "summary": "1 failed in 2.15s",
+   "failed": [
+    "test_the_stop_policy_words_are_the_decisions"
+   ],
+   "designated_failed": true,
+   "designated_not_failed": [],
+   "seconds": 2.4
+  },
+  "LY6": {
+   "condition": "the stop-policy exception is checked",
+   "designated": [
+    "test_the_stop_policy_exception_is_the_pinned_one[rule]",
+    "test_the_stop_policy_exception_is_the_pinned_one[sense]",
+    "test_the_stop_policy_words_are_the_decisions"
+   ],
+   "exit": 1,
+   "summary": "3 failed in 5.10s",
+   "failed": [
+    "test_the_stop_policy_exception_is_the_pinned_one[rule]",
+    "test_the_stop_policy_exception_is_the_pinned_one[sense]",
+    "test_the_stop_policy_words_are_the_decisions"
+   ],
+   "designated_failed": true,
+   "designated_not_failed": [],
+   "seconds": 5.3
+  },
+  "LE1": {
+   "condition": "an exception is carried only from one the recovery wrote",
+   "designated": [
+    "test_a_gate_the_used_recovery_has_no_exception_for_is_refused"
+   ],
+   "exit": 1,
+   "summary": "1 failed in 1.71s",
+   "failed": [
+    "test_a_gate_the_used_recovery_has_no_exception_for_is_refused"
+   ],
+   "designated_failed": true,
+   "designated_not_failed": [],
+   "seconds": 1.9
+  },
+  "LE2": {
+   "condition": "an inherited exception is carried unchanged",
+   "designated": [
+    "test_an_inherited_exception_is_carried_unchanged"
+   ],
+   "exit": 1,
+   "summary": "1 failed in 1.96s",
+   "failed": [
+    "test_an_inherited_exception_is_carried_unchanged"
+   ],
+   "designated_failed": true,
+   "designated_not_failed": [],
+   "seconds": 2.4
+  },
+  "LE3": {
+   "condition": "each exception names carried_from and its applicability",
+   "designated": [
+    "test_each_exception_writes_where_it_comes_from_and_its_applicability[carried_from]",
+    "test_each_exception_writes_where_it_comes_from_and_its_applicability[applicability]"
+   ],
+   "exit": 1,
+   "summary": "2 failed in 3.91s",
+   "failed": [
+    "test_each_exception_writes_where_it_comes_from_and_its_applicability[applicability]",
+    "test_each_exception_writes_where_it_comes_from_and_its_applicability[carried_from]"
+   ],
+   "designated_failed": true,
+   "designated_not_failed": [],
+   "seconds": 4.2
+  },
+  "LE4": {
+   "condition": "the exceptions are compared with the recovery's",
+   "designated": [
+    "test_an_inherited_exception_is_carried_unchanged"
+   ],
+   "exit": 1,
+   "summary": "1 failed in 2.36s",
+   "failed": [
+    "test_an_inherited_exception_is_carried_unchanged"
+   ],
+   "designated_failed": true,
+   "designated_not_failed": [],
+   "seconds": 2.6
+  },
+  "LE5": {
+   "condition": "every gate reads FAIL with its exception",
+   "designated": [
+    "test_a_gate_without_its_exception_is_refused",
+    "test_a_gate_judged_PASS_is_refused_even_with_the_record_pinned"
+   ],
+   "exit": 1,
+   "summary": "2 failed in 2.91s",
+   "failed": [
+    "test_a_gate_judged_PASS_is_refused_even_with_the_record_pinned",
+    "test_a_gate_without_its_exception_is_refused"
+   ],
+   "designated_failed": true,
+   "designated_not_failed": [],
+   "seconds": 3.1
+  },
+  "LE6": {
+   "condition": "an exception never reads a status other than FAIL",
+   "designated": [
+    "test_an_exception_never_reads_a_status_other_than_fail"
+   ],
+   "exit": 1,
+   "summary": "1 failed in 1.77s",
+   "failed": [
+    "test_an_exception_never_reads_a_status_other_than_fail"
+   ],
+   "designated_failed": true,
+   "designated_not_failed": [],
+   "seconds": 2.0
+  },
+  "LF1": {
+   "condition": "every required field",
+   "designated": [
+    "test_every_field_is_required[purpose]",
+    "test_every_field_is_required[predecessor]",
+    "test_every_field_is_required[code]",
+    "test_every_field_is_required[decision]",
+    "test_every_field_is_required[authorization]",
+    "test_every_field_is_required[authorized_by]",
+    "test_every_field_is_required[authorized_at]",
+    "test_every_field_is_required[start_checkpoint]",
+    "test_every_field_is_required[rollback_checkpoint]",
+    "test_every_field_is_required[start_step]",
+    "test_every_field_is_required[end_step]",
+    "test_every_field_is_required[max_model_steps]",
+    "test_every_field_is_required[wall_cap_s]",
+    "test_every_field_is_required[run_flags]",
+    "test_every_field_is_required[stop_lines]",
+    "test_every_field_is_required[stop_lines_row]",
+    "test_every_field_is_required[stop_criteria]",
+    "test_every_field_is_required[completion_jobs_row]",
+    "test_every_field_is_required[reachability]",
+    "test_every_field_is_required[no_auto_continue]",
+    "test_every_field_is_required[carried_clock]",
+    "test_every_field_is_required[stop_policy_exception]"
+   ],
+   "exit": 1,
+   "summary": "22 failed in 31.29s",
+   "failed": [
+    "test_every_field_is_required[authorization]",
+    "test_every_field_is_required[authorized_at]",
+    "test_every_field_is_required[authorized_by]",
+    "test_every_field_is_required[carried_clock]",
+    "test_every_field_is_required[code]",
+    "test_every_field_is_required[completion_jobs_row]",
+    "test_every_field_is_required[decision]",
+    "test_every_field_is_required[end_step]",
+    "test_every_field_is_required[max_model_steps]",
+    "test_every_field_is_required[no_auto_continue]",
+    "test_every_field_is_required[predecessor]",
+    "test_every_field_is_required[purpose]",
+    "test_every_field_is_required[reachability]",
+    "test_every_field_is_required[rollback_checkpoint]",
+    "test_every_field_is_required[run_flags]",
+    "test_every_field_is_required[start_checkpoint]",
+    "test_every_field_is_required[start_step]",
+    "test_every_field_is_required[stop_criteria]",
+    "test_every_field_is_required[stop_lines]",
+    "test_every_field_is_required[stop_lines_row]",
+    "test_every_field_is_required[stop_policy_exception]",
+    "test_every_field_is_required[wall_cap_s]"
+   ],
+   "designated_failed": true,
+   "designated_not_failed": [],
+   "seconds": 31.5
+  },
+  "LF2": {
+   "condition": "the exceptions are a block",
+   "designated": [
+    "test_the_exceptions_form"
+   ],
+   "exit": 1,
+   "summary": "1 failed in 1.90s",
+   "failed": [
+    "test_the_exceptions_form"
+   ],
+   "designated_failed": true,
+   "designated_not_failed": [],
+   "seconds": 2.2
+  },
+  "LF3": {
+   "condition": "the named fields are text",
+   "designated": [
+    "test_the_blocks_form[authorization-text]"
+   ],
+   "exit": 1,
+   "summary": "1 failed in 1.55s",
+   "failed": [
+    "test_the_blocks_form[authorization-text]"
+   ],
+   "designated_failed": true,
+   "designated_not_failed": [],
+   "seconds": 1.8
+  },
+  "LF4": {
+   "condition": "a sub-block is a block",
+   "designated": [
+    "test_the_blocks_form[code-block]"
+   ],
+   "exit": 1,
+   "summary": "1 failed in 5.34s",
+   "failed": [
+    "test_the_blocks_form[code-block]"
+   ],
+   "designated_failed": true,
+   "designated_not_failed": [],
+   "seconds": 5.6
+  },
+  "LF5": {
+   "condition": "the stop step is a whole number",
+   "designated": [
+    "test_the_blocks_form[stopped-step]"
+   ],
+   "exit": 1,
+   "summary": "1 failed in 1.67s",
+   "failed": [
+    "test_the_blocks_form[stopped-step]"
+   ],
+   "designated_failed": true,
+   "designated_not_failed": [],
+   "seconds": 1.9
+  },
+  "LF6": {
+   "condition": "the sub-blocks' fields are text",
+   "designated": [
+    "test_the_blocks_form[recovery-run]",
+    "test_the_blocks_form[adoption-file]",
+    "test_the_blocks_form[code-hash]"
+   ],
+   "exit": 1,
+   "summary": "3 failed in 4.56s",
+   "failed": [
+    "test_the_blocks_form[adoption-file]",
+    "test_the_blocks_form[code-hash]",
+    "test_the_blocks_form[recovery-run]"
+   ],
+   "designated_failed": true,
+   "designated_not_failed": [],
+   "seconds": 4.8
+  },
+  "LF7": {
+   "condition": "the sha256 fields and the code hash are sha256s",
+   "designated": [
+    "test_the_blocks_form[recovery-sha]"
+   ],
+   "exit": 1,
+   "summary": "1 failed in 1.70s",
+   "failed": [
+    "test_the_blocks_form[recovery-sha]"
+   ],
+   "designated_failed": true,
+   "designated_not_failed": [],
+   "seconds": 2.0
+  },
+  "LF8": {
+   "condition": "role link",
+   "designated": [
+    "test_the_blocks_form[role]"
+   ],
+   "exit": 1,
+   "summary": "1 failed in 1.68s",
+   "failed": [
+    "test_the_blocks_form[role]"
+   ],
+   "designated_failed": true,
+   "designated_not_failed": [],
+   "seconds": 1.9
+  },
+  "LF9": {
+   "condition": "a link is used once (repeats)",
+   "designated": [
+    "test_the_blocks_form[repeats]"
+   ],
+   "exit": 1,
+   "summary": "1 failed in 2.23s",
+   "failed": [
+    "test_the_blocks_form[repeats]"
+   ],
+   "designated_failed": true,
+   "designated_not_failed": [],
+   "seconds": 2.5
+  },
+  "LF10": {
+   "condition": "a link targets no gate",
+   "designated": [
+    "test_the_blocks_form[targets]"
+   ],
+   "exit": 1,
+   "summary": "1 failed in 2.20s",
+   "failed": [
+    "test_the_blocks_form[targets]"
+   ],
+   "designated_failed": true,
+   "designated_not_failed": [],
+   "seconds": 2.4
+  },
+  "LF11": {
+   "condition": "start_step, end_step and max_model_steps are whole numbers",
+   "designated": [
+    "test_the_blocks_form[start-str]"
+   ],
+   "exit": 1,
+   "summary": "1 failed in 1.63s",
+   "failed": [
+    "test_the_blocks_form[start-str]"
+   ],
+   "designated_failed": true,
+   "designated_not_failed": [],
+   "seconds": 1.9
+  },
+  "LF12": {
+   "condition": "max_model_steps is end_step - start_step",
+   "designated": [
+    "test_max_model_steps_other_than_end_minus_start_is_refused"
+   ],
+   "exit": 1,
+   "summary": "1 failed in 1.73s",
+   "failed": [
+    "test_max_model_steps_other_than_end_minus_start_is_refused"
+   ],
+   "designated_failed": true,
+   "designated_not_failed": [],
+   "seconds": 2.0
+  },
+  "LF13": {
+   "condition": "the duration is bounded",
+   "designated": [
+    "test_the_duration_is_bounded"
+   ],
+   "exit": 1,
+   "summary": "1 failed in 1.51s",
+   "failed": [
+    "test_the_duration_is_bounded"
+   ],
+   "designated_failed": true,
+   "designated_not_failed": [],
+   "seconds": 1.7
+  },
+  "LF14": {
+   "condition": "wall_cap_s is a number of seconds above 0",
+   "designated": [
+    "test_the_wall_cap_is_a_number_of_seconds_above_zero[zero]",
+    "test_the_wall_cap_is_a_number_of_seconds_above_zero[negative]",
+    "test_the_wall_cap_is_a_number_of_seconds_above_zero[text]",
+    "test_the_wall_cap_is_a_number_of_seconds_above_zero[nan]",
+    "test_the_wall_cap_is_a_number_of_seconds_above_zero[bool]"
+   ],
+   "exit": 1,
+   "summary": "5 failed in 6.46s",
+   "failed": [
+    "test_the_wall_cap_is_a_number_of_seconds_above_zero[bool]",
+    "test_the_wall_cap_is_a_number_of_seconds_above_zero[nan]",
+    "test_the_wall_cap_is_a_number_of_seconds_above_zero[negative]",
+    "test_the_wall_cap_is_a_number_of_seconds_above_zero[text]",
+    "test_the_wall_cap_is_a_number_of_seconds_above_zero[zero]"
+   ],
+   "designated_failed": true,
+   "designated_not_failed": [],
+   "seconds": 6.7
+  },
+  "LF15": {
+   "condition": "the stop criteria's form",
+   "designated": [
+    "test_the_stop_criteria_are_checked_as_a_continuations"
+   ],
+   "exit": 1,
+   "summary": "1 failed in 2.01s",
+   "failed": [
+    "test_the_stop_criteria_are_checked_as_a_continuations"
+   ],
+   "designated_failed": true,
+   "designated_not_failed": [],
+   "seconds": 2.3
+  },
+  "LF16": {
+   "condition": "the stop fields read numbers in the start run's stats",
+   "designated": [
+    "test_the_stop_fields_are_read_in_the_start_runs_stats"
+   ],
+   "exit": 1,
+   "summary": "1 failed in 1.62s",
+   "failed": [
+    "test_the_stop_fields_are_read_in_the_start_runs_stats"
+   ],
+   "designated_failed": true,
+   "designated_not_failed": [],
+   "seconds": 1.8
+  },
+  "LF17": {
+   "condition": "the run flags' own checks (run flags only, an existing state, a new folder)",
+   "designated": [
+    "test_the_run_flags_name_both_latent_body_flags_and_a_new_folder"
+   ],
+   "exit": 1,
+   "summary": "1 failed in 3.01s",
+   "failed": [
+    "test_the_run_flags_name_both_latent_body_flags_and_a_new_folder"
+   ],
+   "designated_failed": true,
+   "designated_not_failed": [],
+   "seconds": 3.3
+  },
+  "LF18": {
+   "condition": "the run flags name both latent body flags",
+   "designated": [
+    "test_the_run_flags_name_both_latent_body_flags_and_a_new_folder"
+   ],
+   "exit": 1,
+   "summary": "1 failed in 1.75s",
+   "failed": [
+    "test_the_run_flags_name_both_latent_body_flags_and_a_new_folder"
+   ],
+   "designated_failed": true,
+   "designated_not_failed": [],
+   "seconds": 2.0
+  },
+  "LF19": {
+   "condition": "an exception's key is a gate number",
+   "designated": [
+    "test_the_exceptions_form"
+   ],
+   "exit": 1,
+   "summary": "1 failed in 2.16s",
+   "failed": [
+    "test_the_exceptions_form"
+   ],
+   "designated_failed": true,
+   "designated_not_failed": [],
+   "seconds": 2.4
+  },
+  "LF20": {
+   "condition": "an exception's gate is one of the seven",
+   "designated": [
+    "test_the_exceptions_form"
+   ],
+   "exit": 1,
+   "summary": "1 failed in 1.58s",
+   "failed": [
+    "test_the_exceptions_form"
+   ],
+   "designated_failed": true,
+   "designated_not_failed": [],
+   "seconds": 1.8
+  },
+  "LF21": {
+   "condition": "an exception is a block",
+   "designated": [
+    "test_the_exceptions_form"
+   ],
+   "exit": 1,
+   "summary": "1 failed in 1.68s",
+   "failed": [
+    "test_the_exceptions_form"
+   ],
+   "designated_failed": true,
+   "designated_not_failed": [],
+   "seconds": 1.9
+  },
+  "LS1": {
+   "condition": "a link needs who writes it",
+   "designated": [
+    "test_set_link_needs_a_record_and_who_writes_it"
+   ],
+   "exit": 1,
+   "summary": "1 failed in 1.61s",
+   "failed": [
+    "test_set_link_needs_a_record_and_who_writes_it"
+   ],
+   "designated_failed": true,
+   "designated_not_failed": [],
+   "seconds": 1.9
+  },
+  "LS2": {
+   "condition": "a used link is not written again",
+   "designated": [
+    "test_the_link_is_used_once"
+   ],
+   "exit": 1,
+   "summary": "1 failed in 1.80s",
+   "failed": [
+    "test_the_link_is_used_once"
+   ],
+   "designated_failed": true,
+   "designated_not_failed": [],
+   "seconds": 2.0
+  },
+  "LS3": {
+   "condition": "the link file names its configuration",
+   "designated": [
+    "test_the_link_file_names_its_own_configuration"
+   ],
+   "exit": 1,
+   "summary": "1 failed in 1.70s",
+   "failed": [
+    "test_the_link_file_names_its_own_configuration"
+   ],
+   "designated_failed": true,
+   "designated_not_failed": [],
+   "seconds": 2.0
+  },
+  "LS4": {
+   "condition": "the link file was written against the pinned record",
+   "designated": [
+    "test_a_link_file_written_against_another_record_is_refused"
+   ],
+   "exit": 1,
+   "summary": "1 failed in 2.13s",
+   "failed": [
+    "test_a_link_file_written_against_another_record_is_refused"
+   ],
+   "designated_failed": true,
+   "designated_not_failed": [],
+   "seconds": 2.4
+  },
+  "LS5": {
+   "condition": "the rows are checked (written or queued, no attempt or launch recorded)",
+   "designated": [
+    "test_the_links_rows_must_read_written_or_queued[link_stop_row]",
+    "test_the_links_rows_must_read_written_or_queued[link_done_row]",
+    "test_a_row_recording_another_link_is_refused",
+    "test_a_failed_attempt_refuses_a_second_launch"
+   ],
+   "exit": 1,
+   "summary": "4 failed in 7.09s",
+   "failed": [
+    "test_a_failed_attempt_refuses_a_second_launch",
+    "test_a_row_recording_another_link_is_refused",
+    "test_the_links_rows_must_read_written_or_queued[link_done_row]",
+    "test_the_links_rows_must_read_written_or_queued[link_stop_row]"
+   ],
+   "designated_failed": true,
+   "designated_not_failed": [],
+   "seconds": 7.3
+  },
+  "LS6": {
+   "condition": "the authorization is checked for reuse",
+   "designated": [
+    "test_a_decision_already_used_by_another_link_is_refused",
+    "test_a_decision_message_already_used_is_refused",
+    "test_an_earlier_blocks_decision_is_not_the_links[recovery]",
+    "test_an_earlier_blocks_decision_is_not_the_links[adoption]",
+    "test_an_earlier_blocks_words_are_refused[recovery]",
+    "test_an_earlier_blocks_words_are_refused[adoption]",
+    "test_authorization_words_that_do_not_name_the_decision_are_refused"
+   ],
+   "exit": 1,
+   "summary": "7 failed in 8.06s",
+   "failed": [
+    "test_a_decision_already_used_by_another_link_is_refused",
+    "test_a_decision_message_already_used_is_refused",
+    "test_an_earlier_blocks_decision_is_not_the_links[adoption]",
+    "test_an_earlier_blocks_decision_is_not_the_links[recovery]",
+    "test_an_earlier_blocks_words_are_refused[adoption]",
+    "test_an_earlier_blocks_words_are_refused[recovery]",
+    "test_authorization_words_that_do_not_name_the_decision_are_refused"
+   ],
+   "designated_failed": true,
+   "designated_not_failed": [],
+   "seconds": 8.3
+  },
+  "LS7": {
+   "condition": "the decision's message and the delegation record are read",
+   "designated": [
+    "test_the_decision_message_and_the_delegation_record_are_read[message-text]",
+    "test_the_decision_message_and_the_delegation_record_are_read[delegation]",
+    "test_the_authorization_holds_each_delegation_sentence_verbatim"
+   ],
+   "exit": 1,
+   "summary": "3 failed in 4.04s",
+   "failed": [
+    "test_the_authorization_holds_each_delegation_sentence_verbatim",
+    "test_the_decision_message_and_the_delegation_record_are_read[delegation]",
+    "test_the_decision_message_and_the_delegation_record_are_read[message-text]"
+   ],
+   "designated_failed": true,
+   "designated_not_failed": [],
+   "seconds": 4.3
+  },
+  "LS8": {
+   "condition": "the command template is checked",
+   "designated": [
+    "test_the_command_template_reads_its_pinned_sha256"
+   ],
+   "exit": 1,
+   "summary": "1 failed in 1.89s",
+   "failed": [
+    "test_the_command_template_reads_its_pinned_sha256"
+   ],
+   "designated_failed": true,
+   "designated_not_failed": [],
+   "seconds": 2.1
+  },
+  "LS9": {
+   "condition": "the budget is checked",
+   "designated": [
+    "test_the_wall_cap_is_read_from_both_run_owners_receipts[recovery-no-end]",
+    "test_a_route_wall_cap_that_is_not_the_remaining_time_is_refused",
+    "test_a_missing_run_owner_log_is_refused"
+   ],
+   "exit": 1,
+   "summary": "3 failed in 4.68s",
+   "failed": [
+    "test_a_missing_run_owner_log_is_refused",
+    "test_a_route_wall_cap_that_is_not_the_remaining_time_is_refused",
+    "test_the_wall_cap_is_read_from_both_run_owners_receipts[recovery-no-end]"
+   ],
+   "designated_failed": true,
+   "designated_not_failed": [],
+   "seconds": 4.9
+  },
+  "LS10": {
+   "condition": "the chain is checked",
+   "designated": [
+    "test_a_used_recovery_file_whose_sha256_differs_is_refused",
+    "test_the_earlier_blocks_rows_keep_their_ends[recovery-requeued]"
+   ],
+   "exit": 1,
+   "summary": "2 failed in 3.20s",
+   "failed": [
+    "test_a_used_recovery_file_whose_sha256_differs_is_refused",
+    "test_the_earlier_blocks_rows_keep_their_ends[recovery-requeued]"
+   ],
+   "designated_failed": true,
+   "designated_not_failed": [],
+   "seconds": 3.4
+  },
+  "LS11": {
+   "condition": "the preservation is checked",
+   "designated": [
+    "test_a_manifest_that_changed_after_the_link_is_refused"
+   ],
+   "exit": 1,
+   "summary": "1 failed in 2.08s",
+   "failed": [
+    "test_a_manifest_that_changed_after_the_link_is_refused"
+   ],
+   "designated_failed": true,
+   "designated_not_failed": [],
+   "seconds": 2.3
+  },
+  "LS12": {
+   "condition": "the predecessor is checked",
+   "designated": [
+    "test_a_predecessor_model_whose_sha256_differs_is_refused",
+    "test_a_preserved_run_that_did_not_end_at_the_stop_is_refused"
+   ],
+   "exit": 1,
+   "summary": "2 failed in 2.89s",
+   "failed": [
+    "test_a_predecessor_model_whose_sha256_differs_is_refused",
+    "test_a_preserved_run_that_did_not_end_at_the_stop_is_refused"
+   ],
+   "designated_failed": true,
+   "designated_not_failed": [],
+   "seconds": 3.2
+  },
+  "LS13": {
+   "condition": "every preserved file is hashed",
+   "designated": [
+    "test_every_preserved_file_is_hashed_when_written_and_at_launch"
+   ],
+   "exit": 1,
+   "summary": "1 failed in 1.96s",
+   "failed": [
+    "test_every_preserved_file_is_hashed_when_written_and_at_launch"
+   ],
+   "designated_failed": true,
+   "designated_not_failed": [],
+   "seconds": 2.2
+  },
+  "LS14": {
+   "condition": "the record and the checkout's code are checked",
+   "designated": [
+    "test_a_changed_checkout_code_is_refused_when_written_and_when_noted",
+    "test_a_record_whose_settings_were_edited_is_refused"
+   ],
+   "exit": 1,
+   "summary": "2 failed in 2.92s",
+   "failed": [
+    "test_a_changed_checkout_code_is_refused_when_written_and_when_noted",
+    "test_a_record_whose_settings_were_edited_is_refused"
+   ],
+   "designated_failed": true,
+   "designated_not_failed": [],
+   "seconds": 3.2
+  },
+  "LS15": {
+   "condition": "the route's pins are checked",
+   "designated": [
+    "test_a_configuration_the_route_does_not_name_is_refused",
+    "test_each_pinned_value_is_compared_exactly[end]"
+   ],
+   "exit": 1,
+   "summary": "2 failed in 3.31s",
+   "failed": [
+    "test_a_configuration_the_route_does_not_name_is_refused",
+    "test_each_pinned_value_is_compared_exactly[end]"
+   ],
+   "designated_failed": true,
+   "designated_not_failed": [],
+   "seconds": 3.6
+  },
+  "LL1": {
+   "condition": "every flag but the replaced ones reads as the template's at launch",
+   "designated": [
+    "test_every_flag_but_the_replaced_ones_reads_as_the_recoverys_launch[caregiver-record-dir]",
+    "test_every_flag_but_the_replaced_ones_reads_as_the_recoverys_launch[report-every]",
+    "test_every_flag_but_the_replaced_ones_reads_as_the_recoverys_launch[minutes]"
+   ],
+   "exit": 1,
+   "summary": "3 failed in 3.83s",
+   "failed": [
+    "test_every_flag_but_the_replaced_ones_reads_as_the_recoverys_launch[caregiver-record-dir]",
+    "test_every_flag_but_the_replaced_ones_reads_as_the_recoverys_launch[minutes]",
+    "test_every_flag_but_the_replaced_ones_reads_as_the_recoverys_launch[report-every]"
+   ],
+   "designated_failed": true,
+   "designated_not_failed": [],
+   "seconds": 4.1
+  },
+  "LL2": {
+   "condition": "the launch's folders are checked",
+   "designated": [
+    "test_the_launch_writes_new_folders_outside_the_preservations[--out]",
+    "test_the_launch_writes_new_folders_outside_the_preservations[--checkpoint-storage]",
+    "test_the_launch_writes_new_folders_outside_the_preservations[--latent-body-output]",
+    "test_the_launch_never_writes_into_an_earlier_run[out-recovery-run]",
+    "test_the_launchs_out_never_takes_an_earlier_runs_folder_name[the-recovery-runs-name]"
+   ],
+   "exit": 1,
+   "summary": "5 failed in 6.59s",
+   "failed": [
+    "test_the_launch_never_writes_into_an_earlier_run[out-recovery-run]",
+    "test_the_launch_writes_new_folders_outside_the_preservations[--checkpoint-storage]",
+    "test_the_launch_writes_new_folders_outside_the_preservations[--latent-body-output]",
+    "test_the_launch_writes_new_folders_outside_the_preservations[--out]",
+    "test_the_launchs_out_never_takes_an_earlier_runs_folder_name[the-recovery-runs-name]"
+   ],
+   "designated_failed": true,
+   "designated_not_failed": [],
+   "seconds": 6.8
+  },
+  "LL3": {
+   "condition": "the launch resumes exactly the start",
+   "designated": [
+    "test_a_launch_from_another_checkpoint_is_not_the_link"
+   ],
+   "exit": 1,
+   "summary": "1 failed in 1.97s",
+   "failed": [
+    "test_a_launch_from_another_checkpoint_is_not_the_link"
+   ],
+   "designated_failed": true,
+   "designated_not_failed": [],
+   "seconds": 2.2
+  },
+  "LL4": {
+   "condition": "the run flags are carried exactly",
+   "designated": [
+    "test_the_run_flags_the_link_names_are_carried_exactly"
+   ],
+   "exit": 1,
+   "summary": "1 failed in 1.80s",
+   "failed": [
+    "test_the_run_flags_the_link_names_are_carried_exactly"
+   ],
+   "designated_failed": true,
+   "designated_not_failed": [],
+   "seconds": 2.0
+  },
+  "LL5": {
+   "condition": "--max-steps reads exactly the end",
+   "designated": [
+    "test_the_launch_ends_exactly_at_the_adoptions_end"
+   ],
+   "exit": 1,
+   "summary": "1 failed in 2.08s",
+   "failed": [
+    "test_the_launch_ends_exactly_at_the_adoptions_end"
+   ],
+   "designated_failed": true,
+   "designated_not_failed": [],
+   "seconds": 2.3
+  },
+  "LL6": {
+   "condition": "no output folder lies in an earlier run's folders",
+   "designated": [
+    "test_the_launch_never_writes_into_an_earlier_run[out-recovery-run]",
+    "test_the_launch_never_writes_into_an_earlier_run[storage-adoption-run]",
+    "test_the_launch_never_writes_into_an_earlier_run[latent-recovery]",
+    "test_the_launch_never_writes_into_an_earlier_run[latent-adoption]"
+   ],
+   "exit": 1,
+   "summary": "4 failed in 5.43s",
+   "failed": [
+    "test_the_launch_never_writes_into_an_earlier_run[latent-adoption]",
+    "test_the_launch_never_writes_into_an_earlier_run[latent-recovery]",
+    "test_the_launch_never_writes_into_an_earlier_run[out-recovery-run]",
+    "test_the_launch_never_writes_into_an_earlier_run[storage-adoption-run]"
+   ],
+   "designated_failed": true,
+   "designated_not_failed": [],
+   "seconds": 5.7
+  },
+  "LL7": {
+   "condition": "--out's folder name is no earlier run's",
+   "designated": [
+    "test_the_launchs_out_never_takes_an_earlier_runs_folder_name[the-recovery-runs-name]",
+    "test_the_launchs_out_never_takes_an_earlier_runs_folder_name[the-adoption-runs-name]"
+   ],
+   "exit": 1,
+   "summary": "2 failed in 2.80s",
+   "failed": [
+    "test_the_launchs_out_never_takes_an_earlier_runs_folder_name[the-adoption-runs-name]",
+    "test_the_launchs_out_never_takes_an_earlier_runs_folder_name[the-recovery-runs-name]"
+   ],
+   "designated_failed": true,
+   "designated_not_failed": [],
+   "seconds": 3.0
+  },
+  "LL8": {
+   "condition": "the adoption's run folder is kept",
+   "designated": [
+    "test_the_launch_never_writes_into_an_earlier_run[storage-adoption-run]",
+    "test_the_launchs_out_never_takes_an_earlier_runs_folder_name[the-adoption-runs-name]"
+   ],
+   "exit": 1,
+   "summary": "2 failed in 2.71s",
+   "failed": [
+    "test_the_launch_never_writes_into_an_earlier_run[storage-adoption-run]",
+    "test_the_launchs_out_never_takes_an_earlier_runs_folder_name[the-adoption-runs-name]"
+   ],
+   "designated_failed": true,
+   "designated_not_failed": [],
+   "seconds": 2.9
+  },
+  "LL9": {
+   "condition": "the earlier runs' latent body folders are kept",
+   "designated": [
+    "test_the_launch_never_writes_into_an_earlier_run[latent-recovery]",
+    "test_the_launch_never_writes_into_an_earlier_run[latent-adoption]"
+   ],
+   "exit": 1,
+   "summary": "2 failed in 2.91s",
+   "failed": [
+    "test_the_launch_never_writes_into_an_earlier_run[latent-adoption]",
+    "test_the_launch_never_writes_into_an_earlier_run[latent-recovery]"
+   ],
+   "designated_failed": true,
+   "designated_not_failed": [],
+   "seconds": 3.2
+  },
+  "LD1": {
+   "condition": "launch_refusal judges the link's start as the link",
+   "designated": [
+    "test_the_link_admits_exactly_its_launch_and_keeps_every_earlier_record"
+   ],
+   "exit": 1,
+   "summary": "1 failed in 1.88s",
+   "failed": [
+    "test_the_link_admits_exactly_its_launch_and_keeps_every_earlier_record"
+   ],
+   "designated_failed": true,
+   "designated_not_failed": [],
+   "seconds": 2.1
+  },
+  "LD2": {
+   "condition": "launch_plan names the link's launch",
+   "designated": [
+    "test_the_link_admits_exactly_its_launch_and_keeps_every_earlier_record"
+   ],
+   "exit": 1,
+   "summary": "1 failed in 1.55s",
+   "failed": [
+    "test_the_link_admits_exactly_its_launch_and_keeps_every_earlier_record"
+   ],
+   "designated_failed": true,
+   "designated_not_failed": [],
+   "seconds": 1.8
+  },
+  "LD3": {
+   "condition": "a launch from the link's start under another configuration is refused",
+   "designated": [
+    "test_a_command_whose_configuration_differs_is_refused_naming_each_difference"
+   ],
+   "exit": 1,
+   "summary": "1 failed in 1.57s",
+   "failed": [
+    "test_a_command_whose_configuration_differs_is_refused_naming_each_difference"
+   ],
+   "designated_failed": true,
+   "designated_not_failed": [],
+   "seconds": 1.8
+  },
+  "LD4": {
+   "condition": "the mismatch refusal holds while the link is unused",
+   "designated": [
+    "test_a_command_whose_configuration_differs_is_refused_naming_each_difference"
+   ],
+   "exit": 1,
+   "summary": "1 failed in 1.38s",
+   "failed": [
+    "test_a_command_whose_configuration_differs_is_refused_naming_each_difference"
+   ],
+   "designated_failed": true,
+   "designated_not_failed": [],
+   "seconds": 1.6
+  },
+  "LD5": {
+   "condition": "the listed refusal names the link",
+   "designated": [
+    "test_without_the_link_the_configuration_is_never_trained_from_the_stop",
+    "test_the_link_is_used_once"
+   ],
+   "exit": 1,
+   "summary": "2 failed in 3.10s",
+   "failed": [
+    "test_the_link_is_used_once",
+    "test_without_the_link_the_configuration_is_never_trained_from_the_stop"
+   ],
+   "designated_failed": true,
+   "designated_not_failed": [],
+   "seconds": 3.3
+  },
+  "LD6": {
+   "condition": "a configuration LINK_ROUTES lists is never trained normally",
+   "designated": [
+    "test_without_the_link_the_configuration_is_never_trained_from_the_stop"
+   ],
+   "exit": 1,
+   "summary": "1 failed in 1.88s",
+   "failed": [
+    "test_without_the_link_the_configuration_is_never_trained_from_the_stop"
+   ],
+   "designated_failed": true,
+   "designated_not_failed": [],
+   "seconds": 2.1
+  },
+  "LD7": {
+   "condition": "the noting of a link needs src",
+   "designated": [
+    "test_the_noting_of_a_link_needs_src"
+   ],
+   "exit": 1,
+   "summary": "1 failed in 1.68s",
+   "failed": [
+    "test_the_noting_of_a_link_needs_src"
+   ],
+   "designated_failed": true,
+   "designated_not_failed": [],
+   "seconds": 2.0
+  },
+  "LD8": {
+   "condition": "the noting judges the link again",
+   "designated": [
+    "test_a_changed_checkout_code_is_refused_when_written_and_when_noted",
+    "test_a_configuration_the_route_does_not_name_is_refused"
+   ],
+   "exit": 1,
+   "summary": "2 failed in 3.91s",
+   "failed": [
+    "test_a_changed_checkout_code_is_refused_when_written_and_when_noted",
+    "test_a_configuration_the_route_does_not_name_is_refused"
+   ],
+   "designated_failed": true,
+   "designated_not_failed": [],
+   "seconds": 4.2
+  },
+  "LD9": {
+   "condition": "marking the launch reads the training row's record",
+   "designated": [
+    "test_a_hand_edited_link_file_is_refused_by_its_training_row"
+   ],
+   "exit": 1,
+   "summary": "1 failed in 1.97s",
+   "failed": [
+    "test_a_hand_edited_link_file_is_refused_by_its_training_row"
+   ],
+   "designated_failed": true,
+   "designated_not_failed": [],
+   "seconds": 2.2
+  },
+  "LD10": {
+   "condition": "noting an attempt reads the training row's record",
+   "designated": [
+    "test_a_failed_attempt_refuses_a_second_launch",
+    "test_a_hand_edited_link_file_is_refused_by_its_training_row"
+   ],
+   "exit": 1,
+   "summary": "2 failed in 2.89s",
+   "failed": [
+    "test_a_failed_attempt_refuses_a_second_launch",
+    "test_a_hand_edited_link_file_is_refused_by_its_training_row"
+   ],
+   "designated_failed": true,
+   "designated_not_failed": [],
+   "seconds": 3.1
+  },
+  "LD11": {
+   "condition": "marking the launch records it in the training row",
+   "designated": [
+    "test_the_link_admits_exactly_its_launch_and_keeps_every_earlier_record",
+    "test_the_command_line_writes_a_link_and_marks_its_launch"
+   ],
+   "exit": 1,
+   "summary": "2 failed in 3.42s",
+   "failed": [
+    "test_the_command_line_writes_a_link_and_marks_its_launch",
+    "test_the_link_admits_exactly_its_launch_and_keeps_every_earlier_record"
+   ],
+   "designated_failed": true,
+   "designated_not_failed": [],
+   "seconds": 3.7
+  },
+  "LD12": {
+   "condition": "noting an attempt records it in the training row",
+   "designated": [
+    "test_the_link_admits_exactly_its_launch_and_keeps_every_earlier_record",
+    "test_the_link_is_used_once"
+   ],
+   "exit": 1,
+   "summary": "2 failed in 3.06s",
+   "failed": [
+    "test_the_link_admits_exactly_its_launch_and_keeps_every_earlier_record",
+    "test_the_link_is_used_once"
+   ],
+   "designated_failed": true,
+   "designated_not_failed": [],
+   "seconds": 3.3
+  },
+  "LD13": {
+   "condition": "the authorization scan reads the links folder",
+   "designated": [
+    "test_a_decision_already_used_by_another_link_is_refused"
+   ],
+   "exit": 1,
+   "summary": "1 failed in 1.57s",
+   "failed": [
+    "test_a_decision_already_used_by_another_link_is_refused"
+   ],
+   "designated_failed": true,
+   "designated_not_failed": [],
+   "seconds": 1.8
+  },
+  "CL1": {
+   "condition": "the link command needs --src",
+   "designated": [
+    "test_the_command_line_writes_a_link_and_marks_its_launch"
+   ],
+   "exit": 1,
+   "summary": "1 failed in 1.67s",
+   "failed": [
+    "test_the_command_line_writes_a_link_and_marks_its_launch"
+   ],
+   "designated_failed": true,
+   "designated_not_failed": [],
+   "seconds": 1.9
+  },
+  "CL2": {
+   "condition": "the link command needs --block-file",
+   "designated": [
+    "test_the_command_line_writes_a_link_and_marks_its_launch"
+   ],
+   "exit": 1,
+   "summary": "1 failed in 1.66s",
+   "failed": [
+    "test_the_command_line_writes_a_link_and_marks_its_launch"
+   ],
+   "designated_failed": true,
+   "designated_not_failed": [],
+   "seconds": 1.9
+  },
+  "CL3": {
+   "condition": "launched --link marks the link",
+   "designated": [
+    "test_the_command_line_writes_a_link_and_marks_its_launch"
+   ],
+   "exit": 1,
+   "summary": "1 failed in 1.44s",
+   "failed": [
+    "test_the_command_line_writes_a_link_and_marks_its_launch"
+   ],
+   "designated_failed": true,
+   "designated_not_failed": [],
+   "seconds": 1.7
+  },
+  "CL4": {
+   "condition": "launched marks one block, --link counted",
+   "designated": [
+    "test_the_command_line_writes_a_link_and_marks_its_launch"
+   ],
+   "exit": 1,
+   "summary": "1 failed in 5.78s",
+   "failed": [
+    "test_the_command_line_writes_a_link_and_marks_its_launch"
+   ],
+   "designated_failed": true,
+   "designated_not_failed": [],
+   "seconds": 6.0
+  }
+ },
+ "held": 146,
+ "of": 146,
+ "verdict": "PASS",
+ "rule": "PASS when the unmutated copy passes every test of the link test file before and after, the copy's tool is restored byte for byte, and for every mutation EVERY designated test fails on the copy with that one condition deleted"
+}

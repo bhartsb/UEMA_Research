@@ -1,0 +1,375 @@
+{
+ "version": "m6_frozen_replay_v1",
+ "verdict": "pass",
+ "held": 10,
+ "of": 10,
+ "cases": [
+  {
+   "case": "F1 the tiny cancellation case (old = -d, path = 2d, target change = d): error with the path 0, without it 4 x the no-change error, cosine -1, the pooled ratios 0 and 4 over the same denominator; a zero target change gives no ratio (absolute sums only) and an undefined cosine",
+   "held": true,
+   "seconds": 0.0,
+   "row": {
+    "e_with": 2.58257e-15,
+    "e_without": 0.0200062,
+    "d2": 0.00500155,
+    "paired": -0.0200062,
+    "o2": 0.00500155,
+    "p2": 0.0200062,
+    "s2": 0.00500155,
+    "cos_op": -1.0,
+    "cos_s_d": 1.0,
+    "decomposition_max": 0.0,
+    "bypass_max": 0.0,
+    "body": 1,
+    "target": 0
+   },
+   "summary": {
+    "rows": 1,
+    "sum_error_with_path": 2.58257e-15,
+    "sum_error_without_path": 0.0200062,
+    "sum_no_change_error": 0.00500155,
+    "pooled_with_path": 5.16354e-13,
+    "pooled_without_path": 4.0,
+    "denominator_zero": false,
+    "mean_paired_difference": -0.0200062,
+    "improved": 1,
+    "worsened": 0,
+    "equal": 0,
+    "rms_old": 0.0707216,
+    "rms_path": 0.141443,
+    "rms_sum": 0.0707216,
+    "rms_target_change": 0.0707216,
+    "cos_old_path": {
+     "defined": 1,
+     "undefined": 0,
+     "q25": -1.0,
+     "median": -1.0,
+     "q75": -1.0,
+     "at_or_under_minus_0_9": 1
+    }
+   },
+   "zero_summary": {
+    "rows": 1,
+    "sum_error_with_path": 0.0,
+    "sum_error_without_path": 0.0,
+    "sum_no_change_error": 0.0,
+    "pooled_with_path": null,
+    "pooled_without_path": null,
+    "denominator_zero": true,
+    "mean_paired_difference": 0.0,
+    "improved": 0,
+    "worsened": 0,
+    "equal": 1,
+    "rms_old": 0.0,
+    "rms_path": 0.0,
+    "rms_sum": 0.0,
+    "rms_target_change": 0.0,
+    "cos_old_path": {
+     "defined": 0,
+     "undefined": 1,
+     "q25": null,
+     "median": null,
+     "q75": null,
+     "at_or_under_minus_0_9": 0
+    }
+   }
+  },
+  {
+   "case": "F2 on a learner built by the pinned builder from the run's args.json: the normal prediction equals (o + c) + p and the bypass equals o + c bit for bit with a nonzero path; with the path's output layer at zero the normal prediction equals the bypass bit for bit",
+   "held": true,
+   "seconds": 0.85,
+   "decomposition_bitwise": true,
+   "bypass_bitwise": true,
+   "path_output_nonzero": true,
+   "zero_path_equals_bypass": true,
+   "path_output_largest": 0.0312841
+  },
+  {
+   "case": "F3 the input identity: on one fixed window batch, the program's prepared context, current tokens and memory bias, the forward model's last step and the normal proprioception prediction equal those replay_update itself computes on the same windows (captured by hooks before its update, its own running-centre update counted and not made, the centre at a trained learner's weight 1), within 1e-5; one centre update's effect on the prediction reported beside it",
+   "held": true,
+   "seconds": 2.63,
+   "max_abs_differences": {
+    "ctx": 0.0,
+    "cur": 0.0,
+    "memory_bias": 0.0,
+    "last_step": 0.0,
+    "prediction": 0.0
+   },
+   "line": 1e-05,
+   "rows": 8,
+   "fails": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    []
+   ],
+   "motor_rebuilt": 8,
+   "contract": 33,
+   "replay_centre_updates_counted": 1,
+   "one_centre_update_changes_prediction_by": 3.8147e-06
+  },
+  {
+   "case": "F4 the full job on a fixture preserved state (checkpoint by LemLite.save_checkpoint, companion by continuation_state.write_episode, MANIFEST pins, an observer lane): verdict pass, receipt completed, label offset 0 verified, rows frozen before the learner is built, every frozen row evaluated, the decomposition bit for bit, the state unchanged; a second call is refused (exit 4) and changes no file",
+   "held": true,
+   "seconds": 18.5,
+   "exit": 0,
+   "verdict": "pass",
+   "receipt": "completed",
+   "labels": {
+    "scores": {
+     "-2": {
+      "pairs": 192,
+      "median_abs_log_ratio": 0.103651
+     },
+     "-1": {
+      "pairs": 200,
+      "median_abs_log_ratio": 0.0837725
+     },
+     "0": {
+      "pairs": 208,
+      "median_abs_log_ratio": 0.0
+     },
+     "1": {
+      "pairs": 208,
+      "median_abs_log_ratio": 0.0833399
+     },
+     "2": {
+      "pairs": 208,
+      "median_abs_log_ratio": 0.103651
+     }
+    },
+    "delta": 0,
+    "line": 0.5,
+    "held": true
+   },
+   "counts": {
+    "report_492600": {
+     "candidates": 64,
+     "included": 64,
+     "excluded": 0,
+     "labels": [
+      492592,
+      492599
+     ]
+    },
+    "report_492700": {
+     "candidates": 64,
+     "included": 64,
+     "excluded": 0,
+     "labels": [
+      492692,
+      492699
+     ]
+    },
+    "reference": {
+     "candidates": 80,
+     "included": 80,
+     "excluded": 0,
+     "labels": [
+      492741,
+      492750
+     ]
+    }
+   },
+   "coverage": {
+    "windows_done": [
+     "report_492600",
+     "report_492700",
+     "reference"
+    ],
+    "rows_done": 208,
+    "rows_frozen": 208,
+    "stopped": null
+   },
+   "state_check": {
+    "tensors": 857,
+    "changed": [],
+    "n_changed": 0,
+    "named_caches": {
+     "_mod_emb_expanded": {
+      "changed": true,
+      "equals_recomputation": true
+     },
+     "_temp_emb_expanded": {
+      "changed": true,
+      "equals_recomputation": true
+     },
+     "_token_assembly_buf": {
+      "changed": true,
+      "meaning": "the forward model's no-gradient scratch for assembling the current frame"
+     }
+    },
+    "path_gauge_rows": 0,
+    "path_gauge_armed": false,
+    "optimizer_state_entries": 0,
+    "replay_attached": false,
+    "held": true
+   },
+   "decomposition": {
+    "rows": 208,
+    "failed": 0,
+    "largest": 0.0,
+    "largest_bypass": 0.0
+   },
+   "frozen_before_build": true,
+   "second_call_exit": 4,
+   "files_unchanged": true,
+   "invalid": [],
+   "stderr": "",
+   "elapsed_s": 16.1,
+   "peak_memory_gib": 2.109
+  },
+  {
+   "case": "F5 an observer lane matching no label offset: failed ('the ring's labels cannot be verified')",
+   "held": true,
+   "seconds": 3.44,
+   "exit": 2,
+   "receipt": "failed",
+   "verdict": "invalid",
+   "invalid": [
+    "V3: the ring's labels cannot be verified against the observer lane (median |ln ratio| per offset {-2: 0.4827805769125315, -1: 0.46284203201887203, 0: 0.46889287073135194, 1: 0.519984864513264, 2: 0.4797320084500084}; the smallest must be at most 0.50 of every other)"
+   ],
+   "stderr": ""
+  },
+  {
+   "case": "F6 the state check's positive control: the path's running centre moved during the readings gives V7, failed",
+   "held": true,
+   "seconds": 5.39,
+   "exit": 2,
+   "receipt": "failed",
+   "verdict": "invalid",
+   "invalid": [
+    "V7: the learner's state changed during the readings: {'tensors': 857, 'changed': ['heads_all_slot_path.centre_mean'], 'n_changed': 1, 'named_caches': {'_mod_emb_expanded': {'changed': True, 'equals_recomputation': True}, '_temp_emb_expanded': {'changed': True, 'equals_recomputation': True}, '_token_assembly_buf': {'changed': True, 'meaning': \"the forward model's no-gradient scratch for assembling the current frame\"}}, 'path_gauge_rows': 0, 'path_gauge_armed': False, 'optimizer_state_entries': 0, 'replay_attached': False, 'held': False}"
+   ],
+   "stderr": ""
+  },
+  {
+   "case": "F7 the soft deadline passed: the receipt 'partial', verdict 'partial', the coverage reached named",
+   "held": true,
+   "seconds": 3.23,
+   "receipt": "partial",
+   "coverage": {
+    "windows_done": [],
+    "rows_done": 0,
+    "rows_frozen": 208,
+    "stopped": "the soft deadline of 0 s passed before window report_492600 finished"
+   },
+   "invalid": [],
+   "stderr": ""
+  },
+  {
+   "case": "F8 refusals: no review acceptance and an acceptance for other bytes (not run); a visible card and a companion whose bytes are not its receipt's (failed)",
+   "held": true,
+   "seconds": 3.71,
+   "no_review": {
+    "exit": 2,
+    "receipt": "not_run",
+    "verdict": "invalid",
+    "invalid": [
+     "not run: no readable review acceptance at D:\\UEMA_Research\\external\\D\\UEMA_scratch\\b1_recover_489625\\m6_frozen\\selftest_run5\\absent.json (FileNotFoundError)"
+    ],
+    "stderr": ""
+   },
+   "other_bytes": {
+    "exit": 2,
+    "receipt": "not_run",
+    "verdict": "invalid",
+    "invalid": [
+     "not run: the review acceptance D:\\UEMA_Research\\external\\D\\UEMA_scratch\\b1_recover_489625\\m6_frozen\\selftest_run5\\review_other.json does not accept this program's sha256 b1737b34f276fa6d58ff521a21c9198f925f6bc5b10525a038fb5506ef1ddd59 (it reads accepted True for ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff)"
+    ],
+    "stderr": ""
+   },
+   "card": {
+    "exit": 2,
+    "receipt": "failed",
+    "verdict": "invalid",
+    "invalid": [
+     "V8: the graphics card is not hidden (CUDA_VISIBLE_DEVICES '0'; the job needs -1)"
+    ],
+    "stderr": ""
+   },
+   "companion_pin": {
+    "exit": 2,
+    "receipt": "failed",
+    "verdict": "invalid",
+    "invalid": [
+     "error: ValueError: the companion D:\\UEMA_Research\\external\\D\\UEMA_scratch\\b1_recover_489625\\m6_frozen\\selftest_run5\\fixture\\pin\\companion_store\\ckpt_step_492751_e2841a03522f4d4c9c16b10512abff16.pt.gz has sha256 fa0ca1838101bb0203917ba6086b5d8fc5bc52058358c723a39d0656ad1813f6, its receipt says 0000000000000000000000000000000000000000000000000000000000000000"
+    ],
+    "stderr": ""
+   }
+  },
+  {
+   "case": "F9 not-run writes the not-run receipt; close on a claim without a receipt writes 'failed'",
+   "held": true,
+   "seconds": 0.35,
+   "not_run": "not_run",
+   "killed": "failed"
+  },
+  {
+   "case": "F10 the label check's scale on the real records (the preserved observer lane, MANIFEST-pinned chunks, no checkpoint): the median |ln ratio| between the live no-change errors of model steps 1 and 2 apart, per body, over the reference labels; the right offset must read at most 0.5 of the smaller",
+   "held": true,
+   "seconds": 0.35,
+   "steps_apart_1": {
+    "pairs": 2800,
+    "median_abs_log_ratio": 0.725196
+   },
+   "steps_apart_2": {
+    "pairs": 2800,
+    "median_abs_log_ratio": 1.00592
+   },
+   "right_offset_must_read_at_most": 0.362598,
+   "chunks": [
+    {
+     "file": "D:\\UEMA_Research\\external\\D\\UEMA_preserved\\b1_recover_B1R_skip13_489625\\run\\observer\\model\\chunk_000492325_27240_00027.npz",
+     "pinned": true,
+     "steps": [
+      492325,
+      492424
+     ]
+    },
+    {
+     "file": "D:\\UEMA_Research\\external\\D\\UEMA_preserved\\b1_recover_B1R_skip13_489625\\run\\observer\\model\\chunk_000492425_27240_00028.npz",
+     "pinned": true,
+     "steps": [
+      492425,
+      492524
+     ]
+    },
+    {
+     "file": "D:\\UEMA_Research\\external\\D\\UEMA_preserved\\b1_recover_B1R_skip13_489625\\run\\observer\\model\\chunk_000492525_27240_00029.npz",
+     "pinned": true,
+     "steps": [
+      492525,
+      492624
+     ]
+    },
+    {
+     "file": "D:\\UEMA_Research\\external\\D\\UEMA_preserved\\b1_recover_B1R_skip13_489625\\run\\observer\\model\\chunk_000492625_27240_00030.npz",
+     "pinned": true,
+     "steps": [
+      492625,
+      492724
+     ]
+    },
+    {
+     "file": "D:\\UEMA_Research\\external\\D\\UEMA_preserved\\b1_recover_B1R_skip13_489625\\run\\observer\\model\\chunk_000492725_27240_00031.npz",
+     "pinned": true,
+     "steps": [
+      492725,
+      492799
+     ]
+    }
+   ],
+   "note": "the right offset's own scatter (one encoder update and float16 storage) is read only by the job; the live persistence of model step k compared with that of k + 1 and k + 2 here"
+  }
+ ],
+ "program_sha256": "b1737b34f276fa6d58ff521a21c9198f925f6bc5b10525a038fb5506ef1ddd59",
+ "written": "Oct 13, 2026 5:55:50 PM PDT",
+ "seconds": 39.8,
+ "fixture_args": "D:\\UEMA_Research\\external\\D\\UEMA_preserved\\b1_recover_B1R_skip13_489625\\run\\args.json",
+ "peak_working_set_gib": 1.351
+}

@@ -1,0 +1,846 @@
+{
+ "check": "arm_consistency_sampling_check_v1",
+ "started": "2026-10-23 07:56:51 AM Pacific Daylight Time",
+ "training_authorized": false,
+ "declared": {
+  "test_weight": 0.2,
+  "test_weight_note": "a test value, not a selected weight",
+  "agreement_relative": 1e-06,
+  "power_relative": 0.0001,
+  "stand_in_vision_norm": 1.5,
+  "grad_clip": 1.0,
+  "model_step": 1000,
+  "cap_gradings": 11,
+  "internal_bound_s": 100.0
+ },
+ "sections": {
+  "S0 pins and inputs": {
+   "cpu_s": 0.438,
+   "wall_s": 0.682
+  },
+  "S1 build and pre-pass": {
+   "cpu_s": 0.172,
+   "wall_s": 1.843
+  },
+  "S2 arms A, B, C": {
+   "cpu_s": 0.469,
+   "wall_s": 0.655
+  },
+  "S3 non-finite loss and step guard": {
+   "cpu_s": 0.094,
+   "wall_s": 0.09
+  },
+  "S4 NaN gradients at the clip": {
+   "cpu_s": 0.047,
+   "wall_s": 0.048
+  },
+  "S5 the cap": {
+   "cpu_s": 0.281,
+   "wall_s": 0.29
+  },
+  "S6 code pins": {
+   "cpu_s": 0.016,
+   "wall_s": 0.012
+  }
+ },
+ "source": {
+  "commit": "71841320b19146b5b95c7c4665aa29f753695c6b",
+  "expected_commit": "71841320b19146b5b95c7c4665aa29f753695c6b",
+  "worktree_clean": true,
+  "status": "",
+  "git_return_codes": {
+   "rev-parse HEAD": 0,
+   "rev-parse expected": 0,
+   "status": 0
+  },
+  "files_sha256": {
+   "Source/Python/lem/model/arm_consistency.py": "2028a94378f371dc2c626c813ee6fffbda0ee0dbc76e667fbd89e349a4e9e96f",
+   "Source/Python/lem/model/efference.py": "22f89073c9ce83c41335678853c67366d605055211099683a3c3839f034ae824",
+   "Source/Python/mimo_bridge/lem_model.py": "7d1cf6925832c6b6864603b51a14ff8ae185b5597a57920a588ede7956a0c229",
+   "Source/Python/mimo_bridge/tools/arm_consistency_check.py": "79b4b4d5a898e4413b0ea83ae1cc95810f0573e83e7b3dd357757db6d2f2d4f0",
+   "Source/Python/mimo_bridge/tools/arm_consistency_sampling_check.py": "0cf2c7c9054e8f118f096223043fc7c28bfdd02364a5d4804840842852997367"
+  },
+  "python": "3.13.3",
+  "torch": "2.6.0+cu124",
+  "numpy": "2.2.6",
+  "platform": "Windows-11-10.0.26200-SP0"
+ },
+ "inputs": [
+  {
+   "path": "D:/UEMA_Research/external/D/UEMA_preserved/s4r_pose_learning_S4R_pose_learning_a2_496250/run/args.json",
+   "sha256": "c3ffd361fe13b124e6563de2f895a6abb0a92565a6a13dfcb286855c11aa6098",
+   "bytes": 8130,
+   "manifest_listed": true,
+   "manifest_match": true
+  },
+  {
+   "path": "D:/UEMA_Research/external/D/UEMA_preserved/s4r_pose_learning_S4R_pose_learning_a2_496250/run/scenes/mimo_bridge_crib_preflight_age24.xml",
+   "sha256": "8e29c988d69e25375b378dcac202dd0717505605bd80c9314a0be90c8fc19834",
+   "bytes": 102581,
+   "manifest_listed": true,
+   "manifest_match": true
+  },
+  {
+   "path": "D:/UEMA_Research/external/D/UEMA_preserved/s4r_pose_learning_S4R_pose_learning_a2_496250/run/checkpoints/ckpt_step_496350/model.safetensors",
+   "sha256": "df36dc094a8135edbd5a4b3808f879e1e58b15bc579c47ba055f672fadad94d0",
+   "bytes": 73119988,
+   "manifest_listed": true,
+   "manifest_match": true
+  }
+ ],
+ "modules": {
+  "arm_consistency": "C:\\Users\\bhart\\Documents\\UEMA_wt\\a2_arm_consistency_20261023\\Source\\Python\\lem\\model\\arm_consistency.py",
+  "efference": "C:\\Users\\bhart\\Documents\\UEMA_wt\\a2_arm_consistency_20261023\\Source\\Python\\lem\\model\\efference.py",
+  "lem_model": "C:\\Users\\bhart\\Documents\\UEMA_wt\\a2_arm_consistency_20261023\\Source\\Python\\mimo_bridge\\lem_model.py",
+  "arm_consistency_check": "C:\\Users\\bhart\\Documents\\UEMA_wt\\a2_arm_consistency_20261023\\Source\\Python\\mimo_bridge\\tools\\arm_consistency_check.py",
+  "this program": "C:\\Users\\bhart\\Documents\\UEMA_wt\\a2_arm_consistency_20261023\\Source\\Python\\mimo_bridge\\tools\\arm_consistency_sampling_check.py"
+ },
+ "build": {
+  "handles": [
+   "wrist_L",
+   "thumb_L",
+   "index_L",
+   "middle_L",
+   "ring_L",
+   "pinky_L",
+   "wrist_R",
+   "thumb_R",
+   "index_R",
+   "middle_R",
+   "ring_R",
+   "pinky_R",
+   "head",
+   "upperarm_L",
+   "lowerarm_L",
+   "upperarm_R",
+   "lowerarm_R",
+   "thigh_L",
+   "calf_L",
+   "thigh_R",
+   "calf_R",
+   "foot_L",
+   "foot_R",
+   "gaze",
+   "lower_trunk",
+   "chest"
+  ],
+  "geometry_sha256": "7797b3254bb4d6adc25d7a3ac17c68458f71b7bbec1de400d290314f4aea2c82",
+  "bodies": 8,
+  "efference_tensors": 50,
+  "training_config": {
+   "lr": 0.0003,
+   "weight_decay": 0.01,
+   "betas": [
+    0.9,
+    0.999
+   ],
+   "grad_clip": 1.0
+  },
+  "training_config_file": "C:\\Users\\bhart\\Documents\\UEMA_wt\\a2_arm_consistency_20261023\\Source\\Python\\lem\\master_config.yaml",
+  "stand_in": {
+   "seed": 20261030,
+   "vision_norm_unscaled": 172.00699298441666,
+   "scale": 0.008720575681105569,
+   "vision_norm_target": 1.5
+  },
+  "prepass": {
+   "lesson_alone_group_norm_float64": 0.4477166568761813,
+   "lesson_alone_vision_copy_norm": 0.0
+  },
+  "threads": 3,
+  "cuda_initialized": false
+ },
+ "equivalence": {
+  "arms": {
+   "A": {
+    "label": "A",
+    "lesson_drew_random_numbers": false,
+    "grads_none_after_lesson": true,
+    "loss_keys": [
+     "efference_arm_consistency",
+     "efference_body",
+     "efference_gaze"
+    ],
+    "loss": 1.007645606994629,
+    "branch": "finite loss",
+    "sample_pending_at_clip": true,
+    "clip_returned": 0.0,
+    "clip_norms": {
+     "core": 0.0,
+     "efference": 1.7483972311019897
+    },
+    "hook_left_random_states_unchanged": true,
+    "optimizer_step_taken": true,
+    "optimizer_state_entries": 43,
+    "cpu_s": 0.0781,
+    "wall_s": 0.0661
+   },
+   "B": {
+    "label": "B",
+    "lesson_drew_random_numbers": false,
+    "grads_none_after_lesson": true,
+    "loss_keys": [
+     "efference_arm_consistency",
+     "efference_body",
+     "efference_gaze"
+    ],
+    "loss": 1.007645606994629,
+    "branch": "finite loss",
+    "sample_pending_at_clip": false,
+    "clip_returned": 0.0,
+    "clip_norms": {
+     "core": 0.0,
+     "efference": 1.7483972311019897
+    },
+    "hook_left_random_states_unchanged": true,
+    "optimizer_step_taken": true,
+    "optimizer_state_entries": 43,
+    "cpu_s": 0.1094,
+    "wall_s": 0.0384
+   },
+   "C": {
+    "label": "C",
+    "lesson_drew_random_numbers": false,
+    "grads_none_after_lesson": true,
+    "loss_keys": [
+     "efference_body",
+     "efference_gaze"
+    ],
+    "loss": 1.0018460750579834,
+    "branch": "finite loss",
+    "sample_pending_at_clip": true,
+    "clip_returned": 0.0,
+    "clip_norms": {
+     "core": 0.0,
+     "efference": 1.7405850887298584
+    },
+    "hook_left_random_states_unchanged": true,
+    "optimizer_step_taken": true,
+    "optimizer_state_entries": 43,
+    "cpu_s": 0.0312,
+    "wall_s": 0.0531
+   }
+  },
+  "A_sample": {
+   "grading_step": 1000,
+   "command_began_step": 994,
+   "bodies": 8,
+   "why": "first eligible grading",
+   "ordinal": 1,
+   "supervised_tenure_raw_norm_by_group": {
+    "body_all": 0.012812054100713234,
+    "body_mlp": 0.3296509146779115,
+    "body_pool": 0.012988391651764025,
+    "gaze*": 0.0,
+    "lat_norm": 0.016557676649400447,
+    "vision*": 0.0
+   },
+   "term_per_weight_raw_norm_by_group": {
+    "body_all": 0.010477668821629047,
+    "body_mlp": 0.503252957842861,
+    "body_pool": 0.011749383680988244,
+    "gaze*": 0.0,
+    "lat_norm": 0.013883786067142913,
+    "vision*": 0.0
+   },
+   "term_direct_recipients": [
+    "lat_norm.weight",
+    "lat_norm.bias",
+    "body_pool.query",
+    "body_pool.qnorm.weight",
+    "body_pool.qnorm.bias",
+    "body_pool.wq.weight",
+    "body_pool.wq.bias",
+    "body_pool.wk.weight",
+    "body_pool.wk.bias",
+    "body_pool.wv.weight",
+    "body_pool.wv.bias",
+    "body_pool.wo.weight",
+    "body_pool.wo.bias",
+    "body_all.weight",
+    "body_all.bias",
+    "body_mlp.0.weight",
+    "body_mlp.0.bias",
+    "body_mlp.2.weight",
+    "body_mlp.2.bias",
+    "body_mlp.4.weight",
+    "body_mlp.4.bias"
+   ],
+   "lat_norm_receives_term_gradient": true,
+   "clip_step": {
+    "model_step": 1000,
+    "full_raw_norm_by_group": {
+     "body_all": 0.013994570758700555,
+     "body_mlp": 0.3698753181568168,
+     "body_pool": 0.013799731596219451,
+     "gaze*": 0.8128281711186993,
+     "lat_norm": 0.09494062866592477,
+     "vision*": 1.5000000185869673
+    },
+    "full_raw_norm_read": 1.748398537542573,
+    "raw_norm_without_term": 1.7405862281084525,
+    "term_in_loss": true,
+    "weight": 0.2,
+    "grad_clip": 1.0,
+    "group_norm_at_clip": 1.7483972311019897,
+    "clip_scale": 0.5719520771704938,
+    "clip_scale_without_term": 0.5745187508279774,
+    "optimizer_step_taken": true
+   }
+  },
+  "C_sample": {
+   "grading_step": 1000,
+   "command_began_step": 994,
+   "bodies": 8,
+   "why": "first eligible grading",
+   "ordinal": 1,
+   "supervised_tenure_raw_norm_by_group": {
+    "body_all": 0.012812054100713234,
+    "body_mlp": 0.3296509146779115,
+    "body_pool": 0.012988391651764025,
+    "gaze*": 0.0,
+    "lat_norm": 0.016557676649400447,
+    "vision*": 0.0
+   },
+   "term_per_weight_raw_norm_by_group": {
+    "body_all": 0.010477668821629047,
+    "body_mlp": 0.503252957842861,
+    "body_pool": 0.011749383680988244,
+    "gaze*": 0.0,
+    "lat_norm": 0.013883786067142913,
+    "vision*": 0.0
+   },
+   "term_direct_recipients": [
+    "lat_norm.weight",
+    "lat_norm.bias",
+    "body_pool.query",
+    "body_pool.qnorm.weight",
+    "body_pool.qnorm.bias",
+    "body_pool.wq.weight",
+    "body_pool.wq.bias",
+    "body_pool.wk.weight",
+    "body_pool.wk.bias",
+    "body_pool.wv.weight",
+    "body_pool.wv.bias",
+    "body_pool.wo.weight",
+    "body_pool.wo.bias",
+    "body_all.weight",
+    "body_all.bias",
+    "body_mlp.0.weight",
+    "body_mlp.0.bias",
+    "body_mlp.2.weight",
+    "body_mlp.2.bias",
+    "body_mlp.4.weight",
+    "body_mlp.4.bias"
+   ],
+   "lat_norm_receives_term_gradient": true,
+   "clip_step": {
+    "model_step": 1000,
+    "full_raw_norm_by_group": {
+     "body_all": 0.013268684622067673,
+     "body_mlp": 0.3310907152853576,
+     "body_pool": 0.012917489144563596,
+     "gaze*": 0.8128281711186993,
+     "lat_norm": 0.09479845910880208,
+     "vision*": 1.5000000185869673
+    },
+    "full_raw_norm_read": 1.740586229015973,
+    "raw_norm_without_term": 1.740586229015973,
+    "term_in_loss": false,
+    "weight": 0.0,
+    "grad_clip": 1.0,
+    "group_norm_at_clip": 1.7405850887298584,
+    "clip_scale": 0.5745191269049614,
+    "clip_scale_without_term": 0.5745187505284306,
+    "optimizer_step_taken": true
+   }
+  },
+  "differing": {
+   "loss": [],
+   "grads_after_backward": [],
+   "grads_after_clip": [],
+   "params": [],
+   "buffers": [],
+   "optimizer_state": []
+  },
+  "random_states_equal_A_B": {
+   "after_lesson": true,
+   "after_backward": true,
+   "after_clip": true,
+   "after_step": true
+  },
+  "agreement": {
+   "A_full_raw_norm_read": 1.748398537542573,
+   "A_clip_returned": 1.7483972311019897,
+   "A_full_vs_clip_rel": 7.472218326766361e-07,
+   "A_float64_grad_norm_independent": 1.748398537542573,
+   "A_raw_norm_without_term": 1.7405862281084525,
+   "C_float64_grad_norm": 1.740586229015973,
+   "without_vs_C_rel": 5.213878451190548e-10,
+   "A_clip_scale_without_term": 0.5745187508279774,
+   "C_clip_scale": 0.5745191269049614,
+   "C_measured_scale": 0.5745191585887413,
+   "scale_without_vs_C_rel": 6.545943666399414e-07,
+   "C_clip_returned": 1.7405850887298584,
+   "clip_scales": {
+    "A": 0.5719520771704938,
+    "B": 0.5719520771704938,
+    "C": 0.5745191269049614
+   },
+   "term_effect_on_group_norm_rel": 0.004488320312069,
+   "lesson_alone_norm": 0.4477166568761813,
+   "lesson_alone_vs_clip_rel": 0.743927381654573,
+   "line": 1e-06,
+   "power_line": 0.0001
+  }
+ },
+ "nonfinite": {
+  "F": {
+   "label": "F",
+   "lesson_drew_random_numbers": false,
+   "grads_none_after_lesson": true,
+   "loss_keys": [
+    "efference_arm_consistency",
+    "efference_body",
+    "efference_gaze"
+   ],
+   "loss": "nan",
+   "branch": "non-finite loss",
+   "sample_pending_at_clip": null,
+   "optimizer_step_taken": false,
+   "optimizer_state_entries": 0,
+   "cpu_s": 0.0312,
+   "wall_s": 0.0303
+  },
+  "F_sample_after_release": "not reached: non-finite loss",
+  "F_next_step": {
+   "branch": "finite loss",
+   "sample_pending_at_clip": false,
+   "clip_returned": 0.0,
+   "clip_norms": {
+    "core": 0.0,
+    "efference": 1.6824437379837036
+   },
+   "hook_left_random_states_unchanged": true,
+   "optimizer_step_taken": true
+  },
+  "F_sample": {
+   "grading_step": 1000,
+   "command_began_step": 994,
+   "bodies": 8,
+   "why": "first eligible grading",
+   "ordinal": 1,
+   "supervised_tenure_raw_norm_by_group": {
+    "body_all": 0.012812054100713234,
+    "body_mlp": 0.3296509146779115,
+    "body_pool": 0.012988391651764025,
+    "gaze*": 0.0,
+    "lat_norm": 0.016557676649400447,
+    "vision*": 0.0
+   },
+   "term_per_weight_raw_norm_by_group": {
+    "body_all": 0.010477668821629047,
+    "body_mlp": 0.503252957842861,
+    "body_pool": 0.011749383680988244,
+    "gaze*": 0.0,
+    "lat_norm": 0.013883786067142913,
+    "vision*": 0.0
+   },
+   "term_direct_recipients": [
+    "lat_norm.weight",
+    "lat_norm.bias",
+    "body_pool.query",
+    "body_pool.qnorm.weight",
+    "body_pool.qnorm.bias",
+    "body_pool.wq.weight",
+    "body_pool.wq.bias",
+    "body_pool.wk.weight",
+    "body_pool.wk.bias",
+    "body_pool.wv.weight",
+    "body_pool.wv.bias",
+    "body_pool.wo.weight",
+    "body_pool.wo.bias",
+    "body_all.weight",
+    "body_all.bias",
+    "body_mlp.0.weight",
+    "body_mlp.0.bias",
+    "body_mlp.2.weight",
+    "body_mlp.2.bias",
+    "body_mlp.4.weight",
+    "body_mlp.4.bias"
+   ],
+   "lat_norm_receives_term_gradient": true,
+   "clip_step": "not reached: non-finite loss"
+  },
+  "M": {
+   "label": "M",
+   "lesson_drew_random_numbers": false,
+   "grads_none_after_lesson": true,
+   "loss_keys": [
+    "efference_arm_consistency",
+    "efference_body",
+    "efference_gaze"
+   ],
+   "loss": 1.007645606994629,
+   "branch": "finite loss",
+   "sample_pending_at_clip": true,
+   "clip_returned": 0.0,
+   "clip_norms": {
+    "core": 0.0,
+    "efference": 1.7483972311019897
+   },
+   "hook_left_random_states_unchanged": true,
+   "optimizer_step_taken": true,
+   "optimizer_state_entries": 43,
+   "cpu_s": 0.0469,
+   "wall_s": 0.0479
+  },
+  "M_sample": {
+   "grading_step": 1000,
+   "command_began_step": 994,
+   "bodies": 8,
+   "why": "first eligible grading",
+   "ordinal": 1,
+   "supervised_tenure_raw_norm_by_group": {
+    "body_all": 0.012812054100713234,
+    "body_mlp": 0.3296509146779115,
+    "body_pool": 0.012988391651764025,
+    "gaze*": 0.0,
+    "lat_norm": 0.016557676649400447,
+    "vision*": 0.0
+   },
+   "term_per_weight_raw_norm_by_group": {
+    "body_all": 0.010477668821629047,
+    "body_mlp": 0.503252957842861,
+    "body_pool": 0.011749383680988244,
+    "gaze*": 0.0,
+    "lat_norm": 0.013883786067142913,
+    "vision*": 0.0
+   },
+   "term_direct_recipients": [
+    "lat_norm.weight",
+    "lat_norm.bias",
+    "body_pool.query",
+    "body_pool.qnorm.weight",
+    "body_pool.qnorm.bias",
+    "body_pool.wq.weight",
+    "body_pool.wq.bias",
+    "body_pool.wk.weight",
+    "body_pool.wk.bias",
+    "body_pool.wv.weight",
+    "body_pool.wv.bias",
+    "body_pool.wo.weight",
+    "body_pool.wo.bias",
+    "body_all.weight",
+    "body_all.bias",
+    "body_mlp.0.weight",
+    "body_mlp.0.bias",
+    "body_mlp.2.weight",
+    "body_mlp.2.bias",
+    "body_mlp.4.weight",
+    "body_mlp.4.bias"
+   ],
+   "lat_norm_receives_term_gradient": true,
+   "clip_step": "not reached: the clip ran on model step 1001, not the sampled grading's model step 1000"
+  }
+ },
+ "nan_gradient": {
+  "N": {
+   "label": "N",
+   "lesson_drew_random_numbers": false,
+   "grads_none_after_lesson": true,
+   "loss_keys": [
+    "efference_arm_consistency",
+    "efference_body",
+    "efference_gaze"
+   ],
+   "loss": 1.007645606994629,
+   "branch": "finite loss",
+   "sample_pending_at_clip": true,
+   "clip_returned": "nan",
+   "clip_norms": {
+    "core": 0.0,
+    "efference": "nan"
+   },
+   "hook_left_random_states_unchanged": true,
+   "optimizer_step_taken": false,
+   "optimizer_state_entries": 0,
+   "cpu_s": 0.0469,
+   "wall_s": 0.0449
+  },
+  "N_sample": {
+   "grading_step": 1000,
+   "command_began_step": 994,
+   "bodies": 8,
+   "why": "first eligible grading",
+   "ordinal": 1,
+   "supervised_tenure_raw_norm_by_group": {
+    "body_all": 0.012812054100713234,
+    "body_mlp": 0.3296509146779115,
+    "body_pool": 0.012988391651764025,
+    "gaze*": 0.0,
+    "lat_norm": 0.016557676649400447,
+    "vision*": 0.0
+   },
+   "term_per_weight_raw_norm_by_group": {
+    "body_all": 0.010477668821629047,
+    "body_mlp": 0.503252957842861,
+    "body_pool": 0.011749383680988244,
+    "gaze*": 0.0,
+    "lat_norm": 0.013883786067142913,
+    "vision*": 0.0
+   },
+   "term_direct_recipients": [
+    "lat_norm.weight",
+    "lat_norm.bias",
+    "body_pool.query",
+    "body_pool.qnorm.weight",
+    "body_pool.qnorm.bias",
+    "body_pool.wq.weight",
+    "body_pool.wq.bias",
+    "body_pool.wk.weight",
+    "body_pool.wk.bias",
+    "body_pool.wv.weight",
+    "body_pool.wv.bias",
+    "body_pool.wo.weight",
+    "body_pool.wo.bias",
+    "body_all.weight",
+    "body_all.bias",
+    "body_mlp.0.weight",
+    "body_mlp.0.bias",
+    "body_mlp.2.weight",
+    "body_mlp.2.bias",
+    "body_mlp.4.weight",
+    "body_mlp.4.bias"
+   ],
+   "lat_norm_receives_term_gradient": true,
+   "clip_step": {
+    "model_step": 1000,
+    "full_raw_norm_by_group": {
+     "body_all": 0.013994570758700555,
+     "body_mlp": 0.3698753181568168,
+     "body_pool": 0.013799731596219451,
+     "gaze*": 0.8128281711186993,
+     "lat_norm": 0.09494062866592477,
+     "vision*": null
+    },
+    "full_raw_norm_read": null,
+    "raw_norm_without_term": null,
+    "term_in_loss": true,
+    "weight": 0.2,
+    "grad_clip": 1.0,
+    "group_norm_at_clip": null,
+    "clip_scale": null,
+    "clip_scale_without_term": null,
+    "optimizer_step_taken": false
+   }
+  }
+ },
+ "cap": {
+  "trace": [
+   {
+    "grading": 1,
+    "evaluated": 1,
+    "skipped": 0
+   },
+   {
+    "grading": 2,
+    "evaluated": 2,
+    "skipped": 0
+   },
+   {
+    "grading": 3,
+    "evaluated": 3,
+    "skipped": 0
+   },
+   {
+    "grading": 4,
+    "evaluated": 4,
+    "skipped": 0
+   },
+   {
+    "grading": 5,
+    "evaluated": 5,
+    "skipped": 0
+   },
+   {
+    "grading": 6,
+    "evaluated": 6,
+    "skipped": 0
+   },
+   {
+    "grading": 7,
+    "evaluated": 7,
+    "skipped": 0
+   },
+   {
+    "grading": 8,
+    "evaluated": 8,
+    "skipped": 0
+   },
+   {
+    "grading": 9,
+    "evaluated": 9,
+    "skipped": 0
+   },
+   {
+    "grading": 10,
+    "evaluated": 10,
+    "skipped": 0
+   },
+   {
+    "grading": 11,
+    "evaluated": 10,
+    "skipped": 1
+   }
+  ],
+  "balance_max": 10,
+  "clip_step_of_samples": [
+   "not reached: the training step's clip did not run after this grading",
+   "not reached: the training step's clip did not run after this grading",
+   "not reached: the training step's clip did not run after this grading",
+   "not reached: the training step's clip did not run after this grading",
+   "not reached: the training step's clip did not run after this grading",
+   "not reached: the training step's clip did not run after this grading",
+   "not reached: the training step's clip did not run after this grading",
+   "not reached: the training step's clip did not run after this grading",
+   "not reached: the training step's clip did not run after this grading",
+   "not reached: the training step's clip did not run after this grading"
+  ]
+ },
+ "code_pins": {
+  "clip_source_sha256": "bc7c0b36268053d98ec26c526ad97e08f3f94d6cf8ac05ce8f18543170a0c75c",
+  "step_source_sha256": "b8b79b6ecd1b60708939d32d34cb5ffb7c16bf17b7993d972304803e3e4f202f",
+  "mirrored_lines": [
+   {
+    "line": "if not bool(torch.isfinite(loss.detach())):",
+    "at": 1549
+   },
+   {
+    "line": "self.optimizer.zero_grad(set_to_none=True)",
+    "at": 1553
+   },
+   {
+    "line": "if getattr(self, \"arm_consistency\", None) is not None:",
+    "at": 1554
+   },
+   {
+    "line": "self.arm_consistency.release_pending(\"non-finite loss\")",
+    "at": 1556
+   },
+   {
+    "line": "self.optimizer.zero_grad(set_to_none=True)",
+    "at": 1558
+   },
+   {
+    "line": "loss.backward()",
+    "at": 1563
+   },
+   {
+    "line": "_arm = getattr(self, \"arm_consistency\", None)",
+    "at": 1567
+   },
+   {
+    "line": "_arm_clip = _arm is not None and self.efference is not None and _arm.clip_sample_pending()",
+    "at": 1568
+   },
+   {
+    "line": "if _arm_clip:",
+    "at": 1569
+   },
+   {
+    "line": "_arm.before_clip(self.efference, step)",
+    "at": 1570
+   },
+   {
+    "line": "grad_norm = self._clip_training_gradients()",
+    "at": 1571
+   },
+   {
+    "line": "if _arm_clip:",
+    "at": 1572
+   },
+   {
+    "line": "_arm.after_clip((self.clip_norms or {}).get(\"efference\"), self.grad_clip,",
+    "at": 1573
+   },
+   {
+    "line": "optimizer_step_taken=math.isfinite(grad_norm))",
+    "at": 1574
+   },
+   {
+    "line": "if not math.isfinite(grad_norm):",
+    "at": 1577
+   },
+   {
+    "line": "self.optimizer.zero_grad(set_to_none=True)",
+    "at": 1581
+   },
+   {
+    "line": "self.optimizer.step()",
+    "at": 1593
+   }
+  ],
+  "step_lines": [
+   {
+    "line": "step = self.step_count if step_index is None else step_index",
+    "at": 72
+   },
+   {
+    "line": "_eff = self._efference_lesson(nf_latent, exec_t, executed_order_id,",
+    "at": 1062
+   },
+   {
+    "line": "handle_state, frames, step, B, train=train)",
+    "at": 1063
+   }
+  ],
+  "step_rebinds_between": []
+ },
+ "conditions": {
+  "S0 HEAD equals --expected-commit and the worktree is clean (git status --porcelain --untracked-files=all prints nothing)": true,
+  "S0 every input listed in the preservation manifest matches its sha256 and size (args.json, the scene, the 496,350 model.safetensors)": true,
+  "S0 the modules executed are this worktree's": true,
+  "S1 the efference module's 496,350 tensors load strictly (no missing and no unexpected key) and equal every saved tensor": true,
+  "S1 lem/master_config.yaml training.grad_clip equals the clip used here (1.0)": true,
+  "S0 CPU only: every efference parameter and every input tensor of the check is on the CPU": true,
+  "S2 the sampled grading took place in A at the first eligible grading (one sample, ordinal 1) and none in B (the code's switch balance_gauges=False: its grading counted as skipped)": true,
+  "S2 every efference .grad is None after the lesson's grading and before the backward, in A and in B": true,
+  "S2 the lesson's loss keys and values are equal bit for bit in A and B": true,
+  "S2 the torch (CPU), Python and numpy random states are equal in A and B after the lesson, the backward, the clip and the optimizer step, and the clip hook (before_clip, the clip, after_clip) leaves them unchanged in A": true,
+  "S2 every efference .grad is equal bit for bit in A and B after the backward": true,
+  "S2 every efference .grad is equal bit for bit in A and B after the actual clip (A: before_clip, LemLite._clip_training_gradients, after_clip; B: the clip only) and the clip returned the same norms": true,
+  "S2 after one AdamW step every parameter, every buffer and every optimizer state (step, exp_avg, exp_avg_sq) is equal bit for bit in A and B": true,
+  "S2 A's sample was pending at the clip and its clip record carries the grading's model step; B had none pending": true,
+  "S2 A's group_norm_at_clip equals the norm clip_grad_norm_ returned for the efference group (LemLite._clip_training_gradients' clip_norms['efference']), exactly": true,
+  "S2 A's full raw norm read before the clip agrees with the clip's returned norm within 1e-6 relative": true,
+  "S2 ARM C (weight 0): its float64 .grad norm before the clip equals A's raw_norm_without_term within 1e-6 relative, and its clip scale (min(1, 1 / (its clip norm + 1e-6)), equal to its measured scale within 1e-6) equals A's clip_scale_without_term within 1e-6 relative": true,
+  "S2 the comparisons can fail: the term moves the efference group's raw norm (A's full read against C's) by more than 1e-4 relative, the lesson's own losses alone give a norm more than 1e-4 relative from the clip's, and the clip acts (scale below 1) in A, B and C": true,
+  "S2 the term's direct recipients in A's sample are not empty and all lie in lat_norm, body_pool, body_all, body_mlp": true,
+  "S2 the clip record's groups gaze* and vision* hold a raw norm above 0 (the stand-in loss reaches the gaze head and the vision copy)": true,
+  "S2 both held fields (the pending sample and the term gradients) are None after after_clip in A": true,
+  "S2 A's sample count is at most BALANCE_MAX": true,
+  "S2 A's clip record says the optimizer step was taken, and the step mirror took it": true,
+  "S3 a sampled grading on a model step with a non-finite loss reads 'not reached: non-finite loss' with both held fields None, and the next finite model step (no grading) runs its clip and optimizer step without filling it": true,
+  "S3 a sample whose clip runs on another model step is released unread by before_clip ('not reached: the clip ran on model step ...') with both held fields None": true,
+  "S4 NaN gradients at the clip (finite loss): clip_scale and clip_scale_without_term read None (not 1.0), group_norm_at_clip and the raw norms None, optimizer_step_taken False, and the optimizer step was not taken (no optimizer state, every parameter unchanged)": true,
+  "S4 both held fields are None after after_clip with NaN gradients": true,
+  "S5 11 eligible gradings (a plan capture held at each) give 10 balance samples = BALANCE_MAX, 1 counted as skipped": true,
+  "S6 LemLite.step hands the same step to the efference lesson and to before_clip (its assignment and the lesson call found, in order, before before_clip, and no line between them rebinds step)": true,
+  "S6 the clip is LemLite's own _clip_training_gradients, called on a stub with only the attributes it reads (no model built); its clip_norms holds the groups core (empty) and efference in A, B and C": true,
+  "S6 every line the step mirror repeats is found in LemLite.step's source, in the same order": true,
+  "inside the internal bound of 100 s": true
+ },
+ "errors": [],
+ "elapsed_s": 4.805,
+ "cpu_s_total": 2.484,
+ "verdict": "pass",
+ "exit_code": 0,
+ "readings": [
+  "PASS: the sampled training step (A) and the unsampled one (B) are equal bit for bit in their random states, their gradients after the backward and after the clip, and their parameters and optimizer state after one AdamW step; the sample's numbers agree with the clip and with the weight-0 control; training is not authorized.",
+  "32 of 32 declared conditions hold; 0 errors.",
+  "The efference group's raw norm read by the sample before the clip is 1.748398537542573; the clip returned 1.7483972311019897 (relative difference 7.472218326766361e-07, line 1e-6).",
+  "Without the term the sample reads a norm of 1.7405862281084525 and a clip scale of 0.5745187508279774; the weight-0 run C measured 1.740586229015973 and 0.5745191269049614 (relative differences 5.213878451190548e-10 and 6.545943666399414e-07, line 1e-6)."
+ ],
+ "why": []
+}

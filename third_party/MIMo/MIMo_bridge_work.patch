@@ -1,0 +1,198 @@
+diff --git a/mimo_infant/actuation/actuation.py b/mimo_infant/actuation/actuation.py
+index ceca348..aaf8271 100644
+--- a/mimo_infant/actuation/actuation.py
++++ b/mimo_infant/actuation/actuation.py
+@@ -217,6 +217,11 @@ class PositionalModel(ActuationModel):
+         self.actuated_joints = env.model.actuator_trnid[actuators, 0]
+         super().__init__(env, actuators)
+         self.locked_joints = self.get_locked_joints()
++        # joint id -> id of the joint equality constraint that can lock it (XML provides one per joint)
++        self._joint_constraint = {}
++        for eq_id in range(env.model.neq):
++            if env.model.eq_type[eq_id] == 2:   # mjEQ_JOINT
++                self._joint_constraint.setdefault(int(env.model.eq_obj1id[eq_id]), eq_id)
+         
+     def get_locked_joints(self):
+         """ Collects the ids of all locked joints within actuated joints.
+@@ -252,25 +257,37 @@ class PositionalModel(ActuationModel):
+     def action(self, action):
+         """ Locks the joints into the positions provided by 'action'.
+ 
+-        Control values are clipped to the joint range of motion.
++        Control values are clipped to the joint range of motion. Each actuated joint is held
++        by the (initially inactive) joint equality constraint of the same name from the XML:
++        the constraint is switched on and its target angle set. Joints locked by some other
++        constraint beforehand (``locked_joints``) are left alone. Torque-motor ctrl is zeroed.
+ 
+         Args:
+             action (numpy.ndarray): A numpy array with desired joint positions.
+         """
+-        if (action is None) or (np.sum(np.abs(action)) == 0):
+-            pass
+         self.control_input = np.clip(action, self.action_space.low, self.action_space.high)
+-        for idx in range(len(self.actuated_joints)):
+-            if self.actuated_joints[idx] in self.locked_joints:
++        model = self.env.model
++        self.env.data.ctrl[self.actuators] = 0.0
++        for idx, joint_id in enumerate(self.actuated_joints):
++            if joint_id in self.locked_joints:
+                 continue
+-            self.env.data.ctrl[idx] = self.control_input[idx]
++            eq_id = self._joint_constraint.get(int(joint_id))
++            if eq_id is None:
++                continue
++            # eq_data for a joint constraint is a polynomial; data[0] is the target offset
++            # from the joint's qpos0, see mimo_infant.simulation.utils.set_joint_locking_angle
++            qpos0 = model.qpos0[model.jnt_qposadr[joint_id]]
++            model.eq_data[eq_id, 0] = self.control_input[idx] - qpos0
++            model.eq_data[eq_id, 1:] = 0
++            model.eq_active0[eq_id] = 1
++            if hasattr(self.env.data, "eq_active"):
++                self.env.data.eq_active[eq_id] = 1
+ 
+     def substep_update(self):
+-        """ Like action, but called on every physics step instead of every environment step.
+-
+-        This allows for torques to be updated every physics step.
++        """ Nothing to do between physics steps: the equality constraints hold the pose.
++        (The old code re-issued a zero action here, which wiped the command every substep.)
+         """
+-        self.action(numpy.zeros_like(self.control_input))
++        return
+ 
+     def observations(self):
+         """ Returns the current control input, i.e. the locked positions.
+diff --git a/mimo_infant/simulation/assets/mimo/MIMo_metav2.xml b/mimo_infant/simulation/assets/mimo/MIMo_metav2.xml
+index 855d71f..9eb7586 100644
+--- a/mimo_infant/simulation/assets/mimo/MIMo_metav2.xml
++++ b/mimo_infant/simulation/assets/mimo/MIMo_metav2.xml
+@@ -124,6 +124,42 @@ This file includes work (https://github.com/vikashplus/Adroit) covered by the fo
+ 			<joint joint="robot:head_swivel" coef="1"/>
+ 			<joint joint="robot:head_tilt" coef="-1"/>
+ 		</fixed>
++
++		<!-- Inter-finger coupling (juncturae tendinum), same combined-limit pattern as the
++		     head_limits tendons above: the tendon length is flex(A) - flex(B), so inside the
++		     range band the fingers move freely at ZERO force, and only at the band edge does
++		     the constraint stop one finger flexing fully while its neighbour stays extended.
++		     NOT a spring: a spring pulls toward equal angles always and fights natural spread.
++		     Band widths follow the finger-individuation (enslaving) ordering measured by
++		     Zatsiorsky & Latash: index most independent of middle (+/-0.52 rad ~ 30 deg),
++		     middle-ring tighter (+/-0.44 ~ 25 deg), ring-little tightest (+/-0.35 ~ 20 deg).
++		     The thumb is uncoupled. Knuckle range is -0.35..1.57 rad, so the free band covers
++		     ordinary independent motion and the limit binds only near full-flex/full-extend
++		     splits (a "Vulcan salute" is out of reach, as on a real infant hand). -->
++		<fixed class="mimo" name="finger_couple_right_ff_mf" limited="true" range="-0.52 0.52">
++			<joint joint="robot:right_ff_knuckle" coef="1"/>
++			<joint joint="robot:right_mf_knuckle" coef="-1"/>
++		</fixed>
++		<fixed class="mimo" name="finger_couple_right_mf_rf" limited="true" range="-0.44 0.44">
++			<joint joint="robot:right_mf_knuckle" coef="1"/>
++			<joint joint="robot:right_rf_knuckle" coef="-1"/>
++		</fixed>
++		<fixed class="mimo" name="finger_couple_right_rf_lf" limited="true" range="-0.35 0.35">
++			<joint joint="robot:right_rf_knuckle" coef="1"/>
++			<joint joint="robot:right_lf_knuckle" coef="-1"/>
++		</fixed>
++		<fixed class="mimo" name="finger_couple_left_ff_mf" limited="true" range="-0.52 0.52">
++			<joint joint="robot:left_ff_knuckle" coef="1"/>
++			<joint joint="robot:left_mf_knuckle" coef="-1"/>
++		</fixed>
++		<fixed class="mimo" name="finger_couple_left_mf_rf" limited="true" range="-0.44 0.44">
++			<joint joint="robot:left_mf_knuckle" coef="1"/>
++			<joint joint="robot:left_rf_knuckle" coef="-1"/>
++		</fixed>
++		<fixed class="mimo" name="finger_couple_left_rf_lf" limited="true" range="-0.35 0.35">
++			<joint joint="robot:left_rf_knuckle" coef="1"/>
++			<joint joint="robot:left_lf_knuckle" coef="-1"/>
++		</fixed>
+ 	</tendon>
+ 	
+ 	<sensor>
+diff --git a/mimo_infant/simulation/benchmark.py b/mimo_infant/simulation/benchmark.py
+index 23e3248..4320542 100644
+--- a/mimo_infant/simulation/benchmark.py
++++ b/mimo_infant/simulation/benchmark.py
+@@ -82,7 +82,7 @@ def benchmark(configurations, output_file):
+         env = gym.make(env_name, **config_dict)
+         _ = env.reset()
+ 
+-        dt = env.dt
++        dt = env.unwrapped.dt   # gym.make wraps the env (TimeLimit etc.); wrappers have no .dt
+ 
+         max_steps = math.floor(sim_time / dt)
+ 
+diff --git a/mimo_infant/simulation/envs/mimo_env.py b/mimo_infant/simulation/envs/mimo_env.py
+index 8ccfa85..b848783 100644
+--- a/mimo_infant/simulation/envs/mimo_env.py
++++ b/mimo_infant/simulation/envs/mimo_env.py
+@@ -342,6 +342,10 @@ class MIMoEnv(MujocoEnv, utils.EzPickle):
+         self.done_active = done_active
+         self.sensory_delay = sensory_delay
+         self.motor_delay = motor_delay
++        # histories must exist before the first _get_obs()/_set_action() call (construction
++        # calls _get_obs to size the observation space, which crashed for sensory_delay > 0)
++        self._obs_history = []
++        self._action_history = []
+ 
+         # Here we have most MIMo specific attributes. These are populated during _initialize_simulation, which is
+         # called by MujocoEnv during its initialization.
+@@ -358,7 +362,7 @@ class MIMoEnv(MujocoEnv, utils.EzPickle):
+         self._initial_qpos = initial_qpos
+ 
+         if self.age is not None:
+-            model_path = adjust_mimo_to_age(self.age, model_path, custom_measurements)
++            model_path = adjust_mimo_to_age(self.age, model_path, custom=custom_measurements)
+ 
+         # Load XML and initialize everything
+         super().__init__(model_path,
+@@ -595,8 +599,9 @@ class MIMoEnv(MujocoEnv, utils.EzPickle):
+         """
+         # Store current action
+         self._action_history.append(action)
+-        # Get oldest action from history
+-        if len(self._action_history) < self.motor_delay:
++        # Get the action from motor_delay steps ago (exactly k steps of delay; the old
++        # `< self.motor_delay` test gave k-1 steps and no delay at all for k=1)
++        if len(self._action_history) <= self.motor_delay:
+             return self._action_history[0]
+         return self._action_history.pop(0)
+ 
+@@ -797,8 +802,8 @@ class MIMoEnv(MujocoEnv, utils.EzPickle):
+         """
+         # Store current observation
+         self._obs_history.append(observation)
+-        # Get oldest observation from history
+-        if len(self._obs_history) < self.sensory_delay:
++        # Get the observation from sensory_delay steps ago (exactly k steps of delay)
++        if len(self._obs_history) <= self.sensory_delay:
+             return self._obs_history[0]
+         return self._obs_history.pop(0)
+ 
+diff --git a/mimo_infant/vision/vision.py b/mimo_infant/vision/vision.py
+index eba0ce3..ead4bcc 100644
+--- a/mimo_infant/vision/vision.py
++++ b/mimo_infant/vision/vision.py
+@@ -127,9 +127,14 @@ class SimpleVision(Vision):
+         self.env.camera_id = None
+ 
+         imgs = {}
++        old_renderer_cam = getattr(self.env.mujoco_renderer, "camera_id", None)
+         for camera in self.camera_parameters:
+             self.env.camera_name = camera
+             rgb_viewer.viewport = self._viewports[camera]
++            # gymnasium >= 1.0: MujocoRenderer.render() ignores env.camera_name and uses the
++            # camera_id stored on the renderer, so set it per eye (else every "eye" is the
++            # free camera and both eyes return the same third-person image).
++            self.env.mujoco_renderer.camera_id = self.env.model.camera(camera).id
+             img = self.env.render()
+             if self._acuity_functions[camera] is not None: # Apply age-dependent visual acuity
+                 img = self._apply_acuity(img, camera)
+@@ -141,6 +146,7 @@ class SimpleVision(Vision):
+         self.env.render_mode = old_mode
+         self.env.camera_name = old_cam_name
+         self.env.camera_id = old_cam_id
++        self.env.mujoco_renderer.camera_id = old_renderer_cam
+         rgb_viewer.viewport = old_viewport
+ 
+         return imgs

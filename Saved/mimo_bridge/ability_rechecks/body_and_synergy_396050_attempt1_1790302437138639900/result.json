@@ -1,0 +1,355 @@
+{
+  "checkpoint": "D:\\UEMA_Research\\Saved\\mimo_bridge\\experiments\\H84_fresh_drivers_20260918_seg39_resume_20260924_180416\\checkpoints\\ckpt_step_396050",
+  "bodies": 8,
+  "goals": [
+    "curl_witness",
+    "extension_witness"
+  ],
+  "goal_suite": "hand",
+  "contract": "wrist_relative_joint_v1",
+  "learning": false,
+  "production_changed": false,
+  "hold_seconds": 0.25,
+  "initializer": "controller",
+  "compare_execution_contracts": false,
+  "goal_source": "Observed endpoint of a same-state physical reference with chosen compatible curl/extension, ordinary wrist order and force settings.",
+  "comparison": "Starting controller, direct feasible-hand planner, composed learned-synergy/feasible-hand planner. Strength and gaze are fixed to the controller inside both searches.",
+  "gaze_scope": "Body-stage mechanism comparison: visual gaze optimization is deliberately held fixed in every arm; this does not qualify the combined visual/body policy.",
+  "hand_memory_scope": "The separate calibrated hand-memory choice stage is disabled in this physical-body planner comparison; its learned calibration remains preserved.",
+  "adoption": "Compare common physical-goal error and hand-joint error across independent bodies; no switch is changed by this experiment.",
+  "script_sha256": "ae12b756eb005879abebac2001b5652c6a7321d670fb4335fff25fc9986ec42b",
+  "source_sha256": {
+    "Source\\Python\\mimo_bridge\\hand_target_control.py": "f40c645e81efc8fab58f2286e074dfb944e77aa71c6143e6d931a7ac22f89053",
+    "Source\\Python\\mimo_bridge\\lem_model.py": "58b18295968b7bc47f2a4eed764af4666423b52ca150b586d98974cc0b4ac54d",
+    "Source\\Python\\lem\\model\\physical_goal.py": "654cf36e63f29fdda64d365a07a6d09dd1f66a8612074357f4dcd913770cd53a",
+    "Source\\Python\\mimo_bridge\\env.py": "66bc8f6edbab4fe26d33b740956fd3bf51c90dab46fd0036f8420c550fb42a3a",
+    "Source\\Python\\mimo_bridge\\tools\\gof_probe_harness.py": "9b868754548a72108b8f505dbd26ae6bf969c119853e404f4e57b60b919cc6f0"
+  },
+  "seed": 0,
+  "summary": {
+    "physical_goal_error": {
+      "means": {
+        "controller": 0.6171623771078885,
+        "direct": 0.7372121256776154,
+        "synergy": 0.676433740183711
+      },
+      "synergy_minus_direct": -0.06077838549390435,
+      "paired_bootstrap95": [
+        -0.10138458199799061,
+        -0.007097010966390371
+      ],
+      "bodies_synergy_better": 7,
+      "against_controller": {
+        "direct": {
+          "mean_difference": 0.12004974856972694,
+          "paired_bootstrap95": [
+            0.06000104732811451,
+            0.17814055969938636
+          ],
+          "bodies_better": 1
+        },
+        "synergy": {
+          "mean_difference": 0.05927136307582259,
+          "paired_bootstrap95": [
+            0.00938059063628316,
+            0.09752917662262917
+          ],
+          "bodies_better": 1
+        }
+      }
+    },
+    "hand_joint_error_deg": {
+      "means": {
+        "controller": 5.246820695698261,
+        "direct": 5.45608451962471,
+        "synergy": 5.423276484012604
+      },
+      "synergy_minus_direct": -0.03280803561210632,
+      "paired_bootstrap95": [
+        -0.12504366040229797,
+        0.05652471855282767
+      ],
+      "bodies_synergy_better": 5,
+      "against_controller": {
+        "direct": {
+          "mean_difference": 0.20926382392644882,
+          "paired_bootstrap95": [
+            0.12622500509023665,
+            0.2923064855858683
+          ],
+          "bodies_better": 0
+        },
+        "synergy": {
+          "mean_difference": 0.1764557883143425,
+          "paired_bootstrap95": [
+            0.05908196903765202,
+            0.27593284845352173
+          ],
+          "bodies_better": 1
+        }
+      }
+    },
+    "wrist_goal_error_cm": {
+      "means": {
+        "controller": 0.017979026641114615,
+        "direct": 0.8042837791144848,
+        "synergy": 0.7827912475913763
+      },
+      "synergy_minus_direct": -0.021492531523108482,
+      "paired_bootstrap95": [
+        -0.2280175667256117,
+        0.19425162486732006
+      ],
+      "bodies_synergy_better": 5,
+      "against_controller": {
+        "direct": {
+          "mean_difference": 0.7863047524733702,
+          "paired_bootstrap95": [
+            0.5377980100965942,
+            1.006369206743875
+          ],
+          "bodies_better": 0
+        },
+        "synergy": {
+          "mean_difference": 0.7648122209502617,
+          "paired_bootstrap95": [
+            0.6045803485430952,
+            0.8954546820572431
+          ],
+          "bodies_better": 0
+        }
+      }
+    }
+  },
+  "by_goal": {
+    "curl_witness": {
+      "fingers": {
+        "means": {
+          "controller": 2.7054221630096436,
+          "direct": 2.8915549218654633,
+          "synergy": 2.56170916557312
+        },
+        "against_controller": {
+          "direct": {
+            "mean_difference": 0.1861327588558197,
+            "paired_bootstrap95": [
+              -0.05919581949710844,
+              0.4268369235098361
+            ],
+            "bodies_better": 3
+          },
+          "synergy": {
+            "mean_difference": -0.14371299743652344,
+            "paired_bootstrap95": [
+              -0.4398333892226219,
+              0.11272507384419435
+            ],
+            "bodies_better": 4
+          }
+        }
+      },
+      "wrists": {
+        "means": {
+          "controller": 0.00019915506999268473,
+          "direct": 0.12113676173612475,
+          "synergy": 0.10328990686684847
+        },
+        "against_controller": {
+          "direct": {
+            "mean_difference": 0.12093760666613207,
+            "paired_bootstrap95": [
+              0.07750313564105227,
+              0.1631612427603386
+            ],
+            "bodies_better": 0
+          },
+          "synergy": {
+            "mean_difference": 0.10309075179685578,
+            "paired_bootstrap95": [
+              0.06749643968083774,
+              0.13582933584688417
+            ],
+            "bodies_better": 0
+          }
+        }
+      },
+      "other_body": {
+        "means": {
+          "controller": 3.591184168527661e-05,
+          "direct": 0.039378390880301595,
+          "synergy": 0.05101088993251324
+        },
+        "against_controller": {
+          "direct": {
+            "mean_difference": 0.03934247903861632,
+            "paired_bootstrap95": [
+              0.022743915139994898,
+              0.06375408515287972
+            ],
+            "bodies_better": 0
+          },
+          "synergy": {
+            "mean_difference": 0.05097497809082796,
+            "paired_bootstrap95": [
+              0.029450364282144825,
+              0.08650936562051044
+            ],
+            "bodies_better": 0
+          }
+        }
+      },
+      "witness_supported_bodies": 8,
+      "witness_separation_from_controller": {
+        "fingers": [
+          3.3466739654541016,
+          3.4540693759918213,
+          2.011446237564087,
+          2.0030078887939453,
+          2.512457847595215,
+          3.4703681468963623,
+          2.3810672760009766,
+          2.4642865657806396
+        ],
+        "wrists": [
+          0.000268315285211429,
+          0.00019952379807364196,
+          0.0007798591395840049,
+          6.139667675597593e-05,
+          3.840501904051052e-06,
+          7.637811904714908e-06,
+          2.198691618104931e-05,
+          0.0002506804303266108
+        ],
+        "other_body": [
+          1.621653609618079e-05,
+          0.0001977275824174285,
+          2.894196404668037e-05,
+          1.1266321962466463e-05,
+          3.218913775526744e-07,
+          7.111964350769995e-07,
+          1.1535037629073486e-05,
+          2.057420351775363e-05
+        ]
+      }
+    },
+    "extension_witness": {
+      "fingers": {
+        "means": {
+          "controller": 0.38025037571787834,
+          "direct": 0.6468127220869064,
+          "synergy": 0.6514611169695854
+        },
+        "against_controller": {
+          "direct": {
+            "mean_difference": 0.2665623463690281,
+            "paired_bootstrap95": [
+              0.17122270539402962,
+              0.3575312979519367
+            ],
+            "bodies_better": 0
+          },
+          "synergy": {
+            "mean_difference": 0.2712107412517071,
+            "paired_bootstrap95": [
+              0.16711806864477693,
+              0.3702319051604718
+            ],
+            "bodies_better": 0
+          }
+        }
+      },
+      "wrists": {
+        "means": {
+          "controller": 0.00010475877822102575,
+          "direct": 0.11918328190222383,
+          "synergy": 0.10891206748783588
+        },
+        "against_controller": {
+          "direct": {
+            "mean_difference": 0.1190785231240028,
+            "paired_bootstrap95": [
+              0.07500928845273949,
+              0.16094911134983647
+            ],
+            "bodies_better": 0
+          },
+          "synergy": {
+            "mean_difference": 0.10880730870961486,
+            "paired_bootstrap95": [
+              0.07480263676222298,
+              0.1395328775502942
+            ],
+            "bodies_better": 0
+          }
+        }
+      },
+      "other_body": {
+        "means": {
+          "controller": 2.4555237102596994e-05,
+          "direct": 0.03725926799234003,
+          "synergy": 0.046341400826349854
+        },
+        "against_controller": {
+          "direct": {
+            "mean_difference": 0.03723471275523743,
+            "paired_bootstrap95": [
+              0.023225871291287517,
+              0.05532187053129495
+            ],
+            "bodies_better": 0
+          },
+          "synergy": {
+            "mean_difference": 0.04631684558924726,
+            "paired_bootstrap95": [
+              0.028244964848277484,
+              0.076049833899488
+            ],
+            "bodies_better": 0
+          }
+        }
+      },
+      "witness_supported_bodies": 8,
+      "witness_separation_from_controller": {
+        "fingers": [
+          0.5432928204536438,
+          0.5461126565933228,
+          0.18057797849178314,
+          0.29338234663009644,
+          0.5282114148139954,
+          0.299434632062912,
+          0.1862669140100479,
+          0.46472424268722534
+        ],
+        "wrists": [
+          0.0007739842403680086,
+          7.950225722197501e-07,
+          9.311891062679933e-07,
+          2.2747977368453576e-07,
+          4.467357211979106e-05,
+          2.784926778076624e-07,
+          8.349681479558058e-08,
+          1.7096732335630804e-05
+        ],
+        "other_body": [
+          0.0001439595507690683,
+          6.407563812871331e-09,
+          2.36853452406649e-08,
+          2.3537383597727057e-08,
+          5.088236866868101e-05,
+          9.375565213076698e-09,
+          5.688947091186947e-09,
+          1.5312825780711137e-06
+        ]
+      }
+    }
+  },
+  "weights_unchanged": true,
+  "exact_replay": true,
+  "inverse_projection": {
+    "calls": 40,
+    "elapsed_s": 1.3410495000425726,
+    "maximum_s": 0.04110579995904118,
+    "failed_calls": 0
+  },
+  "elapsed_s": 376.953959941864
+}

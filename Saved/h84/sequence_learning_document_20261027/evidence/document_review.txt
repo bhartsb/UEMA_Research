@@ -1,0 +1,73 @@
+Independent adversarial document review — October27,2026
+Reviewer: sequence_architecture_review
+Scope: entire draft HTML and Mermaid source, read-only except this note. Five-minute review bound. No model/test/training execution.
+Reviewed: docs/H84_CONTINUOUS_MOVEMENT_LEARNING_2026-10-27.html and docs/h84_sequence_learning_20261027/movement_sequence.mmd
+
+Disposition: architecture direction is coherent, but draft needs the concrete corrections below before final acceptance. It clearly separates illustrated poses from learned ability, explains three clocks well, identifies the existing policy MLP, and selects a real actor–critic mechanism. No claim of achieved physical grasp was found. The main remaining weakness is several engineering choices still phrased as instructions to a future designer rather than decisions made by this document.
+
+HIGH D1 — The learning objective is not actually specified.
+Location: Engineering contract, value-learning paragraph: 'Define utility and its time units from the existing wellness contract'.
+Evidence: lem/model/wellness_channels.py explicitly distinguishes the raw grounded sum feeding wellness_grad and entity teacher from the normalized, per-channel, detrended goal-ring ranking. The latter stores each channel minus its running average, then normalizes/weights candidates at ranking time, with raw-harm gate. These are not interchangeable 'actual utility'.
+Consequence: the actor can be trained toward a different preference while the document says existing semantics are retained. A scalar that ranks remembered moments is not already a defined time-integrated TD reward. Learning-progress channels also depend on prediction errors and learning history, not physical state alone.
+Correction: identify the exact proposed interval producer/formula, active flags, weights and normalization/history treatment. State explicitly that lifting an existing rank into a cumulative objective is a proposed new consumer whose preference must be checked, not an unchanged contract. Distinguish raw grounded motor-gradient teacher from the actor's proposed scalar. If the actual producer choice cannot yet be settled from preserved evidence, label that specific design decision open and make its recorded objective comparison a prerequisite. Do not imply this decision was made by writing 'use existing wellness'. Keep raw harm enforcement separate from ranking.
+
+HIGH D2 — Likelihood-ratio fallback could use the wrong probability.
+Location: policy learning paragraph.
+Issue: 'use a likelihood-ratio policy gradient with the observed/evaluated effective action' is ambiguous and can be mathematically wrong under many-to-one filters.
+Correction: sample request u from pi(u|s,g), compute effective action a=filter(u,s), evaluate detached advantage using Q(s,g,a), and multiply by grad log pi(u|s,g). The probability is that of the sampled request, not the potentially non-invertible effective action. A differentiable route similarly evaluates Q on the actual converted command. Freeze decoder parameters in actor optimization; matching output values alone does not certify a useful surrogate derivative.
+
+HIGH D3 — Static rendering and physical contact are conflated.
+Location: worked-trace paragraph: 'physical contact solver prevents the renderer from treating a finger as a ghost...'.
+Issue: reused pictures are kinematic poses with sampled geometric clearance, not a dynamics contact solution. Physics contact also generally admits a solver tolerance; it does not guarantee exact zero penetration.
+Correction: say that in physical execution the contact solver produces opposing forces, and penetration/force tolerances must be measured. These pose renderings were checked geometrically and do not establish grip force or solver behavior. Keep the visual evidence separate from the future physical test.
+
+MEDIUM D4 — Goal representation and retrieval still hide the mechanism.
+Location: B and engineering policy: 'an outcome represented in real experience', 'finite memory shortlist'; F: 'Learn or reuse the sensory representation'.
+Consequence: an implementer cannot tell what g contains, how comparable outcomes are selected, or how one ball remains the same object after gaze/body movement. This was a central user objection to the earlier document.
+Correction: define g's fields/representation and the concrete shortlist procedure using preserved experience, including unknown/missing identity. Identify the producer of object/contact continuity and the actual training target or retained implementation. Do not silently assume explicit simulator identity. If a representation is deliberately not an explicit object tracker, state how temporal perception retains identity and how the identity-swap test settles it. Separate generic learned outcome representation from a ball-specific goal routine.
+
+MEDIUM D5 — 'Learning ownership' defers a key algorithm choice.
+Location: Engineering contract: 'Define which losses may update the shared temporal core...use an explicit update schedule'.
+Correction: choose an initial ownership schedule. For example, prediction loss updates the temporal representation, actor/critic heads consume detached representations, target networks update after finite accepted optimizer steps, and replay prefixes are re-encoded under their declared current/target encoder versions. Other choices are valid, but one must be stated. Avoid mixing old latent vectors with newly trained encoder coordinates. No numeric optimizer hyperparameter needs to be invented to define who updates what.
+
+MEDIUM D6 — Prediction fields/losses and planner reference remain partly vague.
+Location: 'appropriate likelihood losses', 'complete predicted state', 'unsampled policy'.
+Correction: list at least the required advancing outputs (temporal sensory representation, joint/root estimate and uncertainty, relevant contact/history, filter state, previous intention, wellness history) and identify the observed targets. Distinguish categorical contact from continuous conditional quantities; do not average separate contact possibilities into one physically impossible mean. Define unsampled policy as the selected modal/maximum-probability goal plus mean or otherwise declared deterministic motor output. Same-state qualified comparisons determine K; do not imply any K already meets50 ms wall time.
+
+LOW D7 — Diagram obscures one connection.
+Location: parts-map SVG.
+Issue: G wellness/value points upward into C, and E sends H, but G's ranking result back to E is not clearly drawn. A reader can see scoring and dispatch but must infer who receives the scores. Learning box lists B,C,D,F,G with no corresponding update lines.
+Correction: add a labeled score-to-planner arrow, or place a plainly labeled 'score returned to E' text. A short legend can distinguish prediction loop, physical feedback and training arrows rather than adding dense crossing lines. Ensure actual screenshot proves legibility at desktop/narrow widths.
+
+READABILITY
+
+Main explanatory paragraphs are materially clearer than the earlier report. The separation of immediate correction from weight updates is useful and understandable. Exact actor–critic equations belong in details as written. Prefer 'small neural network' alongside MLP at first mention and define 'held-out' as experience excluded from the fitting update. Replace 'supported score' with 'score inside the model's tested range' plus a link to the precise qualification procedure. Do not fill the top-level text with every optimizer setting.
+
+GOOD LIMITATIONS TO RETAIN
+
+- Three seconds is this example's lookahead, not every possible task duration.
+- Fifty milliseconds is proposed simulated-time correction, not measured inference speed.
+- Terminal continuation value refers to the base learned policy.
+- No fixed goal lease or named grasp-phase controller.
+- The ball remains on the illustrated stand; free-object lift and hold is the physical criterion.
+- Implementation and training remain paused; this document grants no launch.
+
+Review conclusion: fix D1–D3 before delivery; resolve D4–D6 concretely or mark their exact decisions open rather than claiming a complete implementation specification. The recommendation itself is sound enough to document as the preferred starting design, conditional on physical comparison and objective audit.
+
+DELTA REVIEW AFTER CORRECTIONS
+
+Three-minute bounded read of updated HTML. D1 is now honestly identified in the introduction and engineering contract as a specific open objective-integration decision, with exact current score differences and a named saved-record comparison. This is an appropriate resolution for a design report; it is not approval of an executable complete learner. D2 request-probability correction and D3 static-render/contact distinction are fixed. D4 now defines ring-plus-carried goal records, re-encoding and temporal correspondence learning. D5 selects core/head ownership. D6 names distribution, state fields and deterministic baseline. D7 has a score-to-planner explanation/diagram update. Main language remains readable and the physical claims remain bounded.
+
+Two precision corrections requested from parent before delivery:
+
+Delta A — current versus target encoder coordinates. The new schedule says next-state targets use target encoder, while the TD expectation uses current goal/motor policy. Compute the current policy's next goal/request from the current-encoder next-state and candidate features. Evaluate that same effective action and goal using target-encoder state/goal features in the target Q. Do not accidentally feed target-encoder coordinates into the current actor or current coordinates into a target critic trained to another encoding. The effective decoder/filter state is the same physical state in both paths.
+
+Delta B — 'errors of complete returns, including terminal estimate' overclaims the empirical calibration target. A continuing/infinite terminal value has no directly observed complete return in a finite replay window. Use explicitly measured finite-window returns and separately report the uncertainty or truncation of unobserved continuation. A justified finite terminal horizon/tail bound is another option after the objective/discount is fixed. Bootstrapped continuation targets are learning targets, not measured complete returns. The percentile is already correctly called an engineering choice rather than an individual-trajectory confidence guarantee.
+
+The central architecture recommendation remains endorsed. The report must continue to identify the objective choice as unresolved and implementation/training as paused. No additional model experiment is requested or authorized by this review.
+
+FINAL DELTA DISPOSITION
+
+Parent supplied and current HTML records the local corrections: current-encoder policy chooses the next goal/request, target-encoder critics evaluate the same selected goal/effective command; record identities preserve correspondence. Planning-error calibration now compares the predicted three-second utility subtotal with actual three-second readings. Continuation is separately evaluated, requires finite utility/discount bounds for an unobserved tail, and is omitted from qualified ranking when it cannot be bounded. These resolve Delta A and Delta B at design-document level.
+
+Accepted for delivery as a carefully reviewed proposed architecture report. This acceptance does not resolve or approve the explicitly open cumulative-wellness objective, authorize implementation/training, establish real-time inference, or certify a physical grasp. The report clearly says those things and identifies the next decision. No remaining high-severity document error was found in this bounded final delta review.

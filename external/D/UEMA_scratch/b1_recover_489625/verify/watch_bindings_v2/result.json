@@ -1,0 +1,182 @@
+{
+ "tool": "check_watch_bindings.py",
+ "script_sha256": "54a41430ba463566ceb5a77d444d04b851707422a884d5748566a4ef0a87810d",
+ "wrappers": {
+  "D:\\UEMA_Research\\external\\D\\UEMA_scratch\\b1_recover_489625\\watch\\recover_hourly_watch.py": "0993037f2a7c9340251d877cd6732214ada4a71b8dacfed57b9ccccd6d527f86",
+  "D:\\UEMA_Research\\external\\D\\UEMA_scratch\\b1_recover_489625\\watch\\recover_self_percept_watch.py": "e58ee00bef78f1c6a76349dfd41cbaef846b79e739ecf7abe84585bcad59ee6a"
+ },
+ "at": "Oct 13, 2026 01:10:34 PM PDT",
+ "checks": [
+  {
+   "name": "W1 the horizon spec matches only the recovery run, its 489,625 resume and 494,025",
+   "held": true,
+   "facts": {
+    "this": "match",
+    "old_resume": "mismatch: its args.json resumes D:\\UEMA_Research\\external\\D\\UEMA_preserved\\body1_extension_B1E_skip13_485975\\run\\checkpoints\\ckpt_step_489350, not D:\\UEMA_Research\\external\\D\\UEMA_preserved\\b1_adopt_B1A_skip13_489350\\run\\checkpoints\\ckpt_step_489625",
+    "other_end": "mismatch: its args.json reads max_steps 494026, not 494025",
+    "stopped_run_folder": "other"
+   }
+  },
+  {
+   "name": "W2 M3 is an alert for the 489,625 resume only; the stopped run's resume reads it as a stop",
+   "held": true,
+   "facts": {
+    "this": {
+     "M3": "proxy decision proxy-adoption-recovery-489625-20261013: the one recovery run from the preserved 489,625 of B1A_skip13_489350 to model step 494,025 (the adoption's span 489,350 to 494,025, interrupted for a monitoring repair) reads this line as an alert; every other line stops it as before"
+    },
+    "stopped_runs_resume": {},
+    "table": [
+     {
+      "resume_tail": "H84_fresh_drivers_20260918_seg41o_1431/checkpoints/ckpt_step_481800",
+      "max_steps": 484675
+     },
+     {
+      "resume_tail": "H84_fresh_drivers_20260918_seg41j_1526/checkpoints/ckpt_step_484675",
+      "max_steps": 489350
+     },
+     {
+      "resume_tail": "b1_adopt_B1A_skip13_489350/run/checkpoints/ckpt_step_489625",
+      "max_steps": 494025
+     }
+    ]
+   }
+  },
+  {
+   "name": "W3 the three priors on one clock, each record once, before the run's own",
+   "held": true,
+   "facts": {
+    "records": [
+     14,
+     35,
+     4
+    ],
+    "steps": [
+     [
+      484700,
+      485975
+     ],
+     [
+      486000,
+      489350
+     ],
+     [
+      489400,
+      489625
+     ]
+    ],
+    "training_seconds": 11550.87,
+    "placed": 53,
+    "first_last": [
+     484700,
+     489625
+    ],
+    "own_row_elapsed": 11650.868168592453
+   }
+  },
+  {
+   "name": "W4 the run-local state carries the stopped run's crossings and alerts and refuses a changed carry",
+   "held": true,
+   "facts": {
+    "crossings": 2,
+    "alerts": [
+     "M3-alert-for-this-run:H84_fresh_drivers_20260918_seg41u_1718:M3@483300",
+     "M3-alert-for-this-run:H84_fresh_drivers_20260918_seg41r_1539:M3@486200",
+     "M3-alert-for-this-run:B1E_skip13_485975:M3@486800",
+     "M3-alert-for-this-run:B1A_skip13_489350:M3@486800"
+    ],
+    "approved_end": {
+     "decision": "proxy-adoption-watch-horizon-20261013",
+     "decision_text_sha256": "56318568fff3c6583158fa856fd9f1a5c6e8138a52ba39e495a7ddf4a9d5ecd3",
+     "switch_step": 479350,
+     "original_horizon_steps": 10000,
+     "horizon_steps": 14675,
+     "end_step": 494025,
+     "run": "D:\\UEMA_Research\\external\\D\\UEMA_scratch\\b1_recover_489625\\verify\\watch_bindings_v2\\w4\\run\\B1R_skip13_489625",
+     "resume": "D:\\UEMA_Research\\external\\D\\UEMA_preserved\\b1_adopt_B1A_skip13_489350\\run\\checkpoints\\ckpt_step_489625",
+     "max_steps": 494025
+    },
+    "refused_changed_carry": "refused: D:\\UEMA_Research\\external\\D\\UEMA_scratch\\b1_recover_489625\\verify\\watch_bindings_v2\\w4\\changed_local.json hashes 561cb81d8c0353c6e51c20e0a4d082dddf1e4145df765941895a956919ff2526, not the pinned 264264f3e619d9568d29869b5c5f41c79fad83109d36209b230ec1901e2bcbab"
+   }
+  },
+  {
+   "name": "W5 both decisions' texts hash to their pinned values; another text is named",
+   "held": true,
+   "facts": {
+    "problems": [],
+    "stand_in": [
+     "the decision message's text does not hash to f382f32b0240a3ba4f9fea41c7e7b7280c98dc6d32b5d60fb23e0f0fd2e1a78f"
+    ]
+   }
+  },
+  {
+   "name": "W6 the self-percept carry stitches the three priors before the run's own records",
+   "held": true,
+   "facts": {
+    "prior_runs": [
+     "D:\\UEMA_Research\\external\\D\\UEMA_preserved\\body1_continuation_B1C_skip13_484675\\run",
+     "D:\\UEMA_Research\\external\\D\\UEMA_preserved\\body1_extension_B1E_skip13_485975\\run",
+     "D:\\UEMA_Research\\external\\D\\UEMA_preserved\\b1_adopt_B1A_skip13_489350\\run"
+    ],
+    "stitched": 53,
+    "first_last": [
+     484700,
+     489625
+    ],
+    "with_own": 54,
+    "verdict": "pass",
+    "worst_1000": 0
+   }
+  },
+  {
+   "name": "W7 the monitoring receipt does not apply to another run folder",
+   "held": true,
+   "facts": {
+    "receipt": {
+     "applies": false,
+     "why": "other"
+    },
+    "unused": null
+   }
+  },
+  {
+   "name": "W8 the monitoring receipt reads the lines with this run's alert table (M3 an alert: no stop) and keeps the inherited M3 crossing beside it as the reading without that table (the review's m4)",
+   "held": true,
+   "facts": {
+    "receipt": {
+     "applies": true,
+     "judged": true,
+     "decision": "proxy-adoption-watch-horizon-20261013",
+     "switch_step": 479350,
+     "end_step": 494025,
+     "horizon_steps": 14675,
+     "newest_step": 489625,
+     "after_full_reports": 99,
+     "watch_over": false,
+     "stop": null,
+     "alerts_for_this_run": [
+      "M3"
+     ],
+     "stop_without_this_runs_alert_table": "heads' all-slot paths: a path's hidden layer had 83% of its units responding (the lower of the whole-model monitor's reading and the path's own reading on the commanded rows), under the line of 90%, in 2 full reports with a reading running, up to model step 486800",
+     "last_complete_20_report_window_ends": 487700,
+     "last_complete_1000_step_window_ends": 489350,
+     "incomplete_final_1000_step_window": [
+      489351,
+      494025
+     ],
+     "incomplete_final_20_report_window_after": 487700,
+     "unobserved_tail": [
+      489626,
+      494025
+     ],
+     "warnings": [],
+     "missing_input_warnings": [],
+     "local_state": "D:\\UEMA_Research\\external\\D\\UEMA_scratch\\b1_recover_489625\\verify\\watch_bindings_v2\\w8\\run\\B1R_skip13_489625\\heads_all_slot_path_watch_recovery.json"
+    }
+   }
+  }
+ ],
+ "held": 8,
+ "of": 8,
+ "verdict": "pass",
+ "seconds": 2.8
+}

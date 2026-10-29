@@ -1,0 +1,68 @@
+Independent adversarial readability and clarity review
+Owner: the overseer child reviewer /root/sequence_document_clarity
+Scope: entire proposed HTML, Mermaid source, and rendered desktop/narrow screenshots. No model edits, training, simulation or diagnostic launch. STOP preserved.
+Useful outcome: concrete changes needed before publication. Five-minute reporting bound; no measured completion estimate.
+Reviewed draft SHA256: 7af9cb21f2b943ebaea44ad68d8e165e3f919d3cb924fb6f2600ef6e837ab86c
+
+Verdict: strong overall structure, but revise the following issues before calling the document clear. This is a draft verdict, not a final approval of later edits.
+
+1. Correct the architecture connections.
+The map routes the arrow labeled "Advance the predicted state" from wellness/value G to intention C. F is the predictor, and B must update the candidate's temporal memory. Add F -> candidate B -> C (or a clearly labeled equivalent), and G -> E for the score. The Mermaid loop must explicitly return updated candidate state to E or C before the next predicted step. State that each candidate uses its own temporary memory copy; imagination must not overwrite actual observed memory. Without these links the figure contradicts the prose and omits the sequence's central recurrence.
+
+2. Define key words where the main reader first needs them.
+Define wellness as UEMA's existing readings of how the body/model is doing, with concrete examples supported by source; state as the information carried into this decision; intention as the outcome currently sought; MLP as a small layered neural network. Define filter as the code that changes or slows a requested command before sending it. Replace main-prose "dispatch" with "send to the body," "held-out" with "saved examples not used for learning," and "occlusion" with "the hand hiding the object from the eyes." Equations and specialist terms may remain in the engineering appendix.
+
+3. Remove the unexplained decision rule "highest supported score."
+The document explains how candidate commands are sampled and scored, which is a major improvement over the old vague wording. But "supported" still conceals an unresolved mechanism. Specify the actual uncertainty/reliability rule and how its threshold is calibrated, or clearly identify that choice as not yet settled. Do not imply an uncertainty estimate automatically makes extrapolated actions safe or prevents model exploitation.
+
+4. Fix the contact-solver claim.
+The worked trace says the contact solver prevents a finger passing through the ball. Contact solvers calculate contact forces; soft contact can allow penetration, and tunneling/discrete-step problems still need evaluation. Replace with a claim about resisting overlap and measuring allowed penetration during the real physical test. Keep the pose-rendering clearance evidence and its limits as currently written.
+
+5. Make horizontal diagram navigation discoverable.
+Inspected desktop_sequence-diagram.png clips the rightmost learning lane; narrow_sequence-diagram.png shows only about two lanes. The diagram container does scroll and the full-size link exists, but the reader has no clear prompt before the diagram. Add "Scroll sideways to follow all lanes" plus a compact numbered reading path. The same hint should appear above the parts map. Do not shrink the full nine-lane diagram to illegible type merely to fit a phone.
+
+6. Keep the architecture recommendation conditional and comparative.
+The current section 6 does this well: it names policy-only as a serious baseline, recognizes diffusion/chunks as alternatives, and does not claim a physical comparison already occurred. Preserve this. "Strongest starting approach" is a reasoned recommendation based on reused UEMA parts, not proof of best sample efficiency or real-time feasibility. The 50 ms target is proposed, not measured, and must stay labeled so in map/sequence captions as well as timing prose.
+
+7. Explain the objective gap in plain consequence terms.
+Section F correctly identifies that a learner cannot be expected to prefer useful grasping if the existing score favors inactivity. The next action must remain source/saved-record attribution once implementation is resumed, not a disguised new distance-to-ball reward. Do not hide this dependency behind "organic emergence." Explain that a connected learner gives it a route to learn the ability, while the actual objective and relevant experience must make that ability worth acquiring.
+
+8. Avoid implying all future targets are fixed desired poses.
+Keep the definition that the goal is a remembered outcome and can continue/change through value learning. The drawings show one possible result, not the actor's training action list. The current timing table and captions state this correctly.
+
+What already works:
+- Opening gives the intended mechanism before details.
+- Separate 3-second lookahead, 50-ms proposed feedback interval, and 500-ms viewing groups directly address the user's timing confusion.
+- Immediate correction is distinguished from waiting for a weight update.
+- Several futures are concretely generated by sampled learned commands, then rolled through advancing state.
+- Actual experience, imagined predictions, value learning, and motor learning are separated.
+- Real learning and execution remain paused; original report and rendering assets remain unchanged.
+- Two avatar views, final hand closeups, exact pose-versus-physical distinction, and proposed lift-and-hold test are understandable.
+- Main prose is readable at narrow width; the engineering contract stays in an expandable section.
+
+Screenshots inspected:
+desktop_parts.png; desktop_sequence-diagram.png; narrow_sequence-diagram.png; narrow_solution.png.
+
+Next check: parent applies the concrete fixes, rerenders desktop/narrow screenshots, and requests a bounded delta review. No model implementation or training is authorized by this review.
+
+
+DELTA REVIEW - revised document
+Reviewed HTML SHA256: 79757b2ab812aa3853d36dc15cafe26bb7fa5d27ef2724dca2a769147ccc0b98
+Review time: 2026-10-26T23:53:14.680671
+Bound: three-minute focused delta review. Scope stayed document-only.
+
+Resolved in the inspected revision:
+- Parts map now routes F's prediction to a copy of B, and G's scores back to E. The label makes candidate-copy semantics explicit.
+- Mermaid now carries B's updated candidate state back to E for the next predicted step and states that actual memory remains unchanged.
+- First-use definitions for policy, state, intention, wellness and MLP are present. The command filter is explained beside its role.
+- Contact mechanics now correctly say forces resist overlap and overlap must be measured. Pose renders are explicitly separate from physical simulation.
+- Both diagrams have reading guidance. Fresh desktop_parts.png and narrow_sequence.png (23:52 capture) show readable labels and visible sideways-scroll guidance. The long sequence remains intentionally scrollable instead of being shrunk into illegible text.
+- The planner's former unexplained "supported" rule is now an explicit proposed calibration mechanism, including complete-return errors, a declared percentile, conditions, fallback policy, and limits of its interpretation.
+- The cumulative-wellness conflict is prominent in the opening, section 5, technical contract and status. It is a real remaining objective decision with a named owner and next saved-record comparison, not a claim of completed implementation.
+
+Small final readability edits requested:
+1. In main section 5C, replace "dispatch" with "sending to the body."
+2. In main section 5D, replace "occlusion" with "the hand hiding the object from the eyes."
+3. The new final paragraph of section 5F explains feature correspondence, identity swaps and encoding details in main prose. Keep a short plain-language explanation there and move the detailed training/correspondence test to the engineering appendix. Suggested main text: "The model must keep track of the same ball as its eyes move and its hand hides part of it. It learns by matching what it saw before with what appears next, while accounting for eye and head motion. If it is unsure, it must keep that uncertainty." Keep the no-secret-simulator-input point.
+
+Disposition: substantive clarity concerns from the first review are resolved; the three listed wording edits finish the main-reader pass. The unresolved cumulative-utility decision must remain visible. This review accepts the document as a proposed architecture to discuss, not as approval to implement, train, or claim demonstrated grasping. No new source/model changes were made by this reviewer.

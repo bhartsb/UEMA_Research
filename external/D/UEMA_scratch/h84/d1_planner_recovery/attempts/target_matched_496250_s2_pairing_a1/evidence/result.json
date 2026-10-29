@@ -1,0 +1,1900 @@
+{
+ "verdict": "fail",
+ "reasons": [
+  "pairing gate(s) P1_decision_input_arrays, P6_restore read FAIL: no paired claim"
+ ],
+ "decision": "reach-target-matched-launch-decision-20261024",
+ "decision_step": 496250,
+ "end_step": 496256,
+ "gates": {
+  "P1_decision_input_arrays": {
+   "status": "FAIL",
+   "compared": 52,
+   "names": [
+    "cur__audio",
+    "cur__motor",
+    "cur__proprioception",
+    "cur__tactile",
+    "cur__vestibular",
+    "cur__vision",
+    "decision__achieved",
+    "decision__context",
+    "decision__cuda_rng",
+    "decision__hand_current_angles",
+    "decision__hand_current_velocities",
+    "decision__hand_goal__pose",
+    "decision__hand_goal__valid",
+    "decision__hand_previous_joints",
+    "decision__memory_bias",
+    "decision__physical_goal__pose",
+    "decision__physical_goal__valid",
+    "decision__physical_route__memory_bias",
+    "decision__smooth_prev",
+    "decision__torch_rng",
+    "encoder__mlp.0.weight",
+    "encoder__mlp.1.bias",
+    "encoder__mlp.1.weight",
+    "encoder__mlp.12.weight",
+    "encoder__mlp.4.weight",
+    "encoder__mlp.5.bias",
+    "encoder__mlp.5.weight",
+    "encoder__mlp.8.weight",
+    "encoder__mlp.9.bias",
+    "encoder__mlp.9.weight",
+    "forecast_pose__iteration0_order",
+    "forecast_pose__iteration0_position_cm",
+    "forecast_pose__iteration0_quaternion",
+    "forecast_pose__target",
+    "goal__audio",
+    "goal__motor",
+    "goal__proprioception",
+    "goal__tactile",
+    "goal__vestibular",
+    "goal__vision",
+    "goal_pose",
+    "goal_pose_valid",
+    "motor_out",
+    "plan0",
+    "proprio_input_start",
+    "raw__audio",
+    "raw__motor",
+    "raw__proprioception",
+    "raw__tactile",
+    "raw__vestibular",
+    "raw__vision",
+    "start_pose"
+   ],
+   "missing": [],
+   "differing": [
+    {
+     "array": "plan0",
+     "dtype": "float32",
+     "shape": [
+      8,
+      26,
+      9
+     ],
+     "bodies_differing": [
+      0,
+      1,
+      5,
+      6
+     ]
+    }
+   ]
+  },
+  "P2_decision_input_record": {
+   "status": "PASS",
+   "compared": 51,
+   "missing": [],
+   "differing": []
+  },
+  "P3_ordinary_winner": {
+   "status": "PASS",
+   "sent_candidate": [
+    0,
+    1,
+    5,
+    6
+   ],
+   "missing": [],
+   "problems": []
+  },
+  "P4_record_metadata": {
+   "status": "PASS",
+   "off": [
+    20,
+    0.1,
+    0.01,
+    true
+   ],
+   "on": [
+    20,
+    0.1,
+    0.01,
+    true,
+    "target_candidate_v1"
+   ],
+   "problems": []
+  },
+  "P5_sent_equals_scored": {
+   "status": "PASS",
+   "compared": "command_for_encoder(the depth-one executed form) against the order the body forecast scored for the target candidate, on every decoder-active number (the complement of decoder_inert_mask), bodies sent the target candidate only; 0 = identical",
+   "largest_abs_difference": [
+    0.0,
+    0.0,
+    null,
+    null,
+    null,
+    0.0,
+    0.0,
+    null
+   ],
+   "recomputed_largest_abs_difference": [
+    0.0,
+    0.0,
+    0.11631090939044952,
+    0.15535646677017212,
+    0.05556311458349228,
+    0.0,
+    0.0,
+    0.15739431977272034
+   ],
+   "recomputed_arithmetic": [
+    "reciprocal",
+    "reciprocal",
+    null,
+    null,
+    null,
+    "reciprocal",
+    "reciprocal",
+    null
+   ],
+   "position_rows": "all",
+   "problems": []
+  },
+  "P6_restore": {
+   "status": "FAIL",
+   "checks": {
+    "off_args_resume_start": true,
+    "off_restore_line": true,
+    "on_args_resume_start": true,
+    "on_restore_line": true,
+    "load_reports_equal": false,
+    "start_companion_identity": true
+   },
+   "missing": [],
+   "problems": [
+    "load_report.json differs: {'path': '/loaded_components[0]', 'off': \"'encoder:proprioception'\", 'on': \"'encoder:motor'\"}"
+   ]
+  },
+  "P7_restored_world_state": {
+   "status": "PASS",
+   "cause": null,
+   "mismatches": [],
+   "worlds": [
+    {
+     "world": 0,
+     "fields": 528,
+     "equal": true
+    },
+    {
+     "world": 1,
+     "fields": 527,
+     "equal": true
+    },
+    {
+     "world": 2,
+     "fields": 526,
+     "equal": true
+    },
+    {
+     "world": 3,
+     "fields": 528,
+     "equal": true
+    },
+    {
+     "world": 4,
+     "fields": 526,
+     "equal": true
+    },
+    {
+     "world": 5,
+     "fields": 528,
+     "equal": true
+    },
+    {
+     "world": 6,
+     "fields": 527,
+     "equal": true
+    },
+    {
+     "world": 7,
+     "fields": 528,
+     "equal": true
+    }
+   ],
+   "api": "<source>.iter_world_blobs() (the call continuation_state.save uses for the episode companion: each world's dict(env_kwargs, world=BridgeEnv.save_full_state(), echo, payload, elapsed), pickled by its world worker), unpickled here one world at a time; save_full_state() for a source without it",
+   "excluded": [
+    {
+     "field": "elapsed",
+     "why": "wall-clock seconds, time.time() - t0 when the snapshot is taken (after a restore, the saved value plus the wall time since the restore): process bookkeeping that differs in any two snapshots, not world state"
+    },
+    {
+     "field": "tape_id of every caregiver recording tape (mimo_bridge.event_tape.EventTape, the caregiver's events under --caregiver-record-dir: world.caregiver.events)",
+     "why": "a random identifier (uuid4) a tape draws for every copy of itself (EventTape.__deepcopy__ builds a new tape): the snapshot API's copy of the caregiver state carries a new one each time, so it differs in any two snapshots of the same world; the tape's recording state (its folder, status file, spans, counts, sizes and buffer) is kept"
+    }
+   ],
+   "not_covered": [
+    "renderer and video buffers (no bearing on physics or sensing)",
+    "the reports counted since the world was built (the footprint guard's and the rubbing calibration's)",
+    "the roll maximum (_roll_max), which the trainer's rolled-over share counts per segment",
+    "the caregiver's recent events: an EventLog is read back as its pickled event counter (mimo_bridge.tools.observer.baseline.DiscardedEvents), so the events themselves are not hashed"
+   ],
+   "against_start": {
+    "off": {
+     "read": true,
+     "worlds": [
+      {
+       "world": 0,
+       "compared": true,
+       "fields": 528,
+       "world_sha256_equal": true,
+       "differing": [],
+       "only_in_readback": [],
+       "only_in_start": []
+      },
+      {
+       "world": 1,
+       "compared": true,
+       "fields": 527,
+       "world_sha256_equal": true,
+       "differing": [],
+       "only_in_readback": [],
+       "only_in_start": []
+      },
+      {
+       "world": 2,
+       "compared": true,
+       "fields": 526,
+       "world_sha256_equal": true,
+       "differing": [],
+       "only_in_readback": [],
+       "only_in_start": []
+      },
+      {
+       "world": 3,
+       "compared": true,
+       "fields": 528,
+       "world_sha256_equal": true,
+       "differing": [],
+       "only_in_readback": [],
+       "only_in_start": []
+      },
+      {
+       "world": 4,
+       "compared": true,
+       "fields": 526,
+       "world_sha256_equal": true,
+       "differing": [],
+       "only_in_readback": [],
+       "only_in_start": []
+      },
+      {
+       "world": 5,
+       "compared": true,
+       "fields": 528,
+       "world_sha256_equal": true,
+       "differing": [],
+       "only_in_readback": [],
+       "only_in_start": []
+      },
+      {
+       "world": 6,
+       "compared": true,
+       "fields": 527,
+       "world_sha256_equal": true,
+       "differing": [],
+       "only_in_readback": [],
+       "only_in_start": []
+      },
+      {
+       "world": 7,
+       "compared": true,
+       "fields": 528,
+       "world_sha256_equal": true,
+       "differing": [],
+       "only_in_readback": [],
+       "only_in_start": []
+      }
+     ],
+     "worlds_equal": 8
+    },
+    "on": {
+     "read": true,
+     "worlds": [
+      {
+       "world": 0,
+       "compared": true,
+       "fields": 528,
+       "world_sha256_equal": true,
+       "differing": [],
+       "only_in_readback": [],
+       "only_in_start": []
+      },
+      {
+       "world": 1,
+       "compared": true,
+       "fields": 527,
+       "world_sha256_equal": true,
+       "differing": [],
+       "only_in_readback": [],
+       "only_in_start": []
+      },
+      {
+       "world": 2,
+       "compared": true,
+       "fields": 526,
+       "world_sha256_equal": true,
+       "differing": [],
+       "only_in_readback": [],
+       "only_in_start": []
+      },
+      {
+       "world": 3,
+       "compared": true,
+       "fields": 528,
+       "world_sha256_equal": true,
+       "differing": [],
+       "only_in_readback": [],
+       "only_in_start": []
+      },
+      {
+       "world": 4,
+       "compared": true,
+       "fields": 526,
+       "world_sha256_equal": true,
+       "differing": [],
+       "only_in_readback": [],
+       "only_in_start": []
+      },
+      {
+       "world": 5,
+       "compared": true,
+       "fields": 528,
+       "world_sha256_equal": true,
+       "differing": [],
+       "only_in_readback": [],
+       "only_in_start": []
+      },
+      {
+       "world": 6,
+       "compared": true,
+       "fields": 527,
+       "world_sha256_equal": true,
+       "differing": [],
+       "only_in_readback": [],
+       "only_in_start": []
+      },
+      {
+       "world": 7,
+       "compared": true,
+       "fields": 528,
+       "world_sha256_equal": true,
+       "differing": [],
+       "only_in_readback": [],
+       "only_in_start": []
+      }
+     ],
+     "worlds_equal": 8
+    }
+   }
+  },
+  "P8_configuration": {
+   "status": "PASS",
+   "differing_keys": [
+    "caregiver_record_dir",
+    "checkpoint_storage",
+    "latent_body_output",
+    "out",
+    "planner_target_candidate"
+   ],
+   "problems": []
+  }
+ },
+ "branches": {
+  "off": {
+   "read": true,
+   "complete": true,
+   "verdict": "pass",
+   "why": [],
+   "trainer_exit_code": 0,
+   "trainer_seconds": 164.955,
+   "claim_to_close_seconds": 171.092,
+   "stop_requested": false,
+   "killed": false,
+   "complete_save": {
+    "complete": true,
+    "problems": [],
+    "files": {
+     "episode_state.json": [
+      639,
+      1792882514000000000,
+      "87daa498aa4127aa618ac42199033bab6610372e7ddc7b4d725cde9c61b5e7a2"
+     ],
+     "lineage.json": [
+      688,
+      1792882514576214400,
+      "92e9a5a3010e48740090454ca997d7a91934ad5ec537eac07669df8c9163d839"
+     ],
+     "meta.json": [
+      112,
+      1792882444000000000,
+      "51692a3f5441e95e4684c00f844deb46bdeb6ffabd545536d383a7a803f459ee"
+     ],
+     "model.safetensors": [
+      73119988,
+      1792882444000000000,
+      "6dbd7c51779277c36566b42d801389e69f8650a7494e8e90f42c02a22d30743f"
+     ],
+     "model_receipt.json": [
+      247492,
+      1792882448000000000,
+      "e9e0e262772fbaeedf93b3ca87587ea3a6524620df2f3bea5f0fe5c62cc1d594"
+     ],
+     "optimizer.pt": [
+      138060045,
+      1792882447000000000,
+      "5a4512bd329e2192ef11385f4baa9833bcd798ebff7e579009842d0015033743"
+     ],
+     "runtime_state.pt": [
+      489337392,
+      1792882492000000000,
+      "8ffeb12372459f86b88587ed1856242878b94fd745d0d835dbc1e16d63db88c0"
+     ]
+    },
+    "companion": {
+     "path": "D:\\UEMA_Research\\external\\D\\UEMA_scratch\\h84\\d1_planner_recovery\\attempts\\target_matched_496250_s2_off_a1\\evidence\\recording\\checkpoint_state\\TMATCH_off_496250\\ckpt_step_496256_b4e17bea83e94392aa36bd4058668269.pt.gz",
+     "bytes": 620431387,
+     "mtime_ns": 1792882513000000000,
+     "sha256": "a7bee4d5601e711cee1583a21d9dc3ae5c69b5da9a3eb7f48ee20e07c428035e",
+     "receipt_bytes": 620431387,
+     "receipt_sha256": "a7bee4d5601e711cee1583a21d9dc3ae5c69b5da9a3eb7f48ee20e07c428035e"
+    }
+   }
+  },
+  "on": {
+   "read": true,
+   "complete": true,
+   "verdict": "pass",
+   "why": [],
+   "trainer_exit_code": 0,
+   "trainer_seconds": 155.73,
+   "claim_to_close_seconds": 161.608,
+   "stop_requested": false,
+   "killed": false,
+   "complete_save": {
+    "complete": true,
+    "problems": [],
+    "files": {
+     "episode_state.json": [
+      637,
+      1792882683000000000,
+      "835396de2d214c5ec2eb637d443a4350ba42ab2486a8ea8cd371885f12156841"
+     ],
+     "lineage.json": [
+      685,
+      1792882683292213200,
+      "cd14b19f42a32874a2328abb1b53f98781f272fe3c9a6bc984279faab61fdfa2"
+     ],
+     "meta.json": [
+      112,
+      1792882612000000000,
+      "8d9a0cc29668c30a642fd99cd2e38a6db9f8a81693b52c73bb3d9222afcb6fce"
+     ],
+     "model.safetensors": [
+      73119988,
+      1792882612000000000,
+      "782d769c9a66402e9a581bd85b4261c762711ad50e4ab9199642ad4abf76ce0e"
+     ],
+     "model_receipt.json": [
+      247492,
+      1792882615000000000,
+      "8b9fa5579af3fcd4c76a5ba99a5821751712e9d0903f1792ef806b3b5d8c11b8"
+     ],
+     "optimizer.pt": [
+      138060045,
+      1792882615000000000,
+      "a387bf8b2da317d753e485609e13f6fdd37533ebdf55dd645fada3db60e064f7"
+     ],
+     "runtime_state.pt": [
+      489337392,
+      1792882661000000000,
+      "357a485bda44ecb0320c68aae5e63bbe3852df0e0b8d3e1a0e47ad948083a632"
+     ]
+    },
+    "companion": {
+     "path": "D:\\UEMA_Research\\external\\D\\UEMA_scratch\\h84\\d1_planner_recovery\\attempts\\target_matched_496250_s2_on_a1\\evidence\\recording\\checkpoint_state\\TMATCH_on_496250\\ckpt_step_496256_d5d48f0ac86b4a30a3bdd9a39ecdec8f.pt.gz",
+     "bytes": 620509315,
+     "mtime_ns": 1792882682000000000,
+     "sha256": "f341b568054bb7ea1dc1116b7d82a7b2634dcea6ae90f31e0f2d4b2b3a9ec535",
+     "receipt_bytes": 620509315,
+     "receipt_sha256": "f341b568054bb7ea1dc1116b7d82a7b2634dcea6ae90f31e0f2d4b2b3a9ec535"
+    }
+   }
+  }
+ },
+ "capture_files": {
+  "off": [
+   "captures_cap000496250_19472_00001.npz"
+  ],
+  "on": [
+   "captures_cap000496250_14684_00001.npz"
+  ]
+ },
+ "wrist_index_problems": [],
+ "bodies": [
+  {
+   "body": 0,
+   "candidate": {
+    "body": 0,
+    "built": true,
+    "finite": true,
+    "offered": true,
+    "selected": true,
+    "selected_source": "target_candidate",
+    "outcome": "selected",
+    "reason": null,
+    "goal": 22.476,
+    "ordinary_goal": 28.3161,
+    "ordinary_source": "iteration0",
+    "forecast": {
+     "position": 14.1037,
+     "rotation": 8.372302
+    },
+    "effort": 0.07335861,
+    "action_space_penalty": 0.0,
+    "offset_from_iteration0_raw": {
+     "position_cm": 23.26416,
+     "turn_deg": 59.87745
+    },
+    "offset_from_iteration0_executed": {
+     "position_cm": 8.142455,
+     "turn_deg": 20.93652
+    },
+    "within_trust_region_bounds_raw": false
+   },
+   "off": {
+    "body": 0,
+    "forecast_pose_error": {
+     "position": 18.56941,
+     "rotation": 9.746693,
+     "sum": 28.316103000000002
+    },
+    "actual_pose_error": {
+     "position": 25.23518,
+     "rotation": 10.94101,
+     "sum": 36.1762
+    },
+    "forecast_hand_distance_cm": {
+     "wrist_L": 20.086597882413834,
+     "wrist_R": 11.894057455688777
+    },
+    "actual_hand_distance_cm": {
+     "wrist_L": 21.54699,
+     "wrist_R": 16.06128
+    },
+    "actual_body_gap_cm": 12.47959
+   },
+   "on": {
+    "body": 0,
+    "forecast_pose_error": {
+     "position": 14.1037,
+     "rotation": 8.372302,
+     "sum": 22.476002
+    },
+    "actual_pose_error": {
+     "position": 16.14306,
+     "rotation": 6.991966,
+     "sum": 23.13503
+    },
+    "forecast_hand_distance_cm": {
+     "wrist_L": 17.584992427373567,
+     "wrist_R": 9.610708837446857
+    },
+    "actual_hand_distance_cm": {
+     "wrist_L": 17.77623,
+     "wrist_R": 11.36848
+    },
+    "actual_body_gap_cm": 10.10429
+   },
+   "on_minus_off": {
+    "body": 0,
+    "actual_hand_distance_on_minus_off_cm": {
+     "wrist_L": -3.7707599999999992,
+     "wrist_R": -4.6928
+    },
+    "actual_pose_error_sum_on_minus_off": -13.041170000000001,
+    "forecast_pose_error_sum_on_minus_off": -5.840101000000001,
+    "actual_body_gap_on_minus_off_cm": -2.3752999999999993
+   },
+   "sent_command_equal": false
+  },
+  {
+   "body": 1,
+   "candidate": {
+    "body": 1,
+    "built": true,
+    "finite": true,
+    "offered": true,
+    "selected": true,
+    "selected_source": "target_candidate",
+    "outcome": "selected",
+    "reason": null,
+    "goal": 8.830204,
+    "ordinary_goal": 10.0568,
+    "ordinary_source": "search",
+    "forecast": {
+     "position": 5.124508,
+     "rotation": 3.705695
+    },
+    "effort": 0.0663969,
+    "action_space_penalty": 0.0,
+    "offset_from_iteration0_raw": {
+     "position_cm": 24.71066,
+     "turn_deg": 53.14272
+    },
+    "offset_from_iteration0_executed": {
+     "position_cm": 8.648729,
+     "turn_deg": 18.91826
+    },
+    "within_trust_region_bounds_raw": false
+   },
+   "off": {
+    "body": 1,
+    "forecast_pose_error": {
+     "position": 6.003512,
+     "rotation": 4.053286,
+     "sum": 10.056798
+    },
+    "actual_pose_error": {
+     "position": 5.796324,
+     "rotation": 3.663665,
+     "sum": 9.459988
+    },
+    "forecast_hand_distance_cm": {
+     "wrist_L": 6.661625139420821,
+     "wrist_R": 10.795958364320082
+    },
+    "actual_hand_distance_cm": {
+     "wrist_L": 5.647931,
+     "wrist_R": 11.11828
+    },
+    "actual_body_gap_cm": 6.455275
+   },
+   "on": {
+    "body": 1,
+    "forecast_pose_error": {
+     "position": 5.124508,
+     "rotation": 3.705695,
+     "sum": 8.830203
+    },
+    "actual_pose_error": {
+     "position": 3.214764,
+     "rotation": 2.470419,
+     "sum": 5.685183
+    },
+    "forecast_hand_distance_cm": {
+     "wrist_L": 7.343781731820396,
+     "wrist_R": 8.790478461060406
+    },
+    "actual_hand_distance_cm": {
+     "wrist_L": 4.583129,
+     "wrist_R": 7.585637
+    },
+    "actual_body_gap_cm": 5.004204
+   },
+   "on_minus_off": {
+    "body": 1,
+    "actual_hand_distance_on_minus_off_cm": {
+     "wrist_L": -1.0648020000000002,
+     "wrist_R": -3.532643
+    },
+    "actual_pose_error_sum_on_minus_off": -3.774804999999999,
+    "forecast_pose_error_sum_on_minus_off": -1.2265950000000014,
+    "actual_body_gap_on_minus_off_cm": -1.4510710000000007
+   },
+   "sent_command_equal": false
+  },
+  {
+   "body": 2,
+   "candidate": {
+    "body": 2,
+    "built": true,
+    "finite": true,
+    "offered": true,
+    "selected": false,
+    "selected_source": "iteration0",
+    "outcome": "rejected",
+    "reason": "its forecast pose error is not below both the iteration-0 composite's forecast and the measured starting pose's error",
+    "goal": 9.532121,
+    "ordinary_goal": 10.64653,
+    "ordinary_source": "iteration0",
+    "forecast": {
+     "position": 6.66743,
+     "rotation": 2.86469
+    },
+    "effort": 0.0670533,
+    "action_space_penalty": 0.0,
+    "offset_from_iteration0_raw": {
+     "position_cm": 16.97411,
+     "turn_deg": 38.61771
+    },
+    "offset_from_iteration0_executed": {
+     "position_cm": 5.940937,
+     "turn_deg": 13.51711
+    },
+    "within_trust_region_bounds_raw": false
+   },
+   "off": {
+    "body": 2,
+    "forecast_pose_error": {
+     "position": 7.540411,
+     "rotation": 3.106123,
+     "sum": 10.646533999999999
+    },
+    "actual_pose_error": {
+     "position": 6.832287,
+     "rotation": 3.034768,
+     "sum": 9.867055
+    },
+    "forecast_hand_distance_cm": {
+     "wrist_L": 4.025700098109187,
+     "wrist_R": 13.576293362442941
+    },
+    "actual_hand_distance_cm": {
+     "wrist_L": 6.160738,
+     "wrist_R": 12.93163
+    },
+    "actual_body_gap_cm": 6.409538
+   },
+   "on": {
+    "body": 2,
+    "forecast_pose_error": {
+     "position": 7.540411,
+     "rotation": 3.106123,
+     "sum": 10.646533999999999
+    },
+    "actual_pose_error": {
+     "position": 6.832287,
+     "rotation": 3.034768,
+     "sum": 9.867055
+    },
+    "forecast_hand_distance_cm": {
+     "wrist_L": 4.025700098109187,
+     "wrist_R": 13.576293362442941
+    },
+    "actual_hand_distance_cm": {
+     "wrist_L": 6.160738,
+     "wrist_R": 12.93163
+    },
+    "actual_body_gap_cm": 6.409538
+   },
+   "on_minus_off": {
+    "body": 2,
+    "actual_hand_distance_on_minus_off_cm": {
+     "wrist_L": 0.0,
+     "wrist_R": 0.0
+    },
+    "actual_pose_error_sum_on_minus_off": 0.0,
+    "forecast_pose_error_sum_on_minus_off": 0.0,
+    "actual_body_gap_on_minus_off_cm": 0.0
+   },
+   "sent_command_equal": true
+  },
+  {
+   "body": 3,
+   "candidate": {
+    "body": 3,
+    "built": true,
+    "finite": true,
+    "offered": true,
+    "selected": false,
+    "selected_source": "search",
+    "outcome": "rejected",
+    "reason": "its forecast pose error is not strictly below the ordinary result's (an equal forecast keeps the ordinary result)",
+    "goal": 4.701796,
+    "ordinary_goal": 4.557413,
+    "ordinary_source": "search",
+    "forecast": {
+     "position": 1.801848,
+     "rotation": 2.899948
+    },
+    "effort": 0.07148907,
+    "action_space_penalty": 0.0,
+    "offset_from_iteration0_raw": {
+     "position_cm": 11.62044,
+     "turn_deg": 54.41318
+    },
+    "offset_from_iteration0_executed": {
+     "position_cm": 4.067156,
+     "turn_deg": 18.87011
+    },
+    "within_trust_region_bounds_raw": false
+   },
+   "off": {
+    "body": 3,
+    "forecast_pose_error": {
+     "position": 1.596071,
+     "rotation": 2.961342,
+     "sum": 4.557413
+    },
+    "actual_pose_error": {
+     "position": 1.696944,
+     "rotation": 2.646887,
+     "sum": 4.343831
+    },
+    "forecast_hand_distance_cm": {
+     "wrist_L": 1.8891599203475684,
+     "wrist_R": 1.9773897098619282
+    },
+    "actual_hand_distance_cm": {
+     "wrist_L": 2.647112,
+     "wrist_R": 2.414508
+    },
+    "actual_body_gap_cm": 3.67871
+   },
+   "on": {
+    "body": 3,
+    "forecast_pose_error": {
+     "position": 1.596071,
+     "rotation": 2.961342,
+     "sum": 4.557413
+    },
+    "actual_pose_error": {
+     "position": 1.696952,
+     "rotation": 2.646888,
+     "sum": 4.34384
+    },
+    "forecast_hand_distance_cm": {
+     "wrist_L": 1.8891599203475684,
+     "wrist_R": 1.9773897098619282
+    },
+    "actual_hand_distance_cm": {
+     "wrist_L": 2.647118,
+     "wrist_R": 2.414519
+    },
+    "actual_body_gap_cm": 3.678717
+   },
+   "on_minus_off": {
+    "body": 3,
+    "actual_hand_distance_on_minus_off_cm": {
+     "wrist_L": 5.999999999950489e-06,
+     "wrist_R": 1.09999999997612e-05
+    },
+    "actual_pose_error_sum_on_minus_off": 9.000000000369823e-06,
+    "forecast_pose_error_sum_on_minus_off": 0.0,
+    "actual_body_gap_on_minus_off_cm": 6.999999999646178e-06
+   },
+   "sent_command_equal": true
+  },
+  {
+   "body": 4,
+   "candidate": {
+    "body": 4,
+    "built": true,
+    "finite": true,
+    "offered": true,
+    "selected": false,
+    "selected_source": "iteration0",
+    "outcome": "rejected",
+    "reason": "its forecast pose error is not below both the iteration-0 composite's forecast and the measured starting pose's error",
+    "goal": 3.777351,
+    "ordinary_goal": 4.427244,
+    "ordinary_source": "iteration0",
+    "forecast": {
+     "position": 2.378066,
+     "rotation": 1.399286
+    },
+    "effort": 0.06356864,
+    "action_space_penalty": 0.0,
+    "offset_from_iteration0_raw": {
+     "position_cm": 10.23833,
+     "turn_deg": 24.48282
+    },
+    "offset_from_iteration0_executed": {
+     "position_cm": 3.583415,
+     "turn_deg": 8.578039
+    },
+    "within_trust_region_bounds_raw": false
+   },
+   "off": {
+    "body": 4,
+    "forecast_pose_error": {
+     "position": 2.955443,
+     "rotation": 1.471801,
+     "sum": 4.427244
+    },
+    "actual_pose_error": {
+     "position": 1.909415,
+     "rotation": 1.071883,
+     "sum": 2.981298
+    },
+    "forecast_hand_distance_cm": {
+     "wrist_L": 7.306244485766909,
+     "wrist_R": 7.612592094633391
+    },
+    "actual_hand_distance_cm": {
+     "wrist_L": 5.294179,
+     "wrist_R": 6.433276
+    },
+    "actual_body_gap_cm": 3.565214
+   },
+   "on": {
+    "body": 4,
+    "forecast_pose_error": {
+     "position": 2.955443,
+     "rotation": 1.471801,
+     "sum": 4.427244
+    },
+    "actual_pose_error": {
+     "position": 1.909411,
+     "rotation": 1.071883,
+     "sum": 2.981293
+    },
+    "forecast_hand_distance_cm": {
+     "wrist_L": 7.306244485766909,
+     "wrist_R": 7.612592094633391
+    },
+    "actual_hand_distance_cm": {
+     "wrist_L": 5.294176,
+     "wrist_R": 6.433267
+    },
+    "actual_body_gap_cm": 3.565209
+   },
+   "on_minus_off": {
+    "body": 4,
+    "actual_hand_distance_on_minus_off_cm": {
+     "wrist_L": -2.9999999995311555e-06,
+     "wrist_R": -9.000000000369823e-06
+    },
+    "actual_pose_error_sum_on_minus_off": -4.999999999810711e-06,
+    "forecast_pose_error_sum_on_minus_off": 0.0,
+    "actual_body_gap_on_minus_off_cm": -5.000000000254801e-06
+   },
+   "sent_command_equal": true
+  },
+  {
+   "body": 5,
+   "candidate": {
+    "body": 5,
+    "built": true,
+    "finite": true,
+    "offered": true,
+    "selected": true,
+    "selected_source": "target_candidate",
+    "outcome": "selected",
+    "reason": null,
+    "goal": 21.25494,
+    "ordinary_goal": 23.48265,
+    "ordinary_source": "search",
+    "forecast": {
+     "position": 12.24474,
+     "rotation": 9.010197
+    },
+    "effort": 0.07279247,
+    "action_space_penalty": 0.0,
+    "offset_from_iteration0_raw": {
+     "position_cm": 28.91947,
+     "turn_deg": 92.42223
+    },
+    "offset_from_iteration0_executed": {
+     "position_cm": 10.12181,
+     "turn_deg": 31.17128
+    },
+    "within_trust_region_bounds_raw": false
+   },
+   "off": {
+    "body": 5,
+    "forecast_pose_error": {
+     "position": 13.89125,
+     "rotation": 9.591406,
+     "sum": 23.482656
+    },
+    "actual_pose_error": {
+     "position": 15.72496,
+     "rotation": 12.38623,
+     "sum": 28.11119
+    },
+    "forecast_hand_distance_cm": {
+     "wrist_L": 3.80651849213913,
+     "wrist_R": 20.030698636709523
+    },
+    "actual_hand_distance_cm": {
+     "wrist_L": 3.821844,
+     "wrist_R": 21.33964
+    },
+    "actual_body_gap_cm": 8.387304
+   },
+   "on": {
+    "body": 5,
+    "forecast_pose_error": {
+     "position": 12.24474,
+     "rotation": 9.010197,
+     "sum": 21.254936999999998
+    },
+    "actual_pose_error": {
+     "position": 13.55486,
+     "rotation": 9.103964,
+     "sum": 22.65882
+    },
+    "forecast_hand_distance_cm": {
+     "wrist_L": 1.7546781531865019,
+     "wrist_R": 19.078076821697373
+    },
+    "actual_hand_distance_cm": {
+     "wrist_L": 7.411517,
+     "wrist_R": 18.70371
+    },
+    "actual_body_gap_cm": 8.585645
+   },
+   "on_minus_off": {
+    "body": 5,
+    "actual_hand_distance_on_minus_off_cm": {
+     "wrist_L": 3.589673,
+     "wrist_R": -2.6359299999999983
+    },
+    "actual_pose_error_sum_on_minus_off": -5.452370000000002,
+    "forecast_pose_error_sum_on_minus_off": -2.2277190000000004,
+    "actual_body_gap_on_minus_off_cm": 0.1983409999999992
+   },
+   "sent_command_equal": false
+  },
+  {
+   "body": 6,
+   "candidate": {
+    "body": 6,
+    "built": true,
+    "finite": true,
+    "offered": true,
+    "selected": true,
+    "selected_source": "target_candidate",
+    "outcome": "selected",
+    "reason": null,
+    "goal": 7.809219,
+    "ordinary_goal": 9.296167,
+    "ordinary_source": "search",
+    "forecast": {
+     "position": 3.68481,
+     "rotation": 4.124409
+    },
+    "effort": 0.06595029,
+    "action_space_penalty": 0.0,
+    "offset_from_iteration0_raw": {
+     "position_cm": 21.744,
+     "turn_deg": 66.79759
+    },
+    "offset_from_iteration0_executed": {
+     "position_cm": 7.610398,
+     "turn_deg": 23.53094
+    },
+    "within_trust_region_bounds_raw": false
+   },
+   "off": {
+    "body": 6,
+    "forecast_pose_error": {
+     "position": 4.536781,
+     "rotation": 4.759387,
+     "sum": 9.296168000000002
+    },
+    "actual_pose_error": {
+     "position": 4.32634,
+     "rotation": 3.011618,
+     "sum": 7.337957
+    },
+    "forecast_hand_distance_cm": {
+     "wrist_L": 2.634486446675234,
+     "wrist_R": 11.138638450534176
+    },
+    "actual_hand_distance_cm": {
+     "wrist_L": 4.525119,
+     "wrist_R": 10.6241
+    },
+    "actual_body_gap_cm": 4.990845
+   },
+   "on": {
+    "body": 6,
+    "forecast_pose_error": {
+     "position": 3.68481,
+     "rotation": 4.124409,
+     "sum": 7.809219000000001
+    },
+    "actual_pose_error": {
+     "position": 2.319882,
+     "rotation": 1.569382,
+     "sum": 3.889264
+    },
+    "forecast_hand_distance_cm": {
+     "wrist_L": 2.1216465249848304,
+     "wrist_R": 9.863640539333064
+    },
+    "actual_hand_distance_cm": {
+     "wrist_L": 4.133239,
+     "wrist_R": 7.760014
+    },
+    "actual_body_gap_cm": 3.955276
+   },
+   "on_minus_off": {
+    "body": 6,
+    "actual_hand_distance_on_minus_off_cm": {
+     "wrist_L": -0.39188000000000045,
+     "wrist_R": -2.8640860000000004
+    },
+    "actual_pose_error_sum_on_minus_off": -3.4486930000000005,
+    "forecast_pose_error_sum_on_minus_off": -1.486949000000001,
+    "actual_body_gap_on_minus_off_cm": -1.0355690000000002
+   },
+   "sent_command_equal": false
+  },
+  {
+   "body": 7,
+   "candidate": {
+    "body": 7,
+    "built": true,
+    "finite": true,
+    "offered": true,
+    "selected": false,
+    "selected_source": "search",
+    "outcome": "rejected",
+    "reason": "its forecast pose error is not strictly below the ordinary result's (an equal forecast keeps the ordinary result)",
+    "goal": 8.535852,
+    "ordinary_goal": 7.854028,
+    "ordinary_source": "search",
+    "forecast": {
+     "position": 4.354331,
+     "rotation": 4.181521
+    },
+    "effort": 0.06684928,
+    "action_space_penalty": 0.0,
+    "offset_from_iteration0_raw": {
+     "position_cm": 12.37847,
+     "turn_deg": 56.43599
+    },
+    "offset_from_iteration0_executed": {
+     "position_cm": 4.332466,
+     "turn_deg": 19.41455
+    },
+    "within_trust_region_bounds_raw": false
+   },
+   "off": {
+    "body": 7,
+    "forecast_pose_error": {
+     "position": 3.631991,
+     "rotation": 4.222037,
+     "sum": 7.8540280000000005
+    },
+    "actual_pose_error": {
+     "position": 6.68724,
+     "rotation": 5.019728,
+     "sum": 11.70697
+    },
+    "forecast_hand_distance_cm": {
+     "wrist_L": 7.328552747419041,
+     "wrist_R": 5.444596150590292
+    },
+    "actual_hand_distance_cm": {
+     "wrist_L": 5.469278,
+     "wrist_R": 11.80565
+    },
+    "actual_body_gap_cm": 6.505799
+   },
+   "on": {
+    "body": 7,
+    "forecast_pose_error": {
+     "position": 3.631991,
+     "rotation": 4.222037,
+     "sum": 7.8540280000000005
+    },
+    "actual_pose_error": {
+     "position": 6.68722,
+     "rotation": 5.01973,
+     "sum": 11.70695
+    },
+    "forecast_hand_distance_cm": {
+     "wrist_L": 7.328552747419041,
+     "wrist_R": 5.444596150590292
+    },
+    "actual_hand_distance_cm": {
+     "wrist_L": 5.469275,
+     "wrist_R": 11.80562
+    },
+    "actual_body_gap_cm": 6.505792
+   },
+   "on_minus_off": {
+    "body": 7,
+    "actual_hand_distance_on_minus_off_cm": {
+     "wrist_L": -3.000000000419334e-06,
+     "wrist_R": -3.0000000000640625e-05
+    },
+    "actual_pose_error_sum_on_minus_off": -1.9999999999242846e-05,
+    "forecast_pose_error_sum_on_minus_off": 0.0,
+    "actual_body_gap_on_minus_off_cm": -7.000000000090267e-06
+   },
+   "sent_command_equal": true
+  }
+ ],
+ "candidate_summary": {
+  "offered": 8,
+  "selected": 4,
+  "rejected": 4,
+  "not_built": 0
+ },
+ "world_records_after_bursts": [
+  {
+   "body": 0,
+   "sent_command_equal": false,
+   "records": [
+    {
+     "step": 496250,
+     "equal": false,
+     "fields": {
+      "qpos": false,
+      "mocap": false,
+      "objpose": false,
+      "sim_time": true
+     },
+     "first_differing_qpos_index": 0
+    },
+    {
+     "step": 496251,
+     "equal": false,
+     "fields": {
+      "qpos": false,
+      "mocap": false,
+      "objpose": false,
+      "sim_time": true
+     },
+     "first_differing_qpos_index": 0
+    },
+    {
+     "step": 496252,
+     "equal": false,
+     "fields": {
+      "qpos": false,
+      "mocap": false,
+      "objpose": false,
+      "sim_time": true
+     },
+     "first_differing_qpos_index": 0
+    },
+    {
+     "step": 496253,
+     "equal": false,
+     "fields": {
+      "qpos": false,
+      "mocap": false,
+      "objpose": false,
+      "sim_time": true
+     },
+     "first_differing_qpos_index": 0
+    },
+    {
+     "step": 496254,
+     "equal": false,
+     "fields": {
+      "qpos": false,
+      "mocap": false,
+      "objpose": false,
+      "sim_time": true
+     },
+     "first_differing_qpos_index": 0
+    }
+   ]
+  },
+  {
+   "body": 1,
+   "sent_command_equal": false,
+   "records": [
+    {
+     "step": 496250,
+     "equal": false,
+     "fields": {
+      "qpos": false,
+      "mocap": false,
+      "objpose": false,
+      "sim_time": true
+     },
+     "first_differing_qpos_index": 0
+    },
+    {
+     "step": 496251,
+     "equal": false,
+     "fields": {
+      "qpos": false,
+      "mocap": false,
+      "objpose": false,
+      "sim_time": true
+     },
+     "first_differing_qpos_index": 0
+    },
+    {
+     "step": 496252,
+     "equal": false,
+     "fields": {
+      "qpos": false,
+      "mocap": false,
+      "objpose": false,
+      "sim_time": true
+     },
+     "first_differing_qpos_index": 0
+    },
+    {
+     "step": 496253,
+     "equal": false,
+     "fields": {
+      "qpos": false,
+      "mocap": false,
+      "objpose": false,
+      "sim_time": true
+     },
+     "first_differing_qpos_index": 0
+    },
+    {
+     "step": 496254,
+     "equal": false,
+     "fields": {
+      "qpos": false,
+      "mocap": false,
+      "objpose": false,
+      "sim_time": true
+     },
+     "first_differing_qpos_index": 0
+    }
+   ]
+  },
+  {
+   "body": 2,
+   "sent_command_equal": true,
+   "records": [
+    {
+     "step": 496250,
+     "equal": true,
+     "fields": {
+      "qpos": true,
+      "mocap": true,
+      "objpose": true,
+      "sim_time": true
+     },
+     "first_differing_qpos_index": null
+    },
+    {
+     "step": 496251,
+     "equal": true,
+     "fields": {
+      "qpos": true,
+      "mocap": true,
+      "objpose": true,
+      "sim_time": true
+     },
+     "first_differing_qpos_index": null
+    },
+    {
+     "step": 496252,
+     "equal": true,
+     "fields": {
+      "qpos": true,
+      "mocap": true,
+      "objpose": true,
+      "sim_time": true
+     },
+     "first_differing_qpos_index": null
+    },
+    {
+     "step": 496253,
+     "equal": true,
+     "fields": {
+      "qpos": true,
+      "mocap": true,
+      "objpose": true,
+      "sim_time": true
+     },
+     "first_differing_qpos_index": null
+    },
+    {
+     "step": 496254,
+     "equal": false,
+     "fields": {
+      "qpos": false,
+      "mocap": false,
+      "objpose": false,
+      "sim_time": true
+     },
+     "first_differing_qpos_index": 15
+    }
+   ]
+  },
+  {
+   "body": 3,
+   "sent_command_equal": true,
+   "records": [
+    {
+     "step": 496250,
+     "equal": true,
+     "fields": {
+      "qpos": true,
+      "mocap": true,
+      "objpose": true,
+      "sim_time": true
+     },
+     "first_differing_qpos_index": null
+    },
+    {
+     "step": 496251,
+     "equal": true,
+     "fields": {
+      "qpos": true,
+      "mocap": true,
+      "objpose": true,
+      "sim_time": true
+     },
+     "first_differing_qpos_index": null
+    },
+    {
+     "step": 496252,
+     "equal": false,
+     "fields": {
+      "qpos": false,
+      "mocap": false,
+      "objpose": false,
+      "sim_time": true
+     },
+     "first_differing_qpos_index": 77
+    },
+    {
+     "step": 496253,
+     "equal": false,
+     "fields": {
+      "qpos": false,
+      "mocap": false,
+      "objpose": false,
+      "sim_time": true
+     },
+     "first_differing_qpos_index": 4
+    },
+    {
+     "step": 496254,
+     "equal": false,
+     "fields": {
+      "qpos": false,
+      "mocap": false,
+      "objpose": false,
+      "sim_time": true
+     },
+     "first_differing_qpos_index": 1
+    }
+   ]
+  },
+  {
+   "body": 4,
+   "sent_command_equal": true,
+   "records": [
+    {
+     "step": 496250,
+     "equal": true,
+     "fields": {
+      "qpos": true,
+      "mocap": true,
+      "objpose": true,
+      "sim_time": true
+     },
+     "first_differing_qpos_index": null
+    },
+    {
+     "step": 496251,
+     "equal": true,
+     "fields": {
+      "qpos": true,
+      "mocap": true,
+      "objpose": true,
+      "sim_time": true
+     },
+     "first_differing_qpos_index": null
+    },
+    {
+     "step": 496252,
+     "equal": false,
+     "fields": {
+      "qpos": false,
+      "mocap": true,
+      "objpose": true,
+      "sim_time": true
+     },
+     "first_differing_qpos_index": 76
+    },
+    {
+     "step": 496253,
+     "equal": false,
+     "fields": {
+      "qpos": false,
+      "mocap": false,
+      "objpose": false,
+      "sim_time": true
+     },
+     "first_differing_qpos_index": 4
+    },
+    {
+     "step": 496254,
+     "equal": false,
+     "fields": {
+      "qpos": false,
+      "mocap": false,
+      "objpose": false,
+      "sim_time": true
+     },
+     "first_differing_qpos_index": 4
+    }
+   ]
+  },
+  {
+   "body": 5,
+   "sent_command_equal": false,
+   "records": [
+    {
+     "step": 496250,
+     "equal": false,
+     "fields": {
+      "qpos": false,
+      "mocap": false,
+      "objpose": false,
+      "sim_time": true
+     },
+     "first_differing_qpos_index": 0
+    },
+    {
+     "step": 496251,
+     "equal": false,
+     "fields": {
+      "qpos": false,
+      "mocap": false,
+      "objpose": false,
+      "sim_time": true
+     },
+     "first_differing_qpos_index": 0
+    },
+    {
+     "step": 496252,
+     "equal": false,
+     "fields": {
+      "qpos": false,
+      "mocap": false,
+      "objpose": false,
+      "sim_time": true
+     },
+     "first_differing_qpos_index": 0
+    },
+    {
+     "step": 496253,
+     "equal": false,
+     "fields": {
+      "qpos": false,
+      "mocap": false,
+      "objpose": false,
+      "sim_time": true
+     },
+     "first_differing_qpos_index": 0
+    },
+    {
+     "step": 496254,
+     "equal": false,
+     "fields": {
+      "qpos": false,
+      "mocap": false,
+      "objpose": false,
+      "sim_time": true
+     },
+     "first_differing_qpos_index": 0
+    }
+   ]
+  },
+  {
+   "body": 6,
+   "sent_command_equal": false,
+   "records": [
+    {
+     "step": 496250,
+     "equal": false,
+     "fields": {
+      "qpos": false,
+      "mocap": false,
+      "objpose": false,
+      "sim_time": true
+     },
+     "first_differing_qpos_index": 0
+    },
+    {
+     "step": 496251,
+     "equal": false,
+     "fields": {
+      "qpos": false,
+      "mocap": false,
+      "objpose": false,
+      "sim_time": true
+     },
+     "first_differing_qpos_index": 0
+    },
+    {
+     "step": 496252,
+     "equal": false,
+     "fields": {
+      "qpos": false,
+      "mocap": false,
+      "objpose": false,
+      "sim_time": true
+     },
+     "first_differing_qpos_index": 0
+    },
+    {
+     "step": 496253,
+     "equal": false,
+     "fields": {
+      "qpos": false,
+      "mocap": false,
+      "objpose": false,
+      "sim_time": true
+     },
+     "first_differing_qpos_index": 0
+    },
+    {
+     "step": 496254,
+     "equal": false,
+     "fields": {
+      "qpos": false,
+      "mocap": false,
+      "objpose": false,
+      "sim_time": true
+     },
+     "first_differing_qpos_index": 0
+    }
+   ]
+  },
+  {
+   "body": 7,
+   "sent_command_equal": true,
+   "records": [
+    {
+     "step": 496250,
+     "equal": true,
+     "fields": {
+      "qpos": true,
+      "mocap": true,
+      "objpose": true,
+      "sim_time": true
+     },
+     "first_differing_qpos_index": null
+    },
+    {
+     "step": 496251,
+     "equal": true,
+     "fields": {
+      "qpos": true,
+      "mocap": true,
+      "objpose": true,
+      "sim_time": true
+     },
+     "first_differing_qpos_index": null
+    },
+    {
+     "step": 496252,
+     "equal": false,
+     "fields": {
+      "qpos": false,
+      "mocap": true,
+      "objpose": true,
+      "sim_time": true
+     },
+     "first_differing_qpos_index": 77
+    },
+    {
+     "step": 496253,
+     "equal": false,
+     "fields": {
+      "qpos": false,
+      "mocap": false,
+      "objpose": false,
+      "sim_time": true
+     },
+     "first_differing_qpos_index": 3
+    },
+    {
+     "step": 496254,
+     "equal": false,
+     "fields": {
+      "qpos": false,
+      "mocap": false,
+      "objpose": false,
+      "sim_time": true
+     },
+     "first_differing_qpos_index": 3
+    }
+   ]
+  }
+ ],
+ "historical_a2_vs_off": {
+  "read": true,
+  "pre_decision_arrays": "FAIL",
+  "pre_decision_arrays_differing": [
+   {
+    "array": "forecast_pose__iteration0_order",
+    "dtype": "float32",
+    "shape": [
+     8,
+     26,
+     9
+    ],
+    "bodies_differing": [
+     7
+    ]
+   },
+   {
+    "array": "forecast_pose__iteration0_position_cm",
+    "dtype": "float32",
+    "shape": [
+     8,
+     26,
+     3
+    ],
+    "bodies_differing": [
+     7
+    ]
+   },
+   {
+    "array": "forecast_pose__iteration0_quaternion",
+    "dtype": "float32",
+    "shape": [
+     8,
+     26,
+     4
+    ],
+    "bodies_differing": [
+     7
+    ]
+   },
+   {
+    "array": "plan0",
+    "dtype": "float32",
+    "shape": [
+     8,
+     26,
+     9
+    ],
+    "bodies_differing": [
+     7
+    ]
+   }
+  ],
+  "pre_decision_fields": "FAIL",
+  "pre_decision_fields_differing": [
+   {
+    "field": "objective.per_body.objective.start",
+    "first": {
+     "path": "objective.per_body.objective.start[7]",
+     "off": "8.926338",
+     "on": "8.926339"
+    }
+   },
+   {
+    "field": "objective.per_body.goal.start",
+    "first": {
+     "path": "objective.per_body.goal.start[7]",
+     "off": "8.859488",
+     "on": "8.859489"
+    }
+   },
+   {
+    "field": "identity.launch.trainer_code_hash",
+    "first": {
+     "path": "identity.launch.trainer_code_hash",
+     "off": "'a4c213a3e2db87e73a6e67fde571ae3cbc7eff25659d1240db0286c91790cd9d'",
+     "on": "'b39d550b46c5ce2c9d7b39e562411b55d4eebb84ba7c1effd2fdd9817972c4ef'"
+    }
+   },
+   {
+    "field": "identity.launch.git_commit",
+    "first": {
+     "path": "identity.launch.git_commit",
+     "off": "'7dd0eabda'",
+     "on": "'unknown'"
+    }
+   }
+  ],
+  "sent_sha_equal": [
+   true,
+   true,
+   true,
+   true,
+   true,
+   true,
+   true,
+   false
+  ],
+  "end_hand_distance_off_minus_a2_cm": [
+   [
+    0.0,
+    0.0
+   ],
+   [
+    -8.000000000230045e-06,
+    2.0000000001019203e-05
+   ],
+   [
+    0.0,
+    0.0
+   ],
+   [
+    -1.000000000139778e-06,
+    -1.9999999998354667e-06
+   ],
+   [
+    -2.0000000000131024e-05,
+    -5.200000000016303e-05
+   ],
+   [
+    0.0,
+    0.0
+   ],
+   [
+    1.3000000000040757e-05,
+    -9.999999999621423e-06
+   ],
+   [
+    0.0,
+    0.0
+   ]
+  ],
+  "note": "a2 ran at 7dd0eabda; OFF at fbc296d5e with the switch off; launch metadata (identity.launch, planner_settings when unchanged) differs by design and is not compared here"
+ },
+ "timing": {
+  "t0": "Oct 24, 2026 3:51:27 PM PDT",
+  "last_event": {
+   "step": "closure",
+   "event": "begin",
+   "at": "Oct 24, 2026 3:58:11 PM PDT",
+   "at_epoch": 1792882691.904,
+   "since_t0_s": 404.225,
+   "deadline": "Oct 24, 2026 3:59:51 PM PDT",
+   "elapsed_s": 517.837
+  },
+  "unsuspended_s_at_last_event": 517.837,
+  "wall_since_t0_at_last_event": 404.225
+ },
+ "definitions": {
+  "pose_error": "the planner's units: mean over the 25 non-gaze handles and 3 axes of (cm / 1.80)^2, plus the same of (degrees / 11.0)^2; 0 = every handle at the goal pose, 1 = one 250 ms movement scale per axis away",
+  "hand_distance_cm": "each wrist handle's distance from the goal pose's same handle, cm; forecast: the selected forecast pose (forecast_pose__selected_position_cm) against goal_pose x 200; actual: the capture's physical.wrist_gap_cm.end, the pose after the command's 25 physics steps (250 ms)",
+  "offered": "the candidate was built from a valid stored target and its evaluation is finite",
+  "on_minus_off": "ON's reading minus OFF's, the same body and the same saved decision"
+ },
+ "read_seconds": 1.807,
+ "inputs": {
+  "off_branch": {
+   "path": "D:/UEMA_Research/external/D/UEMA_scratch/h84/d1_planner_recovery/attempts/target_matched_496250_s2_off_a1/evidence/owner/branch_end.json",
+   "sha256": "3ef1378f5aab8d70ca9cd4be9b54ee0687c7cbad7c1ead80e1544929a74076ca"
+  },
+  "on_branch": {
+   "path": "D:/UEMA_Research/external/D/UEMA_scratch/h84/d1_planner_recovery/attempts/target_matched_496250_s2_on_a1/evidence/owner/branch_end.json",
+   "sha256": "9bdc65e2532a28cd4031705a1e33dae0c3a251798c5efb6da775847018ef07ae"
+  },
+  "start_episode_state": {
+   "path": "D:/UEMA_Research/external/D/UEMA_preserved/s4r_measure_S4R_measure_496000/run/checkpoints/ckpt_step_496250/episode_state.json",
+   "sha256": "64456651baa0100ed990cdfd7db5e80e06da34d7b8711083419084508c87fc19"
+  },
+  "clock": {
+   "path": "D:/UEMA_Research/external/D/UEMA_scratch/h84/d1_planner_recovery/target_matched_496250_package_s2/runtime/budget_clock.json",
+   "sha256": "e1a5fe44add11fddcb64b4a9f2cdfa0ea418b68a41be38ede4264b4b915ca5e1"
+  },
+  "start_manifests": {
+   "path": "D:/UEMA_Research/external/D/UEMA_scratch/h84/d1_planner_recovery/target_matched_496250_package_s2/start_world_manifests.json",
+   "sha256": "245928e256a97f914cd6fc6658011d35afac08360a3c4ee12b4c4d97a12a1c13"
+  }
+ },
+ "reader_sha256": "11406229608a4cb63ba1b4922d97463b4d831ea4c59e6e32eb0a8b1caa982f91"
+}

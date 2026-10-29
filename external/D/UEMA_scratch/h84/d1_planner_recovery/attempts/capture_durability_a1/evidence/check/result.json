@@ -1,0 +1,2252 @@
+{
+ "tool": "capture_durability_v2",
+ "verdict": "pass",
+ "reason": "every setup, durability and owner condition holds (36 conditions)",
+ "decision": "the overseer, pose-package-a2-preparation-decision-20261022 item 2: \"One focused saved-data/synthetic check, at most 15 minutes, must show complete captures readable before normal shutdown and truncated captures rejected.\"",
+ "started": "Oct 23, 2026 12:41:00 AM PDT",
+ "argv": [
+  "D:/UEMA_Research/.venv_mimo/Scripts/python.exe",
+  "-B",
+  "D:/UEMA_Research/external/D/UEMA_scratch/h84/d1_planner_recovery/pose_return_checks/check_capture_durability.py",
+  "--worktree",
+  "C:/Users/bhart/Documents/UEMA_wt/s4r_pose_fields_s1_20261022",
+  "--expect-head",
+  "7dd0eabda866facdba382c801a0558314229c842",
+  "--lane-sha256",
+  "1516ab1b4f297564c48736399f9b77f6b5fb2141fa5341b6f42019bdba370387",
+  "--record-sha256",
+  "d43576265fd34a7875b7a9d756897501e03aa66e6a19b97c2418eabcd884a163",
+  "--chain-sha256",
+  "256283171debca52db02bd4815cfef67e40faa09b20f8274b91427ca405b3b4d",
+  "--datasource-sha256",
+  "d13101bf65629da0a163b8381cf7f70e8207173e85c03fecaba88a90c17fd0ba",
+  "--reader",
+  "D:/UEMA_Research/external/D/UEMA_scratch/h84/d1_planner_recovery/s4r_pose_learning_496250_repair_package/read_pose_learning.py",
+  "--reader-sha256",
+  "8a0a231cbd4ccafe69d3a0fc8783bc9c4e6d80a292d892f634e1ba8fc7cb05a8",
+  "--owner",
+  "D:/UEMA_Research/external/D/UEMA_scratch/h84/d1_planner_recovery/s4r_pose_learning_496250_repair_package/versions/s4r_pose_learning_owner.da57ffb0.py",
+  "--owner-sha256",
+  "da57ffb03257248fbe69b6f6b3589f87fc738ee7dbe9e61a075f67465ead883e",
+  "--out",
+  "D:/UEMA_Research/external/D/UEMA_scratch/h84/d1_planner_recovery/attempts/capture_durability_a1/evidence/check"
+ ],
+ "cwd": "D:\\UEMA_Research\\Source\\Python",
+ "out": "D:\\UEMA_Research\\external\\D\\UEMA_scratch\\h84\\d1_planner_recovery\\attempts\\capture_durability_a1\\evidence\\check",
+ "time_limit_s": 300.0,
+ "design": {
+  "model_steps": [
+   1000,
+   1036
+  ],
+  "plan_steps": [
+   1005,
+   1020
+  ],
+  "hold": 5,
+  "chunk_steps": 10,
+  "bodies": 2,
+  "rows": 26,
+  "gaze_row": 23,
+  "wrist_rows": [
+   10,
+   11
+  ],
+  "goal_ages": {
+   "1005": [
+    3,
+    4
+   ],
+   "1020": [
+    5,
+    7
+   ]
+  },
+  "alone": 1005,
+  "pending": 1020,
+  "nudge": {
+   "step": 1020,
+   "body": 1,
+   "row": 0,
+   "column": 0
+  },
+  "stats": {
+   "end_step": 1025,
+   "report_every": 25
+  },
+  "lane_reserve_bytes": 536870912
+ },
+ "second_flush": "Right after each model step's lane row is added, this program asks PlanCapture.take_lane_row_flush and, when it answers true (once after a capture's line), calls ModelLane.write_pending, as the trainer does since 7dd0eabda (the independent review of a0d7eec93..c3ea051d2, CHANGE 2: the end step's model row on disk before the next model step). The trainer's own wiring of that call (train_mimo.py) is checked by the source's test file (mimo_bridge/tests/test_capture_flush_connection.py), not by this program.",
+ "does_not_show": [
+  "the trainer's own call order and wiring (train_mimo.py: the hooks, the latch, take_lane_row_flush and write_pending after the row is added): emulated here in the trainer's order; the source's test file checks the wiring",
+  "the world half across worker processes (PoolSource.observer_flush and the worker command): each in-process world recorder is flushed here by datasource._observer_flush, extracted unchanged",
+  "real world records: the world rows are synthetic (WorldRecorder.flush is driven with a synthetic header and synthetic rows; no MuJoCo world, no _finalize)",
+  "a crash, kill or power loss between a write and its rename (the lanes write <name>.part.npz and rename with os.replace, no fsync): only a truncated file under its final name and a leftover .part.npz are shown",
+  "damage other than truncation (for example a corrupted member inside an intact zip, which fails its CRC check)",
+  "disk refusals and gaps.jsonl: the synthetic lanes use a 512 MiB reserve and never refuse",
+  "join paths not exercised: bodies without a valid goal pose (null readings), invalid captures (a reset, cleared at close), the read time bound, two copies of one key, a lane_flush that wrote no file",
+  "the a2 sizes: 2 bodies, 8-number tokens and 10-row model chunks here (a2: 8 bodies, 192-number tokens, 100-row chunks)",
+  "a LIVE reading (the first-window reading): only final readings are run",
+  "the owner beyond detail_flush_state, owner_verdict, aggregate_blocks and run_reader with a fake runner (its stop, preservation, commit guard, reading row and end receipt; its Owner class, which calls aggregate_blocks and owner_verdict at its end, is not run)",
+  "the reader's other INVALID causes (the review of 32f442b5: CHANGE A1, a renamed causal_chain_*.jsonl beside --captures; NOTE A4, a line of another body count; NOTE A5, a capture-line write failure counted in the stats or the counts unreadable) and CHANGE A2's refusal (a pose-return line without its forecast poses or hand readings): here they are only met in their satisfied form, in the PASS of the complete run",
+  "anything about the model's numbers: commands, poses and tokens are synthetic; nothing about forecasting or reaching"
+ ],
+ "pins": {
+  "head": "7dd0eabda866facdba382c801a0558314229c842",
+  "status_lines": 0,
+  "mimo_bridge/observer_model_lane.py": {
+   "want": "1516ab1b4f297564c48736399f9b77f6b5fb2141fa5341b6f42019bdba370387",
+   "now": "1516ab1b4f297564c48736399f9b77f6b5fb2141fa5341b6f42019bdba370387"
+  },
+  "mimo_bridge/observer_record.py": {
+   "want": "d43576265fd34a7875b7a9d756897501e03aa66e6a19b97c2418eabcd884a163",
+   "now": "d43576265fd34a7875b7a9d756897501e03aa66e6a19b97c2418eabcd884a163"
+  },
+  "mimo_bridge/causal_chain.py": {
+   "want": "256283171debca52db02bd4815cfef67e40faa09b20f8274b91427ca405b3b4d",
+   "now": "256283171debca52db02bd4815cfef67e40faa09b20f8274b91427ca405b3b4d"
+  },
+  "mimo_bridge/datasource.py": {
+   "want": "d13101bf65629da0a163b8381cf7f70e8207173e85c03fecaba88a90c17fd0ba",
+   "now": "d13101bf65629da0a163b8381cf7f70e8207173e85c03fecaba88a90c17fd0ba"
+  },
+  "reader": {
+   "path": "D:/UEMA_Research/external/D/UEMA_scratch/h84/d1_planner_recovery/s4r_pose_learning_496250_repair_package/read_pose_learning.py",
+   "want": "8a0a231cbd4ccafe69d3a0fc8783bc9c4e6d80a292d892f634e1ba8fc7cb05a8",
+   "now": "8a0a231cbd4ccafe69d3a0fc8783bc9c4e6d80a292d892f634e1ba8fc7cb05a8"
+  },
+  "owner": {
+   "path": "D:/UEMA_Research/external/D/UEMA_scratch/h84/d1_planner_recovery/s4r_pose_learning_496250_repair_package/versions/s4r_pose_learning_owner.da57ffb0.py",
+   "want": "da57ffb03257248fbe69b6f6b3589f87fc738ee7dbe9e61a075f67465ead883e",
+   "now": "da57ffb03257248fbe69b6f6b3589f87fc738ee7dbe9e61a075f67465ead883e"
+  },
+  "dependencies_recorded": {
+   "lem/model/physical_goal.py": "566c9fd6594c42068039c72e4fa92983fc5f97e5bb8de719dc205ce4190e3b67",
+   "lem/model/efference.py": "e65db12d38e27dca26d0b1d6b12bb34bdd2fcd6a91034aa9691a4a46fcea50dc",
+   "lem/model/motor_synergy.py": "18a1c3adbf4d22c2ddabd3696e155e96fcff1b952f427c6b1b88be8e2c4dc300",
+   "lem/model/wellness.py": "c0db86fdfc1cd8d426cafb27124afd2105a7816a6e47f029970af0c40006a8f7",
+   "lem/model/contact_wellness.py": "50804b97b9e6a269589560c907ab6b28c9e318954290f94a3690b1dd1f18c4af",
+   "mimo_bridge/event_tape.py": "04c77131334ebb0880f0e06f130655b5665bd6e842c992de78f1a50157bc13ef",
+   "mimo_bridge/comparison_records.py": "fda8412d4a79e018f597ea49165d0318c49bb95f55e066481c07eab915a36bc0",
+   "mimo_bridge/__init__.py": "c79f456292c935fe28e5f7c4b921ab09145dac5718bc98d401aeccd4254994e9"
+  },
+  "out_disk_free_bytes": 119906648064,
+  "module_files": {
+   "mimo_bridge.observer_model_lane": "C:\\Users\\bhart\\Documents\\UEMA_wt\\s4r_pose_fields_s1_20261022\\Source\\Python\\mimo_bridge\\observer_model_lane.py",
+   "mimo_bridge.observer_record": "C:\\Users\\bhart\\Documents\\UEMA_wt\\s4r_pose_fields_s1_20261022\\Source\\Python\\mimo_bridge\\observer_record.py",
+   "mimo_bridge.causal_chain": "C:\\Users\\bhart\\Documents\\UEMA_wt\\s4r_pose_fields_s1_20261022\\Source\\Python\\mimo_bridge\\causal_chain.py",
+   "mimo_bridge.comparison_records": "C:\\Users\\bhart\\Documents\\UEMA_wt\\s4r_pose_fields_s1_20261022\\Source\\Python\\mimo_bridge\\comparison_records.py",
+   "mimo_bridge.event_tape": "C:\\Users\\bhart\\Documents\\UEMA_wt\\s4r_pose_fields_s1_20261022\\Source\\Python\\mimo_bridge\\event_tape.py",
+   "lem.model.physical_goal": "C:\\Users\\bhart\\Documents\\UEMA_wt\\s4r_pose_fields_s1_20261022\\Source\\Python\\lem\\model\\physical_goal.py",
+   "lem.model.efference": "C:\\Users\\bhart\\Documents\\UEMA_wt\\s4r_pose_fields_s1_20261022\\Source\\Python\\lem\\model\\efference.py",
+   "lem.model.wellness": "C:\\Users\\bhart\\Documents\\UEMA_wt\\s4r_pose_fields_s1_20261022\\Source\\Python\\lem\\model\\wellness.py"
+  },
+  "extracted_sources": {
+   "reader": {
+    "JOIN_NAMES": {
+     "definitions": 1,
+     "sha256": "f4fde2841149450696fa8d7c19f11e488fe93d938834383efb713e02438055b8"
+    },
+    "LANE_MARKS": {
+     "definitions": 1,
+     "sha256": "62eac478f083348887acb064a0cabe84ae4d679d99f4acd63d2641fce1554826"
+    },
+    "MODEL_ROW_KEYS": {
+     "definitions": 1,
+     "sha256": "8a2b5b1b0e6ed85e1d160267bc6b73fb64f7ea4ac49eeeffe22798f5f4c4df6b"
+    },
+    "WORLD_ROW_KEYS": {
+     "definitions": 1,
+     "sha256": "6122cc76a8ea5bc4949422b4c91e82ae2c4c307de0f3fdb1afd1a1c694604849"
+    },
+    "gather_detail": {
+     "definitions": 1,
+     "sha256": "4bd736a05f121bd86c5453a6e4d6fed516d2ba53494b2a76b90d1ac71a11e5c4"
+    },
+    "lane_listing": {
+     "definitions": 1,
+     "sha256": "a31ecc46a332b89de54dba770b5f4843ba31c1f6f6bac7da200e98f9092765c4"
+    },
+    "pid_of": {
+     "definitions": 1,
+     "sha256": "bec809efe01bfaf9a9113f22adbd981ed1ed5824914fa631642828a19cebe410"
+    },
+    "read_lane_file": {
+     "definitions": 1,
+     "sha256": "9554b47ee399c924aa4922b344bd13d3cb969a3c8962371136c3a62b48b38e51"
+    }
+   },
+   "owner": {
+    "DETAIL_CHECK_S": {
+     "definitions": 1,
+     "sha256": "40d57dd90237ea2c1813394da55c7724d1a4a1c8cf0e3383702753227c6fb31e"
+    },
+    "MAIN": {
+     "definitions": 1,
+     "sha256": "a21f886507e416f3be034038a2b75625402803f5400611a64192ba647748a193"
+    },
+    "MODEL_ROW_KEYS": {
+     "definitions": 1,
+     "sha256": "e4c4ab1a79f2e130b24fa8f743907a5744250f790c24a85b19b732b08c30178b"
+    },
+    "PY": {
+     "definitions": 1,
+     "sha256": "5d550613c099fcc0a6797f9e4eea540ed8c6968860beb5e236e519dff9001832"
+    },
+    "READER_INVALID_EXIT": {
+     "definitions": 1,
+     "sha256": "2794e6d19b35942cba74c35cf54c11b1cb46b026fc3568e24c29a52aa6ce941c"
+    },
+    "WORLD_ROW_KEYS": {
+     "definitions": 1,
+     "sha256": "6122cc76a8ea5bc4949422b4c91e82ae2c4c307de0f3fdb1afd1a1c694604849"
+    },
+    "_read_npz_whole": {
+     "definitions": 1,
+     "sha256": "350c39172d6b3182e0ca2fd822aa4708ac1180777cb03b6de196fdb02c14c560"
+    },
+    "aggregate_blocks": {
+     "definitions": 1,
+     "sha256": "5e19b742fe1058869b706e62610fe76386b0a01c2fc93c6d413af589e20ad752"
+    },
+    "clock": {
+     "definitions": 1,
+     "sha256": "d9a151a7adac923ddff06b94aa9278b7838c21fdf0e5eb929342db362329a83e"
+    },
+    "detail_flush_state": {
+     "definitions": 1,
+     "sha256": "08cb9e280d589f77aab1d08e8f6a096fc0cb1c81e8851fa9f3dc7811a31a77b1"
+    },
+    "flag_value": {
+     "definitions": 1,
+     "sha256": "87004a35a2b3e005bb95e57bbfc5fce2044ec88b3ce05c0381f7d2a7712feb2e"
+    },
+    "load_command": {
+     "definitions": 1,
+     "sha256": "5f4f78fdd6c04802461c59078aabe43404fae215b52f9c9d602579555af0c486"
+    },
+    "owner_verdict": {
+     "definitions": 1,
+     "sha256": "1649efc1fe22a2f7e077259c327da0b77b472e991f571d51b676e12896676f3d"
+    },
+    "reader_argv": {
+     "definitions": 1,
+     "sha256": "c191445005c1a367b32107f047067f59d28907e1acca27c4bfd3126b65e1e118"
+    },
+    "run_reader": {
+     "definitions": 1,
+     "sha256": "e789bbe8a60502f9964937665c2c19bd154e5d80466c5c298feb13df3987388f"
+    },
+    "sha256": {
+     "definitions": 1,
+     "sha256": "433700c75a68dd86ca857a2a8b659f957180cd2a8e87092d05d220e9271b775a"
+    }
+   },
+   "datasource": {
+    "_observer_flush": {
+     "definitions": 1,
+     "sha256": "14cf02e44c0a11f4c8299aa38670c341dfaf86ab60adf193a72a50a7a2767614"
+    }
+   }
+  }
+ },
+ "versions": {
+  "python": "3.13.3",
+  "numpy": "2.2.6",
+  "torch": "2.6.0+cu124"
+ },
+ "evidence": {
+  "owner_fixture": {
+   "plan": {
+    "common": {
+     "start_step": 1000,
+     "end_reading": {
+      "reader": "D:\\UEMA_Research\\external\\D\\UEMA_scratch\\h84\\d1_planner_recovery\\s4r_pose_learning_496250_repair_package\\read_pose_learning.py",
+      "reader_sha256": "8a0a231cbd4ccafe69d3a0fc8783bc9c4e6d80a292d892f634e1ba8fc7cb05a8",
+      "timeout_s": 60.0,
+      "guard_need_gb": "1",
+      "cwd": "D:\\UEMA_Research\\external\\D\\UEMA_scratch\\h84\\d1_planner_recovery\\attempts\\capture_durability_a1\\evidence\\check\\owner_fixture",
+      "tenure": 5,
+      "bodies": 2,
+      "handles": 25
+     }
+    },
+    "arms": [
+     {
+      "command_file": "D:\\UEMA_Research\\external\\D\\UEMA_scratch\\h84\\d1_planner_recovery\\attempts\\capture_durability_a1\\evidence\\check\\owner_fixture\\command.json",
+      "command_sha256": "189dbddfc97f9675ab12756dfd7cdce529ef9777908ef89d0dac6d3788a74dd5"
+     }
+    ]
+   },
+   "one_ok": {
+    "success": true,
+    "failures": [],
+    "final_watch_check": {
+     "ok": true,
+     "outcome": "no stop-level line crossed"
+    }
+   },
+   "one_failed": {
+    "success": false,
+    "failures": [
+     "SYNTHETIC: the training arm ended with a failure"
+    ],
+    "final_watch_check": {
+     "ok": true,
+     "outcome": "no stop-level line crossed"
+    }
+   },
+   "owner_incomplete_block": "INCOMPLETE: the closure deadline ran out before the owner's receipt",
+   "readings": {
+    "3": {
+     "argv": [
+      "D:\\UEMA_Research\\.venv_mimo\\Scripts\\python.exe",
+      "-B",
+      "D:\\UEMA_Research\\external\\D\\UEMA_scratch\\h84\\d1_planner_recovery\\s4r_pose_learning_496250_repair_package\\read_pose_learning.py",
+      "D:\\UEMA_Research\\external\\D\\UEMA_scratch\\h84\\d1_planner_recovery\\attempts\\capture_durability_a1\\evidence\\check\\owner_fixture\\run\\replay_training_stats.jsonl",
+      "D:\\UEMA_Research\\external\\D\\UEMA_scratch\\h84\\d1_planner_recovery\\attempts\\capture_durability_a1\\evidence\\check\\owner_fixture\\reading_3.json",
+      "--start-step",
+      "1000",
+      "--tenure",
+      "5",
+      "--bodies",
+      "2",
+      "--handles",
+      "25",
+      "--report-every",
+      "25",
+      "--captures",
+      "D:\\UEMA_Research\\external\\D\\UEMA_scratch\\h84\\d1_planner_recovery\\attempts\\capture_durability_a1\\evidence\\check\\owner_fixture\\run\\causal_chain.jsonl",
+      "--end-step",
+      "1025"
+     ],
+     "exit_status": 3,
+     "ran": true,
+     "why": "exit code 3 (INVALID: the measurement is incomplete (the health check passed; the reader's output names the cause in invalid_reasons))",
+     "guard_exit": 0,
+     "limit_s": 60.0,
+     "out": "D:\\UEMA_Research\\external\\D\\UEMA_scratch\\h84\\d1_planner_recovery\\attempts\\capture_durability_a1\\evidence\\check\\owner_fixture\\reading_3.json"
+    },
+    "2": {
+     "argv": [
+      "D:\\UEMA_Research\\.venv_mimo\\Scripts\\python.exe",
+      "-B",
+      "D:\\UEMA_Research\\external\\D\\UEMA_scratch\\h84\\d1_planner_recovery\\s4r_pose_learning_496250_repair_package\\read_pose_learning.py",
+      "D:\\UEMA_Research\\external\\D\\UEMA_scratch\\h84\\d1_planner_recovery\\attempts\\capture_durability_a1\\evidence\\check\\owner_fixture\\run\\replay_training_stats.jsonl",
+      "D:\\UEMA_Research\\external\\D\\UEMA_scratch\\h84\\d1_planner_recovery\\attempts\\capture_durability_a1\\evidence\\check\\owner_fixture\\reading_2.json",
+      "--start-step",
+      "1000",
+      "--tenure",
+      "5",
+      "--bodies",
+      "2",
+      "--handles",
+      "25",
+      "--report-every",
+      "25",
+      "--captures",
+      "D:\\UEMA_Research\\external\\D\\UEMA_scratch\\h84\\d1_planner_recovery\\attempts\\capture_durability_a1\\evidence\\check\\owner_fixture\\run\\causal_chain.jsonl",
+      "--end-step",
+      "1025"
+     ],
+     "exit_status": 2,
+     "ran": true,
+     "why": "exit code 2 (a required health failure)",
+     "guard_exit": 0,
+     "limit_s": 60.0,
+     "out": "D:\\UEMA_Research\\external\\D\\UEMA_scratch\\h84\\d1_planner_recovery\\attempts\\capture_durability_a1\\evidence\\check\\owner_fixture\\reading_2.json"
+    },
+    "0": {
+     "argv": [
+      "D:\\UEMA_Research\\.venv_mimo\\Scripts\\python.exe",
+      "-B",
+      "D:\\UEMA_Research\\external\\D\\UEMA_scratch\\h84\\d1_planner_recovery\\s4r_pose_learning_496250_repair_package\\read_pose_learning.py",
+      "D:\\UEMA_Research\\external\\D\\UEMA_scratch\\h84\\d1_planner_recovery\\attempts\\capture_durability_a1\\evidence\\check\\owner_fixture\\run\\replay_training_stats.jsonl",
+      "D:\\UEMA_Research\\external\\D\\UEMA_scratch\\h84\\d1_planner_recovery\\attempts\\capture_durability_a1\\evidence\\check\\owner_fixture\\reading_0.json",
+      "--start-step",
+      "1000",
+      "--tenure",
+      "5",
+      "--bodies",
+      "2",
+      "--handles",
+      "25",
+      "--report-every",
+      "25",
+      "--captures",
+      "D:\\UEMA_Research\\external\\D\\UEMA_scratch\\h84\\d1_planner_recovery\\attempts\\capture_durability_a1\\evidence\\check\\owner_fixture\\run\\causal_chain.jsonl",
+      "--end-step",
+      "1025"
+     ],
+     "exit_status": 0,
+     "ran": true,
+     "why": null,
+     "guard_exit": 0,
+     "limit_s": 60.0,
+     "out": "D:\\UEMA_Research\\external\\D\\UEMA_scratch\\h84\\d1_planner_recovery\\attempts\\capture_durability_a1\\evidence\\check\\owner_fixture\\reading_0.json"
+    }
+   },
+   "runner_calls": {
+    "3": [
+     {
+      "argv": [
+       "D:\\UEMA_Research\\.venv_mimo\\Scripts\\python.exe",
+       "-m",
+       "mimo_bridge.tools.commit_guard",
+       "--need-gb",
+       "1",
+       "--json"
+      ],
+      "cwd": "D:\\UEMA_Research\\external\\D\\UEMA_scratch\\h84\\d1_planner_recovery\\attempts\\capture_durability_a1\\evidence\\check\\owner_fixture",
+      "timeout_s": 60.0
+     },
+     {
+      "argv": [
+       "D:\\UEMA_Research\\.venv_mimo\\Scripts\\python.exe",
+       "-B",
+       "D:\\UEMA_Research\\external\\D\\UEMA_scratch\\h84\\d1_planner_recovery\\s4r_pose_learning_496250_repair_package\\read_pose_learning.py",
+       "D:\\UEMA_Research\\external\\D\\UEMA_scratch\\h84\\d1_planner_recovery\\attempts\\capture_durability_a1\\evidence\\check\\owner_fixture\\run\\replay_training_stats.jsonl",
+       "D:\\UEMA_Research\\external\\D\\UEMA_scratch\\h84\\d1_planner_recovery\\attempts\\capture_durability_a1\\evidence\\check\\owner_fixture\\reading_3.json",
+       "--start-step",
+       "1000",
+       "--tenure",
+       "5",
+       "--bodies",
+       "2",
+       "--handles",
+       "25",
+       "--report-every",
+       "25",
+       "--captures",
+       "D:\\UEMA_Research\\external\\D\\UEMA_scratch\\h84\\d1_planner_recovery\\attempts\\capture_durability_a1\\evidence\\check\\owner_fixture\\run\\causal_chain.jsonl",
+       "--end-step",
+       "1025"
+      ],
+      "cwd": "D:\\UEMA_Research\\external\\D\\UEMA_scratch\\h84\\d1_planner_recovery\\attempts\\capture_durability_a1\\evidence\\check\\owner_fixture",
+      "timeout_s": 59.99662470817566
+     }
+    ],
+    "2": [
+     {
+      "argv": [
+       "D:\\UEMA_Research\\.venv_mimo\\Scripts\\python.exe",
+       "-m",
+       "mimo_bridge.tools.commit_guard",
+       "--need-gb",
+       "1",
+       "--json"
+      ],
+      "cwd": "D:\\UEMA_Research\\external\\D\\UEMA_scratch\\h84\\d1_planner_recovery\\attempts\\capture_durability_a1\\evidence\\check\\owner_fixture",
+      "timeout_s": 60.0
+     },
+     {
+      "argv": [
+       "D:\\UEMA_Research\\.venv_mimo\\Scripts\\python.exe",
+       "-B",
+       "D:\\UEMA_Research\\external\\D\\UEMA_scratch\\h84\\d1_planner_recovery\\s4r_pose_learning_496250_repair_package\\read_pose_learning.py",
+       "D:\\UEMA_Research\\external\\D\\UEMA_scratch\\h84\\d1_planner_recovery\\attempts\\capture_durability_a1\\evidence\\check\\owner_fixture\\run\\replay_training_stats.jsonl",
+       "D:\\UEMA_Research\\external\\D\\UEMA_scratch\\h84\\d1_planner_recovery\\attempts\\capture_durability_a1\\evidence\\check\\owner_fixture\\reading_2.json",
+       "--start-step",
+       "1000",
+       "--tenure",
+       "5",
+       "--bodies",
+       "2",
+       "--handles",
+       "25",
+       "--report-every",
+       "25",
+       "--captures",
+       "D:\\UEMA_Research\\external\\D\\UEMA_scratch\\h84\\d1_planner_recovery\\attempts\\capture_durability_a1\\evidence\\check\\owner_fixture\\run\\causal_chain.jsonl",
+       "--end-step",
+       "1025"
+      ],
+      "cwd": "D:\\UEMA_Research\\external\\D\\UEMA_scratch\\h84\\d1_planner_recovery\\attempts\\capture_durability_a1\\evidence\\check\\owner_fixture",
+      "timeout_s": 59.996954679489136
+     }
+    ],
+    "0": [
+     {
+      "argv": [
+       "D:\\UEMA_Research\\.venv_mimo\\Scripts\\python.exe",
+       "-m",
+       "mimo_bridge.tools.commit_guard",
+       "--need-gb",
+       "1",
+       "--json"
+      ],
+      "cwd": "D:\\UEMA_Research\\external\\D\\UEMA_scratch\\h84\\d1_planner_recovery\\attempts\\capture_durability_a1\\evidence\\check\\owner_fixture",
+      "timeout_s": 60.0
+     },
+     {
+      "argv": [
+       "D:\\UEMA_Research\\.venv_mimo\\Scripts\\python.exe",
+       "-B",
+       "D:\\UEMA_Research\\external\\D\\UEMA_scratch\\h84\\d1_planner_recovery\\s4r_pose_learning_496250_repair_package\\read_pose_learning.py",
+       "D:\\UEMA_Research\\external\\D\\UEMA_scratch\\h84\\d1_planner_recovery\\attempts\\capture_durability_a1\\evidence\\check\\owner_fixture\\run\\replay_training_stats.jsonl",
+       "D:\\UEMA_Research\\external\\D\\UEMA_scratch\\h84\\d1_planner_recovery\\attempts\\capture_durability_a1\\evidence\\check\\owner_fixture\\reading_0.json",
+       "--start-step",
+       "1000",
+       "--tenure",
+       "5",
+       "--bodies",
+       "2",
+       "--handles",
+       "25",
+       "--report-every",
+       "25",
+       "--captures",
+       "D:\\UEMA_Research\\external\\D\\UEMA_scratch\\h84\\d1_planner_recovery\\attempts\\capture_durability_a1\\evidence\\check\\owner_fixture\\run\\causal_chain.jsonl",
+       "--end-step",
+       "1025"
+      ],
+      "cwd": "D:\\UEMA_Research\\external\\D\\UEMA_scratch\\h84\\d1_planner_recovery\\attempts\\capture_durability_a1\\evidence\\check\\owner_fixture",
+      "timeout_s": 59.99670743942261
+     }
+    ]
+   }
+  },
+  "lines_state": {
+   "1005": {
+    "key": "cap000001005",
+    "accepted": true,
+    "lane_flush": {
+     "file": "captures_cap000001005_21164_00001.npz",
+     "rows": 0,
+     "captures": [
+      "cap000001005"
+     ],
+     "refusal": null,
+     "error": null
+    },
+    "world_flush": {
+     "after_model_step": 1009,
+     "bodies": [
+      {
+       "file": "chunk_000001000_21164_00000.npz",
+       "rows": 10,
+       "refusal": null,
+       "error": null
+      },
+      {
+       "file": "chunk_000001000_21164_00000.npz",
+       "rows": 10,
+       "refusal": null,
+       "error": null
+      }
+     ]
+    }
+   },
+   "1020": {
+    "key": "cap000001020",
+    "accepted": true,
+    "lane_flush": {
+     "file": "chunk_000001021_21164_00004.npz",
+     "rows": 4,
+     "captures": [
+      "cap000001020"
+     ],
+     "refusal": null,
+     "error": null
+    },
+    "world_flush": {
+     "after_model_step": 1024,
+     "bodies": [
+      {
+       "file": "chunk_000001010_21164_00001.npz",
+       "rows": 15,
+       "refusal": null,
+       "error": null
+      },
+      {
+       "file": "chunk_000001010_21164_00001.npz",
+       "rows": 15,
+       "refusal": null,
+       "error": null
+      }
+     ]
+    }
+   }
+  },
+  "second_flushes": [
+   {
+    "model_step": 1010,
+    "file": "chunk_000001010_21164_00002.npz",
+    "rows": 1,
+    "captures": [],
+    "refusal": null,
+    "error": null
+   },
+   {
+    "model_step": 1025,
+    "file": "chunk_000001025_21164_00005.npz",
+    "rows": 1,
+    "captures": [],
+    "refusal": null,
+    "error": null
+   }
+  ],
+  "selections": {
+   "1005": {
+    "step": 1005,
+    "goal_idx": [
+     2,
+     1
+    ],
+    "goal_age": [
+     3,
+     4
+    ],
+    "goal_pose_valid": [
+     true,
+     true
+    ]
+   },
+   "1020": {
+    "step": 1020,
+    "goal_idx": [
+     15,
+     13
+    ],
+    "goal_age": [
+     5,
+     7
+    ],
+    "goal_pose_valid": [
+     true,
+     true
+    ]
+   }
+  },
+  "lane_files_A": {
+   "observer/model/captures_cap000001005_21164_00001.npz": {
+    "bytes": 36744,
+    "sha256": "e14765d38fba31c1b799404f940a13e2045fd75fbf594582a3ba9de1fc46be7b"
+   },
+   "observer/model/chunk_000001000_21164_00000.npz": {
+    "bytes": 2236,
+    "sha256": "cea549a3d1243289657cdfc12cee66dfa02073611ea9bf8cdb9c1bd3bfbc7119"
+   },
+   "observer/model/chunk_000001010_21164_00002.npz": {
+    "bytes": 2178,
+    "sha256": "c86c21ebc1a22c9fcbc21d23271fcdd8a54b80f2c69a4184b783d7e6e72f8443"
+   },
+   "observer/model/chunk_000001011_21164_00003.npz": {
+    "bytes": 2239,
+    "sha256": "cb2b5dd96da4c6458fdb306677de9e5c4ab278b4fcdc56a6dba90383eb1e0a02"
+   },
+   "observer/model/chunk_000001021_21164_00004.npz": {
+    "bytes": 38502,
+    "sha256": "04989826a1b12a61593a190a5a7531796a320bcfb6eefcf12845d6731a6ac3a8"
+   },
+   "observer/model/chunk_000001025_21164_00005.npz": {
+    "bytes": 2178,
+    "sha256": "ce6f982e61d284dc0f377ff3c5ae3f7cbac50549488301034c6134622d562a1a"
+   },
+   "observer/model/chunk_000001026_21164_00006.npz": {
+    "bytes": 2237,
+    "sha256": "7cac18a008319f53ac08af28d35726e92fd3e09539af1c081a2fa15825ad7cc5"
+   },
+   "observer/world/b0/chunk_000001000_21164_00000.npz": {
+    "bytes": 10459,
+    "sha256": "f015ededffa5fd75e69dbfbb8d40b273c311561a9d676440a83ac9dd66149fa7"
+   },
+   "observer/world/b0/chunk_000001010_21164_00001.npz": {
+    "bytes": 11276,
+    "sha256": "25f745663790d1e5bb37c88b00ab81c88edd2af29eaa8269a6104b283fc3a7a3"
+   },
+   "observer/world/b1/chunk_000001000_21164_00000.npz": {
+    "bytes": 10468,
+    "sha256": "b3991245bcd71cd57cf02119dc996906edda254415e16def20044c2c2f11197d"
+   },
+   "observer/world/b1/chunk_000001010_21164_00001.npz": {
+    "bytes": 11270,
+    "sha256": "daf3ca552784411904db0e8a0e11b7edddb2b45259359757d836228b1bf922ce"
+   }
+  },
+  "owner_complete": {
+   "verdict": "all captures durable",
+   "counts": {
+    "captures": 2,
+    "accepted": 2,
+    "durable": 2,
+    "not_durable": 0,
+    "not_verified": 0,
+    "accepted_not_durable": 0,
+    "model_files_read": 7,
+    "world_files_read": 4,
+    "files_with_problems": 0,
+    "partial_files": 0,
+    "unreadable_capture_lines": 0
+   }
+  },
+  "reader_A": {
+   "argv": [
+    "D:\\UEMA_Research\\.venv_mimo\\Scripts\\python.exe",
+    "-B",
+    "D:\\UEMA_Research\\external\\D\\UEMA_scratch\\h84\\d1_planner_recovery\\s4r_pose_learning_496250_repair_package\\read_pose_learning.py",
+    "D:\\UEMA_Research\\external\\D\\UEMA_scratch\\h84\\d1_planner_recovery\\attempts\\capture_durability_a1\\evidence\\check\\run_A\\replay_training_stats.jsonl",
+    "D:\\UEMA_Research\\external\\D\\UEMA_scratch\\h84\\d1_planner_recovery\\attempts\\capture_durability_a1\\evidence\\check\\reading_A.json",
+    "--start-step",
+    "1000",
+    "--tenure",
+    "5",
+    "--bodies",
+    "2",
+    "--handles",
+    "25",
+    "--report-every",
+    "25",
+    "--captures",
+    "D:\\UEMA_Research\\external\\D\\UEMA_scratch\\h84\\d1_planner_recovery\\attempts\\capture_durability_a1\\evidence\\check\\run_A\\causal_chain.jsonl",
+    "--end-step",
+    "1025"
+   ],
+   "exit_code": 0,
+   "seconds": 0.283,
+   "stdout": "{\"windows\": 1, \"required_health_pass\": true, \"verdict\": \"PASS\", \"measurement_complete\": true, \"invalid\": [], \"detail\": {\"captures\": 2, \"joined\": 2, \"pending\": 0, \"missing\": 0, \"partial\": 0, \"not joined\": 0, \"not verified\": 0, \"bodies\": 4, \"bodies_joined\": 4, \"usable_bodies\": 3, \"usable_bodies_joined\": 3, \"position_ulp_only_bodies\": 1, \"position_ulp_only_bodies_joined\": 1, \"lines_with_lane_flush\": 2, \"lines_with_world_flush\": 2}, \"failures\": []}\n",
+   "stderr": "",
+   "out": "D:\\UEMA_Research\\external\\D\\UEMA_scratch\\h84\\d1_planner_recovery\\attempts\\capture_durability_a1\\evidence\\check\\reading_A.json",
+   "out_sha256": "8be04c8c3537bf5bbe1531b6208b777fc6bdcb535e06a834a6954f8baf6d84ce"
+  },
+  "reader_B": {
+   "argv": [
+    "D:\\UEMA_Research\\.venv_mimo\\Scripts\\python.exe",
+    "-B",
+    "D:\\UEMA_Research\\external\\D\\UEMA_scratch\\h84\\d1_planner_recovery\\s4r_pose_learning_496250_repair_package\\read_pose_learning.py",
+    "D:\\UEMA_Research\\external\\D\\UEMA_scratch\\h84\\d1_planner_recovery\\attempts\\capture_durability_a1\\evidence\\check\\run_B\\replay_training_stats.jsonl",
+    "D:\\UEMA_Research\\external\\D\\UEMA_scratch\\h84\\d1_planner_recovery\\attempts\\capture_durability_a1\\evidence\\check\\reading_B.json",
+    "--start-step",
+    "1000",
+    "--tenure",
+    "5",
+    "--bodies",
+    "2",
+    "--handles",
+    "25",
+    "--report-every",
+    "25",
+    "--captures",
+    "D:\\UEMA_Research\\external\\D\\UEMA_scratch\\h84\\d1_planner_recovery\\attempts\\capture_durability_a1\\evidence\\check\\run_B\\causal_chain.jsonl",
+    "--end-step",
+    "1025"
+   ],
+   "exit_code": 3,
+   "seconds": 0.316,
+   "stdout": "{\"windows\": 1, \"required_health_pass\": true, \"verdict\": \"INVALID\", \"measurement_complete\": false, \"invalid\": [\"detail_records\"], \"detail\": {\"captures\": 2, \"joined\": 1, \"pending\": 0, \"missing\": 1, \"partial\": 0, \"not joined\": 0, \"not verified\": 0, \"bodies\": 4, \"bodies_joined\": 2, \"usable_bodies\": 3, \"usable_bodies_joined\": 2, \"position_ulp_only_bodies\": 1, \"position_ulp_only_bodies_joined\": 0, \"lines_with_lane_flush\": 2, \"lines_with_world_flush\": 2}, \"failures\": []}\n",
+   "stderr": "",
+   "out": "D:\\UEMA_Research\\external\\D\\UEMA_scratch\\h84\\d1_planner_recovery\\attempts\\capture_durability_a1\\evidence\\check\\reading_B.json",
+   "out_sha256": "2910f4258b4ea9aa3793ec9a385838773856c8f68c016fd6382112471e63bab7"
+  },
+  "reader_C": {
+   "argv": [
+    "D:\\UEMA_Research\\.venv_mimo\\Scripts\\python.exe",
+    "-B",
+    "D:\\UEMA_Research\\external\\D\\UEMA_scratch\\h84\\d1_planner_recovery\\s4r_pose_learning_496250_repair_package\\read_pose_learning.py",
+    "D:\\UEMA_Research\\external\\D\\UEMA_scratch\\h84\\d1_planner_recovery\\attempts\\capture_durability_a1\\evidence\\check\\run_C\\replay_training_stats.jsonl",
+    "D:\\UEMA_Research\\external\\D\\UEMA_scratch\\h84\\d1_planner_recovery\\attempts\\capture_durability_a1\\evidence\\check\\reading_C.json",
+    "--start-step",
+    "1000",
+    "--tenure",
+    "5",
+    "--bodies",
+    "2",
+    "--handles",
+    "25",
+    "--report-every",
+    "25",
+    "--captures",
+    "D:\\UEMA_Research\\external\\D\\UEMA_scratch\\h84\\d1_planner_recovery\\attempts\\capture_durability_a1\\evidence\\check\\run_C\\causal_chain.jsonl",
+    "--end-step",
+    "1025"
+   ],
+   "exit_code": 3,
+   "seconds": 0.264,
+   "stdout": "{\"windows\": 1, \"required_health_pass\": true, \"verdict\": \"INVALID\", \"measurement_complete\": false, \"invalid\": [\"detail_records\"], \"detail\": {\"captures\": 2, \"joined\": 1, \"pending\": 0, \"missing\": 1, \"partial\": 0, \"not joined\": 0, \"not verified\": 0, \"bodies\": 4, \"bodies_joined\": 2, \"usable_bodies\": 3, \"usable_bodies_joined\": 1, \"position_ulp_only_bodies\": 1, \"position_ulp_only_bodies_joined\": 1, \"lines_with_lane_flush\": 2, \"lines_with_world_flush\": 2}, \"failures\": []}\n",
+   "stderr": "",
+   "out": "D:\\UEMA_Research\\external\\D\\UEMA_scratch\\h84\\d1_planner_recovery\\attempts\\capture_durability_a1\\evidence\\check\\reading_C.json",
+   "out_sha256": "b8ad79300f6f1608e08282557f4877b97aa4904f0f92583dbd4e8d1e3b343621"
+  }
+ },
+ "conditions": [
+  {
+   "id": "O1",
+   "kind": "owner",
+   "what": "run_reader on the fixture plan with a fake runner answering 3 for the reader: it ran, exit_status 3, why starting 'exit code 3 (INVALID: the measurement is incomplete'; the runner was handed the commit guard and then the reader argv naming the pinned reader and --end-step 1025",
+   "expected": {
+    "ran": true,
+    "exit_status": 3,
+    "why_starts": "exit code 3 (INVALID: the measurement is incomplete",
+    "runner_calls": 2,
+    "reader_in_argv": "D:\\UEMA_Research\\external\\D\\UEMA_scratch\\h84\\d1_planner_recovery\\s4r_pose_learning_496250_repair_package\\read_pose_learning.py",
+    "READER_INVALID_EXIT": 3
+   },
+   "found": {
+    "ran": true,
+    "exit_status": 3,
+    "why": "exit code 3 (INVALID: the measurement is incomplete (the health check passed; the reader's output names the cause in invalid_reasons))",
+    "runner_calls": 2,
+    "first_call": [
+     "D:\\UEMA_Research\\.venv_mimo\\Scripts\\python.exe",
+     "-m",
+     "mimo_bridge.tools.commit_guard",
+     "--need-gb",
+     "1",
+     "--json"
+    ],
+    "second_call": [
+     "D:\\UEMA_Research\\.venv_mimo\\Scripts\\python.exe",
+     "-B",
+     "D:\\UEMA_Research\\external\\D\\UEMA_scratch\\h84\\d1_planner_recovery\\s4r_pose_learning_496250_repair_package\\read_pose_learning.py",
+     "D:\\UEMA_Research\\external\\D\\UEMA_scratch\\h84\\d1_planner_recovery\\attempts\\capture_durability_a1\\evidence\\check\\owner_fixture\\run\\replay_training_stats.jsonl",
+     "D:\\UEMA_Research\\external\\D\\UEMA_scratch\\h84\\d1_planner_recovery\\attempts\\capture_durability_a1\\evidence\\check\\owner_fixture\\reading_3.json",
+     "--start-step",
+     "1000",
+     "--tenure",
+     "5",
+     "--bodies",
+     "2",
+     "--handles",
+     "25",
+     "--report-every",
+     "25",
+     "--captures",
+     "D:\\UEMA_Research\\external\\D\\UEMA_scratch\\h84\\d1_planner_recovery\\attempts\\capture_durability_a1\\evidence\\check\\owner_fixture\\run\\causal_chain.jsonl",
+     "--end-step",
+     "1025"
+    ],
+    "READER_INVALID_EXIT": 3
+   },
+   "ok": true
+  },
+  {
+   "id": "O2",
+   "kind": "owner",
+   "what": "aggregate_blocks with that exit-3 reading alone: exactly one block, starting \"INVALID: \"; owner_verdict gives INVALID",
+   "expected": {
+    "blocks": 1,
+    "starts": "INVALID: ",
+    "verdict": "INVALID"
+   },
+   "found": {
+    "blocks": [
+     "INVALID: the final reading: exit code 3 (INVALID: the measurement is incomplete (the health check passed; the reader's output names the cause in invalid_reasons))"
+    ],
+    "verdict": "INVALID"
+   },
+   "ok": true
+  },
+  {
+   "id": "O3",
+   "kind": "owner",
+   "what": "the exit-3 reading with a training failure: owner_verdict gives FAIL",
+   "expected": {
+    "blocks": 2,
+    "verdict": "FAIL"
+   },
+   "found": {
+    "blocks": [
+     "SYNTHETIC: the training arm ended with a failure",
+     "INVALID: the final reading: exit code 3 (INVALID: the measurement is incomplete (the health check passed; the reader's output names the cause in invalid_reasons))"
+    ],
+    "verdict": "FAIL"
+   },
+   "ok": true
+  },
+  {
+   "id": "O4",
+   "kind": "owner",
+   "what": "the exit-3 reading with an INCOMPLETE block (the reading ended after the closure deadline, from aggregate_blocks; or the owner's own INCOMPLETE block added after aggregate_blocks, as its end does): owner_verdict gives FAIL",
+   "expected": {
+    "after_deadline": {
+     "incomplete_blocks": 1,
+     "verdict": "FAIL"
+    },
+    "owner_block": {
+     "verdict": "FAIL"
+    }
+   },
+   "found": {
+    "after_deadline": {
+     "blocks": [
+      "INVALID: the final reading: exit code 3 (INVALID: the measurement is incomplete (the health check passed; the reader's output names the cause in invalid_reasons))",
+      "INCOMPLETE: the final reading ended after the closure deadline"
+     ],
+     "verdict": "FAIL"
+    },
+    "owner_block": {
+     "blocks": [
+      "INVALID: the final reading: exit code 3 (INVALID: the measurement is incomplete (the health check passed; the reader's output names the cause in invalid_reasons))",
+      "INCOMPLETE: the closure deadline ran out before the owner's receipt"
+     ],
+     "verdict": "FAIL"
+    }
+   },
+   "ok": true
+  },
+  {
+   "id": "O5",
+   "kind": "owner",
+   "what": "the reader answering 2 (a required health failure): run_reader's why and the block are b986ff6e's text; owner_verdict gives FAIL",
+   "expected": {
+    "exit_status": 2,
+    "why": "exit code 2 (a required health failure)",
+    "blocks": [
+     "the final reading: exit code 2 (a required health failure)"
+    ],
+    "verdict": "FAIL"
+   },
+   "found": {
+    "exit_status": 2,
+    "why": "exit code 2 (a required health failure)",
+    "blocks": [
+     "the final reading: exit code 2 (a required health failure)"
+    ],
+    "verdict": "FAIL"
+   },
+   "ok": true
+  },
+  {
+   "id": "O6",
+   "kind": "owner",
+   "what": "the reader answering 0 with nothing else blocking: no block; owner_verdict gives PASS",
+   "expected": {
+    "exit_status": 0,
+    "why": null,
+    "blocks": [],
+    "verdict": "PASS"
+   },
+   "found": {
+    "exit_status": 0,
+    "why": null,
+    "blocks": [],
+    "verdict": "PASS"
+   },
+   "ok": true
+  },
+  {
+   "id": "S1",
+   "kind": "setup",
+   "what": "both plan steps produced a plan_capture line (the writer's own _finish)",
+   "expected": [
+    1005,
+    1020
+   ],
+   "found": [
+    1005,
+    1020
+   ],
+   "ok": true
+  },
+  {
+   "id": "S2",
+   "kind": "setup",
+   "what": "the capture of 1005 was written alone (flush_captures: captures_*.npz, no row pending)",
+   "expected": {
+    "file": "captures_cap000001005_*.npz",
+    "rows": 0,
+    "captures": [
+     "cap000001005"
+    ],
+    "refusal": null,
+    "error": null
+   },
+   "found": {
+    "file": "captures_cap000001005_21164_00001.npz",
+    "rows": 0,
+    "captures": [
+     "cap000001005"
+    ],
+    "refusal": null,
+    "error": null
+   },
+   "ok": true
+  },
+  {
+   "id": "S3",
+   "kind": "setup",
+   "what": "the capture of 1020 was written with the rows pending (flush_captures: chunk_*.npz)",
+   "expected": {
+    "file": "chunk_*.npz",
+    "rows": ">0",
+    "captures": [
+     "cap000001020"
+    ],
+    "refusal": null,
+    "error": null
+   },
+   "found": {
+    "file": "chunk_000001021_21164_00004.npz",
+    "rows": 4,
+    "captures": [
+     "cap000001020"
+    ],
+    "refusal": null,
+    "error": null
+   },
+   "ok": true
+  },
+  {
+   "id": "S4",
+   "kind": "setup",
+   "what": "each capture's world flush wrote every body's world chunk after the hold's last burst (state.world_flush through _observer_flush)",
+   "expected": {
+    "1005": {
+     "after_model_step": 1009,
+     "bodies": "2 chunk files, no error"
+    },
+    "1020": {
+     "after_model_step": 1024,
+     "bodies": "2 chunk files, no error"
+    }
+   },
+   "found": {
+    "1005": {
+     "after_model_step": 1009,
+     "bodies": [
+      {
+       "file": "chunk_000001000_21164_00000.npz",
+       "rows": 10,
+       "refusal": null,
+       "error": null
+      },
+      {
+       "file": "chunk_000001000_21164_00000.npz",
+       "rows": 10,
+       "refusal": null,
+       "error": null
+      }
+     ]
+    },
+    "1020": {
+     "after_model_step": 1024,
+     "bodies": [
+      {
+       "file": "chunk_000001010_21164_00001.npz",
+       "rows": 15,
+       "refusal": null,
+       "error": null
+      },
+      {
+       "file": "chunk_000001010_21164_00001.npz",
+       "rows": 15,
+       "refusal": null,
+       "error": null
+      }
+     ]
+    }
+   },
+   "ok": true
+  },
+  {
+   "id": "S5",
+   "kind": "setup",
+   "what": "both lines valid (capture, physical outcome), exact command match as designed, and the planned-versus-sent x maximum of 1020's body 1 one float32 unit",
+   "expected": {
+    "capture": true,
+    "physical_outcome": true,
+    "exact": {
+     "1005": [
+      true,
+      true
+     ],
+     "1020": [
+      true,
+      false
+     ]
+    },
+    "nudged_x_max_about": 3.814697265625e-06
+   },
+   "found": {
+    "capture": {
+     "1005": true,
+     "1020": true
+    },
+    "reason": {
+     "1005": null,
+     "1020": null
+    },
+    "physical_outcome": {
+     "1005": true,
+     "1020": true
+    },
+    "exact": {
+     "1005": [
+      true,
+      true
+     ],
+     "1020": [
+      true,
+      false
+     ]
+    },
+    "nudged_row": [
+     3.814697e-06,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0
+    ]
+   },
+   "ok": true
+  },
+  {
+   "id": "S6",
+   "kind": "setup",
+   "what": "take_lane_row_flush answered true exactly once after each capture's line, in its end step, and write_pending then wrote that step's own row (the trainer's second lane write)",
+   "expected": [
+    {
+     "model_step": 1010,
+     "file": "chunk_000001010_*.npz",
+     "rows": 1,
+     "captures": [],
+     "refusal": null,
+     "error": null
+    },
+    {
+     "model_step": 1025,
+     "file": "chunk_000001025_*.npz",
+     "rows": 1,
+     "captures": [],
+     "refusal": null,
+     "error": null
+    }
+   ],
+   "found": [
+    {
+     "model_step": 1010,
+     "file": "chunk_000001010_21164_00002.npz",
+     "rows": 1,
+     "captures": [],
+     "refusal": null,
+     "error": null
+    },
+    {
+     "model_step": 1025,
+     "file": "chunk_000001025_21164_00005.npz",
+     "rows": 1,
+     "captures": [],
+     "refusal": null,
+     "error": null
+    }
+   ],
+   "ok": true
+  },
+  {
+   "id": "S7",
+   "kind": "setup",
+   "what": "the lanes are open before the readings (never closed): row 1036 and the world rows 1025-1036 unwritten in memory",
+   "expected": {
+    "model_lane_enabled": true,
+    "model_rows_unwritten": [
+     1036
+    ],
+    "world": [
+     {
+      "body": 0,
+      "enabled": true,
+      "rows_unwritten": 12,
+      "first": 1025,
+      "last": 1036
+     },
+     {
+      "body": 1,
+      "enabled": true,
+      "rows_unwritten": 12,
+      "first": 1025,
+      "last": 1036
+     }
+    ]
+   },
+   "found": {
+    "model_lane_enabled": true,
+    "model_rows_unwritten": [
+     1036
+    ],
+    "world": [
+     {
+      "body": 0,
+      "enabled": true,
+      "rows_unwritten": 12,
+      "first": 1025,
+      "last": 1036
+     },
+     {
+      "body": 1,
+      "enabled": true,
+      "rows_unwritten": 12,
+      "first": 1025,
+      "last": 1036
+     }
+    ]
+   },
+   "ok": true
+  },
+  {
+   "id": "S10",
+   "kind": "setup",
+   "what": "both lines carry objective.physical, state.forecast_pose_saved true and, among state.names, the 7 forecast-pose arrays and the 4 hand readings at +1 and at the order's end (the arrays the a2 reader's CHANGE A2 requires: the complete run's PASS covers them)",
+   "expected": {
+    "1005": {
+     "physical": true,
+     "forecast_pose_saved": true,
+     "names_missing": []
+    },
+    "1020": {
+     "physical": true,
+     "forecast_pose_saved": true,
+     "names_missing": []
+    }
+   },
+   "found": {
+    "1005": {
+     "physical": true,
+     "forecast_pose_saved": true,
+     "names_missing": []
+    },
+    "1020": {
+     "physical": true,
+     "forecast_pose_saved": true,
+     "names_missing": []
+    }
+   },
+   "ok": true
+  },
+  {
+   "id": "S8",
+   "kind": "setup",
+   "what": "the synthetic stats record, whose causal_chain block is the real recorder's (its plan_capture counts: every capture line written, no write failure), and the handed captures",
+   "expected": {
+    "stats": "replay_training_stats.jsonl",
+    "write_failures": 0,
+    "total": {
+     "attempted": 2,
+     "written": 2,
+     "valid_written": 2,
+     "write_failures": 0
+    },
+    "handed_keys": [
+     "cap000001005",
+     "cap000001020"
+    ]
+   },
+   "found": {
+    "stats_bytes": 14089,
+    "write_failures": 0,
+    "total": {
+     "attempted": 2,
+     "written": 2,
+     "valid_written": 2,
+     "write_failures": 0
+    },
+    "handed_keys": [
+     "cap000001005",
+     "cap000001020"
+    ]
+   },
+   "ok": true
+  },
+  {
+   "id": "A1",
+   "kind": "durability",
+   "what": "every capture file reads whole under the reader's read_lane_file and every array the writer handed to the lane equals the array read back (dtype, shape and bytes), the meta text too",
+   "expected": "every array and the meta equal, no problem",
+   "found": {
+    "cap000001005": {
+     "file": "captures_cap000001005_21164_00001.npz",
+     "members": 39,
+     "problem": null,
+     "arrays_and_meta_equal": 38,
+     "of": 38,
+     "problems": []
+    },
+    "cap000001020": {
+     "file": "chunk_000001021_21164_00004.npz",
+     "members": 49,
+     "problem": null,
+     "arrays_and_meta_equal": 37,
+     "of": 37,
+     "problems": []
+    }
+   },
+   "ok": true
+  },
+  {
+   "id": "A2",
+   "kind": "durability",
+   "what": "every row the lane was handed up to its last write is on disk once with the values handed (step, latched, order_seq); row 1036 (unwritten, the lane open) is not",
+   "expected": {
+    "steps": "1000-1035 once each, equal",
+    "not_on_disk": [
+     1036
+    ]
+   },
+   "found": {
+    "steps_on_disk": 36,
+    "wrong_or_missing": [],
+    "extra": [],
+    "problems": []
+   },
+   "ok": true
+  },
+  {
+   "id": "A3",
+   "kind": "durability",
+   "what": "every model-lane and world file reads whole under the owner's _read_npz_whole, and each capture's file lists its key in capture_keys with all its arrays",
+   "expected": "no problem in 11 files; both keys listed with all arrays",
+   "found": {
+    "model/captures_cap000001005_21164_00001.npz": {
+     "problem": null,
+     "capture_keys": [
+      "cap000001005"
+     ]
+    },
+    "model/chunk_000001000_21164_00000.npz": {
+     "problem": null,
+     "capture_keys": null
+    },
+    "model/chunk_000001010_21164_00002.npz": {
+     "problem": null,
+     "capture_keys": null
+    },
+    "model/chunk_000001011_21164_00003.npz": {
+     "problem": null,
+     "capture_keys": null
+    },
+    "model/chunk_000001021_21164_00004.npz": {
+     "problem": null,
+     "capture_keys": [
+      "cap000001020"
+     ]
+    },
+    "model/chunk_000001025_21164_00005.npz": {
+     "problem": null,
+     "capture_keys": null
+    },
+    "model/chunk_000001026_21164_00006.npz": {
+     "problem": null,
+     "capture_keys": null
+    },
+    "world/b0/chunk_000001000_21164_00000.npz": {
+     "problem": null,
+     "capture_keys": null
+    },
+    "world/b0/chunk_000001010_21164_00001.npz": {
+     "problem": null,
+     "capture_keys": null
+    },
+    "world/b1/chunk_000001000_21164_00000.npz": {
+     "problem": null,
+     "capture_keys": null
+    },
+    "world/b1/chunk_000001010_21164_00001.npz": {
+     "problem": null,
+     "capture_keys": null
+    }
+   },
+   "ok": true
+  },
+  {
+   "id": "A4",
+   "kind": "durability",
+   "what": "the reader's gather_detail finds each capture key in exactly its own complete file, with no file problem and no .part.npz read",
+   "expected": {
+    "key_files": {
+     "cap000001005": [
+      "model/captures_cap000001005_21164_00001.npz"
+     ],
+     "cap000001020": [
+      "model/chunk_000001021_21164_00004.npz"
+     ]
+    },
+    "problems": {},
+    "part_files_read": [],
+    "model_last": 1035,
+    "world_last": {
+     "0": 1024,
+     "1": 1024
+    },
+    "cut": null
+   },
+   "found": {
+    "key_files": {
+     "cap000001005": [
+      "model/captures_cap000001005_21164_00001.npz"
+     ],
+     "cap000001020": [
+      "model/chunk_000001021_21164_00004.npz"
+     ]
+    },
+    "problems": {},
+    "part_files_read": [],
+    "model_last": 1035,
+    "world_last": {
+     "0": 1024,
+     "1": 1024
+    },
+    "cut": null,
+    "files_read": 11
+   },
+   "ok": true
+  },
+  {
+   "id": "A5",
+   "kind": "durability",
+   "what": "the owner's detail_flush_state reads every capture durable",
+   "expected": {
+    "verdict": "all captures durable",
+    "captures": {
+     "1005": "durable",
+     "1020": "durable"
+    },
+    "files_with_problems": 0
+   },
+   "found": {
+    "verdict": "all captures durable",
+    "captures": {
+     "1005": "durable",
+     "1020": "durable"
+    },
+    "files_with_problems": 0,
+    "incomplete": null
+   },
+   "ok": true
+  },
+  {
+   "id": "A6",
+   "kind": "durability",
+   "what": "the reader run whole (final mode) on the complete run, the lanes still open: exit 0, verdict PASS with no cause of INVALID, both captures joined, every usable and position_ulp_only body joined",
+   "expected": {
+    "exit_code": 0,
+    "verdict": "PASS",
+    "measurement_complete": true,
+    "invalid_kinds": [],
+    "required_health_pass": true,
+    "states": {
+     "1005": "joined",
+     "1020": "joined"
+    },
+    "usable": [
+     [
+      1005,
+      0
+     ],
+     [
+      1005,
+      1
+     ],
+     [
+      1020,
+      0
+     ]
+    ],
+    "position_ulp_only": [
+     [
+      1020,
+      1
+     ]
+    ],
+    "usable_bodies_joined": 3,
+    "position_ulp_only_bodies_joined": 1
+   },
+   "found": {
+    "exit_code": 0,
+    "summary": {
+     "verdict": "PASS",
+     "verdict_reason": "every window healthy; the detail records of every counted plan capture (2) read from disk and joined; no renamed capture file beside --captures; no capture-line write failure counted in the stats",
+     "measurement_complete": true,
+     "invalid_kinds": [],
+     "renamed_files": [],
+     "write_counts": {
+      "failed_steps": [],
+      "unreadable_steps": []
+     },
+     "required_health_pass": true,
+     "failures": [],
+     "states": {
+      "1005": "joined",
+      "1020": "joined"
+     },
+     "reasons": {
+      "1005": [],
+      "1020": []
+     },
+     "deviation": {
+      "1005": {
+       "J4 column maxima (printed units)": 0.0,
+       "J5 wrist rows (units of 1e-4)": 0.0,
+       "J7 gaps (tolerance units)": 0.0244,
+       "J7 pose_error (tolerance units)": 0.0033,
+       "J7 wrist_cm (units of 1e-3 cm)": 0.0
+      },
+      "1020": {
+       "J4 column maxima (printed units)": 0.0,
+       "J5 wrist rows (units of 1e-4)": 0.0,
+       "J7 gaps (tolerance units)": 0.0205,
+       "J7 pose_error (tolerance units)": 0.0041,
+       "J7 wrist_cm (units of 1e-3 cm)": 0.0
+      }
+     },
+     "counts": {
+      "captures": 2,
+      "joined": 2,
+      "pending": 0,
+      "missing": 0,
+      "partial": 0,
+      "not joined": 0,
+      "not verified": 0,
+      "bodies": 4,
+      "bodies_joined": 4,
+      "usable_bodies": 3,
+      "usable_bodies_joined": 3,
+      "position_ulp_only_bodies": 1,
+      "position_ulp_only_bodies_joined": 1,
+      "lines_with_lane_flush": 2,
+      "lines_with_world_flush": 2
+     },
+     "usable": [
+      [
+       1005,
+       0
+      ],
+      [
+       1005,
+       1
+      ],
+      [
+       1020,
+       0
+      ]
+     ],
+     "position_ulp_only": [
+      [
+       1020,
+       1
+      ]
+     ],
+     "files": [
+      [
+       "model/captures_cap000001005_21164_00001.npz",
+       null
+      ],
+      [
+       "model/chunk_000001000_21164_00000.npz",
+       null
+      ],
+      [
+       "model/chunk_000001010_21164_00002.npz",
+       null
+      ],
+      [
+       "model/chunk_000001011_21164_00003.npz",
+       null
+      ],
+      [
+       "model/chunk_000001021_21164_00004.npz",
+       null
+      ],
+      [
+       "model/chunk_000001025_21164_00005.npz",
+       null
+      ],
+      [
+       "model/chunk_000001026_21164_00006.npz",
+       null
+      ],
+      [
+       "world/b0/chunk_000001000_21164_00000.npz",
+       null
+      ],
+      [
+       "world/b0/chunk_000001010_21164_00001.npz",
+       null
+      ],
+      [
+       "world/b1/chunk_000001000_21164_00000.npz",
+       null
+      ],
+      [
+       "world/b1/chunk_000001010_21164_00001.npz",
+       null
+      ]
+     ],
+     "part_marks": null,
+     "partial_results": null
+    }
+   },
+   "ok": true
+  },
+  {
+   "id": "B1",
+   "kind": "setup",
+   "what": "the damaged copy: chunk_000001021_21164_00004.npz truncated to half its bytes under its final name; chunk_000001021_21164_00004.part.npz holds the complete bytes",
+   "expected": {
+    "truncated_bytes": 19251,
+    "part_sha256": "04989826a1b12a61593a190a5a7531796a320bcfb6eefcf12845d6731a6ac3a8"
+   },
+   "found": {
+    "truncated_bytes": 19251,
+    "part_sha256": "04989826a1b12a61593a190a5a7531796a320bcfb6eefcf12845d6731a6ac3a8",
+    "complete_bytes": 38502
+   },
+   "ok": true
+  },
+  {
+   "id": "B2",
+   "kind": "durability",
+   "what": "the reader's read_lane_file rejects the truncated file: unreadable, no member listed (it contributes no key)",
+   "expected": {
+    "problem": "unreadable: ...",
+    "members": null
+   },
+   "found": {
+    "problem": "unreadable: BadZipFile: File is not a zip file",
+    "members": null
+   },
+   "ok": true
+  },
+  {
+   "id": "B3",
+   "kind": "durability",
+   "what": "the owner's _read_npz_whole rejects the truncated file: unreadable, no capture key",
+   "expected": {
+    "problem": "unreadable: ...",
+    "capture_keys": null
+   },
+   "found": {
+    "problem": "unreadable: BadZipFile: File is not a zip file",
+    "capture_keys": null
+   },
+   "ok": true
+  },
+  {
+   "id": "B4",
+   "kind": "durability",
+   "what": "the reader's gather_detail: the damaged key is in no file, the other key in its own complete file; the truncated file is listed with an unreadable problem; the .part.npz is never read, only listed among the lane's marks",
+   "expected": {
+    "key_files": {
+     "cap000001005": [
+      "model/captures_cap000001005_21164_00001.npz"
+     ]
+    },
+    "truncated_problem": "unreadable: ...",
+    "part_files_read": [],
+    "part_marks": [
+     "chunk_000001021_21164_00004.part.npz"
+    ]
+   },
+   "found": {
+    "key_files": {
+     "cap000001005": [
+      "model/captures_cap000001005_21164_00001.npz"
+     ]
+    },
+    "truncated_problem": "unreadable: BadZipFile: File is not a zip file",
+    "part_files_read": [],
+    "part_marks": [
+     "chunk_000001021_21164_00004.part.npz"
+    ]
+   },
+   "ok": true
+  },
+  {
+   "id": "B5",
+   "kind": "durability",
+   "what": "the owner's detail_flush_state: the damaged capture is not durable (its key in no readable lane file), the other durable; the truncated file read with an unreadable problem; the .part.npz never read, only listed",
+   "expected": {
+    "damaged": "not durable",
+    "state_missing": [
+     "cap000001020 in no readable lane file"
+    ],
+    "other": "durable",
+    "truncated_problem": "unreadable: ...",
+    "part_read": false,
+    "part_marks": [
+     "chunk_000001021_21164_00004.part.npz"
+    ]
+   },
+   "found": {
+    "damaged": "not durable",
+    "state_missing": [
+     "cap000001020 in no readable lane file"
+    ],
+    "other": "durable",
+    "truncated_problem": "unreadable: BadZipFile: File is not a zip file",
+    "part_read": false,
+    "part_marks": [
+     "chunk_000001021_21164_00004.part.npz"
+    ]
+   },
+   "ok": true
+  },
+  {
+   "id": "B6",
+   "kind": "durability",
+   "what": "the .part.npz itself is complete (read whole when opened directly, its key listed): the readers reject it by its name, not by its content",
+   "expected": {
+    "problem": null,
+    "capture_keys_include": "cap000001020"
+   },
+   "found": {
+    "problem": null,
+    "capture_keys": [
+     "cap000001020"
+    ]
+   },
+   "ok": true
+  },
+  {
+   "id": "B7",
+   "kind": "durability",
+   "what": "the reader run whole (final mode) on run_B: exit 3, verdict INVALID (never PASS) with the detail records as its only cause; the damaged capture not joined (any state but joined), the other joined; partial results split as such; the truncated file listed unreadable; the .part.npz never read, only listed",
+   "expected": {
+    "exit_code": 3,
+    "verdict": "INVALID",
+    "measurement_complete": false,
+    "invalid_kinds": [
+     "detail_records"
+    ],
+    "required_health_pass": true,
+    "states": {
+     "1020": "not joined (the reader names it missing)",
+     "1005": "joined"
+    },
+    "usable_with_joined_detail": [
+     [
+      1005,
+      0
+     ],
+     [
+      1005,
+      1
+     ]
+    ],
+    "usable_without_joined_detail": [
+     [
+      1020,
+      0
+     ]
+    ],
+    "truncated_problem": "unreadable: ...",
+    "part_files_read": [],
+    "part_marks": [
+     "chunk_000001021_21164_00004.part.npz"
+    ]
+   },
+   "found": {
+    "exit_code": 3,
+    "summary": {
+     "verdict": "INVALID",
+     "verdict_reason": "measurement incomplete: required detail records missing or unjoined: 1 of 2 counted plan captures not joined (missing 1); 2 of 3 usable body outcomes have joined detail",
+     "measurement_complete": false,
+     "invalid_kinds": [
+      "detail_records"
+     ],
+     "renamed_files": [],
+     "write_counts": {
+      "failed_steps": [],
+      "unreadable_steps": []
+     },
+     "required_health_pass": true,
+     "failures": [],
+     "states": {
+      "1005": "joined",
+      "1020": "missing"
+     },
+     "reasons": {
+      "1005": [],
+      "1020": [
+       "no complete, readable model-lane file lists cap000001020 in capture_keys (the newest complete model chunk ends at model step 1035; the capture's order ended at 1025)",
+       "state.lane_flush names chunk_000001021_21164_00004.npz, written before this line: np.load cannot read it whole (unreadable: BadZipFile: File is not a zip file), so it counts as absent",
+       "lane files np.load could not open (absent): ['model/chunk_000001021_21164_00004.npz: unreadable: BadZipFile: File is not a zip file']"
+      ]
+     },
+     "deviation": {
+      "1005": {
+       "J4 column maxima (printed units)": 0.0,
+       "J5 wrist rows (units of 1e-4)": 0.0,
+       "J7 gaps (tolerance units)": 0.0244,
+       "J7 pose_error (tolerance units)": 0.0033,
+       "J7 wrist_cm (units of 1e-3 cm)": 0.0
+      },
+      "1020": {}
+     },
+     "counts": {
+      "captures": 2,
+      "joined": 1,
+      "pending": 0,
+      "missing": 1,
+      "partial": 0,
+      "not joined": 0,
+      "not verified": 0,
+      "bodies": 4,
+      "bodies_joined": 2,
+      "usable_bodies": 3,
+      "usable_bodies_joined": 2,
+      "position_ulp_only_bodies": 1,
+      "position_ulp_only_bodies_joined": 0,
+      "lines_with_lane_flush": 2,
+      "lines_with_world_flush": 2
+     },
+     "usable": [
+      [
+       1005,
+       0
+      ],
+      [
+       1005,
+       1
+      ],
+      [
+       1020,
+       0
+      ]
+     ],
+     "position_ulp_only": [
+      [
+       1020,
+       1
+      ]
+     ],
+     "files": [
+      [
+       "model/captures_cap000001005_21164_00001.npz",
+       null
+      ],
+      [
+       "model/chunk_000001000_21164_00000.npz",
+       null
+      ],
+      [
+       "model/chunk_000001010_21164_00002.npz",
+       null
+      ],
+      [
+       "model/chunk_000001011_21164_00003.npz",
+       null
+      ],
+      [
+       "model/chunk_000001021_21164_00004.npz",
+       "unreadable: BadZipFile: File is not a zip file"
+      ],
+      [
+       "model/chunk_000001025_21164_00005.npz",
+       null
+      ],
+      [
+       "model/chunk_000001026_21164_00006.npz",
+       null
+      ],
+      [
+       "world/b0/chunk_000001000_21164_00000.npz",
+       null
+      ],
+      [
+       "world/b0/chunk_000001010_21164_00001.npz",
+       null
+      ],
+      [
+       "world/b1/chunk_000001000_21164_00000.npz",
+       null
+      ],
+      [
+       "world/b1/chunk_000001010_21164_00001.npz",
+       null
+      ]
+     ],
+     "part_marks": [
+      "chunk_000001021_21164_00004.part.npz"
+     ],
+     "partial_results": {
+      "note": "measurement incomplete: every reading is kept; the usable outcomes whose detail records were read from disk and joined are the valid partial results, the others are listed apart; the learning checkpoints are the owner's preservation, never read or touched by this reader",
+      "usable_with_joined_detail": [
+       [
+        1005,
+        0
+       ],
+       [
+        1005,
+        1
+       ]
+      ],
+      "usable_without_joined_detail": [
+       [
+        1020,
+        0
+       ]
+      ],
+      "position_ulp_only_with_joined_detail": [],
+      "position_ulp_only_without_joined_detail": [
+       [
+        1020,
+        1
+       ]
+      ]
+     }
+    }
+   },
+   "ok": true
+  },
+  {
+   "id": "C1",
+   "kind": "setup",
+   "what": "the damaged copy: captures_cap000001005_21164_00001.npz truncated to half its bytes under its final name; captures_cap000001005_21164_00001.part.npz holds the complete bytes",
+   "expected": {
+    "truncated_bytes": 18372,
+    "part_sha256": "e14765d38fba31c1b799404f940a13e2045fd75fbf594582a3ba9de1fc46be7b"
+   },
+   "found": {
+    "truncated_bytes": 18372,
+    "part_sha256": "e14765d38fba31c1b799404f940a13e2045fd75fbf594582a3ba9de1fc46be7b",
+    "complete_bytes": 36744
+   },
+   "ok": true
+  },
+  {
+   "id": "C2",
+   "kind": "durability",
+   "what": "the reader's read_lane_file rejects the truncated file: unreadable, no member listed (it contributes no key)",
+   "expected": {
+    "problem": "unreadable: ...",
+    "members": null
+   },
+   "found": {
+    "problem": "unreadable: BadZipFile: File is not a zip file",
+    "members": null
+   },
+   "ok": true
+  },
+  {
+   "id": "C3",
+   "kind": "durability",
+   "what": "the owner's _read_npz_whole rejects the truncated file: unreadable, no capture key",
+   "expected": {
+    "problem": "unreadable: ...",
+    "capture_keys": null
+   },
+   "found": {
+    "problem": "unreadable: BadZipFile: File is not a zip file",
+    "capture_keys": null
+   },
+   "ok": true
+  },
+  {
+   "id": "C4",
+   "kind": "durability",
+   "what": "the reader's gather_detail: the damaged key is in no file, the other key in its own complete file; the truncated file is listed with an unreadable problem; the .part.npz is never read, only listed among the lane's marks",
+   "expected": {
+    "key_files": {
+     "cap000001020": [
+      "model/chunk_000001021_21164_00004.npz"
+     ]
+    },
+    "truncated_problem": "unreadable: ...",
+    "part_files_read": [],
+    "part_marks": [
+     "captures_cap000001005_21164_00001.part.npz"
+    ]
+   },
+   "found": {
+    "key_files": {
+     "cap000001020": [
+      "model/chunk_000001021_21164_00004.npz"
+     ]
+    },
+    "truncated_problem": "unreadable: BadZipFile: File is not a zip file",
+    "part_files_read": [],
+    "part_marks": [
+     "captures_cap000001005_21164_00001.part.npz"
+    ]
+   },
+   "ok": true
+  },
+  {
+   "id": "C5",
+   "kind": "durability",
+   "what": "the owner's detail_flush_state: the damaged capture is not durable (its key in no readable lane file), the other durable; the truncated file read with an unreadable problem; the .part.npz never read, only listed",
+   "expected": {
+    "damaged": "not durable",
+    "state_missing": [
+     "cap000001005 in no readable lane file"
+    ],
+    "other": "durable",
+    "truncated_problem": "unreadable: ...",
+    "part_read": false,
+    "part_marks": [
+     "captures_cap000001005_21164_00001.part.npz"
+    ]
+   },
+   "found": {
+    "damaged": "not durable",
+    "state_missing": [
+     "cap000001005 in no readable lane file"
+    ],
+    "other": "durable",
+    "truncated_problem": "unreadable: BadZipFile: File is not a zip file",
+    "part_read": false,
+    "part_marks": [
+     "captures_cap000001005_21164_00001.part.npz"
+    ]
+   },
+   "ok": true
+  },
+  {
+   "id": "C6",
+   "kind": "durability",
+   "what": "the .part.npz itself is complete (read whole when opened directly, its key listed): the readers reject it by its name, not by its content",
+   "expected": {
+    "problem": null,
+    "capture_keys_include": "cap000001005"
+   },
+   "found": {
+    "problem": null,
+    "capture_keys": [
+     "cap000001005"
+    ]
+   },
+   "ok": true
+  },
+  {
+   "id": "C7",
+   "kind": "durability",
+   "what": "the reader run whole (final mode) on run_C: exit 3, verdict INVALID (never PASS) with the detail records as its only cause; the damaged capture not joined (any state but joined), the other joined; partial results split as such; the truncated file listed unreadable; the .part.npz never read, only listed",
+   "expected": {
+    "exit_code": 3,
+    "verdict": "INVALID",
+    "measurement_complete": false,
+    "invalid_kinds": [
+     "detail_records"
+    ],
+    "required_health_pass": true,
+    "states": {
+     "1005": "not joined (the reader names it missing)",
+     "1020": "joined"
+    },
+    "usable_with_joined_detail": [
+     [
+      1020,
+      0
+     ]
+    ],
+    "usable_without_joined_detail": [
+     [
+      1005,
+      0
+     ],
+     [
+      1005,
+      1
+     ]
+    ],
+    "truncated_problem": "unreadable: ...",
+    "part_files_read": [],
+    "part_marks": [
+     "captures_cap000001005_21164_00001.part.npz"
+    ]
+   },
+   "found": {
+    "exit_code": 3,
+    "summary": {
+     "verdict": "INVALID",
+     "verdict_reason": "measurement incomplete: required detail records missing or unjoined: 1 of 2 counted plan captures not joined (missing 1); 1 of 3 usable body outcomes have joined detail",
+     "measurement_complete": false,
+     "invalid_kinds": [
+      "detail_records"
+     ],
+     "renamed_files": [],
+     "write_counts": {
+      "failed_steps": [],
+      "unreadable_steps": []
+     },
+     "required_health_pass": true,
+     "failures": [],
+     "states": {
+      "1005": "missing",
+      "1020": "joined"
+     },
+     "reasons": {
+      "1005": [
+       "no complete, readable model-lane file lists cap000001005 in capture_keys (the newest complete model chunk ends at model step 1035; the capture's order ended at 1010)",
+       "state.lane_flush names captures_cap000001005_21164_00001.npz, written before this line: np.load cannot read it whole (unreadable: BadZipFile: File is not a zip file), so it counts as absent",
+       "lane files np.load could not open (absent): ['model/captures_cap000001005_21164_00001.npz: unreadable: BadZipFile: File is not a zip file']"
+      ],
+      "1020": []
+     },
+     "deviation": {
+      "1005": {},
+      "1020": {
+       "J4 column maxima (printed units)": 0.0,
+       "J5 wrist rows (units of 1e-4)": 0.0,
+       "J7 gaps (tolerance units)": 0.0205,
+       "J7 pose_error (tolerance units)": 0.0041,
+       "J7 wrist_cm (units of 1e-3 cm)": 0.0
+      }
+     },
+     "counts": {
+      "captures": 2,
+      "joined": 1,
+      "pending": 0,
+      "missing": 1,
+      "partial": 0,
+      "not joined": 0,
+      "not verified": 0,
+      "bodies": 4,
+      "bodies_joined": 2,
+      "usable_bodies": 3,
+      "usable_bodies_joined": 1,
+      "position_ulp_only_bodies": 1,
+      "position_ulp_only_bodies_joined": 1,
+      "lines_with_lane_flush": 2,
+      "lines_with_world_flush": 2
+     },
+     "usable": [
+      [
+       1005,
+       0
+      ],
+      [
+       1005,
+       1
+      ],
+      [
+       1020,
+       0
+      ]
+     ],
+     "position_ulp_only": [
+      [
+       1020,
+       1
+      ]
+     ],
+     "files": [
+      [
+       "model/captures_cap000001005_21164_00001.npz",
+       "unreadable: BadZipFile: File is not a zip file"
+      ],
+      [
+       "model/chunk_000001000_21164_00000.npz",
+       null
+      ],
+      [
+       "model/chunk_000001010_21164_00002.npz",
+       null
+      ],
+      [
+       "model/chunk_000001011_21164_00003.npz",
+       null
+      ],
+      [
+       "model/chunk_000001021_21164_00004.npz",
+       null
+      ],
+      [
+       "model/chunk_000001025_21164_00005.npz",
+       null
+      ],
+      [
+       "model/chunk_000001026_21164_00006.npz",
+       null
+      ],
+      [
+       "world/b0/chunk_000001000_21164_00000.npz",
+       null
+      ],
+      [
+       "world/b0/chunk_000001010_21164_00001.npz",
+       null
+      ],
+      [
+       "world/b1/chunk_000001000_21164_00000.npz",
+       null
+      ],
+      [
+       "world/b1/chunk_000001010_21164_00001.npz",
+       null
+      ]
+     ],
+     "part_marks": [
+      "captures_cap000001005_21164_00001.part.npz"
+     ],
+     "partial_results": {
+      "note": "measurement incomplete: every reading is kept; the usable outcomes whose detail records were read from disk and joined are the valid partial results, the others are listed apart; the learning checkpoints are the owner's preservation, never read or touched by this reader",
+      "usable_with_joined_detail": [
+       [
+        1020,
+        0
+       ]
+      ],
+      "usable_without_joined_detail": [
+       [
+        1005,
+        0
+       ],
+       [
+        1005,
+        1
+       ]
+      ],
+      "position_ulp_only_with_joined_detail": [
+       [
+        1020,
+        1
+       ]
+      ],
+      "position_ulp_only_without_joined_detail": []
+     }
+    }
+   },
+   "ok": true
+  },
+  {
+   "id": "S9",
+   "kind": "setup",
+   "what": "the lanes were never closed: still open, with the same unwritten rows, after every reading",
+   "expected": {
+    "model_lane_enabled": true,
+    "model_rows_unwritten": [
+     1036
+    ]
+   },
+   "found": {
+    "model_lane_enabled": true,
+    "model_rows_unwritten": [
+     1036
+    ],
+    "world": [
+     {
+      "body": 0,
+      "enabled": true,
+      "rows_unwritten": 12,
+      "first": 1025,
+      "last": 1036
+     },
+     {
+      "body": 1,
+      "enabled": true,
+      "rows_unwritten": 12,
+      "first": 1025,
+      "last": 1036
+     }
+    ]
+   },
+   "ok": true
+  }
+ ],
+ "phases_s": {
+  "preflight": 0.08,
+  "import": 1.429,
+  "owner_fixtures": 0.074,
+  "synthetic_run": 0.519,
+  "complete_readings": 0.364,
+  "damaged_B": 0.604,
+  "damaged_C": 0.665,
+  "lanes_still_open": 0.0
+ },
+ "ended": "Oct 23, 2026 12:41:04 AM PDT",
+ "seconds": 3.736
+}

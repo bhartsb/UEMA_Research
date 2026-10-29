@@ -1,0 +1,211 @@
+{
+ "title": "The world's following gauge before and after the 2026-09-23 fix, on the same orders",
+ "measured": "2026-09-23",
+ "by": "fix-following-gauge (docs/gain_of_function_v3/agents/fix-following-gauge.md)",
+ "gauge": "env.py _command_response: per body part with strength above 0 and an asked turn of at least 1e-4 rad, the cosine between the turn asked (ordered orientation against the pose when the order was entered) and the turn made; averaged over the scored parts. -1 = every part turned exactly against its order, 0 = unrelated to the order, +1 = exactly as ordered. cmd_response = over one 10 ms frame; cmd_response_slow = over one order's tenure. The trainer's stats rows: cmd_response_cos (the 10 ms reading on the last frame of each model step), cmd_response_cos_held (the tenure reading), follow_bout (the 10 ms reading, averaged over babble bouts), cmd_mag_rad (the mean asked turn).",
+ "what_changed": {
+  "rows": "the eyes' row is found by name (row 23); before, the LAST row was skipped as the eyes, which in trunk_v1 (26 rows) is the chest, and the eyes' row was scored",
+  "span": "an order is scored over cmd_horizon = 25 frames (250 ms); before, 26",
+  "trainer_sampling": "train_mimo averages the held reading only on the last model step of each held order, where the 25 frames are exactly that order's tenure; before, every model step's reading went in"
+ },
+ "seeded_orders_in_segment_31_world": {
+  "setup": "train_mimo.env_kwargs_for(seg31 args.json, phase 'mature'), 1 body, CPU, vision off, caregiver recording off, seed 0; 2,000 model steps (400 orders); an order latched every 5 model steps of 5 frames, executed = 0.35 x new + 0.65 x previous (smooth_actions 0.35); each new order turns every body part 10-60 degrees about its own random axis from its current pose, position target +-3 cm, strength 0.2-0.7 per part, and writes an eye command (azimuth and elevation 0.4 rad at most) into the eyes' row the way lem_model.gaze_to_handle does. The world ran the fixed code; HEAD's function and queue ran beside it on the same arguments at the same moments.",
+  "results": {
+   "cmd_response_cos (fast, 10 ms)": {
+    "old": [
+     0.06739532173690616,
+     2000
+    ],
+    "new": [
+     0.06969418127686566,
+     2000
+    ],
+    "old_halves": [
+     0.06377966623183291,
+     0.07101097724197938
+    ],
+    "new_halves": [
+     0.06621569433162469,
+     0.07317266822210662
+    ]
+   },
+   "fast window_cos": {
+    "old": [
+     0.07119914163926701,
+     2000
+    ],
+    "new": [
+     0.07373191801818903,
+     2000
+    ]
+   },
+   "fast ratio": {
+    "old": [
+     0.03717250508313269,
+     2000
+    ],
+    "new": [
+     0.03737581579147603,
+     2000
+    ]
+   },
+   "fast acc_cos": {
+    "old": [
+     0.10361368328760426,
+     2000
+    ],
+    "new": [
+     0.10712226314531517,
+     2000
+    ]
+   },
+   "fast pos_cos": {
+    "old": [
+     -0.11827393036166532,
+     2000
+    ],
+    "new": [
+     -0.10573229165051455,
+     2000
+    ]
+   },
+   "fast cmd_mag": {
+    "old": [
+     0.40101798179292836,
+     2000
+    ],
+    "new": [
+     0.30026715008201255,
+     2000
+    ]
+   },
+   "cmd_response_cos_held": {
+    "old_every_step_26_frames_last_row_as_eyes": [
+     0.13540964333947536,
+     1995
+    ],
+    "rows_fixed_every_step_26_frames": [
+     0.13961053806019738,
+     1995
+    ],
+    "rows_fixed_every_step_25_frames": [
+     0.1810998156720319,
+     1996
+    ],
+    "new_tenure_end_25_frames": [
+     0.3044101840287395,
+     400
+    ],
+    "old_halves": [
+     0.12708454952761652,
+     0.14369311168227486
+    ],
+    "new_halves": [
+     0.302186347159017,
+     0.30663402089846203
+    ]
+   },
+   "spans_frames": {
+    "old": [
+     26
+    ],
+    "new": [
+     25
+    ],
+    "sim_s_latch_to_tenure_end": [
+     0.25
+    ]
+   },
+   "n_zero_readings": {
+    "fast_old": 0,
+    "fast_new": 0,
+    "scored_rows_fast_old": [
+     25
+    ],
+    "scored_rows_fast_new": [
+     25
+    ]
+   },
+   "per_100_part_orders": {
+    "old gauge as the stats read it (every step, 26 frames, all rows but the last): parts that turned with a component toward the order": [
+     59.6,
+     49875
+    ],
+    "new gauge as the stats read it (tenure end, 25 frames, all rows but the eyes'): same count": [
+     70.6,
+     10000
+    ],
+    "new, same rows: parts that ended closer to the ordered orientation": [
+     55.6,
+     10000
+    ],
+    "chest alone, new (tenure end): turned toward": [
+     59.2,
+     400
+    ],
+    "chest alone, new (tenure end): ended closer": [
+     55.2,
+     400
+    ],
+    "eyes' row alone, as the old gauge scored it (every step, 26 frames): turned toward": [
+     45.8,
+     1995
+    ],
+    "fast (10 ms) eyes' row alone, old: turned toward": [
+     49.0,
+     2000
+    ],
+    "fast (10 ms) chest alone, new: turned toward": [
+     53.8,
+     2000
+    ]
+   },
+   "row_means": {
+    "eyes_slow_old": [
+     -0.0634,
+     1995
+    ],
+    "chest_slow_new_tenure": [
+     0.1151,
+     400
+    ],
+    "eyes_fast": [
+     -0.0228,
+     2000
+    ],
+    "chest_fast": [
+     0.0346,
+     2000
+    ],
+    "eyes_asked_turn_rad_fast": [
+     2.8097,
+     2000
+    ],
+    "chest_asked_turn_rad_fast": [
+     0.2909,
+     2000
+    ]
+   },
+   "steps": 2000,
+   "orders": 400,
+   "seconds": 750.447144985199
+  }
+ },
+ "live_model_orders_new_gauge": {
+  "source": "the per-part rows of docs/gain_of_function_v3/measurements/following_out_of_100.json's live case (ckpt_step_344400 acting in its saved world, 5 bodies, 245 orders, learning off): each row's cos is the gauge's per-part cosine from the latch to the next latch, 25 frames, eyes' row left out, chest scored - the fixed held gauge",
+  "held_reading_mean_of_orders": 0.3167,
+  "orders": 245,
+  "part_orders": 6125,
+  "parts_turned_toward_the_order_per_100": 70.9,
+  "chest_turned_toward_per_100": 60.4,
+  "halves_by_body": [
+   0.31,
+   0.3212
+  ],
+  "old_gauge_on_segment_31_stats": "replay_training_stats.jsonl of segment 31, 161 records (steps 328,400-344,400): cmd_response_cos_held mean 0.1398 (0.1084-0.1709), cmd_response_cos 0.0473, follow_bout 0.0714, cmd_mag_rad 0.4485"
+ },
+ "scripts": {
+  "measure": "\"\"\"Before/after of the env's following gauge on segment 31's world, same seeded orders.\n\nOne world (train_mimo.env_kwargs_for on the seg31 args.json, 1 body, CPU, vision off, caregiver\nrecording off). Orders are latched like the trainer: a new order every motor_hold = 5 model steps,\neach model step action_repeat = 5 frames, executed = 0.35 x new + 0.65 x previous (smooth_actions).\nThe world runs the FIXED code (eyes' row by name, slow queue popped at cmd_horizon). Every call of\nenv._command_response is shadowed, at the same moment and on the same arguments, by:\n  old  = HEAD's function (eyes' row = LAST row) with HEAD's queue (popped at cmd_horizon + 1)\n  mix  = the fixed function with HEAD's queue (to split the row fix from the span fix)\nand per-row detail (direction cosine, closer-or-not) for counts per 100.\nStats are formed as train_mimo forms them: the last frame of each model step.\n\"\"\"\nimport json, math, os, sys, time, types\nos.environ[\"CUDA_VISIBLE_DEVICES\"] = \"-1\"\nREPO = r\"D:\\UEMA_Research\"\nsys.path.insert(0, os.path.join(REPO, \"Source\", \"Python\"))\nimport numpy as np\n\nSTEPS = int(os.environ.get(\"STEPS\", \"1000\"))\nSEED = int(os.environ.get(\"SEED\", \"0\"))\nSCRATCH = os.path.dirname(os.path.abspath(__file__))\nOUT = os.path.join(SCRATCH, os.environ.get(\"OUT_NAME\", \"gauge_before_after.json\"))\n\nfrom mimo_bridge.train_mimo import env_kwargs_for\nfrom mimo_bridge.env import BridgeEnv\nfrom mimo_bridge.action_decoder import quat_xyzw_to_mat, rotmat_log\nfrom mimo_bridge.tools.command_following import _turn, rest_order\n\nRUN = os.path.join(REPO, \"Saved\", \"mimo_bridge\", \"experiments\", \"H84_fresh_drivers_20260918_seg31_toy_and_push\")\na = json.load(open(os.path.join(RUN, \"args.json\")))\nns = types.SimpleNamespace(**a)\nkw = env_kwargs_for(ns, \"mature\", os.path.join(SCRATCH, \"gauge_run\"))\nkw.update(caregiver_record_dir=\"\", vision=False, tag=\"_rowfix\", seed=SEED)\nHOLD, REPS, SMOOTH = int(a[\"motor_hold\"]), int(a[\"action_repeat\"]), float(a[\"smooth_actions\"])\nenv = BridgeEnv(**kw)\nH = env._cmd_horizon\nassert H == HOLD * REPS == 25, H\nnames = list(env.proprio.handle_names)\nn = len(names)\nGAZE, CHEST, LAST = names.index(\"gaze\"), names.index(\"chest\"), n - 1\nprint(\"layout rows\", n, \"gaze\", GAZE, \"last\", names[LAST], \"dt\", env.dt, flush=True)\n\n\ndef gauge(motor, xp_before, xq_before, w_before, hist, record_window, gaze_idx, handle_mask=None):\n    \"\"\"env._command_response verbatim (HEAD == fixed except the gaze_idx line), with its own window.\"\"\"\n    d = env.data\n    cos_list, ratio_list, acc_list = [], [], []\n    w_after = env._handle_angvel()\n    pos_cos, cmd_mags = [], []\n    for i, b in enumerate(env.proprio.body_ids):\n        if i == gaze_idx:\n            continue\n        if motor[i, 8] <= 0 or (handle_mask is not None and not handle_mask[i]):\n            continue\n        q0 = xq_before[i]; R0 = quat_xyzw_to_mat([q0[1], q0[2], q0[3], q0[0]])\n        q1 = d.xquat[b]; R1 = quat_xyzw_to_mat([q1[1], q1[2], q1[3], q1[0]])\n        Rt = quat_xyzw_to_mat(motor[i, 3:7])\n        w_cmd = rotmat_log(Rt @ R0.T); w_got = rotmat_log(R1 @ R0.T)\n        nc, ng = np.linalg.norm(w_cmd), np.linalg.norm(w_got)\n        if nc < 1e-4:\n            continue\n        cos_list.append(float(np.dot(w_cmd, w_got) / (nc * max(ng, 1e-9))) if ng > 1e-6 else 0.0)\n        cmd_mags.append(nc)\n        e_cmd = np.clip(motor[i, 0:3] / 100.0 - xp_before[i], -0.5, 0.5)\n        npc = float(np.linalg.norm(e_cmd))\n        if npc > 1e-3:\n            dpos = np.asarray(d.xpos[b], dtype=np.float64) - xp_before[i]\n            ndp = float(np.linalg.norm(dpos))\n            pos_cos.append(float(np.dot(e_cmd, dpos) / (npc * ndp)) if ndp > 1e-5 else 0.0)\n        ratio_list.append(float(ng / nc))\n        dw = w_after[i] - w_before[i]; nd = np.linalg.norm(dw)\n        acc_list.append(float(np.dot(w_cmd, dw) / (nc * nd)) if nd > 1e-6 else 0.0)\n    w_cmd_all = np.zeros((n, 3))\n    for i, b in enumerate(env.proprio.body_ids):\n        if i == gaze_idx:\n            continue\n        if motor[i, 8] <= 0 or (handle_mask is not None and not handle_mask[i]):\n            continue\n        q0 = xq_before[i]; R0 = quat_xyzw_to_mat([q0[1], q0[2], q0[3], q0[0]])\n        w_cmd_all[i] = rotmat_log(quat_xyzw_to_mat(motor[i, 3:7]) @ R0.T)\n    if record_window:\n        hist.append((w_cmd_all, np.array(xq_before)))\n        if len(hist) > env._cmd_window:\n            hist.pop(0)\n    win_cos = []\n    if len(hist) == env._cmd_window:\n        asked = np.sum([h[0] for h in hist], axis=0); xq_start = hist[0][1]\n        for i, b in enumerate(env.proprio.body_ids):\n            na = np.linalg.norm(asked[i])\n            if na < 1e-3:\n                continue\n            qs = xq_start[i]; Rs = quat_xyzw_to_mat([qs[1], qs[2], qs[3], qs[0]])\n            q1 = d.xquat[b]; R1 = quat_xyzw_to_mat([q1[1], q1[2], q1[3], q1[0]])\n            got = rotmat_log(R1 @ Rs.T); ng = np.linalg.norm(got)\n            win_cos.append(float(np.dot(asked[i], got) / (na * ng)) if ng > 1e-4 else 0.0)\n    win = float(np.mean(win_cos)) if win_cos else 0.0\n    if not cos_list:\n        return {\"cos\": 0.0, \"n\": 0, \"window_cos\": win, \"ratio\": 0.0, \"acc_cos\": 0.0,\n                \"pos_cos\": float(np.mean(pos_cos)) if pos_cos else 0.0,\n                \"cmd_mag\": float(np.mean(cmd_mags)) if cmd_mags else 0.0}\n    return {\"cos\": float(np.mean(cos_list)), \"n\": len(cos_list), \"window_cos\": win,\n            \"ratio\": float(np.mean(ratio_list)), \"acc_cos\": float(np.mean(acc_list)),\n            \"pos_cos\": float(np.mean(pos_cos)) if pos_cos else 0.0,\n            \"cmd_mag\": float(np.mean(cmd_mags)) if cmd_mags else 0.0}\n\n\ndef rows(motor, xq_before):\n    \"\"\"Per row: (direction cosine, ended closer to the ordered orientation, asked turn rad), NaN when\n    the gauge would skip the row for strength 0 or an asked turn under 1e-4 rad.\"\"\"\n    out = np.full((n, 3), np.nan)\n    for i, b in enumerate(env.proprio.body_ids):\n        if motor[i, 8] <= 0:\n            continue\n        q0 = xq_before[i]; R0 = quat_xyzw_to_mat([q0[1], q0[2], q0[3], q0[0]])\n        q1 = env.data.xquat[b]; R1 = quat_xyzw_to_mat([q1[1], q1[2], q1[3], q1[0]])\n        Rt = quat_xyzw_to_mat(motor[i, 3:7])\n        w_cmd = rotmat_log(Rt @ R0.T); w_got = rotmat_log(R1 @ R0.T)\n        nc, ng = np.linalg.norm(w_cmd), np.linalg.norm(w_got)\n        if nc < 1e-4:\n            continue\n        c = float(np.dot(w_cmd, w_got) / (nc * ng)) if ng > 1e-6 else 0.0\n        d_after = np.linalg.norm(rotmat_log(Rt @ R1.T))\n        out[i] = (c, float(d_after < nc), nc)\n    return out\n\n\nshadow = {\"hist_old\": [], \"hist_mix\": [], \"q_old\": [], \"q_new\": [], \"last\": None}\norig = env._command_response\n\n\ndef wrapped(motor, xp_before, xq_before, w_before, handle_mask=None, record_window=True):\n    r = orig(motor, xp_before, xq_before, w_before, handle_mask=handle_mask, record_window=record_window)\n    fr = int(env.frame)                     # frames completed, this one included\n    if record_window:                       # the per-frame (fast) call, then the slow one\n        rec = {\"fast_old\": gauge(motor, xp_before, xq_before, w_before, shadow[\"hist_old\"], True, LAST),\n               \"fast_new\": r, \"rows_fast\": rows(motor, xq_before)}\n        # sanity: the fixed function reproduced\n        mix_fast = gauge(motor, xp_before, xq_before, w_before, shadow[\"hist_mix\"], True, GAZE)\n        for k in (\"cos\", \"n\", \"window_cos\", \"ratio\", \"acc_cos\", \"pos_cos\", \"cmd_mag\"):\n            assert abs(mix_fast[k] - r[k]) < 1e-12, (k, mix_fast[k], r[k])\n        shadow[\"q_old\"].append((np.array(motor, dtype=np.float64), xp_before.copy(), xq_before.copy(), fr))\n        shadow[\"q_new\"].append(fr)\n        if len(shadow[\"q_old\"]) > H:        # HEAD's queue: popped at cmd_horizon + 1 entries\n            mo, xp0, xq0, f0 = shadow[\"q_old\"].pop(0)\n            rec[\"slow_old\"] = gauge(mo, xp0, xq0, w_before, shadow[\"hist_old\"], False, LAST)\n            rec[\"slow_mix\"] = gauge(mo, xp0, xq0, w_before, shadow[\"hist_mix\"], False, GAZE)\n            rec[\"rows_slow_old\"] = rows(mo, xq0)\n            rec[\"span_old\"] = fr - f0 + 1\n        shadow[\"last\"] = rec\n    else:\n        rec = shadow[\"last\"]\n        if len(shadow[\"q_new\"]) > H - 1:\n            del shadow[\"q_new\"][:len(shadow[\"q_new\"]) - H]\n        f0 = shadow[\"q_new\"].pop(0)\n        rec[\"slow_new\"] = r\n        rec[\"rows_slow_new\"] = rows(motor, xq_before)\n        rec[\"span_new\"] = fr - f0 + 1\n    return r\n\n\nenv._command_response = wrapped\n\n\ndef gaze_quat(az, el):\n    ca, sa, ce, se = math.cos(az / 2), math.sin(az / 2), math.cos(el / 2), math.sin(el / 2)\n    return np.array([-sa * se, ca * se, sa * ce, ca * ce])      # lem_model.LemLite.gaze_to_handle\n\n\nrng = np.random.default_rng(SEED)\nenv.reset()\nfor _ in range(20):\n    env.step(rest_order(env, n), None, None, render=False)\nshadow.update(hist_old=[], hist_mix=[], q_old=[], q_new=[])\nenv._cmd_hist, env._cmd_delay = [], []\nsteps = []\nprev = None\nt0 = time.time()\naz = el = 0.0\nfor s in range(STEPS):\n    order_age = s % HOLD\n    if order_age == 0:\n        prop = rest_order(env, n)\n        for i in range(n):\n            if i == GAZE:\n                continue\n            prop[i, 3:7] = _turn(prop[i, 3:7], rng.normal(size=3), math.radians(rng.uniform(10.0, 60.0)))\n            prop[i, 0:3] += rng.normal(0.0, 3.0, 3)\n        az, el = rng.uniform(-0.4, 0.4, 2)\n        prop[GAZE, 3:7] = gaze_quat(az, el)\n        prop[:, 8] = rng.uniform(0.2, 0.7, n)\n        if prev is None:\n            exe = prop.copy()\n        else:\n            exe = SMOOTH * prop + (1 - SMOOTH) * prev\n            for i in range(n):\n                qp, qn = prev[i, 3:7], prop[i, 3:7]\n                if np.dot(qp, qn) < 0:\n                    qn = -qn\n                q = SMOOTH * qn + (1 - SMOOTH) * qp\n                exe[i, 3:7] = q / np.linalg.norm(q)\n        prev = exe\n        t_latch = float(env.data.time)\n    for rep in range(REPS):\n        out = env.step(exe, (float(az), float(el)), None, render=False)\n    rec = shadow[\"last\"]\n    steps.append(dict(\n        s=s, age=order_age,\n        fast_old_all={k: rec[\"fast_old\"].get(k) for k in (\"window_cos\", \"ratio\", \"acc_cos\", \"pos_cos\", \"cmd_mag\")},\n        fast_new_all={k: rec[\"fast_new\"].get(k) for k in (\"window_cos\", \"ratio\", \"acc_cos\", \"pos_cos\", \"cmd_mag\")},\n        fast_old=rec[\"fast_old\"][\"cos\"], fast_new=rec[\"fast_new\"][\"cos\"],\n        fast_n_old=rec[\"fast_old\"][\"n\"], fast_n_new=rec[\"fast_new\"][\"n\"],\n        slow_old=rec.get(\"slow_old\", {}).get(\"cos\"), slow_mix=rec.get(\"slow_mix\", {}).get(\"cos\"),\n        slow_new=rec.get(\"slow_new\", {}).get(\"cos\"),\n        slow_n_old=rec.get(\"slow_old\", {}).get(\"n\"), slow_n_new=rec.get(\"slow_new\", {}).get(\"n\"),\n        span_old=rec.get(\"span_old\"), span_new=rec.get(\"span_new\"),\n        sim_since_latch=float(env.data.time) - t_latch,\n        info_slow=(out.info.get(\"cmd_response_slow\") or {}).get(\"cos\"),\n        rows_slow_new=None if rec.get(\"rows_slow_new\") is None else rec[\"rows_slow_new\"].tolist(),\n        rows_slow_old=None if rec.get(\"rows_slow_old\") is None else rec[\"rows_slow_old\"].tolist(),\n        rows_fast=rec[\"rows_fast\"].tolist()))\n    assert steps[-1][\"info_slow\"] == steps[-1][\"slow_new\"]\n    if s % 200 == 0:\n        print(f\"step {s} {time.time() - t0:.0f}s\", flush=True)\nenv.close()\njson.dump(dict(steps=steps, names=names, gaze=GAZE, chest=CHEST, last=LAST, H=H, hold=HOLD, reps=REPS,\n               seed=SEED, dt=env.dt, seconds=time.time() - t0, kw={k: str(v) for k, v in kw.items()}),\n          open(OUT, \"w\"), default=float)\nprint(\"done\", OUT, flush=True)\n",
+  "analyse": "import json, sys, os\nimport numpy as np\n\nP = os.path.join(os.path.dirname(os.path.abspath(__file__)), sys.argv[1] if len(sys.argv) > 1 else \"gauge_before_after.json\")\nd = json.load(open(P))\nS = d[\"steps\"]\nG, C, L, HOLD = d[\"gaze\"], d[\"chest\"], d[\"last\"], d[\"hold\"]\nN = len(S)\n\n\ndef mean(v):\n    v = [x for x in v if x is not None]\n    return (float(np.mean(v)), len(v)) if v else (None, 0)\n\n\ndef halves(key_fn, sel=lambda r: True):\n    a = [key_fn(r) for r in S[:N // 2] if sel(r)]\n    b = [key_fn(r) for r in S[N // 2:] if sel(r)]\n    return mean(a)[0], mean(b)[0]\n\n\nout = {}\ntend = lambda r: r[\"age\"] == HOLD - 1\nout[\"cmd_response_cos (fast, 10 ms)\"] = dict(old=mean([r[\"fast_old\"] for r in S]), new=mean([r[\"fast_new\"] for r in S]),\n                                             old_halves=halves(lambda r: r[\"fast_old\"]), new_halves=halves(lambda r: r[\"fast_new\"]))\nfor k in (\"window_cos\", \"ratio\", \"acc_cos\", \"pos_cos\", \"cmd_mag\"):\n    out[f\"fast {k}\"] = dict(old=mean([r[\"fast_old_all\"][k] for r in S]), new=mean([r[\"fast_new_all\"][k] for r in S]))\nout[\"cmd_response_cos_held\"] = dict(\n    old_every_step_26_frames_last_row_as_eyes=mean([r[\"slow_old\"] for r in S]),\n    rows_fixed_every_step_26_frames=mean([r[\"slow_mix\"] for r in S]),\n    rows_fixed_every_step_25_frames=mean([r[\"slow_new\"] for r in S]),\n    new_tenure_end_25_frames=mean([r[\"slow_new\"] for r in S if tend(r)]),\n    old_halves=halves(lambda r: r[\"slow_old\"]),\n    new_halves=halves(lambda r: r[\"slow_new\"], tend))\nout[\"spans_frames\"] = dict(old=sorted({r[\"span_old\"] for r in S if r[\"span_old\"]}),\n                           new=sorted({r[\"span_new\"] for r in S if r[\"span_new\"]}),\n                           sim_s_latch_to_tenure_end=sorted({round(r[\"sim_since_latch\"], 4) for r in S if tend(r)}))\nout[\"n_zero_readings\"] = dict(fast_old=sum(r[\"fast_n_old\"] == 0 for r in S), fast_new=sum(r[\"fast_n_new\"] == 0 for r in S),\n                              scored_rows_fast_old=sorted({r[\"fast_n_old\"] for r in S}), scored_rows_fast_new=sorted({r[\"fast_n_new\"] for r in S}))\n\n\ndef per100(rows_key, sel, row_ok, col):\n    vals = []\n    for r in S:\n        if not sel(r) or r[rows_key] is None:\n            continue\n        for i, row in enumerate(r[rows_key]):\n            if row_ok(i) and row[0] is not None and np.isfinite(row[0]):\n                vals.append(row[col])\n    if not vals:\n        return None\n    v = np.array(vals, dtype=float)\n    x = (v > 0).mean() if col == 0 else v.mean()\n    return round(100.0 * float(x), 1), len(vals)\n\n\nevery = lambda r: True\nout[\"per_100_part_orders\"] = {\n    \"old gauge as the stats read it (every step, 26 frames, all rows but the last): parts that turned with a component toward the order\":\n        per100(\"rows_slow_old\", every, lambda i: i != L, 0),\n    \"new gauge as the stats read it (tenure end, 25 frames, all rows but the eyes'): same count\":\n        per100(\"rows_slow_new\", tend, lambda i: i != G, 0),\n    \"new, same rows: parts that ended closer to the ordered orientation\":\n        per100(\"rows_slow_new\", tend, lambda i: i != G, 1),\n    \"chest alone, new (tenure end): turned toward\": per100(\"rows_slow_new\", tend, lambda i: i == C, 0),\n    \"chest alone, new (tenure end): ended closer\": per100(\"rows_slow_new\", tend, lambda i: i == C, 1),\n    \"eyes' row alone, as the old gauge scored it (every step, 26 frames): turned toward\": per100(\"rows_slow_old\", every, lambda i: i == G, 0),\n    \"fast (10 ms) eyes' row alone, old: turned toward\": per100(\"rows_fast\", every, lambda i: i == G, 0),\n    \"fast (10 ms) chest alone, new: turned toward\": per100(\"rows_fast\", every, lambda i: i == C, 0),\n}\n\n\ndef row_mean(rows_key, sel, i, col=0):\n    v = [r[rows_key][i][col] for r in S if sel(r) and r[rows_key] is not None and r[rows_key][i][col] is not None\n         and np.isfinite(r[rows_key][i][col])]\n    return (round(float(np.mean(v)), 4), len(v)) if v else None\n\n\nout[\"row_means\"] = dict(eyes_slow_old=row_mean(\"rows_slow_old\", every, G), chest_slow_new_tenure=row_mean(\"rows_slow_new\", tend, C),\n                        eyes_fast=row_mean(\"rows_fast\", every, G), chest_fast=row_mean(\"rows_fast\", every, C),\n                        eyes_asked_turn_rad_fast=row_mean(\"rows_fast\", every, G, 2), chest_asked_turn_rad_fast=row_mean(\"rows_fast\", every, C, 2))\nout[\"steps\"], out[\"orders\"], out[\"seconds\"] = N, N // HOLD, d[\"seconds\"]\nprint(json.dumps(out, indent=1))\n"
+ }
+}

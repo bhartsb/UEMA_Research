@@ -1,0 +1,264 @@
+{
+ "version": "motor_same_input_v1",
+ "verdict": "pass",
+ "held": 20,
+ "of": 20,
+ "cases": [
+  {
+   "case": "F1 identical-encoder control: one checkpoint built twice gives bit-identical tokens (paired difference 0); another checkpoint's encoder gives a nonzero difference; the asked-change path adds exactly 0",
+   "held": true,
+   "seconds": 2.48,
+   "identical_largest_rms": 0.0,
+   "other_encoder_smallest_rms": 1.42621,
+   "asked_change_bypass_identical": true
+  },
+  {
+   "case": "F2 the full job on fixture preserved folders: verdict pass, receipt completed, phase offset 0, the stored spread equals the stats record, the newest-slot parity held; a second call is refused (exit 4) and changes no file",
+   "held": true,
+   "seconds": 32.82,
+   "exit": 0,
+   "verdict": "pass",
+   "receipt": "completed",
+   "second_call_exit": 4,
+   "files_unchanged": true,
+   "invalid": [],
+   "stderr": "",
+   "readings_body1": {
+    "start_inputs__start_encoder": {
+     "1": 0.206105,
+     "2": 0.206713,
+     "3": 0.206348,
+     "4": 0.209303,
+     "5": 0.209013,
+     "6": 0.207519,
+     "7": 0.206794,
+     "8": 0.200612
+    },
+    "start_inputs__end_encoder": {
+     "1": 0.193316,
+     "2": 0.193084,
+     "3": 0.19468,
+     "4": 0.201011,
+     "5": 0.194426,
+     "6": 0.194874,
+     "7": 0.195918,
+     "8": 0.188009
+    },
+    "end_inputs__start_encoder": {
+     "1": 0.202389,
+     "2": 0.206563,
+     "3": 0.20792,
+     "4": 0.200766,
+     "5": 0.208027,
+     "6": 0.206516,
+     "7": 0.207732,
+     "8": 0.203091
+    },
+    "end_inputs__end_encoder": {
+     "1": 0.193539,
+     "2": 0.19863,
+     "3": 0.191344,
+     "4": 0.196681,
+     "5": 0.19682,
+     "6": 0.196309,
+     "7": 0.191682,
+     "8": 0.192166
+    }
+   }
+  },
+  {
+   "case": "F3a a preserved start without MANIFEST.json: not run",
+   "held": true,
+   "seconds": 0.18,
+   "exit": 2,
+   "receipt": "not_run",
+   "invalid": [
+    "not run: start: D:\\UEMA_Research\\external\\D\\UEMA_scratch\\b1_recover_489625\\motor_encoder_followup\\selftest_run3\\fixtures\\A_no_manifest holds no MANIFEST.json (the state is not preserved)"
+   ],
+   "stderr": ""
+  },
+  {
+   "case": "F3b a MANIFEST that does not read pass: not run",
+   "held": true,
+   "seconds": 0.18,
+   "exit": 2,
+   "receipt": "not_run",
+   "invalid": [
+    "not run: start: D:\\UEMA_Research\\external\\D\\UEMA_scratch\\b1_recover_489625\\motor_encoder_followup\\selftest_run3\\fixtures\\A_verdict_fail\\MANIFEST.json reads verdict 'fail', not pass"
+   ],
+   "stderr": ""
+  },
+  {
+   "case": "F3c model.safetensors not matching its pin: failed",
+   "held": true,
+   "seconds": 1.68,
+   "exit": 2,
+   "receipt": "failed",
+   "invalid": [
+    "D:\\UEMA_Research\\external\\D\\UEMA_scratch\\b1_recover_489625\\motor_encoder_followup\\selftest_run3\\fixtures\\A_model_sha model.safetensors hashes 6f33c4f011785d695822991b9611f6b96c2922d57f8b41bc06c9761aee72d2d8, the MANIFEST pins 0000000000000000000000000000000000000000000000000000000000000000"
+   ],
+   "stderr": ""
+  },
+  {
+   "case": "F3d a companion pin not matching the receipt: failed",
+   "held": true,
+   "seconds": 1.85,
+   "exit": 2,
+   "receipt": "failed",
+   "invalid": [
+    "D:\\UEMA_Research\\external\\D\\UEMA_scratch\\b1_recover_489625\\motor_encoder_followup\\selftest_run3\\fixtures\\A_companion_sha: the companion receipt's sha256 6efc2665ebb58762d8eae4f53737dce0404bc986aba2f337d3b080776c3a368d differs from the MANIFEST's 0000000000000000000000000000000000000000000000000000000000000000"
+   ],
+   "stderr": ""
+  },
+  {
+   "case": "F3e the companion file missing: failed",
+   "held": true,
+   "seconds": 1.96,
+   "exit": 2,
+   "receipt": "failed",
+   "invalid": [
+    "D:\\UEMA_Research\\external\\D\\UEMA_scratch\\b1_recover_489625\\motor_encoder_followup\\selftest_run3\\fixtures\\A_companion_missing: the companion ckpt_step_489625_b4677126e56f4f7b98eee63f359f396c.pt.gz named by D:\\UEMA_Research\\external\\D\\UEMA_scratch\\b1_recover_489625\\motor_encoder_followup\\selftest_run3\\fixtures\\A_companion_missing\\run\\checkpoints\\ckpt_step_489625\\episode_state.json is not in episode_companion/"
+   ],
+   "stderr": ""
+  },
+  {
+   "case": "F3f achieved rows of the wrong shape: failed",
+   "held": true,
+   "seconds": 2.07,
+   "exit": 2,
+   "receipt": "failed",
+   "invalid": [
+    "the ring's achieved rows are (8, 1100, 25, 10), not (8, 1100, 26, 10)"
+   ],
+   "stderr": ""
+  },
+  {
+   "case": "F3g a companion without a replay ring: failed",
+   "held": true,
+   "seconds": 1.71,
+   "exit": 2,
+   "receipt": "failed",
+   "invalid": [
+    "D:\\UEMA_Research\\external\\D\\UEMA_scratch\\b1_recover_489625\\motor_encoder_followup\\selftest_run3\\fixtures\\N: the companion holds no replay ring"
+   ],
+   "stderr": ""
+  },
+  {
+   "case": "F3h no 1,000 consecutive steps in one episode: failed",
+   "held": true,
+   "seconds": 1.88,
+   "exit": 2,
+   "receipt": "failed",
+   "invalid": [
+    "no 1,000 consecutive stored model steps lie in one episode with the motor validity bit true for all 8 bodies"
+   ],
+   "stderr": ""
+  },
+  {
+   "case": "F3i the motor validity bit false inside every window: failed",
+   "held": true,
+   "seconds": 1.87,
+   "exit": 2,
+   "receipt": "failed",
+   "invalid": [
+    "no 1,000 consecutive stored model steps lie in one episode with the motor validity bit true for all 8 bodies"
+   ],
+   "stderr": ""
+  },
+  {
+   "case": "F3j the collapse-watch samples matching no placement: failed",
+   "held": true,
+   "seconds": 1.82,
+   "exit": 2,
+   "receipt": "failed",
+   "invalid": [
+    "the phase cannot be reconstructed: 0 placements of the collapse watch's 200 samples fit the ring's stored motor tokens within float16 rounding ([(489624, 6.215995788574219), (489623, 6.332065105438232), (489622, 6.534091949462891), (489621, 6.464247226715088), (489620, 0.010004797019064426)])"
+   ],
+   "stderr": ""
+  },
+  {
+   "case": "F3k a motor encoder tensor missing from model.safetensors: failed (strict load)",
+   "held": true,
+   "seconds": 2.28,
+   "exit": 2,
+   "receipt": "failed",
+   "invalid": [
+    "start@489625: the motor encoder does not load strictly: Error(s) in loading state_dict for EncoderRegistry:\n\tMissing key(s) in state_dict: \"encoders.motor.layers.0.attn.in_proj_weight\". "
+   ],
+   "stderr": ""
+  },
+  {
+   "case": "F3l an unexpected motor encoder tensor: failed (strict load)",
+   "held": true,
+   "seconds": 2.26,
+   "exit": 2,
+   "receipt": "failed",
+   "invalid": [
+    "start@489625: the motor encoder does not load strictly: Error(s) in loading state_dict for EncoderRegistry:\n\tUnexpected key(s) in state_dict: \"encoders.motor.stand_in_extra\". "
+   ],
+   "stderr": ""
+  },
+  {
+   "case": "F3m no review acceptance: not run",
+   "held": true,
+   "seconds": 0.2,
+   "exit": 2,
+   "receipt": "not_run",
+   "invalid": [
+    "not run: no readable review acceptance at D:\\UEMA_Research\\external\\D\\UEMA_scratch\\b1_recover_489625\\motor_encoder_followup\\selftest_run3\\absent_review.json (FileNotFoundError)"
+   ],
+   "stderr": ""
+  },
+  {
+   "case": "F3n a review acceptance for other bytes: not run",
+   "held": true,
+   "seconds": 0.22,
+   "exit": 2,
+   "receipt": "not_run",
+   "invalid": [
+    "not run: the review acceptance D:\\UEMA_Research\\external\\D\\UEMA_scratch\\b1_recover_489625\\motor_encoder_followup\\selftest_run3\\review_other.json does not accept this program's sha256 94cea97e5e8f3e2f165d765c3332bdfdaf80cf5128bd9a49c74d57d2f3262e4a (it reads accepted True for ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff)"
+   ],
+   "stderr": ""
+  },
+  {
+   "case": "F3o the graphics card not hidden: failed",
+   "held": true,
+   "seconds": 0.2,
+   "exit": 2,
+   "receipt": "failed",
+   "invalid": [
+    "the graphics card is not hidden (CUDA_VISIBLE_DEVICES '0'; the job needs -1)"
+   ],
+   "stderr": ""
+  },
+  {
+   "case": "F4 an end preserved at 490,000: read and labelled incomplete, never substituted for 494,025",
+   "held": true,
+   "seconds": 34.78,
+   "label": "incomplete: the recovery's preserved end is model step 490000, not 494025",
+   "exit": 0
+  },
+  {
+   "case": "F5 not-run writes the not-run receipt; a later run is refused by the claim",
+   "held": true,
+   "seconds": 0.27,
+   "exit": 2,
+   "receipt": "not_run",
+   "run_after_exit": 4
+  },
+  {
+   "case": "F6 close: a completed receipt is left as it is; a claim without a receipt gets a failed receipt; a job that never started gets the claim and a not-run receipt, and a later run is refused",
+   "held": true,
+   "seconds": 0.62,
+   "completed_left": true,
+   "killed_state": "failed",
+   "never_state": "not_run",
+   "run_after_never_exit": 4
+  }
+ ],
+ "program_sha256": "94cea97e5e8f3e2f165d765c3332bdfdaf80cf5128bd9a49c74d57d2f3262e4a",
+ "written": "Oct 13, 2026 4:16:42 PM PDT",
+ "seconds": 136.0,
+ "fixture_args": "D:/UEMA_Research/external/D/UEMA_scratch/b1_recover_489625/run/B1R_skip13_489625/args.json",
+ "peak_working_set_gib": 0.589
+}

@@ -1,0 +1,311 @@
+{
+ "experiment": "finger_package_vs_control_481800",
+ "written": "Oct 10, 2026 9:47:24 PM PDT",
+ "self_check": false,
+ "verdict": "pass",
+ "verdict_word": "SUPPORTED",
+ "statement": "SUPPORTED (one finger arm and one control arm from 481,800 on these 8 worlds over 2,875 model steps; not a qualification)",
+ "verdict_reason": "SC1 PASS, SC2a PASS, SC2b PASS, SC3 vision PASS, audio PASS, proprioception PASS, tactile PASS",
+ "validity_problems": [],
+ "arms": {
+  "finger": {
+   "run": "D:\\UEMA_Research\\Saved\\mimo_bridge\\experiments\\H84_fresh_drivers_20260918_seg41j_1526",
+   "stop_written": null,
+   "stops_written": [],
+   "resume": "D:\\UEMA_Research\\Saved\\mimo_bridge\\experiments\\H84_fresh_drivers_20260918_seg41o_1431\\checkpoints\\ckpt_step_481800",
+   "stage_done_steps": 484675,
+   "end_checkpoint": true
+  },
+  "control": {
+   "run": "D:\\UEMA_Research\\Saved\\mimo_bridge\\experiments\\H84_fresh_drivers_20260918_seg41u_1718",
+   "stop_written": null,
+   "stops_written": [],
+   "resume": "D:\\UEMA_Research\\Saved\\mimo_bridge\\experiments\\H84_fresh_drivers_20260918_seg41o_1431\\checkpoints\\ckpt_step_481800",
+   "stage_done_steps": 484675,
+   "end_checkpoint": true
+  }
+ },
+ "launch_states": {
+  "finger": "D:\\UEMA_Research\\external\\D\\UEMA_scratch\\finger_investigation\\matched_comparison_v2\\launch_state\\finger.json",
+  "control": "D:\\UEMA_Research\\external\\D\\UEMA_scratch\\finger_investigation\\matched_comparison_v2\\launch_state\\control.json",
+  "differences": [],
+  "notes": [
+   "control capture only:  M Saved/mimo_bridge/archive_keep.json",
+   "control capture only:  M docs/gain_of_function_v4/coordinator/launch_checks_v2_2026-10-10.py",
+   "control capture only:  M docs/gain_of_function_v4/preflight/4ba33dfc88ced223.json",
+   "control capture only:  M docs/gain_of_function_v4/test_registry.json",
+   "control capture only: ?? docs/gain_of_function_v4/coordinator/keep_comparison_end_2026-10-10.py",
+   "control capture only: ?? docs/gain_of_function_v4/coordinator/pin_comparison_run_2026-10-10.py"
+  ]
+ },
+ "declared_criteria_equal": true,
+ "args_differences": {
+  "package": [
+   "finger_joint_servo",
+   "hand_response_calibration",
+   "replace_saved_hand_calibration"
+  ],
+  "run_folders": [
+   "checkpoint_storage",
+   "out"
+  ],
+  "self_check_exempt": [],
+  "latent": [
+   "latent_body_config",
+   "latent_body_output",
+   "latent_body_resume"
+  ],
+  "other": []
+ },
+ "latent_shadow": {
+  "finger": {
+   "folder": "D:\\UEMA_latent_body\\finger_comparison_2026-10-10\\finger",
+   "events": true,
+   "started": 1,
+   "started_contract": "wrist_relative_joint_v1+finger_joint_servo_v1",
+   "started_resume": "D:\\UEMA_latent_body\\finger_comparison_2026-10-10\\start\\latent_start_fresh_seed7_d14e62148317e5c0.pt",
+   "failed": 0,
+   "lessons": 2873,
+   "last_updates": 2873,
+   "last_examples": 22984,
+   "last_step": 484674,
+   "excluded_records": 1,
+   "excluded_transitions": 8
+  },
+  "control": {
+   "folder": "D:\\UEMA_latent_body\\finger_comparison_2026-10-10\\control",
+   "events": true,
+   "started": 1,
+   "started_contract": "wrist_relative_joint_v1",
+   "started_resume": "D:\\UEMA_latent_body\\finger_comparison_2026-10-10\\start\\latent_start_fresh_seed7_68a6cf05a095507c.pt",
+   "failed": 0,
+   "lessons": 2873,
+   "last_updates": 2873,
+   "last_examples": 22984,
+   "last_step": 484674,
+   "excluded_records": 0,
+   "excluded_transitions": 0
+  },
+  "note": "reported beside; decides nothing (VERSION 2)"
+ },
+ "SC1": {
+  "statistic": "finger arm minus control arm, mean finger joint error over model steps 482,100 to 484,600",
+  "finger_mean_deg": 12.106634389887134,
+  "control_mean_deg": 14.635072795394088,
+  "records": {
+   "finger": 26,
+   "control": 26,
+   "declared": 26
+  },
+  "d1_deg": -2.5284384055069538,
+  "line_deg": 0.3,
+  "word": "PASS"
+ },
+ "SC2a": {
+  "verdict": "pass",
+  "P1": true,
+  "P2": true,
+  "word": "PASS"
+ },
+ "SC2b": {
+  "finger_relative_effect_in_100": 22.9479245188683,
+  "control_relative_effect_in_100": 11.435317961587659,
+  "difference_in_100": 11.512606557280643,
+  "margin_in_100": 7.2,
+  "word": "PASS"
+ },
+ "SC3": {
+  "vision": {
+   "finger_mean": 0.7012794421512665,
+   "control_mean": 0.681151874620526,
+   "difference": 0.02012756753074052,
+   "named_loss": 0.1453,
+   "word": "PASS"
+  },
+  "audio": {
+   "finger_mean": 0.8926365948890661,
+   "control_mean": 0.899156960012256,
+   "difference": -0.006520365123189875,
+   "named_loss": 0.0495,
+   "word": "PASS"
+  },
+  "proprioception": {
+   "finger_mean": 0.6749233491274557,
+   "control_mean": 0.6537758067381524,
+   "difference": 0.021147542389303275,
+   "named_loss": 0.1653,
+   "word": "PASS"
+  },
+  "tactile": {
+   "finger_mean": 0.9209414839480801,
+   "control_mean": 0.915066113926428,
+   "difference": 0.00587537002165206,
+   "named_loss": 0.0196,
+   "word": "PASS"
+  }
+ },
+ "SC3_early_beside": {
+  "window": [
+   481900,
+   483300
+  ],
+  "statistic": "finger arm minus control arm, mean prediction ratio over the full stats records at model steps 481,900 to 483,300",
+  "senses": {
+   "vision": {
+    "finger_mean": 0.6810267726803297,
+    "control_mean": 0.6462337304869307,
+    "difference": 0.03479304219339907,
+    "records": {
+     "finger": 15,
+     "control": 15,
+     "declared": 15
+    }
+   },
+   "audio": {
+    "finger_mean": 0.9080099446604389,
+    "control_mean": 0.8916003081001215,
+    "difference": 0.016409636560317464,
+    "records": {
+     "finger": 15,
+     "control": 15,
+     "declared": 15
+    }
+   },
+   "proprioception": {
+    "finger_mean": 0.7256290078250728,
+    "control_mean": 0.6957771374444329,
+    "difference": 0.029851870380639856,
+    "records": {
+     "finger": 15,
+     "control": 15,
+     "declared": 15
+    }
+   },
+   "tactile": {
+    "finger_mean": 0.9257267693970008,
+    "control_mean": 0.9323725219837588,
+    "difference": -0.006645752586757925,
+    "records": {
+     "finger": 15,
+     "control": 15,
+     "declared": 15
+    }
+   }
+  },
+  "missing": [],
+  "note": "reported beside SC3; decides nothing (no validity problem, no word of the verdict)"
+ },
+ "readings": {
+  "finger_end": {
+   "file": "D:\\UEMA_Research\\external\\D\\UEMA_scratch\\finger_investigation\\matched_comparison_v2\\readings\\finger_end\\result_hand_choice.json",
+   "verdict": "pass",
+   "checkpoint": "D:\\UEMA_Research\\Saved\\mimo_bridge\\experiments\\H84_fresh_drivers_20260918_seg41j_1526\\checkpoints\\ckpt_step_484675",
+   "checkpoint_step": 484675,
+   "model_sha256": "f021c515ae86a771ee8fc2cbc31099a5119e4b2b71c757211761643ed5df6ddd",
+   "P1": true,
+   "P2": true,
+   "mean_d": -0.6055943739352057,
+   "signflip_count": 2,
+   "body_means": {
+    "4": -0.39206354275145905,
+    "5": -0.5508483253804335,
+    "6": -0.5733109031841805,
+    "7": -0.9061547244247494
+   },
+   "decisions": 16,
+   "relative_effect_in_100": 22.9479245188683,
+   "closed_share": {
+    "refit": 0.20341082962621684,
+    "without": -0.028911865551400094
+   }
+  },
+  "control_end": {
+   "file": "D:\\UEMA_Research\\external\\D\\UEMA_scratch\\finger_investigation\\matched_comparison_v2\\readings\\control_end\\result_hand_choice.json",
+   "verdict": "pass",
+   "checkpoint": "D:\\UEMA_Research\\Saved\\mimo_bridge\\experiments\\H84_fresh_drivers_20260918_seg41u_1718\\checkpoints\\ckpt_step_484675",
+   "checkpoint_step": 484675,
+   "model_sha256": "b63c2143ec3177d5a3e2e1c1285eedd1b603ac2445893512229a187617d8a2ff",
+   "P1": true,
+   "P2": true,
+   "mean_d": -0.5146896051149571,
+   "signflip_count": 2,
+   "body_means": {
+    "4": -0.5548369821529486,
+    "5": -0.8222991687133934,
+    "6": -0.2911863160201389,
+    "7": -0.39043595357334737
+   },
+   "decisions": 16,
+   "relative_effect_in_100": 11.435317961587659,
+   "closed_share": {
+    "refit": -0.036006702009262724,
+    "without": -0.1871122133000917
+   }
+  },
+  "references": {
+   "C1": {
+    "file": "D:\\UEMA_Research\\external\\D\\UEMA_scratch\\finger_investigation\\matched_comparison_v2\\readings\\C1\\result_hand_choice.json",
+    "verdict": "pass",
+    "checkpoint": "D:\\UEMA_Research\\Saved\\mimo_bridge\\experiments\\H84_fresh_drivers_20260918_seg41c_0841\\checkpoints\\ckpt_step_484675",
+    "checkpoint_step": 484675,
+    "model_sha256": "0957d5d4205134f416293034474e203cc27db54732434d3f2a4345ef3bfd7594",
+    "P1": true,
+    "P2": true,
+    "mean_d": -0.38269216986337884,
+    "signflip_count": 2,
+    "body_means": {
+     "4": -0.2894373428619502,
+     "5": -0.5997477280014101,
+     "6": -0.26466520951921824,
+     "7": -0.3769183990709369
+    },
+    "decisions": 16,
+    "relative_effect_in_100": 16.75637154455825,
+    "closed_share": {
+     "refit": 0.07276749291388093,
+     "without": -0.12999445996676726
+    }
+   },
+   "C2": {
+    "file": "D:\\UEMA_Research\\external\\D\\UEMA_scratch\\finger_investigation\\matched_comparison_v2\\readings\\C2\\result_hand_choice.json",
+    "verdict": "pass",
+    "checkpoint": "D:\\UEMA_Research\\Saved\\mimo_bridge\\experiments\\H84_fresh_drivers_20260918_seg41c_1433\\checkpoints\\ckpt_step_484675",
+    "checkpoint_step": 484675,
+    "model_sha256": "d9ddd9e4262ea4284bab90f3fb4eb5c4d66e9e9e01c504c765c840bc4b72d4cd",
+    "P1": true,
+    "P2": true,
+    "mean_d": -0.46667873485534755,
+    "signflip_count": 2,
+    "body_means": {
+     "4": -0.31262638334550524,
+     "5": -0.3690433565861861,
+     "6": -0.4592183523016447,
+     "7": -0.7258268471880541
+    },
+    "decisions": 16,
+    "relative_effect_in_100": 15.974016728454297,
+    "closed_share": {
+     "refit": 0.06176552396522977,
+     "without": -0.12479887270478071
+    }
+   }
+  }
+ },
+ "reference_readings_file": "D:\\UEMA_Research\\external\\D\\UEMA_scratch\\finger_investigation\\matched_comparison_v2\\readings\\result_reference_readings.json",
+ "H4_paired_trace_beside": {
+  "file": "D:\\UEMA_Research\\external\\D\\UEMA_scratch\\finger_investigation\\matched_comparison_v2\\readings\\finger_end_paired_trace.json",
+  "verdict": "pass",
+  "checks": {
+   "B1_on_rule_no_gap_dominated_push_against": true,
+   "B2_force_and_torque_follow_command": true,
+   "B3_bend_and_extend_body_line": true,
+   "problems": []
+  },
+  "seconds": 322.0,
+  "exit_code": 0
+ },
+ "R3_chain_beside": {
+  "file": "D:\\UEMA_Research\\external\\D\\UEMA_scratch\\finger_investigation\\matched_comparison_v2\\readings\\finger_end\\result_hand_choice.json",
+  "note": "each of the 16 decisions' rows hold the chain: the restored state's hash, the remembered pose, the hand stage's predicted first and selected cost, each arm's command and hand joint goal, the end-of-hold measures"
+ }
+}

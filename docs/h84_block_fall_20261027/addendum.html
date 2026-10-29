@@ -1,0 +1,188 @@
+<section id="block-fall">
+<p class="eyebrow">Added after the patent and current-code review</p>
+<h2>From the block to the floor, then back up</h2>
+<p class="lead">Getting upright and feeling well again are different jobs. UEMA needs to learn both: change its movements while its body is disturbed, and account for senses or muscles that have not fully recovered.</p>
+<div class="callout"><strong>Revised to your requested size:</strong> the cube is <strong>0.75 foot per edge: 9 inches, or 0.2286 metres</strong>. MIMo keeps its original body proportions and is about 0.83 metres tall. Both cameras show the same movement, without a caregiver. This 12-second animation is an authored movement study.</div>
+<div class="controls">
+<button id="block-play" type="button">Play fall and get-up</button><button id="block-reset" type="button">Start again</button>
+<label for="block-view">Camera</label><select id="block-view"><option value="both">Both perspectives</option><option value="side">Side</option><option value="front">Front diagonal</option></select>
+<output id="block-clock" for="block-time">0.0 / 12.0 s</output>
+</div>
+<label for="block-time">Move through the sequence</label><input id="block-time" type="range" min="0" max="360" value="0" step="1" style="width:100%">
+<div class="pair" id="block-viewer"><figure id="block-side-figure"><img id="block-side" src="h84_block_fall_20261027/knee_contact/block_side_000.webp" alt="MIMo upright on the block, side view"><figcaption>Side view: watch the head, hips, hands and feet.</figcaption></figure><figure id="block-front-figure"><img id="block-front" src="h84_block_fall_20261027/knee_contact/block_front_000.webp" alt="The same starting pose seen from a front diagonal"><figcaption>Front diagonal: check both arms and the separate leg placements.</figcaption></figure></div>
+<p id="block-caption" class="callout" aria-live="polite"></p>
+<p><strong>Watch the support change:</strong> the body tips from its toes, then the hands and knees meet the floor. The knees stay down while the elbows bend and the chest lowers. The hips shift back, the hands lift, one foot comes forward, and the body rises. Contact forces still require a physical simulation; these pictures show the proposed arrangement and timing.</p>
+<div class="parts" style="grid-template-columns:repeat(auto-fit,minmax(min(100%,280px),1fr))"><article class="part"><h3>Body position</h3><p id="block-body"></p></article><article class="part"><h3>Example touch-precision state</h3><p id="block-quality"></p><meter id="block-meter" min="0" max="1" value="1" style="width:100%"></meter><p>The meter illustrates a setting that would make one skin region's pressure readings coarser. It does not change the rendered poses or a running model. It is not measured damage from this fall.</p></article></div>
+<h3>What moves together, and when</h3>
+<div class="table-scroll"><table><thead><tr><th>Illustrated time</th><th>Movement to inspect</th><th>What experience must teach UEMA</th></tr></thead><tbody>
+<tr><td>0–1.60 s<br>Stand, then tip</td><td>The body rotates toward the block edge. The toes remain at the edge while the heels rise. The arms begin reaching toward the floor.</td><td>Use changing pressure and tilt to predict loss of support early enough to correct it.</td></tr>
+<tr><td>1.60–1.86 s<br>Leave the edge</td><td>The pelvis descends, the trunk turns forward, and hips and knees bend to clear the block. The hands approach the floor.</td><td>Predict where contact will occur and how a changed command affects the whole body, including wrists and head.</td></tr>
+<tr><td>1.86–3.90 s<br>Lower on hands and knees</td><td>Both knees meet the floor and stay in place. Elbows bend as the chest lowers, then extend as the chest rises. The hips turn around the knees instead of leaving the knees hanging in the air.</td><td>Learn how elbow motion changes loading, and how to obtain support without overloading a hand or knee.</td></tr>
+<tr><td>3.90–5.50 s<br>Shift from hands to knees</td><td>The hips shift back toward the heels before the hands lift. The chest then rises over the knees. The arms return beside the trunk. The knees remain in place.</td><td>Predict whether knee and shin contact can support the body before releasing the hands.</td></tr>
+<tr><td>5.50–7.30 s<br>Plant one foot</td><td>The right knee moves forward while the left knee stays down. The right foot swings forward, turns toward the floor and plants. The trunk shifts toward that foot.</td><td>Coordinate hip, knee and ankle movement so the foot clears the floor and the remaining contacts support the body.</td></tr>
+<tr><td>7.30–10.30 s<br>Bring the other foot under, then rise</td><td>The left knee lifts. The left foot comes forward while the right foot stays planted. Both hips and knees extend as the trunk returns upright.</td><td>Keep support during the transfer. Correct for slipping, changed strength or uncertain pressure readings.</td></tr>
+<tr><td>10.30–12.00 s<br>Finish upright</td><td>The final stance is held for inspection. The example sensor state continues recovering.</td><td>Standing again must not erase remaining fatigue or loss of sensing precision.</td></tr>
+</tbody></table></div>
+<p><strong>The pictures suggest a possible arrangement, not the only recovery.</strong> A learned response could roll, remain low, use a different hand, or postpone standing when that preserves more function. We must not reward the learner for matching these joint poses.</p>
+<details><summary>Timing, contact checks and the remaining physical question</summary>
+<p>The display has 30 frames per second, with 361 poses from 0 to 12 seconds. A 500 ms viewing interval spans 15 frame intervals. The proposed model still receives feedback within that interval; the pictures are not a command schedule for the learner.</p>
+<p>From edge departure to the first low floor pose takes about 0.26 seconds. The authored pelvis path includes gravity during that interval. Rotations and limb movements are posed, so this is not a solved whole-body fall. The later recovery takes several seconds because support transfers between hands, knees and feet. The total duration is an illustration choice, not a measured learning result.</p>
+<p>Each displayed pose is checked against floor and block geometry. The corrected landing also checks that the surface beside each knee stays within 1 millimetre of the floor while both knees are down. A closest-point check makes sure this is knee contact, rather than a different part of the leg touching. Hand and foot targets are solved within joint limits; the record reports fitting errors as well as clearances. These geometry checks cannot measure load-bearing ability or impact forces. The next physical qualification must measure those quantities in the simulator. <a href="../Saved/h84/block_fall_design_20261027/evidence/knee_contact/motion.json">Revised pose and clearance record</a> · <a href="h84_block_fall_20261027/knee_contact/render.py">Renderer source</a>.</p>
+<p>The meter illustrates an affected skin region with q = 0.20 at 1.86 seconds. This is a chosen example, not damage calculated from the pictured fall. It follows q = 1 − 0.8 exp(−elapsed/10 s), the existing zero-load recovery rule. At 12 seconds q is about 0.71. A value of 0.71 is a precision setting, not “71% accuracy.” The meter changes neither the pictures nor a running model.</p>
+</details></section>
+
+<section id="patent-function">
+<h2>Unwellness should change what the body can sense and do</h2>
+<p>Imagine trying to stand with a hand that reports pressure in large steps. A gentle increase in load may be invisible until the reading suddenly jumps. UEMA must learn to use that hand differently, use other sensations, or choose another movement. A separate “bad” score cannot by itself create this experience.</p>
+<div class="path">Contact loads a particular region<br>↓<br>That region's function changes over time<br>↓<br>The model receives the changed sensations and capacity<br>↓<br>It predicts, chooses, acts, and learns from the result</div>
+<p><strong>A meta-parameter is a setting that changes how sensing or movement works.</strong> Examples are the size of a pressure-reading step, a sensor's delay, or the force a muscle can produce. Here these are temporary body-state settings. They are different from the learned network weights that store experience.</p>
+<h3>What the patent contributes</h3>
+<p>I read the complete description and all 30 claims of <a href="https://patents.google.com/patent/US11537850B2/en?oq=11537850">US11537850B2</a>, and inspected its 12 drawing sheets. It describes interactions changing sensory resolution or the processing of sensory information. Figure 5 separates changes to sensors from changes to neural processing. Claims 10–11 address temporary local resolution loss from deformation; claim 1 includes changes to neural-network processing. Some examples distinguish recovery from permanent loss of maximum resolution.</p>
+<p>The pressure example's five-minute effect is an example in the patent, not a calibrated MIMo recovery time. The existing code's ten-second recovery constant is a separate engineering choice. Neither supplies a measured injury threshold for this block fall. The recommendation below applies the patent's functional idea without treating all its possible mechanisms as mandatory.</p>
+<h3>What is already connected, and what needs extending</h3>
+<div class="table-scroll"><table><thead><tr><th>Setting</th><th>Actual effect</th><th>Current source and design decision</th></tr></thead><tbody>
+<tr><td>Local touch precision</td><td>Pressure and shear readings are rounded to larger steps in the affected skin region, then regain precision over time.</td><td><strong>Implemented.</strong> BodyFunction and virtual skin do this. In <code>modulate</code> mode the changed readings reach learner inputs, contact wellness, memory and self-state. Keep this producer; qualify its load and recovery profile.</td></tr>
+<tr><td>Muscle force capacity</td><td>A fatigued actuator has less force available, and recovers according to its fatigue state.</td><td><strong>Implemented for fatigue.</strong> It changes simulator actuator gain and force limits in its modulation mode. Direct impact-related muscle or joint damage is a separate proposed extension.</td></tr>
+<tr><td>Position-sense precision and delay</td><td>Affected joints could report less precise or older position and motion readings.</td><td><strong>Proposed impact extension.</strong> Specify the affected joints, numeric precision, delay and recovery before enabling it. Preserve timestamps so old data cannot masquerade as current data.</td></tr>
+<tr><td>Balance sensing</td><td>A qualified head disturbance could temporarily bias or delay motion/tilt readings.</td><td><strong>Proposed extension.</strong> Apply only with a declared physical cause and recovery state. Falling is not itself proof that the balance sensor has been damaged.</td></tr>
+<tr><td>Vision quality</td><td>A qualified eye/head effect could change image sharpness, exposure range or update delay.</td><td><strong>Proposed impact extension.</strong> Do not blur every image after every fall. Location and cause must justify the effect.</td></tr>
+<tr><td>Processing capacity</td><td>A reversible gate could limit available features or increase a represented processing delay.</td><td><strong>Optional, not the first implementation.</strong> Keep its state explicit and predictable. Do not erase learned weights or throttle the computer to simulate pain.</td></tr>
+</tbody></table></div>
+<p><strong>These are source capabilities, not a claim that every switch is enabled.</strong> The inspected training option defaults body-function modulation to <code>off</code>. <code>observe</code> records a shadow effect while leaving experienced quality healthy; <code>modulate</code> changes the experience. The self-state pathway represents the model's own sensing and movement capacity. Its settings distinguish learning a forecast from letting that forecast affect perception or choice. A run receipt must identify the enabled modes.</p>
+<details><summary>The exact pressure example, without confusing precision with strength</summary>
+<p>The current code maps local q in [0,1] to b = round(2 + 21q) bits. It rounds pressure and shear in pascals to steps of 100,000/(2<sup>b</sup> − 1). Intact readings are passed through unchanged. At q = 0.20, b = 6 and the step is about 1,587 Pa. At q = 0.80, b = 19 and the step is about 0.19 Pa. Thus q = 0.80 does not mean “80% prediction accuracy” or “80% muscle strength.” It is a control setting for a specific sensing operation.</p>
+<p>The number of skin locations stays the same. The reading becomes coarser; pressure is not simply multiplied down. High pressures are not clipped by this quantizer. An older optional movement-drive route scales sensor amplitudes and learning/exploration settings after stillness. That is a different mechanism and should not be silently added to this impact model.</p>
+</details>
+<h3>The recommended state: cause, effect, recovery, and remaining capacity</h3>
+<p>Keep a small record for each affected body region: the load and exposure that caused the change, its present sensory and force capacity, its recovery clock, and any lasting limit. The world owns this record. A new intention, a replay sample, or restarting the process must not heal it.</p>
+<p>Temporary impairment and lasting damage need separate fields. Temporary impairment can recover. Lasting damage lowers the maximum it can recover to until a declared repair occurs. A smaller pain reading is not evidence that either has healed. Surprise in the predictor is also not an injury measurement.</p>
+<p>If “spurious damage” means a false impact caused by a numerical or logging error, fix that error rather than teaching the model to fear it. If it means simulated harm inside the virtual body, give it a defined physical cause and a real functional effect in that body.</p>
+<p>The model should learn that a hard impact can leave it with worse control afterward. It should also learn that a short effort or a controlled descent can preserve future control. This is how the same objective can favor a quick correction before a fall and a careful recovery after one, without a programmed “fall → kneel → stand” routine. Keep loss of body function in that objective: making a sensor less informative must not earn a reward merely because its readings become easier to predict.</p>
+<details><summary>Producer-to-consumer contract and the next implementation work</summary>
+<ol>
+<li><strong>Measure the cause.</strong> Use the existing skin exposure/pressure history for reversible touch effects. Add qualified contact impulse, joint load or head disturbance only for new effects that need them. Record region, units, timestamps and profile version. Validate pulse duration and timestep sensitivity; a one-frame numerical contact spike must not create arbitrary permanent injury.</li>
+<li><strong>Advance the function state.</strong> Extend the existing world-owned BodyFunction state instead of creating an unrelated global pain multiplier. Separate its reversible precision state from fatigue and any calibrated persistent damage. Update by elapsed simulation time, not by the number of optimizer steps.</li>
+<li><strong>Apply the effect once.</strong> One observation operator produces the experienced sensor stream. One capacity mapping sets actual actuator availability. All learner routes use the same experienced stream. Keep clean physical values in an audit record; do not secretly feed them to the acting policy as replacement senses.</li>
+<li><strong>Represent what the agent can know.</strong> Existing self-state receives explicit quality fields: readings of its own bodily condition. Keep that access declared. For new hidden effects, infer capacity and uncertainty from allowed evidence; do not silently supply a perfect hidden injury state. Missing data must carry a validity marker rather than being read as zero load.</li>
+<li><strong>Predict the changing body.</strong> Preserve the existing action-and-duration-conditioned self forecast and the code that compares predicted movement sequences. Connect them to the proposed common sequence state: body motion, contact, experienced observations, local function, muscle capacity, intention and elapsed time advance together. A three-second rollout needs a learned continuation value for the rest of a longer get-up and a much longer sensory recovery.</li>
+<li><strong>Learn from actual outcomes.</strong> Save the before/after experienced readings, function fields, effective command, duration and audit loads under their versions. Train sensory forecasts on experienced targets and function forecasts on the declared function targets. Use real subsequent loss of function in value learning; preserve rare harmful transients in training windows. No bonus is paid merely for injuring and then recovering.</li>
+<li><strong>Qualify the complete connection.</strong> In a later authorized saved-state comparison, change only a physical load or declared impairment and verify the expected observation/capacity effect, its duration, and persistence after reload. Then compare learned choices before and after training in early-correction, unavoidable-impact, recovery, harmless-contact and unfamiliar scenes. Raw load and damage records must still detect harm when the affected sensor is less precise.</li>
+</ol>
+<p>The next authorized implementation target would be this common function-state/sequence contract, preserving the existing tactile, fatigue, self-forecast and replay routes. The overseer owns the design; the builder would execute after the implementation pause is lifted. Diagnostic preparation must use the existing managed runner and cumulative budget. No implementation or training is launched by this document.</p>
+<p><a href="../Saved/h84/block_fall_design_20261027/evidence/code_capability_review.txt">Independent source review with exact files and line references</a> · <a href="../Saved/h84/block_fall_design_20261027/evidence/patent_read_record.json">Complete patent reading record</a>.</p>
+</details></section>
+
+<section id="past-future" aria-labelledby="attention-title">
+<style>
+#past-future .attention-answer{border-left:5px solid #16678c;background:#eaf4fa;padding:18px 22px;margin:18px 0}
+#past-future .attention-terms{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+#past-future .attention-terms article{border:1px solid #b7ccd8;border-radius:6px;padding:16px;background:#f6fafc}
+#past-future .attention-terms h3{margin-top:0}
+#past-future .attention-scroll{overflow-x:auto;border:1px solid #cbdce5;padding:12px;margin:18px 0}
+#past-future .attention-timeline{display:block;width:100%;min-width:850px;height:auto}
+#past-future .attention-matrix{border-collapse:collapse;min-width:850px;width:100%;font-size:1rem}
+#past-future .attention-matrix caption{text-align:left;font-weight:700;padding:8px 0 16px}
+#past-future .attention-matrix th,#past-future .attention-matrix td{padding:12px 9px;border:1px solid #b7ccd8;text-align:center;vertical-align:middle}
+#past-future .attention-matrix tbody th{text-align:left;min-width:190px}
+#past-future .attention-yes{background:#e3f2e9;color:#174d31;font-weight:700}
+#past-future .attention-no{background:#fae6e3;color:#852f25;font-weight:700}
+#past-future .attention-example{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:18px 0}
+#past-future .attention-example article{padding:18px;border:2px solid #91b4c8;border-radius:6px}
+#past-future .attention-example h3{margin-top:0}
+#past-future blockquote{margin:18px 0;padding:15px 20px;background:#f4f6f8;border-left:4px solid #778d9a}
+#past-future code{overflow-wrap:anywhere}
+@media(max-width:760px){#past-future .attention-terms,#past-future .attention-example{grid-template-columns:1fr}}
+</style>
+<h2 id="attention-title">The attention problem: learn from the later result without seeing it early</h2>
+<p class="lead">At the edge of the block, UEMA can predict a fall. It cannot read the actual floor impact before that impact happens. This rule must hold while it moves and while we teach many moments in one training sequence.</p>
+<blockquote><strong>The concern being answered:</strong> “The forward model has a cross-modal attention path without a causal mask. Changing a later observation must not change an earlier prediction.”</blockquote>
+<div class="attention-answer"><strong>Decision:</strong> preserve the current prediction route while testing a successor that enforces this rule for every moment. Add a time-based reading rule to the bridge between senses, and check every other route that could carry a later answer backward. Keep sight and touch from the same available moment connected.</div>
+<p><strong>Status:</strong> this section specifies the repair and its checks. It does not change the model or resume training.</p>
+
+<div class="attention-terms">
+<article><h3>Attention</h3><p>The network chooses which readings to use when making its next estimate.</p></article>
+<article><h3>Cross-modal</h3><p>Different senses share information. Sight can help explain touch, and touch can help explain sight.</p></article>
+<article><h3>Causal mask</h3><p>A rule that blocks information which had not arrived when a choice was made. It does not block all communication between senses.</p></article>
+</div>
+
+<h3>One fall, three different uses of information</h3>
+<p>These times explain the information rule; they are not measured reaction times. Read the diagram from left to right. On a small screen, scroll sideways.</p>
+<div class="attention-scroll" tabindex="0" aria-label="Scrollable timeline of prediction, observation and learning">
+<svg class="attention-timeline" viewBox="0 0 980 410" role="img" aria-labelledby="attention-svg-title attention-svg-desc">
+<title id="attention-svg-title">Predict now, observe later, then learn</title>
+<desc id="attention-svg-desc">At 1.4 seconds, sight and touch already received help choose a command and predict impact. At 2.2 seconds, actual impact readings arrive. Those readings can teach the next prediction but cannot be an input to the earlier prediction. An imagined future is a guess, not a later measured answer.</desc>
+<defs><marker id="attention-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10Z" fill="#16678c"/></marker></defs>
+<g font-family="system-ui, sans-serif" fill="#163346">
+<rect x="15" y="25" width="285" height="190" rx="8" fill="#eaf4fa" stroke="#91b4c8"/>
+<rect x="345" y="25" width="285" height="190" rx="8" fill="#fff3df" stroke="#c8a568"/>
+<rect x="675" y="25" width="290" height="190" rx="8" fill="#e8f4ec" stroke="#91b49d"/>
+<text x="35" y="58" font-size="22" font-weight="700">1.4 s: choose and predict</text>
+<text x="35" y="94" font-size="18">Use received sight and touch.</text>
+<text x="35" y="123" font-size="18">Choose a body command.</text>
+<text x="35" y="152" font-size="18">Guess what contact may follow.</text>
+<text x="35" y="187" font-size="17" font-weight="700">The impact is still unknown.</text>
+<text x="365" y="58" font-size="22" font-weight="700">2.2 s: observe contact</text>
+<text x="365" y="94" font-size="18">The actual readings arrive.</text>
+<text x="365" y="123" font-size="18">Use them for the next move.</text>
+<text x="365" y="152" font-size="18">Compare them with the guess.</text>
+<text x="365" y="187" font-size="17" font-weight="700">An answer to learn from, now.</text>
+<text x="695" y="58" font-size="22" font-weight="700">Afterward: learn</text>
+<text x="695" y="94" font-size="18">Update the learned weights.</text>
+<text x="695" y="123" font-size="18">Improve the next similar choice.</text>
+<text x="695" y="152" font-size="18">Keep the earlier prediction.</text>
+<text x="695" y="187" font-size="17" font-weight="700">Keep its original inputs.</text>
+<path d="M305 120H339" fill="none" stroke="#16678c" stroke-width="3" marker-end="url(#attention-arrow)"/>
+<path d="M635 120H669" fill="none" stroke="#16678c" stroke-width="3" marker-end="url(#attention-arrow)"/><rect x="15" y="245" width="950" height="61" rx="6" fill="#eaf4fa"/>
+<text x="35" y="271" font-size="18" font-weight="700">Allowed at 1.4 s: imagine a possible contact at 2.2 s.</text>
+<text x="35" y="295" font-size="17">That prediction comes from the available past and the proposed command. It may be wrong.</text>
+<rect x="15" y="325" width="950" height="61" rx="6" fill="#fae6e3"/>
+<text x="35" y="351" font-size="18" font-weight="700">Blocked at 1.4 s: read the actual contact measurement from 2.2 s.</text>
+<text x="35" y="375" font-size="17">During training, keep that later measurement on the answer side of the comparison.</text>
+</g></svg></div>
+
+<h3>Exactly which measured readings may each prediction use?</h3>
+<p>Each row below is a prediction made at one moment. Each column is a measured reading. “Yes” means that reading may help the prediction. “No” means the mask must block it. This simple example assumes each reading arrives at the time printed above its column.</p>
+<div class="attention-scroll" tabindex="0" aria-label="Scrollable table showing allowed and blocked attention by time">
+<table class="attention-matrix"><caption>Keep same-time senses connected. Block later measured answers.</caption>
+<thead><tr><th rowspan="2" scope="col">Prediction made at</th><th colspan="2" scope="colgroup">1.0 s readings</th><th colspan="2" scope="colgroup">1.4 s readings</th><th colspan="2" scope="colgroup">2.2 s readings</th></tr><tr><th scope="col">Sight</th><th scope="col">Touch</th><th scope="col">Sight</th><th scope="col">Touch</th><th scope="col">Sight</th><th scope="col">Touch</th></tr></thead>
+<tbody><tr><th scope="row">1.0 s</th><td class="attention-yes">Yes</td><td class="attention-yes">Yes</td><td class="attention-no">No</td><td class="attention-no">No</td><td class="attention-no">No</td><td class="attention-no">No</td></tr>
+<tr><th scope="row">1.4 s: at the edge</th><td class="attention-yes">Yes</td><td class="attention-yes">Yes</td><td class="attention-yes">Yes</td><td class="attention-yes">Yes</td><td class="attention-no">No</td><td class="attention-no">No</td></tr>
+<tr><th scope="row">2.2 s: after contact</th><td class="attention-yes">Yes</td><td class="attention-yes">Yes</td><td class="attention-yes">Yes</td><td class="attention-yes">Yes</td><td class="attention-yes">Yes</td><td class="attention-yes">Yes</td></tr></tbody></table></div>
+<p><strong>Late-arriving readings need special care.</strong> A camera image taken at 1.4 s but received at 1.5 s was not available for the 1.4 s choice. Save when it was taken and when it arrived. The reading rule follows what was available, not just the label on the image.</p>
+
+<h3>What the inspected code does today—and what must change</h3>
+<div class="attention-example"><article><h3>Current route: the newest moment</h3><p>The inspected live and replay routes give the model an already-observed history and use its newest output. At 1.4 s, that input history does not contain the actual 2.2 s impact. The missing bridge mask alone therefore does <strong>not</strong> prove that these current decisions see the future.</p></article>
+<article><h3>Proposed training: many moments together</h3><p>To teach predictions at 1.0, 1.4 and 2.2 s in one batch, all three moments may sit in the same input array. Without the time rule, the 1.4 s output could read the 2.2 s answer. Every connection must obey the matrix above before we use those earlier outputs as forecasts.</p></article></div>
+<p>The concrete defect in that proposed use is <strong>answer leakage</strong>: a prediction is helped by the answer it was supposed to discover. A lower training error would then hide a bad predictor. Masking prevents this shortcut; it does not, by itself, teach accurate motion.</p>
+
+<h3>The test that would settle whether the rule works</h3>
+<div class="attention-answer"><strong>Make two copies of the same example.</strong> Keep the learned weights, earlier readings, proposed command and random choices identical. Change only the later actual impact reading in one copy. Recompute the 1.4 s prediction and command in both copies. Their outputs must stay the same; merely keeping an old log unchanged would not test this. The later answer and the error used for learning may change.</div>
+<p>Also change a touch reading that really was available at 1.4 s. That reading is allowed to affect the 1.4 s estimate. This second check helps catch an incorrect repair that blocks useful senses along with future answers. After a learning update, a new prediction can improve; that is different from changing a prediction already made.</p>
+
+<h3>Why this matters for UEMA’s own wellness</h3>
+<p>UEMA should learn whether a movement preserves its sensing, strength and useful control over time. At the edge it uses <em>predicted</em> consequences to choose. Afterward, actual bodily effects teach how good that prediction and choice were. This keeps the reason for moving inside the model’s wellness objective; the mask neither adds a new reward nor supplies a fall-recovery routine.</p>
+<p>A harmful movement must not look successful because a damaged sensor reports less detail or because the predictor secretly saw the answer. Learn from the experienced senses together with the declared bodily-function evidence. Keep hidden clean simulator readings for auditing, unless the model is explicitly allowed to sense them.</p>
+
+<details><summary>Precise implementation: all attention paths, replay, delayed inputs and caches</summary>
+<p><strong>Inspected source.</strong> In <code>forward_model.py</code>, stage 1 exchanges senses at one time. Stage 2 masks later times within each sense. Stage 3 flattens time and sense into one array and has no time mask. An earlier internal output can therefore depend on a later supplied input. The main inspected prediction heads consume the newest output; this is why the current history-only route and proposed parallel earlier-time outputs require different conclusions. The source review records the exact paths and line references.</p>
+<p><strong>Mask definition.</strong> Give each output a decision cutoff and each measured input its acquisition time, arrival time and validity. Permit an input only when it was available by that cutoff and belongs to its declared context. Do not join unrelated worlds or episodes as consecutive sensor moments. Previously acquired memories may remain available under the declared memory contract. All available senses at the same time may exchange information. Implement time blocks across modalities, rather than a plain lower triangle over serialized sense tokens. A plain triangle would wrongly block a same-time sense merely because it was listed later.</p>
+<p><strong>Close indirect paths too.</strong> Apply the same availability boundary to every cross-time attention layer and any feature that can carry later data: earlier-token states, memory retrieval, bodily self-state, normalization, padding and reused caches. A token with an early timestamp is not safe if an earlier processing stage already mixed future measurements into it. Do not compute sequence-wide normalization from future examples for an earlier prediction. Never reuse a bidirectionally processed cache as a causal past cache.</p>
+<p><strong>Future commands need ordering too.</strong> When replay teaches a sequence, give each predicted transition only the command executed for that transition. Later commands may have been chosen in response to later observations. They must not leak those observations back into earlier predictions. In a second counterfactual check, change only executed commands after transition k: predicted physical states through k must remain unchanged. A proposed future command sequence is allowed for imagination, but a later command cannot physically cause an earlier body state.</p>
+<p><strong>Replay and targets.</strong> Reconstruct the sampled decision from its recorded earlier context and the information available at that decision. Keep later measurements and wellness outcomes in target fields, not acting inputs. The inspected replay route already separates context, current input and the next target; preserve that separation. Store the previous command, active filter, intention, available bodily-condition fields, world identity and timing needed to reproduce the decision. A retrospective teacher may study the completed sequence, but its hindsight is a training target or later weight update—not an early policy observation.</p>
+<p><strong>Imagination.</strong> Predicted future features are allowed within each imagined candidate. Produce them from the available state and proposed actions, advance that candidate’s own state, and keep their predicted provenance distinct from real measurements. Do not insert true next frames between imagined steps and report that result as autonomous prediction. Imagined contact must also advance the predicted bodily-function state and the intrinsic wellness consequences used by the next choice.</p>
+<p><strong>Timestamp ordering.</strong> Declare how simultaneous sensor delivery, a command decision and command dispatch are ordered. A measurement delivered after the decision is unavailable to it even if the acquisition timestamp matches. The same ordering must hold in live inference, replay and parallel training. Reinitialize or rebuild caches after changing the mask semantics; do not carry cached states made under the old mixing rule into the successor without an explicit conversion.</p>
+</details>
+
+<details><summary>Migration and acceptance: preserve learning, prove information flow, then compare ability</summary>
+<ol>
+<li><strong>Preserve the current state and reference route.</strong> Keep weights, optimizer state, replay, memories, worlds, bodily-function state and source/configuration versions. Make the causal successor separately. A new mask changes the model’s meaning; do not silently switch an old checkpoint and call the result equivalent.</li>
+<li><strong>Implement one availability contract.</strong> Add the time-block bridge mask and fix any indirect route that violates it. Expose per-time prediction outputs only after their complete input path obeys that contract.</li>
+<li><strong>Run the counterfactual information check when authorized.</strong> Freeze weights, random state, prefix and proposed actions. Perturb or replace only later measured observations. Earlier forecasts, value inputs and policy outputs must be unchanged within a declared numerical tolerance for the same execution path. Check earlier output derivatives with respect to later measured inputs are zero where differentiable. Control random draws so harmless random-number changes do not masquerade as leakage.</li>
+<li><strong>Check useful information still gets through.</strong> Verify same-time available cross-sense paths are permitted. Use paired inputs where the affected sense is actually used; a trained model need not respond to every possible perturbation. Test delayed arrivals, padding, memory retrieval, self-state and warm caches separately, using the same cutoff.</li>
+<li><strong>Compare against the preserved newest-prefix route.</strong> Record changes in forecasts and choices; identical numerical outputs are not required after a semantic mask change. Judge future prediction on sequences excluded from fitting, including first contact and recovering senses. Retain a free-running test in which only predicted intermediate states are available.</li>
+<li><strong>Judge the motion, not only training loss.</strong> Compare contact timing, body motion, sensory-function predictions, useful control and actual chosen recovery. Keep the current route until the successor passes the declared adoption comparison and retained abilities have been checked.</li>
+</ol>
+<p>These are the specific implementation and acceptance steps proposed here. They have not been executed by this document work. Implementation and training remain paused. The overseer owns the design decision; later execution remains with the project’s authorized coordinator and managed test process.</p>
+<p><a href="../Saved/h84/block_fall_design_20261027/evidence/code_capability_review.txt">Independent source review: current capability and attention paths</a> · <a href="../Saved/h84/block_fall_design_20261027/evidence/revision2/attention_review.txt">Adversarial review of this replacement section</a></p>
+</details>
+</section>

@@ -1,0 +1,1253 @@
+{
+  "uncalibrated": {
+    "result": {
+      "checkpoint": "Saved\\mimo_bridge\\experiments\\H84_fresh_drivers_20260918_seg34_motor_control\\checkpoints\\ckpt_step_372375",
+      "bodies": 8,
+      "learning": false,
+      "task": "Match the world pose reached by a recorded normal exploratory command in 250 ms.",
+      "target_source": "One independent-babble command per body, fixed seed 92400 + body index, then actual physics.",
+      "goal_scope": "Auditor-supplied reachable physical goal; the sensory-memory planner keeps its original goal.",
+      "cost": "Mean per-axis squared world position error / 1.80 cm squared plus rotation error / 11 degrees squared, all non-gaze parts.",
+      "trust_region": "Before production filtering: +/-1.80 cm per position coordinate and at most 11 degrees per part around the starting controller command.",
+      "optimization": "30 Adam updates, learning rate 0.1; retain the exact baseline and best evaluated candidate.",
+      "fixed": "Starting world, model execution state, random streams, strength, radius and gaze request; no learning.",
+      "controls": "Original controller; repaired sensory-goal planner; target-generating command and exact replay.",
+      "evidence": "Candidate must improve actual endpoint error against the original controller. Prediction improvement alone does not pass.",
+      "production_switches_changed": false,
+      "worlds": 8,
+      "weights_unchanged": true,
+      "goal_error_means": {
+        "controller": 0.503388300538063,
+        "raw_planner": 4.089918911457062,
+        "body_prediction_choice": 0.4752862621098757,
+        "target_witness": 3.591749615691189e-15
+      },
+      "bodies_better_than_controller": 5,
+      "difference_from_controller": {
+        "mean": -0.02810203842818737,
+        "ci95": [
+          -0.11786457751877606,
+          0.038936316408216966
+        ]
+      },
+      "physical_improvement": false,
+      "adoption": false,
+      "next_test": "Connect remembered goals to physical pose, then test repeated goal-directed choices from changed starts before adoption."
+    },
+    "raw_sources": [
+      {
+        "path": "Saved\\gof_takeover_20260923\\planner_investigation\\body_choice_372375_v2\\result.json",
+        "sha256": "65f473b7e3e6dd968b4c39cab363f0eed25fb029ecec6c3cc84899dfe039a49d"
+      },
+      {
+        "path": "Saved\\gof_takeover_20260923\\planner_investigation\\body_choice_372375_v2\\trials.jsonl",
+        "sha256": "e444205887a9e0646023b1ff5b0577cf8cd9715c2f67d488b2e0f1c5d0b509a8"
+      }
+    ],
+    "mean_physical_error_reduction_percent": 5.582576789756455,
+    "physical_error_reduction_percent_ci95": [
+      -11.31057760151645,
+      15.294174353819782
+    ],
+    "errors_by_arm": {
+      "controller": {
+        "position_error_cm": 1.2738958448171616,
+        "rotation_error_deg": 7.174436569213867,
+        "goal_error": 0.503388300538063
+      },
+      "raw_planner": {
+        "position_error_cm": 3.5768734216690063,
+        "rotation_error_deg": 17.938958525657654,
+        "goal_error": 4.089918911457062
+      },
+      "body_prediction_choice": {
+        "position_error_cm": 1.2613704651594162,
+        "rotation_error_deg": 7.068673729896545,
+        "goal_error": 0.4752862621098757
+      }
+    },
+    "bodies": [
+      {
+        "body": 1,
+        "predicted_before": 3.041360855102539,
+        "predicted_after": 2.4482007026672363,
+        "controller": {
+          "goal_error": 0.39121201634407043,
+          "position_error_cm": 1.335405707359314,
+          "rotation_error_deg": 6.629421234130859
+        },
+        "candidate": {
+          "goal_error": 0.36050325632095337,
+          "position_error_cm": 1.2307591438293457,
+          "rotation_error_deg": 6.247735500335693
+        },
+        "repeated_exactly": true
+      },
+      {
+        "body": 2,
+        "predicted_before": 7.498940467834473,
+        "predicted_after": 6.566688537597656,
+        "controller": {
+          "goal_error": 0.3697175979614258,
+          "position_error_cm": 1.1107773780822754,
+          "rotation_error_deg": 7.066338062286377
+        },
+        "candidate": {
+          "goal_error": 0.43230560421943665,
+          "position_error_cm": 1.40159010887146,
+          "rotation_error_deg": 7.08247184753418
+        },
+        "repeated_exactly": true
+      },
+      {
+        "body": 3,
+        "predicted_before": 6.9038238525390625,
+        "predicted_after": 6.310541152954102,
+        "controller": {
+          "goal_error": 0.2216421365737915,
+          "position_error_cm": 0.7270354628562927,
+          "rotation_error_deg": 4.792454242706299
+        },
+        "candidate": {
+          "goal_error": 0.20627914369106293,
+          "position_error_cm": 0.7287580370903015,
+          "rotation_error_deg": 5.059915542602539
+        },
+        "repeated_exactly": true
+      },
+      {
+        "body": 4,
+        "predicted_before": 3.5645365715026855,
+        "predicted_after": 2.9504716396331787,
+        "controller": {
+          "goal_error": 1.4489567279815674,
+          "position_error_cm": 2.7541146278381348,
+          "rotation_error_deg": 11.797623634338379
+        },
+        "candidate": {
+          "goal_error": 1.14784836769104,
+          "position_error_cm": 2.4644386768341064,
+          "rotation_error_deg": 9.945391654968262
+        },
+        "repeated_exactly": true
+      },
+      {
+        "body": 5,
+        "predicted_before": 2.7061686515808105,
+        "predicted_after": 2.137871503829956,
+        "controller": {
+          "goal_error": 0.38969486951828003,
+          "position_error_cm": 1.004859209060669,
+          "rotation_error_deg": 6.658926486968994
+        },
+        "candidate": {
+          "goal_error": 0.32752150297164917,
+          "position_error_cm": 0.843477189540863,
+          "rotation_error_deg": 6.463806629180908
+        },
+        "repeated_exactly": true
+      },
+      {
+        "body": 6,
+        "predicted_before": 5.467857360839844,
+        "predicted_after": 4.735903739929199,
+        "controller": {
+          "goal_error": 0.529295802116394,
+          "position_error_cm": 1.3038192987442017,
+          "rotation_error_deg": 8.44418716430664
+        },
+        "candidate": {
+          "goal_error": 0.5825545787811279,
+          "position_error_cm": 1.2669804096221924,
+          "rotation_error_deg": 8.523516654968262
+        },
+        "repeated_exactly": true
+      },
+      {
+        "body": 7,
+        "predicted_before": 5.031080722808838,
+        "predicted_after": 3.7520952224731445,
+        "controller": {
+          "goal_error": 0.19162490963935852,
+          "position_error_cm": 0.7216251492500305,
+          "rotation_error_deg": 5.337538242340088
+        },
+        "candidate": {
+          "goal_error": 0.27420592308044434,
+          "position_error_cm": 0.8975830078125,
+          "rotation_error_deg": 6.2036919593811035
+        },
+        "repeated_exactly": true
+      },
+      {
+        "body": 8,
+        "predicted_before": 4.058991432189941,
+        "predicted_after": 3.0387990474700928,
+        "controller": {
+          "goal_error": 0.4849623441696167,
+          "position_error_cm": 1.2335299253463745,
+          "rotation_error_deg": 6.669003486633301
+        },
+        "candidate": {
+          "goal_error": 0.471071720123291,
+          "position_error_cm": 1.2573771476745605,
+          "rotation_error_deg": 7.022860050201416
+        },
+        "repeated_exactly": true
+      }
+    ]
+  },
+  "explanation": "A physical goal supplied by the auditor tests whether learned movement predictions can guide a command. It does not test autonomous goal choice, grasping or rolling.",
+  "oracle_definition": "A diagnostic supplied with the actual controller endpoint before choosing. That future information is unavailable to a live policy.",
+  "production_changed": false,
+  "oracle_baseline_centred": {
+    "result": {
+      "checkpoint": "Saved\\mimo_bridge\\experiments\\H84_fresh_drivers_20260918_seg34_motor_control\\checkpoints\\ckpt_step_372375",
+      "bodies": 8,
+      "learning": false,
+      "task": "Match the world pose reached by a recorded normal exploratory command in 250 ms.",
+      "target_source": "One independent-babble command per body, fixed seed 92400 + body index, then actual physics.",
+      "goal_scope": "Auditor-supplied reachable physical goal; the sensory-memory planner keeps its original goal.",
+      "cost": "Mean per-axis squared world position error / 1.80 cm squared plus rotation error / 11 degrees squared, all non-gaze parts.",
+      "trust_region": "Before production filtering: +/-1.80 cm per position coordinate and at most 11 degrees per part around the starting controller command.",
+      "optimization": "30 Adam updates, learning rate 0.1; retain the exact baseline and best evaluated candidate.",
+      "fixed": "Starting world, model execution state, random streams, strength, radius and gaze request; no learning.",
+      "controls": "Original controller; repaired sensory-goal planner; target-generating command and exact replay.",
+      "evidence": "Candidate must improve actual endpoint error against the original controller. Prediction improvement alone does not pass.",
+      "production_switches_changed": false,
+      "oracle_diagnostic": "Uses the measured controller endpoint to remove the baseline prediction bias. This outcome is unavailable when selecting a live command. Only command-dependent predicted differences guide the search; no production adoption can follow from this oracle arm.",
+      "reference_trials": "Saved\\gof_takeover_20260923\\planner_investigation\\body_choice_372375_v2\\trials.jsonl",
+      "worlds": 8,
+      "weights_unchanged": true,
+      "goal_error_means": {
+        "controller": 0.503388300538063,
+        "raw_planner": 4.089918911457062,
+        "body_prediction_choice": 0.34863996505737305,
+        "target_witness": 3.591749615691189e-15,
+        "uncalibrated_choice": 0.4752862621098757
+      },
+      "bodies_better_than_controller": 8,
+      "difference_from_controller": {
+        "mean": -0.15474833548069,
+        "ci95": [
+          -0.27321039224043486,
+          -0.06428799880668519
+        ]
+      },
+      "physical_improvement": true,
+      "adoption": false,
+      "next_test": "Connect remembered goals to physical pose, then test repeated goal-directed choices from changed starts before adoption."
+    },
+    "raw_sources": [
+      {
+        "path": "Saved\\gof_takeover_20260923\\planner_investigation\\body_choice_oracle_372375\\result.json",
+        "sha256": "5f945c9073bf129d444845581e7c1f243bf1ce8dbef9ee64ad5c91232794e11a"
+      },
+      {
+        "path": "Saved\\gof_takeover_20260923\\planner_investigation\\body_choice_oracle_372375\\trials.jsonl",
+        "sha256": "a646c7eea5507715a377e9676bf28a9191737b1808c2e7d533ba547f5ec7c6bf"
+      }
+    ],
+    "mean_physical_error_reduction_percent": 30.741345262748887,
+    "physical_error_reduction_percent_ci95": [
+      19.843614275842395,
+      36.31777442699709
+    ],
+    "errors_by_arm": {
+      "controller": {
+        "position_error_cm": 1.2738958448171616,
+        "rotation_error_deg": 7.174436569213867,
+        "goal_error": 0.503388300538063
+      },
+      "raw_planner": {
+        "position_error_cm": 3.5768734216690063,
+        "rotation_error_deg": 17.938958525657654,
+        "goal_error": 4.089918911457062
+      },
+      "body_prediction_choice": {
+        "position_error_cm": 1.0046197958290577,
+        "rotation_error_deg": 6.337084889411926,
+        "goal_error": 0.34863996505737305
+      },
+      "uncalibrated_choice": {
+        "position_error_cm": 1.2613704651594162,
+        "rotation_error_deg": 7.068673729896545,
+        "goal_error": 0.4752862621098757
+      }
+    },
+    "bodies": [
+      {
+        "body": 1,
+        "predicted_before": 0.39121201634407043,
+        "predicted_after": 0.27302539348602295,
+        "controller": {
+          "goal_error": 0.39121201634407043,
+          "position_error_cm": 1.335405707359314,
+          "rotation_error_deg": 6.629421234130859
+        },
+        "candidate": {
+          "goal_error": 0.2773475646972656,
+          "position_error_cm": 0.9670165777206421,
+          "rotation_error_deg": 5.810418605804443
+        },
+        "repeated_exactly": true,
+        "previous_results_reproduced": true
+      },
+      {
+        "body": 2,
+        "predicted_before": 0.3697175979614258,
+        "predicted_after": 0.3039931654930115,
+        "controller": {
+          "goal_error": 0.3697175979614258,
+          "position_error_cm": 1.1107773780822754,
+          "rotation_error_deg": 7.066338062286377
+        },
+        "candidate": {
+          "goal_error": 0.3536027669906616,
+          "position_error_cm": 1.1634634733200073,
+          "rotation_error_deg": 6.45273494720459
+        },
+        "repeated_exactly": true,
+        "previous_results_reproduced": true
+      },
+      {
+        "body": 3,
+        "predicted_before": 0.2216421514749527,
+        "predicted_after": 0.19721956551074982,
+        "controller": {
+          "goal_error": 0.2216421365737915,
+          "position_error_cm": 0.7270354628562927,
+          "rotation_error_deg": 4.792454242706299
+        },
+        "candidate": {
+          "goal_error": 0.18932536244392395,
+          "position_error_cm": 0.6829797625541687,
+          "rotation_error_deg": 4.493145942687988
+        },
+        "repeated_exactly": true,
+        "previous_results_reproduced": true
+      },
+      {
+        "body": 4,
+        "predicted_before": 1.4489567279815674,
+        "predicted_after": 1.1470258235931396,
+        "controller": {
+          "goal_error": 1.4489567279815674,
+          "position_error_cm": 2.7541146278381348,
+          "rotation_error_deg": 11.797623634338379
+        },
+        "candidate": {
+          "goal_error": 0.9325476884841919,
+          "position_error_cm": 2.088172674179077,
+          "rotation_error_deg": 10.391780853271484
+        },
+        "repeated_exactly": true,
+        "previous_results_reproduced": true
+      },
+      {
+        "body": 5,
+        "predicted_before": 0.3896948993206024,
+        "predicted_after": 0.3126450777053833,
+        "controller": {
+          "goal_error": 0.38969486951828003,
+          "position_error_cm": 1.004859209060669,
+          "rotation_error_deg": 6.658926486968994
+        },
+        "candidate": {
+          "goal_error": 0.26291489601135254,
+          "position_error_cm": 0.8789888024330139,
+          "rotation_error_deg": 5.491675853729248
+        },
+        "repeated_exactly": true,
+        "previous_results_reproduced": true
+      },
+      {
+        "body": 6,
+        "predicted_before": 0.529295802116394,
+        "predicted_after": 0.4340842068195343,
+        "controller": {
+          "goal_error": 0.529295802116394,
+          "position_error_cm": 1.3038192987442017,
+          "rotation_error_deg": 8.44418716430664
+        },
+        "candidate": {
+          "goal_error": 0.3604518473148346,
+          "position_error_cm": 0.8845421671867371,
+          "rotation_error_deg": 7.298851490020752
+        },
+        "repeated_exactly": true,
+        "previous_results_reproduced": true
+      },
+      {
+        "body": 7,
+        "predicted_before": 0.19162490963935852,
+        "predicted_after": 0.1312391608953476,
+        "controller": {
+          "goal_error": 0.19162490963935852,
+          "position_error_cm": 0.7216251492500305,
+          "rotation_error_deg": 5.337538242340088
+        },
+        "candidate": {
+          "goal_error": 0.15167474746704102,
+          "position_error_cm": 0.4602808654308319,
+          "rotation_error_deg": 4.787464618682861
+        },
+        "repeated_exactly": true,
+        "previous_results_reproduced": true
+      },
+      {
+        "body": 8,
+        "predicted_before": 0.4849623441696167,
+        "predicted_after": 0.34415772557258606,
+        "controller": {
+          "goal_error": 0.4849623441696167,
+          "position_error_cm": 1.2335299253463745,
+          "rotation_error_deg": 6.669003486633301
+        },
+        "candidate": {
+          "goal_error": 0.26125484704971313,
+          "position_error_cm": 0.9115140438079834,
+          "rotation_error_deg": 5.970606803894043
+        },
+        "repeated_exactly": true,
+        "previous_results_reproduced": true
+      }
+    ]
+  },
+  "completed_past_order_correction": {
+    "result": {
+      "checkpoint": "Saved\\mimo_bridge\\experiments\\H84_fresh_drivers_20260918_seg34_motor_control\\checkpoints\\ckpt_step_372375",
+      "bodies": 8,
+      "starts_per_body": 3,
+      "private_warmup_steps": 20,
+      "start_spacing_steps": 10,
+      "new_target_seed_base": 95700,
+      "learning": false,
+      "production_switches_changed": false,
+      "correction": "Add the most recent completed order's measured-minus-predicted world displacement and world rotation-vector change to the new 250 ms forecast. No tuned weight, clamp, or future controller outcome.",
+      "held_out": "Later states after twenty private policy steps and distinct target seeds; none of the eight preceding calibration targets is reused.",
+      "comparison": "Controller, uncorrected body-head search and past-order-corrected body-head search from the same snapshots, goal and random state.",
+      "unchanged": "30 search updates, learning rate 0.1, baseline retained, +/-1.80 cm per raw coordinate and 11 degrees per part before normal smoothing; strength and gaze fixed.",
+      "acceptance": "Actual goal error improves over both the controller and uncorrected body-head choice, with 95% paired uncertainty computed across the eight body means.",
+      "scope": "Auditor-supplied reachable physical goals; goal-memory integration is still required before autonomous use.",
+      "comparisons": {
+        "controller": {
+          "bodies": 8,
+          "trials": 24,
+          "candidate": "past_order_corrected",
+          "baseline": "controller",
+          "candidate_mean": 0.47173631067077315,
+          "baseline_mean": 0.4280076567083597,
+          "error_difference_mean": 0.04372865396241348,
+          "error_difference_ci95": [
+            0.010268681698168329,
+            0.07649797406047586
+          ],
+          "error_reduction_percent": -10.216792451498069,
+          "error_reduction_percent_ci95": [
+            -16.616417125968997,
+            -2.4103166447540287
+          ],
+          "bodies_improved": 1,
+          "improvement_above_uncertainty": false
+        },
+        "uncorrected": {
+          "bodies": 8,
+          "trials": 24,
+          "candidate": "past_order_corrected",
+          "baseline": "uncorrected",
+          "candidate_mean": 0.47173631067077315,
+          "baseline_mean": 0.4342116775612036,
+          "error_difference_mean": 0.03752463310956955,
+          "error_difference_ci95": [
+            -0.03912413901028533,
+            0.1091783894536396
+          ],
+          "error_reduction_percent": -8.642013803113425,
+          "error_reduction_percent_ci95": [
+            -24.262591720941856,
+            9.152346855741717
+          ],
+          "bodies_improved": 3,
+          "improvement_above_uncertainty": false
+        }
+      },
+      "weights_unchanged": true,
+      "passed_private_comparison": false,
+      "production_adoption": false
+    },
+    "raw_sources": [
+      {
+        "path": "Saved\\gof_takeover_20260923\\planner_investigation\\body_choice_causal_372375\\result.json",
+        "sha256": "13fa28ef9dd12417051f9ee4f5dfe9f435c7273c305768eaa969935bc18aaf24"
+      },
+      {
+        "path": "Saved\\gof_takeover_20260923\\planner_investigation\\body_choice_causal_372375\\trials.jsonl",
+        "sha256": "4689901462a0eb8c102507bce5af543404229050f0c4a9510faeb9b15c539f25"
+      }
+    ],
+    "errors_by_arm": {
+      "controller": {
+        "position_error_cm": 1.1429972077409427,
+        "rotation_error_deg": 7.130235234896342,
+        "goal_error": 0.4280076567083597
+      },
+      "uncorrected": {
+        "position_error_cm": 1.1417484655976295,
+        "rotation_error_deg": 7.251784006754558,
+        "goal_error": 0.43421167756120366
+      },
+      "past_order_corrected": {
+        "position_error_cm": 1.1781233996152878,
+        "rotation_error_deg": 7.519563456376393,
+        "goal_error": 0.4717363106707732
+      }
+    },
+    "trials": [
+      {
+        "body": 1,
+        "trial": 1,
+        "past_order": {
+          "observed_step": 372396,
+          "order_began": 372390,
+          "choice_step": 372401,
+          "age_steps": 5,
+          "position_residual_cm": 6.110426902770996,
+          "rotation_residual_deg": 23.04677391052246,
+          "source": "Most recent completed order: actual minus predicted movement, in the body head output coordinates."
+        },
+        "errors": {
+          "controller": {
+            "goal_error": 0.23325993120670319,
+            "position_error_cm": 0.9190147519111633,
+            "rotation_error_deg": 6.368980884552002
+          },
+          "uncorrected": {
+            "goal_error": 0.31944340467453003,
+            "position_error_cm": 1.1076146364212036,
+            "rotation_error_deg": 6.814943790435791
+          },
+          "past_order_corrected": {
+            "goal_error": 0.26618072390556335,
+            "position_error_cm": 0.8871357440948486,
+            "rotation_error_deg": 6.929014682769775
+          }
+        },
+        "repeated_exactly": true
+      },
+      {
+        "body": 1,
+        "trial": 2,
+        "past_order": {
+          "observed_step": 372406,
+          "order_began": 372400,
+          "choice_step": 372411,
+          "age_steps": 5,
+          "position_residual_cm": 5.075711727142334,
+          "rotation_residual_deg": 17.380338668823242,
+          "source": "Most recent completed order: actual minus predicted movement, in the body head output coordinates."
+        },
+        "errors": {
+          "controller": {
+            "goal_error": 0.1730266660451889,
+            "position_error_cm": 0.8151170611381531,
+            "rotation_error_deg": 4.894836902618408
+          },
+          "uncorrected": {
+            "goal_error": 0.224176287651062,
+            "position_error_cm": 1.0308436155319214,
+            "rotation_error_deg": 4.8511576652526855
+          },
+          "past_order_corrected": {
+            "goal_error": 0.18726982176303864,
+            "position_error_cm": 0.7904438972473145,
+            "rotation_error_deg": 5.491364002227783
+          }
+        },
+        "repeated_exactly": true
+      },
+      {
+        "body": 1,
+        "trial": 3,
+        "past_order": {
+          "observed_step": 372416,
+          "order_began": 372410,
+          "choice_step": 372421,
+          "age_steps": 5,
+          "position_residual_cm": 4.74763822555542,
+          "rotation_residual_deg": 17.694791793823242,
+          "source": "Most recent completed order: actual minus predicted movement, in the body head output coordinates."
+        },
+        "errors": {
+          "controller": {
+            "goal_error": 0.15246134996414185,
+            "position_error_cm": 0.5913043022155762,
+            "rotation_error_deg": 5.330742835998535
+          },
+          "uncorrected": {
+            "goal_error": 0.229467511177063,
+            "position_error_cm": 0.7888474464416504,
+            "rotation_error_deg": 6.2708740234375
+          },
+          "past_order_corrected": {
+            "goal_error": 0.20497575402259827,
+            "position_error_cm": 0.7872723937034607,
+            "rotation_error_deg": 5.709956169128418
+          }
+        },
+        "repeated_exactly": true
+      },
+      {
+        "body": 2,
+        "trial": 1,
+        "past_order": {
+          "observed_step": 372396,
+          "order_began": 372390,
+          "choice_step": 372401,
+          "age_steps": 5,
+          "position_residual_cm": 4.539275169372559,
+          "rotation_residual_deg": 21.001272201538086,
+          "source": "Most recent completed order: actual minus predicted movement, in the body head output coordinates."
+        },
+        "errors": {
+          "controller": {
+            "goal_error": 0.4528207778930664,
+            "position_error_cm": 1.1624796390533447,
+            "rotation_error_deg": 7.901775360107422
+          },
+          "uncorrected": {
+            "goal_error": 0.49565553665161133,
+            "position_error_cm": 1.1740955114364624,
+            "rotation_error_deg": 8.688823699951172
+          },
+          "past_order_corrected": {
+            "goal_error": 0.6242531538009644,
+            "position_error_cm": 1.4071285724639893,
+            "rotation_error_deg": 9.202791213989258
+          }
+        },
+        "repeated_exactly": true
+      },
+      {
+        "body": 2,
+        "trial": 2,
+        "past_order": {
+          "observed_step": 372406,
+          "order_began": 372400,
+          "choice_step": 372411,
+          "age_steps": 5,
+          "position_residual_cm": 3.8357036113739014,
+          "rotation_residual_deg": 16.21247100830078,
+          "source": "Most recent completed order: actual minus predicted movement, in the body head output coordinates."
+        },
+        "errors": {
+          "controller": {
+            "goal_error": 0.3501984775066376,
+            "position_error_cm": 0.9618569016456604,
+            "rotation_error_deg": 7.236135959625244
+          },
+          "uncorrected": {
+            "goal_error": 0.3996134400367737,
+            "position_error_cm": 1.1844488382339478,
+            "rotation_error_deg": 7.131787300109863
+          },
+          "past_order_corrected": {
+            "goal_error": 0.4277419447898865,
+            "position_error_cm": 1.1489040851593018,
+            "rotation_error_deg": 8.913559913635254
+          }
+        },
+        "repeated_exactly": true
+      },
+      {
+        "body": 2,
+        "trial": 3,
+        "past_order": {
+          "observed_step": 372416,
+          "order_began": 372410,
+          "choice_step": 372421,
+          "age_steps": 5,
+          "position_residual_cm": 4.47075080871582,
+          "rotation_residual_deg": 19.9364013671875,
+          "source": "Most recent completed order: actual minus predicted movement, in the body head output coordinates."
+        },
+        "errors": {
+          "controller": {
+            "goal_error": 0.47838327288627625,
+            "position_error_cm": 1.2366582155227661,
+            "rotation_error_deg": 8.478775024414062
+          },
+          "uncorrected": {
+            "goal_error": 0.40040040016174316,
+            "position_error_cm": 1.1815563440322876,
+            "rotation_error_deg": 8.044569969177246
+          },
+          "past_order_corrected": {
+            "goal_error": 0.3835042119026184,
+            "position_error_cm": 0.9693601727485657,
+            "rotation_error_deg": 8.42053508758545
+          }
+        },
+        "repeated_exactly": true
+      },
+      {
+        "body": 3,
+        "trial": 1,
+        "past_order": {
+          "observed_step": 372396,
+          "order_began": 372390,
+          "choice_step": 372401,
+          "age_steps": 5,
+          "position_residual_cm": 2.450181722640991,
+          "rotation_residual_deg": 10.986509323120117,
+          "source": "Most recent completed order: actual minus predicted movement, in the body head output coordinates."
+        },
+        "errors": {
+          "controller": {
+            "goal_error": 0.19734196364879608,
+            "position_error_cm": 0.929093599319458,
+            "rotation_error_deg": 5.008947372436523
+          },
+          "uncorrected": {
+            "goal_error": 0.26294153928756714,
+            "position_error_cm": 0.8998184204101562,
+            "rotation_error_deg": 5.984667778015137
+          },
+          "past_order_corrected": {
+            "goal_error": 0.2544860243797302,
+            "position_error_cm": 0.8586959838867188,
+            "rotation_error_deg": 5.939748764038086
+          }
+        },
+        "repeated_exactly": true
+      },
+      {
+        "body": 3,
+        "trial": 2,
+        "past_order": {
+          "observed_step": 372406,
+          "order_began": 372400,
+          "choice_step": 372411,
+          "age_steps": 5,
+          "position_residual_cm": 3.0190629959106445,
+          "rotation_residual_deg": 14.727945327758789,
+          "source": "Most recent completed order: actual minus predicted movement, in the body head output coordinates."
+        },
+        "errors": {
+          "controller": {
+            "goal_error": 0.15744349360466003,
+            "position_error_cm": 0.508155882358551,
+            "rotation_error_deg": 4.961180210113525
+          },
+          "uncorrected": {
+            "goal_error": 0.20374615490436554,
+            "position_error_cm": 0.6144845485687256,
+            "rotation_error_deg": 5.463522911071777
+          },
+          "past_order_corrected": {
+            "goal_error": 0.2010316401720047,
+            "position_error_cm": 0.6039375066757202,
+            "rotation_error_deg": 5.28305196762085
+          }
+        },
+        "repeated_exactly": true
+      },
+      {
+        "body": 3,
+        "trial": 3,
+        "past_order": {
+          "observed_step": 372416,
+          "order_began": 372410,
+          "choice_step": 372421,
+          "age_steps": 5,
+          "position_residual_cm": 3.2998857498168945,
+          "rotation_residual_deg": 11.947251319885254,
+          "source": "Most recent completed order: actual minus predicted movement, in the body head output coordinates."
+        },
+        "errors": {
+          "controller": {
+            "goal_error": 0.45286643505096436,
+            "position_error_cm": 0.6903752684593201,
+            "rotation_error_deg": 5.709208965301514
+          },
+          "uncorrected": {
+            "goal_error": 0.49745145440101624,
+            "position_error_cm": 0.8271483778953552,
+            "rotation_error_deg": 6.126758575439453
+          },
+          "past_order_corrected": {
+            "goal_error": 0.46963557600975037,
+            "position_error_cm": 0.8334794640541077,
+            "rotation_error_deg": 6.134292125701904
+          }
+        },
+        "repeated_exactly": true
+      },
+      {
+        "body": 4,
+        "trial": 1,
+        "past_order": {
+          "observed_step": 372396,
+          "order_began": 372390,
+          "choice_step": 372401,
+          "age_steps": 5,
+          "position_residual_cm": 4.551363945007324,
+          "rotation_residual_deg": 25.367374420166016,
+          "source": "Most recent completed order: actual minus predicted movement, in the body head output coordinates."
+        },
+        "errors": {
+          "controller": {
+            "goal_error": 0.8276522159576416,
+            "position_error_cm": 1.9407047033309937,
+            "rotation_error_deg": 9.403960227966309
+          },
+          "uncorrected": {
+            "goal_error": 0.6231609582901001,
+            "position_error_cm": 1.5342684984207153,
+            "rotation_error_deg": 9.294261932373047
+          },
+          "past_order_corrected": {
+            "goal_error": 0.6226900815963745,
+            "position_error_cm": 1.6040410995483398,
+            "rotation_error_deg": 9.032746315002441
+          }
+        },
+        "repeated_exactly": true
+      },
+      {
+        "body": 4,
+        "trial": 2,
+        "past_order": {
+          "observed_step": 372406,
+          "order_began": 372400,
+          "choice_step": 372411,
+          "age_steps": 5,
+          "position_residual_cm": 5.575409889221191,
+          "rotation_residual_deg": 18.899272918701172,
+          "source": "Most recent completed order: actual minus predicted movement, in the body head output coordinates."
+        },
+        "errors": {
+          "controller": {
+            "goal_error": 0.23080390691757202,
+            "position_error_cm": 0.9283766746520996,
+            "rotation_error_deg": 6.20982551574707
+          },
+          "uncorrected": {
+            "goal_error": 0.269343763589859,
+            "position_error_cm": 0.9398338198661804,
+            "rotation_error_deg": 6.476998805999756
+          },
+          "past_order_corrected": {
+            "goal_error": 0.31726139783859253,
+            "position_error_cm": 0.9822032451629639,
+            "rotation_error_deg": 7.172938823699951
+          }
+        },
+        "repeated_exactly": true
+      },
+      {
+        "body": 4,
+        "trial": 3,
+        "past_order": {
+          "observed_step": 372416,
+          "order_began": 372410,
+          "choice_step": 372421,
+          "age_steps": 5,
+          "position_residual_cm": 4.377655506134033,
+          "rotation_residual_deg": 16.755868911743164,
+          "source": "Most recent completed order: actual minus predicted movement, in the body head output coordinates."
+        },
+        "errors": {
+          "controller": {
+            "goal_error": 0.6025614738464355,
+            "position_error_cm": 1.3149161338806152,
+            "rotation_error_deg": 8.329168319702148
+          },
+          "uncorrected": {
+            "goal_error": 0.4408233165740967,
+            "position_error_cm": 1.2671926021575928,
+            "rotation_error_deg": 7.055391788482666
+          },
+          "past_order_corrected": {
+            "goal_error": 0.7822669744491577,
+            "position_error_cm": 1.4509681463241577,
+            "rotation_error_deg": 9.16628646850586
+          }
+        },
+        "repeated_exactly": true
+      },
+      {
+        "body": 5,
+        "trial": 1,
+        "past_order": {
+          "observed_step": 372396,
+          "order_began": 372390,
+          "choice_step": 372401,
+          "age_steps": 5,
+          "position_residual_cm": 6.757258415222168,
+          "rotation_residual_deg": 31.445131301879883,
+          "source": "Most recent completed order: actual minus predicted movement, in the body head output coordinates."
+        },
+        "errors": {
+          "controller": {
+            "goal_error": 0.39669233560562134,
+            "position_error_cm": 1.2200473546981812,
+            "rotation_error_deg": 7.044946670532227
+          },
+          "uncorrected": {
+            "goal_error": 0.46114516258239746,
+            "position_error_cm": 1.142358660697937,
+            "rotation_error_deg": 7.651574611663818
+          },
+          "past_order_corrected": {
+            "goal_error": 0.41190871596336365,
+            "position_error_cm": 1.1684643030166626,
+            "rotation_error_deg": 7.633102893829346
+          }
+        },
+        "repeated_exactly": true
+      },
+      {
+        "body": 5,
+        "trial": 2,
+        "past_order": {
+          "observed_step": 372406,
+          "order_began": 372400,
+          "choice_step": 372411,
+          "age_steps": 5,
+          "position_residual_cm": 5.829171180725098,
+          "rotation_residual_deg": 15.323486328125,
+          "source": "Most recent completed order: actual minus predicted movement, in the body head output coordinates."
+        },
+        "errors": {
+          "controller": {
+            "goal_error": 0.5539068579673767,
+            "position_error_cm": 1.3146835565567017,
+            "rotation_error_deg": 9.77092456817627
+          },
+          "uncorrected": {
+            "goal_error": 0.4992811381816864,
+            "position_error_cm": 1.2244359254837036,
+            "rotation_error_deg": 9.368439674377441
+          },
+          "past_order_corrected": {
+            "goal_error": 0.6035118699073792,
+            "position_error_cm": 1.343656063079834,
+            "rotation_error_deg": 9.635973930358887
+          }
+        },
+        "repeated_exactly": true
+      },
+      {
+        "body": 5,
+        "trial": 3,
+        "past_order": {
+          "observed_step": 372416,
+          "order_began": 372410,
+          "choice_step": 372421,
+          "age_steps": 5,
+          "position_residual_cm": 5.435007572174072,
+          "rotation_residual_deg": 20.955738067626953,
+          "source": "Most recent completed order: actual minus predicted movement, in the body head output coordinates."
+        },
+        "errors": {
+          "controller": {
+            "goal_error": 0.22349894046783447,
+            "position_error_cm": 0.7172514200210571,
+            "rotation_error_deg": 5.811715126037598
+          },
+          "uncorrected": {
+            "goal_error": 0.2507345676422119,
+            "position_error_cm": 0.7792260050773621,
+            "rotation_error_deg": 6.134809494018555
+          },
+          "past_order_corrected": {
+            "goal_error": 0.3210904002189636,
+            "position_error_cm": 0.9744628071784973,
+            "rotation_error_deg": 6.783388614654541
+          }
+        },
+        "repeated_exactly": true
+      },
+      {
+        "body": 6,
+        "trial": 1,
+        "past_order": {
+          "observed_step": 372396,
+          "order_began": 372390,
+          "choice_step": 372401,
+          "age_steps": 5,
+          "position_residual_cm": 3.8315441608428955,
+          "rotation_residual_deg": 21.135896682739258,
+          "source": "Most recent completed order: actual minus predicted movement, in the body head output coordinates."
+        },
+        "errors": {
+          "controller": {
+            "goal_error": 0.8619520664215088,
+            "position_error_cm": 1.4812763929367065,
+            "rotation_error_deg": 10.449341773986816
+          },
+          "uncorrected": {
+            "goal_error": 0.623201310634613,
+            "position_error_cm": 1.1673861742019653,
+            "rotation_error_deg": 10.048623085021973
+          },
+          "past_order_corrected": {
+            "goal_error": 1.2141168117523193,
+            "position_error_cm": 1.9247699975967407,
+            "rotation_error_deg": 10.941288948059082
+          }
+        },
+        "repeated_exactly": true
+      },
+      {
+        "body": 6,
+        "trial": 2,
+        "past_order": {
+          "observed_step": 372406,
+          "order_began": 372400,
+          "choice_step": 372411,
+          "age_steps": 5,
+          "position_residual_cm": 2.82106614112854,
+          "rotation_residual_deg": 10.46053695678711,
+          "source": "Most recent completed order: actual minus predicted movement, in the body head output coordinates."
+        },
+        "errors": {
+          "controller": {
+            "goal_error": 0.6464915871620178,
+            "position_error_cm": 1.554086446762085,
+            "rotation_error_deg": 8.652555465698242
+          },
+          "uncorrected": {
+            "goal_error": 0.7619905471801758,
+            "position_error_cm": 1.7031573057174683,
+            "rotation_error_deg": 8.75057601928711
+          },
+          "past_order_corrected": {
+            "goal_error": 0.6630574464797974,
+            "position_error_cm": 1.5487271547317505,
+            "rotation_error_deg": 8.19395923614502
+          }
+        },
+        "repeated_exactly": true
+      },
+      {
+        "body": 6,
+        "trial": 3,
+        "past_order": {
+          "observed_step": 372416,
+          "order_began": 372410,
+          "choice_step": 372421,
+          "age_steps": 5,
+          "position_residual_cm": 2.785817861557007,
+          "rotation_residual_deg": 16.683155059814453,
+          "source": "Most recent completed order: actual minus predicted movement, in the body head output coordinates."
+        },
+        "errors": {
+          "controller": {
+            "goal_error": 0.42133599519729614,
+            "position_error_cm": 1.1978576183319092,
+            "rotation_error_deg": 8.814369201660156
+          },
+          "uncorrected": {
+            "goal_error": 0.4634925127029419,
+            "position_error_cm": 1.2358723878860474,
+            "rotation_error_deg": 9.254081726074219
+          },
+          "past_order_corrected": {
+            "goal_error": 0.4460734724998474,
+            "position_error_cm": 1.2247862815856934,
+            "rotation_error_deg": 8.058530807495117
+          }
+        },
+        "repeated_exactly": true
+      },
+      {
+        "body": 7,
+        "trial": 1,
+        "past_order": {
+          "observed_step": 372396,
+          "order_began": 372390,
+          "choice_step": 372401,
+          "age_steps": 5,
+          "position_residual_cm": 6.31414270401001,
+          "rotation_residual_deg": 25.247337341308594,
+          "source": "Most recent completed order: actual minus predicted movement, in the body head output coordinates."
+        },
+        "errors": {
+          "controller": {
+            "goal_error": 0.6789736151695251,
+            "position_error_cm": 1.8791998624801636,
+            "rotation_error_deg": 6.212813854217529
+          },
+          "uncorrected": {
+            "goal_error": 0.9007962942123413,
+            "position_error_cm": 1.9449840784072876,
+            "rotation_error_deg": 6.672571182250977
+          },
+          "past_order_corrected": {
+            "goal_error": 0.7341560125350952,
+            "position_error_cm": 1.975816249847412,
+            "rotation_error_deg": 6.995184421539307
+          }
+        },
+        "repeated_exactly": true
+      },
+      {
+        "body": 7,
+        "trial": 2,
+        "past_order": {
+          "observed_step": 372406,
+          "order_began": 372400,
+          "choice_step": 372411,
+          "age_steps": 5,
+          "position_residual_cm": 4.784520149230957,
+          "rotation_residual_deg": 19.10224151611328,
+          "source": "Most recent completed order: actual minus predicted movement, in the body head output coordinates."
+        },
+        "errors": {
+          "controller": {
+            "goal_error": 0.368387371301651,
+            "position_error_cm": 1.0924420356750488,
+            "rotation_error_deg": 6.896679878234863
+          },
+          "uncorrected": {
+            "goal_error": 0.32185524702072144,
+            "position_error_cm": 1.001919150352478,
+            "rotation_error_deg": 7.0778326988220215
+          },
+          "past_order_corrected": {
+            "goal_error": 0.2828412353992462,
+            "position_error_cm": 0.944694459438324,
+            "rotation_error_deg": 6.153458118438721
+          }
+        },
+        "repeated_exactly": true
+      },
+      {
+        "body": 7,
+        "trial": 3,
+        "past_order": {
+          "observed_step": 372416,
+          "order_began": 372410,
+          "choice_step": 372421,
+          "age_steps": 5,
+          "position_residual_cm": 4.191572189331055,
+          "rotation_residual_deg": 22.821928024291992,
+          "source": "Most recent completed order: actual minus predicted movement, in the body head output coordinates."
+        },
+        "errors": {
+          "controller": {
+            "goal_error": 0.34013402462005615,
+            "position_error_cm": 1.147063136100769,
+            "rotation_error_deg": 6.353067398071289
+          },
+          "uncorrected": {
+            "goal_error": 0.5684444904327393,
+            "position_error_cm": 1.3416595458984375,
+            "rotation_error_deg": 7.2132768630981445
+          },
+          "past_order_corrected": {
+            "goal_error": 0.21147370338439941,
+            "position_error_cm": 0.8778217434883118,
+            "rotation_error_deg": 5.709522724151611
+          }
+        },
+        "repeated_exactly": true
+      },
+      {
+        "body": 8,
+        "trial": 1,
+        "past_order": {
+          "observed_step": 372396,
+          "order_began": 372390,
+          "choice_step": 372401,
+          "age_steps": 5,
+          "position_residual_cm": 5.221991539001465,
+          "rotation_residual_deg": 22.139760971069336,
+          "source": "Most recent completed order: actual minus predicted movement, in the body head output coordinates."
+        },
+        "errors": {
+          "controller": {
+            "goal_error": 0.2798193693161011,
+            "position_error_cm": 1.0616222620010376,
+            "rotation_error_deg": 5.4118242263793945
+          },
+          "uncorrected": {
+            "goal_error": 0.2367461770772934,
+            "position_error_cm": 0.8531829118728638,
+            "rotation_error_deg": 5.537476062774658
+          },
+          "past_order_corrected": {
+            "goal_error": 0.22534015774726868,
+            "position_error_cm": 0.8102730512619019,
+            "rotation_error_deg": 5.448394775390625
+          }
+        },
+        "repeated_exactly": true
+      },
+      {
+        "body": 8,
+        "trial": 2,
+        "past_order": {
+          "observed_step": 372406,
+          "order_began": 372400,
+          "choice_step": 372411,
+          "age_steps": 5,
+          "position_residual_cm": 6.6982831954956055,
+          "rotation_residual_deg": 22.37899398803711,
+          "source": "Most recent completed order: actual minus predicted movement, in the body head output coordinates."
+        },
+        "errors": {
+          "controller": {
+            "goal_error": 0.7002248167991638,
+            "position_error_cm": 1.505740761756897,
+            "rotation_error_deg": 9.012487411499023
+          },
+          "uncorrected": {
+            "goal_error": 0.580154538154602,
+            "position_error_cm": 1.415378212928772,
+            "rotation_error_deg": 7.516401767730713
+          },
+          "past_order_corrected": {
+            "goal_error": 0.939263641834259,
+            "position_error_cm": 1.6930400133132935,
+            "rotation_error_deg": 10.321264266967773
+          }
+        },
+        "repeated_exactly": true
+      },
+      {
+        "body": 8,
+        "trial": 3,
+        "past_order": {
+          "observed_step": 372416,
+          "order_began": 372410,
+          "choice_step": 372421,
+          "age_steps": 5,
+          "position_residual_cm": 4.115406513214111,
+          "rotation_residual_deg": 20.330739974975586,
+          "source": "Most recent completed order: actual minus predicted movement, in the body head output coordinates."
+        },
+        "errors": {
+          "controller": {
+            "goal_error": 0.491946816444397,
+            "position_error_cm": 1.2626090049743652,
+            "rotation_error_deg": 6.861382484436035
+          },
+          "uncorrected": {
+            "goal_error": 0.3870145082473755,
+            "position_error_cm": 1.042250156402588,
+            "rotation_error_deg": 6.613394737243652
+          },
+          "past_order_corrected": {
+            "goal_error": 0.5275406837463379,
+            "position_error_cm": 1.4648791551589966,
+            "rotation_error_deg": 7.199168682098389
+          }
+        },
+        "repeated_exactly": true
+      }
+    ]
+  }
+}

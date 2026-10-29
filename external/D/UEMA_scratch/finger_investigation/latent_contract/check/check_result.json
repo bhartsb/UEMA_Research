@@ -1,0 +1,120 @@
+{
+ "question": "Does the latent body shadow record, learn, save and restore under the repaired command contract in the real trainer path, from a declared start?",
+ "verdict": "fail",
+ "validity_problems": [],
+ "shadow": {
+  "tool": "latent_body_start_state_v1",
+  "tool_sha256": "a95bfc90c131f5441bfe6ea2f30abe6aff7de5e05296a5775250e822d7e87df4",
+  "written": "Oct 10, 2026 4:21 AM PDT",
+  "shadow": "D:\\UEMA_Research\\external\\D\\UEMA_scratch\\finger_investigation\\latent_contract\\check\\run\\arm_latent_check\\latent_body",
+  "config": "C:/Users/bhart/Documents/UEMA_wt/latent_contract_repair/docs/gain_of_function_v4/latent_body_shadow_config_h84_finger_joint_servo_v1_2026-10-10.json",
+  "config_sha256": "c9d7b3ad7a34ff42a6f02c8c7067eca6f189d55b5d3ff7ff36c877c943437f48",
+  "contract": "wrist_relative_joint_v1+finger_joint_servo_v1",
+  "steps": 10,
+  "start": {
+   "tool": "latent_body_start_state_v1",
+   "tool_sha256": "a95bfc90c131f5441bfe6ea2f30abe6aff7de5e05296a5775250e822d7e87df4",
+   "kind": "fresh",
+   "written": "Oct 10, 2026 4:16 AM PDT",
+   "config_path": "C:/Users/bhart/Documents/UEMA_wt/latent_contract_repair/docs/gain_of_function_v4/latent_body_shadow_config_h84_finger_joint_servo_v1_2026-10-10.json",
+   "config_sha256": "c9d7b3ad7a34ff42a6f02c8c7067eca6f189d55b5d3ff7ff36c877c943437f48",
+   "configuration": "d14e62148317e5c0a6ddbf4ab6335ad3878b3f6898863951e298cdb8ce4d4add",
+   "action_contract": "wrist_relative_joint_v1+finger_joint_servo_v1",
+   "tree": "4619657c58fe08d26af72d50b735c22caffc424150c1e0ae62b867f8390ec918",
+   "levels": "arm,hand,index",
+   "layout": "trunk_v1",
+   "updates": 0,
+   "examples": 0,
+   "source": null,
+   "path": "D:\\UEMA_Research\\external\\D\\UEMA_scratch\\finger_investigation\\latent_contract\\start\\latent_start_fresh_seed7_d14e62148317e5c0.pt",
+   "sha256": "b63abdca969fef9e5b5020103211264a1e8fdca6100e4a403ad2527e4cf1a730",
+   "bytes": 2015895
+  },
+  "verdict": "fail",
+  "problems": [
+   "identity: rows 0 labelled [], started records 1 (declared configuration and start: True), failed records 1, failure lines 1, finger servo 'on'",
+   "updates: 0 lesson records, consecutive from 1: True, against at least 7",
+   "rows: 0 rows, last example count 0, batch sum 0, labels []",
+   "restore: {\"exists\": false}"
+  ],
+  "readings": [
+   {
+    "name": "rows whose command contract equals the declared one",
+    "value": 0,
+    "unit": "rows",
+    "meaning": "of 0 trajectory rows the shadow wrote (0 = the shadow learned from no transition, all = every transition the trainer wrote carried the declared contract wrist_relative_joint_v1+finger_joint_servo_v1); finger servo setting 'on'; started records 1 holding the declared configuration True; failed records 1; failure lines in the log 1",
+    "baseline": "Oct 10, 12:58:01 AM PDT: the finger arm under the Sep 30 configuration wrote 0 rows and one failed record (Action contract changed)",
+    "statistically_clear": "not judged",
+    "statistical_basis": "",
+    "gof_material": "GOF threshold not yet defined",
+    "passed": false
+   },
+   {
+    "name": "shadow updates",
+    "value": 0,
+    "unit": "updates",
+    "meaning": "lesson records 0, their update counts consecutive from 1: True (0 = no learning; 8 expected for 10 model steps, one per model step from the third)",
+    "baseline": "both control arms of Oct 10: 998 updates in 1,000 model steps, first at model step 481,802",
+    "statistically_clear": "not judged",
+    "statistical_basis": "",
+    "gof_material": "GOF threshold not yet defined",
+    "passed": false
+   },
+   {
+    "name": "trajectory rows",
+    "value": 0,
+    "unit": "rows",
+    "meaning": "against the last lesson's example count 0 and the lessons' batch sizes summed 0; labels [] (one label = no window mixed two contracts)",
+    "baseline": "both control arms of Oct 10: 7,984 rows, 8 per update",
+    "statistically_clear": "not judged",
+    "statistical_basis": "",
+    "gof_material": "GOF threshold not yet defined",
+    "passed": false
+   },
+   {
+    "name": "saved shadow state restored",
+    "value": null,
+    "unit": "updates",
+    "meaning": "latest.pt read under the declared configuration: {\"exists\": false} (the run's last lesson None updates, 0 examples; 0 updates would mean the start, not the run)",
+    "baseline": "a state saved after every observation (--latent-body-save-every 1) holds the last lesson's counts",
+    "statistically_clear": "not judged",
+    "statistical_basis": "",
+    "gof_material": "GOF threshold not yet defined",
+    "passed": false
+   },
+   {
+    "name": "old contract's state loads",
+    "value": 59354,
+    "unit": "updates",
+    "meaning": "D:/UEMA_latent_body/seg41_v2/latest.pt read under D:/UEMA_Research/docs/gain_of_function_v4/latent_body_shadow_config_h84_2026-09-30.json: {\"action_contract\": \"wrist_relative_joint_v1\", \"configuration\": \"68a6cf05a095507c65bdb479a0249a7cf9684add420cfd1464dc17ddcb6f7c77\", \"examples\": 741616, \"loads\": true, \"path\": \"D:/UEMA_latent_body/seg41_v2/latest.pt\", \"start\": null, \"updates\": 59354}",
+    "baseline": "LATENT_SHADOW_STATE_MIXED_BY_ARMS: 59,354 updates, the mixed state of Oct 6",
+    "statistically_clear": "not judged",
+    "statistical_basis": "",
+    "gof_material": "GOF threshold not yet defined",
+    "passed": true
+   }
+  ],
+  "restore": {
+   "exists": false
+  },
+  "old_state": {
+   "path": "D:/UEMA_latent_body/seg41_v2/latest.pt",
+   "action_contract": "wrist_relative_joint_v1",
+   "configuration": "68a6cf05a095507c65bdb479a0249a7cf9684add420cfd1464dc17ddcb6f7c77",
+   "updates": 59354,
+   "examples": 741616,
+   "start": null,
+   "loads": true
+  },
+  "counts": {
+   "lessons": 0,
+   "rows": 0,
+   "started": 1,
+   "failed": 1,
+   "log_failed": 1
+  }
+ },
+ "not_a_measurement": "a trainer arm of 10 model steps with the finger servo on; no prediction reading is compared and the weights are discarded",
+ "job_record": "D:\\UEMA_Research\\external\\D\\UEMA_scratch\\finger_investigation\\latent_contract\\check\\run\\job_record.json",
+ "written": "Oct 10, 2026 4:21:12 AM PDT"
+}

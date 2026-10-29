@@ -1,0 +1,199 @@
+{
+ "question": "does the branch with --finger-joint-servo absent train bit for bit as the base code on real crib worlds with wrist-relative hand goals, fresh and resumed from a state the base code saved; and does the comparison see the finger rule when the flag is on?",
+ "base_commit": "15569a136",
+ "branch_commit": "852f21504",
+ "branch_worktree_dirty": false,
+ "script": {
+  "path": "C:\\Users\\bhart\\Documents\\UEMA_wt\\finger_cmd\\docs\\gain_of_function_v4\\finger_command_interface\\fl_lockstep.py",
+  "sha256": "c32e79d2b049f8f924fa4355bab80a0329c2de2f5441f37e22f7f6607c8f49d1"
+ },
+ "steps": 120,
+ "save_steps": 30,
+ "resume_steps": 40,
+ "bodies": 2,
+ "world_flags": [
+  "--scene",
+  "crib",
+  "--age-binding",
+  "fixed:24",
+  "--contact-profile",
+  "mechanical_v4",
+  "--decoder-kp",
+  "6.0",
+  "--joint-damping-scale",
+  "3.0",
+  "--hinge-armature",
+  "0.02",
+  "--finger-armature",
+  "0.0004",
+  "--touch-inside-rays",
+  "fixed_v1",
+  "--body-function",
+  "modulate",
+  "--hand-target-mode",
+  "wrist_relative_v1",
+  "--caregiver-seconds",
+  "0"
+ ],
+ "repair_flags": [
+  "--motor-asked-change",
+  "on",
+  "--heads-all-slot-path",
+  "on",
+  "--vestibular-encoder-repair",
+  "rescale_restart",
+  "--agency-prior",
+  "0.0",
+  "--contact-control-wellness",
+  "2.0"
+ ],
+ "hand_goals": [
+  "--hand-goals",
+  "memory",
+  "--hand-response-calibration",
+  "C:\\Users\\bhart\\Documents\\UEMA_wt\\finger_cmd\\docs\\gain_of_function_v3\\measurements\\hand_response_calibration_380200.json"
+ ],
+ "fresh": {
+  "base_vs_control": {
+   "model_steps": 120,
+   "first_difference": null,
+   "first_learner_difference": null,
+   "final_state_equal": true,
+   "state_digests_compared": 12,
+   "plans_equal": true
+  },
+  "base_vs_branch_flag_absent": {
+   "model_steps": 120,
+   "first_difference": null,
+   "first_learner_difference": null,
+   "final_state_equal": true,
+   "state_digests_compared": 12,
+   "plans_equal": true
+  },
+  "branch_off_vs_on_hand_goals_off": {
+   "model_steps": 120,
+   "first_difference": {
+    "step": 0,
+    "fields": [
+     "contract",
+     "ctrl",
+     "physical"
+    ]
+   },
+   "first_learner_difference": {
+    "step": 1,
+    "fields": [
+     "breakdown",
+     "command",
+     "gaze",
+     "grad",
+     "loss",
+     "tokens",
+     "wellness"
+    ]
+   },
+   "final_state_equal": false,
+   "state_digests_compared": 12,
+   "plans_equal": true
+  },
+  "planning_decisions": {
+   "base": 10,
+   "branch": 10
+  },
+  "hand_stage_completed": {
+   "base": 10,
+   "control": 10,
+   "branch": 10
+  },
+  "revivals": {
+   "base": {
+    "prediction_heads.heads.vision.mlp.0": 13,
+    "prediction_heads.heads.tactile.mlp.0": 20,
+    "prediction_heads.heads.vestibular.mlp.0": 13
+   },
+   "branch": {
+    "prediction_heads.heads.vision.mlp.0": 13,
+    "prediction_heads.heads.tactile.mlp.0": 20,
+    "prediction_heads.heads.vestibular.mlp.0": 13
+   }
+  },
+  "planted_dead_units": 48,
+  "contracts": {
+   "branch_flag_absent": [
+    "ancestor_arm_axes_signed_limits_v3|ancestor_arm_axes_signed_limits_v3"
+   ],
+   "branch_on": [
+    "ancestor_arm_axes_signed_limits_v3+finger_joint_servo_v1|ancestor_arm_axes_signed_limits_v3+finger_joint_servo_v1"
+   ]
+  },
+  "params": {
+   "base": 2101138,
+   "branch": 2101138,
+   "branch_on": 2101138
+  },
+  "peak_working_set_gb": {
+   "base": 0.733,
+   "control": 0.731,
+   "branch": 0.73,
+   "branch_on": 0.726
+  },
+  "seconds": {
+   "base": 68.3,
+   "control": 70.58,
+   "branch": 68.74,
+   "branch_hand_goals_off": 62.32,
+   "branch_on_hand_goals_off": 60.43
+  },
+  "control_equal": true,
+  "pass": true
+ },
+ "base_code": "D:\\UEMA_Research\\external\\D\\UEMA_scratch\\finger_investigation\\lockstep\\fl_lockstep_jo7vwxyi\\base\\Source\\Python\\mimo_bridge",
+ "branch_code": "C:\\Users\\bhart\\Documents\\UEMA_wt\\finger_cmd\\Source\\Python\\mimo_bridge",
+ "resume": {
+  "saved_at_model_step": 30,
+  "checkpoint": "ckpt_step_30",
+  "base_vs_branch_flag_absent": {
+   "model_steps": 40,
+   "first_difference": null,
+   "first_learner_difference": null,
+   "final_state_equal": true,
+   "state_digests_compared": 40,
+   "plans_equal": true
+  },
+  "loaded_step": {
+   "base": 30,
+   "branch": 30
+  },
+  "reinitialized": {
+   "base": [],
+   "branch": []
+  },
+  "replay_moments_saved": 30,
+  "replay_updates": {
+   "base": 20,
+   "branch": 20
+  },
+  "planning_decisions": {
+   "base": 4,
+   "branch": 4
+  },
+  "hand_stage_completed": {
+   "base": 3,
+   "branch": 3
+  },
+  "peak_working_set_gb": {
+   "save": 0.719,
+   "base": 0.731,
+   "branch": 0.731
+  },
+  "seconds": {
+   "save": 14.46,
+   "base": 23.72,
+   "branch": 24.6
+  },
+  "pass": true
+ },
+ "verdict": "pass",
+ "pass": true,
+ "written": "2026-10-08 10:26:29 AM"
+}

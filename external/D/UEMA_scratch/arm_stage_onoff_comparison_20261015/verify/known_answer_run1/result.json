@@ -1,0 +1,408 @@
+{
+ "tool": "onoff_reader_known_answer_v2",
+ "started": "Oct 15, 2026 05:05:42 PM PDT",
+ "reader_sha256": "5b966a503e54dffdce4b0592635ecdf85ddadcd39464a66d568a5d51fe4afff0",
+ "known_answer_sha256": "646397647ea7f4f788ed3de8362b9a432ce63b1b794bb459436be93341298fbe",
+ "cases": {
+  "K1": {
+   "mapping": {
+    "G": 962,
+    "P0": 999,
+    "P1": 1004,
+    "P2": 1009
+   },
+   "read_from_lane": {
+    "G": 962.0,
+    "P0": 999.0,
+    "P1": 1004.0,
+    "P2": 1009.0
+   },
+   "complete": true,
+   "goal_record": 962,
+   "goal_model_step": 963
+  },
+  "K2": {
+   "got": [
+    5.0,
+    1.0,
+    10.0,
+    4.0,
+    -5.0
+   ],
+   "want": [
+    5.0,
+    1.0,
+    10.0,
+    4.0,
+    -5.0
+   ]
+  },
+  "K3": {
+   "clean": {
+    "reasons": [],
+    "hold2": {
+     "order_seq": 122,
+     "author": "reflex",
+     "model_step": 1005
+    }
+   },
+   "latch_inside_hold1": [
+    "another command was latched inside hold 1 (model step 1002)"
+   ],
+   "no_latch_at_S_plus_hold": [
+    "no command was latched at the end of hold 1 (S + hold = 1005)"
+   ],
+   "latch_inside_hold2": [
+    "another command was latched inside hold 2, so the second command does not cover it (model step 1007)"
+   ],
+   "observer_not_planner_at_S": [
+    "the observer's record at 1000 does not show this latch (latched True, author reflex, order_seq 121, the causal record's 121)"
+   ],
+   "order_seq_differs_at_S": [
+    "the observer's record at 1000 does not show this latch (latched True, author planner, order_seq 121, the causal record's 128)"
+   ],
+   "causal_at_S_plus_hold_differs": [
+    "the causal record at 1005 names command 171, the observer 122"
+   ],
+   "no_causal_record_at_S_plus_hold": [
+    "no single causal record of the second command at 1005 (S + hold)"
+   ],
+   "causal_at_S_plus_hold_agrees": []
+  },
+  "K4": {
+   "episode_change": [
+    "the world records 999 to 1009 are not one continuous stretch (tracks 1, episodes [0, 1], broken at [1003])"
+   ],
+   "missing_record": [
+    "no live world record at model step 1006"
+   ],
+   "second_track": [
+    "the world records 999 to 1009 are not one continuous stretch (tracks 2, episodes [0], broken at [1002])"
+   ],
+   "stats_reset_inside": [
+    "a world reset (stats episode_reset) at model step 1004 inside the holds"
+   ],
+   "records_end_inside_hold2": [
+    "the run's world records end at 1007, before the end of hold 2 (1009): the holds were not recorded"
+   ]
+  },
+  "K5": {
+   "not_live": 1,
+   "palm_cm_at_1000": [
+    1000.0,
+    0.0,
+    0.0
+   ],
+   "reasons": [
+    "no live world record at model step 1003"
+   ]
+  },
+  "K6": {
+   "from_history": {
+    "found": true,
+    "problem": null,
+    "palm": [
+     950.0,
+     0.0,
+     0.0
+    ]
+   },
+   "before_history": "the goal record 890 lies before the first available record 900 (no earlier history is read)",
+   "predecessor_missing": "the record before the goal record 900 is not available, so whether the goal was stored from a reset frame cannot be read",
+   "reset_frame": "the goal record 960 is the first record of a world episode (a reset frame; its stored pose may be the placeholder)",
+   "history_rows_kept": [
+    990,
+    999,
+    10
+   ]
+  },
+  "K7": {
+   "valid": [
+    150,
+    49,
+    200,
+    200,
+    null
+   ],
+   "age_outside": "plan.goal's age 200 or ring_index 0 lies outside a ring of 200",
+   "lengths_differ": "the 8 bodies' ring_index + age + 1 differ ([161, 200]): not one ring length",
+   "above_size": "ring_index + age + 1 = 210 exceeds the ring size 200",
+   "not_whole": "plan.goal's ring_index, age_steps or ring_size is not a whole number"
+  },
+  "K8": {
+   "usable": [
+    1040
+   ],
+   "excluded": {
+    "5": "duplicate causal records at model step 1000 or command 5",
+    "6": "duplicate causal records at model step 1000 or command 6",
+    "7": "no plan in the causal record",
+    "8": "no plan.goal in the causal record",
+    "9": "the plan did not reach the body (reached_body None)"
+   },
+   "counts": {
+    "lines": 8,
+    "latch_records": 6,
+    "planner_records": 6,
+    "planner_usable": 1,
+    "malformed": 1,
+    "other_types": {
+     "other": 1
+    },
+    "duplicate_steps": [
+     1000
+    ],
+    "duplicate_order_seqs": []
+   }
+  },
+  "K9": {
+   "observer_without_causal": [
+    1020,
+    1030
+   ],
+   "ended_inside_holds": [
+    1040
+   ],
+   "causal_without_observer": [
+    1050
+   ],
+   "last": 1047
+  },
+  "K10": {
+   "fallback": {
+    "units": 14,
+    "not_units": [
+     {
+      "body_index_zero_based": 3,
+      "why": "stage fallback: collapsed arm chain"
+     }
+    ],
+    "complete": true
+   },
+   "ring_differs": [
+    "the stage's ring entries or ages differ from plan.goal's"
+   ],
+   "stage_reconciliation": {
+    "stage_without_causal": [
+     [
+      1090,
+      4242
+     ]
+    ],
+    "causal_without_stage": [
+     [
+      1010,
+      143
+     ]
+    ]
+   },
+   "stage_record_missing": [
+    "the stage is on and the causal record holds no arm_stage_execution",
+    "body 0: no single causal record of the second command at 1005 (S + hold)",
+    "body 1: no single causal record of the second command at 1005 (S + hold)",
+    "body 2: no single causal record of the second command at 1005 (S + hold)",
+    "body 3: no single causal record of the second command at 1005 (S + hold)",
+    "body 4: no single causal record of the second command at 1005 (S + hold)",
+    "body 5: no single causal record of the second command at 1005 (S + hold)",
+    "body 6: no single causal record of the second command at 1005 (S + hold)",
+    "body 7: no single causal record of the second command at 1005 (S + hold)"
+   ]
+  },
+  "K11": {
+   "L": {
+    "hold1": [
+     {
+      "model_steps_after_latch": 4
+     }
+    ],
+    "hold2": null
+   },
+   "R": {
+    "hold1": [],
+    "hold2": null
+   },
+   "all_available_no_touch": {
+    "hold1": [],
+    "hold2": []
+   }
+  },
+  "K12": {
+   "clean_complete": true,
+   "second": [
+    "2 of 16 units invalid"
+   ],
+   "invalid": [
+    "the goal record 849 lies before the first available record 900 (no earlier history is read)",
+    "the goal record 849 lies before the first available record 900 (no earlier history is read)"
+   ]
+  },
+  "K13": {
+   "a": {
+    "latch_lines": 10,
+    "complete_latches": 10,
+    "units_valid": 160,
+    "hold1_progress_cm": {
+     "n": 160,
+     "q25": -5.0,
+     "median": -5.0,
+     "q75": -5.0,
+     "min": -5.0,
+     "max": -5.0
+    },
+    "hold2_progress_cm": {
+     "n": 160,
+     "q25": -10.0,
+     "median": -10.0,
+     "q75": -10.0,
+     "min": -10.0,
+     "max": -10.0
+    },
+    "first_hold_gains": 0
+   },
+   "b_latches": 10
+  },
+  "K14": {
+   "pair_1": {
+    "G_cm": 0.0,
+    "P0_cm": 0.0,
+    "P1_cm": 0.3,
+    "P2_cm": 0.0,
+    "hold1_progress_from_start_cm_diff": -0.3,
+    "hold2_progress_from_start_cm_diff": 0.0,
+    "class_rb": "gain lost by the end of hold 2",
+    "class_rec": "gain lost by the end of hold 2"
+   },
+   "problems": [
+    "completeness differs: R-B False (['y']), the recorder True (None)",
+    "goal identity goal_age_steps differs: 11 and 10",
+    "no R-B unit"
+   ],
+   "apart": [
+    {
+     "order_seq": 3,
+     "model_step": 1020,
+     "recorder_incomplete_why": [
+      "x"
+     ],
+     "why": "no causal planning record; the recorder wrote it incomplete"
+    }
+   ],
+   "report_all": {
+    "units": 3,
+    "P1": {
+     "n": 3,
+     "q25": 0.0,
+     "median": 0.0,
+     "q75": 0.0,
+     "q95": 0.0,
+     "max": 0.3,
+     "min": 0.0
+    },
+    "classes": {
+     "gain lost by the end of hold 2 | gain lost by the end of hold 2": 3
+    }
+   }
+  },
+  "K15": {
+   "dropped": 3,
+   "list_after": 0,
+   "kin_after": [
+    null,
+    null,
+    null
+   ]
+  },
+  "K16": {
+   "q2": [
+    493015,
+    494015
+   ],
+   "q1": {
+    "early": [
+     494025,
+     495025
+    ],
+    "late": [
+     495515,
+     496515
+    ],
+    "whole": [
+     494025,
+     496515
+    ]
+   }
+  },
+  "K18": {
+   "invalid_in_folder_named_run": [
+    "line 1 names run SYNTH_ARM, not run",
+    "line 2 names run SYNTH_ARM, not run",
+    "line 3 names run SYNTH_ARM, not run"
+   ],
+   "invalid_after_copy": [],
+   "copy": {
+    "run_name": "SYNTH_ARM",
+    "source": "D:\\UEMA_Research\\external\\D\\UEMA_scratch\\ARM_STAGE_ONOFF_COMPARISON_20261015\\verify\\known_answer_run1\\k18\\run\\arm_stage_outcomes.jsonl",
+    "copy": "D:\\UEMA_Research\\external\\D\\UEMA_scratch\\ARM_STAGE_ONOFF_COMPARISON_20261015\\verify\\known_answer_run1\\k18\\out\\SYNTH_ARM\\arm_stage_outcomes.jsonl",
+    "source_sha256": "74640fd073dec10050e1f82ae6637ad265ae2f3e3acab22b0f0c0d18dec6eef8",
+    "copy_sha256": "74640fd073dec10050e1f82ae6637ad265ae2f3e3acab22b0f0c0d18dec6eef8",
+    "equal": true
+   },
+   "unsafe_name_refused": "stage_done.json names no usable run name: 'a/b'"
+  },
+  "K19": {
+   "b0_L": {
+    "early": {
+     "units": 2,
+     "hold1_median_rb": 2.0,
+     "hold1_median_recorder": 3.0,
+     "hold2_median_rb": 0.0,
+     "hold2_median_recorder": -1.0
+    },
+    "late": {
+     "units": 1,
+     "hold1_median_rb": 5.0,
+     "hold1_median_recorder": 5.5,
+     "hold2_median_rb": 2.0,
+     "hold2_median_recorder": 2.5
+    }
+   },
+   "age_0_49_late": {
+    "units": 1,
+    "hold1_median_rb": -1.0,
+    "hold1_median_recorder": -1.5,
+    "hold2_median_rb": -3.0,
+    "hold2_median_recorder": -3.5
+   }
+  },
+  "K17": {
+   "forbidden_loaded": [],
+   "mujoco_loaded": false
+  }
+ },
+ "checks": {
+  "K1": true,
+  "K2": true,
+  "K3": true,
+  "K4": true,
+  "K5": true,
+  "K6": true,
+  "K7": true,
+  "K8": true,
+  "K9": true,
+  "K10": true,
+  "K11": true,
+  "K12": true,
+  "K13": true,
+  "K14": true,
+  "K15": true,
+  "K16": true,
+  "K18": true,
+  "K19": true,
+  "K17": true
+ },
+ "held": 19,
+ "of": 19,
+ "verdict": "pass",
+ "seconds": 0.1,
+ "ended": "Oct 15, 2026 05:05:42 PM PDT"
+}

@@ -1,0 +1,515 @@
+{
+ "verdict": "pass",
+ "held": 18,
+ "total": 18,
+ "results": [
+  {
+   "expectation": "X1 the outer supervision: the driver ended by itself, exit 0, cleanup verified, no survivors, peak below 4 GiB",
+   "holds": true,
+   "got": {
+    "exit_code": 0,
+    "stopped": null,
+    "seconds": 63.5,
+    "peak_tree_private_gib": 1.916,
+    "cleanup_verified": true,
+    "survivors": [],
+    "orphans_ended": []
+   }
+  },
+  {
+   "expectation": "X2 the driver's exit record: exit 0, no reporter call",
+   "holds": true,
+   "got": {
+    "exit": 0,
+    "reports": []
+   }
+  },
+  {
+   "expectation": "X3 the admission ALLOWED on the copy, with the stand-in; its execution check not judged",
+   "holds": true,
+   "got": {
+    "verdict": "ALLOWED",
+    "problems": [],
+    "execution": "not judged: a dry-run copy (its dry_run section; M7 admits it only with the stand-in)"
+   }
+  },
+  {
+   "expectation": "X4 every expected stage ran and no failure event",
+   "holds": true,
+   "got": {
+    "missing_events": [],
+    "missing_stages": [],
+    "failure_events": [],
+    "events": [
+     "attempt recorded; interval open",
+     "stage",
+     "helpers started",
+     "stage",
+     "start copy made and checked",
+     "stage",
+     "memory guard",
+     "stage",
+     "STAND-IN TRAINER (the driver dry run)",
+     "trainer started",
+     "trainer ended",
+     "trainer stage receipt",
+     "stage",
+     "stage",
+     "stage",
+     "export stage",
+     "stage",
+     "device_reader stage",
+     "device reading",
+     "row end",
+     "release",
+     "completion notice",
+     "driver done"
+    ]
+   }
+  },
+  {
+   "expectation": "X5 the stand-in under the real stage: trainer step exit 0, cleanup verified; the stage complete, Nsight Systems' exit 0, cleanup verified; a report",
+   "holds": true,
+   "got": {
+    "trainer": {
+     "exit_code": 0,
+     "stopped": null,
+     "cleanup_verified": true,
+     "arm": "da"
+    },
+    "stage": {
+     "readable": true,
+     "verdict": "complete",
+     "exit_code": 0,
+     "command_exit_code": 0,
+     "refused": null,
+     "hard_end": null,
+     "cleanup_verified": true
+    },
+    "report": "D:\\UEMA_Research\\external\\D\\UEMA_scratch\\speed_10x\\device_activity_checks\\c_run1\\root\\nsys\\report_492800.nsys-rep",
+    "report_bytes": 51756
+   }
+  },
+  {
+   "expectation": "X6 the stand-in hid the card and ran its spawn child",
+   "holds": true,
+   "got": {
+    "note": {
+     "standin_exit": 0,
+     "pid": 28284,
+     "steps": 14,
+     "cuda_visible_devices": "-1",
+     "torch_cuda_available": false
+    },
+    "worker_done": true
+   }
+  },
+  {
+   "expectation": "X7 the pinned memory guard allowed 32 GB",
+   "holds": true,
+   "got": "ALLOWED: 27.5 of 84.4 GB committed (Windows' limit 84.4 GB; the guard never counts on the page file growing into the last 12 GB of its drive), 11.6 GB RAM free; this work needs 32.0 GB and 6.0 GB must stay free under the limit"
+  },
+  {
+   "expectation": "X8 the end state: ckpt_step_492814, its companion, latest.pt",
+   "holds": true,
+   "got": {
+    "stage_done": {
+     "run": "SPEED_DA_492800",
+     "ok": true,
+     "steps": 492814,
+     "resumed_from": "start/run/checkpoints/ckpt_step_492800",
+     "final_checkpoint": "D:\\UEMA_Research\\external\\D\\UEMA_scratch\\speed_10x\\device_activity_checks\\c_run1\\root\\run\\SPEED_DA_492800\\checkpoints\\ckpt_step_492814",
+     "finished_at": 1792106685.3684204,
+     "finished_at_human": "2026-10-15 16:24:45",
+     "elapsed_min": 29868428.25614034,
+     "exception": null
+    },
+    "latest_complete": "D:\\UEMA_Research\\external\\D\\UEMA_scratch\\speed_10x\\device_activity_checks\\c_run1\\root\\run\\SPEED_DA_492800\\checkpoints\\ckpt_step_492814",
+    "worlds": {
+     "path": "D:\\UEMA_Research\\external\\D\\UEMA_scratch\\speed_10x\\device_activity_checks\\c_run1\\root\\run\\SPEED_DA_492800\\caregiver\\checkpoint_state\\SPEED_DA_492800\\ckpt_step_492814_fixture.pt.gz",
+     "recorded": "1a4cfe290c642fbfc7d54465350b6a1f64defe76fedfeb1c502869f9831cef6e",
+     "sha256": "1a4cfe290c642fbfc7d54465350b6a1f64defe76fedfeb1c502869f9831cef6e",
+     "inside_outputs": true
+    },
+    "latent_latest": {
+     "path": "D:\\UEMA_Research\\external\\D\\UEMA_scratch\\speed_10x\\device_activity_checks\\c_run1\\root\\latent_body\\output\\latest.pt",
+     "exists": true
+    }
+   }
+  },
+  {
+   "expectation": "X9 the phase reader pass",
+   "holds": true,
+   "got": {
+    "verdict": "pass",
+    "problems": []
+   }
+  },
+  {
+   "expectation": "X10 baseline_receipt.json verdict pass, no reason; the device attribution ok",
+   "holds": true,
+   "got": {
+    "verdict": "pass",
+    "reasons": [],
+    "attribution": null,
+    "identity": [],
+    "writes": 0
+   }
+  },
+  {
+   "expectation": "X11 the export stage: exit 0, cleanup verified, stage complete, the SQLite file",
+   "holds": true,
+   "got": {
+    "ran": true,
+    "exit_code": 0,
+    "stopped": null,
+    "cleanup_verified": true,
+    "sqlite": "D:\\UEMA_Research\\external\\D\\UEMA_scratch\\speed_10x\\device_activity_checks\\c_run1\\root\\export\\report_492800.sqlite",
+    "sqlite_bytes": 61440,
+    "why": null
+   }
+  },
+  {
+   "expectation": "X12 the device reader: its INVALID exit 1, cleanup verified, stage complete with command exit 1; the reading INVALID with exactly the expected reason, every captured step unreadable for no trainer kernel",
+   "holds": true,
+   "got": {
+    "receipt": {
+     "ran": true,
+     "exit_code": 1,
+     "stopped": null,
+     "cleanup_verified": true,
+     "verdict": "INVALID",
+     "reasons": [
+      "no captured model step could be read"
+     ],
+     "why": null
+    },
+    "stage": {
+     "verdict": "complete",
+     "command_exit_code": 1,
+     "cleanup_verified": true
+    },
+    "reading": {
+     "verdict": "INVALID",
+     "reasons": [
+      "no captured model step could be read"
+     ],
+     "partial_reasons": [
+      "no planning model step was read: the search's windows are unavailable (no extra model step and no retry is made)"
+     ],
+     "coverage": {
+      "readable_steps": 0,
+      "planning": 0,
+      "ordinary_replay": 0,
+      "ordinary_no_replay": 0
+     },
+     "unreadable": [
+      [
+       492810,
+       "no kernel of the trainer process ran inside this model step's range"
+      ],
+      [
+       492811,
+       "no kernel of the trainer process ran inside this model step's range"
+      ],
+      [
+       492812,
+       "no kernel of the trainer process ran inside this model step's range"
+      ]
+     ]
+    }
+   }
+  },
+  {
+   "expectation": "X13 the synthetic capture row: INVALID for the expected reason, its result file the copy's reading",
+   "holds": true,
+   "got": {
+    "state": "INVALID",
+    "judged_by": "the device reading reads INVALID: no captured model step could be read",
+    "result_file": "D:\\UEMA_Research\\external\\D\\UEMA_scratch\\speed_10x\\device_activity_checks\\c_run1\\root\\device_reader\\result.json",
+    "exit_code": 0
+   }
+  },
+  {
+   "expectation": "X14 the release closed the interval: no fault, no survivor, no guard left",
+   "holds": true,
+   "got": {
+    "release": {
+     "interval": "closed",
+     "faults": [],
+     "survivors": [],
+     "guard_left": []
+    },
+    "interval": "closed"
+   }
+  },
+  {
+   "expectation": "X15 the completion notice: written; its receipt sent false naming the dry run; no reporter call",
+   "holds": true,
+   "got": {
+    "notice": {
+     "sent": false,
+     "why": "the driver dry run's manifest copy (check D0): nothing is sent and no reporter is called",
+     "id": "speed-device-activity-492800-completion",
+     "sha256": "f19f981d425575ff89a6b62791aa9f5f337b5a087232afc07c0e25f76f71011d"
+    },
+    "text_head": "H84 DEVICE-ACTIVITY RECORD (speed_device_activity_492800): COMPLETION NOTICE from its driver, Oct 15, 2026, 04:25:18 PM PDT.\nVERDICT: pass (pass: a complete, numerically clean 14-model-step run under its trainer stage; invalid: no complete run, for the reasons below; the device attribution and the d"
+   }
+  },
+  {
+   "expectation": "X16 no process left that names this check's folder",
+   "holds": true,
+   "got": []
+  },
+  {
+   "expectation": "X17 the originals and controls unchanged; the live capture row unchanged; the real output root not created",
+   "holds": true,
+   "got": {
+    "changed": [],
+    "missing": [],
+    "production": {
+     "before": {
+      "D:\\UEMA_Research\\Saved\\mimo_bridge\\supervisor_control.json": "63c275697e689abfa61db86935c716b9120923d4843490e015bfe03402786759",
+      "D:\\UEMA_Research\\Saved\\mimo_bridge\\training_continuation.json": "89b389fa0376b51a46da8bd83658d6b1130d0e4e01457b17e49344ac525d45b5"
+     },
+     "after": {
+      "D:\\UEMA_Research\\Saved\\mimo_bridge\\supervisor_control.json": "63c275697e689abfa61db86935c716b9120923d4843490e015bfe03402786759",
+      "D:\\UEMA_Research\\Saved\\mimo_bridge\\training_continuation.json": "89b389fa0376b51a46da8bd83658d6b1130d0e4e01457b17e49344ac525d45b5"
+     }
+    },
+    "live_row": [
+     "4dbc677ded00e846d3fe7ad6ff345e9e89ab2d91e0ff9aa6fed888d2e7944c2d",
+     "4dbc677ded00e846d3fe7ad6ff345e9e89ab2d91e0ff9aa6fed888d2e7944c2d"
+    ],
+    "real_root_exists": false
+   }
+  },
+  {
+   "expectation": "X18 every cleanup receipt exists",
+   "holds": true,
+   "got": {
+    "stage_receipts": {
+     "trainer": "D:\\UEMA_Research\\external\\D\\UEMA_scratch\\speed_10x\\device_activity_checks\\c_run1\\root\\receipts\\trainer_stage_receipt.json",
+     "export": "D:\\UEMA_Research\\external\\D\\UEMA_scratch\\speed_10x\\device_activity_checks\\c_run1\\root\\receipts\\export_stage_receipt.json",
+     "reader": "D:\\UEMA_Research\\external\\D\\UEMA_scratch\\speed_10x\\device_activity_checks\\c_run1\\root\\receipts\\device_reader_stage_receipt.json"
+    },
+    "files": {
+     "trainer_supervise.json": true,
+     "trainer_stage_outcome.json": true,
+     "export_supervise.json": true,
+     "device_reader_supervise.json": true,
+     "release.json": true
+    }
+   }
+  }
+ ],
+ "manifest": "C:\\Users\\bhart\\Documents\\UEMA_wt\\speed_device_activity_harness\\docs\\gain_of_function_v4\\speed_device_activity_harness\\package\\manifest.json",
+ "manifest_sha256": "4f5edc6705d3b7a1ce7be47c839b76674f54441e329f97913162ade7befa9e64",
+ "copy": "D:\\UEMA_Research\\external\\D\\UEMA_scratch\\speed_10x\\device_activity_checks\\c_run1\\manifest.json",
+ "copy_sha256": "b0b487cba11cc072c8b56287ff5bcdf7cb8c3993645304e7b3bb63222b68732d",
+ "outer_supervise": {
+  "pid": 25996,
+  "exit_code": 0,
+  "stopped": null,
+  "seconds": 63.5,
+  "peak_tree_private_gib": 1.916,
+  "samples": 61,
+  "processes_recorded": [
+   3124,
+   9208,
+   12844,
+   13476,
+   19980,
+   21920,
+   25996,
+   26408,
+   28284,
+   30848,
+   30896,
+   31008,
+   32040,
+   32148,
+   33076,
+   33152,
+   33336,
+   34000,
+   34008,
+   34188,
+   34544,
+   34716,
+   36352,
+   36476
+  ],
+  "ended_pids": [],
+  "orphans_ended": [],
+  "survivors": [],
+  "survivors_detail": [],
+  "wait_timed_out": false,
+  "cleanup_verified": true,
+  "card_memory_mib": {
+   "before": null,
+   "peak": null
+  },
+  "peak_each_private_gib": [
+   {
+    "pid": 28284,
+    "created": 1792106674.4289331,
+    "name": "python.exe",
+    "command": "D:\\UEMA_Research\\.venv_mimo\\Scripts\\python.exe -B D:\\UEMA_Research\\external\\D\\UEMA_scratch\\speed_10x\\device_activity_checks\\c_run1\\standin_c.py C:\\Users\\bhart\\",
+    "private_gib": 0.842
+   },
+   {
+    "pid": 32148,
+    "created": 1792106678.9387643,
+    "name": "python.exe",
+    "command": "C:\\Users\\bhart\\AppData\\Local\\Programs\\Python\\Python313\\python.exe -B -c from multiprocessing.spawn import spawn_main; spawn_main(parent_pid=28284, pipe_handle=1",
+    "private_gib": 0.769
+   },
+   {
+    "pid": 21920,
+    "created": 1792106674.2354095,
+    "name": "python.exe",
+    "command": "D:\\UEMA_Research\\.venv_mimo\\Scripts\\python.exe -B D:\\UEMA_Research\\external\\D\\UEMA_scratch\\speed_10x\\device_activity_checks\\c_run1\\standin_c.py C:\\Users\\bhart\\",
+    "private_gib": 0.163
+   },
+   {
+    "pid": 33076,
+    "created": 1792106674.0588264,
+    "name": "nsys.exe",
+    "command": "C:\\Program Files\\NVIDIA Corporation\\Nsight Systems 2025.5.2\\target-windows-x64\\nsys.exe --start-agent --session-name uema_device_activity_492800 --shm-name crea",
+    "private_gib": 0.04
+   },
+   {
+    "pid": 31008,
+    "created": 1792106655.6673963,
+    "name": "python.exe",
+    "command": "D:\\UEMA_Research\\.venv_mimo\\Scripts\\python.exe -B D:\\UEMA_Research\\external\\D\\UEMA_scratch\\speed_10x\\device_activity_checks\\c_run1\\d0_driver.py C:\\Users\\bhart\\",
+    "private_gib": 0.028
+   },
+   {
+    "pid": 13476,
+    "created": 1792106673.9933,
+    "name": "nsys.exe",
+    "command": "C:\\Program Files\\NVIDIA Corporation\\Nsight Systems 2025.5.2\\target-windows-x64\\nsys.exe profile --trace=cuda,nvtx --sample=none --backtrace=none --cpuctxsw=none",
+    "private_gib": 0.024
+   },
+   {
+    "pid": 3124,
+    "created": 1792106661.7656715,
+    "name": "python.exe",
+    "command": "D:\\UEMA_Research\\.venv_mimo\\Scripts\\python.exe -B -u C:\\Users\\bhart\\Documents\\UEMA_wt\\speed_device_activity_harness\\docs\\gain_of_funct",
+    "private_gib": 0.018
+   },
+   {
+    "pid": 34008,
+    "created": 1792106673.8833847,
+    "name": "python.exe",
+    "command": "D:\\UEMA_Research\\.venv_mimo\\Scripts\\python.exe -B C:\\Users\\bhart\\Documents\\UEMA_wt\\speed_device_activity\\docs\\gain_of_function_v4\\spee",
+    "private_gib": 0.012
+   },
+   {
+    "pid": 34716,
+    "created": 1792106661.7822096,
+    "name": "python.exe",
+    "command": "D:\\UEMA_Research\\.venv_mimo\\Scripts\\python.exe -B D:\\UEMA_Research\\docs\\gain_of_function_v4\\coordinator\\no_p",
+    "private_gib": 0.011
+   },
+   {
+    "pid": 34000,
+    "created": 1792106661.791631,
+    "name": "conhost.exe",
+    "command": "\\??\\C:\\Windows\\system32\\conhost.exe 0x4",
+    "private_gib": 0.002
+   },
+   {
+    "pid": 36476,
+    "created": 1792106661.7780209,
+    "name": "conhost.exe",
+    "command": "\\??\\C:\\Windows\\system32\\conhost.exe 0x4",
+    "private_gib": 0.002
+   },
+   {
+    "pid": 33336,
+    "created": 1792106674.299616,
+    "name": "conhost.exe",
+    "command": "\\??\\C:\\Windows\\system32\\conhost.exe 0x4",
+    "private_gib": 0.002
+   },
+   {
+    "pid": 34544,
+    "created": 1792106661.767996,
+    "name": "python.exe",
+    "command": "D:\\UEMA_Research\\.venv_mimo\\Scripts\\python.exe -B D:\\UEMA_Research\\docs\\gain_of_function_v4\\coordinator\\no_p",
+    "private_gib": 0.001
+   },
+   {
+    "pid": 19980,
+    "created": 1792106673.86966,
+    "name": "python.exe",
+    "command": "D:\\UEMA_Research\\.venv_mimo\\Scripts\\python.exe -B C:\\Users\\bhart\\Documents\\UEMA_wt\\speed_device_activity\\docs\\gain_of_function_v4\\spee",
+    "private_gib": 0.001
+   },
+   {
+    "pid": 9208,
+    "created": 1792106661.7515843,
+    "name": "python.exe",
+    "command": "D:\\UEMA_Research\\.venv_mimo\\Scripts\\python.exe -B -u C:\\Users\\bhart\\Documents\\UEMA_wt\\speed_device_activity_harness\\docs\\gain_of_funct",
+    "private_gib": 0.001
+   },
+   {
+    "pid": 25996,
+    "created": 1792106655.6581955,
+    "name": "python.exe",
+    "command": "D:\\UEMA_Research\\.venv_mimo\\Scripts\\python.exe -B D:\\UEMA_Research\\external\\D\\UEMA_scratch\\speed_10x\\device_activity_checks\\c_run1\\d0_driver.py C:\\Users\\bhart\\",
+    "private_gib": 0.001
+   }
+  ],
+  "last_each_private_gib": [
+   {
+    "pid": 31008,
+    "created": 1792106655.6673963,
+    "name": "python.exe",
+    "command": "D:\\UEMA_Research\\.venv_mimo\\Scripts\\python.exe -B D:\\UEMA_Research\\external\\D\\UEMA_scratch\\speed_10x\\device_activity_checks\\c_run1\\d0_driver.py C:\\Users\\bhart\\",
+    "private_gib": 0.03
+   },
+   {
+    "pid": 25996,
+    "created": 1792106655.6581955,
+    "name": "python.exe",
+    "command": "D:\\UEMA_Research\\.venv_mimo\\Scripts\\python.exe -B D:\\UEMA_Research\\external\\D\\UEMA_scratch\\speed_10x\\device_activity_checks\\c_run1\\d0_driver.py C:\\Users\\bhart\\",
+    "private_gib": 0.001
+   }
+  ],
+  "last_sample_s": 62.5
+ },
+ "driver_cap_s": 579.2,
+ "bounds": {
+  "whole_s": 840.0,
+  "supervise_tail_s": 200.0,
+  "read_s": 60.0,
+  "min_driver_s": 300.0,
+  "memory_gib": 4.0,
+  "sample_s": 1.0
+ },
+ "check_env": {
+  "cuda_visible_devices": "-1",
+  "omp_num_threads": "2",
+  "mkl_num_threads": "2"
+ },
+ "program": "C:\\Users\\bhart\\Documents\\UEMA_wt\\speed_device_activity_harness\\docs\\gain_of_function_v4\\speed_device_activity_harness\\dry_run_check.py",
+ "program_sha256": "e4f8588bb9414eb917c72aeec1030dbd20e632803e2bcd855dc4a21c04515582",
+ "driver_sha256": "7889b21f26a6ebd4051d5858af09e671f19c38abb2db214586ce0fb1b3763288",
+ "admission_sha256": "97b9b82dedbc0b13d0de95df147edccda186bccd11202ed3009ddd5eacbde6b5",
+ "standin_target": {
+  "path": "C:\\Users\\bhart\\Documents\\UEMA_wt\\speed_device_activity\\docs\\gain_of_function_v4\\speed_device_activity\\_standin_target.py",
+  "sha256": "f284d93872d5f488e1a7d72e403781430acae535601e7f39039141c1eb73fff0"
+ },
+ "reader_check": {
+  "path": "C:\\Users\\bhart\\Documents\\UEMA_wt\\speed_hand_search\\docs\\gain_of_function_v4\\speed_hand_search\\check_read_phase_timings.py",
+  "sha256": "53e751262a139b10c37706cad64bcc0b81f97608e51806bf9175aacb64487283"
+ },
+ "out": "D:\\UEMA_Research\\external\\D\\UEMA_scratch\\speed_10x\\device_activity_checks\\c_run1",
+ "started": "Oct 15, 2026, 04:24:14 PM PDT",
+ "ended": "Oct 15, 2026, 04:25:20 PM PDT",
+ "seconds": 65.4
+}

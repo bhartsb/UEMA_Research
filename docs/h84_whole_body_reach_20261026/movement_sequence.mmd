@@ -1,0 +1,70 @@
+﻿sequenceDiagram
+    participant S as 1 Senses
+    participant C as 2 Core + memory
+    participant I as 3 Intention
+    participant P as 4 Planner
+    participant F as 5 Forward model
+    participant V as 6 Wellness + value
+    participant A as 7 Motor control
+    participant B as 8 Body + world
+    Note over S,B: PROPOSED ALGORITHM - each numbered operation has its data and calculation in section 5
+    B->>S: Left/right images + joint angles<br/>+ timed skin contact samples
+    S->>C: Stereo patch matches -> depth<br/>Temporal matches -> object track<br/>Observed q, speed and pressure
+    C->>I: Retrieve 32 real start/end windows<br/>Keep four distinct outcomes
+    I->>V: Current state + four outcomes<br/>including the retained intention
+    Note over I,V: For each outcome run the planner comparison below<br/>Rank its best table by unshaped utility
+    V-->>I: Unshaped predicted utility<br/>Qualified tail or zero-tail warm-up
+    I->>P: Retain object track + desired<br/>relationship + hold duration<br/>Six-second evaluation period
+    C->>P: State record + retrieved commands<br/>+ previous plan's remaining rows
+    loop Replan after each actual 50 ms row
+        P->>P: Seed current, hold, retrieved<br/>and remaining command tables
+        Note over P,V: Two rounds, 16 alternatives each<br/>Up to 60 rows, clipped to remaining goal-period time
+        P->>P: Perturb executed coordinates<br/>Shift group boundaries by -2..+2 rows<br/>Keep four best, resample once
+        P->>F: Each row: body[26,9], gaze[2],<br/>joint_goal[J], mask, dt=50 ms
+        loop Row
+            F->>F: Copy and advance control filters<br/>Predict q, speed, eyes, objects,<br/>five contact samples and tokens
+            F->>F: FK connects bones from q<br/>Advance private context and memory<br/>Use this result as next input
+        end
+        F->>V: All predicted channel values<br/>+ final state + validity
+        V-->>P: Reject harm/invalid forecasts<br/>Sum discounted dt x utility<br/>Add fixed-goal progress and<br/>qualified continuation or zero tail
+        P->>A: Best table's first row only<br/>or bounded acquisition/protection
+        A->>B: Apply production limits once<br/>Send body, gaze and finger controls
+        B->>S: Measured endpoint + contact history<br/>+ actually executed controls/time
+        S->>C: Join by body, episode, order, time<br/>Update observed state and tracks
+        C->>F: Actual next-state targets<br/>Update matched prediction heads
+        C->>V: Actual 0.5 / 1 / 2 / 3 s return<br/>Update state/intention/duration value
+        C->>I: Same object and relationship?<br/>Count continuous observed hold<br/>Maintain after success to period end
+    end
+    Note over S,B: ILLUSTRATED TRACE - desired geometry below is posed, not an observed trained choice
+    rect rgb(235,245,251)
+        Note over A,B: 0.0-0.5 s - ten rows - begin arm motion
+        A->>B: Open right elbow and turn shoulder<br/>Keep finger bends near zero<br/>Eye rays continue toward the ball
+        B-->>S: Physical version must measure<br/>hand advance and support contact
+    end
+    rect rgb(239,247,239)
+        Note over A,B: 0.5-1.0 s - ten rows - establish forward support
+        A->>B: Left palm remains on side support<br/>Hip/trunk angle increases<br/>Knees/ankles keep feet at floor
+        S->>C: In real motion use new pressure<br/>and body tilt before continuing
+    end
+    rect rgb(239,247,239)
+        Note over A,B: 1.0-1.5 s - ten rows - move shoulder and raise open hand
+        A->>B: Continue hip/trunk lean<br/>Shoulder/elbow bring open palm<br/>above the fixed red ball
+        C->>P: Replan from advanced shoulder<br/>not the original arm position
+    end
+    rect rgb(235,245,251)
+        Note over A,B: 1.5-2.0 s - ten rows - descend with palm direction fixed
+        A->>B: Coordinated shoulder/elbow change<br/>lowers wrist along palm normal<br/>Fingers stay open, gaze tracks ball
+        S->>C: Any new contact changes the<br/>next 50 ms state and command
+    end
+    rect rgb(255,243,225)
+        Note over A,B: 2.0-2.5 s - ten rows - bend each digit around the surface
+        A->>B: Base/middle/end bends in degrees:<br/>index 64/56/30, middle 50/57/36<br/>ring 56/49/31, little 30/49/39<br/>Thumb outer bends 85/90
+        Note over S,B: Exact final finger angles, clearances and opposing directions are measured in section 4
+        S->>C: Physical version measures each<br/>digit's pressure and object motion
+        C->>P: Compare stopping one digit<br/>against closing another<br/>using updated pressure forecasts
+    end
+    rect rgb(255,243,225)
+        Note over A,B: 2.5-3.0 s - ten rows - retain pictured hand shape
+        A->>B: Maintain shown joint angles<br/>The pictured ball stays on its stand
+        Note over S,B: Physical completion additionally requires lift clear of stand and timed retention, section 7
+    end

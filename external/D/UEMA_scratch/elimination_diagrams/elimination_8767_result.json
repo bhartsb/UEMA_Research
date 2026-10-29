@@ -1,0 +1,177 @@
+{
+ "verdict": "pass",
+ "investigation": "motor_handle_reach",
+ "parts": [
+  {
+   "what": "the route serves the investigation, not refused",
+   "ok": true,
+   "found": "6 stages"
+  },
+  {
+   "what": "the Tests page at 1,280 px draws every box with the route's verdict and six fields",
+   "ok": true,
+   "found": []
+  },
+  {
+   "what": "the drawing at 1,280 px sits on its grid, every detail closed and opened",
+   "ok": true,
+   "found": [
+    [],
+    []
+   ]
+  },
+  {
+   "what": "no page script error on the Tests page at 1,280 px",
+   "ok": true,
+   "found": []
+  },
+  {
+   "what": "the Tests page at 600 px draws every box with the route's verdict and six fields",
+   "ok": true,
+   "found": []
+  },
+  {
+   "what": "the drawing at 600 px sits on its grid, every detail closed and opened",
+   "ok": true,
+   "found": [
+    [],
+    []
+   ]
+  },
+  {
+   "what": "no page script error on the Tests page at 600 px",
+   "ok": true,
+   "found": []
+  },
+  {
+   "what": "each box's Architecture link names its stage's component",
+   "ok": true,
+   "found": "all 6"
+  },
+  {
+   "what": "the explainer opened at each link shows that component's popup",
+   "ok": true,
+   "found": [
+    [
+     "SENSE_MOTOR",
+     [
+      "SENSE_MOTOR"
+     ]
+    ],
+    [
+     "MOTOR_ENCODER",
+     [
+      "MOTOR_ENCODER"
+     ]
+    ],
+    [
+     "MOTOR_ENCODER_REPAIR",
+     [
+      "MOTOR_ENCODER_REPAIR"
+     ]
+    ],
+    [
+     "TRANSFORMER",
+     [
+      "TRANSFORMER"
+     ]
+    ]
+   ]
+  },
+  {
+   "what": "the rendered summary names the route's next branch, whose box reads UNKNOWN",
+   "ok": true,
+   "found": "Located by elimination: The fault lies after 'repaired motor path' (MOTOR_ENCODER_REPAIR, PASS) and at or before 'transformer' (TRANSFORMER, FAIL).\n\nNext unresolved branch: predictor attention and routing. The test that would decide it: No registry row holds this test yet; it is named by the defect. PREDICTION_HANDLE_DIRECTION_LOST, its next action in the defect register: A model-level repair, add"
+  },
+  {
+   "what": "the section's text holds no forbidden alias and no bare score decimal",
+   "ok": true,
+   "found": []
+  },
+  {
+   "what": "the explainer's panel at #investigation=ID draws the same boxes",
+   "ok": true,
+   "found": []
+  },
+  {
+   "what": "a click on a box's component link in the explainer opens its popup",
+   "ok": true,
+   "found": [
+    "SENSE_MOTOR",
+    [
+     "SENSE_MOTOR"
+    ],
+    []
+   ]
+  },
+  {
+   "what": "the explainer's panel sits on its grid",
+   "ok": true,
+   "found": []
+  },
+  {
+   "what": "the second dashboard wrote nothing inside production's checkout",
+   "ok": true,
+   "found": "0 writes; the log exists"
+  }
+ ],
+ "stages": [
+  {
+   "key": "raw_input",
+   "verdict": "PASS",
+   "time": "Oct 3, 2026 1:01 AM PDT",
+   "commit": null,
+   "component": "SENSE_MOTOR"
+  },
+  {
+   "key": "per_handle_encoder",
+   "verdict": "UNKNOWN",
+   "time": null,
+   "commit": null,
+   "component": "MOTOR_ENCODER"
+  },
+  {
+   "key": "pool",
+   "verdict": "PASS",
+   "time": "Oct 5, 2026 8:39 AM PDT",
+   "commit": "1b1cb2745",
+   "component": "MOTOR_ENCODER"
+  },
+  {
+   "key": "repaired_path",
+   "verdict": "PASS",
+   "time": "Oct 5, 2026 8:39 AM PDT",
+   "commit": "1b1cb2745",
+   "component": "MOTOR_ENCODER_REPAIR"
+  },
+  {
+   "key": "transformer",
+   "verdict": "FAIL",
+   "time": "Oct 5, 2026 8:39 AM PDT",
+   "commit": "1b1cb2745",
+   "component": "TRANSFORMER"
+  },
+  {
+   "key": "predictor_routing",
+   "verdict": "UNKNOWN",
+   "time": null,
+   "commit": null,
+   "component": "TRANSFORMER"
+  }
+ ],
+ "next_branch": {
+  "key": "predictor_routing",
+  "name": "predictor attention and routing",
+  "test": "No registry row holds this test yet; it is named by the defect. PREDICTION_HANDLE_DIRECTION_LOST, its next action in the defect register: A model-level repair, addressed in training (the operator's decision of Oct 5). First measure where the handles' directions collapse: the same one-handle-at-a-time changes read after each transformer block and at the proprioception head, against the real changes; it waits on PLANNER_SEARCH_REPAIR's gate."
+ },
+ "located": {
+  "found": true,
+  "after": "repaired_path",
+  "at_or_before": "transformer",
+  "gone_around": [],
+  "sentence": "The fault lies after 'repaired motor path' (MOTOR_ENCODER_REPAIR, PASS) and at or before 'transformer' (TRANSFORMER, FAIL)."
+ },
+ "write_log": "D:\\UEMA_Research\\external\\D\\UEMA_scratch\\elimination_diagrams\\writes_20261005_105807.jsonl",
+ "writes_inside_production": 0,
+ "read_at": "Oct 5, 2026 11:03 AM PDT"
+}

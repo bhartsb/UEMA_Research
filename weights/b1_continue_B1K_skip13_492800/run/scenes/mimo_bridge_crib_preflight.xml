@@ -1,0 +1,144 @@
+<mujoco model="MIMo_bridge_crib">
+  <compiler inertiafromgeom="true" angle="degree" meshdir="C:/Users/bhart/Documents/MIMo_private/mimo_infant/simulation/assets/meshes" texturedir="C:/Users/bhart/Documents/MIMo_private/mimo_infant/simulation/assets" />
+  <option gravity="0 0 -9.81" timestep="0.005" iterations="50" tolerance="1e-10" solver="Newton" jacobian="dense" cone="elliptic" impratio="1.0" />
+  <size nconmax="1000" njmax="5000" nstack="10000000" />
+  <visual>
+    <map force="0.1" zfar="30" znear="0.005" />
+    <rgba haze="0.15 0.25 0.35 1" />
+    <quality shadowsize="2048" />
+    <global offwidth="480" offheight="480" />
+  </visual>
+  <default><geom material="matgeom" condim="3" solimp="0.95 0.99 0.001 0.5 1" solref="0.005 1" /></default>
+  <asset>
+    <texture name="playmat_tex" type="2d" file="D:/UEMA_scratch/b1_continue_492800/run/B1K_skip13_492800/scenes/pen_art/play_mat.png" />
+    <material name="playmat" texture="playmat_tex" texrepeat="4 4" texuniform="true" reflectance="0.05" specular="0.05" shininess="0.05" />
+    <texture name="ceil_tex" type="2d" file="D:/UEMA_scratch/b1_continue_492800/run/B1K_skip13_492800/scenes/pen_art/ceiling.png" />
+    <material name="ceilmat" texture="ceil_tex" texrepeat="1 1" emission="0.75" specular="0.03" shininess="0.03" />
+    <texture name="pentex_n" type="2d" file="D:/UEMA_scratch/b1_continue_492800/run/B1K_skip13_492800/scenes/pen_art/pen_wall_n.png" />
+    <material name="penmat_n" texture="pentex_n" texrepeat="1 1" emission="0.35" specular="0.05" shininess="0.05" />
+    <texture name="pentex_s" type="2d" file="D:/UEMA_scratch/b1_continue_492800/run/B1K_skip13_492800/scenes/pen_art/pen_wall_s.png" />
+    <material name="penmat_s" texture="pentex_s" texrepeat="1 1" emission="0.35" specular="0.05" shininess="0.05" />
+    <texture name="pentex_e" type="2d" file="D:/UEMA_scratch/b1_continue_492800/run/B1K_skip13_492800/scenes/pen_art/pen_wall_e.png" />
+    <material name="penmat_e" texture="pentex_e" texrepeat="1 1" emission="0.35" specular="0.05" shininess="0.05" />
+    <texture name="pentex_w" type="2d" file="D:/UEMA_scratch/b1_continue_492800/run/B1K_skip13_492800/scenes/pen_art/pen_wall_w.png" />
+    <material name="penmat_w" texture="pentex_w" texrepeat="1 1" emission="0.35" specular="0.05" shininess="0.05" />
+    <texture type="skybox" builtin="gradient" rgb1="0.3 0.5 0.7" rgb2="0 0 0" width="512" height="512" />
+    <texture name="texplane" type="2d" builtin="checker" rgb1=".2 .3 .4" rgb2=".1 0.15 0.2" width="512" height="512" mark="cross" markrgb=".8 .8 .8" />
+    <texture name="texgeom" type="cube" builtin="flat" mark="cross" width="127" height="1278" rgb1="0.8 0.6 0.4" rgb2="0.8 0.6 0.4" markrgb="1 1 1" random="0.01" />
+    <material name="matplane" reflectance="0.3" texture="texplane" texrepeat="1 1" texuniform="true" />
+    <material name="matgeom" texture="texgeom" texuniform="true" rgba="0.8 0.6 .4 1" />
+  <material name="caregiver_matte" specular=".08" shininess=".1" emission=".12" /></asset>
+  <include file="D:/UEMA_scratch/b1_continue_492800/run/B1K_skip13_492800/scenes/MIMo_metav2_lite_p46112.xml" />
+  
+  <worldbody>
+    <geom name="floor" pos="0 0 0" size="0 0 .25" type="plane" material="playmat" condim="3" />
+    <light directional="false" diffuse=".4 .4 .4" specular="0 0 0" pos="0 0 10" dir="0 0 -1" castshadow="false" />
+    <light mode="targetbodycom" target="upper_body" directional="false" diffuse=".8 .8 .8" specular="0.3 0.3 0.3" pos="0 0 5.0" dir="0 0 -1" />
+    <body name="mimo_location" pos="0 0 0.1" quat="0 0.7071068 0 0.7071068">
+      <freejoint name="mimo_orientation" />
+      <include file="D:/UEMA_scratch/b1_continue_492800/run/B1K_skip13_492800/scenes/MIMo_modelv2_fovea24_ring150_p46112.xml" />
+    </body>
+    <body name="mobile" pos="0.06 0.0 1.05">
+      <joint name="mobile_swing" type="ball" damping="0.015" />
+      <geom name="mobile_string" type="capsule" fromto="0 0 0  0 0 -0.60" size="0.004" mass="0.005" rgba="0.92 0.92 0.86 1" condim="3" />
+      <body name="mobile_frame" pos="0 0 -0.60">
+        <joint name="mobile_spin" type="hinge" axis="0 0 1" damping="0.010" />
+        <geom name="mobile_bar_x" type="capsule" fromto="-0.12 0 0  0.12 0 0" size="0.006" mass="0.010" rgba="0.85 0.85 0.80 1" condim="3" />
+        <geom name="mobile_bar_y" type="capsule" fromto="0 -0.12 0  0 0.12 0" size="0.006" mass="0.010" rgba="0.85 0.85 0.80 1" condim="3" />
+        <body name="mobile_el_e" pos="0.12 0 0">
+          <joint name="mobile_j_e" type="ball" damping="0.004" />
+          <geom name="mobile_str_e" type="capsule" fromto="0 0 0  0 0 -0.20" size="0.003" mass="0.002" rgba="0.9 0.9 0.85 1" condim="3" />
+          <geom name="mobile_el_e_g" type="sphere" pos="0 0 -0.235" size="0.035" mass="0.012" rgba="0.15 0.45 0.95 1" condim="6" />
+        </body>
+        <body name="mobile_el_w" pos="-0.12 0 0">
+          <joint name="mobile_j_w" type="ball" damping="0.004" />
+          <geom name="mobile_str_w" type="capsule" fromto="0 0 0  0 0 -0.20" size="0.003" mass="0.002" rgba="0.9 0.9 0.85 1" condim="3" />
+          <geom name="mobile_el_w_g" type="box" pos="0 0 -0.23" size="0.03 0.03 0.03" mass="0.012" rgba="0.95 0.80 0.10 1" condim="6" />
+        </body>
+        <body name="mobile_el_n" pos="0 0.12 0">
+          <joint name="mobile_j_n" type="ball" damping="0.004" />
+          <geom name="mobile_str_n" type="capsule" fromto="0 0 0  0 0 -0.20" size="0.003" mass="0.002" rgba="0.9 0.9 0.85 1" condim="3" />
+          <geom name="mobile_el_n_g" type="capsule" fromto="0 0 -0.20  0 0 -0.27" size="0.022" mass="0.012" rgba="0.20 0.75 0.35 1" condim="6" />
+        </body>
+        <body name="mobile_el_s" pos="0 -0.12 0">
+          <joint name="mobile_j_s" type="ball" damping="0.004" />
+          <geom name="mobile_str_s" type="capsule" fromto="0 0 0  0 0 -0.20" size="0.003" mass="0.002" rgba="0.9 0.9 0.85 1" condim="3" />
+          <geom name="mobile_el_s_g" type="ellipsoid" pos="0 0 -0.235" size="0.045 0.025 0.030" mass="0.012" rgba="0.95 0.95 0.95 1" condim="6" />
+        </body>
+        <body name="mobile_el_c" pos="0 0 0">
+          <joint name="mobile_j_c" type="ball" damping="0.004" />
+          <geom name="mobile_str_c" type="capsule" fromto="0 0 0  0 0 -0.21" size="0.003" mass="0.002" rgba="0.9 0.9 0.85 1" condim="3" />
+          <geom name="mobile_el_c_g" type="sphere" pos="0 0 -0.255" size="0.045" mass="0.015" rgba="0.55 0.25 0.85 1" condim="6" />
+        </body>
+      </body>
+    </body>
+
+    <body name="target" mocap="true" pos="0.05 0.0 0.45">
+      <geom name="target_geom" type="sphere" material="matgeom" size="0.025" condim="6" rgba="1 0.2 0.2 1" />
+    <geom name="caregiver_pad" type="box" size=".035 .035 .008" mass=".02" rgba=".3 .65 .3 0" contype="1" conaffinity="1" solref=".04 1" friction="1 .005 .0001" /><geom name="caregiver_ring_0" type="capsule" fromto="0.028 0.0 0 0.014000000000000004 0.02424871130596428 0" size=".006" mass=".003" rgba=".9 .7 .1 0" contype="1" conaffinity="1" /><geom name="caregiver_ring_1" type="capsule" fromto="0.014000000000000004 0.02424871130596428 0 -0.013999999999999993 0.024248711305964284 0" size=".006" mass=".003" rgba=".9 .7 .1 0" contype="1" conaffinity="1" /><geom name="caregiver_ring_2" type="capsule" fromto="-0.013999999999999993 0.024248711305964284 0 -0.028 3.429011037612589e-18 0" size=".006" mass=".003" rgba=".9 .7 .1 0" contype="1" conaffinity="1" /><geom name="caregiver_ring_3" type="capsule" fromto="-0.028 3.429011037612589e-18 0 -0.014000000000000012 -0.024248711305964277 0" size=".006" mass=".003" rgba=".9 .7 .1 0" contype="1" conaffinity="1" /><geom name="caregiver_ring_4" type="capsule" fromto="-0.014000000000000012 -0.024248711305964277 0 0.014000000000000004 -0.02424871130596428 0" size=".006" mass=".003" rgba=".9 .7 .1 0" contype="1" conaffinity="1" /><geom name="caregiver_ring_5" type="capsule" fromto="0.014000000000000004 -0.02424871130596428 0 0.028 -6.858022075225178e-18 0" size=".006" mass=".003" rgba=".9 .7 .1 0" contype="1" conaffinity="1" /></body>
+    <body name="box_light" pos="0.05 0.30 0.04">
+      <freejoint /><geom name="box_light_geom" type="box" size="0.03 0.03 0.03" mass="0.05" rgba="0.95 0.95 0.95 1" condim="6" />
+    </body>
+    <body name="box_medium" pos="0.15 0.30 0.04">
+      <freejoint /><geom name="box_medium_geom" type="box" size="0.03 0.03 0.03" mass="0.4" rgba="0.5 0.5 0.5 1" condim="6" />
+    </body>
+    <body name="box_heavy" pos="0.25 0.30 0.04">
+      <freejoint /><geom name="box_heavy_geom" type="box" size="0.03 0.03 0.03" mass="2.0" rgba="0.45 0.1 0.1 1" condim="6" />
+    </body>
+    <geom name="pen_wall_n" type="box" pos="0 0.7 0.12" size="0.72 0.02 0.12" rgba="0.93 0.90 0.84 1" condim="3" />
+    <geom name="pen_wall_s" type="box" pos="0 -0.7 0.12" size="0.72 0.02 0.12" rgba="0.93 0.90 0.84 1" condim="3" />
+    <geom name="pen_wall_e" type="box" pos="0.7 0 0.12" size="0.02 0.72 0.12" rgba="0.93 0.90 0.84 1" condim="3" />
+    <geom name="pen_wall_w" type="box" pos="-0.7 0 0.12" size="0.02 0.72 0.12" rgba="0.93 0.90 0.84 1" condim="3" />
+    <geom name="nursery_ceiling" type="plane" pos="0 0 1.05" zaxis="0 0 -1" size="2.2 2.2 0.01" material="ceilmat" contype="0" conaffinity="0" group="0" />
+    <geom name="pen_art_n" type="plane" pos="0 0.677 0.12" zaxis="0 -1 0" size="0.72 0.12 0.01" material="penmat_n" contype="0" conaffinity="0" group="0" />
+    <geom name="pen_art_s" type="plane" pos="0 -0.677 0.12" zaxis="0 1 0" size="0.72 0.12 0.01" material="penmat_s" contype="0" conaffinity="0" group="0" />
+    <geom name="pen_art_e" type="plane" pos="0.677 0 0.12" zaxis="-1 0 0" size="0.12 0.72 0.01" material="penmat_e" contype="0" conaffinity="0" group="0" />
+    <geom name="pen_art_w" type="plane" pos="-0.677 0 0.12" zaxis="1 0 0" size="0.12 0.72 0.01" material="penmat_w" contype="0" conaffinity="0" group="0" />
+
+    <camera name="watch_cam" mode="targetbody" target="upper_body" pos="1.0 -1.0 0.9" />
+    <body name="squeaker" mocap="true" pos="-0.45 0 0.10">
+      <geom name="squeaker_base" type="cylinder" size="0.062 0.012" rgba="0.16 0.35 0.75 1" condim="6" />
+      <geom name="squeaker_geom" type="ellipsoid" pos="0 0 0.038" size="0.048 0.048 0.034" rgba="0.92 0.15 0.12 1" condim="6" />
+    </body>
+    <body name="dragonfly" mocap="true" pos="0.30 0.30 0.50">
+      <geom name="dragonfly_thorax" type="ellipsoid" pos="0 0 0" size="0.013 0.009 0.009" rgba="0.05 0.45 0.42 1" contype="0" conaffinity="0" />
+      <geom name="dragonfly_abdomen" type="capsule" fromto="-0.060 0 0.001  -0.012 0 0" size="0.0035" rgba="0.10 0.60 0.85 1" contype="0" conaffinity="0" />
+      <geom name="dragonfly_head" type="sphere" pos="0.017 0 0.002" size="0.0065" rgba="0.08 0.35 0.35 1" contype="0" conaffinity="0" />
+      <geom name="dragonfly_eye_l" type="sphere" pos="0.020 0.0045 0.005" size="0.0038" rgba="0.02 0.08 0.10 1" contype="0" conaffinity="0" />
+      <geom name="dragonfly_eye_r" type="sphere" pos="0.020 -0.0045 0.005" size="0.0038" rgba="0.02 0.08 0.10 1" contype="0" conaffinity="0" />
+      <geom name="dragonfly_wing_fl" type="ellipsoid" pos="0.005 0.034 0.006" size="0.010 0.034 0.0007" euler="6 0 10" rgba="0.82 0.90 0.98 0.75" contype="0" conaffinity="0" />
+      <geom name="dragonfly_wing_fr" type="ellipsoid" pos="0.005 -0.034 0.006" size="0.010 0.034 0.0007" euler="-6 0 -10" rgba="0.82 0.90 0.98 0.75" contype="0" conaffinity="0" />
+      <geom name="dragonfly_wing_hl" type="ellipsoid" pos="-0.010 0.032 0.005" size="0.011 0.031 0.0007" euler="6 0 -7" rgba="0.82 0.90 0.98 0.75" contype="0" conaffinity="0" />
+      <geom name="dragonfly_wing_hr" type="ellipsoid" pos="-0.010 -0.032 0.005" size="0.011 0.031 0.0007" euler="-6 0 7" rgba="0.82 0.90 0.98 0.75" contype="0" conaffinity="0" />
+    </body>
+    <body name="bouquet" pos="0.42 0.40 0.14">
+      <geom name="table_top" type="cylinder" pos="0 0 -0.012" size="0.10 0.012" rgba="0.60 0.42 0.26 1" contype="0" conaffinity="0" />
+      <geom name="table_leg1" type="capsule" fromto="-0.06 -0.06 -0.02  -0.07 -0.07 -0.14" size="0.008" rgba="0.50 0.34 0.20 1" contype="0" conaffinity="0" />
+      <geom name="table_leg2" type="capsule" fromto="0.06 -0.06 -0.02  0.07 -0.07 -0.14" size="0.008" rgba="0.50 0.34 0.20 1" contype="0" conaffinity="0" />
+      <geom name="table_leg3" type="capsule" fromto="0.06 0.06 -0.02  0.07 0.07 -0.14" size="0.008" rgba="0.50 0.34 0.20 1" contype="0" conaffinity="0" />
+      <geom name="table_leg4" type="capsule" fromto="-0.06 0.06 -0.02  -0.07 0.07 -0.14" size="0.008" rgba="0.50 0.34 0.20 1" contype="0" conaffinity="0" />
+      <geom name="vase" type="cylinder" pos="0 0 0.05" size="0.035 0.05" rgba="0.55 0.65 0.75 1" contype="0" conaffinity="0" />
+      <geom name="stem1" type="capsule" fromto="0 0 0.09  -0.05 -0.04 0.24" size="0.0035" rgba="0.20 0.55 0.20 1" contype="0" conaffinity="0" />
+      <geom name="stem2" type="capsule" fromto="0 0 0.09  0.05 0.03 0.28" size="0.0035" rgba="0.22 0.60 0.22 1" contype="0" conaffinity="0" />
+      <geom name="stem3" type="capsule" fromto="0 0 0.09  0.00 0.06 0.21" size="0.0035" rgba="0.18 0.50 0.18 1" contype="0" conaffinity="0" />
+      <geom name="stem4" type="capsule" fromto="0 0 0.09  -0.03 0.05 0.30" size="0.0035" rgba="0.20 0.55 0.20 1" contype="0" conaffinity="0" />
+      <geom name="flower1" type="ellipsoid" pos="-0.05 -0.04 0.25" size="0.030 0.030 0.014" rgba="0.95 0.20 0.25 1" contype="0" conaffinity="0" />
+      <geom name="flower2" type="ellipsoid" pos="0.05 0.03 0.29" size="0.028 0.028 0.013" rgba="0.98 0.85 0.15 1" contype="0" conaffinity="0" />
+      <geom name="flower3" type="ellipsoid" pos="0.00 0.06 0.22" size="0.026 0.026 0.012" rgba="0.95 0.95 0.95 1" contype="0" conaffinity="0" />
+      <geom name="flower4" type="ellipsoid" pos="-0.03 0.05 0.31" size="0.028 0.028 0.013" rgba="0.70 0.35 0.85 1" contype="0" conaffinity="0" />
+      <geom name="fcenter1" type="sphere" pos="-0.05 -0.04 0.258" size="0.009" rgba="0.45 0.30 0.10 1" contype="0" conaffinity="0" />
+      <geom name="fcenter2" type="sphere" pos="0.05 0.03 0.297" size="0.009" rgba="0.45 0.30 0.10 1" contype="0" conaffinity="0" />
+      <geom name="fcenter3" type="sphere" pos="0.00 0.06 0.227" size="0.008" rgba="0.45 0.30 0.10 1" contype="0" conaffinity="0" />
+      <geom name="fcenter4" type="sphere" pos="-0.03 0.05 0.317" size="0.009" rgba="0.45 0.30 0.10 1" contype="0" conaffinity="0" />
+    </body>
+    <body name="bee" mocap="true" pos="-0.30 -0.30 0.45">
+      <geom name="bee_body" type="ellipsoid" size="0.017 0.011 0.011" rgba="0.98 0.80 0.12 1" contype="0" conaffinity="0" />
+      <geom name="bee_stripe1" type="ellipsoid" pos="0.005 0 0" size="0.0035 0.0113 0.0113" rgba="0.05 0.05 0.05 1" contype="0" conaffinity="0" />
+      <geom name="bee_stripe2" type="ellipsoid" pos="-0.004 0 0" size="0.0035 0.0113 0.0113" rgba="0.05 0.05 0.05 1" contype="0" conaffinity="0" />
+      <geom name="bee_head" type="sphere" pos="0.019 0 0.002" size="0.006" rgba="0.08 0.08 0.08 1" contype="0" conaffinity="0" />
+      <geom name="bee_wing_l" type="ellipsoid" pos="0.002 0.018 0.012" size="0.019 0.011 0.0008" euler="35 0 20" rgba="0.95 0.95 1.0 0.95" contype="0" conaffinity="0" />
+      <geom name="bee_wing_r" type="ellipsoid" pos="0.002 -0.018 0.012" size="0.019 0.011 0.0008" euler="-35 0 -20" rgba="0.95 0.95 1.0 0.95" contype="0" conaffinity="0" />
+    </body>
+
+  <body name="caregiver_head" mocap="true" pos="0 0 2"><geom name="caregiver_head_geom" type="ellipsoid" size=".086 .072 .112" pos="0 0 0" rgba=".82 .60 .46 1" contype="0" conaffinity="0" material="caregiver_matte" /><geom name="caregiver_hair" type="ellipsoid" size=".091 .064 .096" pos="0 .027 .032" rgba=".16 .085 .055 1" contype="0" conaffinity="0" material="caregiver_matte" /><geom name="caregiver_hair_top" type="ellipsoid" size=".083 .059 .032" pos="0 .006 .087" rgba=".16 .085 .055 1" contype="0" conaffinity="0" material="caregiver_matte" /><geom name="caregiver_ear_l" type="ellipsoid" size=".013 .017 .027" pos="-0.084 .004 -.005" rgba=".82 .60 .46 1" contype="0" conaffinity="0" material="caregiver_matte" /><geom name="caregiver_ear_inner_l" type="ellipsoid" size=".006 .010 .017" pos="-0.092 -.002 -.005" rgba=".66 .40 .32 1" contype="0" conaffinity="0" material="caregiver_matte" /><geom name="caregiver_eye_l" type="ellipsoid" size=".019 .007 .010" pos="-0.031 -.068 .026" rgba=".96 .94 .89 1" contype="0" conaffinity="0" material="caregiver_matte" /><geom name="caregiver_iris_l" type="ellipsoid" size=".008 .0027 .0075" pos="-0.031 -.075 .026" rgba=".23 .13 .075 1" contype="0" conaffinity="0" material="caregiver_matte" /><geom name="caregiver_pupil_l" type="ellipsoid" size=".0038 .0015 .0045" pos="-0.031 -.0775 .026" rgba=".035 .025 .02 1" contype="0" conaffinity="0" material="caregiver_matte" /><geom name="caregiver_glint_l" type="sphere" size=".0018" pos="-0.033 -.079 .029" rgba="1 .98 .92 1" contype="0" conaffinity="0" material="caregiver_matte" /><geom name="caregiver_lid_l" type="ellipsoid" size=".021 .005 .0037" pos="-0.031 -.069 .035" rgba=".82 .60 .46 1" contype="0" conaffinity="0" material="caregiver_matte" /><geom name="caregiver_brow_l" type="ellipsoid" size=".021 .003 .0034" pos="-0.032 -.061 .048" rgba=".16 .085 .055 1" contype="0" conaffinity="0" material="caregiver_matte" /><geom name="caregiver_hair_side_l" type="ellipsoid" size=".017 .033 .055" pos="-0.072 .016 .046" rgba=".16 .085 .055 1" contype="0" conaffinity="0" material="caregiver_matte" /><geom name="caregiver_ear_r" type="ellipsoid" size=".013 .017 .027" pos="0.084 .004 -.005" rgba=".82 .60 .46 1" contype="0" conaffinity="0" material="caregiver_matte" /><geom name="caregiver_ear_inner_r" type="ellipsoid" size=".006 .010 .017" pos="0.092 -.002 -.005" rgba=".66 .40 .32 1" contype="0" conaffinity="0" material="caregiver_matte" /><geom name="caregiver_eye_r" type="ellipsoid" size=".019 .007 .010" pos="0.031 -.068 .026" rgba=".96 .94 .89 1" contype="0" conaffinity="0" material="caregiver_matte" /><geom name="caregiver_iris_r" type="ellipsoid" size=".008 .0027 .0075" pos="0.031 -.075 .026" rgba=".23 .13 .075 1" contype="0" conaffinity="0" material="caregiver_matte" /><geom name="caregiver_pupil_r" type="ellipsoid" size=".0038 .0015 .0045" pos="0.031 -.0775 .026" rgba=".035 .025 .02 1" contype="0" conaffinity="0" material="caregiver_matte" /><geom name="caregiver_glint_r" type="sphere" size=".0018" pos="0.028999999999999998 -.079 .029" rgba="1 .98 .92 1" contype="0" conaffinity="0" material="caregiver_matte" /><geom name="caregiver_lid_r" type="ellipsoid" size=".021 .005 .0037" pos="0.031 -.069 .035" rgba=".82 .60 .46 1" contype="0" conaffinity="0" material="caregiver_matte" /><geom name="caregiver_brow_r" type="ellipsoid" size=".021 .003 .0034" pos="0.032 -.061 .048" rgba=".16 .085 .055 1" contype="0" conaffinity="0" material="caregiver_matte" /><geom name="caregiver_hair_side_r" type="ellipsoid" size=".017 .033 .055" pos="0.072 .016 .046" rgba=".16 .085 .055 1" contype="0" conaffinity="0" material="caregiver_matte" /><geom name="caregiver_nose_bridge" type="ellipsoid" size=".009 .008 .021" pos="0 -.066 .015" rgba=".82 .60 .46 1" contype="0" conaffinity="0" material="caregiver_matte" /><geom name="caregiver_nose" type="ellipsoid" size=".011 .013 .012" pos="0 -.073 -.004" rgba=".82 .60 .46 1" contype="0" conaffinity="0" material="caregiver_matte" /><geom name="caregiver_mouth" type="ellipsoid" size=".019 .003 .001" pos="0 -.069 -.044" rgba=".16 .045 .035 1" contype="0" conaffinity="0" material="caregiver_matte" /><geom name="caregiver_upper_lip" type="ellipsoid" size=".023 .004 .0035" pos="0 -.072 -.042" rgba=".58 .28 .24 1" contype="0" conaffinity="0" material="caregiver_matte" /><geom name="caregiver_lower_lip" type="ellipsoid" size=".021 .004 .004" pos="0 -.072 -.047" rgba=".69 .36 .30 1" contype="0" conaffinity="0" material="caregiver_matte" /></body><body name="caregiver_torso" mocap="true" pos="0 0 2"><geom name="caregiver_torso_geom" type="ellipsoid" size=".18 .095 .23" pos="0 0 0" rgba=".27 .49 .52 1" contype="0" conaffinity="0" material="caregiver_matte" /><geom name="caregiver_neck" type="capsule" size=".032 .06" pos="0 0 0" rgba=".82 .60 .46 1" contype="0" conaffinity="0" material="caregiver_matte" /><geom name="caregiver_upperarm_l" type="capsule" size=".042 .13" pos="0 0 0" rgba=".27 .49 .52 1" contype="0" conaffinity="0" material="caregiver_matte" /><geom name="caregiver_forearm_l" type="capsule" size=".026 .13" pos="0 0 0" rgba=".82 .60 .46 1" contype="0" conaffinity="0" material="caregiver_matte" /><geom name="caregiver_upperarm_r" type="capsule" size=".042 .13" pos="0 0 0" rgba=".27 .49 .52 1" contype="0" conaffinity="0" material="caregiver_matte" /><geom name="caregiver_forearm_r" type="capsule" size=".026 .13" pos="0 0 0" rgba=".82 .60 .46 1" contype="0" conaffinity="0" material="caregiver_matte" /></body><body name="caregiver_hand_l" mocap="true" pos="0 0 2"><geom name="caregiver_hand_l_geom" type="ellipsoid" size=".037 .025 .014" pos="0 0 0" rgba=".82 .60 .46 1" contype="0" conaffinity="0" material="caregiver_matte" /><geom name="caregiver_finger_l_0" type="capsule" size=".006 .015" pos="-0.021 -.033 0" rgba=".82 .60 .46 1" contype="0" conaffinity="0" material="caregiver_matte" quat=".70710678 .70710678 0 0" /><geom name="caregiver_finger_l_1" type="capsule" size=".006 .015" pos="-0.007 -.033 0" rgba=".82 .60 .46 1" contype="0" conaffinity="0" material="caregiver_matte" quat=".70710678 .70710678 0 0" /><geom name="caregiver_finger_l_2" type="capsule" size=".006 .015" pos="0.007 -.033 0" rgba=".82 .60 .46 1" contype="0" conaffinity="0" material="caregiver_matte" quat=".70710678 .70710678 0 0" /><geom name="caregiver_finger_l_3" type="capsule" size=".006 .015" pos="0.021 -.033 0" rgba=".82 .60 .46 1" contype="0" conaffinity="0" material="caregiver_matte" quat=".70710678 .70710678 0 0" /><geom name="caregiver_thumb_l" type="ellipsoid" size=".010 .023 .010" pos="-.036 -.008 -.003" rgba=".82 .60 .46 1" contype="0" conaffinity="0" material="caregiver_matte" /></body><body name="caregiver_hand_r" mocap="true" pos="0 0 2"><geom name="caregiver_hand_r_geom" type="ellipsoid" size=".037 .025 .014" pos="0 0 0" rgba=".82 .60 .46 1" contype="0" conaffinity="0" material="caregiver_matte" /><geom name="caregiver_finger_r_0" type="capsule" size=".006 .015" pos="-0.021 -.033 0" rgba=".82 .60 .46 1" contype="0" conaffinity="0" material="caregiver_matte" quat=".70710678 .70710678 0 0" /><geom name="caregiver_finger_r_1" type="capsule" size=".006 .015" pos="-0.007 -.033 0" rgba=".82 .60 .46 1" contype="0" conaffinity="0" material="caregiver_matte" quat=".70710678 .70710678 0 0" /><geom name="caregiver_finger_r_2" type="capsule" size=".006 .015" pos="0.007 -.033 0" rgba=".82 .60 .46 1" contype="0" conaffinity="0" material="caregiver_matte" quat=".70710678 .70710678 0 0" /><geom name="caregiver_finger_r_3" type="capsule" size=".006 .015" pos="0.021 -.033 0" rgba=".82 .60 .46 1" contype="0" conaffinity="0" material="caregiver_matte" quat=".70710678 .70710678 0 0" /><geom name="caregiver_thumb_r" type="ellipsoid" size=".010 .023 .010" pos="-.036 -.008 -.003" rgba=".82 .60 .46 1" contype="0" conaffinity="0" material="caregiver_matte" /></body></worldbody>
+</mujoco>

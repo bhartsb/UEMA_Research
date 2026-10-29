@@ -1,0 +1,91 @@
+{
+ "check": "stop/save schedule on saved timings",
+ "owner": "D:\\UEMA_Research\\external\\D\\UEMA_scratch\\h84\\d1_planner_recovery\\s4r_pose_learning_496250_repair_package\\s4r_pose_learning_owner.py",
+ "receipts": "D:\\UEMA_Research\\external\\D\\UEMA_scratch\\h84\\d1_planner_recovery\\s4r_pose_learning_496250_package\\receipts",
+ "run": "D:\\UEMA_Research\\external\\D\\UEMA_scratch\\h84\\d1_planner_recovery\\attempts\\s4r_pose_learning_496250_a1\\evidence\\run\\S4R_pose_learning_496250",
+ "inputs": {
+  "request_s": 1792711507.1243267,
+  "request": "4:25:07.1 PM PDT",
+  "trainer_started_s": 1792711309.1301365,
+  "wall_s": 720.0,
+  "stop_wait_s": 140.0,
+  "close_s": 180.0,
+  "acknowledgement_s": 1792711577.573,
+  "acknowledgement": "4:26:17.5 PM PDT",
+  "acknowledgement_line": "2026-10-22 16:26:17,573 [INFO] mimo_bridge.train: overseer command: snapshot_and_stop",
+  "launched_kill_s": 1792711648.128201,
+  "launched_kill": "4:27:28.1 PM PDT",
+  "trainer_ended_s": 1792711653.131559,
+  "trainer_ended": "4:27:33.1 PM PDT"
+ },
+ "owner_constants": {
+  "SAVE_MEASURED_S": 74.0,
+  "ACK_BOUND_S": 94.0,
+  "SAVE_RESERVE_S": 178.0,
+  "STOP_WAIT_S": 140.0
+ },
+ "repaired": {
+  "kill_at_s": 1792711685.1243267,
+  "kill_at": "4:28:05.1 PM PDT",
+  "after_request_s": 178.0,
+  "wall_cap_s": 1792712029.1301365,
+  "wall_cap": "4:33:49.1 PM PDT",
+  "before_wall_cap_s": 344.006,
+  "measured_save_end_s": 1792711651.573,
+  "measured_save_end": "4:27:31.5 PM PDT",
+  "margin_after_measured_save_s": 33.551,
+  "closure_end_bound": "4:31:05.1 PM PDT"
+ },
+ "launched": {
+  "kill_after_request_s": 141.004,
+  "kill_before_measured_save_end_s": 3.445
+ },
+ "progress": {
+  "acknowledged": true,
+  "acknowledged_by": "control_done_1792711577.json",
+  "acknowledged_s": 1792711577.0,
+  "tmp": {
+   "name": ".tmp_ckpt_step_496325_62cdd7435e194bc39ccf10f88ac68120",
+   "files": {
+    "meta.json": [
+     112,
+     1792711577.0
+    ],
+    "model.safetensors": [
+     73119988,
+     1792711577.0
+    ],
+    "model_receipt.json": [
+     247492,
+     1792711580.0
+    ],
+    "optimizer.pt": [
+     138060045,
+     1792711580.0
+    ],
+    "runtime_state.pt": [
+     489337200,
+     1792711630.0
+    ]
+   }
+  },
+  "complete": null
+ },
+ "snapshot_files": [
+  "meta.json",
+  "model.safetensors",
+  "model_receipt.json",
+  "optimizer.pt",
+  "runtime_state.pt"
+ ],
+ "verdict": "pass",
+ "conditions": {
+  "stop_kill_at equals min(start + wall cap, request + max(stop wait, SAVE_RESERVE_S))": true,
+  "the kill is not after the wall cap": true,
+  "the kill comes after acknowledgement + the measured complete save": true,
+  "stop_progress names the acknowledgement control_done_1792711577.json within 1 s of trainer.log": true,
+  "stop_progress lists the unfinished snapshot .tmp_ckpt_step_496325_*": true,
+  "no complete snapshot appeared after the request": true
+ },
+ "elapsed_s": 0.04
+}

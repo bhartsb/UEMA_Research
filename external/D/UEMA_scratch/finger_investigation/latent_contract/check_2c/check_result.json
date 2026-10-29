@@ -1,0 +1,133 @@
+{
+ "question": "Does the latent body shadow record, learn, save and restore under the repaired command contract in the real trainer path, from a declared start?",
+ "verdict": "pass",
+ "validity_problems": [],
+ "shadow": {
+  "tool": "latent_body_start_state_v1",
+  "tool_sha256": "eca52b832e55beffcdf47848bdbb14288e29b2bb3e84acbfb7655dec9219fc9b",
+  "written": "Oct 10, 2026 10:46 AM PDT",
+  "shadow": "D:\\UEMA_Research\\external\\D\\UEMA_scratch\\finger_investigation\\latent_contract\\check_2c\\run\\arm_latent_check\\latent_body",
+  "config": "D:/UEMA_Research/docs/gain_of_function_v4/latent_body_shadow_config_h84_finger_joint_servo_v1_2026-10-10.json",
+  "config_sha256": "c9d7b3ad7a34ff42a6f02c8c7067eca6f189d55b5d3ff7ff36c877c943437f48",
+  "contract": "wrist_relative_joint_v1+finger_joint_servo_v1",
+  "steps": 10,
+  "start": {
+   "tool": "latent_body_start_state_v1",
+   "tool_sha256": "a95bfc90c131f5441bfe6ea2f30abe6aff7de5e05296a5775250e822d7e87df4",
+   "kind": "fresh",
+   "written": "Oct 10, 2026 4:16 AM PDT",
+   "config_path": "C:/Users/bhart/Documents/UEMA_wt/latent_contract_repair/docs/gain_of_function_v4/latent_body_shadow_config_h84_finger_joint_servo_v1_2026-10-10.json",
+   "config_sha256": "c9d7b3ad7a34ff42a6f02c8c7067eca6f189d55b5d3ff7ff36c877c943437f48",
+   "configuration": "d14e62148317e5c0a6ddbf4ab6335ad3878b3f6898863951e298cdb8ce4d4add",
+   "action_contract": "wrist_relative_joint_v1+finger_joint_servo_v1",
+   "tree": "4619657c58fe08d26af72d50b735c22caffc424150c1e0ae62b867f8390ec918",
+   "levels": "arm,hand,index",
+   "layout": "trunk_v1",
+   "updates": 0,
+   "examples": 0,
+   "source": null,
+   "path": "D:\\UEMA_Research\\external\\D\\UEMA_scratch\\finger_investigation\\latent_contract\\start\\latent_start_fresh_seed7_d14e62148317e5c0.pt",
+   "sha256": "b63abdca969fef9e5b5020103211264a1e8fdca6100e4a403ad2527e4cf1a730",
+   "bytes": 2015895
+  },
+  "verdict": "pass",
+  "problems": [],
+  "readings": [
+   {
+    "name": "rows whose command contract equals the declared one",
+    "value": 64,
+    "unit": "rows",
+    "meaning": "of 64 trajectory rows the shadow wrote (0 = the shadow learned from no transition, all = every transition the trainer wrote carried the declared contract wrist_relative_joint_v1+finger_joint_servo_v1); finger servo setting 'on'; started records 1 holding the declared configuration True; failed records 0; failure lines in the log 0",
+    "baseline": "Oct 10, 12:58:01 AM PDT: the finger arm under the Sep 30 configuration wrote 0 rows and one failed record (Action contract changed)",
+    "statistically_clear": "not judged",
+    "statistical_basis": "",
+    "gof_material": "GOF threshold not yet defined",
+    "passed": true
+   },
+   {
+    "name": "transitions excluded at the resume boundary",
+    "value": 8,
+    "unit": "transitions",
+    "meaning": "8 transitions excluded in 1 records (expected 8); their contracts ['wrist_relative_joint_v1'], executed at [481799], the shadow's first model step [481800] (0 = no boundary transition carried another contract; one per body = the open transitions the episode companion restores, executed before the checkpoint)",
+    "baseline": "the companion of 481,800 restores 8 open transitions executed at model step 481,799 under wrist_relative_joint_v1 (evidence/companion_481800_contract.json)",
+    "statistically_clear": "not judged",
+    "statistical_basis": "",
+    "gof_material": "GOF threshold not yet defined",
+    "passed": true
+   },
+   {
+    "name": "shadow updates",
+    "value": 8,
+    "unit": "updates",
+    "meaning": "lesson records 8, their update counts consecutive from 1: True (0 = no learning; 8 expected for 10 model steps, one per model step from the third)",
+    "baseline": "both control arms of Oct 10: 998 updates in 1,000 model steps, first at model step 481,802",
+    "statistically_clear": "not judged",
+    "statistical_basis": "",
+    "gof_material": "GOF threshold not yet defined",
+    "passed": true
+   },
+   {
+    "name": "trajectory rows",
+    "value": 64,
+    "unit": "rows",
+    "meaning": "against the last lesson's example count 64 and the lessons' batch sizes summed 64; labels ['wrist_relative_joint_v1+finger_joint_servo_v1'] (one label = no window mixed two contracts)",
+    "baseline": "both control arms of Oct 10: 7,984 rows, 8 per update",
+    "statistically_clear": "not judged",
+    "statistical_basis": "",
+    "gof_material": "GOF threshold not yet defined",
+    "passed": true
+   },
+   {
+    "name": "saved shadow state restored",
+    "value": 8,
+    "unit": "updates",
+    "meaning": "latest.pt read under the declared configuration: {\"continued_to\": 9, \"contract\": \"wrist_relative_joint_v1+finger_joint_servo_v1\", \"examples\": 64, \"exists\": true, \"refused_under_old\": true, \"runtime_auto_updates\": 8, \"updates\": 8} (the run's last lesson 8 updates, 64 examples; 0 updates would mean the start, not the run)",
+    "baseline": "a state saved after every observation (--latent-body-save-every 1) holds the last lesson's counts",
+    "statistically_clear": "not judged",
+    "statistical_basis": "",
+    "gof_material": "GOF threshold not yet defined",
+    "passed": true
+   },
+   {
+    "name": "old contract's state loads",
+    "value": 59354,
+    "unit": "updates",
+    "meaning": "D:/UEMA_latent_body/seg41_v2/latest.pt read under D:/UEMA_Research/docs/gain_of_function_v4/latent_body_shadow_config_h84_2026-09-30.json: {\"action_contract\": \"wrist_relative_joint_v1\", \"configuration\": \"68a6cf05a095507c65bdb479a0249a7cf9684add420cfd1464dc17ddcb6f7c77\", \"examples\": 741616, \"loads\": true, \"path\": \"D:/UEMA_latent_body/seg41_v2/latest.pt\", \"start\": null, \"updates\": 59354}",
+    "baseline": "LATENT_SHADOW_STATE_MIXED_BY_ARMS: 59,354 updates, the mixed state of Oct 6",
+    "statistically_clear": "not judged",
+    "statistical_basis": "",
+    "gof_material": "GOF threshold not yet defined",
+    "passed": true
+   }
+  ],
+  "restore": {
+   "exists": true,
+   "updates": 8,
+   "examples": 64,
+   "contract": "wrist_relative_joint_v1+finger_joint_servo_v1",
+   "refused_under_old": true,
+   "continued_to": 9,
+   "runtime_auto_updates": 8
+  },
+  "old_state": {
+   "path": "D:/UEMA_latent_body/seg41_v2/latest.pt",
+   "action_contract": "wrist_relative_joint_v1",
+   "configuration": "68a6cf05a095507c65bdb479a0249a7cf9684add420cfd1464dc17ddcb6f7c77",
+   "updates": 59354,
+   "examples": 741616,
+   "start": null,
+   "loads": true
+  },
+  "counts": {
+   "lessons": 8,
+   "rows": 64,
+   "started": 1,
+   "failed": 0,
+   "log_failed": 0,
+   "excluded": 8
+  }
+ },
+ "not_a_measurement": "a trainer arm of 10 model steps with the finger servo on; no prediction reading is compared and the weights are discarded",
+ "job_record": "D:\\UEMA_Research\\external\\D\\UEMA_scratch\\finger_investigation\\latent_contract\\check_2c\\run\\job_record.json",
+ "written": "Oct 10, 2026 10:46:03 AM PDT"
+}

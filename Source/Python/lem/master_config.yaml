@@ -1,0 +1,468 @@
+# Copyright (c) 2026 Mind Machine Learning, Inc. All rights reserved.
+# Licensed under the Mind Machine Learning Noncommercial License 1.0; see the LICENSE file.
+# =============================================================================
+# LEM Master Configuration — Single Source of Truth
+# =============================================================================
+# Version: 2.1
+#
+# RULES:
+# 1. Humans edit ONLY this file. All receipts are slave manifests.
+# 2. Fields prefixed with _ are DERIVED by resolve() — never set them here.
+# 3. Setting enabled: false on a modality removes it from the entire stack.
+# 4. Stop training, edit, restart. No hot-swap mid-run.
+# =============================================================================
+
+version: "2.1"
+
+# -----------------------------------------------------------------------------
+# hardware — Device assignment for multi-GPU setups
+# -----------------------------------------------------------------------------
+hardware:
+  # NOTE: On Windows with mixed TCC/WDDM, CUDA enumerates TCC first!
+  #   cuda:0 = TCC GPU (bus 06:00.0, dedicated compute)
+  #   cuda:1 = WDDM GPU (bus 05:00.0, UE display + D3D12 interop)
+  capture_device: "cuda:1"           # WDDM GPU — D3D12 interop, vision texture capture
+  training_device: "cuda:0"          # TCC GPU — Model params, optimizer, gradients (no UE contention)
+  multi_gpu: true                    # true = dual GPU (capture on WDDM, train on TCC)
+  vision_every_n_frames: 2           # Process vision every N frames (at 45 FPS: 45/2=22.5 Hz, close to 24 Hz spec)
+  torch_compile:
+    enabled: true                    # torch.compile kernel fusion (requires PyTorch 2.0+)
+    mode: "reduce-overhead"              # "reduce-overhead" (CUDA graphs) | "default" (safe fallback). motor_controller .clone() fix enables CUDAGraphs.
+  async_backward: false                # Overlap backward with next frame's forward on separate CUDA stream.
+                                       # Requires backward_every_n_frames > 1. Defers optimizer.step() to
+                                       # last perception frame before next training frame.
+
+# -----------------------------------------------------------------------------
+# async_reader — Background frame reader thread
+# -----------------------------------------------------------------------------
+async_reader:
+  enabled: true                      # true = non-blocking frame reads via ring buffer
+  ring_size: 3                       # Number of tokenized frames in ring buffer
+  max_stale_age_ms: 50               # Frames older than this marked stale
+
+# -----------------------------------------------------------------------------
+# body — Physical avatar constants
+# -----------------------------------------------------------------------------
+body:
+  n_handles: 24         # Physics handles (12 hand/wrist + 11 body + gaze). C++ BuildHandleDefinitions/TrackedBoneNames must add Gaze (2026-08-24)
+  n_joints: 65          # Full skeleton joints (future: all tracked)
+  n_bodysets: 10         # Physics body sets for energy grouping (Arm_L/R, Hand_L/R, Spine, Head, Leg_L/R, Foot_L/R)
+  n_agents: 5           # InterMind: number of concurrent agents
+  tracked_bones: 23     # Currently tracked bones (hands + fingertips + head + limbs)
+
+# -----------------------------------------------------------------------------
+# modalities — Per-modality switch panel
+# -----------------------------------------------------------------------------
+modalities:
+
+  vision:
+    enabled: true
+    data_source: real                    # real | synthetic
+    loss_weight: 1.0                     # Relative loss weight
+    rate_hz: 24                          # Capture rate (Hz) — matches human V4/IT cortex 20-30 Hz
+    pipeline:
+      format: gpu_texture                # gpu_texture | cpu_buffer
+      panorama_resolution: [2520, 1560]  # [width, height] pixels
+      fovea_resolution: [512, 512]       # [width, height] pixels
+      panorama_fov_h_deg: 210.0          # Horizontal FOV (degrees)
+      panorama_fov_v_deg: 130.0          # Vertical FOV (degrees)
+      fovea_fov_deg: 5.0                 # Fovea FOV (degrees)
+    encoder:
+      type: swin_patch
+      patch_size: 16                     # Patch dimension (pixels)
+      n_swin_layers: 4                   # Swin transformer blocks
+      n_heads: 8                         # Attention heads per block
+      window_size: 7                     # Swin window size (patches)
+      angular_pos_hidden: null              # null → d_model (768). Was 96 — 8x bottleneck.
+    placeholder:
+      strategy: gaussian
+      mean: 0.5
+      std: 0.15
+      clip: [0.0, 1.0]
+    loss_ramp:
+      enabled: false
+      from_weight: 0.1
+      to_weight: 1.0
+      over_steps: 1000
+
+  tactile:
+    enabled: true
+    data_source: real                     # OGC TMC pipeline delivers real contact data
+    loss_weight: 0.5
+    rate_hz: 60
+    pipeline:
+      format: sensor_array
+      n_sensors: 256                     # Max sensor patches (one FTMCDerivedPatch per sensor)
+      features_per_sensor: 10            # Per patch: normalPressure, shearMag, slipRate, contactArea, vibPower×4, principalStretch×2
+      shape: [256, 10]                   # [n_sensors, features_per_sensor]; stretches added 2026-09-14 (were computed and dropped)
+    encoder:
+      type: cross_patch_attention
+      input_scale: 1.0                   # Fields pre-normalized to ~[0,1] by tokenizer
+      per_patch_input_dim: 10            # Derived tactile fields per sensor (incl. principal stretches)
+      per_patch_hidden: null               # null → d_model (768). Was 96 — 8x bottleneck.
+      n_cross_attn_layers: 2             # Cross-attention layers
+      n_heads: 4                         # Attention heads
+      patch_pos_embedding: true          # learned "which patch am I" vector per slot (body map from touch)
+    placeholder:
+      strategy: sparse_contact
+      n_active: 3                        # K of N sensors active
+      force_mean: 0.3
+      force_std: 0.15
+      temporal_correlation: 0.8          # AR(1) coefficient for sticky masks
+    loss_ramp:
+      enabled: false
+      from_weight: 0.1
+      to_weight: 1.0
+      over_steps: 1000
+
+  audio:
+    enabled: true
+    data_source: real
+    loss_weight: 0.8
+    rate_hz: 60
+    pipeline:
+      format: spectral
+      fft_n_bins: 256                    # FFT frequency bins
+      n_channels: 2                      # Stereo
+      sample_rate: 48000                 # Hz
+      spatial_features: 2               # ILD + ITD (spatial branch input)
+    encoder:
+      type: conv1d_stack
+      conv_channels: null                    # null → [d_model, d_model, d_model]. Was [48,96,192] — 4-16x bottleneck.
+      kernel_size: 3                     # Conv1D kernel size
+      spatial_branch_input_dim: 2        # ILD + ITD
+      combine: gate                      # concat | add | gate
+    placeholder:
+      strategy: gaussian
+      mean: 0.0
+      std: 0.01
+      clip: [0.0, 1.0]
+    loss_ramp:
+      enabled: false
+      from_weight: 0.1
+      to_weight: 1.0
+      over_steps: 1000
+
+  proprioception:
+    enabled: true
+    data_source: real
+    loss_weight: 1.0
+    rate_hz: 60
+    pipeline:
+      format: flat_vector
+      input_dim: 288                      # tracked_bones(24) * 12 features (quat4+pos3+vel3+fatigue1+idx1); bone 23 = the eyes
+      # When input_dim is set, resolve() uses it directly.
+      # Otherwise falls back to formula: joints*3+joints*3+handles*3+handles*7+bodysets+bodysets+1
+    encoder:
+      type: mlp_project
+      hidden_dims: null                      # null → [d_model, d_model]. Was [384,384] — 2x bottleneck.
+    placeholder:
+      strategy: gaussian
+      mean: 0.0
+      std: 0.1
+      clip: [0.0, 1.0]
+    loss_ramp:
+      enabled: false
+      from_weight: 0.1
+      to_weight: 1.0
+      over_steps: 1000
+
+  motor:
+    enabled: true
+    data_source: real
+    loss_weight: 1.0
+    rate_hz: 60
+    pipeline:
+      format: handle_array
+      n_handles: 24                      # Mirrors body.n_handles
+      features_per_handle: 10           # pos(3) + rot(4) + radius(1) + strength(1) + is_active(1)
+    encoder:
+      type: cross_handle_attention       # Alias for cross_patch_attention
+      # 19 = achieved handle state (10, the tokenizer's output above) + the executed
+      # command (9), appended model-side. The TRANSITION CONTRACT: the model is shown the
+      # order that carried this state to the next one, not only the pose it reached.
+      #
+      # This YAML is merged OVER lem/config/defaults.py, so setting 19 in the defaults
+      # alone changed nothing - the resolved value stayed 10 and the 280M cloud model
+      # would have started on the old contract. Verified by loading through
+      # load_and_resolve(), which is the only check that means anything here.
+      per_patch_input_dim: 19
+      # WHICH LIMB WAS COMMANDED. Without a per-handle identity vector the motor
+      # token is permutation-invariant over the 24 handles: measured on H31's final
+      # checkpoint, permuting all 24 handles moved the token by 0.117 while changing
+      # ONE handle's content moved it by 219 - a 1,900x ratio, i.e. the forward model
+      # was never told WHICH body part an order went to, which is exactly what the
+      # causal test needs it to know. Tactile already had this embedding; motor did
+      # not (bool(None) is False at cross_patch.py:41). Checkpoints load with
+      # strict=False, so an existing snapshot keeps every trained tensor and this
+      # starts from its 0.02-std init.
+      patch_pos_embedding: true
+      per_patch_hidden: null               # null → d_model (768). Was 96 — 8x bottleneck.
+      n_cross_attn_layers: 2             # Cross-attention layers
+      n_heads: 4                         # Attention heads
+    placeholder:
+      strategy: gaussian
+      mean: 0.0
+      std: 0.05
+      clip: [0.0, 1.0]
+    loss_ramp:
+      enabled: false
+      from_weight: 0.1
+      to_weight: 1.0
+      over_steps: 1000
+
+  intermind:
+    enabled: true
+    data_source: synthetic               # Stub until Many Minds is implemented
+    loss_weight: 0.0                     # Intentional: builds encoder+head but zero gradient
+    rate_hz: 60
+    pipeline:
+      format: agent_array
+      n_agents: 5                        # Mirrors body.n_agents
+      features_per_agent: 3             # Extra features per agent beyond d_model
+    encoder:
+      type: self_attention_pool
+      n_self_attn_layers: 2             # Self-attention layers
+      n_heads: 4                         # Attention heads
+    placeholder:
+      strategy: gaussian
+      mean: 0.0
+      std: 0.01
+      clip: [0.0, 1.0]
+    loss_ramp:
+      enabled: false
+      from_weight: 0.1
+      to_weight: 1.0
+      over_steps: 1000
+
+  # --- Optional modalities (disabled by default) ---
+  voice:
+    enabled: false
+    data_source: synthetic
+    loss_weight: 0.3
+    rate_hz: 60
+    pipeline:
+      format: flat_vector
+      input_dim: 56                      # Vocal tract params (12 base + 44 diameters)
+    encoder:
+      type: mlp_project
+      hidden_dims: null                      # null → [d_model, d_model]. Was [192,192].
+    placeholder:
+      strategy: gaussian
+      mean: 0.5
+      std: 0.2
+      clip: [0.0, 1.0]
+    loss_ramp:
+      enabled: false
+      from_weight: 0.1
+      to_weight: 1.0
+      over_steps: 1000
+
+# -----------------------------------------------------------------------------
+# encoder_defaults — Shared defaults for all encoders
+# -----------------------------------------------------------------------------
+encoder_defaults:
+  bias: false                            # Linear layer bias
+  dropout: 0.0                           # Dropout probability
+  activation: gelu                       # Activation function
+  norm_type: layernorm                   # Normalization type
+  pool_type: learned_query               # Pooling strategy
+  pool_n_heads: 4                        # Pool attention heads
+  ffn_expansion: 4                       # FFN hidden dim multiplier
+  d_internal: null                        # null → d_model (encoders run at full d_model width per spec)
+  output_layernorm: true                 # LayerNorm on encoder output (d_model) before forward model
+
+# -----------------------------------------------------------------------------
+# model — Forward model + heads + motor + wellness
+# -----------------------------------------------------------------------------
+model:
+  d_model: 768                           # Core embedding dimension (errata v4: 512→768)
+  context_length: 8                      # Temporal context window (frames) — 8 minimum, scaling toward 32
+  precision: bf16                        # fp16 | bf16 | fp32 (bf16 for Ada+/Blackwell — no GradScaler needed)
+
+  forward_model:
+    n_layers: 8                          # Number of 3-stage attention blocks
+    n_heads: 12                          # Attention heads per stage (errata v4: 8→12)
+    ffn_expansion: 4                     # FFN hidden = d_model * expansion
+    stages:
+      cross_modal: true                  # Stage 1: per-timestep cross-modal attention
+      causal_temporal: true              # Stage 2: per-modality causal temporal attention
+      cross_modal_bridge: true           # Stage 3: full sequence cross-modal-temporal attention
+    gradient_checkpointing: false         # EXP-16: REVERTED — recomputation makes backward longer,
+                                         # worsening SM contention (200-245ms vs 130-175ms baseline).
+
+  prediction_heads:
+    n_heads: 4                           # MHA heads per prediction head
+    hidden_expansion: 2                  # MLP hidden = d_model * expansion
+    n_mlp_layers: 2                      # MLP depth in each head
+
+  motor_controller:
+    n_layers: 6                          # Variable-depth MLP layers
+    hidden_dim: 512                      # MLP hidden dimension
+    confidence_hidden: 128               # Confidence head hidden dim
+    confidence_threshold: 0.8            # Early-halt threshold
+    recursive: false                     # true: 2 layers recursed 1-6x (1.7M params vs 5.0M)
+    adaptive: false                      # true: depth-gated residual blocks via confidence (CF-7, §9.1-9.3)
+    max_depth: 6                         # Max residual blocks in adaptive mode (matches n_layers; spec §9.2 uses 10)
+    thinking_energy_rate: 0.001          # Energy cost per imagination depth level
+    initial_depth_threshold: 0.7         # Starting learned depth threshold (nn.Parameter, optimized via gradient)
+    output_per_handle: 9                 # pos(3) + rot(4) + radius(1) + strength(1)
+
+  gaze_head:
+    enabled: true
+    output_dim: 2                          # azimuth, elevation (radians)
+    hidden_dim: 128
+    n_heads: 4                             # MHA heads for query attention
+    azimuth_range: [-3.14159, 3.14159]     # full horizontal
+    elevation_range: [-1.5708, 1.5708]     # -90° to +90°
+    loss_weight: 0.1
+
+  voice_head:
+    enabled: true
+    output_dim: 80                         # Pink Trombone vocal tract params
+    hidden_dim: 128
+    n_heads: 4
+    loss_weight: 0.0                       # stub -- no gradient contribution
+
+  wellness:
+    loss_weight: 0.1                     # Wellness loss weight relative to prediction loss
+    grounded:
+      prediction_error:
+        input_dim: 1                     # Scalar prediction error
+        hidden_dim: 32
+      tactile_comfort:
+        input_dim: 8                     # Derived patch fields (normalPressure, shearMag, slipRate, area, vibPower×4)
+        hidden_dim: 32
+      capability:
+        input_dim: 21                    # Motor capability features: 10 capacity + 10 accum_energy + 1 total
+        hidden_dim: 32
+      coherence:
+        input_dim: 1                     # Scalar coherence score
+        hidden_dim: 32
+      motor_state:
+        input_dim: 216                   # 24 handles * 9 outputs (pos+rot+rad+str); handle 23 = gaze
+        hidden_dim: 64
+    approximate:
+      hidden_dims: [256, 128]            # MLP hidden layers
+      n_outputs: 5                       # One per grounded evaluator
+
+# -----------------------------------------------------------------------------
+# training — Optimizer, schedule, loss, developmental phases
+# -----------------------------------------------------------------------------
+training:
+  optimizer: adamw                       # Optimizer type
+  lr: 3.0e-4                             # Learning rate
+  weight_decay: 0.01                     # AdamW weight decay
+  betas: [0.9, 0.999]                   # Adam betas
+  grad_clip: 1.0                         # Gradient clipping max norm
+  warmup_steps: 1000                     # LR warmup steps
+  batch_size: 32                         # Frames per batch
+  backward_every_n_frames: 3             # 1 = every frame, N>1 = skip backward on N-1 frames (perception-only)
+
+  loss:
+    source_scales:
+      real: 1.0                          # Scale for real data loss
+      synthetic: 0.0                     # Scale for synthetic/placeholder data (0 = don't predict noise)
+      stale: 0.3                         # Scale for stale (reused) data
+    vicreg:
+      enabled: true                      # VICReg encoder regularization (prevents collapse)
+      variance_weight: 1.0              # Penalize low per-dimension std
+      covariance_weight: 0.04           # Penalize off-diagonal covariance
+      variance_target: 1.0              # Std threshold below which penalty applies
+      temporal_window: 8                # Batch 1 support: compare the current token with the last N
+                                        # tokens of that modality (live loops are batch 1). 0 = off.
+
+  wellness:
+    second_order: false                  # EXP-15: second-order gradients through wellness → motor.
+                                         # true  = create_graph=True (original, doubles backward graph)
+                                         # false = create_graph=False + detach (halves backward, first-order signal only)
+
+  curiosity:
+    enabled: true                        # Curiosity system (UEMA Spec §21)
+    pe_min: 0.1                          # Lower PE threshold (below = bored)
+    pe_max: 0.4                          # Upper PE threshold (above = overwhelmed)
+
+  imagination:
+    enabled: true                        # Imagination-aware training (UEMA Spec §6.3)
+    steps: 3                             # Number of imagination chain steps
+    loss_weight: 0.5                     # Weight for imagination loss in total loss
+    every_n_steps: 1                     # Run imagination every step for consistent training cost (was 2)
+
+  latent_reg:
+    enabled: true                        # Latent regularizer (CF-11, UEMA Spec §6.3)
+    loss_weight: 0.01                    # Weight in total loss (intentionally small — safety net)
+    sigma_threshold: 2.0                 # Penalty activates beyond ±Nσ
+    momentum: 0.99                       # EMA momentum for running stats
+
+  intention:
+    enabled: false                       # Intention generator (CF-9, UEMA Spec §10)
+    n_steps: 50                          # Adam optimization iterations per generate_action
+    lr: 0.1                              # Adam lr for action optimization
+    strength_reg: 0.01                   # Strength² regularization weight
+    max_plan_steps: 5                    # Max actions in plan_multistep
+    cross_sim_rollouts: 5                # Noisy rollouts in CrossSimulationAttention
+    cross_sim_noise: 0.1                 # Noise scale for rollouts 2-5
+
+  developmental_phases:
+    neonate:
+      start_step: 0
+      end_step: 8000
+      rom_limit: 0.05                    # Range of motion limit [0-1]
+      strength_limit: 0.02               # Strength limit [0-1]
+      exploration_noise: 0.01            # Motor babbling noise scale
+      context_length: 8                  # 200ms @ 40 FPS
+    infant:
+      start_step: 8000
+      end_step: 20000
+      rom_limit: 0.20
+      strength_limit: 0.10
+      exploration_noise: 0.005          # Gradual decay from neonate's 0.01
+      context_length: 8                  # 200ms
+    toddler:
+      start_step: 20000
+      end_step: 200000
+      rom_limit: 0.50
+      strength_limit: 0.30
+      exploration_noise: 0.002          # Reduced but still exploring
+      context_length: 24                 # 600ms
+    child:
+      start_step: 200000
+      end_step: null                     # null = no end (final phase)
+      rom_limit: 1.00
+      strength_limit: 1.00
+      exploration_noise: 0.0            # No exploration noise at full capability
+      context_length: 32                 # 800ms
+
+# -----------------------------------------------------------------------------
+# checkpoint — Save/load config
+# -----------------------------------------------------------------------------
+checkpoint:
+  format: safetensors                    # safetensors | pytorch
+  save_every_steps: 5000                 # Save interval (steps)
+  keep_last_n: 10                        # Rolling checkpoint window
+  progressive_resize: true               # Net2Net-style d_model scaling
+  checkpoint_dir: "checkpoints"          # Directory for checkpoint files
+
+# -----------------------------------------------------------------------------
+# action_buffer — Python→UE action output via shared memory
+# -----------------------------------------------------------------------------
+action_buffer:
+  enabled: true
+  shm_name: "LEM_Action_Buffer"
+  buffer_size: 1176                      # 20 header + 828 motor (23×9×4) + 8 gaze + 320 voice
+  write_timeout_ms: 5                    # Max time (ms) to hold SHM lock per write
+
+# -----------------------------------------------------------------------------
+# future — Disabled hooks for errata 5-7 (not yet implemented)
+# -----------------------------------------------------------------------------
+future:
+  imagination_rollouts:
+    enabled: false
+    rollout_length: 16
+  dual_timescale:
+    enabled: false
+    fast_hz: 60
+    slow_hz: 10
+  dreamzero:
+    enabled: false
+    replay_ratio: 0.25

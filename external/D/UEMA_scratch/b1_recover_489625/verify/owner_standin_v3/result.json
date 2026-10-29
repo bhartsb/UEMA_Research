@@ -1,0 +1,1490 @@
+{
+ "tool": "check_owner_standin.py",
+ "script_sha256": "0093a682d1fc245b9e169735974dc39a7eafbaed4fc814ab3960b133e4f85947",
+ "launcher_sha256": "d25eff106877a8da142cd9ae760fc125401835a59cbe58a61affb8b27d11d78f",
+ "exclusion_sha256": "d3e44cdec5f8af7badf07cfe8be236756c12b657c0a47473e8264d1549f2559e",
+ "restore_sha256": "008f31db21497083190fa98cb1ca31e6545fdccfa2d7f052b0919d84b0920c7e",
+ "stubs": {
+  "stub_movement.py": "b717d7cf69dafb8d9a09a5e778c6c6ca8bc71704b69fe1421fdab1fbd6a5a5bc",
+  "stub_posture_probe.py": "d11838ec3b49d62cee0c1aeea7fcb6187fc7f2cfc581d82a55d558075772a503",
+  "stub_preflight.py": "46c88852cd4fec8007d40d4d2c273b24e415a2bba1f1c75b7939901a1044ccfd",
+  "stub_restore_real.py": "6ae1c72db72417880759f697ee9d3cc3372581c794bd0b6bf44f7a6d07c57dec",
+  "stub_trainer_adopt.py": "e783a7ebf8b6ffce98185c11a0e3eb3f42fa4a2fce7ca5bfb2bcc325a8230ba2"
+ },
+ "at": "Oct 13, 2026 01:57:01 PM PDT",
+ "checks": [
+  {
+   "case": "O1",
+   "expect": "owner_end.json written with no failure; the arm not launched",
+   "held": true,
+   "got": {
+    "failures": [],
+    "arms": [
+     [
+      "not_launched",
+      "asked-change exclusion: REFUSE"
+     ]
+    ]
+   }
+  },
+  {
+   "case": "O1",
+   "expect": "no trainer started: no 'trainer started' event and no launch_receipt.json",
+   "held": true,
+   "got": [
+    "guard started",
+    "asked-change exclusion",
+    "FAILURE",
+    "the comparison ends: a later arm is not launched",
+    "owner done",
+    "presentation services restore"
+   ]
+  },
+  {
+   "case": "O1",
+   "expect": "the outcome receipt reads INCOMPLETE ... not launched, labelled, measurement verdict invalid",
+   "held": true,
+   "got": "[one bounded span of the adopted body-1 lineage on main's code (ca77bb8d0), 489,350 to 494,025, interrupted at 489,625 for a monitoring repair and resumed from the preserved 489,625 (two linked runs, B1A_skip13_489350 and B1R_skip13_489625), M3 an alert; continued learning, not an isolated test of one repair] INCOMPLETE - the recovery run (the adopted body-1 lineage, --proprio-token-skip 1,3, on main's code, from the preserved 489,625 of the stopped adoption run to 494,025; the adoption's span 489,350 to 494,025, interrupted at 489,625 for a monitoring repair) not launched (asked-change exclusion: REFUSE)"
+  },
+  {
+   "case": "O1",
+   "expect": "'owner done' then the restore event (exit code 0), its command naming --owner-log the case's owner log and --guard-src the pinned Source/Python, with production's restore arguments otherwise",
+   "held": true,
+   "got": {
+    "events": [
+     "guard started",
+     "asked-change exclusion",
+     "FAILURE",
+     "the comparison ends: a later arm is not launched",
+     "owner done",
+     "presentation services restore"
+    ],
+    "restore": [
+     {
+      "event": "presentation services restore",
+      "by": "the owner",
+      "at": "Oct 13, 2026, 01:56:11 PM PDT",
+      "at_s": 1791924971.6478522,
+      "exit_code": 0,
+      "output": "stub_restore_real: D:\\UEMA_Research\\docs\\gain_of_function_v4\\coordinator\\restore_presentation_services.py (sha256 008f31db21497083190fa98cb1ca31e6545fdccfa2d7f052b0919d84b0920c7e) on the scratch record D:\\UEMA_Research\\external\\D\\UEMA_scratch\\b1_recover_489625\\verify\\owner_standin_v3\\O1_refuse\\service_restoration_scratch.json (production's D:\\UEMA_Research\\Saved\\gof_coordination\\service_restoration.json untouched)\n{\"stand-in service\": \"Oct 13, 2026 01:56:19 PM PDT\"}",
+      "command": [
+       "D:\\UEMA_Research\\.venv_mimo\\Scripts\\python.exe",
+       "-B",
+       "D:\\UEMA_Research\\external\\D\\UEMA_scratch\\b1_recover_489625\\verify\\stubs\\stub_restore_real.py",
+       "restore",
+       "--owner-log",
+       "D:\\UEMA_Research\\external\\D\\UEMA_scratch\\b1_recover_489625\\verify\\owner_standin_v3\\O1_refuse\\receipts\\owner.jsonl",
+       "--guard-src",
+       "C:\\Users\\bhart\\Documents\\UEMA_wt\\b1_adopt_489350\\Source\\Python",
+       "--record",
+       "D:\\UEMA_Research\\external\\D\\UEMA_scratch\\b1_recover_489625\\verify\\owner_standin_v3\\O1_refuse\\service_restoration_scratch.json"
+      ],
+      "cwd": "D:\\UEMA_Research",
+      "seconds": 8.4,
+      "failure_of_the_run": false
+     }
+    ]
+   }
+  },
+  {
+   "case": "O1",
+   "expect": "the real restore on the scratch record: the stand-in service restored after the pinned guard allowed it (guard_source the pinned file, sha256 6a902a59...), its process alive until this check ended it",
+   "held": true,
+   "got": {
+    "status": "restored",
+    "services": [
+     {
+      "marker": "uema_restore_standin_O1_refuse_1791924969812",
+      "restored_at": "Oct 13, 2026 01:56:19 PM PDT",
+      "pid": 61692,
+      "alive_pids": [
+       49308,
+       61692
+      ],
+      "ended": [
+       {
+        "pid": 49308,
+        "ended": 2,
+        "why": "ended (identity checked)"
+       },
+       {
+        "pid": 61692,
+        "ended": 0,
+        "why": "unreadable: psutil.NoSuchProcess(pid=61692, msg='process PID not found')"
+       }
+      ],
+      "guard": "ALLOWED: 28.1 of 84.4 GB committed (Windows' limit 84.4 GB; the guard never counts on the page file growing into the last 12 GB of its drive), 12.0 GB RAM free; this work needs 1.0 GB and 6.0 GB must stay free under the limit",
+      "guard_source": {
+       "cwd": "C:\\Users\\bhart\\Documents\\UEMA_wt\\b1_adopt_489350\\Source\\Python",
+       "pythonpath": "C:\\Users\\bhart\\Documents\\UEMA_wt\\b1_adopt_489350\\Source\\Python",
+       "file": "C:\\Users\\bhart\\Documents\\UEMA_wt\\b1_adopt_489350\\Source\\Python\\mimo_bridge\\tools\\commit_guard.py",
+       "sha256": "6a902a59139127d20aa9310434ee3dc1ddd89509abd15535a1ecd741c05be685",
+       "error": null
+      },
+      "refusals": null
+     }
+    ]
+   }
+  },
+  {
+   "case": "O1",
+   "expect": "no process of the case alive after it (owner, guard; no process whose command line names the case folder, the stand-in watcher among them)",
+   "held": true,
+   "got": [
+    [],
+    []
+   ]
+  },
+  {
+   "case": "O1",
+   "expect": "no completion job ran: no completion chain receipt in the case, and main's three reading rows and its run row b1_recover_B1R_skip13_489625 read the same status, outcome, last run id and block before and after the case (VERSION 2; the run row VERSION 3)",
+   "held": true,
+   "got": [
+    false,
+    {
+     "b1_recover_B1R_skip13_489625": {
+      "status": "written",
+      "outcome": null,
+      "last_run": null,
+      "blocked": false
+     },
+     "b1_recover_posture_494025": {
+      "status": "queued",
+      "outcome": "INVALID",
+      "last_run": "20261013_131300_41584_1e62",
+      "blocked": false
+     },
+     "b1_recover_movement_494025": {
+      "status": "queued",
+      "outcome": "INVALID",
+      "last_run": "20261013_131304_25096_9e90",
+      "blocked": false
+     },
+     "b1_recover_outcome_494025": {
+      "status": "queued",
+      "outcome": "INVALID",
+      "last_run": "20261013_131307_56088_b2eb",
+      "blocked": false
+     }
+    },
+    {
+     "b1_recover_B1R_skip13_489625": {
+      "status": "written",
+      "outcome": null,
+      "last_run": null,
+      "blocked": false
+     },
+     "b1_recover_posture_494025": {
+      "status": "queued",
+      "outcome": "INVALID",
+      "last_run": "20261013_131300_41584_1e62",
+      "blocked": false
+     },
+     "b1_recover_movement_494025": {
+      "status": "queued",
+      "outcome": "INVALID",
+      "last_run": "20261013_131304_25096_9e90",
+      "blocked": false
+     },
+     "b1_recover_outcome_494025": {
+      "status": "queued",
+      "outcome": "INVALID",
+      "last_run": "20261013_131307_56088_b2eb",
+      "blocked": false
+     }
+    }
+   ]
+  },
+  {
+   "case": "O1",
+   "expect": "the owner classified the run folder: REFUSE with an A1 reason (the changed record), its receipt written into the run folder and receipts/recovery",
+   "held": true,
+   "got": {
+    "event": [
+     {
+      "event": "asked-change exclusion",
+      "arm": "recovery",
+      "verdict": "REFUSE",
+      "reasons": [
+       "A1: the exclusion record D:\\UEMA_Research\\external\\D\\UEMA_scratch\\b1_recover_489625\\verify\\owner_standin_v3\\O1_changed_exclusion_record.json reads switch_step 474876, not 474875"
+      ],
+      "at": "Oct 13, 2026, 01:56:11 PM PDT",
+      "at_s": 1791924971.4876206
+     }
+    ],
+    "reasons": [
+     "A1: the exclusion record D:\\UEMA_Research\\external\\D\\UEMA_scratch\\b1_recover_489625\\verify\\owner_standin_v3\\O1_changed_exclusion_record.json reads switch_step 474876, not 474875"
+    ]
+   }
+  },
+  {
+   "case": "O1",
+   "expect": "the failure receipt names the exclusion; owner_end's why reads 'asked-change exclusion: REFUSE'",
+   "held": true,
+   "got": {
+    "failure": "the asked-change exclusion does not hold for this run folder (REFUSE): A1: the exclusion record D:\\UEMA_Research\\external\\D\\UEMA_scratch\\b1_recover_489625\\verify\\owner_standin_v3\\O1_changed_exclusion_record.json reads switch_step 474876, not 474875",
+    "why": "asked-change exclusion: REFUSE"
+   }
+  },
+  {
+   "case": "O1",
+   "expect": "the stub preflight saw launch_refusal and launch_plan and NO note_attempt (the exclusion comes before the preflight attempt)",
+   "held": true,
+   "got": [
+    "launch_refusal",
+    "launch_plan"
+   ]
+  },
+  {
+   "case": "O1",
+   "expect": "no watcher started",
+   "held": true,
+   "got": [
+    "guard started",
+    "asked-change exclusion",
+    "FAILURE",
+    "the comparison ends: a later arm is not launched",
+    "owner done",
+    "presentation services restore"
+   ]
+  },
+  {
+   "case": "O2",
+   "expect": "owner_end.json written with no failure; the arm not launched",
+   "held": true,
+   "got": {
+    "failures": [],
+    "arms": [
+     [
+      "not_launched",
+      "watcher start: hourly_watch wrote no start.json naming its pid within 5 s"
+     ]
+    ]
+   }
+  },
+  {
+   "case": "O2",
+   "expect": "no trainer started: no 'trainer started' event and no launch_receipt.json",
+   "held": true,
+   "got": [
+    "guard started",
+    "asked-change exclusion",
+    "preflight attempt noted",
+    "watcher started",
+    "FAILURE",
+    "the comparison ends: a later arm is not launched",
+    "owner done",
+    "presentation services restore"
+   ]
+  },
+  {
+   "case": "O2",
+   "expect": "the outcome receipt reads INCOMPLETE ... not launched, labelled, measurement verdict invalid",
+   "held": true,
+   "got": "[one bounded span of the adopted body-1 lineage on main's code (ca77bb8d0), 489,350 to 494,025, interrupted at 489,625 for a monitoring repair and resumed from the preserved 489,625 (two linked runs, B1A_skip13_489350 and B1R_skip13_489625), M3 an alert; continued learning, not an isolated test of one repair] INCOMPLETE - the recovery run (the adopted body-1 lineage, --proprio-token-skip 1,3, on main's code, from the preserved 489,625 of the stopped adoption run to 494,025; the adoption's span 489,350 to 494,025, interrupted at 489,625 for a monitoring repair) not launched (watcher start: hourly_watch wrote no start.json naming its pid within 5 s)"
+  },
+  {
+   "case": "O2",
+   "expect": "'owner done' then the restore event (exit code 0), its command naming --owner-log the case's owner log and --guard-src the pinned Source/Python, with production's restore arguments otherwise",
+   "held": true,
+   "got": {
+    "events": [
+     "guard started",
+     "asked-change exclusion",
+     "preflight attempt noted",
+     "watcher started",
+     "FAILURE",
+     "the comparison ends: a later arm is not launched",
+     "owner done",
+     "presentation services restore"
+    ],
+    "restore": [
+     {
+      "event": "presentation services restore",
+      "by": "the owner",
+      "at": "Oct 13, 2026, 01:56:29 PM PDT",
+      "at_s": 1791924989.3941517,
+      "exit_code": 0,
+      "output": "stub_restore_real: D:\\UEMA_Research\\docs\\gain_of_function_v4\\coordinator\\restore_presentation_services.py (sha256 008f31db21497083190fa98cb1ca31e6545fdccfa2d7f052b0919d84b0920c7e) on the scratch record D:\\UEMA_Research\\external\\D\\UEMA_scratch\\b1_recover_489625\\verify\\owner_standin_v3\\O2_excluded\\service_restoration_scratch.json (production's D:\\UEMA_Research\\Saved\\gof_coordination\\service_restoration.json untouched)\n{\"stand-in service\": \"Oct 13, 2026 01:56:37 PM PDT\"}",
+      "command": [
+       "D:\\UEMA_Research\\.venv_mimo\\Scripts\\python.exe",
+       "-B",
+       "D:\\UEMA_Research\\external\\D\\UEMA_scratch\\b1_recover_489625\\verify\\stubs\\stub_restore_real.py",
+       "restore",
+       "--owner-log",
+       "D:\\UEMA_Research\\external\\D\\UEMA_scratch\\b1_recover_489625\\verify\\owner_standin_v3\\O2_excluded\\receipts\\owner.jsonl",
+       "--guard-src",
+       "C:\\Users\\bhart\\Documents\\UEMA_wt\\b1_adopt_489350\\Source\\Python",
+       "--record",
+       "D:\\UEMA_Research\\external\\D\\UEMA_scratch\\b1_recover_489625\\verify\\owner_standin_v3\\O2_excluded\\service_restoration_scratch.json"
+      ],
+      "cwd": "D:\\UEMA_Research",
+      "seconds": 8.4,
+      "failure_of_the_run": false
+     }
+    ]
+   }
+  },
+  {
+   "case": "O2",
+   "expect": "the real restore on the scratch record: the stand-in service restored after the pinned guard allowed it (guard_source the pinned file, sha256 6a902a59...), its process alive until this check ended it",
+   "held": true,
+   "got": {
+    "status": "restored",
+    "services": [
+     {
+      "marker": "uema_restore_standin_O2_excluded_1791924981910",
+      "restored_at": "Oct 13, 2026 01:56:37 PM PDT",
+      "pid": 13348,
+      "alive_pids": [
+       13348,
+       32536
+      ],
+      "ended": [
+       {
+        "pid": 13348,
+        "ended": 3,
+        "why": "ended (identity checked)"
+       },
+       {
+        "pid": 32536,
+        "ended": 0,
+        "why": "not the recorded process (gone, or its id reused)"
+       }
+      ],
+      "guard": "ALLOWED: 29.6 of 84.4 GB committed (Windows' limit 84.4 GB; the guard never counts on the page file growing into the last 12 GB of its drive), 11.6 GB RAM free; this work needs 1.0 GB and 6.0 GB must stay free under the limit",
+      "guard_source": {
+       "cwd": "C:\\Users\\bhart\\Documents\\UEMA_wt\\b1_adopt_489350\\Source\\Python",
+       "pythonpath": "C:\\Users\\bhart\\Documents\\UEMA_wt\\b1_adopt_489350\\Source\\Python",
+       "file": "C:\\Users\\bhart\\Documents\\UEMA_wt\\b1_adopt_489350\\Source\\Python\\mimo_bridge\\tools\\commit_guard.py",
+       "sha256": "6a902a59139127d20aa9310434ee3dc1ddd89509abd15535a1ecd741c05be685",
+       "error": null
+      },
+      "refusals": null
+     }
+    ]
+   }
+  },
+  {
+   "case": "O2",
+   "expect": "no process of the case alive after it (owner, guard; no process whose command line names the case folder, the stand-in watcher among them)",
+   "held": true,
+   "got": [
+    [],
+    []
+   ]
+  },
+  {
+   "case": "O2",
+   "expect": "no completion job ran: no completion chain receipt in the case, and main's three reading rows and its run row b1_recover_B1R_skip13_489625 read the same status, outcome, last run id and block before and after the case (VERSION 2; the run row VERSION 3)",
+   "held": true,
+   "got": [
+    false,
+    {
+     "b1_recover_B1R_skip13_489625": {
+      "status": "written",
+      "outcome": null,
+      "last_run": null,
+      "blocked": false
+     },
+     "b1_recover_posture_494025": {
+      "status": "queued",
+      "outcome": "INVALID",
+      "last_run": "20261013_131300_41584_1e62",
+      "blocked": false
+     },
+     "b1_recover_movement_494025": {
+      "status": "queued",
+      "outcome": "INVALID",
+      "last_run": "20261013_131304_25096_9e90",
+      "blocked": false
+     },
+     "b1_recover_outcome_494025": {
+      "status": "queued",
+      "outcome": "INVALID",
+      "last_run": "20261013_131307_56088_b2eb",
+      "blocked": false
+     }
+    },
+    {
+     "b1_recover_B1R_skip13_489625": {
+      "status": "written",
+      "outcome": null,
+      "last_run": null,
+      "blocked": false
+     },
+     "b1_recover_posture_494025": {
+      "status": "queued",
+      "outcome": "INVALID",
+      "last_run": "20261013_131300_41584_1e62",
+      "blocked": false
+     },
+     "b1_recover_movement_494025": {
+      "status": "queued",
+      "outcome": "INVALID",
+      "last_run": "20261013_131304_25096_9e90",
+      "blocked": false
+     },
+     "b1_recover_outcome_494025": {
+      "status": "queued",
+      "outcome": "INVALID",
+      "last_run": "20261013_131307_56088_b2eb",
+      "blocked": false
+     }
+    }
+   ]
+  },
+  {
+   "case": "O2",
+   "expect": "the owner classified the run folder EXCLUDED: the pinned lineage's six runs then the case's run, starting at 489,625",
+   "held": true,
+   "got": {
+    "event": [
+     {
+      "event": "asked-change exclusion",
+      "arm": "recovery",
+      "verdict": "EXCLUDED",
+      "reasons": [
+       "the completed historical asked-change watch (deploy H84_fresh_drivers_20260918_seg41m_0402, switch 474875, judged through 484900 with all seven lines held, own state closed, M6 alert kept) is excluded for this run, which starts at 489625 on the unchanged lineage; the module's own walk stops at its floor 477525, below which the deployment began"
+      ],
+      "at": "Oct 13, 2026, 01:56:24 PM PDT",
+      "at_s": 1791924984.1402419
+     }
+    ],
+    "chain": [
+     [
+      "H84_fresh_drivers_20260918_seg41m_0402",
+      474875
+     ],
+     [
+      "H84_fresh_drivers_20260918_seg41o_1431",
+      479350
+     ],
+     [
+      "B1LO_skip13_481800",
+      481800
+     ],
+     [
+      "B1C_skip13_484675",
+      484675
+     ],
+     [
+      "B1E_skip13_485975",
+      485975
+     ],
+     [
+      "B1A_skip13_489350",
+      489350
+     ],
+     [
+      "B1R_skip13_489625",
+      489625
+     ]
+    ]
+   }
+  },
+  {
+   "case": "O2",
+   "expect": "the stub preflight's note_attempt (block recovery, fingerprint stub_fp) came after the exclusion event; the owner noted it",
+   "held": true,
+   "got": {
+    "calls": [
+     "launch_refusal",
+     "launch_plan",
+     "note_attempt"
+    ],
+    "note": [
+     {
+      "call": "note_attempt",
+      "fingerprint": "stub_fp",
+      "run": "D:\\UEMA_Research\\external\\D\\UEMA_scratch\\b1_recover_489625\\verify\\owner_standin_v3\\O2_excluded\\run\\B1R_skip13_489625",
+      "block": "recovery",
+      "src": "D:\\UEMA_Research\\external\\D\\UEMA_scratch\\b1_recover_489625\\verify\\owner_standin_v3\\O2_excluded",
+      "at_s": 1791924984.1408412
+     }
+    ],
+    "exclusion_at_s": 1791924984.1402419
+   }
+  },
+  {
+   "case": "O2",
+   "expect": "the watcher started and wrote no start.json: a FAILURE 'a watcher did not start' naming the missing start.json, no trainer",
+   "held": true,
+   "got": {
+    "failure": "a watcher did not start: hourly_watch wrote no start.json naming its pid within 5 s; no trainer was started",
+    "events": [
+     "guard started",
+     "asked-change exclusion",
+     "preflight attempt noted",
+     "watcher started",
+     "FAILURE",
+     "the comparison ends: a later arm is not launched",
+     "owner done",
+     "presentation services restore"
+    ]
+   }
+  },
+  {
+   "case": "O3",
+   "expect": "owner_end.json written with no failure; the arm not launched",
+   "held": true,
+   "got": {
+    "failures": [],
+    "arms": [
+     [
+      "not_launched",
+      "wall cap: the preflight plan's wall_cap_s None, the owner's timing.wall_s 19931.0, WALL_S 19931.0"
+     ]
+    ]
+   }
+  },
+  {
+   "case": "O3",
+   "expect": "no trainer started: no 'trainer started' event and no launch_receipt.json",
+   "held": true,
+   "got": [
+    "guard started",
+    "FAILURE",
+    "the comparison ends: a later arm is not launched",
+    "owner done",
+    "presentation services restore"
+   ]
+  },
+  {
+   "case": "O3",
+   "expect": "the outcome receipt reads INCOMPLETE ... not launched, labelled, measurement verdict invalid",
+   "held": true,
+   "got": "[one bounded span of the adopted body-1 lineage on main's code (ca77bb8d0), 489,350 to 494,025, interrupted at 489,625 for a monitoring repair and resumed from the preserved 489,625 (two linked runs, B1A_skip13_489350 and B1R_skip13_489625), M3 an alert; continued learning, not an isolated test of one repair] INCOMPLETE - the recovery run (the adopted body-1 lineage, --proprio-token-skip 1,3, on main's code, from the preserved 489,625 of the stopped adoption run to 494,025; the adoption's span 489,350 to 494,025, interrupted at 489,625 for a monitoring repair) not launched (wall cap: the preflight plan's wall_cap_s None, the owner's timing.wall_s 19931.0, WALL_S 19931.0)"
+  },
+  {
+   "case": "O3",
+   "expect": "'owner done' then the restore event (exit code 0), its command naming --owner-log the case's owner log and --guard-src the pinned Source/Python, with production's restore arguments otherwise",
+   "held": true,
+   "got": {
+    "events": [
+     "guard started",
+     "FAILURE",
+     "the comparison ends: a later arm is not launched",
+     "owner done",
+     "presentation services restore"
+    ],
+    "restore": [
+     {
+      "event": "presentation services restore",
+      "by": "the owner",
+      "at": "Oct 13, 2026, 01:56:40 PM PDT",
+      "at_s": 1791925000.7502308,
+      "exit_code": 0,
+      "output": "stub_restore_real: D:\\UEMA_Research\\docs\\gain_of_function_v4\\coordinator\\restore_presentation_services.py (sha256 008f31db21497083190fa98cb1ca31e6545fdccfa2d7f052b0919d84b0920c7e) on the scratch record D:\\UEMA_Research\\external\\D\\UEMA_scratch\\b1_recover_489625\\verify\\owner_standin_v3\\O3_no_wall_cap\\service_restoration_scratch.json (production's D:\\UEMA_Research\\Saved\\gof_coordination\\service_restoration.json untouched)\n{\"stand-in service\": \"Oct 13, 2026 01:56:49 PM PDT\"}",
+      "command": [
+       "D:\\UEMA_Research\\.venv_mimo\\Scripts\\python.exe",
+       "-B",
+       "D:\\UEMA_Research\\external\\D\\UEMA_scratch\\b1_recover_489625\\verify\\stubs\\stub_restore_real.py",
+       "restore",
+       "--owner-log",
+       "D:\\UEMA_Research\\external\\D\\UEMA_scratch\\b1_recover_489625\\verify\\owner_standin_v3\\O3_no_wall_cap\\receipts\\owner.jsonl",
+       "--guard-src",
+       "C:\\Users\\bhart\\Documents\\UEMA_wt\\b1_adopt_489350\\Source\\Python",
+       "--record",
+       "D:\\UEMA_Research\\external\\D\\UEMA_scratch\\b1_recover_489625\\verify\\owner_standin_v3\\O3_no_wall_cap\\service_restoration_scratch.json"
+      ],
+      "cwd": "D:\\UEMA_Research",
+      "seconds": 8.4,
+      "failure_of_the_run": false
+     }
+    ]
+   }
+  },
+  {
+   "case": "O3",
+   "expect": "the real restore on the scratch record: the stand-in service restored after the pinned guard allowed it (guard_source the pinned file, sha256 6a902a59...), its process alive until this check ended it",
+   "held": true,
+   "got": {
+    "status": "restored",
+    "services": [
+     {
+      "marker": "uema_restore_standin_O3_no_wall_cap_1791924999606",
+      "restored_at": "Oct 13, 2026 01:56:49 PM PDT",
+      "pid": 46284,
+      "alive_pids": [
+       43904,
+       46284
+      ],
+      "ended": [
+       {
+        "pid": 43904,
+        "ended": 2,
+        "why": "ended (identity checked)"
+       },
+       {
+        "pid": 46284,
+        "ended": 0,
+        "why": "unreadable: psutil.NoSuchProcess(pid=46284, msg='process PID not found')"
+       }
+      ],
+      "guard": "ALLOWED: 28.1 of 84.4 GB committed (Windows' limit 84.4 GB; the guard never counts on the page file growing into the last 12 GB of its drive), 12.0 GB RAM free; this work needs 1.0 GB and 6.0 GB must stay free under the limit",
+      "guard_source": {
+       "cwd": "C:\\Users\\bhart\\Documents\\UEMA_wt\\b1_adopt_489350\\Source\\Python",
+       "pythonpath": "C:\\Users\\bhart\\Documents\\UEMA_wt\\b1_adopt_489350\\Source\\Python",
+       "file": "C:\\Users\\bhart\\Documents\\UEMA_wt\\b1_adopt_489350\\Source\\Python\\mimo_bridge\\tools\\commit_guard.py",
+       "sha256": "6a902a59139127d20aa9310434ee3dc1ddd89509abd15535a1ecd741c05be685",
+       "error": null
+      },
+      "refusals": null
+     }
+    ]
+   }
+  },
+  {
+   "case": "O3",
+   "expect": "no process of the case alive after it (owner, guard; no process whose command line names the case folder, the stand-in watcher among them)",
+   "held": true,
+   "got": [
+    [],
+    []
+   ]
+  },
+  {
+   "case": "O3",
+   "expect": "no completion job ran: no completion chain receipt in the case, and main's three reading rows and its run row b1_recover_B1R_skip13_489625 read the same status, outcome, last run id and block before and after the case (VERSION 2; the run row VERSION 3)",
+   "held": true,
+   "got": [
+    false,
+    {
+     "b1_recover_B1R_skip13_489625": {
+      "status": "written",
+      "outcome": null,
+      "last_run": null,
+      "blocked": false
+     },
+     "b1_recover_posture_494025": {
+      "status": "queued",
+      "outcome": "INVALID",
+      "last_run": "20261013_131300_41584_1e62",
+      "blocked": false
+     },
+     "b1_recover_movement_494025": {
+      "status": "queued",
+      "outcome": "INVALID",
+      "last_run": "20261013_131304_25096_9e90",
+      "blocked": false
+     },
+     "b1_recover_outcome_494025": {
+      "status": "queued",
+      "outcome": "INVALID",
+      "last_run": "20261013_131307_56088_b2eb",
+      "blocked": false
+     }
+    },
+    {
+     "b1_recover_B1R_skip13_489625": {
+      "status": "written",
+      "outcome": null,
+      "last_run": null,
+      "blocked": false
+     },
+     "b1_recover_posture_494025": {
+      "status": "queued",
+      "outcome": "INVALID",
+      "last_run": "20261013_131300_41584_1e62",
+      "blocked": false
+     },
+     "b1_recover_movement_494025": {
+      "status": "queued",
+      "outcome": "INVALID",
+      "last_run": "20261013_131304_25096_9e90",
+      "blocked": false
+     },
+     "b1_recover_outcome_494025": {
+      "status": "queued",
+      "outcome": "INVALID",
+      "last_run": "20261013_131307_56088_b2eb",
+      "blocked": false
+     }
+    }
+   ]
+  },
+  {
+   "case": "O3",
+   "expect": "the arm refused after launch_plan because the wall cap is not one number (the preflight plan's wall_cap_s None, the owner's timing.wall_s 19931.0, WALL_S 19931.0): the failure receipt and owner_end's why say so",
+   "held": true,
+   "got": {
+    "failure": "the wall cap is not one number: the preflight plan's wall_cap_s None, the owner's enforced timing.wall_s 19931.0, the launcher's WALL_S 19931.0",
+    "why": "wall cap: the preflight plan's wall_cap_s None, the owner's timing.wall_s 19931.0, WALL_S 19931.0"
+   }
+  },
+  {
+   "case": "O3",
+   "expect": "nothing after the refusal ran: the stub preflight saw launch_refusal and launch_plan only, no start check, no run folder, no exclusion event, no watcher",
+   "held": true,
+   "got": {
+    "calls": [
+     "launch_refusal",
+     "launch_plan"
+    ],
+    "events": [
+     "guard started",
+     "FAILURE",
+     "the comparison ends: a later arm is not launched",
+     "owner done",
+     "presentation services restore"
+    ]
+   }
+  },
+  {
+   "case": "O3b",
+   "expect": "owner_end.json written with no failure; the arm not launched",
+   "held": true,
+   "got": {
+    "failures": [],
+    "arms": [
+     [
+      "not_launched",
+      "wall cap: the preflight plan's wall_cap_s 19931, the owner's timing.wall_s 20000.0, WALL_S 19931.0"
+     ]
+    ]
+   }
+  },
+  {
+   "case": "O3b",
+   "expect": "no trainer started: no 'trainer started' event and no launch_receipt.json",
+   "held": true,
+   "got": [
+    "guard started",
+    "FAILURE",
+    "the comparison ends: a later arm is not launched",
+    "owner done",
+    "presentation services restore"
+   ]
+  },
+  {
+   "case": "O3b",
+   "expect": "the outcome receipt reads INCOMPLETE ... not launched, labelled, measurement verdict invalid",
+   "held": true,
+   "got": "[one bounded span of the adopted body-1 lineage on main's code (ca77bb8d0), 489,350 to 494,025, interrupted at 489,625 for a monitoring repair and resumed from the preserved 489,625 (two linked runs, B1A_skip13_489350 and B1R_skip13_489625), M3 an alert; continued learning, not an isolated test of one repair] INCOMPLETE - the recovery run (the adopted body-1 lineage, --proprio-token-skip 1,3, on main's code, from the preserved 489,625 of the stopped adoption run to 494,025; the adoption's span 489,350 to 494,025, interrupted at 489,625 for a monitoring repair) not launched (wall cap: the preflight plan's wall_cap_s 19931, the owner's timing.wall_s 20000.0, WALL_S 19931.0)"
+  },
+  {
+   "case": "O3b",
+   "expect": "'owner done' then the restore event (exit code 0), its command naming --owner-log the case's owner log and --guard-src the pinned Source/Python, with production's restore arguments otherwise",
+   "held": true,
+   "got": {
+    "events": [
+     "guard started",
+     "FAILURE",
+     "the comparison ends: a later arm is not launched",
+     "owner done",
+     "presentation services restore"
+    ],
+    "restore": [
+     {
+      "event": "presentation services restore",
+      "by": "the owner",
+      "at": "Oct 13, 2026, 01:56:52 PM PDT",
+      "at_s": 1791925012.017124,
+      "exit_code": 0,
+      "output": "stub_restore_real: D:\\UEMA_Research\\docs\\gain_of_function_v4\\coordinator\\restore_presentation_services.py (sha256 008f31db21497083190fa98cb1ca31e6545fdccfa2d7f052b0919d84b0920c7e) on the scratch record D:\\UEMA_Research\\external\\D\\UEMA_scratch\\b1_recover_489625\\verify\\owner_standin_v3\\O3b_owner_wall_differs\\service_restoration_scratch.json (production's D:\\UEMA_Research\\Saved\\gof_coordination\\service_restoration.json untouched)\n{\"stand-in service\": \"Oct 13, 2026 01:57:00 PM PDT\"}",
+      "command": [
+       "D:\\UEMA_Research\\.venv_mimo\\Scripts\\python.exe",
+       "-B",
+       "D:\\UEMA_Research\\external\\D\\UEMA_scratch\\b1_recover_489625\\verify\\stubs\\stub_restore_real.py",
+       "restore",
+       "--owner-log",
+       "D:\\UEMA_Research\\external\\D\\UEMA_scratch\\b1_recover_489625\\verify\\owner_standin_v3\\O3b_owner_wall_differs\\receipts\\owner.jsonl",
+       "--guard-src",
+       "C:\\Users\\bhart\\Documents\\UEMA_wt\\b1_adopt_489350\\Source\\Python",
+       "--record",
+       "D:\\UEMA_Research\\external\\D\\UEMA_scratch\\b1_recover_489625\\verify\\owner_standin_v3\\O3b_owner_wall_differs\\service_restoration_scratch.json"
+      ],
+      "cwd": "D:\\UEMA_Research",
+      "seconds": 8.4,
+      "failure_of_the_run": false
+     }
+    ]
+   }
+  },
+  {
+   "case": "O3b",
+   "expect": "the real restore on the scratch record: the stand-in service restored after the pinned guard allowed it (guard_source the pinned file, sha256 6a902a59...), its process alive until this check ended it",
+   "held": true,
+   "got": {
+    "status": "restored",
+    "services": [
+     {
+      "marker": "uema_restore_standin_O3b_owner_wall_differs_1791925010781",
+      "restored_at": "Oct 13, 2026 01:57:00 PM PDT",
+      "pid": 49084,
+      "alive_pids": [
+       49084,
+       53512
+      ],
+      "ended": [
+       {
+        "pid": 49084,
+        "ended": 3,
+        "why": "ended (identity checked)"
+       },
+       {
+        "pid": 53512,
+        "ended": 0,
+        "why": "not the recorded process (gone, or its id reused)"
+       }
+      ],
+      "guard": "ALLOWED: 28.1 of 84.4 GB committed (Windows' limit 84.4 GB; the guard never counts on the page file growing into the last 12 GB of its drive), 12.0 GB RAM free; this work needs 1.0 GB and 6.0 GB must stay free under the limit",
+      "guard_source": {
+       "cwd": "C:\\Users\\bhart\\Documents\\UEMA_wt\\b1_adopt_489350\\Source\\Python",
+       "pythonpath": "C:\\Users\\bhart\\Documents\\UEMA_wt\\b1_adopt_489350\\Source\\Python",
+       "file": "C:\\Users\\bhart\\Documents\\UEMA_wt\\b1_adopt_489350\\Source\\Python\\mimo_bridge\\tools\\commit_guard.py",
+       "sha256": "6a902a59139127d20aa9310434ee3dc1ddd89509abd15535a1ecd741c05be685",
+       "error": null
+      },
+      "refusals": null
+     }
+    ]
+   }
+  },
+  {
+   "case": "O3b",
+   "expect": "no process of the case alive after it (owner, guard; no process whose command line names the case folder, the stand-in watcher among them)",
+   "held": true,
+   "got": [
+    [],
+    []
+   ]
+  },
+  {
+   "case": "O3b",
+   "expect": "no completion job ran: no completion chain receipt in the case, and main's three reading rows and its run row b1_recover_B1R_skip13_489625 read the same status, outcome, last run id and block before and after the case (VERSION 2; the run row VERSION 3)",
+   "held": true,
+   "got": [
+    false,
+    {
+     "b1_recover_B1R_skip13_489625": {
+      "status": "written",
+      "outcome": null,
+      "last_run": null,
+      "blocked": false
+     },
+     "b1_recover_posture_494025": {
+      "status": "queued",
+      "outcome": "INVALID",
+      "last_run": "20261013_131300_41584_1e62",
+      "blocked": false
+     },
+     "b1_recover_movement_494025": {
+      "status": "queued",
+      "outcome": "INVALID",
+      "last_run": "20261013_131304_25096_9e90",
+      "blocked": false
+     },
+     "b1_recover_outcome_494025": {
+      "status": "queued",
+      "outcome": "INVALID",
+      "last_run": "20261013_131307_56088_b2eb",
+      "blocked": false
+     }
+    },
+    {
+     "b1_recover_B1R_skip13_489625": {
+      "status": "written",
+      "outcome": null,
+      "last_run": null,
+      "blocked": false
+     },
+     "b1_recover_posture_494025": {
+      "status": "queued",
+      "outcome": "INVALID",
+      "last_run": "20261013_131300_41584_1e62",
+      "blocked": false
+     },
+     "b1_recover_movement_494025": {
+      "status": "queued",
+      "outcome": "INVALID",
+      "last_run": "20261013_131304_25096_9e90",
+      "blocked": false
+     },
+     "b1_recover_outcome_494025": {
+      "status": "queued",
+      "outcome": "INVALID",
+      "last_run": "20261013_131307_56088_b2eb",
+      "blocked": false
+     }
+    }
+   ]
+  },
+  {
+   "case": "O3b",
+   "expect": "the arm refused after launch_plan because the wall cap is not one number (the preflight plan's wall_cap_s 19931, the owner's timing.wall_s 20000.0, WALL_S 19931.0): the failure receipt and owner_end's why say so",
+   "held": true,
+   "got": {
+    "failure": "the wall cap is not one number: the preflight plan's wall_cap_s 19931, the owner's enforced timing.wall_s 20000.0, the launcher's WALL_S 19931.0",
+    "why": "wall cap: the preflight plan's wall_cap_s 19931, the owner's timing.wall_s 20000.0, WALL_S 19931.0"
+   }
+  },
+  {
+   "case": "O3b",
+   "expect": "nothing after the refusal ran: the stub preflight saw launch_refusal and launch_plan only, no start check, no run folder, no exclusion event, no watcher",
+   "held": true,
+   "got": {
+    "calls": [
+     "launch_refusal",
+     "launch_plan"
+    ],
+    "events": [
+     "guard started",
+     "FAILURE",
+     "the comparison ends: a later arm is not launched",
+     "owner done",
+     "presentation services restore"
+    ]
+   }
+  },
+  {
+   "case": "all",
+   "expect": "production's control files (supervisor_control.json, training_continuation.json's ownership fields, seg41r_1539's control.json) equal before and after",
+   "held": true,
+   "got": {
+    "before": {
+     "D:\\UEMA_Research\\Saved\\mimo_bridge\\supervisor_control.json": "63c275697e689abfa61db86935c716b9120923d4843490e015bfe03402786759",
+     "D:\\UEMA_Research\\Saved\\mimo_bridge\\training_continuation.json": "89b389fa0376b51a46da8bd83658d6b1130d0e4e01457b17e49344ac525d45b5",
+     "D:\\UEMA_Research\\Saved\\mimo_bridge\\experiments\\H84_fresh_drivers_20260918_seg41r_1539\\control.json": "absent"
+    },
+    "after": {
+     "D:\\UEMA_Research\\Saved\\mimo_bridge\\supervisor_control.json": "63c275697e689abfa61db86935c716b9120923d4843490e015bfe03402786759",
+     "D:\\UEMA_Research\\Saved\\mimo_bridge\\training_continuation.json": "89b389fa0376b51a46da8bd83658d6b1130d0e4e01457b17e49344ac525d45b5",
+     "D:\\UEMA_Research\\Saved\\mimo_bridge\\experiments\\H84_fresh_drivers_20260918_seg41r_1539\\control.json": "absent"
+    }
+   }
+  }
+ ],
+ "results": {
+  "O1": {
+   "launch_exit": 0,
+   "launch_said": "{\n \"started\": {\n  \"pid\": 40528,\n  \"created\": 1791924969.9677649\n },\n \"log\": \"D:\\\\UEMA_scratch\\\\b1_recover_489625\\\\verify\\\\owner_standin_v3\\\\O1_refuse\\\\receipts\\\\owner.jsonl\",\n \"state\": \"D:\\\\UEMA_scratch\\\\b1_recover_489625\\\\verify\\\\owner_standin_v3\\\\O1_refuse\\\\receipts\\\\owner_state.json\",\n \"exists\": true,\n \"phase\": \"checks\",\n \"arm\": null,\n \"updated_at\": \"Oct 13, 2026, 01:56:10 PM PDT\",\n \"processes\": [\n  {\n   \"process\": \"owner\",\n   \"pid\": 59280,\n   \"created\": 1791924969.9797685,\n   \"created_at\": \"Oct 13, 2026, 01:56:09 PM PDT\",\n   \"alive_and_same\": true\n  },\n  {\n   \"process\": \"guard\",\n   \"pid\": 24184,\n   \"created\": 1791924970.377005,\n   \"created_at\": \"Oct 13, 2026, 01:56:10 PM PDT\",\n   \"alive_and_same\": true\n  }\n ]\n}\n",
+   "seconds": 11.3,
+   "phase": "done",
+   "alive_after": [],
+   "alive_naming_case": [],
+   "main_reading_runs_before": {
+    "b1_recover_B1R_skip13_489625": {
+     "status": "written",
+     "outcome": null,
+     "last_run": null,
+     "blocked": false
+    },
+    "b1_recover_posture_494025": {
+     "status": "queued",
+     "outcome": "INVALID",
+     "last_run": "20261013_131300_41584_1e62",
+     "blocked": false
+    },
+    "b1_recover_movement_494025": {
+     "status": "queued",
+     "outcome": "INVALID",
+     "last_run": "20261013_131304_25096_9e90",
+     "blocked": false
+    },
+    "b1_recover_outcome_494025": {
+     "status": "queued",
+     "outcome": "INVALID",
+     "last_run": "20261013_131307_56088_b2eb",
+     "blocked": false
+    }
+   },
+   "main_reading_runs_after": {
+    "b1_recover_B1R_skip13_489625": {
+     "status": "written",
+     "outcome": null,
+     "last_run": null,
+     "blocked": false
+    },
+    "b1_recover_posture_494025": {
+     "status": "queued",
+     "outcome": "INVALID",
+     "last_run": "20261013_131300_41584_1e62",
+     "blocked": false
+    },
+    "b1_recover_movement_494025": {
+     "status": "queued",
+     "outcome": "INVALID",
+     "last_run": "20261013_131304_25096_9e90",
+     "blocked": false
+    },
+    "b1_recover_outcome_494025": {
+     "status": "queued",
+     "outcome": "INVALID",
+     "last_run": "20261013_131307_56088_b2eb",
+     "blocked": false
+    }
+   },
+   "owner_end": {
+    "at": "Oct 13, 2026, 01:56:11 PM PDT",
+    "arms": [
+     {
+      "arm": "recovery",
+      "state": "not_launched",
+      "launched": false,
+      "why": "asked-change exclusion: REFUSE"
+     }
+    ],
+    "completion": {
+     "reading_plan": "D:\\UEMA_Research\\external\\D\\UEMA_scratch\\b1_recover_489625\\verify\\owner_standin_v3\\O1_refuse\\reading\\reading_plan.json",
+     "cancelled": [],
+     "incomplete": "INCOMPLETE - the recovery run (the adopted body-1 lineage, --proprio-token-skip 1,3, on main's code, from the preserved 489,625 of the stopped adoption run to 494,025; the adoption's span 489,350 to 494,025, interrupted at 489,625 for a monitoring repair) not launched (asked-change exclusion: REFUSE)",
+     "invalid": null,
+     "external_defects": {},
+     "chain": null,
+     "outcome": "[one bounded span of the adopted body-1 lineage on main's code (ca77bb8d0), 489,350 to 494,025, interrupted at 489,625 for a monitoring repair and resumed from the preserved 489,625 (two linked runs, B1A_skip13_489350 and B1R_skip13_489625), M3 an alert; continued learning, not an isolated test of one repair] INCOMPLETE - the recovery run (the adopted body-1 lineage, --proprio-token-skip 1,3, on main's code, from the preserved 489,625 of the stopped adoption run to 494,025; the adoption's span 489,350 to 494,025, interrupted at 489,625 for a monitoring repair) not launched (asked-change exclusion: REFUSE)",
+     "verdict": "invalid",
+     "failures": []
+    },
+    "failures": [],
+    "cancelled_rows": [],
+    "production_controls_before": {
+     "D:\\UEMA_Research\\Saved\\mimo_bridge\\supervisor_control.json": "63c275697e689abfa61db86935c716b9120923d4843490e015bfe03402786759",
+     "D:\\UEMA_Research\\Saved\\mimo_bridge\\training_continuation.json": "89b389fa0376b51a46da8bd83658d6b1130d0e4e01457b17e49344ac525d45b5",
+     "D:\\UEMA_Research\\Saved\\mimo_bridge\\experiments\\H84_fresh_drivers_20260918_seg41r_1539\\control.json": "absent"
+    },
+    "production_controls_after": {
+     "D:\\UEMA_Research\\Saved\\mimo_bridge\\supervisor_control.json": "63c275697e689abfa61db86935c716b9120923d4843490e015bfe03402786759",
+     "D:\\UEMA_Research\\Saved\\mimo_bridge\\training_continuation.json": "89b389fa0376b51a46da8bd83658d6b1130d0e4e01457b17e49344ac525d45b5",
+     "D:\\UEMA_Research\\Saved\\mimo_bridge\\experiments\\H84_fresh_drivers_20260918_seg41r_1539\\control.json": "absent"
+    },
+    "production_controls_unchanged": true
+   },
+   "owner_failure": null,
+   "service": {
+    "status": "restored",
+    "services": [
+     {
+      "marker": "uema_restore_standin_O1_refuse_1791924969812",
+      "restored_at": "Oct 13, 2026 01:56:19 PM PDT",
+      "pid": 61692,
+      "alive_pids": [
+       49308,
+       61692
+      ],
+      "ended": [
+       {
+        "pid": 49308,
+        "ended": 2,
+        "why": "ended (identity checked)"
+       },
+       {
+        "pid": 61692,
+        "ended": 0,
+        "why": "unreadable: psutil.NoSuchProcess(pid=61692, msg='process PID not found')"
+       }
+      ],
+      "guard": "ALLOWED: 28.1 of 84.4 GB committed (Windows' limit 84.4 GB; the guard never counts on the page file growing into the last 12 GB of its drive), 12.0 GB RAM free; this work needs 1.0 GB and 6.0 GB must stay free under the limit",
+      "guard_source": {
+       "cwd": "C:\\Users\\bhart\\Documents\\UEMA_wt\\b1_adopt_489350\\Source\\Python",
+       "pythonpath": "C:\\Users\\bhart\\Documents\\UEMA_wt\\b1_adopt_489350\\Source\\Python",
+       "file": "C:\\Users\\bhart\\Documents\\UEMA_wt\\b1_adopt_489350\\Source\\Python\\mimo_bridge\\tools\\commit_guard.py",
+       "sha256": "6a902a59139127d20aa9310434ee3dc1ddd89509abd15535a1ecd741c05be685",
+       "error": null
+      },
+      "refusals": null
+     }
+    ]
+   }
+  },
+  "O2": {
+   "launch_exit": 0,
+   "launch_said": "{\n \"started\": {\n  \"pid\": 47732,\n  \"created\": 1791924982.033739\n },\n \"log\": \"D:\\\\UEMA_scratch\\\\b1_recover_489625\\\\verify\\\\owner_standin_v3\\\\O2_excluded\\\\receipts\\\\owner.jsonl\",\n \"state\": \"D:\\\\UEMA_scratch\\\\b1_recover_489625\\\\verify\\\\owner_standin_v3\\\\O2_excluded\\\\receipts\\\\owner_state.json\",\n \"exists\": true,\n \"phase\": \"checks\",\n \"arm\": null,\n \"updated_at\": \"Oct 13, 2026, 01:56:22 PM PDT\",\n \"processes\": [\n  {\n   \"process\": \"owner\",\n   \"pid\": 59396,\n   \"created\": 1791924982.0445263,\n   \"created_at\": \"Oct 13, 2026, 01:56:22 PM PDT\",\n   \"alive_and_same\": true\n  },\n  {\n   \"process\": \"guard\",\n   \"pid\": 55048,\n   \"created\": 1791924982.6415148,\n   \"created_at\": \"Oct 13, 2026, 01:56:22 PM PDT\",\n   \"alive_and_same\": true\n  }\n ]\n}\n",
+   "seconds": 17.3,
+   "phase": "done",
+   "alive_after": [],
+   "alive_naming_case": [],
+   "main_reading_runs_before": {
+    "b1_recover_B1R_skip13_489625": {
+     "status": "written",
+     "outcome": null,
+     "last_run": null,
+     "blocked": false
+    },
+    "b1_recover_posture_494025": {
+     "status": "queued",
+     "outcome": "INVALID",
+     "last_run": "20261013_131300_41584_1e62",
+     "blocked": false
+    },
+    "b1_recover_movement_494025": {
+     "status": "queued",
+     "outcome": "INVALID",
+     "last_run": "20261013_131304_25096_9e90",
+     "blocked": false
+    },
+    "b1_recover_outcome_494025": {
+     "status": "queued",
+     "outcome": "INVALID",
+     "last_run": "20261013_131307_56088_b2eb",
+     "blocked": false
+    }
+   },
+   "main_reading_runs_after": {
+    "b1_recover_B1R_skip13_489625": {
+     "status": "written",
+     "outcome": null,
+     "last_run": null,
+     "blocked": false
+    },
+    "b1_recover_posture_494025": {
+     "status": "queued",
+     "outcome": "INVALID",
+     "last_run": "20261013_131300_41584_1e62",
+     "blocked": false
+    },
+    "b1_recover_movement_494025": {
+     "status": "queued",
+     "outcome": "INVALID",
+     "last_run": "20261013_131304_25096_9e90",
+     "blocked": false
+    },
+    "b1_recover_outcome_494025": {
+     "status": "queued",
+     "outcome": "INVALID",
+     "last_run": "20261013_131307_56088_b2eb",
+     "blocked": false
+    }
+   },
+   "owner_end": {
+    "at": "Oct 13, 2026, 01:56:29 PM PDT",
+    "arms": [
+     {
+      "arm": "recovery",
+      "state": "not_launched",
+      "launched": false,
+      "why": "watcher start: hourly_watch wrote no start.json naming its pid within 5 s"
+     }
+    ],
+    "completion": {
+     "reading_plan": "D:\\UEMA_Research\\external\\D\\UEMA_scratch\\b1_recover_489625\\verify\\owner_standin_v3\\O2_excluded\\reading\\reading_plan.json",
+     "cancelled": [],
+     "incomplete": "INCOMPLETE - the recovery run (the adopted body-1 lineage, --proprio-token-skip 1,3, on main's code, from the preserved 489,625 of the stopped adoption run to 494,025; the adoption's span 489,350 to 494,025, interrupted at 489,625 for a monitoring repair) not launched (watcher start: hourly_watch wrote no start.json naming its pid within 5 s)",
+     "invalid": null,
+     "external_defects": {},
+     "chain": null,
+     "outcome": "[one bounded span of the adopted body-1 lineage on main's code (ca77bb8d0), 489,350 to 494,025, interrupted at 489,625 for a monitoring repair and resumed from the preserved 489,625 (two linked runs, B1A_skip13_489350 and B1R_skip13_489625), M3 an alert; continued learning, not an isolated test of one repair] INCOMPLETE - the recovery run (the adopted body-1 lineage, --proprio-token-skip 1,3, on main's code, from the preserved 489,625 of the stopped adoption run to 494,025; the adoption's span 489,350 to 494,025, interrupted at 489,625 for a monitoring repair) not launched (watcher start: hourly_watch wrote no start.json naming its pid within 5 s)",
+     "verdict": "invalid",
+     "failures": []
+    },
+    "failures": [],
+    "cancelled_rows": [],
+    "production_controls_before": {
+     "D:\\UEMA_Research\\Saved\\mimo_bridge\\supervisor_control.json": "63c275697e689abfa61db86935c716b9120923d4843490e015bfe03402786759",
+     "D:\\UEMA_Research\\Saved\\mimo_bridge\\training_continuation.json": "89b389fa0376b51a46da8bd83658d6b1130d0e4e01457b17e49344ac525d45b5",
+     "D:\\UEMA_Research\\Saved\\mimo_bridge\\experiments\\H84_fresh_drivers_20260918_seg41r_1539\\control.json": "absent"
+    },
+    "production_controls_after": {
+     "D:\\UEMA_Research\\Saved\\mimo_bridge\\supervisor_control.json": "63c275697e689abfa61db86935c716b9120923d4843490e015bfe03402786759",
+     "D:\\UEMA_Research\\Saved\\mimo_bridge\\training_continuation.json": "89b389fa0376b51a46da8bd83658d6b1130d0e4e01457b17e49344ac525d45b5",
+     "D:\\UEMA_Research\\Saved\\mimo_bridge\\experiments\\H84_fresh_drivers_20260918_seg41r_1539\\control.json": "absent"
+    },
+    "production_controls_unchanged": true
+   },
+   "owner_failure": null,
+   "service": {
+    "status": "restored",
+    "services": [
+     {
+      "marker": "uema_restore_standin_O2_excluded_1791924981910",
+      "restored_at": "Oct 13, 2026 01:56:37 PM PDT",
+      "pid": 13348,
+      "alive_pids": [
+       13348,
+       32536
+      ],
+      "ended": [
+       {
+        "pid": 13348,
+        "ended": 3,
+        "why": "ended (identity checked)"
+       },
+       {
+        "pid": 32536,
+        "ended": 0,
+        "why": "not the recorded process (gone, or its id reused)"
+       }
+      ],
+      "guard": "ALLOWED: 29.6 of 84.4 GB committed (Windows' limit 84.4 GB; the guard never counts on the page file growing into the last 12 GB of its drive), 11.6 GB RAM free; this work needs 1.0 GB and 6.0 GB must stay free under the limit",
+      "guard_source": {
+       "cwd": "C:\\Users\\bhart\\Documents\\UEMA_wt\\b1_adopt_489350\\Source\\Python",
+       "pythonpath": "C:\\Users\\bhart\\Documents\\UEMA_wt\\b1_adopt_489350\\Source\\Python",
+       "file": "C:\\Users\\bhart\\Documents\\UEMA_wt\\b1_adopt_489350\\Source\\Python\\mimo_bridge\\tools\\commit_guard.py",
+       "sha256": "6a902a59139127d20aa9310434ee3dc1ddd89509abd15535a1ecd741c05be685",
+       "error": null
+      },
+      "refusals": null
+     }
+    ]
+   }
+  },
+  "O3": {
+   "launch_exit": 0,
+   "launch_said": "{\n \"started\": {\n  \"pid\": 58360,\n  \"created\": 1791924999.752346\n },\n \"log\": \"D:\\\\UEMA_scratch\\\\b1_recover_489625\\\\verify\\\\owner_standin_v3\\\\O3_no_wall_cap\\\\receipts\\\\owner.jsonl\",\n \"state\": \"D:\\\\UEMA_scratch\\\\b1_recover_489625\\\\verify\\\\owner_standin_v3\\\\O3_no_wall_cap\\\\receipts\\\\owner_state.json\",\n \"exists\": true,\n \"phase\": \"done\",\n \"arm\": null,\n \"updated_at\": \"Oct 13, 2026, 01:56:40 PM PDT\",\n \"processes\": [\n  {\n   \"process\": \"owner\",\n   \"pid\": 56412,\n   \"created\": 1791924999.772215,\n   \"created_at\": \"Oct 13, 2026, 01:56:39 PM PDT\",\n   \"alive_and_same\": true\n  },\n  {\n   \"process\": \"guard\",\n   \"pid\": 24448,\n   \"created\": 1791924999.98804,\n   \"created_at\": \"Oct 13, 2026, 01:56:39 PM PDT\",\n   \"alive_and_same\": false\n  }\n ]\n}\n",
+   "seconds": 10.8,
+   "phase": "done",
+   "alive_after": [],
+   "alive_naming_case": [],
+   "main_reading_runs_before": {
+    "b1_recover_B1R_skip13_489625": {
+     "status": "written",
+     "outcome": null,
+     "last_run": null,
+     "blocked": false
+    },
+    "b1_recover_posture_494025": {
+     "status": "queued",
+     "outcome": "INVALID",
+     "last_run": "20261013_131300_41584_1e62",
+     "blocked": false
+    },
+    "b1_recover_movement_494025": {
+     "status": "queued",
+     "outcome": "INVALID",
+     "last_run": "20261013_131304_25096_9e90",
+     "blocked": false
+    },
+    "b1_recover_outcome_494025": {
+     "status": "queued",
+     "outcome": "INVALID",
+     "last_run": "20261013_131307_56088_b2eb",
+     "blocked": false
+    }
+   },
+   "main_reading_runs_after": {
+    "b1_recover_B1R_skip13_489625": {
+     "status": "written",
+     "outcome": null,
+     "last_run": null,
+     "blocked": false
+    },
+    "b1_recover_posture_494025": {
+     "status": "queued",
+     "outcome": "INVALID",
+     "last_run": "20261013_131300_41584_1e62",
+     "blocked": false
+    },
+    "b1_recover_movement_494025": {
+     "status": "queued",
+     "outcome": "INVALID",
+     "last_run": "20261013_131304_25096_9e90",
+     "blocked": false
+    },
+    "b1_recover_outcome_494025": {
+     "status": "queued",
+     "outcome": "INVALID",
+     "last_run": "20261013_131307_56088_b2eb",
+     "blocked": false
+    }
+   },
+   "owner_end": {
+    "at": "Oct 13, 2026, 01:56:40 PM PDT",
+    "arms": [
+     {
+      "arm": "recovery",
+      "state": "not_launched",
+      "launched": false,
+      "why": "wall cap: the preflight plan's wall_cap_s None, the owner's timing.wall_s 19931.0, WALL_S 19931.0"
+     }
+    ],
+    "completion": {
+     "reading_plan": "D:\\UEMA_Research\\external\\D\\UEMA_scratch\\b1_recover_489625\\verify\\owner_standin_v3\\O3_no_wall_cap\\reading\\reading_plan.json",
+     "cancelled": [],
+     "incomplete": "INCOMPLETE - the recovery run (the adopted body-1 lineage, --proprio-token-skip 1,3, on main's code, from the preserved 489,625 of the stopped adoption run to 494,025; the adoption's span 489,350 to 494,025, interrupted at 489,625 for a monitoring repair) not launched (wall cap: the preflight plan's wall_cap_s None, the owner's timing.wall_s 19931.0, WALL_S 19931.0)",
+     "invalid": null,
+     "external_defects": {},
+     "chain": null,
+     "outcome": "[one bounded span of the adopted body-1 lineage on main's code (ca77bb8d0), 489,350 to 494,025, interrupted at 489,625 for a monitoring repair and resumed from the preserved 489,625 (two linked runs, B1A_skip13_489350 and B1R_skip13_489625), M3 an alert; continued learning, not an isolated test of one repair] INCOMPLETE - the recovery run (the adopted body-1 lineage, --proprio-token-skip 1,3, on main's code, from the preserved 489,625 of the stopped adoption run to 494,025; the adoption's span 489,350 to 494,025, interrupted at 489,625 for a monitoring repair) not launched (wall cap: the preflight plan's wall_cap_s None, the owner's timing.wall_s 19931.0, WALL_S 19931.0)",
+     "verdict": "invalid",
+     "failures": []
+    },
+    "failures": [],
+    "cancelled_rows": [],
+    "production_controls_before": {
+     "D:\\UEMA_Research\\Saved\\mimo_bridge\\supervisor_control.json": "63c275697e689abfa61db86935c716b9120923d4843490e015bfe03402786759",
+     "D:\\UEMA_Research\\Saved\\mimo_bridge\\training_continuation.json": "89b389fa0376b51a46da8bd83658d6b1130d0e4e01457b17e49344ac525d45b5",
+     "D:\\UEMA_Research\\Saved\\mimo_bridge\\experiments\\H84_fresh_drivers_20260918_seg41r_1539\\control.json": "absent"
+    },
+    "production_controls_after": {
+     "D:\\UEMA_Research\\Saved\\mimo_bridge\\supervisor_control.json": "63c275697e689abfa61db86935c716b9120923d4843490e015bfe03402786759",
+     "D:\\UEMA_Research\\Saved\\mimo_bridge\\training_continuation.json": "89b389fa0376b51a46da8bd83658d6b1130d0e4e01457b17e49344ac525d45b5",
+     "D:\\UEMA_Research\\Saved\\mimo_bridge\\experiments\\H84_fresh_drivers_20260918_seg41r_1539\\control.json": "absent"
+    },
+    "production_controls_unchanged": true
+   },
+   "owner_failure": null,
+   "service": {
+    "status": "restored",
+    "services": [
+     {
+      "marker": "uema_restore_standin_O3_no_wall_cap_1791924999606",
+      "restored_at": "Oct 13, 2026 01:56:49 PM PDT",
+      "pid": 46284,
+      "alive_pids": [
+       43904,
+       46284
+      ],
+      "ended": [
+       {
+        "pid": 43904,
+        "ended": 2,
+        "why": "ended (identity checked)"
+       },
+       {
+        "pid": 46284,
+        "ended": 0,
+        "why": "unreadable: psutil.NoSuchProcess(pid=46284, msg='process PID not found')"
+       }
+      ],
+      "guard": "ALLOWED: 28.1 of 84.4 GB committed (Windows' limit 84.4 GB; the guard never counts on the page file growing into the last 12 GB of its drive), 12.0 GB RAM free; this work needs 1.0 GB and 6.0 GB must stay free under the limit",
+      "guard_source": {
+       "cwd": "C:\\Users\\bhart\\Documents\\UEMA_wt\\b1_adopt_489350\\Source\\Python",
+       "pythonpath": "C:\\Users\\bhart\\Documents\\UEMA_wt\\b1_adopt_489350\\Source\\Python",
+       "file": "C:\\Users\\bhart\\Documents\\UEMA_wt\\b1_adopt_489350\\Source\\Python\\mimo_bridge\\tools\\commit_guard.py",
+       "sha256": "6a902a59139127d20aa9310434ee3dc1ddd89509abd15535a1ecd741c05be685",
+       "error": null
+      },
+      "refusals": null
+     }
+    ]
+   }
+  },
+  "O3b": {
+   "launch_exit": 0,
+   "launch_said": "{\n \"started\": {\n  \"pid\": 52596,\n  \"created\": 1791925010.9357324\n },\n \"log\": \"D:\\\\UEMA_scratch\\\\b1_recover_489625\\\\verify\\\\owner_standin_v3\\\\O3b_owner_wall_differs\\\\receipts\\\\owner.jsonl\",\n \"state\": \"D:\\\\UEMA_scratch\\\\b1_recover_489625\\\\verify\\\\owner_standin_v3\\\\O3b_owner_wall_differs\\\\receipts\\\\owner_state.json\",\n \"exists\": true,\n \"phase\": \"completion\",\n \"arm\": null,\n \"updated_at\": \"Oct 13, 2026, 01:56:51 PM PDT\",\n \"processes\": [\n  {\n   \"process\": \"owner\",\n   \"pid\": 44856,\n   \"created\": 1791925010.9505227,\n   \"created_at\": \"Oct 13, 2026, 01:56:50 PM PDT\",\n   \"alive_and_same\": true\n  },\n  {\n   \"process\": \"guard\",\n   \"pid\": 14928,\n   \"created\": 1791925011.2184732,\n   \"created_at\": \"Oct 13, 2026, 01:56:51 PM PDT\",\n   \"alive_and_same\": true\n  }\n ]\n}\n",
+   "seconds": 10.8,
+   "phase": "done",
+   "alive_after": [],
+   "alive_naming_case": [],
+   "main_reading_runs_before": {
+    "b1_recover_B1R_skip13_489625": {
+     "status": "written",
+     "outcome": null,
+     "last_run": null,
+     "blocked": false
+    },
+    "b1_recover_posture_494025": {
+     "status": "queued",
+     "outcome": "INVALID",
+     "last_run": "20261013_131300_41584_1e62",
+     "blocked": false
+    },
+    "b1_recover_movement_494025": {
+     "status": "queued",
+     "outcome": "INVALID",
+     "last_run": "20261013_131304_25096_9e90",
+     "blocked": false
+    },
+    "b1_recover_outcome_494025": {
+     "status": "queued",
+     "outcome": "INVALID",
+     "last_run": "20261013_131307_56088_b2eb",
+     "blocked": false
+    }
+   },
+   "main_reading_runs_after": {
+    "b1_recover_B1R_skip13_489625": {
+     "status": "written",
+     "outcome": null,
+     "last_run": null,
+     "blocked": false
+    },
+    "b1_recover_posture_494025": {
+     "status": "queued",
+     "outcome": "INVALID",
+     "last_run": "20261013_131300_41584_1e62",
+     "blocked": false
+    },
+    "b1_recover_movement_494025": {
+     "status": "queued",
+     "outcome": "INVALID",
+     "last_run": "20261013_131304_25096_9e90",
+     "blocked": false
+    },
+    "b1_recover_outcome_494025": {
+     "status": "queued",
+     "outcome": "INVALID",
+     "last_run": "20261013_131307_56088_b2eb",
+     "blocked": false
+    }
+   },
+   "owner_end": {
+    "at": "Oct 13, 2026, 01:56:51 PM PDT",
+    "arms": [
+     {
+      "arm": "recovery",
+      "state": "not_launched",
+      "launched": false,
+      "why": "wall cap: the preflight plan's wall_cap_s 19931, the owner's timing.wall_s 20000.0, WALL_S 19931.0"
+     }
+    ],
+    "completion": {
+     "reading_plan": "D:\\UEMA_Research\\external\\D\\UEMA_scratch\\b1_recover_489625\\verify\\owner_standin_v3\\O3b_owner_wall_differs\\reading\\reading_plan.json",
+     "cancelled": [],
+     "incomplete": "INCOMPLETE - the recovery run (the adopted body-1 lineage, --proprio-token-skip 1,3, on main's code, from the preserved 489,625 of the stopped adoption run to 494,025; the adoption's span 489,350 to 494,025, interrupted at 489,625 for a monitoring repair) not launched (wall cap: the preflight plan's wall_cap_s 19931, the owner's timing.wall_s 20000.0, WALL_S 19931.0)",
+     "invalid": null,
+     "external_defects": {},
+     "chain": null,
+     "outcome": "[one bounded span of the adopted body-1 lineage on main's code (ca77bb8d0), 489,350 to 494,025, interrupted at 489,625 for a monitoring repair and resumed from the preserved 489,625 (two linked runs, B1A_skip13_489350 and B1R_skip13_489625), M3 an alert; continued learning, not an isolated test of one repair] INCOMPLETE - the recovery run (the adopted body-1 lineage, --proprio-token-skip 1,3, on main's code, from the preserved 489,625 of the stopped adoption run to 494,025; the adoption's span 489,350 to 494,025, interrupted at 489,625 for a monitoring repair) not launched (wall cap: the preflight plan's wall_cap_s 19931, the owner's timing.wall_s 20000.0, WALL_S 19931.0)",
+     "verdict": "invalid",
+     "failures": []
+    },
+    "failures": [],
+    "cancelled_rows": [],
+    "production_controls_before": {
+     "D:\\UEMA_Research\\Saved\\mimo_bridge\\supervisor_control.json": "63c275697e689abfa61db86935c716b9120923d4843490e015bfe03402786759",
+     "D:\\UEMA_Research\\Saved\\mimo_bridge\\training_continuation.json": "89b389fa0376b51a46da8bd83658d6b1130d0e4e01457b17e49344ac525d45b5",
+     "D:\\UEMA_Research\\Saved\\mimo_bridge\\experiments\\H84_fresh_drivers_20260918_seg41r_1539\\control.json": "absent"
+    },
+    "production_controls_after": {
+     "D:\\UEMA_Research\\Saved\\mimo_bridge\\supervisor_control.json": "63c275697e689abfa61db86935c716b9120923d4843490e015bfe03402786759",
+     "D:\\UEMA_Research\\Saved\\mimo_bridge\\training_continuation.json": "89b389fa0376b51a46da8bd83658d6b1130d0e4e01457b17e49344ac525d45b5",
+     "D:\\UEMA_Research\\Saved\\mimo_bridge\\experiments\\H84_fresh_drivers_20260918_seg41r_1539\\control.json": "absent"
+    },
+    "production_controls_unchanged": true
+   },
+   "owner_failure": null,
+   "service": {
+    "status": "restored",
+    "services": [
+     {
+      "marker": "uema_restore_standin_O3b_owner_wall_differs_1791925010781",
+      "restored_at": "Oct 13, 2026 01:57:00 PM PDT",
+      "pid": 49084,
+      "alive_pids": [
+       49084,
+       53512
+      ],
+      "ended": [
+       {
+        "pid": 49084,
+        "ended": 3,
+        "why": "ended (identity checked)"
+       },
+       {
+        "pid": 53512,
+        "ended": 0,
+        "why": "not the recorded process (gone, or its id reused)"
+       }
+      ],
+      "guard": "ALLOWED: 28.1 of 84.4 GB committed (Windows' limit 84.4 GB; the guard never counts on the page file growing into the last 12 GB of its drive), 12.0 GB RAM free; this work needs 1.0 GB and 6.0 GB must stay free under the limit",
+      "guard_source": {
+       "cwd": "C:\\Users\\bhart\\Documents\\UEMA_wt\\b1_adopt_489350\\Source\\Python",
+       "pythonpath": "C:\\Users\\bhart\\Documents\\UEMA_wt\\b1_adopt_489350\\Source\\Python",
+       "file": "C:\\Users\\bhart\\Documents\\UEMA_wt\\b1_adopt_489350\\Source\\Python\\mimo_bridge\\tools\\commit_guard.py",
+       "sha256": "6a902a59139127d20aa9310434ee3dc1ddd89509abd15535a1ecd741c05be685",
+       "error": null
+      },
+      "refusals": null
+     }
+    ]
+   }
+  }
+ },
+ "held": 40,
+ "of": 40,
+ "verdict": "pass",
+ "seconds": 52.3,
+ "writes": "only under D:\\UEMA_Research\\external\\D\\UEMA_scratch\\b1_recover_489625\\verify\\owner_standin_v3"
+}

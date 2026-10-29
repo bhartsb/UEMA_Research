@@ -1,0 +1,505 @@
+{
+  "checkpoint": "D:\\UEMA_Research\\Saved\\mimo_bridge\\experiments\\H84_fresh_drivers_20260918_seg41m_2030\\checkpoints\\ckpt_step_446400",
+  "script_sha256": "d842038538c840ddfd8baba58b0622aaab61e89c96b4f792cc5ce736065a2620",
+  "helper_sha256": {
+    "D:\\UEMA_Research\\docs\\gain_of_function_v3\\probe_saved_gaze.py": "d842038538c840ddfd8baba58b0622aaab61e89c96b4f792cc5ce736065a2620",
+    "D:\\UEMA_Research\\Source\\Python\\mimo_bridge\\tools\\gof_probe_harness.py": "8dc7a5ab53644c04cd602256c6a42600ffd010f4ab2005481b9ba732942e60f4",
+    "D:\\UEMA_Research\\Source\\Python\\mimo_bridge\\tools\\gof_probe_gaze.py": "0b9f34305f0e245a6b2d7cb8424f6a146cdb36375baf7f70ac59d96a6f8e5ac7"
+  },
+  "runtime_sha256": "73b5076f67d54ef1a04ad3208579ad740f1f9b06ae34ad48cba64a8e30ff3e2c",
+  "source_sha256": {
+    "model.safetensors": "f95bc708f0ea3b26b390440dc9d90950423dded0bc9136b53f9ff33d48402d65",
+    "optimizer.pt": "50a0af9eb1c6bdc3543b23d91f0da64eb8375184b1fe46932048bcb67d6aa4b9",
+    "runtime_state.pt": "4ea5bf34e7dc9dced8570723c9800061dfffb982ec67685c1711fee3ca1c6b04"
+  },
+  "episode": {
+    "path": "D:\\UEMA_Research\\external\\D\\UEMA_recordings\\H84_seg41_caregiver\\checkpoint_state\\H84_fresh_drivers_20260918_seg41m_2030\\ckpt_step_446400_45ae4c9696ea4d549bd5ed69799520d8.pt.gz",
+    "sha256": "b1b765adabf2e6afd50e157d222ead3ad03f526de441eb33281b2f2038c19953",
+    "bytes": 972180863,
+    "step": 446400,
+    "times": [
+      22320.500000053722,
+      22320.500000053722,
+      22320.500000053722,
+      22320.500000053722,
+      22320.500000053722,
+      22320.500000053722,
+      22320.500000053722,
+      22320.500000053722
+    ]
+  },
+  "bodies": 8,
+  "commands": [
+    "hold",
+    "left",
+    "right",
+    "up",
+    "down"
+  ],
+  "starts_per_body": 2,
+  "start_rule": "Each body starts at the first moment, within 30 model steps after its saved moment, where the planner made a plan. A body whose planner is consulted in that window but makes no plan starts at its first planning event instead, and its row in starts says so (measured 2026-09-25 at checkpoint 400,350: body 2's harm reading was over the integrity gate line at every remembered moment, so its goal was its present moment and its planner stopped as converged at every planning event; the body used to be dropped without a word). Only the planner-direction reading (findings: planner_toward_better_predicted_wellness) uses the plan; the eye and view comparisons do not.",
+  "command_branches": 80,
+  "replays_per_branch": 2,
+  "horizons_ms": [
+    50,
+    100,
+    150
+  ],
+  "learning": false,
+  "production_adoption": false,
+  "gaze_reflex": false,
+  "spontaneous_saccades": false,
+  "eye_angle_target": "Mean azimuth/elevation of both eyes, matching LemLite._eye_angles_deg; old probe used the left eye alone.",
+  "eye_pictures": "Each distinct scene is drawn once per body: a later draw of the same scene (the same fingerprint of everything MuJoCo is asked to draw, taken so it does not depend on the previous draw) receives the first picture, because this machine's graphics driver returns different pictures for one unchanged scene when semi-transparent shapes overlap in view (measured 2026-09-24). The fingerprints are part of the replay digest, so both runs of a command must also ask for identical scenes. A mismatch writes replay_mismatch.json.",
+  "guard": {
+    "committed_gb": 19.53847885131836,
+    "limit_gb": 84.39546585083008,
+    "need_gb": 12,
+    "reserve_gb": 6
+  },
+  "summary": {
+    "saved_starts": {
+      "50ms": {
+        "eye_prediction_error_degrees": {
+          "bodies": 8,
+          "candidate_mean": 1.0990151154806282,
+          "comparison_mean": 1.154059958550611,
+          "candidate_minus_comparison": -0.0550448430699826,
+          "paired95_difference": [
+            -0.3742465884753153,
+            0.18575097504983196
+          ],
+          "candidate_error_lower_beyond_sample_uncertainty": false,
+          "error_reduction_fraction": 0.04769669258702458
+        },
+        "visual_prediction_mse": {
+          "bodies": 8,
+          "candidate_mean": 0.0010044280725196586,
+          "comparison_mean": 0.001124080193676491,
+          "candidate_minus_comparison": -0.00011965212115683244,
+          "paired95_difference": [
+            -0.00018649239052592748,
+            -5.375438968258095e-05
+          ],
+          "candidate_error_lower_beyond_sample_uncertainty": true,
+          "error_reduction_fraction": 0.10644447062579254
+        },
+        "actual_eye_change_vs_eye_hold_degrees": 0.8949208687213619
+      },
+      "100ms": {
+        "eye_prediction_error_degrees": {
+          "bodies": 8,
+          "candidate_mean": 1.8157455668716098,
+          "comparison_mean": 3.117965031752315,
+          "candidate_minus_comparison": -1.3022194648807053,
+          "paired95_difference": [
+            -1.7030194849994613,
+            -0.8687609499334498
+          ],
+          "candidate_error_lower_beyond_sample_uncertainty": true,
+          "error_reduction_fraction": 0.41765043918688527
+        },
+        "visual_prediction_mse": {
+          "bodies": 8,
+          "candidate_mean": 0.004764654431710369,
+          "comparison_mean": 0.006209861508978065,
+          "candidate_minus_comparison": -0.0014452070772676961,
+          "paired95_difference": [
+            -0.002279722796220085,
+            -0.0006412784750864375
+          ],
+          "candidate_error_lower_beyond_sample_uncertainty": true,
+          "error_reduction_fraction": 0.2327277468552642
+        },
+        "actual_eye_change_vs_eye_hold_degrees": 3.093990671815275
+      },
+      "150ms": {
+        "eye_prediction_error_degrees": {
+          "bodies": 8,
+          "candidate_mean": 2.6151110762759817,
+          "comparison_mean": 6.058193469216948,
+          "candidate_minus_comparison": -3.4430823929409664,
+          "paired95_difference": [
+            -3.9251804550115588,
+            -2.9040757890481195
+          ],
+          "candidate_error_lower_beyond_sample_uncertainty": true,
+          "error_reduction_fraction": 0.5683348361910274
+        },
+        "visual_prediction_mse": {
+          "bodies": 8,
+          "candidate_mean": 0.012976759040611796,
+          "comparison_mean": 0.018822746103978716,
+          "candidate_minus_comparison": -0.00584598706336692,
+          "paired95_difference": [
+            -0.00893737655133009,
+            -0.002718271396042839
+          ],
+          "candidate_error_lower_beyond_sample_uncertainty": true,
+          "error_reduction_fraction": 0.31058098701821235
+        },
+        "actual_eye_change_vs_eye_hold_degrees": 6.0579822220300485
+      }
+    },
+    "after_head_command": {
+      "50ms": {
+        "eye_prediction_error_degrees": {
+          "bodies": 8,
+          "candidate_mean": 0.6853190180836448,
+          "comparison_mean": 0.9026167644023123,
+          "candidate_minus_comparison": -0.2172977463186675,
+          "paired95_difference": [
+            -0.3876656205614815,
+            -0.005955599969690223
+          ],
+          "candidate_error_lower_beyond_sample_uncertainty": true,
+          "error_reduction_fraction": 0.2407419791970693
+        },
+        "visual_prediction_mse": {
+          "bodies": 8,
+          "candidate_mean": 0.0010742858316916681,
+          "comparison_mean": 0.0011884254818141926,
+          "candidate_minus_comparison": -0.00011413965012252447,
+          "paired95_difference": [
+            -0.000198966045115867,
+            -3.85006955980316e-05
+          ],
+          "candidate_error_lower_beyond_sample_uncertainty": true,
+          "error_reduction_fraction": 0.09604274888845743
+        },
+        "actual_eye_change_vs_eye_hold_degrees": 0.9022902697707194
+      },
+      "100ms": {
+        "eye_prediction_error_degrees": {
+          "bodies": 8,
+          "candidate_mean": 0.9878021687516754,
+          "comparison_mean": 3.128801369507558,
+          "candidate_minus_comparison": -2.1409992007558825,
+          "paired95_difference": [
+            -2.485007870123094,
+            -1.7111774282756038
+          ],
+          "candidate_error_lower_beyond_sample_uncertainty": true,
+          "error_reduction_fraction": 0.6842873509393965
+        },
+        "visual_prediction_mse": {
+          "bodies": 8,
+          "candidate_mean": 0.00844558808421425,
+          "comparison_mean": 0.010177700611166074,
+          "candidate_minus_comparison": -0.0017321125269518234,
+          "paired95_difference": [
+            -0.002854479920642916,
+            -0.0007209980556581293
+          ],
+          "candidate_error_lower_beyond_sample_uncertainty": true,
+          "error_reduction_fraction": 0.17018701896688748
+        },
+        "actual_eye_change_vs_eye_hold_degrees": 3.128587900803061
+      },
+      "150ms": {
+        "eye_prediction_error_degrees": {
+          "bodies": 8,
+          "candidate_mean": 1.869763293556875,
+          "comparison_mean": 6.272002816302445,
+          "candidate_minus_comparison": -4.40223952274557,
+          "paired95_difference": [
+            -4.7424096642430875,
+            -3.9624358034293565
+          ],
+          "candidate_error_lower_beyond_sample_uncertainty": true,
+          "error_reduction_fraction": 0.7018873638422307
+        },
+        "visual_prediction_mse": {
+          "bodies": 8,
+          "candidate_mean": 0.01774245303386124,
+          "comparison_mean": 0.024601644876383943,
+          "candidate_minus_comparison": -0.006859191842522705,
+          "paired95_difference": [
+            -0.01101380277032149,
+            -0.003006899689353304
+          ],
+          "candidate_error_lower_beyond_sample_uncertainty": true,
+          "error_reduction_fraction": 0.2788102940672518
+        },
+        "actual_eye_change_vs_eye_hold_degrees": 6.271889140679428
+      }
+    },
+    "definitions": {
+      "eye_prediction": "Euclidean error in the two eyes' mean azimuth/elevation, in degrees, matching the training target; comparison predicts zero eye movement.",
+      "visual_prediction": "Mean squared feature error for the actual command versus the same prediction with the gaze command replaced by eye hold. The actual visual outcome is identical in both scores.",
+      "uncertainty": "Paired bootstrap over eight body means; four directions are averaged within each body.",
+      "choice": "The auditor selects four eye commands, not the model. Useful goal-directed looking requires a separate choice test."
+    }
+  },
+  "findings": {
+    "discrimination_vision_50ms_trained": {
+      "value": 0.9583333333333334,
+      "decided_pairs": 48,
+      "correct": 46,
+      "tied_pairs": 0,
+      "undecided_pairs": 0,
+      "pairs": 48,
+      "rule": "a pair counts only when its predicted difference exceeds its noise line (twice the spread of that difference over the main moment and 3 nearby eye starts); tied_pairs = the two predictions exactly equal; undecided_pairs = every other pair not counted"
+    },
+    "discrimination_proprioception_50ms_trained": {
+      "value": 0.0,
+      "decided_pairs": 1,
+      "correct": 0,
+      "tied_pairs": 0,
+      "undecided_pairs": 47,
+      "pairs": 48,
+      "rule": "a pair counts only when its predicted difference exceeds its noise line (twice the spread of that difference over the main moment and 3 nearby eye starts); tied_pairs = the two predictions exactly equal; undecided_pairs = every other pair not counted"
+    },
+    "discrimination_vision_50ms": {
+      "value": 0.9583333333333334,
+      "decided_pairs": 48,
+      "correct": 46,
+      "tied_pairs": 0,
+      "undecided_pairs": 0,
+      "pairs": 48,
+      "rule": "a pair counts only when its predicted difference exceeds its noise line (twice the spread of that difference over the main moment and 3 nearby eye starts); tied_pairs = the two predictions exactly equal; undecided_pairs = every other pair not counted"
+    },
+    "discrimination_proprioception_50ms": {
+      "value": 0.0,
+      "decided_pairs": 1,
+      "correct": 0,
+      "tied_pairs": 0,
+      "undecided_pairs": 47,
+      "pairs": 48,
+      "rule": "a pair counts only when its predicted difference exceeds its noise line (twice the spread of that difference over the main moment and 3 nearby eye starts); tied_pairs = the two predictions exactly equal; undecided_pairs = every other pair not counted"
+    },
+    "discrimination_vision_100ms": {
+      "value": 0.9791666666666666,
+      "decided_pairs": 48,
+      "correct": 47,
+      "tied_pairs": 0,
+      "undecided_pairs": 0,
+      "pairs": 48,
+      "rule": "a pair counts only when its predicted difference exceeds its noise line (twice the spread of that difference over the main moment and 3 nearby eye starts); tied_pairs = the two predictions exactly equal; undecided_pairs = every other pair not counted"
+    },
+    "discrimination_proprioception_100ms": {
+      "value": 0.7446808510638298,
+      "decided_pairs": 47,
+      "correct": 35,
+      "tied_pairs": 0,
+      "undecided_pairs": 1,
+      "pairs": 48,
+      "rule": "a pair counts only when its predicted difference exceeds its noise line (twice the spread of that difference over the main moment and 3 nearby eye starts); tied_pairs = the two predictions exactly equal; undecided_pairs = every other pair not counted"
+    },
+    "discrimination_vision_150ms": {
+      "value": 1.0,
+      "decided_pairs": 48,
+      "correct": 48,
+      "tied_pairs": 0,
+      "undecided_pairs": 0,
+      "pairs": 48,
+      "rule": "a pair counts only when its predicted difference exceeds its noise line (twice the spread of that difference over the main moment and 3 nearby eye starts); tied_pairs = the two predictions exactly equal; undecided_pairs = every other pair not counted"
+    },
+    "discrimination_proprioception_150ms": {
+      "value": 0.75,
+      "decided_pairs": 48,
+      "correct": 36,
+      "tied_pairs": 0,
+      "undecided_pairs": 0,
+      "pairs": 48,
+      "rule": "a pair counts only when its predicted difference exceeds its noise line (twice the spread of that difference over the main moment and 3 nearby eye starts); tied_pairs = the two predictions exactly equal; undecided_pairs = every other pair not counted"
+    },
+    "vision_captured_share_50ms_trained": 0.2834520669002102,
+    "vision_direction_50ms_trained": 0.4737967386327941,
+    "vision_size_against_hold_50ms_trained": 0.5532155051395625,
+    "proprioception_captured_share_50ms_trained": -0.00019405324612706325,
+    "proprioception_direction_50ms_trained": -0.1292442913520439,
+    "proprioception_size_against_hold_50ms_trained": 0.01082348410255919,
+    "vision_captured_share_50ms": 0.2850501821272343,
+    "vision_direction_50ms": 0.47998514617311544,
+    "vision_size_against_hold_50ms": 0.5501960474316347,
+    "proprioception_captured_share_50ms": -0.0001954507197962534,
+    "proprioception_direction_50ms": -0.1293408173971392,
+    "proprioception_size_against_hold_50ms": 0.010481230291314007,
+    "vision_captured_share_100ms": 0.2646022708466053,
+    "vision_direction_100ms": 0.4831346730934456,
+    "vision_size_against_hold_100ms": 0.46538178401240865,
+    "proprioception_captured_share_100ms": 0.022418675466261334,
+    "proprioception_direction_100ms": 0.22378388725337572,
+    "proprioception_size_against_hold_100ms": 0.1398544462234878,
+    "vision_captured_share_150ms": 0.2991690520374556,
+    "vision_direction_150ms": 0.5408097804756835,
+    "vision_size_against_hold_150ms": 0.471560622521077,
+    "proprioception_captured_share_150ms": 0.040464545591411126,
+    "proprioception_direction_150ms": 0.223184877919266,
+    "proprioception_size_against_hold_150ms": 0.22251709117674523,
+    "clipped_commands": {
+      "n": 0,
+      "arms": [],
+      "of": 32,
+      "note": "a command beyond the eye's joint range is clipped to the range before it is sent; the arm is scored with the command it sent"
+    },
+    "ablation_vision": {
+      "50ms": {
+        "error_with_gaze": 0.0010044280725196586,
+        "error_without_gaze": 0.001124080193676491,
+        "share_of_error_removed": 0.10644447062579254
+      },
+      "150ms": {
+        "error_with_gaze": 0.012976759040611796,
+        "error_without_gaze": 0.018822746103978716,
+        "share_of_error_removed": 0.31058098701821235
+      }
+    },
+    "eye_moved_deg_150ms_for_10deg_command": {
+      "mean": 6.030799696530686,
+      "spread": 2.6225176266238135
+    },
+    "generalization_head_turned_discrimination_vision_150ms": {
+      "value": 1.0,
+      "decided_pairs": 48,
+      "correct": 48,
+      "tied_pairs": 0,
+      "undecided_pairs": 0,
+      "pairs": 48,
+      "rule": "a pair counts only when its predicted difference exceeds its noise line (twice the spread of that difference over the main moment and 3 nearby eye starts); tied_pairs = the two predictions exactly equal; undecided_pairs = every other pair not counted"
+    },
+    "generalization_head_turned_captured_share_vision_150ms": 0.2675379902088368,
+    "generalization_head_turn_achieved": [
+      {
+        "head_turn_deg": 4.2875328256111,
+        "swivel_change_deg": 5.8338406157392555
+      },
+      {
+        "head_turn_deg": 3.9698804517287885,
+        "swivel_change_deg": 3.273958178407968
+      },
+      {
+        "head_turn_deg": 0.08083507539322946,
+        "swivel_change_deg": 0.09539364236041692
+      },
+      {
+        "head_turn_deg": 8.23828967761779,
+        "swivel_change_deg": 4.31991281708574
+      },
+      {
+        "head_turn_deg": 4.212992209538289,
+        "swivel_change_deg": 3.396518552272413
+      },
+      {
+        "head_turn_deg": 1.7644584026809356,
+        "swivel_change_deg": 1.1217844377528614
+      },
+      {
+        "head_turn_deg": 3.669120441821399,
+        "swivel_change_deg": 2.4180276607591598
+      },
+      {
+        "head_turn_deg": 3.637511655446302,
+        "swivel_change_deg": 3.9984251713673675
+      }
+    ],
+    "planner_toward_better_predicted_wellness": {
+      "share": 0.5,
+      "n": 16,
+      "candidate_pairs_tied": 0,
+      "candidate_pairs": 16,
+      "planner_objective": "distance to a remembered goal; predicted wellness enters its choice only through --prospective-wellness (off in this run, --prospective-wellness-w 0.15)"
+    },
+    "instrument_repeat": null,
+    "prediction_before_action": {
+      "every_prediction_made_before_the_order_was_sent": true,
+      "how": "each prediction is computed from the restored moment, then the same moment is restored and the order sent; the arm records hold both",
+      "eye_pose_prediction": "efference gaze head, degrees at 50/100/150 ms"
+    },
+    "gaze_command_moves_motor_token_share": 0.05683094935571166,
+    "step_response": {
+      "measured": false,
+      "reason": "Mechanical fresh-world servo test not repeated"
+    },
+    "efference_gaze_error_deg": 1.7872759853399964
+  },
+  "checkpoint_episode": "episode companion restored (8 bodies saved; 0 caregiver recording tape(s) replaced by a plain list)",
+  "eye_picture_draws": {
+    "draws": 1920,
+    "reused": 972,
+    "redrawn_differently": 13,
+    "meaning": "Eye pictures drawn in the 80 command branches, both runs: reused = draws answered with the picture their identical scene got first; redrawn_differently = of those, draws whose fresh picture differed from it (a graphics driver slip, or the floor placed around the previous draw's camera)."
+  },
+  "starts": [
+    {
+      "body": 0,
+      "model_steps_after_saved_moment": 10,
+      "rule": "planned",
+      "planned": true,
+      "stopped_by": "horizon",
+      "goal_distance_now": 0.500260654518689,
+      "planning_events_searched": 2
+    },
+    {
+      "body": 1,
+      "model_steps_after_saved_moment": 10,
+      "rule": "planned",
+      "planned": true,
+      "stopped_by": "horizon",
+      "goal_distance_now": 0.09306031989688007,
+      "planning_events_searched": 2
+    },
+    {
+      "body": 2,
+      "model_steps_after_saved_moment": 10,
+      "rule": "planned",
+      "planned": true,
+      "stopped_by": "horizon",
+      "goal_distance_now": 0.30912020616259417,
+      "planning_events_searched": 2
+    },
+    {
+      "body": 3,
+      "model_steps_after_saved_moment": 10,
+      "rule": "planned",
+      "planned": true,
+      "stopped_by": "horizon",
+      "goal_distance_now": 0.1295925279887671,
+      "planning_events_searched": 2
+    },
+    {
+      "body": 4,
+      "model_steps_after_saved_moment": 10,
+      "rule": "planned",
+      "planned": true,
+      "stopped_by": "horizon",
+      "goal_distance_now": 0.3127892799882492,
+      "planning_events_searched": 2
+    },
+    {
+      "body": 5,
+      "model_steps_after_saved_moment": 10,
+      "rule": "planned",
+      "planned": true,
+      "stopped_by": "horizon",
+      "goal_distance_now": 0.4196251281572463,
+      "planning_events_searched": 2
+    },
+    {
+      "body": 6,
+      "model_steps_after_saved_moment": 10,
+      "rule": "planned",
+      "planned": true,
+      "stopped_by": "horizon",
+      "goal_distance_now": 0.5469460592228077,
+      "planning_events_searched": 2
+    },
+    {
+      "body": 7,
+      "model_steps_after_saved_moment": 10,
+      "rule": "planned",
+      "planned": true,
+      "stopped_by": "horizon",
+      "goal_distance_now": 0.4303124677493904,
+      "planning_events_searched": 2
+    }
+  ],
+  "bodies_started_without_a_plan": 0,
+  "evaluated_bodies": 8,
+  "completed_command_branches": 80,
+  "exact_replay": true,
+  "all_candidate_traces_replayed_exactly": true,
+  "weights_unchanged": true,
+  "elapsed_s": 3230.5079481601715
+}

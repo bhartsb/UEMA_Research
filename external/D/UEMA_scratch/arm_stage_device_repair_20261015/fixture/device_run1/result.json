@@ -1,0 +1,208 @@
+{
+ "row": "arm_stage_device_report_fixture_20261015",
+ "run": 1,
+ "at": "Oct 15, 2026 10:43:10 AM PDT",
+ "pid": 36684,
+ "python": "D:\\UEMA_Research\\.venv_mimo\\Scripts\\python.exe",
+ "code": {
+  "old": {
+   "worktree": "C:\\Users\\bhart\\Documents\\UEMA_wt\\arm_stage_provenance",
+   "head": "cd51f134f8cf7df7a00cdb89efcf4f719f053605",
+   "status": "",
+   "file_sha256": "b3f8124922619966c7bad0af34a93a5f960da571e8353119beb03113799b3bbc",
+   "bound_commit": "cd51f134f8cf7df7a00cdb89efcf4f719f053605",
+   "bound_sha256": "b3f8124922619966c7bad0af34a93a5f960da571e8353119beb03113799b3bbc"
+  },
+  "new": {
+   "worktree": "C:\\Users\\bhart\\Documents\\UEMA_wt\\arm_stage_device_repair",
+   "head": "578bf397371058ef52f714d12e0d6f769e3d7775",
+   "status": "",
+   "file_sha256": "f463ff580eb34143053d47476ab92ecb74156830294243b96c235f8a5d3883e3",
+   "bound_commit": "578bf397371058ef52f714d12e0d6f769e3d7775",
+   "bound_sha256": "f463ff580eb34143053d47476ab92ecb74156830294243b96c235f8a5d3883e3"
+  },
+  "fixture_sha256": "107d6e23057d1e149208298428a1375e0cbd4eb6599f6ec6d09750d70b510d96",
+  "bound": true
+ },
+ "checks": {
+  "0_record": {
+   "held": true,
+   "applied": [
+    true,
+    false,
+    true
+   ],
+   "fallback": [
+    null,
+    "invalid selected pose: collapsed arm chain: the upperarm, lowerarm and wrist positions coincide exactly (L side; the placeholder pose of a reset frame)",
+    null
+   ],
+   "loaded_project_modules": []
+  },
+  "A_old_failure_on_card": {
+   "held": true,
+   "raised": "RuntimeError",
+   "message": "Expected all tensors to be on the same device, but found at least two devices, cuda:0 and cpu!",
+   "where": [
+    "    side[\"executed_wrist_target_to_memory_cm\"] = round(float(torch.linalg.norm(ex[b, r[\"wrist\"], 0:3] - mem_cm)), 3)",
+    "                                                                               ~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~",
+    "RuntimeError: Expected all tensors to be on the same device, but found at least two devices, cuda:0 and cpu!"
+   ]
+  },
+  "B_cpu_reference_known_values": {
+   "held": true,
+   "problems": [],
+   "reference": {
+    "0/L/executed_wrist_target_cm": [
+     28.0,
+     -24.125,
+     31.25
+    ],
+    "0/L/executed_wrist_target_to_memory_cm": 5.0,
+    "0/L/executed_strengths": {
+     "wrist": 0.25,
+     "lowerarm": 0.5,
+     "upperarm": 0.75
+    },
+    "0/L/executed_wrist_turn_from_memory_deg": 30.0,
+    "0/L/executed_lowerarm_turn_from_memory_deg": 90.0,
+    "0/L/executed_upperarm_turn_from_memory_deg": 0.0,
+    "0/R/executed_wrist_target_cm": [
+     34.375,
+     -31.5,
+     48.625
+    ],
+    "0/R/executed_wrist_target_to_memory_cm": 10.0,
+    "0/R/executed_strengths": {
+     "wrist": 0.25,
+     "lowerarm": 0.5,
+     "upperarm": 0.75
+    },
+    "0/R/executed_wrist_turn_from_memory_deg": 45.0,
+    "0/R/executed_lowerarm_turn_from_memory_deg": 60.0,
+    "0/R/executed_upperarm_turn_from_memory_deg": 120.0,
+    "2/L/executed_wrist_target_cm": [
+     31.25,
+     -28.125,
+     43.75
+    ],
+    "2/L/executed_wrist_target_to_memory_cm": 0.0,
+    "2/L/executed_strengths": {
+     "wrist": 0.25,
+     "lowerarm": 0.5,
+     "upperarm": 0.75
+    },
+    "2/L/executed_wrist_turn_from_memory_deg": 0.0,
+    "2/L/executed_lowerarm_turn_from_memory_deg": 0.0,
+    "2/L/executed_upperarm_turn_from_memory_deg": 0.0,
+    "2/R/executed_wrist_target_cm": [
+     41.625,
+     -35.5,
+     55.125
+    ],
+    "2/R/executed_wrist_target_to_memory_cm": 3.0,
+    "2/R/executed_strengths": {
+     "wrist": 0.25,
+     "lowerarm": 0.5,
+     "upperarm": 0.75
+    },
+    "2/R/executed_wrist_turn_from_memory_deg": 30.0,
+    "2/R/executed_lowerarm_turn_from_memory_deg": 0.0,
+    "2/R/executed_upperarm_turn_from_memory_deg": 0.0
+   }
+  },
+  "C_device_pairs": {
+   "held": true,
+   "pairs": {
+    "executed cpu, pose cpu": {
+     "executed_device": "cpu",
+     "pose_device": "cpu",
+     "error": null,
+     "equal_to_reference": true,
+     "executed_kept": true,
+     "pose_kept": true,
+     "fields_changed": [],
+     "rng_unchanged": true,
+     "tensors_in_record": [],
+     "held": true
+    },
+    "executed cpu, pose cuda:0": {
+     "executed_device": "cpu",
+     "pose_device": "cuda:0",
+     "error": null,
+     "equal_to_reference": true,
+     "executed_kept": true,
+     "pose_kept": true,
+     "fields_changed": [],
+     "rng_unchanged": true,
+     "tensors_in_record": [],
+     "held": true
+    },
+    "executed cuda:0, pose cpu": {
+     "executed_device": "cuda:0",
+     "pose_device": "cpu",
+     "error": null,
+     "equal_to_reference": true,
+     "executed_kept": true,
+     "pose_kept": true,
+     "fields_changed": [],
+     "rng_unchanged": true,
+     "tensors_in_record": [],
+     "held": true
+    },
+    "executed cuda:0, pose cuda:0": {
+     "executed_device": "cuda:0",
+     "pose_device": "cuda:0",
+     "error": null,
+     "equal_to_reference": true,
+     "executed_kept": true,
+     "pose_kept": true,
+     "fields_changed": [],
+     "rng_unchanged": true,
+     "tensors_in_record": [],
+     "held": true
+    }
+   }
+  },
+  "D_autograd": {
+   "held": true,
+   "equal_to_reference": true,
+   "tensors_in_record": [],
+   "leaf_grad_is_none": true,
+   "executed_has_grad_fn": true
+  },
+  "E_live_sequence_on_card": {
+   "held": true,
+   "added_fields_equal": true,
+   "identity_fields_differing": [],
+   "tensors_in_record": [],
+   "reported_not_judged": {
+    "apply_arm_stage_card_fields_differing_from_cpu": {},
+    "staged_command_equal_cpu": false,
+    "staged_command_max_abs_difference": 5.960464477539063e-08
+   }
+  }
+ },
+ "torch": {
+  "version": "2.6.0+cu124",
+  "cuda": "12.4",
+  "threads": 2,
+  "cuda_available": true,
+  "cuda_visible_devices": "0"
+ },
+ "device": {
+  "name": "NVIDIA GeForce RTX 4070 Laptop GPU",
+  "total_memory_bytes": 8585216000,
+  "allocator_fraction": 0.12506870229007633,
+  "allocator_cap_bytes": 1073741824,
+  "max_memory_allocated_bytes": 30208,
+  "max_memory_reserved_bytes": 2097152
+ },
+ "modules": {
+  "old": "C:\\Users\\bhart\\Documents\\UEMA_wt\\arm_stage_provenance\\Source\\Python\\mimo_bridge\\arm_stage.py",
+  "new": "C:\\Users\\bhart\\Documents\\UEMA_wt\\arm_stage_device_repair\\Source\\Python\\mimo_bridge\\arm_stage.py",
+  "loaded_project_modules": []
+ },
+ "verdict": "pass",
+ "seconds": 1.85
+}

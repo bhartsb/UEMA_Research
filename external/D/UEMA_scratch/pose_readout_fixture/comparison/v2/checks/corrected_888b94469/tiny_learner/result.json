@@ -1,0 +1,58 @@
+{
+ "worktree": "C:\\Users\\bhart\\Documents\\UEMA_wt\\pose_runtime",
+ "commit_pinned": "888b944697c0aa7e120f8aeb2ea3505676496532",
+ "files": [
+  "mimo_bridge/tests/test_pose_replay_tiny.py"
+ ],
+ "started": "Oct 15, 2026 03:56:53 PM",
+ "before": {
+  "head": "888b944697c0aa7e120f8aeb2ea3505676496532",
+  "clean": true
+ },
+ "exit_code": 1,
+ "seconds": 62.6,
+ "tail": "in model.active],-1)\n        capacity=torch.zeros(len(frames),MOTOR_GROUPS,device=model.device)\n        capacity_valid=torch.zeros_like(capacity,dtype=torch.bool)\n        for bi,f in enumerate(frames):\n            cap=(f.meta or {}).get('motor_function')\n            if cap is not None:\n                if cap.get('contract')!='motor_function_v1':raise ValueError('unknown motor function contract')\n                capacity[bi]=torch.as_tensor(cap['values'],device=model.device)\n                capacity_valid[bi]=torch.as_tensor(cap['valid'],device=model.device,dtype=torch.bool)\n        observed=torch.cat([sites[...,-3:],torch.stack([capacity,torch.zeros_like(capacity),torch.zeros_like(capacity)],-1)],1)\n        if history.time is not None:\n            if now.shape!=history.time.shape or (now<=history.time).any() or sites.shape!=history.sites.shape:\n>               raise ValueError('self-state history crossed a body/time boundary without reset')\nE               ValueError: self-state history crossed a body/time boundary without reset\n\nmimo_bridge\\self_state_integration.py:164: ValueError\n_ test_an_unclassified_attribute_that_differs_refuses_the_copy_before_any_call _\n\nworld = <mimo_bridge.datasource.SingleEnvSource object at 0x000001699C3FAB10>\ntmp_path = WindowsPath('D:/UEMA_Research/external/D/UEMA_scratch/pytest/pytest-of-bhart/pytest-4885/test_an_unclassified_attribute0')\nmonkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x000001699C3F96E0>\n\n    def test_an_unclassified_attribute_that_differs_refuses_the_copy_before_any_call(world, tmp_path, monkeypatch):\n        record, start, end = _owner_run(world, tmp_path, 'x')\n        loads = {'n': 0}\n        original = LemLite.load_checkpoint\n    \n        def load(self, *a, **k):\n            loads['n'] += 1\n            out = original(self, *a, **k)\n            self.unlisted_item_for_the_test = loads['n']                    # differs between the two loads\n            return out\n        monkeypatch.setattr(LemLite, 'load_checkpoint', load)\n        _m, rec, state = _rebuild(record, start, end, tmp_path, 'refuse')\n        assert state is None and 'calls' not in rec\n>       assert any('unlisted_item_for_the_test' in r for r in rec['reasons'])\nE       assert False\nE        +  where False = any(<generator object test_an_unclassified_attribute_that_differs_refuses_the_copy_before_any_call.<locals>.<genexpr> at 0x000001699AAD0E10>)\n\nmimo_bridge\\tests\\test_pose_replay_tiny.py:174: AssertionError\n=========================== short test summary info ===========================\nFAILED mimo_bridge/tests/test_pose_replay_tiny.py::test_the_own_copy_rebuilds_the_window_from_its_own_start\nFAILED mimo_bridge/tests/test_pose_replay_tiny.py::test_a_rebuild_repeats_bit_for_bit\nFAILED mimo_bridge/tests/test_pose_replay_tiny.py::test_another_model_rebuilt_on_the_owners_record_installs_over_the_owners_end\nFAILED mimo_bridge/tests/test_pose_replay_tiny.py::test_an_unclassified_attribute_that_differs_refuses_the_copy_before_any_call\n4 failed in 59.63s\n",
+ "per_file": {
+  "mimo_bridge.tests": {
+   "collected": 4,
+   "passed": 0,
+   "failed": 4,
+   "errors": 0,
+   "skipped": 0
+  }
+ },
+ "failures": [
+  {
+   "test": "mimo_bridge.tests.test_pose_replay_tiny::test_the_own_copy_rebuilds_the_window_from_its_own_start",
+   "kind": "failure",
+   "message": "AssertionError: [\"root module tensors no table names: ['body_schema.correlation_matrix', 'body_schema.prev_motor', 'body_schema.prev_p...g', 'body_schema._scratch_proprio_delta', 'forward_model.blocks.0.causal_mask', 'forward_model.blocks.1.causal_mask']\"]\nassert None is not None"
+  },
+  {
+   "test": "mimo_bridge.tests.test_pose_replay_tiny::test_a_rebuild_repeats_bit_for_bit",
+   "kind": "failure",
+   "message": "AssertionError: ([\"root module tensors no table names: ['body_schema.correlation_matrix', 'body_schema.prev_motor', 'body_schema.prev_...', 'body_schema._scratch_proprio_delta', 'forward_model.blocks.0.causal_mask', 'forward_model.blocks.1.causal_mask']\"])\nassert (None is not None)"
+  },
+  {
+   "test": "mimo_bridge.tests.test_pose_replay_tiny::test_another_model_rebuilt_on_the_owners_record_installs_over_the_owners_end",
+   "kind": "failure",
+   "message": "ValueError: self-state history crossed a body/time boundary without reset"
+  },
+  {
+   "test": "mimo_bridge.tests.test_pose_replay_tiny::test_an_unclassified_attribute_that_differs_refuses_the_copy_before_any_call",
+   "kind": "failure",
+   "message": "assert False\n +  where False = any(<generator object test_an_unclassified_attribute_that_differs_refuses_the_copy_before_any_call.<locals>.<genexpr> at 0x000001699AAD0E10>)"
+  }
+ ],
+ "after": {
+  "head": "888b944697c0aa7e120f8aeb2ea3505676496532",
+  "clean": true
+ },
+ "totals": {
+  "collected": 4,
+  "passed": 0,
+  "failed": 4,
+  "errors": 0,
+  "skipped": 0
+ },
+ "verdict": "fail"
+}

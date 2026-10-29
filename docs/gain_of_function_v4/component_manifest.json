@@ -1,0 +1,1953 @@
+{
+ "about": "The component manifest: one entry per part of the model and per tool, shared by the Architecture page and the test registry (the operator's recovery directive of Oct 5, 2026, sections 7C and 9). The fields and the check are described in Source/Python/mimo_bridge/tools/component_manifest.py. id, name, does, paths, blocks, flags and aliases are typed; last code change, last independent QA, QA STALE, switch state, open defects and linked tests are computed and are not in this file.",
+ "schema": 1,
+ "scope": {
+  "entry": "mimo_bridge.train_mimo",
+  "about": "Model code is every .py file under Source/Python/lem and Source/Python/mimo_bridge that the trainer imports, directly or through other imports, plus the files under 'also' (the tools' own files). The check fails when one of them is mapped to no component.",
+  "also": [
+   ".agent/hooks/claim_check.py",
+   ".agent/hooks/reply_lint.py",
+   ".agent/hooks/worklog_time_check.py",
+   "Source/Python/lem/__init__.py",
+   "Source/Python/lem/config/__init__.py",
+   "Source/Python/lem/config/defaults.py",
+   "Source/Python/lem/config/loader.py",
+   "Source/Python/lem/config/resolver.py",
+   "Source/Python/lem/config/validator.py",
+   "Source/Python/lem/model/__init__.py",
+   "Source/Python/lem/model/receipt.py",
+   "Source/Python/lem/reporting.py",
+   "Source/Python/lem/training/__init__.py",
+   "Source/Python/lem/training/checkpoint.py",
+   "Source/Python/lem/training/retention.py",
+   "Source/Python/mimo_bridge/__init__.py",
+   "Source/Python/mimo_bridge/continuation_state.py",
+   "Source/Python/mimo_bridge/episode_archive.py",
+   "Source/Python/mimo_bridge/explainer/__init__.py",
+   "Source/Python/mimo_bridge/explainer/capture.py",
+   "Source/Python/mimo_bridge/explainer/current_state.py",
+   "Source/Python/mimo_bridge/explainer/refresh.py",
+   "Source/Python/mimo_bridge/explainer/schema.py",
+   "Source/Python/mimo_bridge/explainer/viewer.css",
+   "Source/Python/mimo_bridge/explainer/viewer.js",
+   "Source/Python/mimo_bridge/explainer/walkthrough.py",
+   "Source/Python/mimo_bridge/explainer/writer.py",
+   "Source/Python/mimo_bridge/lem_model.py",
+   "Source/Python/mimo_bridge/machine_stats.py",
+   "Source/Python/mimo_bridge/observer_model_lane.py",
+   "Source/Python/mimo_bridge/observer_record.py",
+   "Source/Python/mimo_bridge/storage_locations.py",
+   "Source/Python/mimo_bridge/tools/ability_comparison_window.py",
+   "Source/Python/mimo_bridge/tools/ability_rechecks.py",
+   "Source/Python/mimo_bridge/tools/archive_checkpoints.py",
+   "Source/Python/mimo_bridge/tools/build_explainer.py",
+   "Source/Python/mimo_bridge/tools/check_explainer_page.py",
+   "Source/Python/mimo_bridge/tools/commit_guard.py",
+   "Source/Python/mimo_bridge/tools/component_manifest.py",
+   "Source/Python/mimo_bridge/tools/defect_register.py",
+   "Source/Python/mimo_bridge/tools/development_dashboard.css",
+   "Source/Python/mimo_bridge/tools/development_dashboard.html",
+   "Source/Python/mimo_bridge/tools/development_dashboard.js",
+   "Source/Python/mimo_bridge/tools/development_dashboard.py",
+   "Source/Python/mimo_bridge/tools/development_dashboard_terms.js",
+   "Source/Python/mimo_bridge/tools/elimination.py",
+   "Source/Python/mimo_bridge/tools/elimination_diagram.css",
+   "Source/Python/mimo_bridge/tools/elimination_diagram.js",
+   "Source/Python/mimo_bridge/tools/gof_scoreboard.py",
+   "Source/Python/mimo_bridge/tools/machine_mode.py",
+   "Source/Python/mimo_bridge/tools/native_proof_role.py",
+   "Source/Python/mimo_bridge/tools/offload_storage.py",
+   "Source/Python/mimo_bridge/tools/preflight.py",
+   "Source/Python/mimo_bridge/tools/recovery_api.py",
+   "Source/Python/mimo_bridge/tools/sensor_action_contract_check.py",
+   "Source/Python/mimo_bridge/tools/test_registry.py",
+   "Source/Python/mimo_bridge/tools/test_runner.py",
+   "Source/Python/mimo_bridge/tools/training_continuation.py",
+   "Source/Python/mimo_bridge/train_mimo.py",
+   "Source/Python/mimo_bridge/transition.py",
+   "Source/Python/mimo_bridge/video_control.py",
+   "docs/gain_of_function_v4/coordinator/memory_watch_loop.py",
+   "docs/gain_of_function_v4/coordinator/run_jobs_in_held_pause.py",
+   "docs/gain_of_function_v4/coordinator/self_percept_watch_loop.py",
+   "docs/gain_of_function_v4/heads_all_slot_path_watch.py",
+   "docs/gain_of_function_v4/motor_asked_change_watch.py",
+   "docs/gain_of_function_v4/motor_encoder_asked_change_registry.py",
+   "docs/gain_of_function_v4/motor_fixes_watch.py",
+   "docs/gain_of_function_v4/run_in_training_pause.py",
+   "docs/gain_of_function_v4/vestibular_input_path_watch.py",
+   "docs/h84_launch_2026-09-18/hourly_watch.py"
+  ],
+  "outside": []
+ },
+ "components": [
+  {
+   "id": "WORLD",
+   "kind": "world",
+   "name": "simulated world",
+   "does": "MuJoCo advances the crib scene (the infant body, the toys, the mobile, the walls) by 5 physics steps of 10 ms per model step from the joint torques it is given, and returns the body's joint, contact, camera and head-sensor readings.",
+   "paths": [
+    {"file": "Source/Python/mimo_bridge/env.py"},
+    {"file": "Source/Python/mimo_bridge/body_layout.py"},
+    {"file": "Source/Python/mimo_bridge/pen_art.py"},
+    {"file": "Source/Python/mimo_bridge/support_fixture.py"},
+    {"file": "Source/Python/mimo_bridge/episode_continuity.py"}
+   ],
+   "blocks": ["node.world"],
+   "flags": [
+    "--scene",
+    "--scene-binding",
+    "--n-envs",
+    "--critters",
+    "--mobile",
+    "--body-layout",
+    "--joint-damping-scale",
+    "--hinge-armature",
+    "--finger-armature",
+    "--episode-steps",
+    "--resume-env-settings"
+   ],
+   "aliases": [],
+   "confirmed": {
+    "at": "Oct 28, 2026 1:47 PM PDT",
+    "by": "the builder (release copy)",
+    "commit": "no commit",
+    "content": "b1f74a6b2130118058230c41cb6c2110b8d38d531648cb9a2bddf99eb9c37533",
+    "basis": "Release-only edit checked (Oct 24, 2026): mimo_bridge/env.py BridgeEnv.__init__ re-roots its run_dir with repo_paths.localize before writing the scene files (a saved world names D:/UEMA_scratch/...; MuJoCo's C code opens those files). A run_dir that is not a recorded folder is unchanged. The rest of the mapped code is the development repository's at 9916126d1 with a copyright line added; the entry's description stands."
+   }
+  },
+  {
+   "id": "CAREGIVER",
+   "kind": "world",
+   "name": "caregiver (the world's adult)",
+   "does": "A scripted program of the world that reads the infant's gaze direction and contacts and, from its saved random state, moves the adult figure, brings and removes toys and plays recorded speech into the audio input.",
+   "paths": [
+    {"file": "Source/Python/mimo_bridge/caregiver.py"},
+    {"file": "Source/Python/mimo_bridge/caregiver_interaction.py"},
+    {"file": "Source/Python/mimo_bridge/caregiver_language.py"},
+    {"file": "Source/Python/mimo_bridge/caregiver_visual.py"},
+    {"file": "Source/Python/mimo_bridge/speech.py"},
+    {"file": "Source/Python/mimo_bridge/event_tape.py"}
+   ],
+   "blocks": ["node.caregiver"],
+   "flags": [
+    "--caregiver-mode",
+    "--caregiver-present-seconds",
+    "--caregiver-absent-seconds",
+    "--caregiver-seconds",
+    "--toy-hand-off",
+    "--caregiver-speech-dir",
+    "--caregiver-replay",
+    "--caregiver-record-dir"
+   ],
+   "aliases": [],
+   "confirmed": {
+    "at": "Oct 5, 2026 2:39 AM PDT",
+    "by": "the dashboard data-layer builder (branch dashboard/recovery-2026-10-05)",
+    "commit": "22c27490c",
+    "content": "47bd43298f2b36512279a0532eb963a9e8d212d6b3b5bf7c1341855fd7172a49",
+    "basis": "carried over from the explainer's text, not checked against the code"
+   }
+  },
+  {
+   "id": "SENSORY_FRAME",
+   "kind": "model part",
+   "name": "sensory frame packing",
+   "does": "Packs each body's sense readings into one 31,040-byte frame per model step in the byte layout of the model's tokenizer, and builds from the frames of all bodies the per-sense input tensors the encoders receive.",
+   "paths": [
+    {"file": "Source/Python/mimo_bridge/frame_encoder.py"},
+    {"file": "Source/Python/mimo_bridge/datasource.py"},
+    {"file": "Source/Python/lem/source_mask.py"},
+    {"file": "Source/Python/mimo_bridge/lem_model.py", "functions": ["LemLite._batch_frames"]}
+   ],
+   "blocks": [],
+   "flags": [],
+   "aliases": [],
+   "confirmed": {
+    "at": "Oct 13, 2026 2:27 AM PDT",
+    "by": "manifest repair agent, Oct 13, 2026",
+    "commit": "64ee28971",
+    "content": "33ee54d926237297e5d5538d4020e1549947407141798e26beb673c9d4bd1ca1",
+    "basis": "checked against the code change only: ca77bb8d0 (the only commit since 22c27490c that changed the mapped code) added training_source_masks to lem/source_mask.py, which reduces the per-sample source labels to one label per sense for the current batch and one for the target batch; its only caller is lem/training_step.py, outside this trainer's import closure; frame_encoder.py, datasource.py and LemLite._batch_frames are unchanged; the entry's text still holds (the sentence itself was carried over from the explainer's text and was not re-read against frame_encoder.py or datasource.py)."
+   }
+  },
+  {
+   "id": "SENSE_VISION",
+   "kind": "model part",
+   "name": "vision input",
+   "does": "Cuts each eye's two camera pictures (a wide view and a narrow centre view) into patches of 16 x 16 pixels and outputs them as the rows the vision encoder receives.",
+   "paths": [
+    {"file": "Source/Python/mimo_bridge/vision_adapter.py"}
+   ],
+   "blocks": ["node.sense.vision"],
+   "flags": ["--no-vision", "--ring-fov", "--ring-size", "--fovea-size", "--fovea-fov", "--corrupt-vision", "--render-every", "--vision-gate"],
+   "aliases": [],
+   "confirmed": {
+    "at": "Oct 5, 2026 2:39 AM PDT",
+    "by": "the dashboard data-layer builder (branch dashboard/recovery-2026-10-05)",
+    "commit": "22c27490c",
+    "content": "263f4e9712e015151dd545a9f72e713c75aed7da2e360bd1dffe38d729c84578",
+    "basis": "carried over from the explainer's text, not checked against the code"
+   }
+  },
+  {
+   "id": "SENSE_TACTILE",
+   "kind": "model part",
+   "name": "tactile input",
+   "does": "Turns MuJoCo's contacts and the body's skin points into up to 32 rows per body (pressure, area, place and the touching part) that the tactile encoder receives.",
+   "paths": [
+    {"file": "Source/Python/mimo_bridge/touch_adapter.py"},
+    {"file": "Source/Python/mimo_bridge/touch_inside_rays.py"},
+    {"file": "Source/Python/mimo_bridge/contact_footprint.py"},
+    {"file": "Source/Python/mimo_bridge/contact_mechanics.py"},
+    {"file": "Source/Python/mimo_bridge/virtual_skin.py"},
+    {"file": "Source/Python/mimo_bridge/skin_contract.py"},
+    {"file": "Source/Python/lem/skin_mechanics.py"},
+    {"file": "Source/Python/mimo_bridge/lem_model.py", "functions": ["fit_tactile", "widen_touch_columns", "touch_point_cloud", "self_touch_rows", "self_touching_bodies"]}
+   ],
+   "blocks": ["node.sense.tactile"],
+   "flags": [
+    "--touch-geometry",
+    "--skin-profile",
+    "--contact-profile",
+    "--contact-footprint-guard",
+    "--rubbing-calibration",
+    "--touch-inside-rays",
+    "--touch-scale-mult"
+   ],
+   "aliases": [],
+   "confirmed": {
+    "at": "Oct 5, 2026 2:39 AM PDT",
+    "by": "the dashboard data-layer builder (branch dashboard/recovery-2026-10-05)",
+    "commit": "22c27490c",
+    "content": "eb377052accd920ee5fc36aef7b4de91872da9b21221976ff0465d25b5967760",
+    "basis": "carried over from the explainer's text, not checked against the code"
+   }
+  },
+  {
+   "id": "SENSE_AUDIO",
+   "kind": "model part",
+   "name": "audio input",
+   "does": "Builds each ear's spectrum (256 frequency bands from 40 Hz to 8 kHz, as a log level) from the world's events and the caregiver's speech, and outputs the two spectra and the ear-difference numbers the audio encoder receives.",
+   "paths": [
+    {"file": "Source/Python/mimo_bridge/audio_adapter.py"}
+   ],
+   "blocks": ["node.sense.audio"],
+   "flags": ["--audio", "--audio-freq-bands"],
+   "aliases": [],
+   "confirmed": {
+    "at": "Oct 5, 2026 2:39 AM PDT",
+    "by": "the dashboard data-layer builder (branch dashboard/recovery-2026-10-05)",
+    "commit": "22c27490c",
+    "content": "6bc28cf0a3949576132b69874f587272294bf79625b79acd3ac54023a2afe374",
+    "basis": "carried over from the explainer's text, not checked against the code"
+   }
+  },
+  {
+   "id": "SENSE_PROPRIOCEPTION",
+   "kind": "model part",
+   "name": "proprioception input",
+   "does": "Reads each tracked body part's position, orientation and velocities from MuJoCo and outputs one row per body handle that the proprioception encoder receives.",
+   "paths": [
+    {"file": "Source/Python/mimo_bridge/proprio_adapter.py"},
+    {"file": "Source/Python/mimo_bridge/proprio_heading.py"}
+   ],
+   "blocks": ["node.sense.proprioception"],
+   "flags": ["--proprio-heading"],
+   "aliases": [],
+   "confirmed": {
+    "at": "Oct 5, 2026 2:39 AM PDT",
+    "by": "the dashboard data-layer builder (branch dashboard/recovery-2026-10-05)",
+    "commit": "22c27490c",
+    "content": "987ca42d86ffa8f43ed3be961dace2be4dc499d1aad98896202398f822f2539f",
+    "basis": "carried over from the explainer's text, not checked against the code"
+   }
+  },
+  {
+   "id": "SENSE_MOTOR",
+   "kind": "model part",
+   "name": "motor input (the executed command fed back)",
+   "does": "Takes the command the body executed in the last model step (26 body handles x 9 numbers, positions divided by 200 cm) with the achieved pose and outputs the rows the motor encoder receives.",
+   "paths": [
+    {"file": "Source/Python/mimo_bridge/lem_model.py", "functions": ["command_for_encoder"]}
+   ],
+   "blocks": ["node.sense.motor"],
+   "flags": ["--executed-fields-only", "--eye-row-convention"],
+   "aliases": [],
+   "confirmed": {
+    "at": "Oct 5, 2026 2:39 AM PDT",
+    "by": "the dashboard data-layer builder (branch dashboard/recovery-2026-10-05)",
+    "commit": "22c27490c",
+    "content": "765724f97da6aefe24b2c7364e7f6b8bd9cb60c0e48e2a33ac1c5b5c55be82f2",
+    "basis": "carried over from the explainer's text, not checked against the code"
+   }
+  },
+  {
+   "id": "SENSE_VESTIBULAR",
+   "kind": "model part",
+   "name": "vestibular input",
+   "does": "Builds a vector of 29 numbers per body from the head's accelerometer and gyro, the neck, the support contacts and the joints' efforts and limits, which the vestibular encoder receives.",
+   "paths": [
+    {"file": "Source/Python/mimo_bridge/vestibular_adapter.py"}
+   ],
+   "blocks": ["node.sense.vestibular"],
+   "flags": ["--vestibular-sense"],
+   "aliases": [],
+   "confirmed": {
+    "at": "Oct 5, 2026 2:39 AM PDT",
+    "by": "the dashboard data-layer builder (branch dashboard/recovery-2026-10-05)",
+    "commit": "22c27490c",
+    "content": "aea956f38d4f0ae3d865100468b777d01c279ff74ca06478d73f026c00d3d929",
+    "basis": "carried over from the explainer's text, not checked against the code"
+   }
+  },
+  {
+   "id": "SENSE_INTERMIND",
+   "kind": "model part",
+   "name": "intermind input (a placeholder)",
+   "does": "Generates synthetic rows for the reserved intermind slot so that the slot's encoder and token keep their shapes; no other controller writes into the slot in this run.",
+   "paths": [
+    {"file": "Source/Python/lem/placeholders/__init__.py"},
+    {"file": "Source/Python/lem/placeholders/strategies.py"},
+    {"file": "Source/Python/lem/placeholders/system.py"}
+   ],
+   "blocks": ["node.sense.intermind"],
+   "flags": ["--placeholder-senses"],
+   "aliases": [],
+   "confirmed": {
+    "at": "Oct 5, 2026 2:39 AM PDT",
+    "by": "the dashboard data-layer builder (branch dashboard/recovery-2026-10-05)",
+    "commit": "22c27490c",
+    "content": "5c6cc52bcfdf0d4c8ad8159e3cfafd87c095935552338d94b7bf6e69f1846852",
+    "basis": "carried over from the explainer's text, not checked against the code"
+   }
+  },
+  {
+   "id": "ENCODER_VISION",
+   "kind": "model part",
+   "name": "vision encoder",
+   "does": "A Swin transformer over the eye pictures' patches that outputs one vision token of d_model numbers per body per model step.",
+   "paths": [
+    {"file": "Source/Python/lem/model/encoders/swin_patch.py"},
+    {"file": "Source/Python/lem/model/input_conditioning.py"},
+    {"file": "Source/Python/lem/model/activation_compensation.py"},
+    {"file": "Source/Python/mimo_bridge/lem_model.py", "functions": ["LemLite.configure_visual_input_calibration", "LemLite._restore_visual_input_conditioning", "LemLite.configure_visual_activation_calibration", "LemLite._restore_visual_activation_calibration"]}
+   ],
+   "blocks": ["node.enc.vision"],
+   "flags": ["--vision-swin-layers", "--vision-width", "--vision-input-calibration", "--vision-activation-calibration"],
+   "aliases": [],
+   "confirmed": {
+    "at": "Oct 5, 2026 2:39 AM PDT",
+    "by": "the dashboard data-layer builder (branch dashboard/recovery-2026-10-05)",
+    "commit": "22c27490c",
+    "content": "3fdf276a4f440526d2b9508e7002c7b4a1136caeb255efb07c0af98c44d8d257",
+    "basis": "carried over from the explainer's text, not checked against the code"
+   }
+  },
+  {
+   "id": "ENCODER_TACTILE",
+   "kind": "model part",
+   "name": "tactile encoder",
+   "does": "A per-row MLP, attention between the up-to-32 tactile rows and one learned pooling query, which together output one tactile token per body per model step.",
+   "paths": [
+    {"file": "Source/Python/lem/model/encoders/cross_patch.py"},
+    {"file": "Source/Python/mimo_bridge/lem_model.py", "functions": ["LemLite._restore_widened_touch_encoder"]}
+   ],
+   "blocks": ["node.enc.tactile"],
+   "flags": ["--encoder-layers", "--encoder-width"],
+   "aliases": [],
+   "confirmed": {
+    "at": "Oct 5, 2026 5:38 PM PDT",
+    "by": "the attention cap builder (branch repair/attention-cap-2026-10-05)",
+    "commit": "d84d8da95",
+    "content": "1a443caf89067f2020e7d1b64e00b670270f9daf24bd377e65d94d56c0c53ee3",
+    "basis": "checked against the code: Read the changed code of lem/model/encoders/cross_patch.py: its attention layers and pool are built as CappedMultiheadAttention, which computes nn.MultiheadAttention's own forward while no bound is set; ATTENTION_CAP never sets a bound on the tactile encoder (attention_cap.targets covers the motor encoder only; test_attention_cap.py test_on_covers_exactly_the_named_modules). The entry's sentence still holds unchanged."
+   }
+  },
+  {
+   "id": "ENCODER_AUDIO",
+   "kind": "model part",
+   "name": "audio encoder",
+   "does": "Three 1-D convolutions along the 256 frequency bands of the two ears and a linear branch for the ear-difference numbers, combined into one audio token per body per model step.",
+   "paths": [
+    {"file": "Source/Python/lem/model/encoders/conv1d_stack.py"}
+   ],
+   "blocks": ["node.enc.audio"],
+   "flags": [],
+   "aliases": [],
+   "confirmed": {
+    "at": "Oct 5, 2026 2:39 AM PDT",
+    "by": "the dashboard data-layer builder (branch dashboard/recovery-2026-10-05)",
+    "commit": "22c27490c",
+    "content": "1d3d21c1d186bac78f501f52366fc4170dd55afb7dbd129308fe4154f74cc4dd",
+    "basis": "carried over from the explainer's text, not checked against the code"
+   }
+  },
+  {
+   "id": "ENCODER_PROPRIOCEPTION",
+   "kind": "model part",
+   "name": "proprioception encoder",
+   "does": "An MLP over the flattened body-handle rows that outputs one proprioception token per body per model step; with --proprio-token-repair within_body an added lesson holds each body's token to that body's own posture.",
+   "paths": [
+    {"file": "Source/Python/lem/model/encoders/mlp_project.py"},
+    {"file": "Source/Python/mimo_bridge/proprio_token.py"},
+    {"file": "Source/Python/mimo_bridge/lem_model.py", "functions": ["LemLite._proprio_within_lesson"]}
+   ],
+   "blocks": ["node.enc.proprioception"],
+   "flags": [
+    "--proprio-token-repair",
+    "--proprio-token-strength",
+    "--proprio-token-line",
+    "--proprio-token-deaf",
+    "--proprio-token-skip"
+   ],
+   "aliases": [],
+   "confirmed": {
+    "at": "Oct 5, 2026 2:39 AM PDT",
+    "by": "the dashboard data-layer builder (branch dashboard/recovery-2026-10-05)",
+    "commit": "22c27490c",
+    "content": "c0e28038770726b888f06eb3831b2db078f477242ca186e2521f3efaf3e76cf7",
+    "basis": "carried over from the explainer's text, not checked against the code"
+   }
+  },
+  {
+   "id": "ENCODER_VESTIBULAR",
+   "kind": "model part",
+   "name": "vestibular encoder",
+   "does": "An MLP that takes the 29 vestibular numbers, each clipped to the range -4 to +4, and outputs one vestibular token per body per model step in the model's sixth input slot.",
+   "paths": [
+    {"file": "Source/Python/mimo_bridge/vestibular_sense.py"},
+    {"file": "Source/Python/lem/model/encoders/mlp_project.py"}
+   ],
+   "blocks": ["node.enc.vestibular"],
+   "flags": ["--vestibular-sense", "--vestibular-lesson-weight", "--vestibular-wellness-pe"],
+   "aliases": [],
+   "confirmed": {
+    "at": "Oct 5, 2026 2:39 AM PDT",
+    "by": "the dashboard data-layer builder (branch dashboard/recovery-2026-10-05)",
+    "commit": "22c27490c",
+    "content": "855b962f1ff1498107cd17614a617227b11defb9d208a0dbc2994d15bad74e9f",
+    "basis": "carried over from the explainer's text, not checked against the code"
+   }
+  },
+  {
+   "id": "ENCODER_INTERMIND",
+   "kind": "model part",
+   "name": "intermind encoder",
+   "does": "One self-attention layer and a learned pooling query that turn the placeholder rows into one intermind token.",
+   "paths": [
+    {"file": "Source/Python/lem/model/encoders/self_attention.py"}
+   ],
+   "blocks": ["node.enc.intermind"],
+   "flags": [],
+   "aliases": [],
+   "confirmed": {
+    "at": "Oct 5, 2026 2:39 AM PDT",
+    "by": "the dashboard data-layer builder (branch dashboard/recovery-2026-10-05)",
+    "commit": "22c27490c",
+    "content": "d91f3c562f6e58ad12f8241cd6b1711fa5d04fb110dea6aa55ccb38558d21705",
+    "basis": "carried over from the explainer's text, not checked against the code"
+   }
+  },
+  {
+   "id": "MOTOR_ENCODER",
+   "kind": "model part",
+   "name": "motor encoder",
+   "does": "A per-row MLP, attention between the 26 body-handle rows of the executed command and one learned pooling query, which together output one motor token per body per model step; under --attention-cap on (ATTENTION_CAP) its 2 attention layers and its pool score each handle as a bound times the cosine of query and key.",
+   "paths": [
+    {"file": "Source/Python/lem/model/encoders/cross_patch.py"}
+   ],
+   "blocks": ["node.enc.motor"],
+   "flags": ["--encoder-layers", "--encoder-width", "--attention-cap", "--attention-cap-bound"],
+   "aliases": [],
+   "confirmed": {
+    "at": "Oct 5, 2026 5:38 PM PDT",
+    "by": "the attention cap builder (branch repair/attention-cap-2026-10-05)",
+    "commit": "d84d8da95",
+    "content": "c49b3b0af936c28b18d68bba1325fc9a701b9bc4d7b235ef79baf80bde03aa98",
+    "basis": "checked against the code: Read the changed code of lem/model/encoders/cross_patch.py: CrossPatchAttentionEncoder.__init__ builds its attention layers and its pool as CappedMultiheadAttention (the same parameters; nn.MultiheadAttention's own forward while no bound is set) and the module imports that class; forward is unchanged. The sentence was extended with what --attention-cap on changes for the motor encoder's 2 layers and pool; its flags list gained the two flags."
+   }
+  },
+  {
+   "id": "ENCODER_REGISTRY",
+   "kind": "model part",
+   "name": "encoder registry and shared output normalization",
+   "does": "Builds the active senses' encoders from the resolved configuration, runs each on its input, and passes every token through one shared normalization layer (subtract the token's own mean, divide by its own spread).",
+   "paths": [
+    {"file": "Source/Python/lem/model/encoder_registry.py"},
+    {"file": "Source/Python/lem/model/encoders/__init__.py"}
+   ],
+   "blocks": ["node.ln_out"],
+   "flags": [],
+   "aliases": [],
+   "confirmed": {
+    "at": "Oct 5, 2026 2:39 AM PDT",
+    "by": "the dashboard data-layer builder (branch dashboard/recovery-2026-10-05)",
+    "commit": "22c27490c",
+    "content": "d05b6f452ea51aa8170f6b9fde4dd8c93edca464ec4715a917ceab8cbc76474a",
+    "basis": "carried over from the explainer's text, not checked against the code"
+   }
+  },
+  {
+   "id": "TOP_DOWN_GATE",
+   "kind": "model part",
+   "name": "top-down gate",
+   "does": "Per sense, mixes a learned share g (0 to 50 parts in 100) of the model's own prediction of this model step into the encoder's token, g x prediction + (1 - g) x token, and outputs the mixed tokens that acting, planning and the goal ring read; every lesson grades the raw encoder tokens.",
+   "paths": [
+    {"file": "Source/Python/mimo_bridge/lem_model.py", "functions": ["LemLite.__init__", "LemLite.step"]}
+   ],
+   "blocks": ["node.td_gate"],
+   "flags": ["--top-down-gate"],
+   "aliases": [],
+   "confirmed": {
+    "at": "Oct 10, 2026 8:57 AM PDT",
+    "by": "the coordinator (Oct 10, 2026, after merge 5c66112eb)",
+    "commit": "76336d264",
+    "content": "57811be5c89f6e1f9cadf1be99b56d0e0b1b4579633b2df6c15831a7abb71e43",
+    "basis": "checked against the code as follows: the independent review read the bundle's whole diff (BUNDLE_REVIEW.md: no training number changed; its processor runs of train_mimo.main with forced spike saves kept every saved number, random stream and episode state equal); every FIX was applied by the fix rounds; the coordinator read the fix rounds' lem_model.py and train_mimo.py changes (17beceab8..eec04fcc6) line by line, the gradient clip loop clipping every group as production's did; the processor equality probes at dadb7b76e read 0 of 313, 1,049 and 1,032 checkpoint leaves differing. The changed code adds guarded records and the latent shadow's resume boundary; the entry's sentence is unchanged unless extended above. The graphics-card lockstep row records_lockstep_481800 is the evidence still to run."
+   }
+  },
+  {
+   "id": "TRANSFORMER",
+   "kind": "model part",
+   "name": "transformer (the core)",
+   "does": "Lines up the senses' tokens of the newest and the remembered model steps with learned sense and time embeddings, passes them through the core's blocks (three attention stages and a feed-forward network each) and a final normalization, and outputs one state vector per token for the heads, the motor controller and the planner; under --attention-cap on (ATTENTION_CAP) the cross-modal attention of every block scores each key as a bound times the cosine of its query and key.",
+   "paths": [
+    {"file": "Source/Python/lem/model/forward_model.py"}
+   ],
+   "blocks": ["node.assembly", "node.core", "node.block_s1", "node.block_s2", "node.block_s3", "node.block_ffn", "node.final_norm"],
+   "flags": ["--context-length", "--core-blocks", "--d-model", "--attention-cap", "--attention-cap-bound"],
+   "aliases": [],
+   "confirmed": {
+    "at": "Oct 13, 2026 2:27 AM PDT",
+    "by": "manifest repair agent, Oct 13, 2026",
+    "commit": "64ee28971",
+    "content": "d091a9b988292dd6acff85a64d492764f20a7a5a6123217cbbd5df649b8f41b2",
+    "basis": "checked against the code change only: ca77bb8d0 (the only commit since d84d8da95 that changed lem/model/forward_model.py) added the module function _invalidate_loaded_embedding_cache and registers it in ForwardModel.__init__ as a load_state_dict post-hook, so a load marks the expanded sense and time embedding buffers stale and the next forward recomputes them from the loaded weights; the tokens' path through the blocks is unchanged; the entry's text still holds."
+   }
+  },
+  {
+   "id": "PREDICTION_HEADS",
+   "kind": "model part",
+   "name": "prediction heads",
+   "does": "One head per sense except motor (a learned query, attention over the transformer's output and a 2-layer MLP) that outputs that sense's token for the next model step, 50 ms ahead.",
+   "paths": [
+    {"file": "Source/Python/lem/model/prediction_heads.py", "functions": ["PredictionHead", "PredictionHeads", "<rest>"]}
+   ],
+   "blocks": ["node.heads"],
+   "flags": ["--residual-prediction", "--next-frame-loss"],
+   "aliases": [],
+   "confirmed": {
+    "at": "Oct 5, 2026 12:53 PM PDT",
+    "by": "the dashboard fix agent (branch dashboard/recovery-2026-10-05)",
+    "commit": "e159b4d69",
+    "content": "cd8189906e8c62294ef8af5ae76b01f19bdcbae84c1d5c1eed3e165132943caa",
+    "basis": "carried over from the explainer's text, not checked against the code; Oct 5, 2026: the text of Source/Python/lem/model/prediction_heads.py outside every definition the manifest maps joined this entry as its part <rest> (the dashboard review's finding F13), read in outline by the fix agent (module-level lines and the definitions no component maps); the entry's sentence was not rechecked against it"
+   }
+  },
+  {
+   "id": "TENURE_HEADS",
+   "kind": "model part",
+   "name": "tenure heads (command-to-outcome heads)",
+   "does": "Two small networks graded at the end of each command's hold: one takes the transformer's output and outputs the body's pose change over the hold; the other takes the executed command and outputs the token change it should have caused, scored by how often that output is nearest its own outcome among decoy outcomes.",
+   "paths": [
+    {"file": "Source/Python/mimo_bridge/lem_model.py", "functions": ["LemLite.__init__", "LemLite.step"]}
+   ],
+   "blocks": ["node.tenure_heads"],
+   "flags": [
+    "--action-tenure-loss",
+    "--action-tenure-weight",
+    "--action-tenure-token-reach",
+    "--action-tenure-token-weight",
+    "--action-tenure-token-alpha",
+    "--action-tenure-alpha"
+   ],
+   "aliases": [],
+   "confirmed": {
+    "at": "Oct 10, 2026 8:57 AM PDT",
+    "by": "the coordinator (Oct 10, 2026, after merge 5c66112eb)",
+    "commit": "76336d264",
+    "content": "57811be5c89f6e1f9cadf1be99b56d0e0b1b4579633b2df6c15831a7abb71e43",
+    "basis": "checked against the code as follows: the independent review read the bundle's whole diff (BUNDLE_REVIEW.md: no training number changed; its processor runs of train_mimo.main with forced spike saves kept every saved number, random stream and episode state equal); every FIX was applied by the fix rounds; the coordinator read the fix rounds' lem_model.py and train_mimo.py changes (17beceab8..eec04fcc6) line by line, the gradient clip loop clipping every group as production's did; the processor equality probes at dadb7b76e read 0 of 313, 1,049 and 1,032 checkpoint leaves differing. The changed code adds guarded records and the latent shadow's resume boundary; the entry's sentence is unchanged unless extended above. The graphics-card lockstep row records_lockstep_481800 is the evidence still to run."
+   }
+  },
+  {
+   "id": "RECONSTRUCTION_DECODERS",
+   "kind": "model part",
+   "name": "reconstruction decoders",
+   "does": "One small decoder per sense except motor that takes that sense's part of the transformer's output and outputs the current model step's token; the mean squared difference from the real token is a lesson.",
+   "paths": [
+    {"file": "Source/Python/mimo_bridge/lem_model.py", "functions": ["LemLite.__init__", "LemLite.step"]}
+   ],
+   "blocks": ["node.recon"],
+   "flags": [],
+   "aliases": [],
+   "confirmed": {
+    "at": "Oct 10, 2026 8:57 AM PDT",
+    "by": "the coordinator (Oct 10, 2026, after merge 5c66112eb)",
+    "commit": "76336d264",
+    "content": "57811be5c89f6e1f9cadf1be99b56d0e0b1b4579633b2df6c15831a7abb71e43",
+    "basis": "checked against the code as follows: the independent review read the bundle's whole diff (BUNDLE_REVIEW.md: no training number changed; its processor runs of train_mimo.main with forced spike saves kept every saved number, random stream and episode state equal); every FIX was applied by the fix rounds; the coordinator read the fix rounds' lem_model.py and train_mimo.py changes (17beceab8..eec04fcc6) line by line, the gradient clip loop clipping every group as production's did; the processor equality probes at dadb7b76e read 0 of 313, 1,049 and 1,032 checkpoint leaves differing. The changed code adds guarded records and the latent shadow's resume boundary; the entry's sentence is unchanged unless extended above. The graphics-card lockstep row records_lockstep_481800 is the evidence still to run."
+   }
+  },
+  {
+   "id": "LOSSES",
+   "kind": "model part",
+   "name": "training lessons and their weights",
+   "does": "Weights each sense's lesson by whether its input is real, stale or synthetic, divides each sense's next-step error by its own no-change error when --next-frame-norm persistence is set, sums the lessons into the loss and clips the gradient before the optimizer's update.",
+   "paths": [
+    {"file": "Source/Python/lem/training/loss_manager.py"},
+    {"file": "Source/Python/lem/training/latent_regularizer.py"},
+    {"file": "Source/Python/lem/model/next_frame_norm.py"},
+    {"file": "Source/Python/mimo_bridge/lem_model.py", "functions": ["LemLite._clip_training_gradients", "LemLite._latent_prediction_penalty", "LemLite.next_frame_norm_window_summary"]}
+   ],
+   "blocks": [],
+   "flags": ["--next-frame-norm", "--next-frame-loss"],
+   "aliases": [],
+   "confirmed": {
+    "at": "Oct 13, 2026 2:27 AM PDT",
+    "by": "manifest repair agent, Oct 13, 2026",
+    "commit": "64ee28971",
+    "content": "02ee2ab4a9aabbb9b6fb79149af2c0638287bcc2a696d7c0072f766bd1996078",
+    "basis": "checked against the code change only: ca77bb8d0 (the only commit since 76336d264 that changed the mapped code) added the argument prediction_source_mask to LossManager.compute: when given, the next-step prediction lessons take their real, stale or synthetic scale from it (the target frame's validity) in place of source_mask; this trainer's call in LemLite.step passes none, so its scales are unchanged, and the only caller that passes one is lem/training_step.py, outside this trainer's import closure; the entry's text still holds."
+   }
+  },
+  {
+   "id": "IMAGINATION_CHAIN",
+   "kind": "model part",
+   "name": "imagination chain",
+   "does": "Starting from the oldest model step the chain keeps, predicts the next model step's tokens, feeds that prediction back in as input and predicts again, --imagination-steps times; each predicted step's error against the raw tokens that arrived is added to the loss, and nothing is sent to the body.",
+   "paths": [
+    {"file": "Source/Python/lem/live_test.py", "functions": ["_run_imagination_compiled", "<rest>"]},
+    {"file": "Source/Python/lem/model/forward_model.py", "functions": ["ForwardModel"]},
+    {"file": "Source/Python/mimo_bridge/lem_model.py", "functions": ["LemLite.__init__", "LemLite.step"]}
+   ],
+   "blocks": ["node.imagination"],
+   "flags": ["--imagination", "--imagination-steps", "--imagination-weight", "--think-harder", "--plan-horizon"],
+   "aliases": [],
+   "confirmed": {
+    "at": "Oct 13, 2026 2:27 AM PDT",
+    "by": "manifest repair agent, Oct 13, 2026",
+    "commit": "64ee28971",
+    "content": "9f74ced4c57be4c39e4a3dab2dc9efdb8f1c36dac9e807d7f34e170b6fc3e9b6",
+    "basis": "checked against the code change only: ca77bb8d0 (the only commit since 76336d264 that changed the mapped code) changed ForwardModel only by registering the load_state_dict post-hook that marks the expanded embedding buffers stale after a load; lem/live_test.py and LemLite.__init__ and LemLite.step are unchanged; the entry's text still holds."
+   }
+  },
+  {
+   "id": "REPLAY",
+   "kind": "model part",
+   "name": "replay memory",
+   "does": "Stores each model step's tokens, executed command and achieved pose per body (--replay-size model steps) and, every --replay-every model steps, draws a batch of stored windows and runs the lessons on them as one more optimizer update.",
+   "paths": [
+    {"file": "Source/Python/mimo_bridge/replay.py"},
+    {"file": "Source/Python/mimo_bridge/lem_model.py", "functions": ["LemLite.enable_replay", "LemLite.replay_loss_only", "LemLite.replay_update"]}
+   ],
+   "blocks": ["node.replay"],
+   "flags": ["--replay", "--replay-every", "--replay-batch", "--replay-size"],
+   "aliases": ["diary"],
+   "confirmed": {
+    "at": "Oct 13, 2026 2:27 AM PDT",
+    "by": "manifest repair agent, Oct 13, 2026",
+    "commit": "64ee28971",
+    "content": "990b52738f402ad449b901e9017c25ea360258f8b8bde4cd3ebce114d0aca0c8",
+    "basis": "checked against the code change only: ca77bb8d0 (the only commit since 76336d264 that changed the mapped code) added to LemLite.replay_update, after optimizer.step(), the call that marks the forward model's expanded embedding cache stale (invalidate_embedding_cache), as LemLite.step already does after its update, so a no-gradient forward after a replay update recomputes the embeddings from the updated weights; replay.py, enable_replay and replay_loss_only are unchanged; the entry's text still holds."
+   }
+  },
+  {
+   "id": "MOTOR_CONTROLLER",
+   "kind": "model part",
+   "name": "motor controller",
+   "does": "An MLP with a confidence head that takes the transformer's pooled output, the body handles' current state and the gradient of wellness with respect to that state, and outputs the command: 26 body handles x 9 numbers (target position, orientation as 4 numbers, radius, strength 0 to 1).",
+   "paths": [
+    {"file": "Source/Python/lem/model/motor_controller.py"},
+    {"file": "Source/Python/lem/model/motor_input_fold.py"}
+   ],
+   "blocks": ["node.motor"],
+   "flags": ["--motor-input-fold"],
+   "aliases": ["reflex controller"],
+   "confirmed": {
+    "at": "Oct 5, 2026 2:39 AM PDT",
+    "by": "the dashboard data-layer builder (branch dashboard/recovery-2026-10-05)",
+    "commit": "22c27490c",
+    "content": "424b6f00ae81f19676461301d1e27ded7ddc69a008b93878b80014e63d7a9ab1",
+    "basis": "carried over from the explainer's text, not checked against the code"
+   }
+  },
+  {
+   "id": "BABBLE",
+   "kind": "model part",
+   "name": "babble (exploration noise)",
+   "does": "Adds seeded random noise to a command the planner did not author: at --babble-noise 0.05, 5 cm per axis of position (kept inside the reach limit around the present pose), a rotation of 28.6 degrees (half a radian) per axis, and strength plus the absolute value of a normal draw whose standard deviation is 5 in 100 of the strength's 0-to-1 range.",
+   "paths": [
+    {"file": "Source/Python/mimo_bridge/lem_model.py", "functions": ["LemLite._independent_babble", "LemLite.step"]}
+   ],
+   "blocks": [],
+   "flags": ["--babble-noise", "--babble-scale", "--no-babble", "--babble-bouts", "--random-actions"],
+   "aliases": [],
+   "confirmed": {
+    "at": "Oct 10, 2026 8:57 AM PDT",
+    "by": "the coordinator (Oct 10, 2026, after merge 5c66112eb)",
+    "commit": "76336d264",
+    "content": "6aeb5a343180b4f5f498471a587887565359ad755c4aea93650edd0670e27723",
+    "basis": "checked against the code as follows: the independent review read the bundle's whole diff (BUNDLE_REVIEW.md: no training number changed; its processor runs of train_mimo.main with forced spike saves kept every saved number, random stream and episode state equal); every FIX was applied by the fix rounds; the coordinator read the fix rounds' lem_model.py and train_mimo.py changes (17beceab8..eec04fcc6) line by line, the gradient clip loop clipping every group as production's did; the processor equality probes at dadb7b76e read 0 of 313, 1,049 and 1,032 checkpoint leaves differing. The changed code adds guarded records and the latent shadow's resume boundary; the entry's sentence is unchanged unless extended above. The graphics-card lockstep row records_lockstep_481800 is the evidence still to run."
+   }
+  },
+  {
+   "id": "COMMAND_EXECUTION_PATH",
+   "kind": "model part",
+   "name": "command execution path",
+   "does": "Takes a proposed command and outputs what the body receives: the phase's limits on strength and on the position step from the present pose, the eyes' row as sent, a blend of --smooth-actions of the new command with the rest of the previous one, then the action decoder's conversion of the 26 handle targets into joint torques; with --finger-joint-servo on (FINGER_JOINT_SERVO) each finger hinge is stepped toward its own latched goal angle instead of toward the fingertip's pose.",
+   "paths": [
+    {"file": "Source/Python/mimo_bridge/lem_model.py", "functions": ["LemLite.planned_execution", "LemLite.differentiable_execution_transform", "LemLite.execution_transform", "LemLite.smooth_blend", "LemLite.gaze_row_as_sent", "LemLite.executed_fields_only"]},
+    {"file": "Source/Python/mimo_bridge/action_decoder.py"},
+    {"file": "Source/Python/mimo_bridge/limb_target_control.py"},
+    {"file": "Source/Python/mimo_bridge/execution_contract.py"},
+    {"file": "Source/Python/lem/action/__init__.py"},
+    {"file": "Source/Python/lem/action/shm.py"},
+    {"file": "Source/Python/lem/action/writer.py"}
+   ],
+   "blocks": [],
+   "flags": [
+    "--smooth-actions",
+    "--smooth-source",
+    "--motor-hold",
+    "--action-repeat",
+    "--decoder-kp",
+    "--reach-projection",
+    "--parent-relative-targets",
+    "--position-rows",
+    "--executed-fields-only",
+    "--limp",
+    "--finger-joint-servo"
+   ],
+   "aliases": [],
+   "confirmed": {
+    "at": "Oct 13, 2026 2:27 AM PDT",
+    "by": "manifest repair agent, Oct 13, 2026",
+    "commit": "64ee28971",
+    "content": "3185e0529d19aaa6140baa7a483a65c400354e5fe246f3e9cf506c101504aab7",
+    "basis": "checked against the code change only: ca77bb8d0 (the only commit since 02dbf33be that changed the mapped code) changed rotmat_log in action_decoder.py for a rotation within 1e-6 rad of 180 degrees: the axis is now the column of (R + R^T + 2I)/4 with the largest diagonal entry, its sign set by the skew part of R, in place of the square roots of the diagonal of (R + I)/2 with signs taken from two off-diagonal entries (which lost the relative sign when the axis's first component is 0); the other mapped files and functions are unchanged; the entry's text still holds."
+   }
+  },
+  {
+   "id": "GAZE_COMMAND",
+   "kind": "model part",
+   "name": "gaze command",
+   "does": "Reads the orientation of the eyes' body handle in the command as one azimuth and elevation pair and sends it to both eye servos; the gaze reflex adds a turn toward motion at the edge of the picture.",
+   "paths": [
+    {"file": "Source/Python/mimo_bridge/gaze_reflex.py"},
+    {"file": "Source/Python/lem/model/prediction_heads.py", "functions": ["GazeHead"]},
+    {"file": "Source/Python/mimo_bridge/lem_model.py", "functions": ["LemLite.gaze_to_handle", "LemLite._gaze_from_handle_t", "LemLite._gaze_from_handle", "LemLite.mirror_eye_rows", "LemLite._plan_visual_gaze"]}
+   ],
+   "blocks": ["node.gaze"],
+   "flags": [
+    "--gaze-reflex",
+    "--spontaneous-saccades",
+    "--gaze-kp",
+    "--gaze-kd",
+    "--goal-gaze-hold",
+    "--anticipation-gaze",
+    "--anticipation-gaze-w"
+   ],
+   "aliases": [],
+   "confirmed": {
+    "at": "Oct 5, 2026 2:39 AM PDT",
+    "by": "the dashboard data-layer builder (branch dashboard/recovery-2026-10-05)",
+    "commit": "22c27490c",
+    "content": "e8a3c5d0133f8d720221a003940dd49b357be97be7e105aaee705c3a28ae4094",
+    "basis": "carried over from the explainer's text, not checked against the code"
+   }
+  },
+  {
+   "id": "HAND_STAGE",
+   "kind": "model part",
+   "name": "hand stage",
+   "does": "After the planner's search, for each hand with a valid remembered hand goal, takes the hand's present joint angles and velocities and the calibrated hand response and outputs the finger joint targets whose predicted pose after a 250 ms hold is nearest that goal; these replace the hand's rows of the planned command. A resume keeps the hand calibration the checkpoint saved; under --replace-saved-hand-calibration RECORD it replaces it with the requested one only when the closed-loop admission record binds the receipt bytes, the checkpoint's weights, the trainer code hash (lem/trainer_code.py), the finger rule, the hand geometry and a recomputed pass line, and puts the replacement back over the episode companion's copy before the predictor is built.",
+   "paths": [
+    {"file": "Source/Python/mimo_bridge/hand_target_control.py"},
+    {"file": "Source/Python/lem/model/hand_response.py"},
+    {"file": "Source/Python/mimo_bridge/lem_model.py", "functions": ["LemLite.configure_hand_response_calibration", "LemLite._restore_hand_response_calibration", "LemLite.configure_hand_geometry", "LemLite._smooth_hand_joints", "LemLite._plan_chain"]},
+    {"file": "Source/Python/lem/trainer_code.py"}
+   ],
+   "blocks": ["node.intention"],
+   "flags": [
+    "--hand-target-mode",
+    "--hand-goals",
+    "--hand-response-calibration",
+    "--finger-joint-servo",
+    "--replace-saved-hand-calibration"
+   ],
+   "aliases": [],
+   "confirmed": {
+    "at": "Oct 8, 2026 7:00 PM PDT",
+    "by": "the coordinator (Oct 8, 2026, after merge a28afc9b5)",
+    "commit": "a28afc9b5",
+    "content": "d7f3162f7fcf62168078995df77d72523ace74e24f8b665c5cc185370ce88972",
+    "basis": "checked against the code: lem/model/hand_response.py (the admission constants, signflip_count, admission_line, admission_check, trainer_code_hash imported from lem/trainer_code.py), lem/trainer_code.py (the code hash's scope and arithmetic), lem_model.py (_restore_hand_response_calibration: with the setting absent each branch as production's; _replace_saved_hand_calibration; hand_calibration_replacement_report; _keep_hand_calibration_replacement and its call in configure_hand_geometry, acting only after a replacement), read by the coordinator in git diff ad4ea01fa a28afc9b5; the sentence gains the replacement rule, the flags gain --replace-saved-hand-calibration and the paths lem/trainer_code.py; evidence row hand_calibration_replacement_absent_lockstep PASS (6:56 PM PDT, base ad4ea01fa); independent review D:/UEMA_Research/external/D/UEMA_scratch/plan_review/HAND_CALIBRATION_ADMISSION_REVIEW.md (no BLOCKER; re-check of 08beed2aa: all five fixes hold)."
+   }
+  },
+  {
+   "id": "PLANNER_SEARCH",
+   "kind": "model part",
+   "name": "planner search",
+   "does": "Starts from the motor controller's command and runs Adam (learning rate one tenth, 20 updates) on its positions, orientations, radius logits and strength logits; each update predicts the next tokens through the execution path, the motor encoder, the transformer and the prediction heads and lowers the goal distance plus effort; per body it returns the evaluated command with the lowest total.",
+   "paths": [
+    {"file": "Source/Python/lem/model/intention_generator.py", "functions": ["IntentionGenerator", "<rest>"]},
+    {"file": "Source/Python/mimo_bridge/lem_model.py", "functions": ["LemLite._plan_chain", "LemLite.replan_last", "LemLite._plan_settings"]}
+   ],
+   "blocks": ["node.intention"],
+   "flags": ["--intention", "--intention-every", "--no-intention-execute", "--plan-horizon", "--planner-effort-per-body"],
+   "aliases": ["intention generator"],
+   "confirmed": {
+    "at": "Oct 5, 2026 12:53 PM PDT",
+    "by": "the dashboard fix agent (branch dashboard/recovery-2026-10-05)",
+    "commit": "e159b4d69",
+    "content": "0247d7ce53a7eab86a0025c5221fef3b37b27255f68a5deb99cb05ad01274f61",
+    "basis": "checked against the code: IntentionGenerator.generate_action and LemLite._plan_chain read whole; the step size and the update count are the contract's (section 10), not re-read in LemLite.__init__; Oct 5, 2026: the text of Source/Python/lem/model/intention_generator.py outside every definition the manifest maps joined this entry as its part <rest> (the dashboard review's finding F13), read in outline by the fix agent (module-level lines and the definitions no component maps); the entry's sentence was not rechecked against it"
+   }
+  },
+  {
+   "id": "PLANNER_GOAL_SELECTION",
+   "kind": "model part",
+   "name": "planner goal selection",
+   "does": "Ranks the goal ring's entries by their stored wellness value and outputs the tokens of the highest-ranked entry as the goal state; with --goal-locality on only entries inside the model's own measured 14-step drift distance are ranked, and the goal is held until reached, left behind or 200 model steps old.",
+   "paths": [
+    {"file": "Source/Python/mimo_bridge/lem_model.py", "functions": ["LemLite._gl_select", "LemLite._revalue_ring", "LemLite._goal_position", "LemLite._normalized_goal_values", "LemLite._rank_weights_now", "LemLite.step"]}
+   ],
+   "blocks": ["node.intention"],
+   "flags": ["--goal-locality", "--goal-revalue", "--wellness-rank", "--curiosity-goal"],
+   "aliases": [],
+   "confirmed": {
+    "at": "Oct 10, 2026 8:57 AM PDT",
+    "by": "the coordinator (Oct 10, 2026, after merge 5c66112eb)",
+    "commit": "76336d264",
+    "content": "9e514b9983f31191b622df174ae314bff0ebfcfcd6d4ccafec796cb465194423",
+    "basis": "checked against the code as follows: the independent review read the bundle's whole diff (BUNDLE_REVIEW.md: no training number changed; its processor runs of train_mimo.main with forced spike saves kept every saved number, random stream and episode state equal); every FIX was applied by the fix rounds; the coordinator read the fix rounds' lem_model.py and train_mimo.py changes (17beceab8..eec04fcc6) line by line, the gradient clip loop clipping every group as production's did; the processor equality probes at dadb7b76e read 0 of 313, 1,049 and 1,032 checkpoint leaves differing. The changed code adds guarded records and the latent shadow's resume boundary; the entry's sentence is unchanged unless extended above. The graphics-card lockstep row records_lockstep_481800 is the evidence still to run."
+   }
+  },
+  {
+   "id": "GOAL_RING",
+   "kind": "model part",
+   "name": "goal ring",
+   "does": "Keeps, per body, the tokens and the wellness value of each of the last 200 model steps; the planner's goal state is one of these entries.",
+   "paths": [
+    {"file": "Source/Python/mimo_bridge/lem_model.py", "functions": ["LemLite._rank_store_moment", "LemLite._gl_clear", "LemLite.reset_transition_state", "LemLite.reset_context", "LemLite.step"]}
+   ],
+   "blocks": ["node.intention"],
+   "flags": [],
+   "aliases": [],
+   "confirmed": {
+    "at": "Oct 10, 2026 8:57 AM PDT",
+    "by": "the coordinator (Oct 10, 2026, after merge 5c66112eb)",
+    "commit": "76336d264",
+    "content": "14ee127050ce19896a7f4a804f76e2797320b58f050c3479c99b61823c32cdd3",
+    "basis": "checked against the code as follows: the independent review read the bundle's whole diff (BUNDLE_REVIEW.md: no training number changed; its processor runs of train_mimo.main with forced spike saves kept every saved number, random stream and episode state equal); every FIX was applied by the fix rounds; the coordinator read the fix rounds' lem_model.py and train_mimo.py changes (17beceab8..eec04fcc6) line by line, the gradient clip loop clipping every group as production's did; the processor equality probes at dadb7b76e read 0 of 313, 1,049 and 1,032 checkpoint leaves differing. The changed code adds guarded records and the latent shadow's resume boundary; the entry's sentence is unchanged unless extended above. The graphics-card lockstep row records_lockstep_481800 is the evidence still to run."
+   }
+  },
+  {
+   "id": "PLANNER_GOAL_DISTANCE",
+   "kind": "model part",
+   "name": "planner goal distance",
+   "does": "Per body: for each real sense except motor, the mean squared difference between the predicted next token and the goal's token, summed over those senses with equal weights, plus the effort term (the strength regulariser x the sum of the squared strengths); it is the quantity the search lowers.",
+   "paths": [
+    {"file": "Source/Python/lem/model/intention_generator.py", "functions": ["IntentionGenerator", "effort_penalty", "_dict_mse"]},
+    {"file": "Source/Python/lem/model/physical_goal.py"},
+    {"file": "Source/Python/mimo_bridge/lem_model.py", "functions": ["LemLite._plan_chain"]}
+   ],
+   "blocks": ["node.intention"],
+   "flags": ["--planner-effort-per-body", "--physical-goals"],
+   "aliases": [],
+   "confirmed": {
+    "at": "Oct 5, 2026 2:39 AM PDT",
+    "by": "the dashboard data-layer builder (branch dashboard/recovery-2026-10-05)",
+    "commit": "22c27490c",
+    "content": "b7a68c1bc41f2e6d8cf3f00662b0e65e640347e0e8813de3ac898d163ed48063",
+    "basis": "checked against the code: the objective inside IntentionGenerator.generate_action, effort_penalty and _dict_mse read whole; lem/model/physical_goal.py (off in this run) was not read"
+   }
+  },
+  {
+   "id": "PLANNER_PROSPECTIVE_WELLNESS",
+   "kind": "model part",
+   "name": "planner prospective wellness",
+   "does": "Scores a candidate command's predicted next tokens with the wellness predictor; with --prospective-wellness add it adds weight x (1 - the mean predicted score) to the quantity the search lowers, and in every setting the planning chain records the planned command's predicted score.",
+   "paths": [
+    {"file": "Source/Python/lem/model/intention_generator.py", "functions": ["prospective_wellness_loss", "IntentionGenerator"]},
+    {"file": "Source/Python/lem/model/wellness.py", "functions": ["WellnessEvaluators.score_predicted_wellness"]},
+    {"file": "Source/Python/mimo_bridge/lem_model.py", "functions": ["LemLite._plan_chain"]}
+   ],
+   "blocks": ["node.intention"],
+   "flags": ["--prospective-wellness", "--prospective-wellness-w"],
+   "aliases": [],
+   "confirmed": {
+    "at": "Oct 5, 2026 2:39 AM PDT",
+    "by": "the dashboard data-layer builder (branch dashboard/recovery-2026-10-05)",
+    "commit": "22c27490c",
+    "content": "50736f79b590d85fbc56128aa926faa578a2f69e0b293f885db195cf271ce3f0",
+    "basis": "checked against the code: prospective_wellness_loss, the wellness term inside IntentionGenerator.generate_action and the scoring inside LemLite._plan_chain read whole; WellnessEvaluators.score_predicted_wellness was not read"
+   }
+  },
+  {
+   "id": "PLANNER_RECORD",
+   "kind": "model part",
+   "name": "planner record (the causal chain)",
+   "does": "For each planning decision writes one record to the run's causal_chain.jsonl: the goal's ring position and age, the search's start and end values, the planned command's predicted tokens and predicted wellness, the same for the alternatives (the motor controller's command, hold, two noise-perturbed copies) and, after the hold, the realised tokens and wellness.",
+   "paths": [
+    {"file": "Source/Python/mimo_bridge/causal_chain.py"},
+    {"file": "Source/Python/mimo_bridge/lem_model.py", "functions": ["LemLite._capture_plan_state", "LemLite._causal_execution_candidates", "LemLite._causal_score_candidates", "LemLite._causal_plan_record", "LemLite._causal_perturb"]}
+   ],
+   "blocks": ["node.intention"],
+   "flags": ["--causal-chain"],
+   "aliases": [],
+   "confirmed": {
+    "at": "Oct 5, 2026 2:39 AM PDT",
+    "by": "the dashboard data-layer builder (branch dashboard/recovery-2026-10-05)",
+    "commit": "22c27490c",
+    "content": "346d3a799405ee640bccfed6b6913c4832007bd47fcec54cb4e81fcc1c960bf9",
+    "basis": "carried over from the explainer's text, not checked against the code"
+   }
+  },
+  {
+   "id": "WELLNESS_EVALUATORS",
+   "kind": "model part",
+   "name": "wellness evaluators",
+   "does": "Fixed formulas, not learned, that score each model step per body from the senses' readings: prediction error, capability, coherence, motor state and tactile comfort, each between 0 and 1, summed with the drive terms into the wellness value.",
+   "paths": [
+    {"file": "Source/Python/lem/model/wellness.py", "functions": ["WellnessMode", "MotorStateFormula", "GroundedEvaluator", "WellnessEvaluators", "<rest>"]},
+    {"file": "Source/Python/lem/model/contact_wellness.py"},
+    {"file": "Source/Python/mimo_bridge/movement_drive.py"},
+    {"file": "Source/Python/mimo_bridge/lem_model.py", "functions": ["LemLite._self_touch_wellness", "LemLite._self_touch_audit", "LemLite._self_touch_gate", "LemLite._stash_capability"]}
+   ],
+   "blocks": ["node.wellness"],
+   "flags": [
+    "--wellness-mode",
+    "--motor-state-formula",
+    "--wellness-coherence",
+    "--consequence-w",
+    "--self-touch-wellness",
+    "--movement-bonus",
+    "--movement-penalty",
+    "--movement-drive",
+    "--movement-sensor-mod",
+    "--movement-mref",
+    "--movement-param-mod",
+    "--agency-drive",
+    "--agency-weight",
+    "--agency-prior",
+    "--rest-control"
+   ],
+   "aliases": ["grounded evaluators", "judge A"],
+   "confirmed": {
+    "at": "Oct 5, 2026 12:53 PM PDT",
+    "by": "the dashboard fix agent (branch dashboard/recovery-2026-10-05)",
+    "commit": "e159b4d69",
+    "content": "447ec75729cedefe21995ff50cfe66ec8773cab31e8835595902fd6832b71a13",
+    "basis": "carried over from the explainer's text, not checked against the code; Oct 5, 2026: the text of Source/Python/lem/model/wellness.py outside every definition the manifest maps joined this entry as its part <rest> (the dashboard review's finding F13), read in outline by the fix agent (module-level lines and the definitions no component maps); the entry's sentence was not rechecked against it"
+   }
+  },
+  {
+   "id": "WELLNESS_PREDICTOR",
+   "kind": "model part",
+   "name": "wellness predictor",
+   "does": "A learned network that takes a set of sense tokens and a motor token and outputs five scores between 0 and 1, trained to match the wellness evaluators' five scores on lived model steps; the planner and the goal ranking use it to score predicted and stored tokens.",
+   "paths": [
+    {"file": "Source/Python/lem/model/wellness.py", "functions": ["ApproximateEvaluator", "WellnessEvaluators.score_predicted_wellness"]},
+    {"file": "Source/Python/mimo_bridge/lem_model.py", "functions": ["LemLite.predict_before_execution"]}
+   ],
+   "blocks": ["node.wellness"],
+   "flags": [],
+   "aliases": ["approximate evaluator", "judge B"],
+   "confirmed": {
+    "at": "Oct 5, 2026 2:39 AM PDT",
+    "by": "the dashboard data-layer builder (branch dashboard/recovery-2026-10-05)",
+    "commit": "22c27490c",
+    "content": "8820a87c0dc177d267c4734877e725b12caa5a9cd5d093e9567e9a2dda0f64bd",
+    "basis": "carried over from the explainer's text, not checked against the code"
+   }
+  },
+  {
+   "id": "PREDICTIVE_TRANSITION",
+   "kind": "model part",
+   "name": "canonical transition (one predicted model step)",
+   "does": "Takes a state (the senses' tokens, the context of remembered model steps, the achieved pose) and a command, encodes the command with the motor encoder through the registry, runs the transformer and the prediction heads, and outputs the predicted next state; the planner's search, the planning chain and the imagination chain all predict through it.",
+   "paths": [
+    {"file": "Source/Python/lem/model/predictive_state.py"},
+    {"file": "Source/Python/mimo_bridge/lem_model.py", "functions": ["LemLite.live_predictive_state"]}
+   ],
+   "blocks": [],
+   "flags": [],
+   "aliases": [],
+   "confirmed": {
+    "at": "Oct 5, 2026 2:39 AM PDT",
+    "by": "the dashboard data-layer builder (branch dashboard/recovery-2026-10-05)",
+    "commit": "22c27490c",
+    "content": "bcc84067323cd7e40e1be09dd1138341b8e16c9d8d9e2245985fe0e42d079afd",
+    "basis": "carried over from the explainer's text, not checked against the code"
+   }
+  },
+  {
+   "id": "WELLNESS_CHANNELS",
+   "kind": "model part",
+   "name": "wellness channels and their ranking",
+   "does": "Computes the wellness channels controllability (the body did what the efference heads predicted for the command) and learning progress (prediction errors falling against the no-change error), puts every channel on one scale by its own spread, and outputs the weighted sum the goal ranking uses.",
+   "paths": [
+    {"file": "Source/Python/lem/model/wellness_channels.py"},
+    {"file": "Source/Python/mimo_bridge/lem_model.py", "functions": ["LemLite._init_wellness_channels", "LemLite._with_contact_control_weight", "LemLite._rank_channels_active", "LemLite._channel_pain", "LemLite._observe_wellness_channels", "LemLite._wellness_channel_vector", "LemLite.controllability_window_summary", "LemLite.learning_progress_window_summary", "LemLite.wellness_rank_window_summary", "LemLite._lp_hold_out_fresh"]}
+   ],
+   "blocks": ["node.wellness"],
+   "flags": [
+    "--controllability",
+    "--learning-progress",
+    "--wellness-rank",
+    "--wellness-weights",
+    "--contact-control-wellness",
+    "--curiosity-mode"
+   ],
+   "aliases": [],
+   "confirmed": {
+    "at": "Oct 5, 2026 2:39 AM PDT",
+    "by": "the dashboard data-layer builder (branch dashboard/recovery-2026-10-05)",
+    "commit": "22c27490c",
+    "content": "da58ec7044b8b665b6fc3a75a327c0f7b9e3b6cd1af0960fb88f587b66bb8f97",
+    "basis": "carried over from the explainer's text, not checked against the code"
+   }
+  },
+  {
+   "id": "CURIOSITY",
+   "kind": "model part",
+   "name": "curiosity",
+   "does": "A triangle function of prediction error with no learned parts: 0 at each edge of the band set by --curiosity-band, rising in a straight line to 1 at the band's middle; its output enters the goal value.",
+   "paths": [
+    {"file": "Source/Python/lem/model/curiosity.py"}
+   ],
+   "blocks": ["node.curiosity"],
+   "flags": ["--curiosity-band", "--curiosity-goal", "--curiosity-mode"],
+   "aliases": [],
+   "confirmed": {
+    "at": "Oct 5, 2026 2:39 AM PDT",
+    "by": "the dashboard data-layer builder (branch dashboard/recovery-2026-10-05)",
+    "commit": "22c27490c",
+    "content": "1e69d90508e9d5686ed6530395d755d701f80f81a90c399b54ac56a831b13ce9",
+    "basis": "carried over from the explainer's text, not checked against the code"
+   }
+  },
+  {
+   "id": "BODY_SCHEMA",
+   "kind": "model part",
+   "name": "body schema (level 1 of the self-model)",
+   "does": "Keeps a running correlation, per pair of body handles, between changes of the motor command and changes of proprioception; the coherence term of wellness reads it.",
+   "paths": [
+    {"file": "Source/Python/lem/model/body_schema.py"},
+    {"file": "Source/Python/lem/model/body_sets.py"},
+    {"file": "Source/Python/mimo_bridge/lem_model.py", "functions": ["LemLite._schema_coherence", "LemLite.incorporation_stats"]}
+   ],
+   "blocks": [],
+   "flags": ["--body-schema-updates", "--wellness-coherence"],
+   "aliases": [],
+   "confirmed": {
+    "at": "Oct 5, 2026 2:39 AM PDT",
+    "by": "the dashboard data-layer builder (branch dashboard/recovery-2026-10-05)",
+    "commit": "22c27490c",
+    "content": "b7e02eadcef5caec6f5b3ec29af9e35d9c6ec19909c69845e76eb99c5511522f",
+    "basis": "carried over from the explainer's text, not checked against the code"
+   }
+  },
+  {
+   "id": "PERSISTENT_MEMORY",
+   "kind": "model part",
+   "name": "persistent memory",
+   "does": "Keeps the largest change of each half second (up to 128 events, 64 s of body time), encodes them in sequence with a recurrent network, and adds the resulting vector to the tokens of the newest model step after the transformer, where the prediction heads and the motor controller read them.",
+   "paths": [
+    {"file": "Source/Python/lem/model/persistent_memory.py"},
+    {"file": "Source/Python/mimo_bridge/memory_integration.py"},
+    {"file": "Source/Python/mimo_bridge/lem_model.py", "functions": ["LemLite._persistent_memory_switch", "LemLite.memory_report", "LemLite._memory_goal_predictions", "LemLite._memory_goal_variants", "LemLite._accumulate_memory_goal", "LemLite.memory_goal_report", "LemLite._memory_event_stores"]}
+   ],
+   "blocks": ["node.memory"],
+   "flags": ["--persistent-memory", "--persistent-memory-repair", "--persistent-memory-constant-return"],
+   "aliases": [],
+   "confirmed": {
+    "at": "Oct 5, 2026 2:39 AM PDT",
+    "by": "the dashboard data-layer builder (branch dashboard/recovery-2026-10-05)",
+    "commit": "22c27490c",
+    "content": "649780afbd03a5d8a0fbcf63fb684e7e5200a2a7f59b676bdad6ef157a2b5a84",
+    "basis": "carried over from the explainer's text, not checked against the code"
+   }
+  },
+  {
+   "id": "LIVENESS_REPAIR",
+   "kind": "model part",
+   "name": "liveness repair",
+   "does": "Counts, per watched layer, the units whose input stayed under the response line over the observation window and, under --liveness-repair on, computes those units through replacement rows that it trains itself; under --liveness-rule none it replaces no unit.",
+   "paths": [
+    {"file": "Source/Python/lem/model/liveness.py"}
+   ],
+   "blocks": [],
+   "flags": ["--liveness-repair", "--liveness-rule"],
+   "aliases": [],
+   "confirmed": {
+    "at": "Oct 5, 2026 5:38 PM PDT",
+    "by": "the attention cap builder (branch repair/attention-cap-2026-10-05)",
+    "commit": "d84d8da95",
+    "content": "84a50fb97bbd4492acf8721fd64f4b24948500e8b1105e25ba4214cb40fd45e9",
+    "basis": "checked against the code: Read the changed code of lem/model/liveness.py: attention_weights takes its scores from lem.model.attention_cap.head_scores, which returns the expression it computed before ((Q @ K^T) / sqrt(hd)) for a module without a bound and the module's bound x cosine scores for a capped one, so the monitor's recomputed weights are the module's own; nothing else changed. The entry's sentence still holds unchanged."
+   }
+  },
+  {
+   "id": "EFFERENCE_HEADS",
+   "kind": "model part",
+   "name": "efference heads",
+   "does": "Two small networks, the body head and the gaze head, that take the executed command directly beside the transformer's state and output the predicted position of each body handle in cm and the eyes' angles in degrees after the command.",
+   "paths": [
+    {"file": "Source/Python/lem/model/efference.py"},
+    {"file": "Source/Python/mimo_bridge/lem_model.py", "functions": ["LemLite._efference_lesson", "LemLite.efference_window_summary", "LemLite.efference_lesson_ms", "LemLite.predict_efference", "LemLite._latent_for_order", "LemLite._eye_angles_deg"]}
+   ],
+   "blocks": ["node.efference"],
+   "flags": ["--efference-heads", "--efference-weight"],
+   "aliases": [],
+   "confirmed": {
+    "at": "Oct 5, 2026 2:39 AM PDT",
+    "by": "the dashboard data-layer builder (branch dashboard/recovery-2026-10-05)",
+    "commit": "22c27490c",
+    "content": "84123848b7290a59404e58f2f2aa3ceb45b724c288cc09baccdf7c8d64e9b922",
+    "basis": "carried over from the explainer's text, not checked against the code"
+   }
+  },
+  {
+   "id": "CONTACT_HEAD",
+   "kind": "model part",
+   "name": "contact head",
+   "does": "For each of the 53 skin patches outputs three probabilities for the next model step, given the transformer's state, the executed command and the patch's own contact state: that anything is in contact with it, that one of the body's own parts is, and that an outside thing is.",
+   "paths": [
+    {"file": "Source/Python/lem/model/contact_head.py"},
+    {"file": "Source/Python/mimo_bridge/lem_model.py", "functions": ["LemLite._contact_report", "LemLite._contact_prev_input", "LemLite._contact_lesson", "LemLite._contact_control_forward", "LemLite.contact_control_window_summary", "LemLite.predict_contacts"]}
+   ],
+   "blocks": ["node.contact_head"],
+   "flags": ["--contact-head", "--contact-head-weight", "--contact-control-wellness", "--consequence-self-contact"],
+   "aliases": [],
+   "confirmed": {
+    "at": "Oct 5, 2026 2:39 AM PDT",
+    "by": "the dashboard data-layer builder (branch dashboard/recovery-2026-10-05)",
+    "commit": "22c27490c",
+    "content": "98e1f25d406127094bb20ad194ae92797ccc951700f998994c9516339e448c16",
+    "basis": "carried over from the explainer's text, not checked against the code"
+   }
+  },
+  {
+   "id": "CONTACT_CONSEQUENCES",
+   "kind": "model part",
+   "name": "contact consequence lesson",
+   "does": "A head that takes a past sensory frame, the sequence of commands executed since and a query skin site, and outputs the predicted contact consequence at that site; it is off in this run (--contact-learning off).",
+   "paths": [
+    {"file": "Source/Python/lem/model/contact_consequences.py"},
+    {"file": "Source/Python/mimo_bridge/consequence_learning.py"},
+    {"file": "Source/Python/mimo_bridge/lem_model.py", "functions": ["consequence_kinds", "eligible_contrast", "object_state_for", "object_physics_driven_for"]}
+   ],
+   "blocks": [],
+   "flags": ["--contact-learning", "--consequence-horizon"],
+   "aliases": [],
+   "confirmed": {
+    "at": "Oct 5, 2026 2:39 AM PDT",
+    "by": "the dashboard data-layer builder (branch dashboard/recovery-2026-10-05)",
+    "commit": "22c27490c",
+    "content": "42935dbc6840dcf75d85b301c0508209222613e00da591f3976602f99652d555",
+    "basis": "carried over from the explainer's text, not checked against the code"
+   }
+  },
+  {
+   "id": "MOTOR_SYNERGY",
+   "kind": "model part",
+   "name": "motor synergy",
+   "does": "Learns, from the pose changes of completed commands, a map from a compact intention vector to a posture change over many joints; with --synergy-planner on the planner's search runs on that vector.",
+   "paths": [
+    {"file": "Source/Python/lem/model/motor_synergy.py"},
+    {"file": "Source/Python/mimo_bridge/lem_model.py", "functions": ["LemLite._synergy_stamp", "LemLite._syn_add", "LemLite._synergy_lesson", "LemLite._synergy_grade", "LemLite._synergy_babble", "LemLite._synergy_observe_liveness", "LemLite._synergy_space", "LemLite.synergy_window_summary", "LemLite._migrate_synergy_scales"]}
+   ],
+   "blocks": ["node.synergy", "node.synergy_examples"],
+   "flags": ["--motor-synergy", "--synergy-dim", "--synergy-planner", "--synergy-babble", "--synergy-residual-l2"],
+   "aliases": [],
+   "confirmed": {
+    "at": "Oct 5, 2026 2:39 AM PDT",
+    "by": "the dashboard data-layer builder (branch dashboard/recovery-2026-10-05)",
+    "commit": "22c27490c",
+    "content": "9f99fdac3d065458e4f497cccbc4e89e99fab85782ea23984f37407264dc7476",
+    "basis": "carried over from the explainer's text, not checked against the code"
+   }
+  },
+  {
+   "id": "SELF_PERCEPTION",
+   "kind": "model part",
+   "name": "self perception",
+   "does": "A learned estimate, per observed skin site and actuator group, of how well it functions now and of its change after a run of executed commands, trained on each body's own observations.",
+   "paths": [
+    {"file": "Source/Python/lem/model/self_state.py"},
+    {"file": "Source/Python/lem/model/self_rehearsal.py"},
+    {"file": "Source/Python/lem/model/spatial.py"},
+    {"file": "Source/Python/lem/model/spatial_self.py"},
+    {"file": "Source/Python/mimo_bridge/self_state_integration.py"},
+    {"file": "Source/Python/mimo_bridge/self_intention.py"},
+    {"file": "Source/Python/lem/body_function.py"},
+    {"file": "Source/Python/lem/model/homeostatic_planner.py"},
+    {"file": "Source/Python/lem/model/learning_opportunity.py"},
+    {"file": "Source/Python/mimo_bridge/opportunity_integration.py"}
+   ],
+   "blocks": ["node.self_state"],
+   "flags": [
+    "--self-state",
+    "--self-prediction",
+    "--self-percept-release",
+    "--self-choice",
+    "--self-choice-receipt",
+    "--body-function"
+   ],
+   "aliases": ["self state"],
+   "confirmed": {
+    "at": "Oct 5, 2026 2:39 AM PDT",
+    "by": "the dashboard data-layer builder (branch dashboard/recovery-2026-10-05)",
+    "commit": "22c27490c",
+    "content": "bffad66fe0eb138defca054bbdaaf179ed4712d30139ecfc226bb210be991641",
+    "basis": "carried over from the explainer's text, not checked against the code"
+   }
+  },
+  {
+   "id": "HIERARCHICAL_SELF",
+   "kind": "model part",
+   "name": "hierarchical self (levels 2 and 3 over slots)",
+   "does": "Tracks, per slot, whether the slot's presence goes with higher wellness over windows of 10,000 and 100,000 model steps, in dark mode (it changes no behaviour); it is off in this run.",
+   "paths": [
+    {"file": "Source/Python/mimo_bridge/hierarchical_self.py"},
+    {"file": "Source/Python/mimo_bridge/self_evidence.py"},
+    {"file": "Source/Python/mimo_bridge/lem_model.py", "functions": ["LemLite.hself_stats"]}
+   ],
+   "blocks": ["node.hself"],
+   "flags": ["--hierarchical-self", "--hself-slots"],
+   "aliases": [],
+   "confirmed": {
+    "at": "Oct 5, 2026 2:39 AM PDT",
+    "by": "the dashboard data-layer builder (branch dashboard/recovery-2026-10-05)",
+    "commit": "22c27490c",
+    "content": "39141f3c7ad815f6fd19b2355a0fe72d339479c94a590ac99eeedaa22c93ff74",
+    "basis": "carried over from the explainer's text, not checked against the code"
+   }
+  },
+  {
+   "id": "ENTITY_SELF",
+   "kind": "model part",
+   "name": "entity self (levels 2 and 3 over named things)",
+   "does": "Tracks, for each named thing of the world (the caregiver, a toy, the mobile), a presence number per body and whether its presence goes with higher wellness; a link that passes the evidence test may add --self-value-weight to a goal's value.",
+   "paths": [
+    {"file": "Source/Python/mimo_bridge/entity_self.py"},
+    {"file": "Source/Python/mimo_bridge/entity_presence.py"},
+    {"file": "Source/Python/mimo_bridge/self_value_reader.py"},
+    {"file": "Source/Python/mimo_bridge/self_evidence.py"},
+    {"file": "Source/Python/mimo_bridge/lem_model.py", "functions": ["LemLite._observe_entity_self", "LemLite.entity_self_stats"]}
+   ],
+   "blocks": ["node.entity_self"],
+   "flags": ["--entity-self", "--entity-self-teacher", "--self-value-weight", "--self-value-level", "--self-value-gate-windows"],
+   "aliases": [],
+   "confirmed": {
+    "at": "Oct 5, 2026 2:39 AM PDT",
+    "by": "the dashboard data-layer builder (branch dashboard/recovery-2026-10-05)",
+    "commit": "22c27490c",
+    "content": "c37940d18c8c0a20ef858893d86eb90b3b8fbcd6d8722712c8479bed541835b7",
+    "basis": "carried over from the explainer's text, not checked against the code"
+   }
+  },
+  {
+   "id": "CURRICULUM",
+   "kind": "model part",
+   "name": "curriculum (the growth schedule)",
+   "does": "Six phases from neonate to mature that set the limits applied to every command (strength from 2 to 100 of 100, position step from 2 cm to 40 cm), the delay before a command acts and the body's simulated age; this run starts in the mature phase.",
+   "paths": [
+    {"file": "Source/Python/lem/training/curriculum.py"},
+    {"file": "Source/Python/lem/training/harness.py"},
+    {"file": "Source/Python/lem/live_test.py", "functions": ["apply_developmental_constraints"]},
+    {"file": "Source/Python/mimo_bridge/lem_model.py", "functions": ["LemLite.dev_limits"]}
+   ],
+   "blocks": ["node.curriculum"],
+   "flags": ["--curriculum", "--steps-per-phase", "--start-phase", "--age-binding", "--delay-binding"],
+   "aliases": [],
+   "confirmed": {
+    "at": "Oct 5, 2026 2:39 AM PDT",
+    "by": "the dashboard data-layer builder (branch dashboard/recovery-2026-10-05)",
+    "commit": "22c27490c",
+    "content": "74e81edb6b2b6e89ca3d92a76626b62504c71186c765d32812f73d1c62a82481",
+    "basis": "carried over from the explainer's text, not checked against the code"
+   }
+  },
+  {
+   "id": "VOICE_HEAD",
+   "kind": "model part",
+   "name": "voice head",
+   "does": "A readout of the transformer's output that outputs 80 numbers between 0 and 1 per model step, built for the voice-box goal; no lesson trains it in this run.",
+   "paths": [
+    {"file": "Source/Python/lem/model/prediction_heads.py", "functions": ["VoiceHead"]}
+   ],
+   "blocks": ["node.voice"],
+   "flags": [],
+   "aliases": [],
+   "confirmed": {
+    "at": "Oct 5, 2026 2:39 AM PDT",
+    "by": "the dashboard data-layer builder (branch dashboard/recovery-2026-10-05)",
+    "commit": "22c27490c",
+    "content": "6f525ec8e6212e40474c8048fb94963cb5b026c66984f709a78095b0b538f173",
+    "basis": "carried over from the explainer's text, not checked against the code"
+   }
+  },
+  {
+   "id": "LATENT_BODY_SHADOW",
+   "kind": "model part",
+   "name": "latent body hierarchy (shadow)",
+   "does": "A separate predictive body hierarchy trained on the CPU beside the trainer from completed physical transitions; in shadow mode it reads the run's data and writes nothing the trainer or the body uses. Since Oct 10, 2026 (merge 5c66112eb) a run with --finger-joint-servo on names its own configuration, docs/gain_of_function_v4/latent_body_shadow_config_h84_finger_joint_servo_v1_2026-10-10.json, whose command contract is wrist_relative_joint_v1+finger_joint_servo_v1; at a resume, the transitions executed before the shadow's first model step under another contract are named in one excluded_transitions record and learned from by no lesson, and any later contract change still stops the shadow.",
+   "paths": [
+    {"file": "Source/Python/lem/latent_body/__init__.py"},
+    {"file": "Source/Python/lem/latent_body/checkpoint.py"},
+    {"file": "Source/Python/lem/latent_body/hierarchy.py"},
+    {"file": "Source/Python/lem/latent_body/learning.py"},
+    {"file": "Source/Python/lem/latent_body/losses.py"},
+    {"file": "Source/Python/lem/latent_body/model.py"},
+    {"file": "Source/Python/lem/latent_body/trajectory.py"},
+    {"file": "Source/Python/lem/latent_body/tree.py"},
+    {"file": "Source/Python/lem/planner/__init__.py"},
+    {"file": "Source/Python/lem/planner/latent_candidates.py"},
+    {"file": "Source/Python/lem/planner/latent_rollout.py"},
+    {"file": "Source/Python/mimo_bridge/latent_body_runtime.py"},
+    {"file": "Source/Python/mimo_bridge/latent_body_shadow.py"}
+   ],
+   "blocks": [],
+   "flags": ["--latent-body-hierarchy", "--latent-body-levels", "--latent-planner", "--latent-body-config"],
+   "aliases": [],
+   "confirmed": {
+    "at": "Oct 10, 2026 8:57 AM PDT",
+    "by": "the coordinator (Oct 10, 2026, after merge 5c66112eb)",
+    "commit": "76336d264",
+    "content": "1ecd1798d865aa8a8c457ce9bbe56e2031808d2dbd4aab93b2d3b4acd96022fc",
+    "basis": "checked against the code as follows: the independent review read the bundle's whole diff (BUNDLE_REVIEW.md: no training number changed; its processor runs of train_mimo.main with forced spike saves kept every saved number, random stream and episode state equal); every FIX was applied by the fix rounds; the coordinator read the fix rounds' lem_model.py and train_mimo.py changes (17beceab8..eec04fcc6) line by line, the gradient clip loop clipping every group as production's did; the processor equality probes at dadb7b76e read 0 of 313, 1,049 and 1,032 checkpoint leaves differing. The changed code adds guarded records and the latent shadow's resume boundary; the entry's sentence is unchanged unless extended above. The graphics-card lockstep row records_lockstep_481800 is the evidence still to run."
+   }
+  },
+  {
+   "id": "ACTING_SNAPSHOT",
+   "kind": "model part",
+   "name": "acting snapshot",
+   "does": "A frozen copy of the model that acts with its own encoders, recurrent state and random stream beside the continuing learner.",
+   "paths": [
+    {"file": "Source/Python/mimo_bridge/acting_snapshot.py"},
+    {"file": "Source/Python/mimo_bridge/decorated_acting_snapshot.py"},
+    {"file": "Source/Python/mimo_bridge/tools/actor_runtime.py"}
+   ],
+   "blocks": [],
+   "flags": ["--retire-acting-snapshot"],
+   "aliases": [],
+   "confirmed": {
+    "at": "Oct 5, 2026 2:39 AM PDT",
+    "by": "the dashboard data-layer builder (branch dashboard/recovery-2026-10-05)",
+    "commit": "22c27490c",
+    "content": "6c62ed4ac0a2b1cba86f0654961483ef497ab7249efb8e5ac6d7c4984a6f1586",
+    "basis": "carried over from the explainer's text, not checked against the code"
+   }
+  },
+  {
+   "id": "PREDICTION_AUDIT",
+   "kind": "model part",
+   "name": "prediction audit (the swap test)",
+   "does": "On audited model steps measures each prediction head: its error against the no-change error, and the own-command reading (the error with the body's own command against the error with another body's command of the same size).",
+   "paths": [
+    {"file": "Source/Python/mimo_bridge/prediction_audit.py"},
+    {"file": "Source/Python/mimo_bridge/lem_model.py", "functions": ["LemLite._swap_test_arms", "LemLite.token_temporal_std", "LemLite.token_temporal_std_bodies"]}
+   ],
+   "blocks": [],
+   "flags": [],
+   "aliases": [],
+   "confirmed": {
+    "at": "Oct 5, 2026 2:39 AM PDT",
+    "by": "the dashboard data-layer builder (branch dashboard/recovery-2026-10-05)",
+    "commit": "22c27490c",
+    "content": "6eed18a52d5bbee1f3cddd93a82cc7a229823bfb76255ee220e75d1bad0dc362",
+    "basis": "carried over from the explainer's text, not checked against the code"
+   }
+  },
+  {
+   "id": "TRAINER",
+   "kind": "tool",
+   "name": "trainer (the training loop)",
+   "does": "Steps the 8 worlds, runs one model step (LemLite.step) on their frames, applies the optimizer's update, sends the commands back to the worlds, and writes the stats records, the checkpoints and the replies to control.json.",
+   "paths": [
+    {"file": "Source/Python/mimo_bridge/train_mimo.py"},
+    {"file": "Source/Python/mimo_bridge/__init__.py"},
+    {"file": "Source/Python/lem/__init__.py"},
+    {"file": "Source/Python/lem/model/__init__.py"},
+    {"file": "Source/Python/lem/training/__init__.py"},
+    {"file": "Source/Python/lem/config/__init__.py"},
+    {"file": "Source/Python/lem/config/defaults.py"},
+    {"file": "Source/Python/lem/config/loader.py"},
+    {"file": "Source/Python/lem/config/resolver.py"},
+    {"file": "Source/Python/lem/config/validator.py"},
+    {"file": "Source/Python/lem/reporting.py"},
+    {"file": "Source/Python/lem/model/receipt.py"},
+    {"file": "Source/Python/mimo_bridge/machine_stats.py"},
+    {"file": "Source/Python/mimo_bridge/transition.py"},
+    {"file": "Source/Python/mimo_bridge/lem_model.py", "functions": ["build_config", "StepResult", "core_shape_mismatch", "traceback_short", "LemLite.__init__", "LemLite.step", "LemLite._side_modules", "LemLite.load_checkpoint", "LemLite.save_checkpoint", "<rest>"]}
+   ],
+   "blocks": [],
+   "flags": [
+    "--device",
+    "--seed",
+    "--max-steps",
+    "--minutes",
+    "--report-every",
+    "--resume",
+    "--out",
+    "--reinit",
+    "--fresh-optimizer",
+    "--eval-only",
+    "--tag"
+   ],
+   "aliases": [],
+   "confirmed": {
+    "at": "Oct 28, 2026 1:47 PM PDT",
+    "by": "the builder (release copy)",
+    "commit": "no commit",
+    "content": "53bbb0386a7ddb815a59c636ee751a1c3fc02907ef950cad27c3b81cdd03eb21",
+    "basis": "Release-only edit checked (Oct 24, 2026): mimo_bridge/__init__.py installs repo_paths, which reads the paths recorded on the development machine from the checkout; no training computation changed. The rest of the mapped code is the development repository's at 9916126d1 with a copyright line added; the entry's description stands."
+   }
+  },
+  {
+   "id": "CHECKPOINTS",
+   "kind": "tool",
+   "name": "checkpoints and their storage",
+   "does": "Saves and loads the model's weights, the optimizer state, the runtime state and each world's episode state, keeps the registered checkpoints within a disk budget, and moves older ones from C: to D:; a load refuses a checkpoint whose receipt's saved inventory (checkpoint_inventory, written at every save) disagrees with the saved tensors' names, shapes or dtypes or with the saved step, or, when the optimizer state is loaded too, with the optimizer's parameter groups and parameter count.",
+   "paths": [
+    {"file": "Source/Python/lem/training/checkpoint.py"},
+    {"file": "Source/Python/lem/training/retention.py"},
+    {"file": "Source/Python/mimo_bridge/continuation_state.py"},
+    {"file": "Source/Python/mimo_bridge/episode_archive.py"},
+    {"file": "Source/Python/mimo_bridge/storage_locations.py"},
+    {"file": "Source/Python/mimo_bridge/tools/archive_checkpoints.py"},
+    {"file": "Source/Python/mimo_bridge/tools/offload_storage.py"}
+   ],
+   "blocks": [],
+   "flags": ["--checkpoint-every-min", "--checkpoint-storage", "--episode-continuation"],
+   "aliases": [],
+   "confirmed": {
+    "at": "Oct 13, 2026 2:27 AM PDT",
+    "by": "manifest repair agent, Oct 13, 2026",
+    "commit": "64ee28971",
+    "content": "ce822fe2219e971a077d62c50393979515b0478d49a3185730ed1661682c938c",
+    "basis": "checked against the code change only: ca77bb8d0 (the only commit since 02dbf33be that changed the mapped code) added _validate_saved_inventory to lem/training/checkpoint.py and calls it in CheckpointManager.load (which LemLite.load_checkpoint uses) after the state is read: a receipt carrying checkpoint_inventory (schema saved_module_inventory_v1, written by _save_receipt at every save) must match the payload's tensor names, shapes and dtypes and its step, and, when the optimizer state is loaded too, the optimizer's parameter groups, state ids and parameter tensor count, or the load raises; a receipt without an inventory loads as before; the sentence gains this refusal; retention.py, continuation_state.py, episode_archive.py, storage_locations.py, archive_checkpoints.py and offload_storage.py are unchanged."
+   }
+  },
+  {
+   "id": "OBSERVER",
+   "kind": "tool",
+   "name": "developmental observer's recorder",
+   "does": "Records the world's measured state and the learner's predictions per model step for the developmental observer, and the labels drawn into saved footage; nothing it records is an input of the learner. Since Oct 10, 2026 (mimo_bridge/comparison_records.py, merge 5c66112eb) it also writes the comparison records: per model step and body the persistence error and vision's error without the gaze copy, in the model lane; per model step the gradient norms before the clip; per replay pass its losses, norms and windows; at a vision spike (one body above the declared line on 3 consecutive model steps, at most 3 events per launch) that transition's inputs and the weights after the update, in a folder no retention rule removes; nothing it records is an input of the learner, and every record computation is guarded so a failure is counted, never raised.",
+   "paths": [
+    {"file": "Source/Python/mimo_bridge/observer_model_lane.py"},
+    {"file": "Source/Python/mimo_bridge/observer_record.py"},
+    {"file": "Source/Python/mimo_bridge/video_control.py"},
+    {"file": "Source/Python/mimo_bridge/comparison_records.py"}
+   ],
+   "blocks": [],
+   "flags": [
+    "--observer",
+    "--observer-chunk-steps",
+    "--observer-images-every-min",
+    "--observer-budget-gb",
+    "--observer-reserve-gb",
+    "--video-every-min",
+    "--video-seconds"
+   ],
+   "aliases": [],
+   "confirmed": {
+    "at": "Oct 10, 2026 8:57 AM PDT",
+    "by": "the coordinator (Oct 10, 2026, after merge 5c66112eb)",
+    "commit": "76336d264",
+    "content": "297576c316e099b037ebf83d06bc1babe986d65d809add624b4e3400db20804a",
+    "basis": "checked against the code as follows: the independent review read the bundle's whole diff (BUNDLE_REVIEW.md: no training number changed; its processor runs of train_mimo.main with forced spike saves kept every saved number, random stream and episode state equal); every FIX was applied by the fix rounds; the coordinator read the fix rounds' lem_model.py and train_mimo.py changes (17beceab8..eec04fcc6) line by line, the gradient clip loop clipping every group as production's did; the processor equality probes at dadb7b76e read 0 of 313, 1,049 and 1,032 checkpoint leaves differing. The changed code adds guarded records and the latent shadow's resume boundary; the entry's sentence is unchanged unless extended above. The graphics-card lockstep row records_lockstep_481800 is the evidence still to run."
+   }
+  },
+  {
+   "id": "PREFLIGHT",
+   "kind": "tool",
+   "name": "preflight checks",
+   "does": "Effect probes that run from a run's launch settings before the run is trusted, and the sensor and action contract checks; a failed check stops the launch unless --allow-preflight-fail is set. The training preflight (tools/training_preflight.py, the seven gates) takes a launch command, computes its configuration fingerprint (the first 16 hexadecimal characters of the SHA-256 of its launch flags other than the run flags, the hashes of the files those flags name and the trainer code's hash from lem/trainer_code.py), reads that fingerprint's record docs/gain_of_function_v4/preflight/<fingerprint>.json, and through launch_refusal returns None when the launch may start (every gate PASS, or N/A with a reason and evidence, and the --resume checkpoint continues a model state the record names; or the start of the record's unused repair run, continuation, fresh instance or extension, whose conditions all hold) and otherwise the text that names each blocking gate or condition; the relaunch script calls it before it ends or starts anything, and since commit ca77bb8d0 the training supervisor calls it on every automatic resume command.",
+   "paths": [
+    {"file": "Source/Python/mimo_bridge/tools/preflight.py"},
+    {"file": "Source/Python/mimo_bridge/tools/sensor_action_contract_check.py"},
+    {"file": "Source/Python/mimo_bridge/tools/training_preflight.py"}
+   ],
+   "blocks": [],
+   "flags": ["--allow-preflight-fail"],
+   "aliases": [],
+   "confirmed": {
+    "at": "Oct 13, 2026 2:27 AM PDT",
+    "by": "manifest repair agent, Oct 13, 2026",
+    "commit": "64ee28971",
+    "content": "6bd2432e1666e5538aa646b5bd560cca37c7d0716141b4ff0f464bde03b552f1",
+    "basis": "checked against the code: Source/Python/mimo_bridge/tools/training_preflight.py joined this entry's paths; it is model code by the manifest's rule since ca77bb8d0, whose resume_launch_refusal in tools/training_continuation.py imports its launch_refusal (train_mimo.py imports training_continuation for atomic_json and write_stage_done); its module text, configuration, launch_plan and launch_refusal were read and the sentence gains the training preflight; the defect register already files training preflight defects (PREFLIGHT_FINGERPRINT_HASHES_PYTEST_CACHE, PREFLIGHT_EXPERIMENT_ROUTE_GAPS) under this component; the first sentence was checked against preflight.py's module text and train_mimo.py's launch refusal without --allow-preflight-fail; sensor_action_contract_check.py was not read."
+   }
+  },
+  {
+   "id": "MEMORY_GUARD",
+   "kind": "tool",
+   "name": "memory guard",
+   "does": "Reads Windows' commit charge and commit limit and refuses heavy work when the stated need would leave less than the reserve.",
+   "paths": [
+    {"file": "Source/Python/mimo_bridge/tools/commit_guard.py"}
+   ],
+   "blocks": [],
+   "flags": [],
+   "aliases": [],
+   "confirmed": {
+    "at": "Oct 5, 2026 2:39 AM PDT",
+    "by": "the dashboard data-layer builder (branch dashboard/recovery-2026-10-05)",
+    "commit": "22c27490c",
+    "content": "8152ad116e778e374ee475f60c4316342bcf622e8ce747005e8583077f19fbe8",
+    "basis": "carried over from the explainer's text, not checked against the code"
+   }
+  },
+  {
+   "id": "TRAINING_SUPERVISOR",
+   "kind": "tool",
+   "name": "training supervisor",
+   "does": "A process beside the trainer (mimo_bridge/tools/training_continuation.py, supervise) that records the trainer's exact command and every 15 seconds: keeps one checkpoint archiver, one ability-recheck scheduler and one developmental-observer digester running; while the run's trainer lives, starts the run's hourly watcher when none runs and either pause_reason finds no pause (supervisor_control.json is absent or holds {\"cmd\": \"run\"}, since a file that cannot be read, an archiver setting without a cmd and any cmd other than run read as a pause; the run's stop_reason.json, when present, can be read and does not ask for repair; and every consumed control file of the run can be read and none is a stop or snapshot_and_stop without \"auto_resume\": true) or supervisor_control.json is the pause the relaunch script writes for a repair run naming this run ({\"cmd\": \"pause\", \"repair_run\": <run folder>}) and the run has no stop_reason.json; after the trainer exits, builds the next command (the newest complete checkpoint whose weights are finite and whose optimizer state is present as --resume, a new run folder as --out) and launches it, unless pause_reason finds a pause, another trainer runs, three starts reached no newer checkpoint, the same checkpoint was resumed from before, or the training preflight's launch_refusal (PREFLIGHT, tools/training_preflight.py) refuses that command, in which case the supervisor writes the refusal's text into its state file as preflight_refusal and creates no run folder.",
+   "paths": [
+    {"file": "Source/Python/mimo_bridge/tools/training_continuation.py"},
+    {"file": "Source/Python/mimo_bridge/tools/native_proof_role.py"}
+   ],
+   "blocks": [],
+   "flags": [],
+   "aliases": [],
+   "confirmed": {
+    "at": "Oct 13, 2026 2:27 AM PDT",
+    "by": "manifest repair agent, Oct 13, 2026",
+    "commit": "64ee28971",
+    "content": "9ad136408962a2da85c5d52c91a9945d995376afced5da067154387b2e99e58d",
+    "basis": "checked against the code: ca77bb8d0 (the only commit since 054f1c2b9 that changed training_continuation.py; native_proof_role.py is unchanged) changed pause_reason (supervisor_control.json read as utf-8-sig, any cmd other than run or pause reads as a pause, a stop_reason.json or consumed control that is not an object reads as a pause, auto_resume must be exactly true) and supervise (resume_launch_refusal passes the next command to training_preflight.launch_refusal before the run folder is made; a refusal is written into the state file as preflight_refusal and nothing is launched); pause_reason, repair_run_pause, resume_launch_refusal and supervise were read whole; the sentence's no-pause condition and its list of refusals were corrected."
+   }
+  },
+  {
+   "id": "ABILITY_SCHEDULER",
+   "kind": "tool",
+   "name": "ability scheduler",
+   "does": "Runs each declared ability check on a saved checkpoint when its step is due or one of its declared triggers fires, one check at a time, pausing training in a saved window when a check needs the memory, and writes each round's receipt and its test registry row. For a check whose script takes the hand calibration (the remembered hand-goal comparison's --calibration), it passes the file whose bytes the checkpoint's receipt names: the manifest's file when it is that one, else the file the checkpoint's run launched with when its bytes and payload hash are the receipt's, else the manifest's file.",
+   "paths": [
+    {"file": "Source/Python/mimo_bridge/tools/ability_rechecks.py"},
+    {"file": "Source/Python/mimo_bridge/tools/ability_comparison_window.py"}
+   ],
+   "blocks": [],
+   "flags": [],
+   "aliases": [],
+   "confirmed": {
+    "at": "Oct 9, 2026 3:41 AM PDT",
+    "by": "the coordinator (Oct 9, 2026, after merge c88d82eef)",
+    "commit": "c88d82eef",
+    "content": "615e9fa5313e3b93dad24fdaf2df59c09bdbc88d05989964e4086f5899f82f69",
+    "basis": "checked against the code: ability_rechecks.py's added lines (CHECKPOINT_CALIBRATION_ARGUMENTS names compare_hand_memory_route_2026-09-24.py's --calibration; checkpoint_calibration reads the checkpoint's model_receipt.json hand_response.calibration_file_sha256 and never raises; path_arguments takes the checkpoint from task_command), read by the coordinator in git diff 922e1035c c88d82eef; the sentence gains the calibration rule; evidence: test_ability_rechecks_hand_calibration.py in the branch's tests; independent review D:/UEMA_Research/external/D/UEMA_scratch/plan_review/LAUNCH_PREREQUISITES_REVIEW.md and its re-check (finding F1 holds; the branch may merge once M1 is done in the merge)."
+   }
+  },
+  {
+   "id": "WATCH_PROGRAMS",
+   "kind": "tool",
+   "name": "watch programs",
+   "does": "Scripts that run beside training, read the run's stats file on a schedule and, when a declared stop rule's line is crossed, write snapshot_and_stop to the run's control.json and a pause to the supervisor's control file. A stop line can be read as an alert for named runs: the heads' all-slot paths' line M3 for the attention cap experiment's control run 2 and cap arm, and for the one remembered-hand continuation from checkpoint 484,675 to model step 489,350 (the operator's decision of Oct 11, 2026, 1:57 PM PDT) (hourly_watch.HEADS_ALL_SLOT_PATH_ALERT_RUNS read by heads_all_slot_path_alerts: the first entry whose resume tail and max_steps both match the run's args.json; motor_asked_change_watch.ALERT_INSTEAD_OF_STOP); each such alert's id names the judged run, so two runs under one switch crossing at one model step each record and print their own. The planner monitor holds the hand stage to the hand calibration payload its planner contract names, followed through each replacement that the run's own trainer admitted and recorded (a stats record matching the run's --replace-saved-hand-calibration and --resume, or the resumed checkpoint's receipt list ending at the calibration that checkpoint saved); any other replacement record stops the run.",
+   "paths": [
+    {"file": "docs/h84_launch_2026-09-18/hourly_watch.py"},
+    {"file": "docs/gain_of_function_v4/heads_all_slot_path_watch.py"},
+    {"file": "docs/gain_of_function_v4/motor_asked_change_watch.py"},
+    {"file": "docs/gain_of_function_v4/motor_fixes_watch.py"},
+    {"file": "docs/gain_of_function_v4/coordinator/memory_watch_loop.py"},
+    {"file": "docs/gain_of_function_v4/coordinator/self_percept_watch_loop.py"},
+    {"file": "docs/gain_of_function_v4/vestibular_input_path_watch.py"}
+   ],
+   "blocks": [],
+   "flags": [],
+   "aliases": [],
+   "confirmed": {
+    "at": "Oct 11, 2026 3:39 PM PDT",
+    "by": "the coordinator (Oct 11, 2026, after 5461acb35, the operator's authorization step 2)",
+    "commit": "8989c0ea9",
+    "content": "05c469ea7484c2836efa2bdd6c376ef13ab9963f1826ad16fec4408efbfe5921",
+    "basis": "checked against the code: git diff c88d82eef HEAD of docs/h84_launch_2026-09-18/hourly_watch.py, the only mapped file changed (18 lines added, 4 removed): REMEMBERED_HAND_CONTINUATION (resume tail seg41j_1526/checkpoints/ckpt_step_484675, max_steps 489350, alert M3 with the operator's decision of Oct 11, 2026, 1:57 PM PDT), HEADS_ALL_SLOT_PATH_ALERT_RUNS = (CAP_EXPERIMENT_LATER_ARMS, REMEMBERED_HAND_CONTINUATION), heads_all_slot_path_alerts returning the first matching entry's alerts; the sentence gains the continuation; evidence: test_heads_all_slot_path_watch.py 36 of 36 (the alert-run table: this tail with 489350 alert; with 484675, 0, the 484600 tail, the cap tail with 489350 stop; the cap tail with 484675 alert); the edit is apply_m3_alert.py as reviewed (M3_DECISION_REVIEW.md, m3_alert_proposal.md)"
+   }
+  },
+  {
+   "id": "TEST_REGISTRY",
+   "kind": "tool",
+   "name": "test registry and its runner",
+   "does": "One row per test in docs/gain_of_function_v4/test_registry.json, written before the test runs; the runner refuses a job without a complete row, writes the run's start and its end (PASS, FAIL, INVALID or STOPPED with the next action), and the audit compares every live test process with the running rows.",
+   "paths": [
+    {"file": "Source/Python/mimo_bridge/tools/test_registry.py"},
+    {"file": "Source/Python/mimo_bridge/tools/test_runner.py"},
+    {"file": "docs/gain_of_function_v4/run_in_training_pause.py"},
+    {"file": "docs/gain_of_function_v4/coordinator/run_jobs_in_held_pause.py"},
+    {"file": "docs/gain_of_function_v4/motor_encoder_asked_change_registry.py"}
+   ],
+   "blocks": [],
+   "flags": [],
+   "aliases": [],
+   "confirmed": {
+    "at": "Oct 5, 2026 12:53 PM PDT",
+    "by": "the dashboard fix agent (branch dashboard/recovery-2026-10-05)",
+    "commit": "e159b4d69",
+    "content": "9d5065830f11ac9187dec508ab9242ce72fea764b113cbb6182b1eb788d36db1",
+    "basis": "checked against the code: the dashboard review's fixes of Oct 5, 2026 read by the fix agent: test_registry.py: refusal() now holds the row's block and the defect register's 24-hour rule for every runner (F3); finish_job() seals the digest of the result it writes and the record of the result file written during the run, read by runner_result() and runner_file() (B2, F4); job_started() records the time limit a run used (L2); dashboard_view() carries the audit's warnings (F10); test_runner.py: segment_finish() only for a production segment (F4), unsealed_judgement() (F5), the audit's sentence and warnings (F10), writing_end_over() (L1), holds_run() (L3), timeout_refusal() (L2); run_in_training_pause.py: its refusal status text"
+   }
+  },
+  {
+   "id": "DASHBOARD",
+   "kind": "tool",
+   "name": "development dashboard",
+   "does": "A local web server that reads the run's records, the test registry, the component manifest and the defect register on every request and serves them as JSON routes under /api and as pages: the machine mode under the tabs, the gain-of-function scoreboard and the GOF-BLOCKER defects first in line at the top, the Tests page in seven sections with one card per row (its diagram and its link to the component's popup), the Terms and definitions tab, and above the Tests page's sections each root-cause investigation as a live process-of-elimination diagram whose boxes are computed from the test registry's rows (GET /api/investigations).",
+   "paths": [
+    {"file": "Source/Python/mimo_bridge/tools/development_dashboard.py"},
+    {"file": "Source/Python/mimo_bridge/tools/development_dashboard.js"},
+    {"file": "Source/Python/mimo_bridge/tools/development_dashboard.html"},
+    {"file": "Source/Python/mimo_bridge/tools/development_dashboard.css"},
+    {"file": "Source/Python/mimo_bridge/tools/development_dashboard_terms.js"},
+    {"file": "Source/Python/mimo_bridge/tools/component_manifest.py"},
+    {"file": "Source/Python/mimo_bridge/tools/defect_register.py"},
+    {"file": "Source/Python/mimo_bridge/tools/machine_mode.py"},
+    {"file": "Source/Python/mimo_bridge/tools/gof_scoreboard.py"},
+    {"file": "Source/Python/mimo_bridge/tools/recovery_api.py"},
+    {"file": "Source/Python/mimo_bridge/tools/write_watch.py"},
+    {"file": "Source/Python/mimo_bridge/tools/elimination.py"},
+    {"file": "Source/Python/mimo_bridge/tools/elimination_diagram.js"},
+    {"file": "Source/Python/mimo_bridge/tools/elimination_diagram.css"}
+   ],
+   "blocks": [],
+   "flags": [],
+   "aliases": [],
+   "confirmed": {
+    "at": "Oct 13, 2026 4:48 AM PDT",
+    "by": "dashboard hours agent, Oct 13, 2026",
+    "commit": "0b42291c0",
+    "content": "49fa3da6321ba3325e8ee93ae06ef66bcf832a4479a136f1a22b7a56f7382fec",
+    "basis": "checked against the code: machine_mode.py (commit 0b42291c0) counts a mimo_bridge.train_mimo process that names no production run folder as TRAINING when a test registry row names its run folder (the folder after --out in the row's recorded command, or its last run's log file's folder) or records it as its job process, with the sentence naming the experiment run, its row and its run folder; a trainer process no row names leaves the mode unchanged and is listed as an error. week() adds the lives of the run folders rows name as experiment runs: TRAINING is the union of production and experiment lives, with training_split {production, experiment}, experiment_runs, and each pause's experiment_training_hours removed from its PAUSED FOR OPERATOR share. development_dashboard.js shows the split in the week legend (TRAINING H hours (production P, experiment E)), the experiment runs in its title, each pause's experiment training hours, and the experiment sentence in the mode strip. The entry's description (the machine mode under the tabs, the JSON routes, the pages) still holds; the other mapped files are unchanged."
+   }
+  },
+  {
+   "id": "EXPLAINER",
+   "kind": "tool",
+   "name": "explainer (How the model works)",
+   "does": "Captures one snapshot of a model step (what each sense delivered, the attention, the predictions, the command) and builds the page Saved/mimo_bridge/explainer.html, whose Architecture tab draws one box per part with its text from mimo_bridge/explainer/schema.py and, in each box's popup and at the address #component=ID, the components of the component manifest with their switch state, last code change, last independent QA, QA STALE, open defects and linked tests; and, in a panel under the drawing and at the address #investigation=ID, the same process-of-elimination diagrams as the dashboard's Tests page.",
+   "paths": [
+    {"file": "Source/Python/mimo_bridge/explainer/__init__.py"},
+    {"file": "Source/Python/mimo_bridge/explainer/capture.py"},
+    {"file": "Source/Python/mimo_bridge/explainer/schema.py"},
+    {"file": "Source/Python/mimo_bridge/explainer/writer.py"},
+    {"file": "Source/Python/mimo_bridge/explainer/walkthrough.py"},
+    {"file": "Source/Python/mimo_bridge/explainer/refresh.py"},
+    {"file": "Source/Python/mimo_bridge/explainer/current_state.py"},
+    {"file": "Source/Python/mimo_bridge/explainer/viewer.js"},
+    {"file": "Source/Python/mimo_bridge/explainer/viewer.css"},
+    {"file": "Source/Python/mimo_bridge/tools/build_explainer.py"},
+    {"file": "Source/Python/mimo_bridge/tools/check_explainer_page.py"},
+    {"file": "Source/Python/mimo_bridge/tools/elimination_diagram.js"},
+    {"file": "Source/Python/mimo_bridge/tools/elimination_diagram.css"}
+   ],
+   "blocks": [],
+   "flags": ["--explain-every-min", "--explain-steps", "--explain-body", "--explain-keep-mb"],
+   "aliases": [],
+   "confirmed": {
+    "at": "Oct 9, 2026 7:03 AM PDT",
+    "by": "the overseer explainer owner",
+    "commit": "ed013c6dd",
+    "content": "d11fc03bbcdafd81610f9a8ddf591054ff18ca4a41e9d62318108fb24590e6fb",
+    "basis": "checked against the code (the words after this colon are the the overseer explainer owner's of Oct 9, 2026; this opening was added on Oct 13, 2026 by the manifest repair agent to give the basis the manifest's required form, and the stamp's time, author, commit and code hash were left as they were): Read the complete overnight review, reconciled its findings, and reviewed the final explanation code: schema.py concrete wellness inputs/calculations, source/spec differences and run-specific learning text; viewer.js remembered-goal loop, wellness diagram, training/replay settings and frozen actor labels; walkthrough.py and build_explainer.py related explanations; dashboard glossary equal to the source-qualified tactile definition. The existing component descriptions and path mappings still hold. Four capture flags are declared at train_mimo.py --explain-every-min/--explain-steps/--explain-body/--explain-keep-mb. Independent source and screenshot review: docs/explainer_wellness_2026-10-08/independent_completion_review_20261009.txt. Registered regression/browser receipts: docs/explainer_completion_2026-10-09/."
+   }
+  },
+  {
+   "id": "REPLY_CHECKS",
+   "kind": "tool",
+   "name": "reply and document checks",
+   "does": "Hooks that read each reply and each written document before it is accepted and refuse banned wording, numbers without a source in the turn, time estimates, a forbidden alias of the component manifest and a status whose state is not one of the eight repair states.",
+   "paths": [
+    {"file": ".agent/hooks/reply_lint.py"},
+    {"file": ".agent/hooks/worklog_time_check.py"},
+    {"file": ".agent/hooks/claim_check.py"}
+   ],
+   "blocks": [],
+   "flags": [],
+   "aliases": [],
+   "confirmed": {
+    "at": "Oct 5, 2026 1:13 PM PDT",
+    "by": "the dashboard fix agent (branch dashboard/recovery-2026-10-05)",
+    "commit": "6d4ee6065",
+    "content": "ea0e79b46fa6ac4cf7c18b680c6a58821a5f767e994d6b9b366df866937364f1",
+    "basis": "checked against the code: the dashboard review's fixes of Oct 5, 2026 read by the fix agent: reply_lint.py: a state or status word in any letter case after an id, \"fixed\" beside an id the register does not hold at VERIFIED, and a quote exempt only with a speaker or a naming word before it (F6); an alias marked with its canonical ids passes with marked_ok, for a page's data text (F7); then the rule for \"fixed\" reads the id in its own capitals and \"fixed\" as its predicate (\"ID is fixed\", \"ID fixed the ...\"), so a technical \"held fixed\" beside an id is not a status (the live check's finding of 1:12 PM PDT)"
+   }
+  },
+  {
+   "id": "PREDICTOR_REPAIR",
+   "kind": "repair",
+   "name": "predictor repair (the all-slot path beside each prediction head)",
+   "does": "Adds, beside every prediction head's attention, a path that reads all six input slots (32 numbers per slot) and adds its output to the head's prediction, so that each head's lesson reaches the transformer through every slot.",
+   "paths": [
+    {"file": "Source/Python/lem/model/heads_all_slot_path.py"},
+    {"file": "Source/Python/lem/model/prediction_heads.py", "functions": ["PredictionHeads._all_slot_outputs"]},
+    {"file": "Source/Python/mimo_bridge/lem_model.py", "functions": ["LemLite.heads_all_slot_path_report"]}
+   ],
+   "blocks": ["node.heads"],
+   "flags": ["--heads-all-slot-path"],
+   "switch": {"flag": "--heads-all-slot-path", "on": ["on"]},
+   "wiring": ["heads_all_slot_path", "heads-all-slot-path"],
+   "aliases": ["head repair", "heads repair", "prediction head repair", "candidate 2"],
+   "confirmed": {
+    "at": "Oct 13, 2026 2:27 AM PDT",
+    "by": "manifest repair agent, Oct 13, 2026",
+    "commit": "64ee28971",
+    "content": "fd0072894a066238dc91a3c6d929e8a6be6bcf34e95e6d1c001bac08f6e01e55",
+    "basis": "checked against the code change only: ca77bb8d0 (the only commit since 76336d264 that changed the mapped code or its wiring) changed the wiring part LemLite.load_checkpoint only in the runtime-state restore's exception handler, which now raises a RuntimeError where it logged the warning 'runtime state partially restored'; the lines that read and check the heads_all_slot_path stamp and record its switch are unchanged; the entry's text still holds."
+   }
+  },
+  {
+   "id": "TACTILE_OFFSET_FIX",
+   "kind": "repair",
+   "name": "tactile offset fix (a separate vector on imagined rows)",
+   "does": "Adds one fixed vector per prediction head that is used on the imagination chain's rows only and trained by the chain only, zero at its switch, so that the chain's constant offset stays out of the lived prediction.",
+   "paths": [
+    {"file": "Source/Python/lem/model/heads_all_slot_path.py"}
+   ],
+   "ref": "restart/candidate-heads2-2026-10-04",
+   "blocks": ["node.heads"],
+   "flags": ["--heads-all-slot-path"],
+   "switch": {"flag": "--heads-all-slot-path", "on": ["imagined_offset"]},
+   "wiring": ["heads_all_slot_path", "heads-all-slot-path", "imagined_offset"],
+   "aliases": ["extra tactile fix", "tactile fix", "candidate 3"],
+   "confirmed": {
+    "at": "Oct 5, 2026 12:53 PM PDT",
+    "by": "the dashboard fix agent (branch dashboard/recovery-2026-10-05)",
+    "commit": "0af08c8b2",
+    "content": "357aab2c2a9c3fc78e07c1a52938347245aa67c4e536927a4c1ed5ff289a2753",
+    "basis": "carried over from the explainer's text, not checked against the code; Oct 5, 2026: the definitions of the trainer's code that hold its wiring texts (heads_all_slot_path, heads-all-slot-path, imagined_offset) joined its parts (the dashboard review's finding F14): 12 definitions at the tip of restart/candidate-heads2-2026-10-04 (prediction_heads.py::PredictionHeads._all_slot_outputs, predictive_state.py::transition, lem_model.py::LemLite.__init__, lem_model.py::LemLite._clip_training_gradients, lem_model.py::LemLite._side_modules, lem_model.py::LemLite.heads_all_slot_path_report, lem_model.py::LemLite.load_checkpoint, lem_model.py::LemLite.step, train_mimo.py::acting_configuration, train_mimo.py::build_learner, train_mimo.py::main, train_mimo.py::parse_args), listed by the wiring scan and checked by the fix agent to name the repair's switch or attribute"
+   }
+  },
+  {
+   "id": "HEAD_TILT_REPAIR",
+   "kind": "repair",
+   "name": "head-tilt repair (the vestibular input path)",
+   "does": "With --vestibular-input-path on or on_delayed_encoder_only, per body and model step the vestibular encoder's 28 input numbers (each minus its running mean, divided by its running spread, clipped to -4 to +4) pass through one Linear(28 -> 192) without bias, times 1/sqrt(28); the result u is added to the encoder's last-layer output v as v + s x u, s being the standard deviation of v over its 192 numbers, before the shared normalization (one forward hook on the encoder). The weight is zero at the switch, so the first tokens equal those without the path. On a training model step's live call, when the largest row's u has a root mean square above three tenths, the whole weight is multiplied by three tenths over that size; on every call a row whose u is above three tenths is scaled back to three tenths. Under on the delayed next-model-step lesson trains neither the encoder's own layers nor the path (the previous row's vestibular token enters it without gradient); under on_delayed_encoder_only it trains the encoder's layers and not the path. Its purpose: a token that carries head tilt, which the trained encoder's last layer does not pass on.",
+   "paths": [
+    {"file": "Source/Python/lem/model/vestibular_input_path.py"}
+   ],
+   "blocks": ["node.enc.vestibular"],
+   "flags": ["--vestibular-input-path"],
+   "switch": {"flag": "--vestibular-input-path", "on": ["on", "on_delayed_encoder_only"]},
+   "wiring": ["vestibular_input_path", "vestibular-input-path"],
+   "aliases": ["head repair", "head tilt fix", "tilt fix", "vestibular token repair"],
+   "confirmed": {
+    "at": "Oct 13, 2026 2:27 AM PDT",
+    "by": "manifest repair agent, Oct 13, 2026",
+    "commit": "64ee28971",
+    "content": "8b613d9c96b2d320f9214defbbfc908795318cbfd1d31d959e66020be4a00ce0",
+    "basis": "checked against the code change only: ca77bb8d0 (the only commit since 76336d264 that changed the mapped code or its wiring) changed the wiring part LemLite.load_checkpoint only in the runtime-state restore's exception handler, which now raises a RuntimeError where it logged the warning 'runtime state partially restored'; the lines that read and check the vestibular_input_path stamp and its cap and record its switch are unchanged; the entry's text still holds."
+   }
+  },
+  {
+   "id": "HEAD_TILT_REPAIR_1",
+   "kind": "repair",
+   "name": "first head-tilt repair (the vestibular encoder's rescale and restart)",
+   "does": "At the first load of a checkpoint whose vestibular encoder's last-layer bias has a spread above 1,000, divides that layer by the largest power of two that keeps its bias's spread at or above the floor the shared normalization needs, and drops the encoder's Adam state so that Adam restarts it; the tokens stay the same.",
+   "paths": [
+    {"file": "Source/Python/mimo_bridge/vestibular_sense.py", "functions": ["repair_encoder", "repair_message"]},
+    {"file": "Source/Python/mimo_bridge/lem_model.py", "functions": ["LemLite._vestibular_encoder_repair_on_load", "LemLite._vestibular_encoder_repair_after_runtime"]}
+   ],
+   "blocks": ["node.enc.vestibular"],
+   "flags": ["--vestibular-encoder-repair"],
+   "switch": {"flag": "--vestibular-encoder-repair", "on": ["rescale_restart"]},
+   "wiring": ["vestibular_encoder_repair", "vestibular-encoder-repair"],
+   "aliases": ["vestibular encoder repair", "rescale restart"],
+   "confirmed": {
+    "at": "Oct 13, 2026 2:27 AM PDT",
+    "by": "manifest repair agent, Oct 13, 2026",
+    "commit": "64ee28971",
+    "content": "322c3f759fe7eb81bc30fe127a07321d385dfbec58b67fac8d7b6cdefc4fe3bb",
+    "basis": "checked against the code change only: ca77bb8d0 (the only commit since 76336d264 that changed the mapped code or its wiring) changed the wiring part LemLite.load_checkpoint only in the runtime-state restore's exception handler, which now raises a RuntimeError where it logged the warning 'runtime state partially restored', and the wiring part LemLite.replay_update only by marking the forward model's embedding cache stale after optimizer.step(); the calls of _vestibular_encoder_repair_on_load and _vestibular_encoder_repair_after_runtime and the re-study's revival ceiling and lesson weight are unchanged; the entry's text still holds."
+   }
+  },
+  {
+   "id": "MOTOR_ENCODER_REPAIR",
+   "kind": "repair",
+   "name": "motor encoder repair (the asked change as an input)",
+   "does": "Gives the motor encoder the asked change (per body handle, the executed command minus the achieved pose) as an explicit input so that the motor token carries it.",
+   "paths": [
+    {"file": "Source/Python/lem/model/motor_asked_change.py"}
+   ],
+   "blocks": ["node.enc.motor"],
+   "flags": ["--motor-asked-change"],
+   "switch": {"flag": "--motor-asked-change", "on": ["on"]},
+   "wiring": ["motor_asked_change", "motor-asked-change"],
+   "aliases": ["asked-change repair", "motor repair"],
+   "confirmed": {
+    "at": "Oct 13, 2026 2:27 AM PDT",
+    "by": "manifest repair agent, Oct 13, 2026",
+    "commit": "64ee28971",
+    "content": "a2a14e9d2c7150ee50747e5346ba30cdd432f57eb7ae2397c0b56f5d8efe606c",
+    "basis": "checked against the code change only: ca77bb8d0 (the only commit since 76336d264 that changed the mapped code or its wiring) changed the wiring part LemLite.load_checkpoint only in the runtime-state restore's exception handler, which now raises a RuntimeError where it logged the warning 'runtime state partially restored'; the lines that read and check the motor_asked_change stamp and record its switch are unchanged; the entry's text still holds."
+   }
+  },
+  {
+   "id": "PLANNER_SENSE_WEIGHTS",
+   "kind": "repair",
+   "name": "planner sense weights (goal distance weighted by own-command share)",
+   "does": "Weights each sense's goal distance by the measured share of that sense's change that the body's own command accounts for (3.87 x proprioception and 1.13 x vision at checkpoint 479,350; tactile, audio and vestibular 0) in place of equal weights.",
+   "paths": [
+    {"file": "Source/Python/lem/model/goal_sense_weights.py"}
+   ],
+   "ref": "restart/candidate-planner-2026-10-04",
+   "blocks": ["node.intention"],
+   "flags": ["--goal-sense-weights"],
+   "switch": {"flag": "--goal-sense-weights", "on": ["own_command"]},
+   "wiring": ["goal_sense_weights", "goal-sense-weights"],
+   "aliases": ["weighting switch", "controllability weighting"],
+   "confirmed": {
+    "at": "Oct 5, 2026 12:53 PM PDT",
+    "by": "the dashboard fix agent (branch dashboard/recovery-2026-10-05)",
+    "commit": "adce716b4",
+    "content": "5eba0d4a640bd12afcdb66ba062ec8a4017de7cfd8135dc2324cacc8ac13b76b",
+    "basis": "carried over from the explainer's text, not checked against the code; Oct 5, 2026: the definitions of the trainer's code that hold its wiring texts (goal_sense_weights, goal-sense-weights) joined its parts (the dashboard review's finding F14): 11 definitions at the tip of restart/candidate-planner-2026-10-04 (intention_generator.py::IntentionGenerator.generate_action, lem_model.py::LemLite.__init__, lem_model.py::LemLite._capture_plan_state, lem_model.py::LemLite._causal_plan_record, lem_model.py::LemLite._plan_chain, lem_model.py::LemLite.goal_sense_window_summary, lem_model.py::LemLite.step, train_mimo.py::acting_configuration, train_mimo.py::build_learner, train_mimo.py::main, train_mimo.py::parse_args), listed by the wiring scan and checked by the fix agent to name the repair's switch or attribute"
+   }
+  },
+  {
+   "id": "PLANNER_GOAL_LOCALITY",
+   "kind": "repair",
+   "name": "planner goal locality (the goal inside measured reach)",
+   "does": "Limits the goal ranking to goal ring entries inside the model's own measured 14-step drift distance and holds the picked goal until it is reached, left behind or 200 model steps old.",
+   "paths": [
+    {"file": "Source/Python/mimo_bridge/lem_model.py", "functions": ["LemLite._gl_select"]}
+   ],
+   "blocks": ["node.intention"],
+   "flags": ["--goal-locality"],
+   "switch": {"flag": "--goal-locality", "on": ["on", "weighted"]},
+   "wiring": ["goal_locality", "goal-locality"],
+   "aliases": ["reach-limited goal"],
+   "confirmed": {
+    "at": "Oct 10, 2026 8:57 AM PDT",
+    "by": "the coordinator (Oct 10, 2026, after merge 5c66112eb)",
+    "commit": "76336d264",
+    "content": "ad6d974d13bfe792284fe04fd84cb22704339dcf70ca41b1d2e7c0a03fb9a8b0",
+    "basis": "checked against the code as follows: the independent review read the bundle's whole diff (BUNDLE_REVIEW.md: no training number changed; its processor runs of train_mimo.main with forced spike saves kept every saved number, random stream and episode state equal); every FIX was applied by the fix rounds; the coordinator read the fix rounds' lem_model.py and train_mimo.py changes (17beceab8..eec04fcc6) line by line, the gradient clip loop clipping every group as production's did; the processor equality probes at dadb7b76e read 0 of 313, 1,049 and 1,032 checkpoint leaves differing. The changed code adds guarded records and the latent shadow's resume boundary; the entry's sentence is unchanged unless extended above. The graphics-card lockstep row records_lockstep_481800 is the evidence still to run."
+   }
+  },
+  {
+   "id": "PLANNER_PROSPECTIVE_TERM",
+   "kind": "repair",
+   "name": "planner prospective term (predicted wellness inside the search)",
+   "does": "Adds weight x (1 - the wellness predictor's mean score of the predicted next tokens) to the quantity the planner's search lowers.",
+   "paths": [
+    {"file": "Source/Python/lem/model/intention_generator.py", "functions": ["prospective_wellness_loss", "IntentionGenerator"]}
+   ],
+   "blocks": ["node.intention"],
+   "flags": ["--prospective-wellness", "--prospective-wellness-w"],
+   "switch": {"flag": "--prospective-wellness", "on": ["add"]},
+   "wiring": ["prospective_wellness", "prospective-wellness"],
+   "aliases": [],
+   "confirmed": {
+    "at": "Oct 10, 2026 8:57 AM PDT",
+    "by": "the coordinator (Oct 10, 2026, after merge 5c66112eb)",
+    "commit": "76336d264",
+    "content": "f743d13da53e69fec6c395a4281108468ea7ac8094eccce1896460871adc1255",
+    "basis": "checked against the code as follows: the independent review read the bundle's whole diff (BUNDLE_REVIEW.md: no training number changed; its processor runs of train_mimo.main with forced spike saves kept every saved number, random stream and episode state equal); every FIX was applied by the fix rounds; the coordinator read the fix rounds' lem_model.py and train_mimo.py changes (17beceab8..eec04fcc6) line by line, the gradient clip loop clipping every group as production's did; the processor equality probes at dadb7b76e read 0 of 313, 1,049 and 1,032 checkpoint leaves differing. The changed code adds guarded records and the latent shadow's resume boundary; the entry's sentence is unchanged unless extended above. The graphics-card lockstep row records_lockstep_481800 is the evidence still to run."
+   }
+  },
+  {
+   "id": "PLANNER_SEARCH_REPAIR",
+   "kind": "repair",
+   "name": "planner search repair",
+   "does": "A replacement of the planner's search that selects nearly the same command from nearly the same input; it is being built on branch planner/search-2026-10-05 and this entry maps no code until that branch names its files.",
+   "paths": [],
+   "ref": "planner/search-2026-10-05",
+   "blocks": ["node.intention"],
+   "flags": ["--planner-search"],
+   "switch": {"flag": "--planner-search", "on": ["trust_v1"]},
+   "wiring": ["planner_search", "planner-search"],
+   "aliases": ["search fix", "search stability fix"],
+   "confirmed": {
+    "at": "Oct 5, 2026 12:53 PM PDT",
+    "by": "the dashboard fix agent (branch dashboard/recovery-2026-10-05)",
+    "commit": "dbe705329",
+    "content": "4c9fff392bd3c45caff7a6c1f89e57d8689ead36719b97e6b04220c13622e0aa",
+    "basis": "carried over from the explainer's text, not checked against the code; Oct 5, 2026: the definitions of the trainer's code that hold its wiring texts (planner_search, planner-search) joined its parts (the dashboard review's finding F14): 9 definitions at the tip of planner/search-2026-10-05 (intention_generator.py::IntentionGenerator.generate_action, lem_model.py::LemLite.__init__, lem_model.py::LemLite._plan_chain, lem_model.py::LemLite._plan_settings, lem_model.py::LemLite._plan_visual_gaze, lem_model.py::LemLite._search_layout, train_mimo.py::acting_configuration, train_mimo.py::build_learner, train_mimo.py::parse_args), listed by the wiring scan and checked by the fix agent to name the repair's switch or attribute"
+   }
+  },
+  {
+   "id": "ATTENTION_CAP",
+   "kind": "repair",
+   "name": "attention cap (bounded attention scores in the cross-modal and motor encoder attention)",
+   "does": "Under --attention-cap on, every head of the transformer's cross-modal attention (all blocks) and of the motor encoder's 2 attention layers and its pool scores a key as the bound B (--attention-cap-bound; without it the measured bound 3, picked on checkpoint 481,800 by row attention_cap_bound_481800 and held in attention_cap.MEASURED_BOUND) times the cosine of its in-projected query and key vectors, instead of their dot product over the square root of the head size, so no key takes more than 1 / (1 + (n - 1) exp(-2B)) of a head's weight over n keys and the softmax always passes gradient to the scores; no parameter, buffer or random draw is added, and with the switch off the modules compute nn.MultiheadAttention's own forward.",
+   "paths": [
+    {"file": "Source/Python/lem/model/attention_cap.py"}
+   ],
+   "blocks": ["node.block_s1", "node.enc.motor"],
+   "flags": ["--attention-cap", "--attention-cap-bound"],
+   "switch": {"flag": "--attention-cap", "on": ["on"]},
+   "wiring": ["attention_cap_bound", "attention_cap_change", "attention-cap", "CappedMultiheadAttention", "head_scores"],
+   "aliases": [],
+   "confirmed": {
+    "at": "Oct 13, 2026 2:27 AM PDT",
+    "by": "manifest repair agent, Oct 13, 2026",
+    "commit": "64ee28971",
+    "content": "ae8921c59d66bf5e0c4f1519009bfe8c127f2d148945eb4c84e2b10526d8fbcd",
+    "basis": "checked against the code change only: ca77bb8d0 (the only commit since 76336d264 that changed the mapped code or its wiring) changed the wiring part LemLite.load_checkpoint only in the runtime-state restore's exception handler, which now raises a RuntimeError where it logged the warning 'runtime state partially restored'; the lines that read the attention cap stamp and set attention_cap_change are unchanged; the entry's text still holds."
+   }
+  },
+  {
+   "id": "CONSEQUENCE_REBUILD",
+   "kind": "repair",
+   "name": "consequence rebuild (the caused-change channel)",
+   "does": "Replaces the consequence wellness channel's designer-named flags by the caused change: per predicted sense and body, the agreement of the predicted change under the body's own command with the real change, minus the same agreement under another body's command (-2 to +2).",
+   "paths": [
+    {"file": "Source/Python/lem/model/caused_change.py"}
+   ],
+   "ref": "fix/caused_change_consequence-2026-10-02",
+   "blocks": ["node.wellness"],
+   "flags": ["--consequence-mode"],
+   "switch": {"flag": "--consequence-mode", "on": ["measure", "caused"]},
+   "wiring": ["consequence_mode", "consequence-mode"],
+   "aliases": ["caused change rebuild"],
+   "confirmed": {
+    "at": "Oct 5, 2026 12:53 PM PDT",
+    "by": "the dashboard fix agent (branch dashboard/recovery-2026-10-05)",
+    "commit": "d6cf2739e",
+    "content": "05eab56081499d6699ba2b9eef86083824055ff38a6550e4d8baa26451701323",
+    "basis": "carried over from the explainer's text, not checked against the code: the opening text of lem/model/caused_change.py on the branch read; the code's body was not read; Oct 5, 2026: the definitions of the trainer's code that hold its wiring texts (consequence_mode, consequence-mode) joined its parts (the dashboard review's finding F14): 12 definitions at the tip of fix/caused_change_consequence-2026-10-02 (lem_model.py::LemLite.__init__, lem_model.py::LemLite._caused_change_moment, lem_model.py::LemLite._consequence_now, lem_model.py::LemLite._forget_efference_and_causal, lem_model.py::LemLite._init_wellness_channels, lem_model.py::LemLite._rank_floors, lem_model.py::LemLite.caused_change_window_summary, lem_model.py::LemLite.load_checkpoint, lem_model.py::LemLite.step, train_mimo.py::build_learner, train_mimo.py::main, train_mimo.py::parse_args), listed by the wiring scan and checked by the fix agent to name the repair's switch or attribute"
+   }
+  },
+  {
+   "id": "PROBE_HARNESS",
+   "kind": "tool",
+   "name": "probe harness",
+   "does": "Builds one checkpoint's model on the processor the way the trainer builds it, without its optimizer (load_frozen; torch's thread count is set by its threads argument, 4 unless a probe passes another), and one body out of the checkpoint's saved episode with its world, context, persistent memory and histories; then runs arms from identical restored states that differ only in the command sent to the body, and compares what the model predicted before a command with what the body then did. Nothing trains and no checkpoint is written.",
+   "paths": [
+    {"file": "Source/Python/mimo_bridge/tools/gof_probe_harness.py"}
+   ],
+   "blocks": [],
+   "flags": [],
+   "aliases": [],
+   "confirmed": {
+    "at": "Oct 8, 2026 10:54 AM PDT",
+    "by": "the coordinator (Oct 8, 2026, after merge a56fd6ab3)",
+    "commit": "02dbf33be",
+    "content": "99ec357eb45b4742b4f7cc87be8a3a19c7e6412f0ee22a8645444ab225820733",
+    "basis": "checked against the code: gof_probe_harness.py (Session.__init__ calls _check_finger_rule after the world is built and before the hand control is configured; with hand goals on it refuses a world whose finger_joint_servo differs from the learner's, both read 'off' when the setting is absent), read by the coordinator in git diff 15569a136 15d0cbcce; the sentence holds."
+   }
+  },
+  {
+   "id": "FINGER_JOINT_SERVO",
+   "kind": "repair",
+   "name": "finger joint servo (one meaning for the finger command)",
+   "does": "With --finger-joint-servo on (it needs --hand-target-mode wrist_relative_v1), the action decoder steps each finger hinge toward its own latched goal angle, dq = goal - angle read from the physics state (the 44 hinge goals per body the planner search and the hand stage chose, HandTargetControl.goals_by_joint), in place of the damped least squares toward the fingertip's pose; the hinge range clip, u = strength x (6 x dq - 0.3 x hinge speed), one shared factor per finger chain so no command passes its limit, the final clip and the coupling tendons stay as they are. The world then reports the motor contract with finger_joint_servo_v1, replay stores and samples those model steps under contract bit 32 apart from the others, the transition's action contract gains that part, and the trainer refuses worlds whose rule differs from the launch's. With --hand-goals memory the hand stage's fixed response must declare the rule it was fit under, in both directions (the admitted fit is the pose servo's), and the probe harness refuses a world running another rule than its learner. Its purpose: the finger command means each hinge's goal in the planner search, the hand stage, the decoder and the stored rows alike. Off (the default) every changed line computes production's numbers.",
+   "paths": [],
+   "blocks": [],
+   "flags": ["--finger-joint-servo"],
+   "switch": {"flag": "--finger-joint-servo", "on": ["on"]},
+   "wiring": ["finger_joint_servo", "finger-joint-servo", "FINGER_SERVO_CONTRACT", "finger_goals"],
+   "aliases": ["finger command interface correction"],
+   "confirmed": {
+    "at": "Oct 13, 2026 2:27 AM PDT",
+    "by": "manifest repair agent, Oct 13, 2026",
+    "commit": "64ee28971",
+    "content": "ce12802472dc7710c91bc60a16e65f3fc52fcd2c012027efef224b61526a235c",
+    "basis": "checked against the code change only: ca77bb8d0 (the only commit since 76336d264 that changed its wiring) changed the wiring part LemLite.replay_update only by marking the forward model's embedding cache stale after optimizer.step(); the replay contract's finger servo bit (replay_contract with finger_joint_servo) is unchanged; the entry's text still holds."
+   }
+  }
+ ]
+}

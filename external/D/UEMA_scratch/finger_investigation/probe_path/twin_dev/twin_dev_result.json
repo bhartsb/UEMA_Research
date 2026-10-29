@@ -1,0 +1,240 @@
+{
+ "question": "twin",
+ "stages": {
+  "plain_run_is_the_departed_path": {
+   "met": true,
+   "why": "the pilot's file, inputs and observe 0 on every body",
+   "observe_0_first_difference": {
+    "0": null,
+    "1": null
+   }
+  },
+  "instrumentation_changes_nothing": {
+   "met": true,
+   "bodies": {
+    "0": {
+     "met": true,
+     "observes": [
+      8,
+      8
+     ],
+     "draws": [
+      35,
+      35
+     ],
+     "first_difference": null,
+     "why": "every number of 8 observes equal"
+    },
+    "1": {
+     "met": true,
+     "observes": [
+      8,
+      8
+     ],
+     "draws": [
+      35,
+      35
+     ],
+     "first_difference": null,
+     "why": "every number of 8 observes equal"
+    }
+   },
+   "why": "every body's instrumented run repeats its plain run number for number at all 8 observes, MuJoCo asking for the same scenes"
+  }
+ },
+ "verdict": "pass",
+ "verdict_reason": "a development run, complete and valid apart from its size; its stages are findings: plain_run_is_the_departed_path True (the pilot's file, inputs and observe 0 on every body); instrumentation_changes_nothing True (every body's instrumented run repeats its plain run number for number at all 8 observes, MuJoCo asking for the same scenes)",
+ "validity_problems": [
+  "not the declared measurement (bodies [0, 1], 7 model steps; declared [0, 1, 2, 3, 4, 5, 6, 7], 100): a development run checks the plumbing only"
+ ],
+ "bodies": [
+  0,
+  1
+ ],
+ "steps": 7,
+ "declared_steps": 100,
+ "twin_code": {
+  "plain": {
+   "path": "D:\\UEMA_Research\\external\\D\\UEMA_scratch\\finger_investigation\\probe_path\\twin_dev\\run\\work_twin\\code\\twin_plain_finger_switch_prediction_effect.py",
+   "sha256": "1d974565be23a02fdff703c3766de477f0c17ab07ff8b4096032ad3f6f3aa55d",
+   "commit": "3956c37d0c97803c4c85774e642bc6640c4dd8c2",
+   "source": "docs/gain_of_function_v4/finger_command_interface/finger_switch_prediction_effect.py",
+   "line_endings": "as committed",
+   "ran": "the switch effect pilot's arms (pilot_0538, 5:37 AM PDT Oct 9)",
+   "function": "run_body"
+  },
+  "instrumented": {
+   "path": "D:\\UEMA_Research\\external\\D\\UEMA_scratch\\finger_investigation\\probe_path\\twin_dev\\run\\work_twin\\code\\twin_instrumented_probe_path_trace.py",
+   "sha256": "67cbabb2e14aa89c2a6959c731db5c79b54982238aeef13d0f89ddd65c9b2ba2",
+   "commit": "c4acca5dd4736ece547639946b30782343fdfa87",
+   "source": "docs/gain_of_function_v4/probe_path_investigation/probe_path_trace.py",
+   "line_endings": "CRLF",
+   "ran": "the command row's and the verification row's own arm (1:47 and 1:48 PM PDT Oct 9)",
+   "function": "run_arm_body"
+  }
+ },
+ "development": true,
+ "findings": {
+  "0": {
+   "plain_against_pilot": {
+    "observes": 8,
+    "first_differing_observe": null,
+    "fields": null
+   },
+   "pictures": {
+    "plain": {
+     "draws": 35,
+     "reused": 0,
+     "redrawn_differently": 0,
+     "redrawn_differently_at": [],
+     "cameras": [
+      "eye_left",
+      "eye_right",
+      "fovea_left",
+      "fovea_right",
+      "ring_left"
+     ]
+    },
+    "instrumented": {
+     "draws": 35,
+     "reused": 35,
+     "redrawn_differently": 0,
+     "redrawn_differently_at": [],
+     "cameras": [
+      "eye_left",
+      "eye_right",
+      "fovea_left",
+      "fovea_right",
+      "ring_left"
+     ]
+    }
+   },
+   "plain_reuse_beyond_default": []
+  },
+  "1": {
+   "plain_against_pilot": {
+    "observes": 8,
+    "first_differing_observe": null,
+    "fields": null
+   },
+   "pictures": {
+    "plain": {
+     "draws": 35,
+     "reused": 0,
+     "redrawn_differently": 0,
+     "redrawn_differently_at": [],
+     "cameras": [
+      "eye_left",
+      "eye_right",
+      "fovea_left",
+      "fovea_right",
+      "ring_left"
+     ]
+    },
+    "instrumented": {
+     "draws": 35,
+     "reused": 35,
+     "redrawn_differently": 0,
+     "redrawn_differently_at": [],
+     "cameras": [
+      "eye_left",
+      "eye_right",
+      "fovea_left",
+      "fovea_right",
+      "ring_left"
+     ]
+    }
+   },
+   "plain_reuse_beyond_default": []
+  }
+ },
+ "readings": [
+  {
+   "name": "bodies whose instrumented run repeats its plain run number for number",
+   "value": 2,
+   "unit": "",
+   "meaning": "of 2 bodies; per body the plain probe path (the pilot's own loop) and the instrumented one, in one process from the same restored state and handed the same pictures: every audit number of every sense, bout state, babble noise and finger joint error at all 8 observes, and the same scenes asked of MuJoCo (all = the instrumentation changes nothing)",
+   "baseline": "exact equality, the instrumentation check's original line",
+   "statistically_clear": "not judged",
+   "statistical_basis": "",
+   "gof_material": "GOF threshold not yet defined"
+  },
+  {
+   "name": "fresh pictures of an unchanged scene that came back different",
+   "value": 0,
+   "unit": "",
+   "meaning": "of 70 draws of the instrumented runs, each of a scene the plain run drew (0 = the graphics driver drew every scene alike; each one counted is a picture the store replaced with the plain run's)",
+   "baseline": "reported, not judged: the run-to-run picture variation the store removes",
+   "statistically_clear": "not judged",
+   "statistical_basis": "",
+   "gof_material": "GOF threshold not yet defined"
+  }
+ ],
+ "tool": "probe_path_trace_v1",
+ "written": "Oct 9, 2026 3:44:38 PM PDT",
+ "checkpoint": "D:\\UEMA_Research\\Saved\\mimo_bridge\\experiments\\H84_fresh_drivers_20260918_seg41o_1431\\checkpoints\\ckpt_step_481800",
+ "inputs": {
+  "reference": "C2",
+  "runs": {
+   "C1": "D:\\UEMA_Research\\Saved\\mimo_bridge\\experiments\\H84_fresh_drivers_20260918_seg41c_0841",
+   "C2": "D:\\UEMA_Research\\Saved\\mimo_bridge\\experiments\\H84_fresh_drivers_20260918_seg41c_1433",
+   "L": "D:\\UEMA_Research\\Saved\\mimo_bridge\\experiments\\H84_fresh_drivers_20260918_seg41c_1629"
+  },
+  "records": {
+   "C1": "D:\\UEMA_Research\\external\\D\\UEMA_scratch\\finger_investigation\\probe_path\\training_records\\C1",
+   "C2": "D:\\UEMA_Research\\external\\D\\UEMA_scratch\\finger_investigation\\probe_path\\training_records\\C2",
+   "L": "D:\\UEMA_Research\\external\\D\\UEMA_scratch\\finger_investigation\\probe_path\\training_records\\L"
+  },
+  "records_read": null,
+  "lane": null,
+  "pilot": [
+   {
+    "path": "D:\\UEMA_Research\\external\\D\\UEMA_scratch\\finger_investigation\\switch_effect\\pilot_0538\\arm_control_g0.json",
+    "sha256": "9b922f810d89d18877a9396f665f32323f9ff9a23dbfa556010af81854dadb6d"
+   },
+   {
+    "path": "D:\\UEMA_Research\\external\\D\\UEMA_scratch\\finger_investigation\\switch_effect\\pilot_0538\\arm_control_g1.json",
+    "sha256": "0bf2d1f385bfe16096949c69f4b7fc0523310fc1e3cc4b0394161ca0a03291f3"
+   }
+  ],
+  "repetition_reference": "the switch effect pilot's control arm (D:\\UEMA_Research\\external\\D\\UEMA_scratch\\finger_investigation\\switch_effect\\pilot_0538)",
+  "command": {
+   "path": "C:\\Users\\bhart\\Documents\\UEMA_wt\\probe_path_rejudge\\docs\\gain_of_function_v4\\finger_command_interface\\matched_comparison_2026-10-09\\control_arm_command.json",
+   "sha256": "6fb5e854d099359ebeb951bd08e3bf3ce8d53b3099d1a934e999258d92f9f3b5"
+  },
+  "command_sha256_declared": null,
+  "twin_result": null,
+  "training_dynamics_from": null
+ },
+ "run_files": {
+  "twin": [
+   {
+    "path": "D:\\UEMA_Research\\external\\D\\UEMA_scratch\\finger_investigation\\probe_path\\twin_dev\\run\\arm_twin.json",
+    "sha256": "7e8ea75c79cab2f929ae04b58bbbbb0769c367a81462138a60cdf772a45e3c3f",
+    "started": "Oct 9, 2026 3:42:34 PM PDT",
+    "started_epoch": 1791585754.6741157,
+    "ended": "Oct 9, 2026 3:44:35 PM PDT",
+    "elapsed_s": 120.9,
+    "memory": {
+     "peak_commit_gb": 5.116,
+     "peak_working_set_gb": 2.956
+    },
+    "bodies_requested": [
+     0,
+     1
+    ],
+    "model_sha256": "46c3db2ff1fa5e23faae9ebb1326ca2d58ab74bbcb9b3a2de7637403d10bb6a5",
+    "trainer_code_hash": "add5725e7806b7fc9a6b0e5541f33816cf1bfb11589e4b3172db6e428df4ac4a",
+    "parameters_sha256_loaded": "82e4cccea7785057351fad91e76f2ea80817dd504f4a82d4eeb27f0d544dc076",
+    "command_sha256": "6fb5e854d099359ebeb951bd08e3bf3ce8d53b3099d1a934e999258d92f9f3b5",
+    "steps": 7,
+    "tool_sha256": "4f63f9cd061498442613d00632504d009a8702c95ca32fea3b48719f1bc4288b",
+    "commit": "07334b62c987cdac0d2db574256504d3dd64d471"
+   }
+  ]
+ },
+ "code": {
+  "commit": "07334b62c987cdac0d2db574256504d3dd64d471",
+  "tool_sha256": "4f63f9cd061498442613d00632504d009a8702c95ca32fea3b48719f1bc4288b"
+ }
+}

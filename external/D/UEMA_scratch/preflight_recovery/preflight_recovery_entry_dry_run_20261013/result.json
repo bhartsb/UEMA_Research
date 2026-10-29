@@ -1,0 +1,731 @@
+{
+ "tool": "preflight_recovery/dry_run.py",
+ "row": "preflight_recovery_entry_dry_run_20261013",
+ "script_sha256": "fcae6e00d1dcd5d11e7d59c7f32daedcdbb678897572ee37a989fb2796f3ea87",
+ "entries_sha256": "d11dc6384ae240af610b6d9609fb18e571e137aad68a4ff4e2ee0cecbaab8631",
+ "module": "D:\\UEMA_Research\\Source\\Python\\mimo_bridge\\tools\\training_preflight.py",
+ "module_sha256": "9c65646c05f978916f03b967a41ff30fc2987fa3b97c8c1c8a4836ad4231390e",
+ "branch_training_preflight_sha256": "9c65646c05f978916f03b967a41ff30fc2987fa3b97c8c1c8a4836ad4231390e",
+ "main_training_preflight_sha256": "9c65646c05f978916f03b967a41ff30fc2987fa3b97c8c1c8a4836ad4231390e",
+ "at": "Oct 13, 2026 01:40:20 PM PDT",
+ "checks": [
+  {
+   "check": "D0",
+   "expect": "production now: BLOCKED (the configuration launches only as its adoption, and as its linked recovery from the preserved 489,625 to 494,025); kind normal",
+   "held": true,
+   "got": [
+    {
+     "kind": "normal",
+     "block": null,
+     "fingerprint": "eea1e8bc7f446fb6",
+     "start_step": null,
+     "max_steps": null,
+     "stop_criteria": null
+    },
+    "BLOCKED: configuration eea1e8bc7f446fb6 is the adoption's (ADOPTION_ROUTES): it launches only as its adoption, once, from D:/UEMA_Research/external/D/UEMA_preserved/body1_extension_B1E_skip13_485975/run/checkpoints/ckpt_step_489350 to model step 494025, and as its linked recovery (RECOVERY_ROUTES), once, from D:/UEMA_Research/external/D/UEMA_preserved/b1_adopt_B1A_skip13_489350/run/checkpoints/ckpt_step_489625 to model step 494025; every other launch of it is normal training, refused (the decision: \"Keep each gate FAIL; no normal-training qualification is granted\")"
+   ]
+  },
+  {
+   "check": "D1a",
+   "expect": "with the training row blocked, as production holds it now, the write is refused naming the block; nothing written",
+   "held": true,
+   "got": "refused by the route: the training row b1_recover_B1R_skip13_489625 is blocked (PACKAGE BUILT TO proxy decision proxy-adoption-recovery-489625-20261013 (message text sha256 f382f32b...; author: the overseer), NOT LAUNCHED (Oct 13, 2026). Before any launch: the item-7 agent's linked recovery record and preflight_handoff.json; the coordinator's independent recheck of the monitoring repair and rehearsal; this block removed (test_runner unblock); launch_recover.py check with no failed check; the launch from a foreground command.; it waits on the item-7 preflight handoff; the independent recheck): only the completion jobs' row may carry a block, one waiting on this recovery's training row b1_recover_B1R_skip13_489625\n"
+  },
+  {
+   "check": "D1a",
+   "expect": "the copy's training row unblocked (test_registry.unblock_row on the copy)",
+   "held": true,
+   "got": null
+  },
+  {
+   "check": "D1",
+   "expect": "entries_recovery.py exits 0 with verdict ALLOWED: kind continuation, block recovery, start 489,625, max_steps 494,025, wall cap 19,931 s",
+   "held": true,
+   "got": [
+    0,
+    null,
+    {
+     "kind": "continuation",
+     "block": "recovery",
+     "fingerprint": "eea1e8bc7f446fb6",
+     "start_step": 489625,
+     "max_steps": 494025,
+     "stop_criteria": [
+      {
+       "name": "finger_joint_error_far_beyond_old_servo",
+       "path": "hand_control.joint_error_deg",
+       "op": ">",
+       "line": 15.0,
+       "from_run_hour": 0.5,
+       "mode": "stop",
+       "note": "DIRECT PHYSICAL, both arms. The field: per full stats record, the mean over the 8 bodies' model steps of the record's window of the mean over the 44 finger hinges of |hinge angle - that hinge's joint goal| at the model step's last physics step, degrees (0 = every hinge on its goal; env.py hand_joint_error_deg, train_mimo.py hand_control). The line: the hour mean above 15.0 degrees from run-hour 0.5. Production's servo and calibration (the control arm's configuration) read window means 14.26 to 14.41 degrees in control runs C1 and C2 and the cap arm L from 481,800 (model steps 482,100 to 484,600, 26 records each), per-record spread 0.38 to 0.45, hour means 14.03 to 14.59 from run-hour 0.25 in those runs and seg41o_1431. Simulated with the watcher's own rule at the highest level and spread (m2_stop_line_rates.json, 20,000 runs each): this line stops a run of production's configuration in 1.0 to 3.1 of 1,000 runs (the repair-run proposal's 14.6 from run-hour 0.25: 457 to 537 of 1,000), a run 1 degree worse than production's in 1,000 of 1,000 and 0.5 degree worse in 665 to 740 of 1,000, and a run at the paired trace's size for the finger servo read as this field reads it, after every model step (13.8 to 14.0 degrees: the highest window mean less the 0.43 to 0.64 degree the servo removes, analysis/m7_sc1_reach_and_sc2b_error.json; read at the hold's end only it removes 1.17 to 1.38), in 0 of 1,000. WHAT A STOP MEANS (the same words wherever the comparison states it): A stop of either arm, on any line, ends the comparison without a verdict: matched_comparison_verdict.py reads INVALID and the other arm is not launched. A finger-arm stop on the finger joint error line is in addition recorded as a finding against the package (the finger hinges ended farther from their goals than the line allows, the failure the package exists to remove); every other stop is recorded as readings only, neither a pass nor a fail of the package."
+      },
+      {
+       "name": "non_finite_update",
+       "path": "nan_steps",
+       "op": ">",
+       "line": 0,
+       "from_run_hour": 0,
+       "mode": "stop",
+       "note": "INTEGRITY, both arms. The field: the model steps of the record's window whose live loss was not finite (train_mimo.py). Any such model step in the hour stops the run (a non-finite update changes every learned weight it reaches). 0 in every full stats record of seg41o_1431, C1, C2 and L. The watcher's 5-minute check also stops on nan_steps above 0 in the newest record, and the standing watches' line M2 on the trainer log's skipped optimizer updates; this entry is the registry's record of the same line. EVERY PROGRAM THAT CAN WRITE A STOP INTO AN ARM'S FOLDER WHILE IT RUNS (read on Oct 9, 2026 from each program's code and the running processes; the same programs, files and lines for both arms, and launch_state.py hashes each program's files at both launches; what any of these stops means is the first entry's note; matched_comparison_verdict.py counts a stop from any of them: stop_reason.json, or a control_done_*.json or pending control.json whose cmd is stop or snapshot_and_stop without auto_resume). (1) The hourly watcher, docs/h84_launch_2026-09-18/hourly_watch.py, started by the arm's supervisor; it writes stop_reason.json, then snapshot_and_stop. Its lines: the six entries of this list, read from the run folder's declared_criteria.json; and its own rules, none an entry here: nan_steps above 0 in the newest record; a stop field non-finite in the newest record or absent from an hour of records; the planner monitor (a selection that worsens a body's total score, comparison scores missing, a non-finite search, or a hand stage reporting another calibration than the admitted fit fe953beb... in the control arm or the recorded replacement f68754c8... in the finger arm); a layer under 50 of 100 units responding in two complete report windows after the liveness repair's own window (efference.lesson.vision_in and efference.lesson.body_mlp.0 are alerts only); free disk under 8 GB on the stats, checkpoint or caregiver-record drive, or commit room under 4 GB; and its hourly rules, each needing two consecutive hourly window means past its line: vision causal error above 2 times, tactile causal error above 3 times, replay loss above 3 times and model steps per second under one third of this run's hour-1 mean, which judge from the second hourly sweep, so their earliest stop is the third sweep, about 10,200 s after the watcher finds the first record, while C1, C2 and L ended 6,631 to 7,851 s after their start (the independent review of Oct 9, 2026); vision or tactile token variance under 0.15, judged from run-hour 3; and follow_bout under -0.038, which read 0.246 to 0.293 in the four runs that review read. The five rule files it loads by path: motor_asked_change_watch.py (the asked-change watch, through the first full report at or past model step 484,875: its switch record M1, non-finite updates M2, its hidden layer under 0.9 live share in 2 full reports M3, the other senses against their level before its switch M4, the step rate under 0.9 of the window before in two windows running M5, its output above its growth line M6) and heads_all_slot_path_watch.py (the all-slot paths watch, through model step 489,350: M1, M2, M3 read as an alert for a run that resumes 481,800 of seg41o_1431 with max_steps 484675 (hourly_watch.CAP_EXPERIMENT_LATER_ARMS), M4, M5, a path's output above its sense's real change M6, a path's fixed vector against the old head's M9, proprioception's own-command reading M7, a head's audited error M8) judge both arms; proprio_repair_watch.py, vestibular_repair_watch.py and vestibular_input_path_watch.py judge only runs their switch records reach and printed no line in C1's, C2's and L's watcher logs. (2) The self-percept watch, docs/gain_of_function_v4/coordinator/self_percept_watch_loop.py with Source/Python/mimo_bridge/tools/self_percept_watch.py (processes 7876 and 30248, running since Oct 3, 2026 12:07 PM PDT): every 300 s it judges the supervisor's active run when that run's args.json reads self_percept_release on, as both arms' commands do, and on a crossed line it pauses the supervisor and writes stop_reason.json and snapshot_and_stop. Its two stop lines, declared here as stop lines of both arms: 2 or more live model steps above the self-percept limit of 8 within any 1,000 model steps since the resume, and more than 25 perceive calls above that limit per 100 model steps in a report. C1, C2 and L read 0 such model steps and at most 1 such call per 100 model steps over their 2,875 model steps (Saved/gof_takeover_20260927/self_percept_watch/loop.log). (3) The persistent memory watch, docs/gain_of_function_v4/coordinator/memory_watch_loop.py, which runs docs/gain_of_function_v4/persistent_memory_deploy_watch.py --act every 300 s (processes 6516 and 20176, running since Oct 1, 2026 8:46 AM PDT); it writes snapshot_and_stop into the active run's control.json and no stop_reason.json. Its stop lines (K2: a body-to-body or over-the-window state spread under 0.08 in a full report from the second through 10,000 model steps after the memory's switch; K4: a sense's log of its median ratio over the median of the 20 full reports before the switch above its line, over full reports 2 to 21 after the switch; K5: the step rate over those reports under its line) cannot fire on an arm: the switch it judges is the record of part switch at model step 415,075 (a resume writes part loaded, which it skips), so K2 reads reports up to model step 425,075 and K4 and K5 the reports 2 to 21 after 415,075, all in the arms' common ancestry before 481,800, and an arm adds no record any of them reads; on those reports it reads no crossing (K4: vision -0.380, tactile -0.007, audio 0.013, proprioception -0.012 against the lines 0.944, 0.028, 0.052 and 0.014; K5: 0.891 against 0.862; Saved/gof_takeover_20260927/memory_watch/verdict.json, 4:31 AM PDT, Oct 9, 2026). It could write a stop only if its code, its lines file docs/gain_of_function_v3/measurements/persistent_memory_resume_lines_2026-09-25.json or those records changed. (4) The relaunch script itself (relaunch_h84_seg41_2026-09-29.py stop_trainer) writes snapshot_and_stop with its reason into the new run's control.json when no supervisor attaches after the trainer starts: a failed launch, not a line. No stop for an arm comes from the ability scheduler (ability_rechecks.py and ability_comparison_window.py) or the pause runner (run_in_training_pause.py): each refuses to write into a run's control.json while supervisor_control.json holds a pause (training_continuation.pause_reason), and it holds the repair run's pause while an arm runs. The observer, the archiver, the dashboard and the explainer builder write no control.json."
+      },
+      {
+       "name": "vision_cost_beyond_cap_line",
+       "path": "prediction_audit_per_body.senses.vision.without_body_2.ratio",
+       "op": ">",
+       "line": 0.94,
+       "from_run_hour": 1.25,
+       "mode": "stop",
+       "note": "PREDICTION, both arms; a sense the package does not reach (the camera images the eyes receive). The field: vision's prediction error over the error of predicting no change on the record's live transitions, body 2 left out (0 = exact, 1 = no better than 'nothing changes'). The line: hour mean above 940 in 1,000 from run-hour 1.25; the cap experiment's line unchanged (row attention_cap_stop_lines_481800). The runs without the package (control runs C1 and C2 of production's configuration, and the cap arm L, which ran it with the attention cap on) read hour means from run-hour 1.25 of at most 702 in 1,000 in C1, C2 and L (716 in seg41o_1431, the run that switched on the all-slot paths) and window means up to 678; simulated false stops 0 of 1,000 (20,000 runs). A crossing in either arm shows this sense's prediction lost beyond anything the runs without the package measured plus that margin (the finger servo does not drive this sense); the stop is recorded as readings only, neither a pass nor a fail of the package (WHAT A STOP MEANS, the first entry's note)."
+      },
+      {
+       "name": "audio_cost_beyond_cap_line",
+       "path": "prediction_audit_per_body.senses.audio.without_body_2.ratio",
+       "op": ">",
+       "line": 0.965,
+       "from_run_hour": 1.25,
+       "mode": "stop",
+       "note": "PREDICTION, both arms; a sense the package does not reach (the sound spectrum the ears receive). The field: audio's prediction error over the error of predicting no change on the record's live transitions, body 2 left out (0 = exact, 1 = no better than 'nothing changes'). The line: hour mean above 965 in 1,000 from run-hour 1.25; the cap experiment's line unchanged (row attention_cap_stop_lines_481800). The runs without the package (control runs C1 and C2 of production's configuration, and the cap arm L, which ran it with the attention cap on) read hour means from run-hour 1.25 of at most 906 in 1,000 in C1, C2 and L (908 in seg41o_1431, the run that switched on the all-slot paths) and window means up to 903; simulated false stops 0 of 1,000 (20,000 runs). A crossing in either arm shows this sense's prediction lost beyond anything the runs without the package measured plus that margin (the finger servo does not drive this sense); the stop is recorded as readings only, neither a pass nor a fail of the package (WHAT A STOP MEANS, the first entry's note)."
+      },
+      {
+       "name": "proprioception_cost_beyond_half_gain",
+       "path": "prediction_audit_per_body.senses.proprioception.without_body_2.ratio",
+       "op": ">",
+       "line": 0.86,
+       "from_run_hour": 1.25,
+       "mode": "stop",
+       "note": "PREDICTION, both arms; a sense the package reaches (where each tracked body part is, how it is turned and how fast it moves; the finger handles are among the 26). The field: proprioception's prediction error over the error of predicting no change on the record's live transitions, body 2 left out (0 = exact, 1 = no better than 'nothing changes'). The line: hour mean above 860 in 1,000 from run-hour 1.25; the cap experiment's rule: the configuration's highest judged hour plus half of the model's gain over predicting no change in the 20 records ending at 481,800 (688 + (1,000 - 669) / 2 = 854, rounded up to 860 in 1,000). The runs without the package (control runs C1 and C2 of production's configuration, and the cap arm L, which ran it with the attention cap on) read hour means from run-hour 1.25 of at most 688 in 1,000 in C1, C2 and L (687 in seg41o_1431, the run that switched on the all-slot paths) and window means up to 675; simulated false stops 0 of 1,000 (20,000 runs). A crossing in either arm shows this sense's prediction lost beyond anything the runs without the package measured plus that margin; the stop is recorded as readings only, neither a pass nor a fail of the package (WHAT A STOP MEANS, the first entry's note). In the finger arm a rise of 185 in 1,000 above the control's highest window mean at the switch would reach it. THE SWITCH'S RISE IS NOT MEASURED YET: the dry run's run B read fresh worlds, and the reading the independent review of Oct 9, 2026 asked for is row finger_switch_prediction_effect_481800, a draft that is not in the registry (D:/UEMA_Research/external/D/UEMA_scratch/finger_investigation/switch_effect/row_draft_finger_switch_prediction_effect_481800.json, written 4:06 AM PDT) and has not run; its tool is on branch study/finger-switch-prediction-effect-2026-10-09 (48dd491ca), not merged, under independent review. The operator signs after that reading has set this line (a stop or an alert, the same in both arms) and SC3's named loss for this sense (matched_comparison_verdict.py NAMED_LOSS), and after both are written into this list and both blocks; until then the line stands as declared."
+      },
+      {
+       "name": "tactile_cost_beyond_half_gain",
+       "path": "prediction_audit_per_body.senses.tactile.without_body_2.ratio",
+       "op": ">",
+       "line": 0.99,
+       "from_run_hour": 1.25,
+       "mode": "stop",
+       "note": "PREDICTION, both arms; a sense the package reaches (the skin's contact readings; finger contacts change with the finger servo). The field: tactile's prediction error over the error of predicting no change on the record's live transitions, body 2 left out (0 = exact, 1 = no better than 'nothing changes'). The line: hour mean above 990 in 1,000 from run-hour 1.25; the cap experiment's rule: the configuration's highest judged hour plus half of the model's gain over predicting no change in the 20 records ending at 481,800 (970.5 + (1,000 - 961) / 2 = 990 in 1,000). The runs without the package (control runs C1 and C2 of production's configuration, and the cap arm L, which ran it with the attention cap on) read hour means from run-hour 1.25 of at most 936 in 1,000 in C1, C2 and L (970 in seg41o_1431, the run that switched on the all-slot paths) and window means up to 933; simulated false stops 0 of 1,000 (20,000 runs). A crossing in either arm shows this sense's prediction lost beyond anything the runs without the package measured plus that margin; the stop is recorded as readings only, neither a pass nor a fail of the package (WHAT A STOP MEANS, the first entry's note). In the finger arm a rise of 57 in 1,000 above the control's highest window mean at the switch would reach it. THE SWITCH'S RISE IS NOT MEASURED YET: the dry run's run B read fresh worlds, and the reading the independent review of Oct 9, 2026 asked for is row finger_switch_prediction_effect_481800, a draft that is not in the registry (D:/UEMA_Research/external/D/UEMA_scratch/finger_investigation/switch_effect/row_draft_finger_switch_prediction_effect_481800.json, written 4:06 AM PDT) and has not run; its tool is on branch study/finger-switch-prediction-effect-2026-10-09 (48dd491ca), not merged, under independent review. The operator signs after that reading has set this line (a stop or an alert, the same in both arms) and SC3's named loss for this sense (matched_comparison_verdict.py NAMED_LOSS), and after both are written into this list and both blocks; until then the line stands as declared."
+      }
+     ],
+     "wall_cap_s": 19931
+    },
+    "{\n \"verdict\": \"ALLOWED\",\n \"refusal\": null,\n \"next\": \"a scratch copy: nothing to commit\"\n}\n",
+    ""
+   ]
+  },
+  {
+   "check": "D1",
+   "expect": "the only new file is recoveries/eea1e8bc7f446fb6.json; the record and the used adoption's file unchanged",
+   "held": true,
+   "got": [
+    "recoveries/eea1e8bc7f446fb6.json"
+   ]
+  },
+  {
+   "check": "D1",
+   "expect": "the block carries the used adoption's seven exceptions unchanged, each with carried_from and its applicability",
+   "held": true,
+   "got": [
+    "1",
+    "2",
+    "3",
+    "4",
+    "5",
+    "6",
+    "7"
+   ]
+  },
+  {
+   "check": "D1",
+   "expect": "the authorization holds the delegation record's operator words, the three pinned sentences and the decision's id; authorized_by is the decision's author; the decision's message sha256 is the pin",
+   "held": true,
+   "got": {
+    "id": "proxy-adoption-recovery-489625-20261013",
+    "message_sha256": "f382f32b0240a3ba4f9fea41c7e7b7280c98dc6d32b5d60fb23e0f0fd2e1a78f",
+    "author": "the overseer"
+   }
+  },
+  {
+   "check": "D1",
+   "expect": "the bound: start 489,625, end 494,025, 4,400 model steps, wall cap 19,931 s; the run flags are the stand-in command's; the record sha256 is the route's pin",
+   "held": true,
+   "got": [
+    489625,
+    494025,
+    19931,
+    "e282bfc08fb4142b9b11780115898ebc85f526c466be40ad5b9da8c22e57d083"
+   ]
+  },
+  {
+   "check": "D1",
+   "expect": "each exception's applicability names where its gate's failure was judged and on which model state (gates 2-5 and 7: record c007d2bb5af08224 on 481,800; gate 6: declared stop lines and record eea1e8bc7f446fb6's own judgement; gate 1: its three parts as the records judge them), says the record holds it FAIL for 489,350 as carried, and claims no measurement on 489,350 or at 494,025",
+   "held": true,
+   "got": {
+    "1": "hat keeps the gate FAIL in records c007d2bb5af08224 and 4ba33dfc88ced223: the vestibular token carries no head tilt (record c007d2bb5af08224, Oct 5, 2026 10:10 AM PDT: a held-out read-out found it at no size on checkpoint 479,350; record 4ba33dfc88ced223 kept the gate FAIL on it as not reached by its run). The bodies' posture information in their tokens: record 2c3d82ca4ab4a870 (Oct 12, 2026 7:48 PM PDT) measured body 1's kept (the exclusion run's encoder at model step 484,675 against 481,800, +0.020) and bodies 4, 5 and 8 lower in the exclusion run than in the fresh push-on run (-1.2, -2.8 and -1.9 points), and kept the gate FAIL; the extension's whole-span reading (outcome receipt sha256 da924702...) read every body again at 489,350, body 1 held and no other body lower against the extens",
+    "2": "ing its top value, so that its gradient is exactly 0, was judged by record c007d2bb5af08224 (Oct 5, 2026 10:10 AM PDT; that record cites the audit of checkpoint 479,350, and its one model state is 481,800) and carried for 481,800 by records 4ba33dfc88ced223 and 2c3d82ca4ab4a870. Record eea1e8bc7f446fb6 holds the gate FAIL for its one model state, the preserved 489,350, as carried from those judgements; it was measured again on neither 489,350 nor 489,625. Each later record carried the failure with a gate text that judges it again or states how that record's own change of code, flags or stop lines bears on it, and the 275 model steps ran record eea1e8bc7f446fb6's code and flags without a change; so the gate stays FAIL as carried, and nothing about it is newly measured or passed. No measurem",
+    "3": "0:10 AM PDT; its one model state is 481,800) judged each of the motor encoder's 4 pooling heads to put at least 0.99999 of its weight on one handle at every base state of model step 481,800, and the predictor's attention switching under a small command change and the persistent memory's very large constant without naming another state, and carried for 481,800 by records 4ba33dfc88ced223 and 2c3d82ca4ab4a870. Record eea1e8bc7f446fb6 holds the gate FAIL for its one model state, the preserved 489,350, as carried from those judgements; it was measured again on neither 489,350 nor 489,625. Each later record carried the failure with a gate text that judges it again or states how that record's own change of code, flags or stop lines bears on it, and the 275 model steps ran record eea1e8bc7f446fb6",
+    "4": " on the average handle for a token change of 0.00001 was measured by record c007d2bb5af08224 (Oct 5, 2026 10:10 AM PDT) on model step 481,800 (22.3 degrees on 479,350) and carried for 481,800 by records 4ba33dfc88ced223 and 2c3d82ca4ab4a870. Record eea1e8bc7f446fb6 holds the gate FAIL for its one model state, the preserved 489,350, as carried from those judgements; it was measured again on neither 489,350 nor 489,625. Each later record carried the failure with a gate text that judges it again or states how that record's own change of code, flags or stop lines bears on it, and the 275 model steps ran record eea1e8bc7f446fb6's code and flags without a change; so the gate stays FAIL as carried, and nothing about it is newly measured or passed. No measurement of this gate is planned at 494,025",
+    "5": " change not predictably changing its own predicted consequence was judged by record c007d2bb5af08224 (Oct 5, 2026 10:10 AM PDT; its one model state is 481,800, and its evidence is registry row investigate_motor_handle_reach_481800) and carried for 481,800 by records 4ba33dfc88ced223 and 2c3d82ca4ab4a870 (record 4ba33dfc88ced223 judged its finger and hand part again only on the end checkpoint 484,675 of run seg41j_1526, another model state). Record eea1e8bc7f446fb6 holds the gate FAIL for its one model state, the preserved 489,350, as carried from those judgements; it was measured again on neither 489,350 nor 489,625. Each later record carried the failure with a gate text that judges it again or states how that record's own change of code, flags or stop lines bears on it, and the 275 model ",
+    "6": "nes on internal statistics (the step rate under 0.9 of the window before; a hidden layer under 0.9 live share) were judged by record c007d2bb5af08224 (Oct 5, 2026 10:10 AM PDT) from the held run's declared lines, not from a model state, and carried by records 4ba33dfc88ced223 and 2c3d82ca4ab4a870; record eea1e8bc7f446fb6 judged it again for the adoption run (Oct 13, 2026 8:44 AM PDT): FAIL, with M3 an alert only for that run and its outcome lines reading posture, physical choices and prediction directly. Record eea1e8bc7f446fb6 holds the gate FAIL for its one model state, the preserved 489,350, as carried from those judgements; the recovery changes its monitoring as the decision's items 4 and 5 require (the asked-change watch that ended at 484,900 excluded as a completed watch, M3 an alert",
+    "7": "e two last links do not hold was measured by record c007d2bb5af08224 (Oct 5, 2026 10:10 AM PDT) on paired same-state trials, 64 decisions on model step 481,800 and 128 on 480,829 and 479,350, and carried for 481,800 by records 4ba33dfc88ced223 and 2c3d82ca4ab4a870 (record 4ba33dfc88ced223 judged its hand path again only on the end checkpoint 484,675 of run seg41j_1526, another model state). Record eea1e8bc7f446fb6 holds the gate FAIL for its one model state, the preserved 489,350, as carried from those judgements; it was measured again on neither 489,350 nor 489,625. Each later record carried the failure with a gate text that judges it again or states how that record's own change of code, flags or stop lines bears on it, and the 275 model steps ran record eea1e8bc7f446fb6's code and flags "
+   }
+  },
+  {
+   "check": "D1m",
+   "expect": "with a handoff naming another sha256 for main's tool, the write is refused ('main's tool changed since the review'); nothing written, no receipt",
+   "held": true,
+   "got": "refused: the module D:\\UEMA_Research\\Source\\Python\\mimo_bridge\\tools\\training_preflight.py reads sha256 9c65646c05f978916f03b967a41ff30fc2987fa3b97c8c1c8a4836ad4231390e; the handoff D:\\UEMA_Research\\external\\D\\UEMA_scratch\\preflight_recovery\\preflight_recovery_entry_dry_run_20261013\\run5\\handoff_other_module_sha256.json names 0000000000000000000000000000000000000000000000000000000000000000 for D:/UEMA_Research/Source/Python/mimo_bridge/tools/training_preflight.py (the reviewed merge's file): main's tool changed since the review, or the handoff names another file\n"
+  },
+  {
+   "check": "D1c",
+   "expect": "the check call (python -B -m mimo_bridge.tools.training_preflight check --cmd-file ... --src PINNED --registry COPY --root COPY) exits 0 with 'ALLOWED: configuration eea1e8bc7f446fb6 may launch.'",
+   "held": true,
+   "got": [
+    0,
+    "ALLOWED: configuration eea1e8bc7f446fb6 may launch.\n",
+    ""
+   ]
+  },
+  {
+   "check": "D2",
+   "expect": "refused at launch: --max-steps 494026 (names 'the launch is not bounded as declared: --max-steps reads 494026')",
+   "held": true,
+   "got": "BLOCKED: recovery of configuration eea1e8bc7f446fb6 (D:\\UEMA_Research\\external\\D\\UEMA_scratch\\preflight_recovery\\preflight_recovery_entry_dry_run_20261013\\run5\\preflight_copy\\recoveries\\eea1e8bc7f446fb6.json): 1 condition(s) unmet:\n  - the launch is not bounded as declared: --max-steps reads 494026; the recovery ends exactly at model step 494025 (its end_step: start 489625 + 4400 model steps)"
+  },
+  {
+   "check": "D2",
+   "expect": "refused at launch: --max-steps absent (names '--max-steps reads absent')",
+   "held": true,
+   "got": "BLOCKED: recovery of configuration eea1e8bc7f446fb6 (D:\\UEMA_Research\\external\\D\\UEMA_scratch\\preflight_recovery\\preflight_recovery_entry_dry_run_20261013\\run5\\preflight_copy\\recoveries\\eea1e8bc7f446fb6.json): 1 condition(s) unmet:\n  - the launch is not bounded as declared: --max-steps reads absent; the recovery ends exactly at model step 494025 (its end_step: start 489625 + 4400 model steps)"
+  },
+  {
+   "check": "D2",
+   "expect": "refused at launch: a changed setting (--babble-noise 0.06) (names 'is not the recovery's')",
+   "held": true,
+   "got": "BLOCKED: recovery of configuration eea1e8bc7f446fb6 (D:\\UEMA_Research\\external\\D\\UEMA_scratch\\preflight_recovery\\preflight_recovery_entry_dry_run_20261013\\run5\\preflight_copy\\recoveries\\eea1e8bc7f446fb6.json): the command's configuration 4c92125f1a1597c1 is not the recovery's; a recovery runs exactly its record's code and settings, those of its used adoption. It differs in:\n  - flag --babble-noise: 0.05 -> 0.06"
+  },
+  {
+   "check": "D2",
+   "expect": "refused at launch: the extension's checkout as the trainer code (names 'is not the recovery's')",
+   "held": true,
+   "got": "BLOCKED: recovery of configuration eea1e8bc7f446fb6 (D:\\UEMA_Research\\external\\D\\UEMA_scratch\\preflight_recovery\\preflight_recovery_entry_dry_run_20261013\\run5\\preflight_copy\\recoveries\\eea1e8bc7f446fb6.json): the command's configuration 2c3d82ca4ab4a870 is not the recovery's; a recovery runs exactly its record's code and settings, those of its used adoption. It differs in:\n  - code: 7 file(s) differ: lem/model/forward_model.py, lem/source_mask.py, lem/training/checkpoint.py, lem/training/loss_manager.py, lem/training_step.py, mimo_bridge/action_decoder.py, mimo_bridge/lem_model.py"
+  },
+  {
+   "check": "D2",
+   "expect": "refused at launch: --resume the original, non-preserved 489,625 (names 'it launches only as its adoption')",
+   "held": true,
+   "got": "BLOCKED: configuration eea1e8bc7f446fb6 is the adoption's (ADOPTION_ROUTES): it launches only as its adoption, once, from D:/UEMA_Research/external/D/UEMA_preserved/body1_extension_B1E_skip13_485975/run/checkpoints/ckpt_step_489350 to model step 494025, and as its linked recovery (RECOVERY_ROUTES), once, from D:/UEMA_Research/external/D/UEMA_preserved/b1_adopt_B1A_skip13_489350/run/checkpoints/ckpt_step_489625 to model step 494025; every other launch of it is normal training, refused (the decision: \"Keep each gate FAIL; no normal-training qualification is granted\")"
+  },
+  {
+   "check": "D2",
+   "expect": "refused at launch: --resume the adoption's preserved start 489,350 (names 'it launches only as its adoption')",
+   "held": true,
+   "got": "BLOCKED: configuration eea1e8bc7f446fb6 is the adoption's (ADOPTION_ROUTES): it launches only as its adoption, once, from D:/UEMA_Research/external/D/UEMA_preserved/body1_extension_B1E_skip13_485975/run/checkpoints/ckpt_step_489350 to model step 494025, and as its linked recovery (RECOVERY_ROUTES), once, from D:/UEMA_Research/external/D/UEMA_preserved/b1_adopt_B1A_skip13_489350/run/checkpoints/ckpt_step_489625 to model step 494025; every other launch of it is normal training, refused (the decision: \"Keep each gate FAIL; no normal-training qualification is granted\")"
+  },
+  {
+   "check": "D2",
+   "expect": "refused at launch: --out inside the stopped run's folder (names 'lies in the used adoption's run folder')",
+   "held": true,
+   "got": "BLOCKED: recovery of configuration eea1e8bc7f446fb6 (D:\\UEMA_Research\\external\\D\\UEMA_scratch\\preflight_recovery\\preflight_recovery_entry_dry_run_20261013\\run5\\preflight_copy\\recoveries\\eea1e8bc7f446fb6.json): 2 condition(s) unmet:\n  - the launch's --out D:\\UEMA_Research\\external\\D\\UEMA_scratch\\b1_adopt_489350\\run\\B1A_skip13_489350\\recovery_inside lies in the used adoption's run folder D:/UEMA_Research/external/D/UEMA_scratch/b1_adopt_489350/run/B1A_skip13_489350: the stopped run is kept as it is\n  - the launch's --checkpoint-storage D:\\UEMA_Research\\external\\D\\UEMA_scratch\\b1_adopt_489350\\run\\B1A_skip13_489350\\recovery_inside\\checkpoints lies in the used adoption's run folder D:/UEMA_Research/external/D/UEMA_scratch/b1_adopt_489350/run/B1A_skip13_489350: the stopped run is kept as it is"
+  },
+  {
+   "check": "D2",
+   "expect": "the D1 copy unchanged by the launch judgements",
+   "held": true,
+   "got": null
+  },
+  {
+   "check": "D3",
+   "expect": "refused when written: renewed_wall_cap (names 'pins the remaining wall cap 19931 s; the recovery's wall_cap_s reads 20683', and not another adoption file); nothing written",
+   "held": true,
+   "got": "PreflightError: the recovery route of configuration eea1e8bc7f446fb6 pins the remaining wall cap 19931 s; the recovery's wall_cap_s reads 20683"
+  },
+  {
+   "check": "D3",
+   "expect": "refused when written: end_494026 (names 'ends at model step 494025; the recovery's end_step reads 494026', and not another adoption file); nothing written",
+   "held": true,
+   "got": "PreflightError: the recovery route of configuration eea1e8bc7f446fb6 ends at model step 494025; the recovery's end_step reads 494026"
+  },
+  {
+   "check": "D3",
+   "expect": "refused when written: adoption_decision (names 'the decision proxy-adopt-b1e-one-run-20261013 already authorized the adoption', and not another adoption file); nothing written",
+   "held": true,
+   "got": "PreflightError: the recovery route of configuration eea1e8bc7f446fb6 pins the decision proxy-adoption-recovery-489625-20261013; the recovery names proxy-adopt-b1e-one-run-20261013; the recovery's authorization does not name its decision proxy-adopt-b1e-one-run-20261013: it holds the operator's delegation words verbatim with the decision's reference; the decision proxy-adopt-b1e-one-run-20261013 already authorized the adoption D:\\UEMA_Research\\external\\D\\UEMA_scratch\\preflight_recovery\\preflight_recovery_entry_dry_run_20261013\\run5\\preflight_copy_adoption_decision\\adoptions\\eea1e8bc7f446fb6.json: a decision authorizes one block"
+  },
+  {
+   "check": "D3",
+   "expect": "refused when written: adoption_words (names 'lie one within the other', and not another adoption file); nothing written",
+   "held": true,
+   "got": "PreflightError: the recovery's authorization and the authorization words of the adoption D:\\UEMA_Research\\external\\D\\UEMA_scratch\\preflight_recovery\\preflight_recovery_entry_dry_run_20261013\\run5\\preflight_copy_adoption_words\\adoptions\\eea1e8bc7f446fb6.json lie one within the other: each block carries its own authorization"
+  },
+  {
+   "check": "D3",
+   "expect": "refused when written: changed_exception (names 'changes the used adoption's failure', and not another adoption file); nothing written",
+   "held": true,
+   "got": "PreflightError: the recovery's exception for gate 5 Causal controllability changes the used adoption's failure: an inherited exception is carried as written, its applicability to this state written beside it, never a new measurement"
+  },
+  {
+   "check": "D3",
+   "expect": "refused when written: adoption_start (names 'admits only the stopped run's preserved end checkpoint', and not another adoption file); nothing written",
+   "held": true,
+   "got": "PreflightError: the recovery route of configuration eea1e8bc7f446fb6 admits only the stopped run's preserved end checkpoint D:/UEMA_Research/external/D/UEMA_preserved/b1_adopt_B1A_skip13_489350/run/checkpoints/ckpt_step_489625; the recovery's start checkpoint reads D:\\UEMA_Research\\external\\D\\UEMA_preserved\\body1_extension_B1E_skip13_485975\\run\\checkpoints\\ckpt_step_489350; the recovery route of configuration eea1e8bc7f446fb6 admits only the stopped run's preserved end checkpoint D:/UEMA_Research/external/D/UEMA_preserved/b1_adopt_B1A_skip13_489350/run/checkpoints/ckpt_step_489625; the recovery's predecessor's checkpoint reads D:\\UEMA_Research\\external\\D\\UEMA_preserved\\body1_extension_B1E_skip13_485975\\run\\checkpoints\\ckpt_step_489350; the recovery route of configuration eea1e8bc7f446fb6 starts at model step 489625; the recovery's start_step reads 489350; the predecessor's model D:\\UEMA_Research\\external\\D\\UEMA_preserved\\body1_extension_B1E_skip13_485975\\run\\checkpoints\\ckpt_step_489350\\model.safetensors reads"
+  },
+  {
+   "check": "D3",
+   "expect": "refused when written: original_end (names 'admits only the stopped run's preserved end checkpoint', and not another adoption file); nothing written",
+   "held": true,
+   "got": "PreflightError: the recovery route of configuration eea1e8bc7f446fb6 admits only the stopped run's preserved end checkpoint D:/UEMA_Research/external/D/UEMA_preserved/b1_adopt_B1A_skip13_489350/run/checkpoints/ckpt_step_489625; the recovery's start checkpoint reads D:\\UEMA_Research\\external\\D\\UEMA_scratch\\b1_adopt_489350\\run\\B1A_skip13_489350\\checkpoints\\ckpt_step_489625; the recovery route of configuration eea1e8bc7f446fb6 admits only the stopped run's preserved end checkpoint D:/UEMA_Research/external/D/UEMA_preserved/b1_adopt_B1A_skip13_489350/run/checkpoints/ckpt_step_489625; the recovery's predecessor's checkpoint reads D:\\UEMA_Research\\external\\D\\UEMA_scratch\\b1_adopt_489350\\run\\B1A_skip13_489350\\checkpoints\\ckpt_step_489625; the predecessor checkpoint D:\\UEMA_Research\\external\\D\\UEMA_scratch\\b1_adopt_489350\\run\\B1A_skip13_489350\\checkpoints\\ckpt_step_489625 is not inside the preservation folder D:\\UEMA_Research\\external\\D\\UEMA_preserved\\b1_adopt_B1A_skip13_489350"
+  },
+  {
+   "check": "D3",
+   "expect": "refused when written: adoption_completion_row (names 'the recovery's completion jobs' row is the used adoption's b1_adopt_outcome_494025', and not another adoption file); nothing written",
+   "held": true,
+   "got": "PreflightError: the recovery's completion jobs' row is the used adoption's b1_adopt_outcome_494025: the recovery's completion jobs are declared in a row of their own; the completion jobs' row b1_adopt_outcome_494025 reads status failed; a recovery's row is declared for it and not yet run (status written or queued)"
+  },
+  {
+   "check": "D4",
+   "expect": "the recovery written on the noting copy: ALLOWED",
+   "held": true,
+   "got": [
+    0,
+    null,
+    "{\n \"verdict\": \"ALLOWED\",\n \"refusal\": null,\n \"next\": \"a scratch copy: nothing to commit\"\n}\n"
+   ]
+  },
+  {
+   "check": "D4",
+   "expect": "note_attempt wrote preflight_recovery (one attempt naming the run folder) into the training row only; the adoption's rows unchanged",
+   "held": true,
+   "got": {
+    "fingerprint": "eea1e8bc7f446fb6",
+    "decision": "proxy-adoption-recovery-489625-20261013",
+    "start_checkpoint": "D:/UEMA_Research/external/D/UEMA_preserved/b1_adopt_B1A_skip13_489350/run/checkpoints/ckpt_step_489625",
+    "attempts": [
+     {
+      "run": "D:\\UEMA_Research\\external\\D\\UEMA_scratch\\preflight_recovery\\preflight_recovery_entry_dry_run_20261013\\run5\\stand_in_run_d4",
+      "at": "Oct 13, 2026 1:40 PM PDT",
+      "at_s": 1791924012.2652586,
+      "by": "dry_run.py"
+     }
+    ],
+    "launched_at": null,
+    "launched_at_s": null,
+    "run": null
+   }
+  },
+  {
+   "check": "D4",
+   "expect": "after the noted attempt the launch is refused and a second note_attempt is refused",
+   "held": true,
+   "got": [
+    "BLOCKED: recovery of configuration eea1e8bc7f446fb6 (D:\\UEMA_Research\\external\\D\\UEMA_scratch\\preflight_recovery\\preflight_recovery_entry_dry_run_20261013\\run5\\preflight_copy_noting\\recoveries\\eea1e8bc7f446fb6.json): 1 condition(s) unmet:\n  - the training row b1_recover_B1R_skip13_489625 records this recovery's attempt (run D:\\UEMA_Research\\external\\D\\UEMA_scratch\\preflight_recovery\\preflight_recovery_entry_dry_run_20261013\\run5\\stand_in_run_d4, ",
+    "PreflightError: the training row b1_recover_B1R_skip13_489625 records this recovery's attempt (run D:\\UEMA_Research\\external\\D\\UEMA_scratch\\preflight_recovery\\preflight_recovery_entry_dry_run_20261013\\run5\\stand_in_run_d4, noted Oct 13, 2026 1:40 PM PDT): a recovery launches once, and a noted attempt counts whether or not its trainer trained or was marked launched (notes proxy-prediction-closure-20261013)"
+   ]
+  },
+  {
+   "check": "D4",
+   "expect": "mark_launched with the training row reading running is accepted; a second one is refused",
+   "held": true,
+   "got": [
+    null,
+    "PreflightError: this recovery was launched already (Oct 13, 2026 1:40 PM PDT)"
+   ]
+  },
+  {
+   "check": "D5",
+   "expect": "the package's command (sha256 c396abf2d54c8621): the recovery written for it is ALLOWED with the same plan, and the check call on it exits 0 with ALLOWED",
+   "held": true,
+   "got": [
+    0,
+    null,
+    {
+     "kind": "continuation",
+     "block": "recovery",
+     "fingerprint": "eea1e8bc7f446fb6",
+     "start_step": 489625,
+     "max_steps": 494025,
+     "stop_criteria": [
+      {
+       "name": "finger_joint_error_far_beyond_old_servo",
+       "path": "hand_control.joint_error_deg",
+       "op": ">",
+       "line": 15.0,
+       "from_run_hour": 0.5,
+       "mode": "stop",
+       "note": "DIRECT PHYSICAL, both arms. The field: per full stats record, the mean over the 8 bodies' model steps of the record's window of the mean over the 44 finger hinges of |hinge angle - that hinge's joint goal| at the model step's last physics step, degrees (0 = every hinge on its goal; env.py hand_joint_error_deg, train_mimo.py hand_control). The line: the hour mean above 15.0 degrees from run-hour 0.5. Production's servo and calibration (the control arm's configuration) read window means 14.26 to 14.41 degrees in control runs C1 and C2 and the cap arm L from 481,800 (model steps 482,100 to 484,600, 26 records each), per-record spread 0.38 to 0.45, hour means 14.03 to 14.59 from run-hour 0.25 in those runs and seg41o_1431. Simulated with the watcher's own rule at the highest level and spread (m2_stop_line_rates.json, 20,000 runs each): this line stops a run of production's configuration in 1.0 to 3.1 of 1,000 runs (the repair-run proposal's 14.6 from run-hour 0.25: 457 to 537 of 1,000), a run 1 degree worse than production's in 1,000 of 1,000 and 0.5 degree worse in 665 to 740 of 1,000, and a run at the paired trace's size for the finger servo read as this field reads it, after every model step (13.8 to 14.0 degrees: the highest window mean less the 0.43 to 0.64 degree the servo removes, analysis/m7_sc1_reach_and_sc2b_error.json; read at the hold's end only it removes 1.17 to 1.38), in 0 of 1,000. WHAT A STOP MEANS (the same words wherever the comparison states it): A stop of either arm, on any line, ends the comparison without a verdict: matched_comparison_verdict.py reads INVALID and the other arm is not launched. A finger-arm stop on the finger joint error line is in addition recorded as a finding against the package (the finger hinges ended farther from their goals than the line allows, the failure the package exists to remove); every other stop is recorded as readings only, neither a pass nor a fail of the package."
+      },
+      {
+       "name": "non_finite_update",
+       "path": "nan_steps",
+       "op": ">",
+       "line": 0,
+       "from_run_hour": 0,
+       "mode": "stop",
+       "note": "INTEGRITY, both arms. The field: the model steps of the record's window whose live loss was not finite (train_mimo.py). Any such model step in the hour stops the run (a non-finite update changes every learned weight it reaches). 0 in every full stats record of seg41o_1431, C1, C2 and L. The watcher's 5-minute check also stops on nan_steps above 0 in the newest record, and the standing watches' line M2 on the trainer log's skipped optimizer updates; this entry is the registry's record of the same line. EVERY PROGRAM THAT CAN WRITE A STOP INTO AN ARM'S FOLDER WHILE IT RUNS (read on Oct 9, 2026 from each program's code and the running processes; the same programs, files and lines for both arms, and launch_state.py hashes each program's files at both launches; what any of these stops means is the first entry's note; matched_comparison_verdict.py counts a stop from any of them: stop_reason.json, or a control_done_*.json or pending control.json whose cmd is stop or snapshot_and_stop without auto_resume). (1) The hourly watcher, docs/h84_launch_2026-09-18/hourly_watch.py, started by the arm's supervisor; it writes stop_reason.json, then snapshot_and_stop. Its lines: the six entries of this list, read from the run folder's declared_criteria.json; and its own rules, none an entry here: nan_steps above 0 in the newest record; a stop field non-finite in the newest record or absent from an hour of records; the planner monitor (a selection that worsens a body's total score, comparison scores missing, a non-finite search, or a hand stage reporting another calibration than the admitted fit fe953beb... in the control arm or the recorded replacement f68754c8... in the finger arm); a layer under 50 of 100 units responding in two complete report windows after the liveness repair's own window (efference.lesson.vision_in and efference.lesson.body_mlp.0 are alerts only); free disk under 8 GB on the stats, checkpoint or caregiver-record drive, or commit room under 4 GB; and its hourly rules, each needing two consecutive hourly window means past its line: vision causal error above 2 times, tactile causal error above 3 times, replay loss above 3 times and model steps per second under one third of this run's hour-1 mean, which judge from the second hourly sweep, so their earliest stop is the third sweep, about 10,200 s after the watcher finds the first record, while C1, C2 and L ended 6,631 to 7,851 s after their start (the independent review of Oct 9, 2026); vision or tactile token variance under 0.15, judged from run-hour 3; and follow_bout under -0.038, which read 0.246 to 0.293 in the four runs that review read. The five rule files it loads by path: motor_asked_change_watch.py (the asked-change watch, through the first full report at or past model step 484,875: its switch record M1, non-finite updates M2, its hidden layer under 0.9 live share in 2 full reports M3, the other senses against their level before its switch M4, the step rate under 0.9 of the window before in two windows running M5, its output above its growth line M6) and heads_all_slot_path_watch.py (the all-slot paths watch, through model step 489,350: M1, M2, M3 read as an alert for a run that resumes 481,800 of seg41o_1431 with max_steps 484675 (hourly_watch.CAP_EXPERIMENT_LATER_ARMS), M4, M5, a path's output above its sense's real change M6, a path's fixed vector against the old head's M9, proprioception's own-command reading M7, a head's audited error M8) judge both arms; proprio_repair_watch.py, vestibular_repair_watch.py and vestibular_input_path_watch.py judge only runs their switch records reach and printed no line in C1's, C2's and L's watcher logs. (2) The self-percept watch, docs/gain_of_function_v4/coordinator/self_percept_watch_loop.py with Source/Python/mimo_bridge/tools/self_percept_watch.py (processes 7876 and 30248, running since Oct 3, 2026 12:07 PM PDT): every 300 s it judges the supervisor's active run when that run's args.json reads self_percept_release on, as both arms' commands do, and on a crossed line it pauses the supervisor and writes stop_reason.json and snapshot_and_stop. Its two stop lines, declared here as stop lines of both arms: 2 or more live model steps above the self-percept limit of 8 within any 1,000 model steps since the resume, and more than 25 perceive calls above that limit per 100 model steps in a report. C1, C2 and L read 0 such model steps and at most 1 such call per 100 model steps over their 2,875 model steps (Saved/gof_takeover_20260927/self_percept_watch/loop.log). (3) The persistent memory watch, docs/gain_of_function_v4/coordinator/memory_watch_loop.py, which runs docs/gain_of_function_v4/persistent_memory_deploy_watch.py --act every 300 s (processes 6516 and 20176, running since Oct 1, 2026 8:46 AM PDT); it writes snapshot_and_stop into the active run's control.json and no stop_reason.json. Its stop lines (K2: a body-to-body or over-the-window state spread under 0.08 in a full report from the second through 10,000 model steps after the memory's switch; K4: a sense's log of its median ratio over the median of the 20 full reports before the switch above its line, over full reports 2 to 21 after the switch; K5: the step rate over those reports under its line) cannot fire on an arm: the switch it judges is the record of part switch at model step 415,075 (a resume writes part loaded, which it skips), so K2 reads reports up to model step 425,075 and K4 and K5 the reports 2 to 21 after 415,075, all in the arms' common ancestry before 481,800, and an arm adds no record any of them reads; on those reports it reads no crossing (K4: vision -0.380, tactile -0.007, audio 0.013, proprioception -0.012 against the lines 0.944, 0.028, 0.052 and 0.014; K5: 0.891 against 0.862; Saved/gof_takeover_20260927/memory_watch/verdict.json, 4:31 AM PDT, Oct 9, 2026). It could write a stop only if its code, its lines file docs/gain_of_function_v3/measurements/persistent_memory_resume_lines_2026-09-25.json or those records changed. (4) The relaunch script itself (relaunch_h84_seg41_2026-09-29.py stop_trainer) writes snapshot_and_stop with its reason into the new run's control.json when no supervisor attaches after the trainer starts: a failed launch, not a line. No stop for an arm comes from the ability scheduler (ability_rechecks.py and ability_comparison_window.py) or the pause runner (run_in_training_pause.py): each refuses to write into a run's control.json while supervisor_control.json holds a pause (training_continuation.pause_reason), and it holds the repair run's pause while an arm runs. The observer, the archiver, the dashboard and the explainer builder write no control.json."
+      },
+      {
+       "name": "vision_cost_beyond_cap_line",
+       "path": "prediction_audit_per_body.senses.vision.without_body_2.ratio",
+       "op": ">",
+       "line": 0.94,
+       "from_run_hour": 1.25,
+       "mode": "stop",
+       "note": "PREDICTION, both arms; a sense the package does not reach (the camera images the eyes receive). The field: vision's prediction error over the error of predicting no change on the record's live transitions, body 2 left out (0 = exact, 1 = no better than 'nothing changes'). The line: hour mean above 940 in 1,000 from run-hour 1.25; the cap experiment's line unchanged (row attention_cap_stop_lines_481800). The runs without the package (control runs C1 and C2 of production's configuration, and the cap arm L, which ran it with the attention cap on) read hour means from run-hour 1.25 of at most 702 in 1,000 in C1, C2 and L (716 in seg41o_1431, the run that switched on the all-slot paths) and window means up to 678; simulated false stops 0 of 1,000 (20,000 runs). A crossing in either arm shows this sense's prediction lost beyond anything the runs without the package measured plus that margin (the finger servo does not drive this sense); the stop is recorded as readings only, neither a pass nor a fail of the package (WHAT A STOP MEANS, the first entry's note)."
+      },
+      {
+       "name": "audio_cost_beyond_cap_line",
+       "path": "prediction_audit_per_body.senses.audio.without_body_2.ratio",
+       "op": ">",
+       "line": 0.965,
+       "from_run_hour": 1.25,
+       "mode": "stop",
+       "note": "PREDICTION, both arms; a sense the package does not reach (the sound spectrum the ears receive). The field: audio's prediction error over the error of predicting no change on the record's live transitions, body 2 left out (0 = exact, 1 = no better than 'nothing changes'). The line: hour mean above 965 in 1,000 from run-hour 1.25; the cap experiment's line unchanged (row attention_cap_stop_lines_481800). The runs without the package (control runs C1 and C2 of production's configuration, and the cap arm L, which ran it with the attention cap on) read hour means from run-hour 1.25 of at most 906 in 1,000 in C1, C2 and L (908 in seg41o_1431, the run that switched on the all-slot paths) and window means up to 903; simulated false stops 0 of 1,000 (20,000 runs). A crossing in either arm shows this sense's prediction lost beyond anything the runs without the package measured plus that margin (the finger servo does not drive this sense); the stop is recorded as readings only, neither a pass nor a fail of the package (WHAT A STOP MEANS, the first entry's note)."
+      },
+      {
+       "name": "proprioception_cost_beyond_half_gain",
+       "path": "prediction_audit_per_body.senses.proprioception.without_body_2.ratio",
+       "op": ">",
+       "line": 0.86,
+       "from_run_hour": 1.25,
+       "mode": "stop",
+       "note": "PREDICTION, both arms; a sense the package reaches (where each tracked body part is, how it is turned and how fast it moves; the finger handles are among the 26). The field: proprioception's prediction error over the error of predicting no change on the record's live transitions, body 2 left out (0 = exact, 1 = no better than 'nothing changes'). The line: hour mean above 860 in 1,000 from run-hour 1.25; the cap experiment's rule: the configuration's highest judged hour plus half of the model's gain over predicting no change in the 20 records ending at 481,800 (688 + (1,000 - 669) / 2 = 854, rounded up to 860 in 1,000). The runs without the package (control runs C1 and C2 of production's configuration, and the cap arm L, which ran it with the attention cap on) read hour means from run-hour 1.25 of at most 688 in 1,000 in C1, C2 and L (687 in seg41o_1431, the run that switched on the all-slot paths) and window means up to 675; simulated false stops 0 of 1,000 (20,000 runs). A crossing in either arm shows this sense's prediction lost beyond anything the runs without the package measured plus that margin; the stop is recorded as readings only, neither a pass nor a fail of the package (WHAT A STOP MEANS, the first entry's note). In the finger arm a rise of 185 in 1,000 above the control's highest window mean at the switch would reach it. THE SWITCH'S RISE IS NOT MEASURED YET: the dry run's run B read fresh worlds, and the reading the independent review of Oct 9, 2026 asked for is row finger_switch_prediction_effect_481800, a draft that is not in the registry (D:/UEMA_Research/external/D/UEMA_scratch/finger_investigation/switch_effect/row_draft_finger_switch_prediction_effect_481800.json, written 4:06 AM PDT) and has not run; its tool is on branch study/finger-switch-prediction-effect-2026-10-09 (48dd491ca), not merged, under independent review. The operator signs after that reading has set this line (a stop or an alert, the same in both arms) and SC3's named loss for this sense (matched_comparison_verdict.py NAMED_LOSS), and after both are written into this list and both blocks; until then the line stands as declared."
+      },
+      {
+       "name": "tactile_cost_beyond_half_gain",
+       "path": "prediction_audit_per_body.senses.tactile.without_body_2.ratio",
+       "op": ">",
+       "line": 0.99,
+       "from_run_hour": 1.25,
+       "mode": "stop",
+       "note": "PREDICTION, both arms; a sense the package reaches (the skin's contact readings; finger contacts change with the finger servo). The field: tactile's prediction error over the error of predicting no change on the record's live transitions, body 2 left out (0 = exact, 1 = no better than 'nothing changes'). The line: hour mean above 990 in 1,000 from run-hour 1.25; the cap experiment's rule: the configuration's highest judged hour plus half of the model's gain over predicting no change in the 20 records ending at 481,800 (970.5 + (1,000 - 961) / 2 = 990 in 1,000). The runs without the package (control runs C1 and C2 of production's configuration, and the cap arm L, which ran it with the attention cap on) read hour means from run-hour 1.25 of at most 936 in 1,000 in C1, C2 and L (970 in seg41o_1431, the run that switched on the all-slot paths) and window means up to 933; simulated false stops 0 of 1,000 (20,000 runs). A crossing in either arm shows this sense's prediction lost beyond anything the runs without the package measured plus that margin; the stop is recorded as readings only, neither a pass nor a fail of the package (WHAT A STOP MEANS, the first entry's note). In the finger arm a rise of 57 in 1,000 above the control's highest window mean at the switch would reach it. THE SWITCH'S RISE IS NOT MEASURED YET: the dry run's run B read fresh worlds, and the reading the independent review of Oct 9, 2026 asked for is row finger_switch_prediction_effect_481800, a draft that is not in the registry (D:/UEMA_Research/external/D/UEMA_scratch/finger_investigation/switch_effect/row_draft_finger_switch_prediction_effect_481800.json, written 4:06 AM PDT) and has not run; its tool is on branch study/finger-switch-prediction-effect-2026-10-09 (48dd491ca), not merged, under independent review. The operator signs after that reading has set this line (a stop or an alert, the same in both arms) and SC3's named loss for this sense (matched_comparison_verdict.py NAMED_LOSS), and after both are written into this list and both blocks; until then the line stands as declared."
+      }
+     ],
+     "wall_cap_s": 19931
+    },
+    "ALLOWED: configuration eea1e8bc7f446fb6 may launch.\n",
+    "{\n \"verdict\": \"ALLOWED\",\n \"refusal\": null,\n \"next\": \"a scratch copy: nothing to commit\"\n}\n"
+   ]
+  },
+  {
+   "check": "ALL",
+   "expect": "the production preflight folder unchanged (every file's sha256)",
+   "held": true,
+   "got": []
+  },
+  {
+   "check": "ALL",
+   "expect": "the production registry: the four b1_adopt_ rows equal their copy taken at the start and no row holds preflight_recovery; rows changed by another writer named",
+   "held": true,
+   "got": {
+    "changed_rows": [
+     "preflight_recovery_entry_dry_run_20261013"
+    ],
+    "with_field": []
+   }
+  }
+ ],
+ "held": 34,
+ "of": 34,
+ "results": {
+  "command": "D:\\UEMA_Research\\external\\D\\UEMA_scratch\\preflight_recovery\\preflight_recovery_entry_dry_run_20261013\\run5\\command.json",
+  "command_sha256": "8792481c9ac19416f626d7c57830d64a66168fbb8c393efac915c6e326e98dd2",
+  "D0": {
+   "refusal": "BLOCKED: configuration eea1e8bc7f446fb6 is the adoption's (ADOPTION_ROUTES): it launches only as its adoption, once, from D:/UEMA_Research/external/D/UEMA_preserved/body1_extension_B1E_skip13_485975/run/checkpoints/ckpt_step_489350 to model step 494025, and as its linked recovery (RECOVERY_ROUTES), once, from D:/UEMA_Research/external/D/UEMA_preserved/b1_adopt_B1A_skip13_489350/run/checkpoints/ckpt_step_489625 to model step 494025; every other launch of it is normal training, refused (the decision: \"Keep each gate FAIL; no normal-training qualification is granted\")",
+   "plan": {
+    "kind": "normal",
+    "block": null,
+    "fingerprint": "eea1e8bc7f446fb6",
+    "start_step": null,
+    "max_steps": null,
+    "stop_criteria": null
+   }
+  },
+  "rows": {
+   "standins": [],
+   "training_row": "written",
+   "training_row_block": {
+    "reason": "PACKAGE BUILT TO proxy decision proxy-adoption-recovery-489625-20261013 (message text sha256 f382f32b...; author: the overseer), NOT LAUNCHED (Oct 13, 2026). Before any launch: the item-7 agent's linked recovery record and preflight_handoff.json; the coordinator's independent recheck of the monitoring repair and rehearsal; this block removed (test_runner unblock); launch_recover.py check with no failed check; the launch from a foreground command.",
+    "waits_on": "the item-7 preflight handoff; the independent recheck",
+    "by": "the recovery package builder (agent of Oct 13, 2026, coordinator session 358a210a)",
+    "at": "Oct 13, 2026 12:01 PM PDT"
+   },
+   "completion_row": "queued"
+  },
+  "D1a": {
+   "block": {
+    "reason": "PACKAGE BUILT TO proxy decision proxy-adoption-recovery-489625-20261013 (message text sha256 f382f32b...; author: the overseer), NOT LAUNCHED (Oct 13, 2026). Before any launch: the item-7 agent's linked recovery record and preflight_handoff.json; the coordinator's independent recheck of the monitoring repair and rehearsal; this block removed (test_runner unblock); launch_recover.py check with no failed check; the launch from a foreground command.",
+    "waits_on": "the item-7 preflight handoff; the independent recheck",
+    "by": "the recovery package builder (agent of Oct 13, 2026, coordinator session 358a210a)",
+    "at": "Oct 13, 2026 12:01 PM PDT"
+   },
+   "refusal": "refused by the route: the training row b1_recover_B1R_skip13_489625 is blocked (PACKAGE BUILT TO proxy decision proxy-adoption-recovery-489625-20261013 (message text sha256 f382f32b...; author: the overseer), NOT LAUNCHED (Oct 13, 2026). Before any launch: the item-7 agent's linked recovery record and preflight_handoff.json; the coordinator's independent recheck of the monitoring repair and rehearsal; this block removed (test_runner unblock); launch_recover.py check with no failed check; the launch from a foreground command.; it waits on the item-7 preflight handoff; the independent recheck): only the completion jobs' row may carry a block, one waiting on this recovery's training row b1_recover_B1R_skip13_489625\n",
+   "unblock": null
+  },
+  "D1": {
+   "receipt": {
+    "at": "Oct 13, 2026 01:39:48 PM PDT",
+    "root": "D:\\UEMA_Research\\external\\D\\UEMA_scratch\\preflight_recovery\\preflight_recovery_entry_dry_run_20261013\\run5\\preflight_copy",
+    "registry": "D:\\UEMA_Research\\external\\D\\UEMA_scratch\\preflight_recovery\\preflight_recovery_entry_dry_run_20261013\\run5\\registry_copy.json",
+    "module": "D:\\UEMA_Research\\Source\\Python\\mimo_bridge\\tools\\training_preflight.py",
+    "module_sha256": "9c65646c05f978916f03b967a41ff30fc2987fa3b97c8c1c8a4836ad4231390e",
+    "command": "D:\\UEMA_Research\\external\\D\\UEMA_scratch\\preflight_recovery\\preflight_recovery_entry_dry_run_20261013\\run5\\command.json",
+    "command_sha256": "8792481c9ac19416f626d7c57830d64a66168fbb8c393efac915c6e326e98dd2",
+    "by": "dry_run.py (scratch)",
+    "completion_row": "b1_recover_outcome_494025",
+    "handoff": "D:\\UEMA_Research\\external\\D\\UEMA_scratch\\b1_recover_489625\\preflight_handoff.json",
+    "handoff_sha256": "fac523b8127c615154cd419f07626a7c05b60ba2537fe2d3ea0f703532e82703",
+    "written": {
+     "recovery_file": "D:\\UEMA_Research\\external\\D\\UEMA_scratch\\preflight_recovery\\preflight_recovery_entry_dry_run_20261013\\run5\\preflight_copy\\recoveries\\eea1e8bc7f446fb6.json",
+     "recovery_sha256": "3e8da3d11dc5b9925b7b94e7340aadbb3f9c8e6e18ade9d16d4c959afda345f1",
+     "record_unchanged": true,
+     "adoption_unchanged": true
+    },
+    "refusal": null,
+    "plan": {
+     "kind": "continuation",
+     "block": "recovery",
+     "fingerprint": "eea1e8bc7f446fb6",
+     "start_step": 489625,
+     "max_steps": 494025,
+     "stop_criteria": [
+      {
+       "name": "finger_joint_error_far_beyond_old_servo",
+       "path": "hand_control.joint_error_deg",
+       "op": ">",
+       "line": 15.0,
+       "from_run_hour": 0.5,
+       "mode": "stop",
+       "note": "DIRECT PHYSICAL, both arms. The field: per full stats record, the mean over the 8 bodies' model steps of the record's window of the mean over the 44 finger hinges of |hinge angle - that hinge's joint goal| at the model step's last physics step, degrees (0 = every hinge on its goal; env.py hand_joint_error_deg, train_mimo.py hand_control). The line: the hour mean above 15.0 degrees from run-hour 0.5. Production's servo and calibration (the control arm's configuration) read window means 14.26 to 14.41 degrees in control runs C1 and C2 and the cap arm L from 481,800 (model steps 482,100 to 484,600, 26 records each), per-record spread 0.38 to 0.45, hour means 14.03 to 14.59 from run-hour 0.25 in those runs and seg41o_1431. Simulated with the watcher's own rule at the highest level and spread (m2_stop_line_rates.json, 20,000 runs each): this line stops a run of production's configuration in 1.0 to 3.1 of 1,000 runs (the repair-run proposal's 14.6 from run-hour 0.25: 457 to 537 of 1,000), a run 1 degree worse than production's in 1,000 of 1,000 and 0.5 degree worse in 665 to 740 of 1,000, and a run at the paired trace's size for the finger servo read as this field reads it, after every model step (13.8 to 14.0 degrees: the highest window mean less the 0.43 to 0.64 degree the servo removes, analysis/m7_sc1_reach_and_sc2b_error.json; read at the hold's end only it removes 1.17 to 1.38), in 0 of 1,000. WHAT A STOP MEANS (the same words wherever the comparison states it): A stop of either arm, on any line, ends the comparison without a verdict: matched_comparison_verdict.py reads INVALID and the other arm is not launched. A finger-arm stop on the finger joint error line is in addition recorded as a finding against the package (the finger hinges ended farther from their goals than the line allows, the failure the package exists to remove); every other stop is recorded as readings only, neither a pass nor a fail of the package."
+      },
+      {
+       "name": "non_finite_update",
+       "path": "nan_steps",
+       "op": ">",
+       "line": 0,
+       "from_run_hour": 0,
+       "mode": "stop",
+       "note": "INTEGRITY, both arms. The field: the model steps of the record's window whose live loss was not finite (train_mimo.py). Any such model step in the hour stops the run (a non-finite update changes every learned weight it reaches). 0 in every full stats record of seg41o_1431, C1, C2 and L. The watcher's 5-minute check also stops on nan_steps above 0 in the newest record, and the standing watches' line M2 on the trainer log's skipped optimizer updates; this entry is the registry's record of the same line. EVERY PROGRAM THAT CAN WRITE A STOP INTO AN ARM'S FOLDER WHILE IT RUNS (read on Oct 9, 2026 from each program's code and the running processes; the same programs, files and lines for both arms, and launch_state.py hashes each program's files at both launches; what any of these stops means is the first entry's note; matched_comparison_verdict.py counts a stop from any of them: stop_reason.json, or a control_done_*.json or pending control.json whose cmd is stop or snapshot_and_stop without auto_resume). (1) The hourly watcher, docs/h84_launch_2026-09-18/hourly_watch.py, started by the arm's supervisor; it writes stop_reason.json, then snapshot_and_stop. Its lines: the six entries of this list, read from the run folder's declared_criteria.json; and its own rules, none an entry here: nan_steps above 0 in the newest record; a stop field non-finite in the newest record or absent from an hour of records; the planner monitor (a selection that worsens a body's total score, comparison scores missing, a non-finite search, or a hand stage reporting another calibration than the admitted fit fe953beb... in the control arm or the recorded replacement f68754c8... in the finger arm); a layer under 50 of 100 units responding in two complete report windows after the liveness repair's own window (efference.lesson.vision_in and efference.lesson.body_mlp.0 are alerts only); free disk under 8 GB on the stats, checkpoint or caregiver-record drive, or commit room under 4 GB; and its hourly rules, each needing two consecutive hourly window means past its line: vision causal error above 2 times, tactile causal error above 3 times, replay loss above 3 times and model steps per second under one third of this run's hour-1 mean, which judge from the second hourly sweep, so their earliest stop is the third sweep, about 10,200 s after the watcher finds the first record, while C1, C2 and L ended 6,631 to 7,851 s after their start (the independent review of Oct 9, 2026); vision or tactile token variance under 0.15, judged from run-hour 3; and follow_bout under -0.038, which read 0.246 to 0.293 in the four runs that review read. The five rule files it loads by path: motor_asked_change_watch.py (the asked-change watch, through the first full report at or past model step 484,875: its switch record M1, non-finite updates M2, its hidden layer under 0.9 live share in 2 full reports M3, the other senses against their level before its switch M4, the step rate under 0.9 of the window before in two windows running M5, its output above its growth line M6) and heads_all_slot_path_watch.py (the all-slot paths watch, through model step 489,350: M1, M2, M3 read as an alert for a run that resumes 481,800 of seg41o_1431 with max_steps 484675 (hourly_watch.CAP_EXPERIMENT_LATER_ARMS), M4, M5, a path's output above its sense's real change M6, a path's fixed vector against the old head's M9, proprioception's own-command reading M7, a head's audited error M8) judge both arms; proprio_repair_watch.py, vestibular_repair_watch.py and vestibular_input_path_watch.py judge only runs their switch records reach and printed no line in C1's, C2's and L's watcher logs. (2) The self-percept watch, docs/gain_of_function_v4/coordinator/self_percept_watch_loop.py with Source/Python/mimo_bridge/tools/self_percept_watch.py (processes 7876 and 30248, running since Oct 3, 2026 12:07 PM PDT): every 300 s it judges the supervisor's active run when that run's args.json reads self_percept_release on, as both arms' commands do, and on a crossed line it pauses the supervisor and writes stop_reason.json and snapshot_and_stop. Its two stop lines, declared here as stop lines of both arms: 2 or more live model steps above the self-percept limit of 8 within any 1,000 model steps since the resume, and more than 25 perceive calls above that limit per 100 model steps in a report. C1, C2 and L read 0 such model steps and at most 1 such call per 100 model steps over their 2,875 model steps (Saved/gof_takeover_20260927/self_percept_watch/loop.log). (3) The persistent memory watch, docs/gain_of_function_v4/coordinator/memory_watch_loop.py, which runs docs/gain_of_function_v4/persistent_memory_deploy_watch.py --act every 300 s (processes 6516 and 20176, running since Oct 1, 2026 8:46 AM PDT); it writes snapshot_and_stop into the active run's control.json and no stop_reason.json. Its stop lines (K2: a body-to-body or over-the-window state spread under 0.08 in a full report from the second through 10,000 model steps after the memory's switch; K4: a sense's log of its median ratio over the median of the 20 full reports before the switch above its line, over full reports 2 to 21 after the switch; K5: the step rate over those reports under its line) cannot fire on an arm: the switch it judges is the record of part switch at model step 415,075 (a resume writes part loaded, which it skips), so K2 reads reports up to model step 425,075 and K4 and K5 the reports 2 to 21 after 415,075, all in the arms' common ancestry before 481,800, and an arm adds no record any of them reads; on those reports it reads no crossing (K4: vision -0.380, tactile -0.007, audio 0.013, proprioception -0.012 against the lines 0.944, 0.028, 0.052 and 0.014; K5: 0.891 against 0.862; Saved/gof_takeover_20260927/memory_watch/verdict.json, 4:31 AM PDT, Oct 9, 2026). It could write a stop only if its code, its lines file docs/gain_of_function_v3/measurements/persistent_memory_resume_lines_2026-09-25.json or those records changed. (4) The relaunch script itself (relaunch_h84_seg41_2026-09-29.py stop_trainer) writes snapshot_and_stop with its reason into the new run's control.json when no supervisor attaches after the trainer starts: a failed launch, not a line. No stop for an arm comes from the ability scheduler (ability_rechecks.py and ability_comparison_window.py) or the pause runner (run_in_training_pause.py): each refuses to write into a run's control.json while supervisor_control.json holds a pause (training_continuation.pause_reason), and it holds the repair run's pause while an arm runs. The observer, the archiver, the dashboard and the explainer builder write no control.json."
+      },
+      {
+       "name": "vision_cost_beyond_cap_line",
+       "path": "prediction_audit_per_body.senses.vision.without_body_2.ratio",
+       "op": ">",
+       "line": 0.94,
+       "from_run_hour": 1.25,
+       "mode": "stop",
+       "note": "PREDICTION, both arms; a sense the package does not reach (the camera images the eyes receive). The field: vision's prediction error over the error of predicting no change on the record's live transitions, body 2 left out (0 = exact, 1 = no better than 'nothing changes'). The line: hour mean above 940 in 1,000 from run-hour 1.25; the cap experiment's line unchanged (row attention_cap_stop_lines_481800). The runs without the package (control runs C1 and C2 of production's configuration, and the cap arm L, which ran it with the attention cap on) read hour means from run-hour 1.25 of at most 702 in 1,000 in C1, C2 and L (716 in seg41o_1431, the run that switched on the all-slot paths) and window means up to 678; simulated false stops 0 of 1,000 (20,000 runs). A crossing in either arm shows this sense's prediction lost beyond anything the runs without the package measured plus that margin (the finger servo does not drive this sense); the stop is recorded as readings only, neither a pass nor a fail of the package (WHAT A STOP MEANS, the first entry's note)."
+      },
+      {
+       "name": "audio_cost_beyond_cap_line",
+       "path": "prediction_audit_per_body.senses.audio.without_body_2.ratio",
+       "op": ">",
+       "line": 0.965,
+       "from_run_hour": 1.25,
+       "mode": "stop",
+       "note": "PREDICTION, both arms; a sense the package does not reach (the sound spectrum the ears receive). The field: audio's prediction error over the error of predicting no change on the record's live transitions, body 2 left out (0 = exact, 1 = no better than 'nothing changes'). The line: hour mean above 965 in 1,000 from run-hour 1.25; the cap experiment's line unchanged (row attention_cap_stop_lines_481800). The runs without the package (control runs C1 and C2 of production's configuration, and the cap arm L, which ran it with the attention cap on) read hour means from run-hour 1.25 of at most 906 in 1,000 in C1, C2 and L (908 in seg41o_1431, the run that switched on the all-slot paths) and window means up to 903; simulated false stops 0 of 1,000 (20,000 runs). A crossing in either arm shows this sense's prediction lost beyond anything the runs without the package measured plus that margin (the finger servo does not drive this sense); the stop is recorded as readings only, neither a pass nor a fail of the package (WHAT A STOP MEANS, the first entry's note)."
+      },
+      {
+       "name": "proprioception_cost_beyond_half_gain",
+       "path": "prediction_audit_per_body.senses.proprioception.without_body_2.ratio",
+       "op": ">",
+       "line": 0.86,
+       "from_run_hour": 1.25,
+       "mode": "stop",
+       "note": "PREDICTION, both arms; a sense the package reaches (where each tracked body part is, how it is turned and how fast it moves; the finger handles are among the 26). The field: proprioception's prediction error over the error of predicting no change on the record's live transitions, body 2 left out (0 = exact, 1 = no better than 'nothing changes'). The line: hour mean above 860 in 1,000 from run-hour 1.25; the cap experiment's rule: the configuration's highest judged hour plus half of the model's gain over predicting no change in the 20 records ending at 481,800 (688 + (1,000 - 669) / 2 = 854, rounded up to 860 in 1,000). The runs without the package (control runs C1 and C2 of production's configuration, and the cap arm L, which ran it with the attention cap on) read hour means from run-hour 1.25 of at most 688 in 1,000 in C1, C2 and L (687 in seg41o_1431, the run that switched on the all-slot paths) and window means up to 675; simulated false stops 0 of 1,000 (20,000 runs). A crossing in either arm shows this sense's prediction lost beyond anything the runs without the package measured plus that margin; the stop is recorded as readings only, neither a pass nor a fail of the package (WHAT A STOP MEANS, the first entry's note). In the finger arm a rise of 185 in 1,000 above the control's highest window mean at the switch would reach it. THE SWITCH'S RISE IS NOT MEASURED YET: the dry run's run B read fresh worlds, and the reading the independent review of Oct 9, 2026 asked for is row finger_switch_prediction_effect_481800, a draft that is not in the registry (D:/UEMA_Research/external/D/UEMA_scratch/finger_investigation/switch_effect/row_draft_finger_switch_prediction_effect_481800.json, written 4:06 AM PDT) and has not run; its tool is on branch study/finger-switch-prediction-effect-2026-10-09 (48dd491ca), not merged, under independent review. The operator signs after that reading has set this line (a stop or an alert, the same in both arms) and SC3's named loss for this sense (matched_comparison_verdict.py NAMED_LOSS), and after both are written into this list and both blocks; until then the line stands as declared."
+      },
+      {
+       "name": "tactile_cost_beyond_half_gain",
+       "path": "prediction_audit_per_body.senses.tactile.without_body_2.ratio",
+       "op": ">",
+       "line": 0.99,
+       "from_run_hour": 1.25,
+       "mode": "stop",
+       "note": "PREDICTION, both arms; a sense the package reaches (the skin's contact readings; finger contacts change with the finger servo). The field: tactile's prediction error over the error of predicting no change on the record's live transitions, body 2 left out (0 = exact, 1 = no better than 'nothing changes'). The line: hour mean above 990 in 1,000 from run-hour 1.25; the cap experiment's rule: the configuration's highest judged hour plus half of the model's gain over predicting no change in the 20 records ending at 481,800 (970.5 + (1,000 - 961) / 2 = 990 in 1,000). The runs without the package (control runs C1 and C2 of production's configuration, and the cap arm L, which ran it with the attention cap on) read hour means from run-hour 1.25 of at most 936 in 1,000 in C1, C2 and L (970 in seg41o_1431, the run that switched on the all-slot paths) and window means up to 933; simulated false stops 0 of 1,000 (20,000 runs). A crossing in either arm shows this sense's prediction lost beyond anything the runs without the package measured plus that margin; the stop is recorded as readings only, neither a pass nor a fail of the package (WHAT A STOP MEANS, the first entry's note). In the finger arm a rise of 57 in 1,000 above the control's highest window mean at the switch would reach it. THE SWITCH'S RISE IS NOT MEASURED YET: the dry run's run B read fresh worlds, and the reading the independent review of Oct 9, 2026 asked for is row finger_switch_prediction_effect_481800, a draft that is not in the registry (D:/UEMA_Research/external/D/UEMA_scratch/finger_investigation/switch_effect/row_draft_finger_switch_prediction_effect_481800.json, written 4:06 AM PDT) and has not run; its tool is on branch study/finger-switch-prediction-effect-2026-10-09 (48dd491ca), not merged, under independent review. The operator signs after that reading has set this line (a stop or an alert, the same in both arms) and SC3's named loss for this sense (matched_comparison_verdict.py NAMED_LOSS), and after both are written into this list and both blocks; until then the line stands as declared."
+      }
+     ],
+     "wall_cap_s": 19931
+    },
+    "verdict": "ALLOWED",
+    "next": "a scratch copy: nothing to commit"
+   },
+   "changed": [
+    "recoveries/eea1e8bc7f446fb6.json"
+   ],
+   "reachability": "Start 489,625 (the stopped run's end save), report rate 100, so the first full stats record comes at 489,700. The route's first_readings at the stopped run's fastest pace between two full stats records (0.466 model steps a second) puts the watcher's first judgement of each stop line, with the trainer's reading of its stop, at most finger_joint_error_far_beyond_old_servo 1104, non_finite_update 254, vision_cost_beyond_cap_line 2361, audio_cost_beyond_cap_line 2361, proprioception_cost_beyond_half_gain 2361, tactile_cost_beyond_half_gain 2361 model steps after the start (counted from this run's own run-hour; the hourly wrapper carries the earlier runs' records, so the from_run_hour lines are reached sooner): every line is judged before the end at 494,025, 4,400 model steps in.",
+   "applicability": {
+    "1": "This exception is carried to the preserved model step 489,625 of run B1A_skip13_489350, the same lineage: that run resumed the preserved 489,350 this exception was written for and trained 275 model steps under configuration eea1e8bc7f446fb6 (the same flags, the same named files and the same trainer code, commit 641c931a6, as the record's code hash shows) until its owner stopped it on a monitoring defect (the asked-change watcher read not_reached for a watch that had ended at 484,900; no stop line was crossed). Where gate 1 (Information flow) comes from: the records name three parts. The part that keeps the gate FAIL in records c007d2bb5af08224 and 4ba33dfc88ced223: the vestibular token carries no head tilt (record c007d2bb5af08224, Oct 5, 2026 10:10 AM PDT: a held-out read-out found it at no size on checkpoint 479,350; record 4ba33dfc88ced223 kept the gate FAIL on it as not reached by its run). The bodies' posture information in their tokens: record 2c3d82ca4ab4a870 (Oct 12, 2026 7:48 PM PDT) measured body 1's kept (the exclusion run's encoder at model step 484,675 against 481,800, +0.020) and bodies 4, 5 and 8 lower in the exclusion run than in the fresh push-on run (-1.2, -2.8 and -1.9 points), and kept the gate FAIL; the extension's whole-span reading (outcome receipt sha256 da924702...) read every body again at 489,350, body 1 held and no other body lower against the extension's start 485,975 or seg41r_1539's 489,350; the stopped run's shorter readings (outcome receipt sha256 c9e0c06e..., INCOMPLETE, its posture reading valid) read every body at 489,625, no body lower than at 489,350. The 26 handles' commands reaching the motor token and changing the predicted next proprioception: record c007d2bb5af08224 recorded this part met on 481,800 (its lines L1 and L2), while the failure text record eea1e8bc7f446fb6 carries names it unrepaired. Record eea1e8bc7f446fb6 holds the gate FAIL for its one model state, the preserved 489,350, as carried from those judgements; the head-tilt part was measured again on neither 489,350 nor 489,625. Each later record carried the failure with a gate text that judges it again or states how that record's own change of code, flags or stop lines bears on it, and the 275 model steps ran record eea1e8bc7f446fb6's code and flags without a change; so the gate stays FAIL as carried, and nothing about it is newly measured or passed. No measurement of this gate is planned at 494,025: the recovery's declared readings compare the whole 489,350-to-494,025 span with the original 489,350 baseline, and they are interpreted with this failure assumed at both ends, as the carried why_measurable states. The exception covers this inherited failure only: a training or control defect confirmed in the 275 model steps or in the recovery is outside it (the decision, item 7).",
+    "2": "This exception is carried to the preserved model step 489,625 of run B1A_skip13_489350, the same lineage: that run resumed the preserved 489,350 this exception was written for and trained 275 model steps under configuration eea1e8bc7f446fb6 (the same flags, the same named files and the same trainer code, commit 641c931a6, as the record's code hash shows) until its owner stopped it on a monitoring defect (the asked-change watcher read not_reached for a watch that had ended at 484,900; no stop line was crossed). Where gate 2 (Gradient flow) comes from: the motor controller's confidence head reading its top value, so that its gradient is exactly 0, was judged by record c007d2bb5af08224 (Oct 5, 2026 10:10 AM PDT; that record cites the audit of checkpoint 479,350, and its one model state is 481,800) and carried for 481,800 by records 4ba33dfc88ced223 and 2c3d82ca4ab4a870. Record eea1e8bc7f446fb6 holds the gate FAIL for its one model state, the preserved 489,350, as carried from those judgements; it was measured again on neither 489,350 nor 489,625. Each later record carried the failure with a gate text that judges it again or states how that record's own change of code, flags or stop lines bears on it, and the 275 model steps ran record eea1e8bc7f446fb6's code and flags without a change; so the gate stays FAIL as carried, and nothing about it is newly measured or passed. No measurement of this gate is planned at 494,025: the recovery's declared readings compare the whole 489,350-to-494,025 span with the original 489,350 baseline, and they are interpreted with this failure assumed at both ends, as the carried why_measurable states. The exception covers this inherited failure only: a training or control defect confirmed in the 275 model steps or in the recovery is outside it (the decision, item 7).",
+    "3": "This exception is carried to the preserved model step 489,625 of run B1A_skip13_489350, the same lineage: that run resumed the preserved 489,350 this exception was written for and trained 275 model steps under configuration eea1e8bc7f446fb6 (the same flags, the same named files and the same trainer code, commit 641c931a6, as the record's code hash shows) until its owner stopped it on a monitoring defect (the asked-change watcher read not_reached for a watch that had ended at 484,900; no stop line was crossed). Where gate 3 (Scale/conditioning) comes from: record c007d2bb5af08224 (Oct 5, 2026 10:10 AM PDT; its one model state is 481,800) judged each of the motor encoder's 4 pooling heads to put at least 0.99999 of its weight on one handle at every base state of model step 481,800, and the predictor's attention switching under a small command change and the persistent memory's very large constant without naming another state, and carried for 481,800 by records 4ba33dfc88ced223 and 2c3d82ca4ab4a870. Record eea1e8bc7f446fb6 holds the gate FAIL for its one model state, the preserved 489,350, as carried from those judgements; it was measured again on neither 489,350 nor 489,625. Each later record carried the failure with a gate text that judges it again or states how that record's own change of code, flags or stop lines bears on it, and the 275 model steps ran record eea1e8bc7f446fb6's code and flags without a change; so the gate stays FAIL as carried, and nothing about it is newly measured or passed. No measurement of this gate is planned at 494,025: the recovery's declared readings compare the whole 489,350-to-494,025 span with the original 489,350 baseline, and they are interpreted with this failure assumed at both ends, as the carried why_measurable states. The exception covers this inherited failure only: a training or control defect confirmed in the 275 model steps or in the recovery is outside it (the decision, item 7).",
+    "4": "This exception is carried to the preserved model step 489,625 of run B1A_skip13_489350, the same lineage: that run resumed the preserved 489,350 this exception was written for and trained 275 model steps under configuration eea1e8bc7f446fb6 (the same flags, the same named files and the same trainer code, commit 641c931a6, as the record's code hash shows) until its owner stopped it on a monitoring defect (the asked-change watcher read not_reached for a watch that had ended at 484,900; no stop line was crossed). Where gate 4 (Local stability) comes from: the selected command turning 18.5 degrees on the average handle for a token change of 0.00001 was measured by record c007d2bb5af08224 (Oct 5, 2026 10:10 AM PDT) on model step 481,800 (22.3 degrees on 479,350) and carried for 481,800 by records 4ba33dfc88ced223 and 2c3d82ca4ab4a870. Record eea1e8bc7f446fb6 holds the gate FAIL for its one model state, the preserved 489,350, as carried from those judgements; it was measured again on neither 489,350 nor 489,625. Each later record carried the failure with a gate text that judges it again or states how that record's own change of code, flags or stop lines bears on it, and the 275 model steps ran record eea1e8bc7f446fb6's code and flags without a change; so the gate stays FAIL as carried, and nothing about it is newly measured or passed. No measurement of this gate is planned at 494,025: the recovery's declared readings compare the whole 489,350-to-494,025 span with the original 489,350 baseline, and they are interpreted with this failure assumed at both ends, as the carried why_measurable states. The exception covers this inherited failure only: a training or control defect confirmed in the 275 model steps or in the recovery is outside it (the decision, item 7).",
+    "5": "This exception is carried to the preserved model step 489,625 of run B1A_skip13_489350, the same lineage: that run resumed the preserved 489,350 this exception was written for and trained 275 model steps under configuration eea1e8bc7f446fb6 (the same flags, the same named files and the same trainer code, commit 641c931a6, as the record's code hash shows) until its owner stopped it on a monitoring defect (the asked-change watcher read not_reached for a watch that had ended at 484,900; no stop line was crossed). Where gate 5 (Causal controllability) comes from: for 19 of the 26 handles a command change not predictably changing its own predicted consequence was judged by record c007d2bb5af08224 (Oct 5, 2026 10:10 AM PDT; its one model state is 481,800, and its evidence is registry row investigate_motor_handle_reach_481800) and carried for 481,800 by records 4ba33dfc88ced223 and 2c3d82ca4ab4a870 (record 4ba33dfc88ced223 judged its finger and hand part again only on the end checkpoint 484,675 of run seg41j_1526, another model state). Record eea1e8bc7f446fb6 holds the gate FAIL for its one model state, the preserved 489,350, as carried from those judgements; it was measured again on neither 489,350 nor 489,625. Each later record carried the failure with a gate text that judges it again or states how that record's own change of code, flags or stop lines bears on it, and the 275 model steps ran record eea1e8bc7f446fb6's code and flags without a change; so the gate stays FAIL as carried, and nothing about it is newly measured or passed. No measurement of this gate is planned at 494,025: the recovery's declared readings compare the whole 489,350-to-494,025 span with the original 489,350 baseline, and they are interpreted with this failure assumed at both ends, as the carried why_measurable states. The exception covers this inherited failure only: a training or control defect confirmed in the 275 model steps or in the recovery is outside it (the decision, item 7).",
+    "6": "This exception is carried to the preserved model step 489,625 of run B1A_skip13_489350, the same lineage: that run resumed the preserved 489,350 this exception was written for and trained 275 model steps under configuration eea1e8bc7f446fb6 (the same flags, the same named files and the same trainer code, commit 641c931a6, as the record's code hash shows) until its owner stopped it on a monitoring defect (the asked-change watcher read not_reached for a watch that had ended at 484,900; no stop line was crossed). Where gate 6 (Objective/test alignment) comes from: the held configuration's stop lines on internal statistics (the step rate under 0.9 of the window before; a hidden layer under 0.9 live share) were judged by record c007d2bb5af08224 (Oct 5, 2026 10:10 AM PDT) from the held run's declared lines, not from a model state, and carried by records 4ba33dfc88ced223 and 2c3d82ca4ab4a870; record eea1e8bc7f446fb6 judged it again for the adoption run (Oct 13, 2026 8:44 AM PDT): FAIL, with M3 an alert only for that run and its outcome lines reading posture, physical choices and prediction directly. Record eea1e8bc7f446fb6 holds the gate FAIL for its one model state, the preserved 489,350, as carried from those judgements; the recovery changes its monitoring as the decision's items 4 and 5 require (the asked-change watch that ended at 484,900 excluded as a completed watch, M3 an alert for this recovery, the hourly wrapper's bindings moved to this run, the six declared criteria unchanged), and no record judges gate 6 again for those changes. Each later record carried the failure with a gate text that judges it again or states how that record's own change of code, flags or stop lines bears on it, and the 275 model steps ran record eea1e8bc7f446fb6's code and flags without a change; so the gate stays FAIL as carried, and nothing about it is newly measured or passed. No measurement of this gate is planned at 494,025: the recovery's declared readings compare the whole 489,350-to-494,025 span with the original 489,350 baseline, and they are interpreted with this failure assumed at both ends, as the carried why_measurable states. The exception covers this inherited failure only: a training or control defect confirmed in the 275 model steps or in the recovery is outside it (the decision, item 7).",
+    "7": "This exception is carried to the preserved model step 489,625 of run B1A_skip13_489350, the same lineage: that run resumed the preserved 489,350 this exception was written for and trained 275 model steps under configuration eea1e8bc7f446fb6 (the same flags, the same named files and the same trainer code, commit 641c931a6, as the record's code hash shows) until its owner stopped it on a monitoring defect (the asked-change watcher read not_reached for a watch that had ended at 484,900; no stop line was crossed). Where gate 7 (End-to-end causal dry run) comes from: the planner search's chain whose two last links do not hold was measured by record c007d2bb5af08224 (Oct 5, 2026 10:10 AM PDT) on paired same-state trials, 64 decisions on model step 481,800 and 128 on 480,829 and 479,350, and carried for 481,800 by records 4ba33dfc88ced223 and 2c3d82ca4ab4a870 (record 4ba33dfc88ced223 judged its hand path again only on the end checkpoint 484,675 of run seg41j_1526, another model state). Record eea1e8bc7f446fb6 holds the gate FAIL for its one model state, the preserved 489,350, as carried from those judgements; it was measured again on neither 489,350 nor 489,625. Each later record carried the failure with a gate text that judges it again or states how that record's own change of code, flags or stop lines bears on it, and the 275 model steps ran record eea1e8bc7f446fb6's code and flags without a change; so the gate stays FAIL as carried, and nothing about it is newly measured or passed. No measurement of this gate is planned at 494,025: the recovery's declared readings compare the whole 489,350-to-494,025 span with the original 489,350 baseline, and they are interpreted with this failure assumed at both ends, as the carried why_measurable states. The exception covers this inherited failure only: a training or control defect confirmed in the 275 model steps or in the recovery is outside it (the decision, item 7)."
+   }
+  },
+  "D1m": {
+   "refusal": "refused: the module D:\\UEMA_Research\\Source\\Python\\mimo_bridge\\tools\\training_preflight.py reads sha256 9c65646c05f978916f03b967a41ff30fc2987fa3b97c8c1c8a4836ad4231390e; the handoff D:\\UEMA_Research\\external\\D\\UEMA_scratch\\preflight_recovery\\preflight_recovery_entry_dry_run_20261013\\run5\\handoff_other_module_sha256.json names 0000000000000000000000000000000000000000000000000000000000000000 for D:/UEMA_Research/Source/Python/mimo_bridge/tools/training_preflight.py (the reviewed merge's file): main's tool changed since the review, or the handoff names another file\n",
+   "handoff_sha256_real": "fac523b8127c615154cd419f07626a7c05b60ba2537fe2d3ea0f703532e82703",
+   "main_tool_sha256": "9c65646c05f978916f03b967a41ff30fc2987fa3b97c8c1c8a4836ad4231390e"
+  },
+  "D1c": {
+   "argv": [
+    "D:\\UEMA_Research\\.venv_mimo\\Scripts\\python.exe",
+    "-B",
+    "-m",
+    "mimo_bridge.tools.training_preflight",
+    "check",
+    "--cmd-file",
+    "D:\\UEMA_Research\\external\\D\\UEMA_scratch\\preflight_recovery\\preflight_recovery_entry_dry_run_20261013\\run5\\command.json",
+    "--src",
+    "C:\\Users\\bhart\\Documents\\UEMA_wt\\b1_adopt_489350\\Source\\Python",
+    "--registry",
+    "D:\\UEMA_Research\\external\\D\\UEMA_scratch\\preflight_recovery\\preflight_recovery_entry_dry_run_20261013\\run5\\registry_copy.json",
+    "--root",
+    "D:\\UEMA_Research\\external\\D\\UEMA_scratch\\preflight_recovery\\preflight_recovery_entry_dry_run_20261013\\run5\\preflight_copy"
+   ],
+   "exit": 0,
+   "stdout": "ALLOWED: configuration eea1e8bc7f446fb6 may launch.\n",
+   "stderr": ""
+  },
+  "D2": {
+   "--max-steps 494026": "BLOCKED: recovery of configuration eea1e8bc7f446fb6 (D:\\UEMA_Research\\external\\D\\UEMA_scratch\\preflight_recovery\\preflight_recovery_entry_dry_run_20261013\\run5\\preflight_copy\\recoveries\\eea1e8bc7f446fb6.json): 1 condition(s) unmet:\n  - the launch is not bounded as declared: --max-steps reads 494026; the recovery ends exactly at model step 494025 (its end_step: start 489625 + 4400 model steps)",
+   "--max-steps absent": "BLOCKED: recovery of configuration eea1e8bc7f446fb6 (D:\\UEMA_Research\\external\\D\\UEMA_scratch\\preflight_recovery\\preflight_recovery_entry_dry_run_20261013\\run5\\preflight_copy\\recoveries\\eea1e8bc7f446fb6.json): 1 condition(s) unmet:\n  - the launch is not bounded as declared: --max-steps reads absent; the recovery ends exactly at model step 494025 (its end_step: start 489625 + 4400 model steps)",
+   "a changed setting (--babble-noise 0.06)": "BLOCKED: recovery of configuration eea1e8bc7f446fb6 (D:\\UEMA_Research\\external\\D\\UEMA_scratch\\preflight_recovery\\preflight_recovery_entry_dry_run_20261013\\run5\\preflight_copy\\recoveries\\eea1e8bc7f446fb6.json): the command's configuration 4c92125f1a1597c1 is not the recovery's; a recovery runs exactly its record's code and settings, those of its used adoption. It differs in:\n  - flag --babble-noise: 0.05 -> 0.06",
+   "the extension's checkout as the trainer code": "BLOCKED: recovery of configuration eea1e8bc7f446fb6 (D:\\UEMA_Research\\external\\D\\UEMA_scratch\\preflight_recovery\\preflight_recovery_entry_dry_run_20261013\\run5\\preflight_copy\\recoveries\\eea1e8bc7f446fb6.json): the command's configuration 2c3d82ca4ab4a870 is not the recovery's; a recovery runs exactly its record's code and settings, those of its used adoption. It differs in:\n  - code: 7 file(s) differ: lem/model/forward_model.py, lem/source_mask.py, lem/training/checkpoint.py, lem/training/loss_manager.py, lem/training_step.py, mimo_bridge/action_decoder.py, mimo_bridge/lem_model.py",
+   "--resume the original, non-preserved 489,625": "BLOCKED: configuration eea1e8bc7f446fb6 is the adoption's (ADOPTION_ROUTES): it launches only as its adoption, once, from D:/UEMA_Research/external/D/UEMA_preserved/body1_extension_B1E_skip13_485975/run/checkpoints/ckpt_step_489350 to model step 494025, and as its linked recovery (RECOVERY_ROUTES), once, from D:/UEMA_Research/external/D/UEMA_preserved/b1_adopt_B1A_skip13_489350/run/checkpoints/ckpt_step_489625 to model step 494025; every other launch of it is normal training, refused (the decision: \"Keep each gate FAIL; no normal-training qualification is granted\")",
+   "--resume the adoption's preserved start 489,350": "BLOCKED: configuration eea1e8bc7f446fb6 is the adoption's (ADOPTION_ROUTES): it launches only as its adoption, once, from D:/UEMA_Research/external/D/UEMA_preserved/body1_extension_B1E_skip13_485975/run/checkpoints/ckpt_step_489350 to model step 494025, and as its linked recovery (RECOVERY_ROUTES), once, from D:/UEMA_Research/external/D/UEMA_preserved/b1_adopt_B1A_skip13_489350/run/checkpoints/ckpt_step_489625 to model step 494025; every other launch of it is normal training, refused (the decision: \"Keep each gate FAIL; no normal-training qualification is granted\")",
+   "--out inside the stopped run's folder": "BLOCKED: recovery of configuration eea1e8bc7f446fb6 (D:\\UEMA_Research\\external\\D\\UEMA_scratch\\preflight_recovery\\preflight_recovery_entry_dry_run_20261013\\run5\\preflight_copy\\recoveries\\eea1e8bc7f446fb6.json): 2 condition(s) unmet:\n  - the launch's --out D:\\UEMA_Research\\external\\D\\UEMA_scratch\\b1_adopt_489350\\run\\B1A_skip13_489350\\recovery_inside lies in the used adoption's run folder D:/UEMA_Research/external/D/UEMA_scratch/b1_adopt_489350/run/B1A_skip13_489350: the stopped run is kept as it is\n  - the launch's --checkpoint-storage D:\\UEMA_Research\\external\\D\\UEMA_scratch\\b1_adopt_489350\\run\\B1A_skip13_489350\\recovery_inside\\checkpoints lies in the used adoption's run folder D:/UEMA_Research/external/D/UEMA_scratch/b1_adopt_489350/run/B1A_skip13_489350: the stopped run is kept as it is"
+  },
+  "D3": {
+   "renewed_wall_cap": "PreflightError: the recovery route of configuration eea1e8bc7f446fb6 pins the remaining wall cap 19931 s; the recovery's wall_cap_s reads 20683",
+   "end_494026": "PreflightError: the recovery route of configuration eea1e8bc7f446fb6 ends at model step 494025; the recovery's end_step reads 494026",
+   "adoption_decision": "PreflightError: the recovery route of configuration eea1e8bc7f446fb6 pins the decision proxy-adoption-recovery-489625-20261013; the recovery names proxy-adopt-b1e-one-run-20261013; the recovery's authorization does not name its decision proxy-adopt-b1e-one-run-20261013: it holds the operator's delegation words verbatim with the decision's reference; the decision proxy-adopt-b1e-one-run-20261013 already authorized the adoption D:\\UEMA_Research\\external\\D\\UEMA_scratch\\preflight_recovery\\preflight_recovery_entry_dry_run_20261013\\run5\\preflight_copy_adoption_decision\\adoptions\\eea1e8bc7f446fb6.json: a decision authorizes one block",
+   "adoption_words": "PreflightError: the recovery's authorization and the authorization words of the adoption D:\\UEMA_Research\\external\\D\\UEMA_scratch\\preflight_recovery\\preflight_recovery_entry_dry_run_20261013\\run5\\preflight_copy_adoption_words\\adoptions\\eea1e8bc7f446fb6.json lie one within the other: each block carries its own authorization",
+   "changed_exception": "PreflightError: the recovery's exception for gate 5 Causal controllability changes the used adoption's failure: an inherited exception is carried as written, its applicability to this state written beside it, never a new measurement",
+   "adoption_start": "PreflightError: the recovery route of configuration eea1e8bc7f446fb6 admits only the stopped run's preserved end checkpoint D:/UEMA_Research/external/D/UEMA_preserved/b1_adopt_B1A_skip13_489350/run/checkpoints/ckpt_step_489625; the recovery's start checkpoint reads D:\\UEMA_Research\\external\\D\\UEMA_preserved\\body1_extension_B1E_skip13_485975\\run\\checkpoints\\ckpt_step_489350; the recovery route of configuration eea1e8bc7f446fb6 admits only the stopped run's preserved end checkpoint D:/UEMA_Research/external/D/UEMA_preserved/b1_adopt_B1A_skip13_489350/run/checkpoints/ckpt_step_489625; the recovery's predecessor's checkpoint reads D:\\UEMA_Research\\external\\D\\UEMA_preserved\\body1_extension_B1E_skip13_485975\\run\\checkpoints\\ckpt_step_489350; the recovery route of configuration eea1e8bc7f446fb6 starts at model step 489625; the recovery's start_step reads 489350; the predecessor's model D:\\UEMA_Research\\external\\D\\UEMA_preserved\\body1_extension_B1E_skip13_485975\\run\\checkpoints\\ckpt_step_489350\\model.safetensors reads sha256 69e9997d6c32cf22ad3bed76f47e1168fdce6e7d51f376071dd6162f72e7a397; the recovery names b274e85cf4fca6009e10e3dd993e39f316640132204341099581a9e6e505ba2b; the predecessor run D:/UEMA_Research/external/D/UEMA_preserved/b1_adopt_B1A_skip13_489350/run did not end with its own save at model step 489350: its stage_done.json reads ok True at model step 489625; the predecessor checkpoint D:\\UEMA_Research\\external\\D\\UEMA_preserved\\body1_extension_B1E_skip13_485975\\run\\checkpoints\\ckpt_step_489350 is not inside the preservation folder D:\\UEMA_Research\\external\\D\\UEMA_preserved\\b1_adopt_B1A_skip13_489350",
+   "original_end": "PreflightError: the recovery route of configuration eea1e8bc7f446fb6 admits only the stopped run's preserved end checkpoint D:/UEMA_Research/external/D/UEMA_preserved/b1_adopt_B1A_skip13_489350/run/checkpoints/ckpt_step_489625; the recovery's start checkpoint reads D:\\UEMA_Research\\external\\D\\UEMA_scratch\\b1_adopt_489350\\run\\B1A_skip13_489350\\checkpoints\\ckpt_step_489625; the recovery route of configuration eea1e8bc7f446fb6 admits only the stopped run's preserved end checkpoint D:/UEMA_Research/external/D/UEMA_preserved/b1_adopt_B1A_skip13_489350/run/checkpoints/ckpt_step_489625; the recovery's predecessor's checkpoint reads D:\\UEMA_Research\\external\\D\\UEMA_scratch\\b1_adopt_489350\\run\\B1A_skip13_489350\\checkpoints\\ckpt_step_489625; the predecessor checkpoint D:\\UEMA_Research\\external\\D\\UEMA_scratch\\b1_adopt_489350\\run\\B1A_skip13_489350\\checkpoints\\ckpt_step_489625 is not inside the preservation folder D:\\UEMA_Research\\external\\D\\UEMA_preserved\\b1_adopt_B1A_skip13_489350",
+   "adoption_completion_row": "PreflightError: the recovery's completion jobs' row is the used adoption's b1_adopt_outcome_494025: the recovery's completion jobs are declared in a row of their own; the completion jobs' row b1_adopt_outcome_494025 reads status failed; a recovery's row is declared for it and not yet run (status written or queued)"
+  },
+  "D4": {
+   "field": {
+    "fingerprint": "eea1e8bc7f446fb6",
+    "decision": "proxy-adoption-recovery-489625-20261013",
+    "start_checkpoint": "D:/UEMA_Research/external/D/UEMA_preserved/b1_adopt_B1A_skip13_489350/run/checkpoints/ckpt_step_489625",
+    "attempts": [
+     {
+      "run": "D:\\UEMA_Research\\external\\D\\UEMA_scratch\\preflight_recovery\\preflight_recovery_entry_dry_run_20261013\\run5\\stand_in_run_d4",
+      "at": "Oct 13, 2026 1:40 PM PDT",
+      "at_s": 1791924012.2652586,
+      "by": "dry_run.py"
+     }
+    ],
+    "launched_at": null,
+    "launched_at_s": null,
+    "run": null
+   },
+   "refused_after_note": "BLOCKED: recovery of configuration eea1e8bc7f446fb6 (D:\\UEMA_Research\\external\\D\\UEMA_scratch\\preflight_recovery\\preflight_recovery_entry_dry_run_20261013\\run5\\preflight_copy_noting\\recoveries\\eea1e8bc7f446fb6.json): 1 condition(s) unmet:\n  - the training row b1_recover_B1R_skip13_489625 records this recovery's attempt (run D:\\UEMA_Research\\external\\D\\UEMA_scratch\\preflight_recovery\\preflight_recovery_entry_dry_run_20261013\\run5\\stand_in_run_d4, noted Oct 13, 2026 1:40 PM PDT): a recovery launches once, and a noted attempt counts whether or not its trainer trained or was marked launched (notes proxy-prediction-closure-20261013)",
+   "second_note": "PreflightError: the training row b1_recover_B1R_skip13_489625 records this recovery's attempt (run D:\\UEMA_Research\\external\\D\\UEMA_scratch\\preflight_recovery\\preflight_recovery_entry_dry_run_20261013\\run5\\stand_in_run_d4, noted Oct 13, 2026 1:40 PM PDT): a recovery launches once, and a noted attempt counts whether or not its trainer trained or was marked launched (notes proxy-prediction-closure-20261013)",
+   "mark": null,
+   "second_mark": "PreflightError: this recovery was launched already (Oct 13, 2026 1:40 PM PDT)"
+  },
+  "D5": {
+   "command": "D:\\UEMA_Research\\external\\D\\UEMA_scratch\\b1_recover_489625\\command.json",
+   "command_sha256": "c396abf2d54c8621c23a73ec7365dfa364e65d1acadfd5920a93a54da0e85b9c",
+   "receipt": {
+    "at": "Oct 13, 2026 01:40:16 PM PDT",
+    "root": "D:\\UEMA_Research\\external\\D\\UEMA_scratch\\preflight_recovery\\preflight_recovery_entry_dry_run_20261013\\run5\\preflight_copy_package_command",
+    "registry": "D:\\UEMA_Research\\external\\D\\UEMA_scratch\\preflight_recovery\\preflight_recovery_entry_dry_run_20261013\\run5\\registry_copy_clean.json",
+    "module": "D:\\UEMA_Research\\Source\\Python\\mimo_bridge\\tools\\training_preflight.py",
+    "module_sha256": "9c65646c05f978916f03b967a41ff30fc2987fa3b97c8c1c8a4836ad4231390e",
+    "command": "D:\\UEMA_Research\\external\\D\\UEMA_scratch\\preflight_recovery\\preflight_recovery_entry_dry_run_20261013\\run5\\package_command.json",
+    "command_sha256": "c396abf2d54c8621c23a73ec7365dfa364e65d1acadfd5920a93a54da0e85b9c",
+    "by": "dry_run.py (scratch)",
+    "completion_row": "b1_recover_outcome_494025",
+    "handoff": "D:\\UEMA_Research\\external\\D\\UEMA_scratch\\b1_recover_489625\\preflight_handoff.json",
+    "handoff_sha256": "fac523b8127c615154cd419f07626a7c05b60ba2537fe2d3ea0f703532e82703",
+    "written": {
+     "recovery_file": "D:\\UEMA_Research\\external\\D\\UEMA_scratch\\preflight_recovery\\preflight_recovery_entry_dry_run_20261013\\run5\\preflight_copy_package_command\\recoveries\\eea1e8bc7f446fb6.json",
+     "recovery_sha256": "9983b3691f3f1790a4d0c368fbecba14ec568b089decec00db11b3a14ecfb2eb",
+     "record_unchanged": true,
+     "adoption_unchanged": true
+    },
+    "refusal": null,
+    "plan": {
+     "kind": "continuation",
+     "block": "recovery",
+     "fingerprint": "eea1e8bc7f446fb6",
+     "start_step": 489625,
+     "max_steps": 494025,
+     "stop_criteria": [
+      {
+       "name": "finger_joint_error_far_beyond_old_servo",
+       "path": "hand_control.joint_error_deg",
+       "op": ">",
+       "line": 15.0,
+       "from_run_hour": 0.5,
+       "mode": "stop",
+       "note": "DIRECT PHYSICAL, both arms. The field: per full stats record, the mean over the 8 bodies' model steps of the record's window of the mean over the 44 finger hinges of |hinge angle - that hinge's joint goal| at the model step's last physics step, degrees (0 = every hinge on its goal; env.py hand_joint_error_deg, train_mimo.py hand_control). The line: the hour mean above 15.0 degrees from run-hour 0.5. Production's servo and calibration (the control arm's configuration) read window means 14.26 to 14.41 degrees in control runs C1 and C2 and the cap arm L from 481,800 (model steps 482,100 to 484,600, 26 records each), per-record spread 0.38 to 0.45, hour means 14.03 to 14.59 from run-hour 0.25 in those runs and seg41o_1431. Simulated with the watcher's own rule at the highest level and spread (m2_stop_line_rates.json, 20,000 runs each): this line stops a run of production's configuration in 1.0 to 3.1 of 1,000 runs (the repair-run proposal's 14.6 from run-hour 0.25: 457 to 537 of 1,000), a run 1 degree worse than production's in 1,000 of 1,000 and 0.5 degree worse in 665 to 740 of 1,000, and a run at the paired trace's size for the finger servo read as this field reads it, after every model step (13.8 to 14.0 degrees: the highest window mean less the 0.43 to 0.64 degree the servo removes, analysis/m7_sc1_reach_and_sc2b_error.json; read at the hold's end only it removes 1.17 to 1.38), in 0 of 1,000. WHAT A STOP MEANS (the same words wherever the comparison states it): A stop of either arm, on any line, ends the comparison without a verdict: matched_comparison_verdict.py reads INVALID and the other arm is not launched. A finger-arm stop on the finger joint error line is in addition recorded as a finding against the package (the finger hinges ended farther from their goals than the line allows, the failure the package exists to remove); every other stop is recorded as readings only, neither a pass nor a fail of the package."
+      },
+      {
+       "name": "non_finite_update",
+       "path": "nan_steps",
+       "op": ">",
+       "line": 0,
+       "from_run_hour": 0,
+       "mode": "stop",
+       "note": "INTEGRITY, both arms. The field: the model steps of the record's window whose live loss was not finite (train_mimo.py). Any such model step in the hour stops the run (a non-finite update changes every learned weight it reaches). 0 in every full stats record of seg41o_1431, C1, C2 and L. The watcher's 5-minute check also stops on nan_steps above 0 in the newest record, and the standing watches' line M2 on the trainer log's skipped optimizer updates; this entry is the registry's record of the same line. EVERY PROGRAM THAT CAN WRITE A STOP INTO AN ARM'S FOLDER WHILE IT RUNS (read on Oct 9, 2026 from each program's code and the running processes; the same programs, files and lines for both arms, and launch_state.py hashes each program's files at both launches; what any of these stops means is the first entry's note; matched_comparison_verdict.py counts a stop from any of them: stop_reason.json, or a control_done_*.json or pending control.json whose cmd is stop or snapshot_and_stop without auto_resume). (1) The hourly watcher, docs/h84_launch_2026-09-18/hourly_watch.py, started by the arm's supervisor; it writes stop_reason.json, then snapshot_and_stop. Its lines: the six entries of this list, read from the run folder's declared_criteria.json; and its own rules, none an entry here: nan_steps above 0 in the newest record; a stop field non-finite in the newest record or absent from an hour of records; the planner monitor (a selection that worsens a body's total score, comparison scores missing, a non-finite search, or a hand stage reporting another calibration than the admitted fit fe953beb... in the control arm or the recorded replacement f68754c8... in the finger arm); a layer under 50 of 100 units responding in two complete report windows after the liveness repair's own window (efference.lesson.vision_in and efference.lesson.body_mlp.0 are alerts only); free disk under 8 GB on the stats, checkpoint or caregiver-record drive, or commit room under 4 GB; and its hourly rules, each needing two consecutive hourly window means past its line: vision causal error above 2 times, tactile causal error above 3 times, replay loss above 3 times and model steps per second under one third of this run's hour-1 mean, which judge from the second hourly sweep, so their earliest stop is the third sweep, about 10,200 s after the watcher finds the first record, while C1, C2 and L ended 6,631 to 7,851 s after their start (the independent review of Oct 9, 2026); vision or tactile token variance under 0.15, judged from run-hour 3; and follow_bout under -0.038, which read 0.246 to 0.293 in the four runs that review read. The five rule files it loads by path: motor_asked_change_watch.py (the asked-change watch, through the first full report at or past model step 484,875: its switch record M1, non-finite updates M2, its hidden layer under 0.9 live share in 2 full reports M3, the other senses against their level before its switch M4, the step rate under 0.9 of the window before in two windows running M5, its output above its growth line M6) and heads_all_slot_path_watch.py (the all-slot paths watch, through model step 489,350: M1, M2, M3 read as an alert for a run that resumes 481,800 of seg41o_1431 with max_steps 484675 (hourly_watch.CAP_EXPERIMENT_LATER_ARMS), M4, M5, a path's output above its sense's real change M6, a path's fixed vector against the old head's M9, proprioception's own-command reading M7, a head's audited error M8) judge both arms; proprio_repair_watch.py, vestibular_repair_watch.py and vestibular_input_path_watch.py judge only runs their switch records reach and printed no line in C1's, C2's and L's watcher logs. (2) The self-percept watch, docs/gain_of_function_v4/coordinator/self_percept_watch_loop.py with Source/Python/mimo_bridge/tools/self_percept_watch.py (processes 7876 and 30248, running since Oct 3, 2026 12:07 PM PDT): every 300 s it judges the supervisor's active run when that run's args.json reads self_percept_release on, as both arms' commands do, and on a crossed line it pauses the supervisor and writes stop_reason.json and snapshot_and_stop. Its two stop lines, declared here as stop lines of both arms: 2 or more live model steps above the self-percept limit of 8 within any 1,000 model steps since the resume, and more than 25 perceive calls above that limit per 100 model steps in a report. C1, C2 and L read 0 such model steps and at most 1 such call per 100 model steps over their 2,875 model steps (Saved/gof_takeover_20260927/self_percept_watch/loop.log). (3) The persistent memory watch, docs/gain_of_function_v4/coordinator/memory_watch_loop.py, which runs docs/gain_of_function_v4/persistent_memory_deploy_watch.py --act every 300 s (processes 6516 and 20176, running since Oct 1, 2026 8:46 AM PDT); it writes snapshot_and_stop into the active run's control.json and no stop_reason.json. Its stop lines (K2: a body-to-body or over-the-window state spread under 0.08 in a full report from the second through 10,000 model steps after the memory's switch; K4: a sense's log of its median ratio over the median of the 20 full reports before the switch above its line, over full reports 2 to 21 after the switch; K5: the step rate over those reports under its line) cannot fire on an arm: the switch it judges is the record of part switch at model step 415,075 (a resume writes part loaded, which it skips), so K2 reads reports up to model step 425,075 and K4 and K5 the reports 2 to 21 after 415,075, all in the arms' common ancestry before 481,800, and an arm adds no record any of them reads; on those reports it reads no crossing (K4: vision -0.380, tactile -0.007, audio 0.013, proprioception -0.012 against the lines 0.944, 0.028, 0.052 and 0.014; K5: 0.891 against 0.862; Saved/gof_takeover_20260927/memory_watch/verdict.json, 4:31 AM PDT, Oct 9, 2026). It could write a stop only if its code, its lines file docs/gain_of_function_v3/measurements/persistent_memory_resume_lines_2026-09-25.json or those records changed. (4) The relaunch script itself (relaunch_h84_seg41_2026-09-29.py stop_trainer) writes snapshot_and_stop with its reason into the new run's control.json when no supervisor attaches after the trainer starts: a failed launch, not a line. No stop for an arm comes from the ability scheduler (ability_rechecks.py and ability_comparison_window.py) or the pause runner (run_in_training_pause.py): each refuses to write into a run's control.json while supervisor_control.json holds a pause (training_continuation.pause_reason), and it holds the repair run's pause while an arm runs. The observer, the archiver, the dashboard and the explainer builder write no control.json."
+      },
+      {
+       "name": "vision_cost_beyond_cap_line",
+       "path": "prediction_audit_per_body.senses.vision.without_body_2.ratio",
+       "op": ">",
+       "line": 0.94,
+       "from_run_hour": 1.25,
+       "mode": "stop",
+       "note": "PREDICTION, both arms; a sense the package does not reach (the camera images the eyes receive). The field: vision's prediction error over the error of predicting no change on the record's live transitions, body 2 left out (0 = exact, 1 = no better than 'nothing changes'). The line: hour mean above 940 in 1,000 from run-hour 1.25; the cap experiment's line unchanged (row attention_cap_stop_lines_481800). The runs without the package (control runs C1 and C2 of production's configuration, and the cap arm L, which ran it with the attention cap on) read hour means from run-hour 1.25 of at most 702 in 1,000 in C1, C2 and L (716 in seg41o_1431, the run that switched on the all-slot paths) and window means up to 678; simulated false stops 0 of 1,000 (20,000 runs). A crossing in either arm shows this sense's prediction lost beyond anything the runs without the package measured plus that margin (the finger servo does not drive this sense); the stop is recorded as readings only, neither a pass nor a fail of the package (WHAT A STOP MEANS, the first entry's note)."
+      },
+      {
+       "name": "audio_cost_beyond_cap_line",
+       "path": "prediction_audit_per_body.senses.audio.without_body_2.ratio",
+       "op": ">",
+       "line": 0.965,
+       "from_run_hour": 1.25,
+       "mode": "stop",
+       "note": "PREDICTION, both arms; a sense the package does not reach (the sound spectrum the ears receive). The field: audio's prediction error over the error of predicting no change on the record's live transitions, body 2 left out (0 = exact, 1 = no better than 'nothing changes'). The line: hour mean above 965 in 1,000 from run-hour 1.25; the cap experiment's line unchanged (row attention_cap_stop_lines_481800). The runs without the package (control runs C1 and C2 of production's configuration, and the cap arm L, which ran it with the attention cap on) read hour means from run-hour 1.25 of at most 906 in 1,000 in C1, C2 and L (908 in seg41o_1431, the run that switched on the all-slot paths) and window means up to 903; simulated false stops 0 of 1,000 (20,000 runs). A crossing in either arm shows this sense's prediction lost beyond anything the runs without the package measured plus that margin (the finger servo does not drive this sense); the stop is recorded as readings only, neither a pass nor a fail of the package (WHAT A STOP MEANS, the first entry's note)."
+      },
+      {
+       "name": "proprioception_cost_beyond_half_gain",
+       "path": "prediction_audit_per_body.senses.proprioception.without_body_2.ratio",
+       "op": ">",
+       "line": 0.86,
+       "from_run_hour": 1.25,
+       "mode": "stop",
+       "note": "PREDICTION, both arms; a sense the package reaches (where each tracked body part is, how it is turned and how fast it moves; the finger handles are among the 26). The field: proprioception's prediction error over the error of predicting no change on the record's live transitions, body 2 left out (0 = exact, 1 = no better than 'nothing changes'). The line: hour mean above 860 in 1,000 from run-hour 1.25; the cap experiment's rule: the configuration's highest judged hour plus half of the model's gain over predicting no change in the 20 records ending at 481,800 (688 + (1,000 - 669) / 2 = 854, rounded up to 860 in 1,000). The runs without the package (control runs C1 and C2 of production's configuration, and the cap arm L, which ran it with the attention cap on) read hour means from run-hour 1.25 of at most 688 in 1,000 in C1, C2 and L (687 in seg41o_1431, the run that switched on the all-slot paths) and window means up to 675; simulated false stops 0 of 1,000 (20,000 runs). A crossing in either arm shows this sense's prediction lost beyond anything the runs without the package measured plus that margin; the stop is recorded as readings only, neither a pass nor a fail of the package (WHAT A STOP MEANS, the first entry's note). In the finger arm a rise of 185 in 1,000 above the control's highest window mean at the switch would reach it. THE SWITCH'S RISE IS NOT MEASURED YET: the dry run's run B read fresh worlds, and the reading the independent review of Oct 9, 2026 asked for is row finger_switch_prediction_effect_481800, a draft that is not in the registry (D:/UEMA_Research/external/D/UEMA_scratch/finger_investigation/switch_effect/row_draft_finger_switch_prediction_effect_481800.json, written 4:06 AM PDT) and has not run; its tool is on branch study/finger-switch-prediction-effect-2026-10-09 (48dd491ca), not merged, under independent review. The operator signs after that reading has set this line (a stop or an alert, the same in both arms) and SC3's named loss for this sense (matched_comparison_verdict.py NAMED_LOSS), and after both are written into this list and both blocks; until then the line stands as declared."
+      },
+      {
+       "name": "tactile_cost_beyond_half_gain",
+       "path": "prediction_audit_per_body.senses.tactile.without_body_2.ratio",
+       "op": ">",
+       "line": 0.99,
+       "from_run_hour": 1.25,
+       "mode": "stop",
+       "note": "PREDICTION, both arms; a sense the package reaches (the skin's contact readings; finger contacts change with the finger servo). The field: tactile's prediction error over the error of predicting no change on the record's live transitions, body 2 left out (0 = exact, 1 = no better than 'nothing changes'). The line: hour mean above 990 in 1,000 from run-hour 1.25; the cap experiment's rule: the configuration's highest judged hour plus half of the model's gain over predicting no change in the 20 records ending at 481,800 (970.5 + (1,000 - 961) / 2 = 990 in 1,000). The runs without the package (control runs C1 and C2 of production's configuration, and the cap arm L, which ran it with the attention cap on) read hour means from run-hour 1.25 of at most 936 in 1,000 in C1, C2 and L (970 in seg41o_1431, the run that switched on the all-slot paths) and window means up to 933; simulated false stops 0 of 1,000 (20,000 runs). A crossing in either arm shows this sense's prediction lost beyond anything the runs without the package measured plus that margin; the stop is recorded as readings only, neither a pass nor a fail of the package (WHAT A STOP MEANS, the first entry's note). In the finger arm a rise of 57 in 1,000 above the control's highest window mean at the switch would reach it. THE SWITCH'S RISE IS NOT MEASURED YET: the dry run's run B read fresh worlds, and the reading the independent review of Oct 9, 2026 asked for is row finger_switch_prediction_effect_481800, a draft that is not in the registry (D:/UEMA_Research/external/D/UEMA_scratch/finger_investigation/switch_effect/row_draft_finger_switch_prediction_effect_481800.json, written 4:06 AM PDT) and has not run; its tool is on branch study/finger-switch-prediction-effect-2026-10-09 (48dd491ca), not merged, under independent review. The operator signs after that reading has set this line (a stop or an alert, the same in both arms) and SC3's named loss for this sense (matched_comparison_verdict.py NAMED_LOSS), and after both are written into this list and both blocks; until then the line stands as declared."
+      }
+     ],
+     "wall_cap_s": 19931
+    },
+    "verdict": "ALLOWED",
+    "next": "a scratch copy: nothing to commit"
+   },
+   "check_exit": 0,
+   "check_stdout": "ALLOWED: configuration eea1e8bc7f446fb6 may launch.\n"
+  },
+  "production_registry": {
+   "sha256_before": "2d3ca1f79fd1e1c6f2a72b9896ab2f9376ac19b6b3145fdae6e435ef57a3d4d5",
+   "sha256_after": "5f5e6015cfb0c58ff9498c5474190085173fb9491163b96f659ca3da9f15586e",
+   "rows_changed_by_other_writers": [
+    "preflight_recovery_entry_dry_run_20261013"
+   ]
+  }
+ },
+ "verdict": "PASS"
+}

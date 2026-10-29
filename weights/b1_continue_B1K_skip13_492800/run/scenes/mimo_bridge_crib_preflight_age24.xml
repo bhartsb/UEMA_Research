@@ -1,0 +1,923 @@
+<?xml version='1.0' encoding='utf-8'?>
+<mujoco model="MIMo_bridge_crib">
+  <compiler inertiafromgeom="true" angle="degree" meshdir="C:/Users/bhart/Documents/MIMo_private/mimo_infant/simulation/assets/meshes" texturedir="C:/Users/bhart/Documents/MIMo_private/mimo_infant/simulation/assets" />
+  <option gravity="0 0 -9.81" timestep="0.005" iterations="50" tolerance="1e-10" solver="Newton" jacobian="dense" cone="elliptic" impratio="1.0" />
+  <size nconmax="1000" njmax="5000" nstack="10000000" />
+  <visual>
+    <map force="0.1" zfar="30" znear="0.005" />
+    <rgba haze="0.15 0.25 0.35 1" />
+    <quality shadowsize="2048" />
+    <global offwidth="480" offheight="480" />
+  </visual>
+  <default><geom material="matgeom" condim="3" solimp="0.95 0.99 0.001 0.5 1" solref="0.005 1" /></default>
+  <asset>
+    <texture name="playmat_tex" type="2d" file="D:/UEMA_scratch/b1_continue_492800/run/B1K_skip13_492800/scenes/pen_art/play_mat.png" />
+    <material name="playmat" texture="playmat_tex" texrepeat="4 4" texuniform="true" reflectance="0.05" specular="0.05" shininess="0.05" />
+    <texture name="ceil_tex" type="2d" file="D:/UEMA_scratch/b1_continue_492800/run/B1K_skip13_492800/scenes/pen_art/ceiling.png" />
+    <material name="ceilmat" texture="ceil_tex" texrepeat="1 1" emission="0.75" specular="0.03" shininess="0.03" />
+    <texture name="pentex_n" type="2d" file="D:/UEMA_scratch/b1_continue_492800/run/B1K_skip13_492800/scenes/pen_art/pen_wall_n.png" />
+    <material name="penmat_n" texture="pentex_n" texrepeat="1 1" emission="0.35" specular="0.05" shininess="0.05" />
+    <texture name="pentex_s" type="2d" file="D:/UEMA_scratch/b1_continue_492800/run/B1K_skip13_492800/scenes/pen_art/pen_wall_s.png" />
+    <material name="penmat_s" texture="pentex_s" texrepeat="1 1" emission="0.35" specular="0.05" shininess="0.05" />
+    <texture name="pentex_e" type="2d" file="D:/UEMA_scratch/b1_continue_492800/run/B1K_skip13_492800/scenes/pen_art/pen_wall_e.png" />
+    <material name="penmat_e" texture="pentex_e" texrepeat="1 1" emission="0.35" specular="0.05" shininess="0.05" />
+    <texture name="pentex_w" type="2d" file="D:/UEMA_scratch/b1_continue_492800/run/B1K_skip13_492800/scenes/pen_art/pen_wall_w.png" />
+    <material name="penmat_w" texture="pentex_w" texrepeat="1 1" emission="0.35" specular="0.05" shininess="0.05" />
+    <texture type="skybox" builtin="gradient" rgb1="0.3 0.5 0.7" rgb2="0 0 0" width="512" height="512" />
+    <texture name="texplane" type="2d" builtin="checker" rgb1=".2 .3 .4" rgb2=".1 0.15 0.2" width="512" height="512" mark="cross" markrgb=".8 .8 .8" />
+    <texture name="texgeom" type="cube" builtin="flat" mark="cross" width="127" height="1278" rgb1="0.8 0.6 0.4" rgb2="0.8 0.6 0.4" markrgb="1 1 1" random="0.01" />
+    <material name="matplane" reflectance="0.3" texture="texplane" texrepeat="1 1" texuniform="true" />
+    <material name="matgeom" texture="texgeom" texuniform="true" rgba="0.8 0.6 .4 1" />
+  <material name="caregiver_matte" specular=".08" shininess=".1" emission=".12" /></asset>
+
+	
+	<size nuser_actuator="3" />
+
+	<default>
+		<default class="mimo">
+        	<joint limited="true" damping=".1" stiffness=".1" armature="0.001" solimplimit="0.98 0.99 0.001 .5 1" solreflimit="0.02 1" />
+        	<geom condim="3" material="skin" friction="1 0.005 0.0002" solimp="0.95 0.99 0.001 0.5 1" solref="0.005 1" />
+        	<motor ctrlrange="-1 1" ctrllimited="true" forcelimited="true" />
+    	</default>
+	</default>
+
+    <asset>
+
+		<texture name="tex_head_default" type="cube" rgb1="0.95 .8 .5" builtin="flat" width="16" height="96" />
+		<texture name="tex_head_happy" type="cube" rgb1="0.95 .8 .5" builtin="flat" width="16" height="96" />
+		<texture name="tex_head_sad" type="cube" rgb1="0.95 .8 .5" builtin="flat" width="16" height="96" />
+		<texture name="tex_head_surprised" type="cube" rgb1="0.95 .8 .5" builtin="flat" width="16" height="96" />
+		<texture name="tex_head_angry" type="cube" rgb1="0.95 .8 .5" builtin="flat" width="16" height="96" />
+		<texture name="tex_head_disgusted" type="cube" rgb1="0.95 .8 .5" builtin="flat" width="16" height="96" />
+		<texture name="tex_head_scared" type="cube" rgb1="0.95 .8 .5" builtin="flat" width="16" height="96" />
+		<texture name="tex_top_sleeve" type="cube" rgb1="0.95 .8 .5" builtin="flat" width="16" height="96" />
+		<texture name="tex_pants_leg" type="cube" rgb1="0.95 .8 .5" builtin="flat" width="16" height="96" />
+		<texture name="tex_eye_left" type="cube" rgb1="1 1 1" builtin="flat" width="16" height="96" />
+		<texture name="tex_eye_right" type="cube" rgb1="1 1 1" builtin="flat" width="16" height="96" />
+
+		<material name="skin" rgba="0.95 0.8 0.5 1" specular=".15" shininess=".7" />
+		<material name="buttons" rgba=".05 .05 .05 1" specular=".9" shininess=".9" />
+		<material name="head" texture="tex_head_default" texuniform="true" specular=".0" shininess=".0" />
+		<material name="top_up" rgba=".1 .5 0.0 1" specular=".0" shininess=".0" />
+		<material name="top_middle" rgba=".1 .5 0.0 1" specular=".0" shininess=".0" />
+		<material name="top_down" rgba=".1 .5 0.0 1" specular=".0" shininess=".0" />
+		<material name="top_sleeve" texture="tex_top_sleeve" texuniform="true" specular=".0" shininess=".0" />
+		<material name="pants_up" rgba="0.1 0.1 0.6 1" specular=".0" shininess=".0" />
+		<material name="pants_down" rgba="0.1 0.1 0.6 1" specular=".0" shininess=".0" />
+		<material name="pants_leg" texture="tex_pants_leg" texuniform="true" specular=".0" shininess=".0" />
+		<material name="eye_left" texture="tex_eye_left" texuniform="true" specular=".0" shininess=".0" />
+		<material name="eye_right" texture="tex_eye_right" texuniform="true" specular=".0" shininess=".0" />
+
+    </asset>
+	
+	
+	<contact>
+		<pair geom1="lb" geom2="ub1" condim="1" />
+		<exclude body1="left_eye" body2="upper_body" />
+		<exclude body1="right_eye" body2="upper_body" />
+		<exclude body1="chest" body2="head" />
+	</contact>
+	
+	<tendon>
+		<fixed class="mimo" name="hip_bend" limited="true" range="-.01 .01">
+			<joint joint="robot:hip_bend1" coef="1" />
+			<joint joint="robot:hip_bend2" coef="-1" />
+		</fixed>
+		<fixed class="mimo" name="hip_rotation" limited="true" range="-.01 .01">
+			<joint joint="robot:hip_rot1" coef="1" />
+			<joint joint="robot:hip_rot2" coef="-1" />
+		</fixed>
+		<fixed class="mimo" name="hip_lean" limited="true" range="-.01 .01">
+			<joint joint="robot:hip_lean1" coef="1" />
+			<joint joint="robot:hip_lean2" coef="-.5" />
+		</fixed>
+
+		<fixed class="mimo" name="head_limits1" limited="true" range="-2.1 2.1">
+			<joint joint="robot:head_swivel" coef="1" />
+			<joint joint="robot:head_tilt_side" coef="1" />
+		</fixed>
+		<fixed class="mimo" name="head_limits2" limited="true" range="-2.1 2.1">
+			<joint joint="robot:head_tilt" coef="1" />
+			<joint joint="robot:head_tilt_side" coef="1" />
+		</fixed>
+		<fixed class="mimo" name="head_limits3" limited="true" range="-2.1 2.1">
+			<joint joint="robot:head_swivel" coef="1" />
+			<joint joint="robot:head_tilt" coef="1" />
+		</fixed>
+		<fixed class="mimo" name="head_limits1_sym" limited="true" range="-2.1 2.1">
+			<joint joint="robot:head_swivel" coef="1" />
+			<joint joint="robot:head_tilt_side" coef="-1" />
+		</fixed>
+		<fixed class="mimo" name="head_limits2_sym" limited="true" range="-2.1 2.1">
+			<joint joint="robot:head_tilt" coef="1" />
+			<joint joint="robot:head_tilt_side" coef="-1" />
+		</fixed>
+		<fixed class="mimo" name="head_limits3_sym" limited="true" range="-2.1 2.1">
+			<joint joint="robot:head_swivel" coef="1" />
+			<joint joint="robot:head_tilt" coef="-1" />
+		</fixed>
+
+		
+		<fixed class="mimo" name="finger_couple_right_ff_mf" limited="true" range="-0.52 0.52">
+			<joint joint="robot:right_ff_knuckle" coef="1" />
+			<joint joint="robot:right_mf_knuckle" coef="-1" />
+		</fixed>
+		<fixed class="mimo" name="finger_couple_right_mf_rf" limited="true" range="-0.44 0.44">
+			<joint joint="robot:right_mf_knuckle" coef="1" />
+			<joint joint="robot:right_rf_knuckle" coef="-1" />
+		</fixed>
+		<fixed class="mimo" name="finger_couple_right_rf_lf" limited="true" range="-0.35 0.35">
+			<joint joint="robot:right_rf_knuckle" coef="1" />
+			<joint joint="robot:right_lf_knuckle" coef="-1" />
+		</fixed>
+		<fixed class="mimo" name="finger_couple_left_ff_mf" limited="true" range="-0.52 0.52">
+			<joint joint="robot:left_ff_knuckle" coef="1" />
+			<joint joint="robot:left_mf_knuckle" coef="-1" />
+		</fixed>
+		<fixed class="mimo" name="finger_couple_left_mf_rf" limited="true" range="-0.44 0.44">
+			<joint joint="robot:left_mf_knuckle" coef="1" />
+			<joint joint="robot:left_rf_knuckle" coef="-1" />
+		</fixed>
+		<fixed class="mimo" name="finger_couple_left_rf_lf" limited="true" range="-0.35 0.35">
+			<joint joint="robot:left_rf_knuckle" coef="1" />
+			<joint joint="robot:left_lf_knuckle" coef="-1" />
+		</fixed>
+	</tendon>
+	
+	<sensor>
+		<accelerometer name="vestibular_acc" site="vestibular" />
+		<gyro name="vestibular_gyro" site="vestibular" />
+		
+		<torque name="proprio:neck" site="torque_neck" />
+		<torque name="proprio:left_eye" site="torque_left_eye" />
+		<torque name="proprio:right_eye" site="torque_right_eye" />
+		
+		<torque name="proprio:chest" site="torque_chest" />
+		<torque name="proprio:trunk_upper" site="torque_ub" />
+		<torque name="proprio:trunk_lower" site="torque_lb" />
+		
+		<torque name="proprio:right_shoulder" site="torque_right_shoulder" />
+		<torque name="proprio:right_elbow" site="torque_right_elbow" />
+		<torque name="proprio:right_wrist" site="torque_right_wrist" />
+
+		<torque name="proprio:right_ff_knuckle" site="torque_right_ff_knuckle" />
+		<torque name="proprio:right_ff_middle" site="torque_right_ff_middle" />
+		<torque name="proprio:right_ff_distal" site="torque_right_ff_distal" />
+		<torque name="proprio:right_mf_knuckle" site="torque_right_mf_knuckle" />
+		<torque name="proprio:right_mf_middle" site="torque_right_mf_middle" />
+		<torque name="proprio:right_mf_distal" site="torque_right_mf_distal" />
+		<torque name="proprio:right_rf_knuckle" site="torque_right_rf_knuckle" />
+		<torque name="proprio:right_rf_middle" site="torque_right_rf_middle" />
+		<torque name="proprio:right_rf_distal" site="torque_right_rf_distal" />
+		<torque name="proprio:right_lf_meta" site="torque_right_lf_meta" />
+		<torque name="proprio:right_lf_knuckle" site="torque_right_lf_knuckle" />
+		<torque name="proprio:right_lf_middle" site="torque_right_lf_middle" />
+		<torque name="proprio:right_lf_distal" site="torque_right_lf_distal" />
+		<torque name="proprio:right_th_base" site="torque_right_th_base" />
+		<torque name="proprio:right_th_hub" site="torque_right_th_hub" />
+		<torque name="proprio:right_th_distal" site="torque_right_th_distal" />
+		
+		<torque name="proprio:left_shoulder" site="torque_left_shoulder" />
+		<torque name="proprio:left_elbow" site="torque_left_elbow" />
+		<torque name="proprio:left_wrist" site="torque_left_wrist" />
+
+		<torque name="proprio:left_ff_knuckle" site="torque_left_ff_knuckle" />
+		<torque name="proprio:left_ff_middle" site="torque_left_ff_middle" />
+		<torque name="proprio:left_ff_distal" site="torque_left_ff_distal" />
+		<torque name="proprio:left_mf_knuckle" site="torque_left_mf_knuckle" />
+		<torque name="proprio:left_mf_middle" site="torque_left_mf_middle" />
+		<torque name="proprio:left_mf_distal" site="torque_left_mf_distal" />
+		<torque name="proprio:left_rf_knuckle" site="torque_left_rf_knuckle" />
+		<torque name="proprio:left_rf_middle" site="torque_left_rf_middle" />
+		<torque name="proprio:left_rf_distal" site="torque_left_rf_distal" />
+		<torque name="proprio:left_lf_meta" site="torque_left_lf_meta" />
+		<torque name="proprio:left_lf_knuckle" site="torque_left_lf_knuckle" />
+		<torque name="proprio:left_lf_middle" site="torque_left_lf_middle" />
+		<torque name="proprio:left_lf_distal" site="torque_left_lf_distal" />
+		<torque name="proprio:left_th_base" site="torque_left_th_base" />
+		<torque name="proprio:left_th_hub" site="torque_left_th_hub" />
+		<torque name="proprio:left_th_distal" site="torque_left_th_distal" />
+		
+		<torque name="proprio:right_hip" site="torque_right_hip" />
+		<torque name="proprio:right_knee" site="torque_right_knee" />
+		<torque name="proprio:right_ankle" site="torque_right_ankle" />
+		<torque name="proprio:right_toes" site="torque_right_toes" />
+		<torque name="proprio:right_big_toe" site="torque_right_big_toe" />
+		
+		<torque name="proprio:left_hip" site="torque_left_hip" />
+		<torque name="proprio:left_knee" site="torque_left_knee" />
+		<torque name="proprio:left_ankle" site="torque_left_ankle" />
+		<torque name="proprio:left_toes" site="torque_left_toes" />
+		<torque name="proprio:left_big_toe" site="torque_left_big_toe" />
+	</sensor>
+
+    <actuator>
+		
+		<motor class="mimo" name="act:hip_bend" joint="robot:hip_bend1" gear="11.445274022776479" forcerange="-1 .765" user=".8574 32.93 22.97" />
+		<motor class="mimo" name="act:hip_twist" joint="robot:hip_rot1" gear="3.926875680782478" forcerange="-1 1" user="1.699 8.136 8.136" />
+		<motor class="mimo" name="act:hip_lean" joint="robot:hip_lean1" gear="7.842933522223957" forcerange="-1 1" user="1.278 1.264 1.264" />
+
+		<motor class="mimo" name="act:chest_twist" joint="robot:chest_rot" gear="0.3894422162759482" forcerange="-1 1" user="1.699 8.136 8.136" />
+		<motor class="mimo" name="act:chest_lean" joint="robot:chest_lean" gear="0.7788844325518964" forcerange="-1 1" user="1.278 1.264 1.264" />
+
+		<motor class="mimo" name="act:head_swivel" joint="robot:head_swivel" gear="1.9723820572800088" forcerange="-1 1" user=".6665 24.87 24.87" />
+		<motor class="mimo" name="act:head_tilt" joint="robot:head_tilt" gear="3.6160337716800153" forcerange="-1 .55" user=".9338 31.39 16.86" />
+		<motor class="mimo" name="act:head_tilt_side" joint="robot:head_tilt_side" gear="1.9723820572800088" forcerange="-1 1" user="1.068 15.69 15.69" />
+
+		<motor class="mimo" name="act:left_eye_horizontal" joint="robot:left_eye_horizontal" gear="0.005917146171840027" forcerange="-1 1" user="5.110 .03025 .03025" />
+		<motor class="mimo" name="act:left_eye_vertical" joint="robot:left_eye_vertical" gear="0.005917146171840027" forcerange="-1 1" user="6.179 .02619 .02771" />
+		<motor class="mimo" name="act:left_eye_torsional" joint="robot:left_eye_torsional" gear="0.004054340895520018" forcerange="-1 1" user="25.03 .003686 .003686" />
+		<motor class="mimo" name="act:right_eye_horizontal" joint="robot:right_eye_horizontal" gear="0.005917146171840027" forcerange="-1 1" user="5.110 .03025 .03025" />
+		<motor class="mimo" name="act:right_eye_vertical" joint="robot:right_eye_vertical" gear="0.005917146171840027" forcerange="-1 1" user="6.179 .02619 .02771" />
+		<motor class="mimo" name="act:right_eye_torsional" joint="robot:right_eye_torsional" gear="0.004054340895520018" forcerange="-1 1" user="25.03 .003686 .003686" />
+
+		<motor class="mimo" name="act:right_shoulder_horizontal" joint="robot:right_shoulder_horizontal" gear="2.1532200911365003" forcerange="-1 1" user="1.811 18.80 15.30" />
+		<motor class="mimo" name="act:right_shoulder_abduction" joint="robot:right_shoulder_ad_ab" gear="4.78493353585889" forcerange="-.6875 1" user=".8793 44.17 69.23" />
+		<motor class="mimo" name="act:right_shoulder_internal" joint="robot:right_shoulder_rotation" gear="2.9905834599118064" forcerange="-1 .64" user="1.498 25.09 17.10" />
+		<motor class="mimo" name="act:right_elbow" joint="robot:right_elbow" gear="4.360208987973502" forcerange="-1 .83" user="1.566 35.43 27.04" />
+		<motor class="mimo" name="act:right_wrist_rotation" joint="robot:right_hand1" gear="0.5718394790237868" forcerange="-1 1" user="1.513 7.842 7.842" />
+		<motor class="mimo" name="act:right_wrist_flexion" joint="robot:right_hand2" gear="1.0129727914135653" forcerange="-1 .57" user="1.455 13.66 7.874" />
+		<motor class="mimo" name="act:right_wrist_ulnar" joint="robot:right_hand3" gear="0.7760678643894251" forcerange="-.87 1" user="2.254 5.155 6.021" />
+
+		<motor class="mimo" name="act:right_ff_side" joint="robot:right_ff_side" gear="0.034406101945692186" forcerange="-1 1" user="6.217 .1556 .1556" />
+		<motor class="mimo" name="act:right_ff_knuckle" joint="robot:right_ff_knuckle" gear="0.04259475420876691" forcerange="-.345 1" user="4.368 .1422 .4378" />
+		<motor class="mimo" name="act:right_ff_middle" joint="robot:right_ff_middle" gear="0.013613815970535112" forcerange="-.345 1" user="3.493 .04684 .1339" />
+		<motor class="mimo" name="act:right_ff_distal" joint="robot:right_ff_distal" gear="0.007875193448193724" forcerange="-.345 1" user="2.539 .03054 .07747" />
+
+		<motor class="mimo" name="act:right_mf_side" joint="robot:right_mf_side" gear="0.03441589538676569" forcerange="-1 1" user="5.375 .1556 .1556" />
+		<motor class="mimo" name="act:right_mf_knuckle" joint="robot:right_mf_knuckle" gear="0.08053319520503172" forcerange="-.345 1" user="4.325 .2687 .8275" />
+		<motor class="mimo" name="act:right_mf_middle" joint="robot:right_mf_middle" gear="0.026533314912551523" forcerange="-.345 1" user="3.375 .08855 .2532" />
+		<motor class="mimo" name="act:right_mf_distal" joint="robot:right_mf_distal" gear="0.015179191142017422" forcerange="-.345 1" user="2.577 .05771 .1464" />
+
+		<motor class="mimo" name="act:right_rf_side" joint="robot:right_rf_side" gear="0.03476449884095981" forcerange="-1 1" user="4.984 .1556 .1556" />
+		<motor class="mimo" name="act:right_rf_knuckle" joint="robot:right_rf_knuckle" gear="0.05423261819189729" forcerange="-.345 1" user="2.817 .1791 .5517" />
+		<motor class="mimo" name="act:right_rf_middle" joint="robot:right_rf_middle" gear="0.017403877661014314" forcerange="-.345 1" user="3.007 .05903 .1688" />
+		<motor class="mimo" name="act:right_rf_distal" joint="robot:right_rf_distal" gear="0.009737120214881368" forcerange="-.345 1" user="2.313 .03847 .09759" />
+
+		<motor class="mimo" name="act:right_lf_side" joint="robot:right_lf_side" gear="0.03846663726907728" forcerange="-1 1" user="5.282 .1556 .1556" />
+		<motor class="mimo" name="act:right_lf_meta" joint="robot:right_lf_meta" gear="0.05205798930111907" forcerange="-.345 1" user="6.855 .07962 .1508" />
+		<motor class="mimo" name="act:right_lf_knuckle" joint="robot:right_lf_knuckle" gear="0.015078921809478294" forcerange="-.345 1" user="2.337 .04502 .1386" />
+		<motor class="mimo" name="act:right_lf_middle" joint="robot:right_lf_middle" gear="0.004465427599452381" forcerange="-.345 1" user="2.566 .01483 .04239" />
+		<motor class="mimo" name="act:right_lf_distal" joint="robot:right_lf_distal" gear="0.0025815105424140355" forcerange="-.345 1" user="2.001 .009666 .02452" />
+
+		<motor class="mimo" name="act:right_thumb_side" joint="robot:right_th_swivel" gear="0.20355157025206574" forcerange="-.345 1" user="3.491 1.117 2.604" />
+		<motor class="mimo" name="act:right_thumb_add" joint="robot:right_th_adduction" gear="0.07312576518438824" forcerange="-1 1" user="5.646 .4969 .5024" />
+		
+		<motor class="mimo" name="act:right_thumb_pivot" joint="robot:right_th_pivot" gear="0.06859287961898221" forcerange="-1 1" user="9.055 .1868 .1868" />
+		<motor class="mimo" name="act:right_thumb_middle" joint="robot:right_th_middle" gear="0.08642702831991758" forcerange="-.345 1" user="3.877 .2433 .7065" />
+		<motor class="mimo" name="act:right_thumb_distal" joint="robot:right_th_distal" gear="0.06558683587984107" forcerange="-.345 1" user="3.392 .2053 .4959" />
+
+		<motor class="mimo" name="act:left_shoulder_horizontal" joint="robot:left_shoulder_horizontal" gear="2.1532200911365003" forcerange="-1 1" user="1.811 18.80 15.30" />
+		<motor class="mimo" name="act:left_shoulder_abduction" joint="robot:left_shoulder_ad_ab" gear="4.78493353585889" forcerange="-.6875 1" user=".8793 44.17 69.23" />
+		<motor class="mimo" name="act:left_shoulder_internal" joint="robot:left_shoulder_rotation" gear="2.9905834599118064" forcerange="-1 .64" user="1.498 25.09 17.10" />
+		<motor class="mimo" name="act:left_elbow" joint="robot:left_elbow" gear="4.360208987973502" forcerange="-1 .83" user="1.566 35.43 27.04" />
+		<motor class="mimo" name="act:left_wrist_rotation" joint="robot:left_hand1" gear="0.5718394790237868" forcerange="-1 1" user="1.513 7.842 7.842" />
+		<motor class="mimo" name="act:left_wrist_flexion" joint="robot:left_hand2" gear="1.0129727914135653" forcerange="-1 .57" user="1.455 13.66 7.874" />
+		<motor class="mimo" name="act:left_wrist_ulnar" joint="robot:left_hand3" gear="0.7760678643894251" forcerange="-.87 1" user="2.254 5.155 6.021" />
+
+		<motor class="mimo" name="act:left_ff_side" joint="robot:left_ff_side" gear="0.034406101945692186" forcerange="-1 1" user="6.217 .1556 .1556" />
+		<motor class="mimo" name="act:left_ff_knuckle" joint="robot:left_ff_knuckle" gear="0.04259475420876691" forcerange="-.345 1" user="4.368 .1422 .4378" />
+		<motor class="mimo" name="act:left_ff_middle" joint="robot:left_ff_middle" gear="0.013613815970535112" forcerange="-.345 1" user="3.493 .04684 .1339" />
+		<motor class="mimo" name="act:left_ff_distal" joint="robot:left_ff_distal" gear="0.007875193448193724" forcerange="-.345 1" user="2.539 .03054 .07747" />
+
+		<motor class="mimo" name="act:left_mf_side" joint="robot:left_mf_side" gear="0.03441589538676569" forcerange="-1 1" user="5.375 .1556 .1556" />
+		<motor class="mimo" name="act:left_mf_knuckle" joint="robot:left_mf_knuckle" gear="0.08053319520503172" forcerange="-.345 1" user="4.325 .2687 .8275" />
+		<motor class="mimo" name="act:left_mf_middle" joint="robot:left_mf_middle" gear="0.026533314912551523" forcerange="-.345 1" user="3.375 .08855 .2532" />
+		<motor class="mimo" name="act:left_mf_distal" joint="robot:left_mf_distal" gear="0.015179191142017422" forcerange="-.345 1" user="2.577 .05771 .1464" />
+
+		<motor class="mimo" name="act:left_rf_side" joint="robot:left_rf_side" gear="0.03476449884095981" forcerange="-1 1" user="4.984 .1556 .1556" />
+		<motor class="mimo" name="act:left_rf_knuckle" joint="robot:left_rf_knuckle" gear="0.05423261819189729" forcerange="-.345 1" user="2.817 .1791 .5517" />
+		<motor class="mimo" name="act:left_rf_middle" joint="robot:left_rf_middle" gear="0.017403877661014314" forcerange="-.345 1" user="3.007 .05903 .1688" />
+		<motor class="mimo" name="act:left_rf_distal" joint="robot:left_rf_distal" gear="0.009737120214881368" forcerange="-.345 1" user="2.313 .03847 .09759" />
+
+		<motor class="mimo" name="act:left_lf_side" joint="robot:left_lf_side" gear="0.03846663726907728" forcerange="-1 1" user="5.282 .1556 .1556" />
+		<motor class="mimo" name="act:left_lf_meta" joint="robot:left_lf_meta" gear="0.05205798930111907" forcerange="-.345 1" user="6.855 .07962 .1508" />
+		<motor class="mimo" name="act:left_lf_knuckle" joint="robot:left_lf_knuckle" gear="0.015078921809478294" forcerange="-.345 1" user="2.337 .04502 .1386" />
+		<motor class="mimo" name="act:left_lf_middle" joint="robot:left_lf_middle" gear="0.004465427599452381" forcerange="-.345 1" user="2.566 .01483 .04239" />
+		<motor class="mimo" name="act:left_lf_distal" joint="robot:left_lf_distal" gear="0.0025815105424140355" forcerange="-.345 1" user="2.001 .009666 .02452" />
+
+		<motor class="mimo" name="act:left_thumb_side" joint="robot:left_th_swivel" gear="0.20355157025206574" forcerange="-.345 1" user="3.491 1.117 2.604" />
+		<motor class="mimo" name="act:left_thumb_add" joint="robot:left_th_adduction" gear="0.07312576518438824" forcerange="-1 1" user="5.646 .4969 .5024" />
+		
+		<motor class="mimo" name="act:left_thumb_pivot" joint="robot:left_th_pivot" gear="0.06859287961898221" forcerange="-1 1" user="9.055 .1868 .1868" />
+		<motor class="mimo" name="act:left_thumb_middle" joint="robot:left_th_middle" gear="0.08642702831991758" forcerange="-.345 1" user="3.877 .2433 .7065" />
+		<motor class="mimo" name="act:left_thumb_distal" joint="robot:left_th_distal" gear="0.06558683587984107" forcerange="-.345 1" user="3.392 .2053 .4959" />
+
+		<motor class="mimo" name="act:right_hip_flex" joint="robot:right_hip1" gear="10.791604513298726" forcerange="-1 1" user="1.083 71.25 92.49" />
+		<motor class="mimo" name="act:right_hip_abduction" joint="robot:right_hip2" gear="8.417451520373007" forcerange="-1 1" user="1.488 24.81 29.20" />
+		<motor class="mimo" name="act:right_hip_rotation" joint="robot:right_hip3" gear="4.775284997134685" forcerange="-.75 1" user="1.860 12.32 15.78" />
+		<motor class="mimo" name="act:right_knee" joint="robot:right_knee" gear="12.623471510621046" forcerange="-.65 1" user="1.450 63.16 89.27" />
+		<motor class="mimo" name="act:right_foot_flexion" joint="robot:right_foot1" gear="6.009303069675905" forcerange="-1 .5" user="1.430 21.34 11.87" />
+		<motor class="mimo" name="act:right_foot_inversion" joint="robot:right_foot2" gear="1.8441247515407542" forcerange="-.91 1" user="1.988 4.184 4.645" />
+		<motor class="mimo" name="act:right_foot_rotation" joint="robot:right_foot3" gear="1.9077152602145733" forcerange="-1 1" user="2.688 3.868 3.625" />
+		<motor class="mimo" name="act:right_big_toe" joint="robot:right_big_toe" gear="0.22506290470074866" forcerange="-1 .3" user="1.774 1.473 .4220" />
+		<motor class="mimo" name="act:right_toes" joint="robot:right_toes" gear="0.22506290470074877" forcerange="-1 .3" user="1.805 1.473 .4220" />
+
+		<motor class="mimo" name="act:left_hip_flex" joint="robot:left_hip1" gear="10.791604513298726" forcerange="-1 1" user="1.083 71.25 92.49" />
+		<motor class="mimo" name="act:left_hip_abduction" joint="robot:left_hip2" gear="8.417451520373007" forcerange="-1 1" user="1.488 24.81 29.20" />
+		<motor class="mimo" name="act:left_hip_rotation" joint="robot:left_hip3" gear="4.775284997134685" forcerange="-.75 1" user="1.860 12.32 15.78" />
+		<motor class="mimo" name="act:left_knee" joint="robot:left_knee" gear="12.623471510621046" forcerange="-.65 1" user="1.450 63.16 89.27" />
+		<motor class="mimo" name="act:left_foot_flexion" joint="robot:left_foot1" gear="6.009303069675905" forcerange="-1 .5" user="1.430 21.34 11.87" />
+		<motor class="mimo" name="act:left_foot_inversion" joint="robot:left_foot2" gear="1.8441247515407542" forcerange="-.91 1" user="1.988 4.184 4.645" />
+		<motor class="mimo" name="act:left_foot_rotation" joint="robot:left_foot3" gear="1.9077152602145733" forcerange="-1 1" user="2.688 3.868 3.625" />
+		<motor class="mimo" name="act:left_toes" joint="robot:left_toes" gear="0.22506290470074877" forcerange="-1 .3" user="1.774 1.473 .4220" />
+		<motor class="mimo" name="act:left_big_toe" joint="robot:left_big_toe" gear="0.22506290470074866" forcerange="-1 .3" user="1.805 1.473 .4220" />
+	</actuator>
+
+	<equality> 
+		<joint name="robot:hip_lean1" joint1="robot:hip_lean1" active="false" polycoef="0 1 0 0 0" solimp="0.95 0.99999 0.001 0.5 2" />
+		<joint name="robot:hip_rot1" joint1="robot:hip_rot1" active="false" polycoef="0 1 0 0 0" solimp="0.95 0.99999 0.001 0.5 2" />
+		<joint name="robot:hip_bend1" joint1="robot:hip_bend1" active="false" polycoef="0 1 0 0 0" solimp="0.95 0.99999 0.001 0.5 2" />
+		<joint name="robot:hip_lean2" joint1="robot:hip_lean2" active="false" polycoef="0 1 0 0 0" solimp="0.95 0.99999 0.001 0.5 2" />
+		<joint name="robot:hip_rot2" joint1="robot:hip_rot2" active="false" polycoef="0 1 0 0 0" solimp="0.95 0.99999 0.001 0.5 2" />
+		<joint name="robot:hip_bend2" joint1="robot:hip_bend2" active="false" polycoef="0 1 0 0 0" solimp="0.95 0.99999 0.001 0.5 2" />
+		<joint name="robot:head_swivel" joint1="robot:head_swivel" active="false" polycoef="0 1 0 0 0" solimp="0.95 0.99999 0.001 0.5 2" />
+		<joint name="robot:head_tilt" joint1="robot:head_tilt" active="false" polycoef="0 1 0 0 0" solimp="0.95 0.99999 0.001 0.5 2" />
+		<joint name="robot:head_tilt_side" joint1="robot:head_tilt_side" active="false" polycoef="0 1 0 0 0" solimp="0.95 0.99999 0.001 0.5 2" />
+		<joint name="robot:left_eye_horizontal" joint1="robot:left_eye_horizontal" active="false" polycoef="0 1 0 0 0" solimp="0.95 0.99999 0.001 0.5 2" />
+		<joint name="robot:left_eye_vertical" joint1="robot:left_eye_vertical" active="false" polycoef="0 1 0 0 0" solimp="0.95 0.99999 0.001 0.5 2" />
+		<joint name="robot:left_eye_torsional" joint1="robot:left_eye_torsional" active="false" polycoef="0 1 0 0 0" solimp="0.95 0.99999 0.001 0.5 2" />
+		<joint name="robot:right_eye_horizontal" joint1="robot:right_eye_horizontal" active="false" polycoef="0 1 0 0 0" solimp="0.95 0.99999 0.001 0.5 2" />
+		<joint name="robot:right_eye_vertical" joint1="robot:right_eye_vertical" active="false" polycoef="0 1 0 0 0" solimp="0.95 0.99999 0.001 0.5 2" />
+		<joint name="robot:right_eye_torsional" joint1="robot:right_eye_torsional" active="false" polycoef="0 1 0 0 0" solimp="0.95 0.99999 0.001 0.5 2" />
+
+		<joint name="robot:right_shoulder_horizontal" joint1="robot:right_shoulder_horizontal" active="false" polycoef="0 1 0 0 0" solimp="0.95 0.99999 0.001 0.5 2" />
+		<joint name="robot:right_shoulder_ad_ab" joint1="robot:right_shoulder_ad_ab" active="false" polycoef="0 1 0 0 0" solimp="0.95 0.99999 0.001 0.5 2" />
+		<joint name="robot:right_shoulder_rotation" joint1="robot:right_shoulder_rotation" active="false" polycoef="0 1 0 0 0" solimp="0.95 0.99999 0.001 0.5 2" />
+		<joint name="robot:right_elbow" joint1="robot:right_elbow" active="false" polycoef="0 1 0 0 0" solimp="0.95 0.99999 0.001 0.5 2" />
+		<joint name="robot:right_hand1" joint1="robot:right_hand1" active="false" polycoef="0 1 0 0 0" solimp="0.95 0.99999 0.001 0.5 2" />
+		<joint name="robot:right_hand2" joint1="robot:right_hand2" active="false" polycoef="0 1 0 0 0" solimp="0.95 0.99999 0.001 0.5 2" />
+		<joint name="robot:right_hand3" joint1="robot:right_hand3" active="false" polycoef="0 1 0 0 0" solimp="0.95 0.99999 0.001 0.5 2" />
+
+		<joint name="robot:right_ff_side" joint1="robot:right_ff_side" active="false" polycoef="0 1 0 0 0" solimp="0.95 0.99999 0.001 0.5 2" />
+		<joint name="robot:right_ff_knuckle" joint1="robot:right_ff_knuckle" active="false" polycoef="0 1 0 0 0" solimp="0.95 0.99999 0.001 0.5 2" />
+		<joint name="robot:right_ff_middle" joint1="robot:right_ff_middle" active="false" polycoef="0 1 0 0 0" solimp="0.95 0.99999 0.001 0.5 2" />
+		<joint name="robot:right_ff_distal" joint1="robot:right_ff_distal" active="false" polycoef="0 1 0 0 0" solimp="0.95 0.99999 0.001 0.5 2" />
+		<joint name="robot:right_mf_side" joint1="robot:right_mf_side" active="false" polycoef="0 1 0 0 0" solimp="0.95 0.99999 0.001 0.5 2" />
+		<joint name="robot:right_mf_knuckle" joint1="robot:right_mf_knuckle" active="false" polycoef="0 1 0 0 0" solimp="0.95 0.99999 0.001 0.5 2" />
+		<joint name="robot:right_mf_middle" joint1="robot:right_mf_middle" active="false" polycoef="0 1 0 0 0" solimp="0.95 0.99999 0.001 0.5 2" />
+		<joint name="robot:right_mf_distal" joint1="robot:right_mf_distal" active="false" polycoef="0 1 0 0 0" solimp="0.95 0.99999 0.001 0.5 2" />
+		<joint name="robot:right_rf_side" joint1="robot:right_rf_side" active="false" polycoef="0 1 0 0 0" solimp="0.95 0.99999 0.001 0.5 2" />
+		<joint name="robot:right_rf_knuckle" joint1="robot:right_rf_knuckle" active="false" polycoef="0 1 0 0 0" solimp="0.95 0.99999 0.001 0.5 2" />
+		<joint name="robot:right_rf_middle" joint1="robot:right_rf_middle" active="false" polycoef="0 1 0 0 0" solimp="0.95 0.99999 0.001 0.5 2" />
+		<joint name="robot:right_rf_distal" joint1="robot:right_rf_distal" active="false" polycoef="0 1 0 0 0" solimp="0.95 0.99999 0.001 0.5 2" />
+		<joint name="robot:right_lf_meta" joint1="robot:right_lf_meta" active="false" polycoef="0 1 0 0 0" solimp="0.95 0.99999 0.001 0.5 2" />
+		<joint name="robot:right_lf_side" joint1="robot:right_lf_side" active="false" polycoef="0 1 0 0 0" solimp="0.95 0.99999 0.001 0.5 2" />
+		<joint name="robot:right_lf_knuckle" joint1="robot:right_lf_knuckle" active="false" polycoef="0 1 0 0 0" solimp="0.95 0.99999 0.001 0.5 2" />
+		<joint name="robot:right_lf_middle" joint1="robot:right_lf_middle" active="false" polycoef="0 1 0 0 0" solimp="0.95 0.99999 0.001 0.5 2" />
+		<joint name="robot:right_lf_distal" joint1="robot:right_lf_distal" active="false" polycoef="0 1 0 0 0" solimp="0.95 0.99999 0.001 0.5 2" />
+		<joint name="robot:right_th_swivel" joint1="robot:right_th_swivel" active="false" polycoef="0 1 0 0 0" solimp="0.95 0.99999 0.001 0.5 2" />
+		<joint name="robot:right_th_adduction" joint1="robot:right_th_adduction" active="false" polycoef="0 1 0 0 0" solimp="0.95 0.99999 0.001 0.5 2" />
+		
+		<joint name="robot:right_th_pivot" joint1="robot:right_th_pivot" active="false" polycoef="0 1 0 0 0" solimp="0.95 0.99999 0.001 0.5 2" />
+		<joint name="robot:right_th_middle" joint1="robot:right_th_middle" active="false" polycoef="0 1 0 0 0" solimp="0.95 0.99999 0.001 0.5 2" />
+		<joint name="robot:right_th_distal" joint1="robot:right_th_distal" active="false" polycoef="0 1 0 0 0" solimp="0.95 0.99999 0.001 0.5 2" />
+
+		<joint name="robot:left_shoulder_horizontal" joint1="robot:left_shoulder_horizontal" active="false" polycoef="0 1 0 0 0" solimp="0.95 0.99999 0.001 0.5 2" />
+		<joint name="robot:left_shoulder_ad_ab" joint1="robot:left_shoulder_ad_ab" active="false" polycoef="0 1 0 0 0" solimp="0.95 0.99999 0.001 0.5 2" />
+		<joint name="robot:left_shoulder_rotation" joint1="robot:left_shoulder_rotation" active="false" polycoef="0 1 0 0 0" solimp="0.95 0.99999 0.001 0.5 2" />
+		<joint name="robot:left_elbow" joint1="robot:left_elbow" active="false" polycoef="0 1 0 0 0" solimp="0.95 0.99999 0.001 0.5 2" />
+		<joint name="robot:left_hand1" joint1="robot:left_hand1" active="false" polycoef="0 1 0 0 0" solimp="0.95 0.99999 0.001 0.5 2" />
+		<joint name="robot:left_hand2" joint1="robot:left_hand2" active="false" polycoef="0 1 0 0 0" solimp="0.95 0.99999 0.001 0.5 2" />
+		<joint name="robot:left_hand3" joint1="robot:left_hand3" active="false" polycoef="0 1 0 0 0" solimp="0.95 0.99999 0.001 0.5 2" />
+
+		<joint name="robot:left_ff_side" joint1="robot:left_ff_side" active="false" polycoef="0 1 0 0 0" solimp="0.95 0.99999 0.001 0.5 2" />
+		<joint name="robot:left_ff_knuckle" joint1="robot:left_ff_knuckle" active="false" polycoef="0 1 0 0 0" solimp="0.95 0.99999 0.001 0.5 2" />
+		<joint name="robot:left_ff_middle" joint1="robot:left_ff_middle" active="false" polycoef="0 1 0 0 0" solimp="0.95 0.99999 0.001 0.5 2" />
+		<joint name="robot:left_ff_distal" joint1="robot:left_ff_distal" active="false" polycoef="0 1 0 0 0" solimp="0.95 0.99999 0.001 0.5 2" />
+		<joint name="robot:left_mf_side" joint1="robot:left_mf_side" active="false" polycoef="0 1 0 0 0" solimp="0.95 0.99999 0.001 0.5 2" />
+		<joint name="robot:left_mf_knuckle" joint1="robot:left_mf_knuckle" active="false" polycoef="0 1 0 0 0" solimp="0.95 0.99999 0.001 0.5 2" />
+		<joint name="robot:left_mf_middle" joint1="robot:left_mf_middle" active="false" polycoef="0 1 0 0 0" solimp="0.95 0.99999 0.001 0.5 2" />
+		<joint name="robot:left_mf_distal" joint1="robot:left_mf_distal" active="false" polycoef="0 1 0 0 0" solimp="0.95 0.99999 0.001 0.5 2" />
+		<joint name="robot:left_rf_side" joint1="robot:left_rf_side" active="false" polycoef="0 1 0 0 0" solimp="0.95 0.99999 0.001 0.5 2" />
+		<joint name="robot:left_rf_knuckle" joint1="robot:left_rf_knuckle" active="false" polycoef="0 1 0 0 0" solimp="0.95 0.99999 0.001 0.5 2" />
+		<joint name="robot:left_rf_middle" joint1="robot:left_rf_middle" active="false" polycoef="0 1 0 0 0" solimp="0.95 0.99999 0.001 0.5 2" />
+		<joint name="robot:left_rf_distal" joint1="robot:left_rf_distal" active="false" polycoef="0 1 0 0 0" solimp="0.95 0.99999 0.001 0.5 2" />
+		<joint name="robot:left_lf_meta" joint1="robot:left_lf_meta" active="false" polycoef="0 1 0 0 0" solimp="0.95 0.99999 0.001 0.5 2" />
+		<joint name="robot:left_lf_side" joint1="robot:left_lf_side" active="false" polycoef="0 1 0 0 0" solimp="0.95 0.99999 0.001 0.5 2" />
+		<joint name="robot:left_lf_knuckle" joint1="robot:left_lf_knuckle" active="false" polycoef="0 1 0 0 0" solimp="0.95 0.99999 0.001 0.5 2" />
+		<joint name="robot:left_lf_middle" joint1="robot:left_lf_middle" active="false" polycoef="0 1 0 0 0" solimp="0.95 0.99999 0.001 0.5 2" />
+		<joint name="robot:left_lf_distal" joint1="robot:left_lf_distal" active="false" polycoef="0 1 0 0 0" solimp="0.95 0.99999 0.001 0.5 2" />
+		<joint name="robot:left_th_swivel" joint1="robot:left_th_swivel" active="false" polycoef="0 1 0 0 0" solimp="0.95 0.99999 0.001 0.5 2" />
+		<joint name="robot:left_th_adduction" joint1="robot:left_th_adduction" active="false" polycoef="0 1 0 0 0" solimp="0.95 0.99999 0.001 0.5 2" />
+		
+		<joint name="robot:left_th_pivot" joint1="robot:left_th_pivot" active="false" polycoef="0 1 0 0 0" solimp="0.95 0.99999 0.001 0.5 2" />
+		<joint name="robot:left_th_middle" joint1="robot:left_th_middle" active="false" polycoef="0 1 0 0 0" solimp="0.95 0.99999 0.001 0.5 2" />
+		<joint name="robot:left_th_distal" joint1="robot:left_th_distal" active="false" polycoef="0 1 0 0 0" solimp="0.95 0.99999 0.001 0.5 2" />
+
+		<joint name="robot:right_hip1" joint1="robot:right_hip1" active="false" polycoef="0 1 0 0 0" solimp="0.95 0.99999 0.001 0.5 2" />
+		<joint name="robot:right_hip2" joint1="robot:right_hip2" active="false" polycoef="0 1 0 0 0" solimp="0.95 0.99999 0.001 0.5 2" />
+		<joint name="robot:right_hip3" joint1="robot:right_hip3" active="false" polycoef="0 1 0 0 0" solimp="0.95 0.99999 0.001 0.5 2" />
+		<joint name="robot:right_knee" joint1="robot:right_knee" active="false" polycoef="0 1 0 0 0" solimp="0.95 0.99999 0.001 0.5 2" />
+		<joint name="robot:right_foot1" joint1="robot:right_foot1" active="false" polycoef="0 1 0 0 0" solimp="0.95 0.99999 0.001 0.5 2" />
+		<joint name="robot:right_foot2" joint1="robot:right_foot2" active="false" polycoef="0 1 0 0 0" solimp="0.95 0.99999 0.001 0.5 2" />
+		<joint name="robot:right_foot3" joint1="robot:right_foot3" active="false" polycoef="0 1 0 0 0" solimp="0.95 0.99999 0.001 0.5 2" />
+		<joint name="robot:right_big_toe" joint1="robot:right_big_toe" active="false" polycoef="0 1 0 0 0" solimp="0.95 0.99999 0.001 0.5 2" />
+		<joint name="robot:right_toes" joint1="robot:right_toes" active="false" polycoef="0 1 0 0 0" solimp="0.95 0.99999 0.001 0.5 2" />
+
+		<joint name="robot:left_hip1" joint1="robot:left_hip1" active="false" polycoef="0 1 0 0 0" solimp="0.95 0.99999 0.001 0.5 2" />
+		<joint name="robot:left_hip2" joint1="robot:left_hip2" active="false" polycoef="0 1 0 0 0" solimp="0.95 0.99999 0.001 0.5 2" />
+		<joint name="robot:left_hip3" joint1="robot:left_hip3" active="false" polycoef="0 1 0 0 0" solimp="0.95 0.99999 0.001 0.5 2" />
+		<joint name="robot:left_knee" joint1="robot:left_knee" active="false" polycoef="0 1 0 0 0" solimp="0.95 0.99999 0.001 0.5 2" />
+		<joint name="robot:left_foot1" joint1="robot:left_foot1" active="false" polycoef="0 1 0 0 0" solimp="0.95 0.99999 0.001 0.5 2" />
+		<joint name="robot:left_foot2" joint1="robot:left_foot2" active="false" polycoef="0 1 0 0 0" solimp="0.95 0.99999 0.001 0.5 2" />
+		<joint name="robot:left_foot3" joint1="robot:left_foot3" active="false" polycoef="0 1 0 0 0" solimp="0.95 0.99999 0.001 0.5 2" />
+		<joint name="robot:left_big_toe" joint1="robot:left_big_toe" active="false" polycoef="0 1 0 0 0" solimp="0.95 0.99999 0.001 0.5 2" />
+		<joint name="robot:left_toes" joint1="robot:left_toes" active="false" polycoef="0 1 0 0 0" solimp="0.95 0.99999 0.001 0.5 2" />
+	</equality>
+	
+<worldbody>
+    <geom name="floor" pos="0 0 0" size="0 0 .25" type="plane" material="playmat" condim="3" />
+    <light directional="false" diffuse=".4 .4 .4" specular="0 0 0" pos="0 0 10" dir="0 0 -1" castshadow="false" />
+    <light mode="targetbodycom" target="upper_body" directional="false" diffuse=".8 .8 .8" specular="0.3 0.3 0.3" pos="0 0 5.0" dir="0 0 -1" />
+    <body name="mimo_location" pos="0 0 0.1" quat="0 0.7071068 0 0.7071068">
+      <freejoint name="mimo_orientation" />
+
+	<body childclass="mimo" name="hip" pos="0 0 0">
+		
+		
+		
+		<geom name="lb" type="capsule" size="0.04927440776520813 0.044141656956332286 0.0" mass="1.2639563486022711" material="pants_down" pos="-0.002 0.0 0.0051327508088758475" euler="90 0 0" />
+		<site name="lowerBody_center" type="sphere" size=".01 .01 .01" pos="0 0 0" />
+		<body name="lower_body" pos="0.002 0.0 0.07801781229491288">
+			<joint name="robot:hip_lean1" type="hinge" pos="0.0 0.0 -0.05440715857408399" axis="1 0 0" range="-14 14" stiffness="3.38" damping="0.77" frictionloss=".049" armature="0.01" />
+			<joint name="robot:hip_rot1" type="hinge" pos="0.0 0.0 -0.05440715857408399" axis="0 0 1" range="-18 18" stiffness="1.45" damping="0.29" frictionloss=".018" armature="0.01" />
+			<joint name="robot:hip_bend1" type="hinge" pos="0.0 0.0 -0.05440715857408399" axis="0 1 0" range="-17 30.5" stiffness="2.20" damping="0.84" frictionloss="0.040" armature="0.01" />
+			<site name="torque_lb" type="sphere" size="0.01" pos="0 0 0" group="4" />
+			<geom name="cb" type="capsule" size="0.05440715857408399 0.035929255662130934 0.0" mass="1.445155157563998" material="pants_up" contype="0" pos="0.005 0.0 -0.008212401294201357" euler="90 0 0" />
+				
+			<body name="upper_body" pos="-0.002 0.0 0.09341606472154043">
+				<joint name="robot:hip_lean2" type="hinge" pos="0.0 0.0 -0.05338060841230882" axis="1 0 0" range="-27 27" stiffness="1.69" damping="0.38" frictionloss=".024" armature="0.01" />
+				<joint name="robot:hip_rot2" type="hinge" pos="0.0 0.0 -0.05338060841230882" axis="0 0 1" range="-18 18" stiffness="1.45" damping="0.29" frictionloss=".018" armature="0.01" />
+				<joint name="robot:hip_bend2" type="hinge" pos="0.0 0.0 -0.05338060841230882" axis="0 1 0" range="-17 30.5" stiffness="2.20" damping="0.84" frictionloss="0.040" armature="0.01" />
+				<site name="torque_ub" type="sphere" size="0.01" pos="0 0 0" group="4" />
+				<geom name="ub1" type="capsule" size="0.05338060841230882 0.03592925566213093 0.0" mass="1.187366046068002" material="top_down" pos="0.007 0.0 -0.03284960517680543" euler="90 0 0" />
+				<geom name="ub2" type="capsule" size="0.049274407765208146 0.0400354563092316 0.0" mass="1.0310482675905728" material="top_middle" pos="0.004 0.0 0.03079650485325509" euler="90 0 0" />
+				<geom name="neck" type="capsule" size="0.018943789550499017 1e-06 0.0" mass="0.0" material="skin" pos="0.0 0.0 0.13447907119254723" euler="0 0 0" />
+
+				<body name="chest" pos="0.0 0.0 0.09238951455976527">
+					<joint name="robot:chest_lean" type="hinge" pos="0 0 0" axis="1 0 0" range="-9 9" stiffness="1.69" damping="0.38" frictionloss=".024" armature="0.01" />
+					<joint name="robot:chest_rot" type="hinge" pos="0 0 0" axis="0 0 1" range="-18 18" stiffness="1.45" damping="0.29" frictionloss=".018" armature="0.01" />
+					<site name="torque_chest" type="sphere" size="0.01" pos="0 0 0" group="4" />
+					<geom name="ub3" type="capsule" size="0.04208855663278196 0.04824785760343297 0.0" mass="0.7807234652398662" material="top_up" pos="0 0 0" euler="90 0 0" />
+				
+					<body name="right_upper_arm" pos="0.0 -0.09658110222852735 0.0" euler="170 0 0">
+						
+						<joint name="robot:right_shoulder_horizontal" type="hinge" pos="0 0 0" axis="0 1 -4" range="-28 118" stiffness=".09" damping=".05" frictionloss=".0009" armature="0.004" />
+						<joint name="robot:right_shoulder_ad_ab" type="hinge" pos="0 0 0" axis="-1 0 0" range="-84 183" stiffness=".11" damping=".10" frictionloss=".0014" armature="0.004" />
+						<joint name="robot:right_shoulder_rotation" type="hinge" pos="0 0 0" axis="0 0 -1" range="-99 67" stiffness=".12" damping=".07" frictionloss=".0008" armature="0.004" />
+						<site name="torque_right_shoulder" type="sphere" size="0.01" pos="0 0 0" group="4" />
+						<geom name="right_uarm1" type="capsule" material="top_sleeve" size="0.024978751969249716 0.06020852339034716 0.0" mass="0.3239400003776468" pos="0.0 0.0 0.06020852339034716" euler="0 0 0" />
+						<body name="right_lower_arm" pos="0.0 -0.0 0.12041704678069431" euler="0 0 0">
+							<joint name="robot:right_elbow" type="hinge" pos="0 0 0" axis="0 -1 0" springref="-20" range="-146 5" stiffness=".13" damping=".11" frictionloss=".030" armature="0.002" />
+							<site name="torque_right_elbow" type="sphere" size="0.01" pos="0 0 0" group="4" />
+							<geom name="right_larm" type="capsule" size="0.023980401509209864 0.042320774189665095 0.0" mass="0.22636751662562432" pos="0.0 0.0 0.042320774189665095" contype="8" conaffinity="7" />
+							<body name="right_hand" pos="0.007371350612269622 -0.0 0.12190576171833142" euler="0 0 0"> 
+								<joint name="robot:right_hand1" type="hinge" pos="-0.007371350612269622 -0.0 -0.01111917419608036" axis="0 0 -1" springref="-20" range="-90 90" stiffness=".22" damping=".03" frictionloss=".007" armature="0.001" />
+								<joint name="robot:right_hand2" type="hinge" pos="-0.007371350612269622 -0.0 -0.014825565594773812" axis="-1 0 0" range="-92 86" stiffness=".33" damping=".11" frictionloss=".007" armature="0.001" />
+								<joint name="robot:right_hand3" type="hinge" pos="-0.007371350612269622 -0.0 -0.018531956993467266" axis="0 1 0" range="-53 48" stiffness=".38" damping=".11" frictionloss=".007" armature="0.001" />
+								<site name="torque_right_wrist" type="sphere" size="0.002" pos="0 0 0" group="4" />
+								<geom name="geom:right_hand1" type="box" pos="0 0 0" size="0.01802821749743656 0.006189881449883724 0.018531956993467266" mass="0.015480511610715375" condim="6" />
+								<geom name="geom:right_hand2" type="box" pos="-0.024220152011743042 0.0 -0.009265978496733633" size="0.006191934514306483 0.006189881449883724 0.009265978496733633" mass="0.0026583745022721187" condim="6" />
+								<geom name="geom:right_hand3" type="cylinder" pos="0.0 0.0 0.018531956993467266" size="0.006189881449883724 0.01792821749743656 0.0" mass="0.00396572948958833" euler="0 90 0" condim="6" />
+								<geom name="geom:right_hand4" type="cylinder" pos="-0.006191934514306483 0.0 -0.018531956993467266" size="0.006189881449883724 0.024120152011743043 0.0" mass="0.00533447373259609" euler="0 90 0" condim="6" />
+								
+								<body name="right_ffknuckle" pos="0.013459487532280785 -0.0 0.018531956993467266">
+									<joint name="robot:right_ff_side" type="hinge" pos="0 0 0" axis="0 1 0" range="-25 25" stiffness=".003" damping="0.001" armature="0.0001" />
+									<joint name="robot:right_ff_knuckle" type="hinge" pos="0 0 0" axis="1 0 0" range="-20 90" springref="45" stiffness="0.0008" damping="0.0005" armature="0.0001" />
+									<site name="torque_right_ff_knuckle" type="sphere" size="0.002" pos="0 0 0" group="4" />
+									<geom name="geom:right_ffknuckle1" type="capsule" pos="0.0 0.0 0.011124827299507947" size="0.004468729965155776 0.011124827299507947 0.0" mass="0.001852424528756067" condim="6" />
+									
+									<body name="right_ffmiddle" pos="0.0 -0.0 0.022249654599015893">
+										<joint name="robot:right_ff_middle" type="hinge" pos="0 0 0" axis="1 0 0" range="-5 100" springref="45" stiffness="0.0006" damping="0.0005" armature="0.0001" />
+										<site name="torque_right_ff_middle" type="sphere" size="0.002" pos="0 0 0" group="4" />
+										<geom name="geom:right_ffmiddle1" type="capsule" pos="0.0 0.0 0.005562413649753973" size="0.004245293466897987 0.005562413649753973 0.0" mass="0.0009878760304358246" condim="6" />
+										
+										<body name="right_ffdistal" pos="0.0 -0.0 0.011124827299507947">
+											<joint name="robot:right_ff_distal" type="hinge" pos="0 0 0" axis="1 0 0" range="-5 80" springref="30" stiffness="0.0006" damping="0.0005" armature="0.0001" />
+											<site name="torque_right_ff_distal" type="sphere" size="0.002" pos="0 0 0" group="4" />
+											<geom name="geom:right_ffdistal1" type="capsule" pos="0.0 0.0 0.0035458992529774293" size="0.004033028793553088 0.0035458992529774293 0.0" mass="0.0006567748541096962" condim="6" />
+										</body>
+									</body>
+								</body>
+								
+								<body name="right_mfknuckle" pos="0.0 -0.0 0.018531956993467266">
+									<joint name="robot:right_mf_side" type="hinge" pos="0 0 0" axis="0 1 0" range="-25 25" stiffness=".003" damping="0.001" armature="0.0001" />
+									<joint name="robot:right_mf_knuckle" type="hinge" pos="0 0 0" axis="1 0 0" range="-20 90" springref="45" stiffness="0.0010" damping="0.0005" armature="0.0001" />
+									<site name="torque_right_mf_knuckle" type="sphere" size="0.002" pos="0 0 0" group="4" />
+									<geom name="geom:right_mfknuckle1" type="capsule" pos="0.0 0.0 0.012360919221675495" size="0.004703926279111343 0.012360919221675495 0.0" mass="0.0022604360090027705" condim="6" />
+									
+									<body name="right_mfmiddle" pos="0.0 -0.0 0.02472183844335099">
+										<joint name="robot:right_mf_middle" type="hinge" pos="0 0 0" axis="1 0 0" range="-5 100" springref="45" stiffness="0.0007" damping="0.0005" armature="0.0001" />
+										<site name="torque_right_mf_middle" type="sphere" size="0.002" pos="0 0 0" group="4" />
+										<geom name="geom:right_mfmiddle1" type="capsule" pos="0.0 0.0 0.006180459610837748" size="0.004468729965155776 0.006180459610837748 0.0" mass="0.001195359853880847" condim="6" />
+										
+										<body name="right_mfdistal" pos="0.0 -0.0 0.012360919221675495">
+											<joint name="robot:right_mf_distal" type="hinge" pos="0 0 0" axis="1 0 0" range="-5 80" springref="30" stiffness="0.0006" damping="0.0005" armature="0.0001" />
+											<site name="torque_right_mf_distal" type="sphere" size="0.002" pos="0 0 0" group="4" />
+											<geom name="geom:right_mfdistal1" type="capsule" pos="0.0 0.0 0.004057812877388755" size="0.004245293466897987 0.004057812877388755 0.0" mass="0.0008111137010247257" condim="6" />
+										</body>
+									</body>
+								</body>
+								
+								<body name="right_rfknuckle" pos="-0.013459487532280785 -0.0 0.018531956993467266">
+									<joint name="robot:right_rf_side" type="hinge" pos="0 0 0" axis="0 1 0" range="-25 25" stiffness=".003" damping="0.001" armature="0.0001" />
+									<joint name="robot:right_rf_knuckle" type="hinge" pos="0 0 0" axis="1 0 0" range="-20 90" springref="45" stiffness="0.0009" damping="0.0005" armature="0.0001" />
+									<site name="torque_right_rf_knuckle" type="sphere" size="0.002" pos="0 0 0" group="4" />
+									<geom name="geom:right_rfknuckle1" type="capsule" pos="0.0 0.0 0.011124827299507947" size="0.004468729965155776 0.011124827299507947 0.0" mass="0.0018522524982463385" condim="6" />
+									
+									<body name="right_rfmiddle" pos="0.0 -0.0 0.022249654599015893">
+										<joint name="robot:right_rf_middle" type="hinge" pos="0 0 0" axis="1 0 0" range="-5 100" springref="45" stiffness="0.0007" damping="0.0005" armature="0.0001" />
+										<site name="torque_right_rf_middle" type="sphere" size="0.002" pos="0 0 0" group="4" />
+										<geom name="geom:right_rfmiddle1" type="capsule" pos="0.0 0.0 0.005562413649753973" size="0.004245293466897987 0.005562413649753973 0.0" mass="0.0009880047472175819" condim="6" />
+										
+										<body name="right_rfdistal" pos="0.0 -0.0 0.011124827299507947">
+											<joint name="robot:right_rf_distal" type="hinge" pos="0 0 0" axis="1 0 0" range="-5 80" springref="30" stiffness="0.0006" damping="0.0005" armature="0.0001" />
+											<site name="torque_right_rf_distal" type="sphere" size="0.002" pos="0 0 0" group="4" />
+											<geom name="geom:right_rfdistal1" type="capsule" pos="0.0 0.0 0.0035458992529774293" size="0.004033028793553088 0.0035458992529774293 0.0" mass="0.0006571307796299425" condim="6" />
+										</body>
+									</body>
+								</body>
+								
+								<body name="right_lfmetacarpal" pos="-0.01577469031025699 -0.0 0.003264455271147975">
+									<joint name="robot:right_lf_meta" type="hinge" pos="0 0 0" axis="0.571 0 0.821" range="0 40" stiffness=".01" damping=".001" armature="0.0001" />
+									<site name="torque_right_lf_meta" type="sphere" size="0.002" pos="0 0 0" group="4" />
+									<geom name="geom:right_lfmetacarpal1" type="box" pos="-0.009387901771459723 0.0 -0.003264455271147975" size="0.0053494944443328125 0.006289881449883725 0.009265978496733633" mass="0.002341796112467528" condim="6" contype="16" conaffinity="7" />
+									<geom name="geom:right_lfmetacarpal2" type="cylinder" pos="-0.009387901771459723 0.0 0.006001523225585658" size="0.006289881449883725 0.005249494444332812 0.0" mass="0.0012031497562215246" euler="0 90 0" condim="6" contype="16" conaffinity="7" />
+									
+									<body name="right_lfknuckle" pos="-0.009420569499014632 -0.0 0.006001523225585658">
+										<joint name="robot:right_lf_side" type="hinge" pos="0 0 0" axis="0 1 0" range="-25 25" stiffness="0.003" damping="0.001" armature="0.0001" />
+										<joint name="robot:right_lf_knuckle" type="hinge" pos="0 0 0" axis="1 0 0" range="-20 90" springref="45" stiffness="0.0007" damping="0.0005" armature="0.0001" />
+										<site name="torque_right_lf_knuckle" type="sphere" size="0.002" pos="0 0 0" group="4" />
+										<geom name="geom:right_lfknuckle1" type="capsule" pos="0.0 0.0 0.010877608915074437" size="0.004280572913991323 0.010877608915074437 0.0" mass="0.001648680073352652" condim="6" />
+										
+										<body name="right_lfmiddle" pos="0.0 -0.0 0.021755217830148874">
+											<joint name="robot:right_lf_middle" type="hinge" pos="0 0 0" axis="1 0 0" range="-5 100" springref="45" stiffness="0.0006" damping="0.0005" armature="0.0001" />
+											<site name="torque_right_lf_middle" type="sphere" size="0.002" pos="0 0 0" group="4" />
+											<geom name="geom:right_lfmiddle1" type="capsule" pos="0.0 0.0 0.005438804457537218" size="0.004066544268291756 0.005438804457537218 0.0" mass="0.0008725705385759935" condim="6" />
+											
+											<body name="right_lfdistal" pos="0.0 -0.0 0.010877608915074437">
+												<joint name="robot:right_lf_distal" type="hinge" pos="0 0 0" axis="1 0 0" range="-5 80" springref="30" stiffness="0.0006" damping="0.0005" armature="0.0001" />
+												<site name="torque_right_lf_distal" type="sphere" size="0.002" pos="0 0 0" group="4" />
+												<geom name="geom:right_lfdistal1" type="capsule" pos="0.0 0.0 0.0035071959300986347" size="0.003863217054877168 0.0035071959300986347 0.0" mass="0.000586371680348331" condim="6" />
+											</body>
+										</body>
+									</body>
+								</body>
+								
+								<body name="right_thbase" pos="0.012952516075845192 -0.004483424406337013 -0.017034144166128293" euler="0 80 30">
+									<joint name="robot:right_th_swivel" type="hinge" pos="0 0 0" axis="3 -5 -1" range="-10 110" springref="40" stiffness="0.003" damping="0.001" armature="0.0001" />
+									<joint name="robot:right_th_adduction" type="hinge" pos="0 0 0" axis="1 2 0" range="-60 0" springref="-35" stiffness="0.004" damping="0.001" armature="0.0001" />
+									
+									<site name="torque_right_th_base" type="sphere" size="0.002" pos="0 0 0" group="4" />
+									<geom name="geom:right_thbase1" type="capsule" pos="0.0 0.0 0.009270689416256622" size="0.00583814541974861 0.009270689416256622 0.0" mass="0.0029812392179277085" condim="6" contype="16" conaffinity="7" />
+									
+									<body name="right_thhub" pos="0.0 -0.0 0.018541378832513243">
+										<joint name="robot:right_th_pivot" type="hinge" pos="0 0 0" axis="1 0 0" range="-10 10" springref="0" stiffness="0.002" damping="0.001" armature="0.0001" />
+										<joint name="robot:right_th_middle" type="hinge" pos="0 0 0" axis="0 -1 0" range="0 90" springref="30" stiffness="0.004" damping="0.001" armature="0.0001" />
+										<site name="torque_right_th_hub" type="sphere" size="0.002" pos="0 0 0" group="4" />
+										<geom name="geom:right_thhub1" type="capsule" pos="0.0 0.0 0.006489482591379635" size="0.00554623814876118 0.006489482591379635 0.0" mass="0.0020721908932894526" condim="6" />
+										
+										<body name="right_thdistal" pos="0.0 -0.0 0.01297896518275927">
+											<joint name="robot:right_th_distal" type="hinge" pos="0 0 0" axis="0 -1 0" range="0 90" springref="20" stiffness="0.004" damping="0.001" armature="0.0001" />
+											<site name="torque_right_th_distal" type="sphere" size="0.002" pos="0 0 0" group="4" />
+											<geom name="geom:right_thdistal1" type="capsule" pos="0.0 0.0 0.0060259481205668045" size="0.0052689262413231205 0.0060259481205668045 0.0" mass="0.0017413478436245633" condim="6" />
+										</body>
+									</body>
+								</body>
+							</body>
+						</body>
+					</body>
+
+					<body name="left_upper_arm" pos="0.0 0.09658110222852735 0.0" euler="-170 0 0">
+						
+						<joint name="robot:left_shoulder_horizontal" type="hinge" pos="0 0 0" axis="0 1 4" range="-28 118" stiffness=".09" damping=".05" frictionloss=".0009" armature="0.004" />
+						<joint name="robot:left_shoulder_ad_ab" type="hinge" pos="0 0 0" axis="1 0 0" range="-84 183" stiffness=".11" damping=".10" frictionloss=".0014" armature="0.004" />
+						<joint name="robot:left_shoulder_rotation" type="hinge" pos="0 0 0" axis="0 0 1" range="-99 67" stiffness=".12" damping=".07" frictionloss=".0008" armature="0.004" />
+						<site name="torque_left_shoulder" type="sphere" size="0.01" pos="0 0 0" group="4" />
+						<geom name="left_uarm1" type="capsule" material="top_sleeve" size="0.024978751969249716 0.06020852339034716 0.0" mass="0.3239400003776468" pos="0.0 0.0 0.06020852339034716" euler="0 0 0" />
+						<body name="left_lower_arm" pos="0.0 0.0 0.12041704678069431" euler="0 0 0">
+							<joint name="robot:left_elbow" type="hinge" pos="0 0 0" axis="0 -1 0" springref="-20" range="-146 5" stiffness=".13" damping=".11" frictionloss=".030" armature="0.002" />
+							<site name="torque_left_elbow" type="sphere" size="0.01" pos="0 0 0" group="4" />
+							<geom name="left_larm" type="capsule" size="0.023980401509209864 0.042320774189665095 0.0" mass="0.22636751662562432" pos="0.0 0.0 0.042320774189665095" contype="2" conaffinity="25" />
+							<body name="left_hand" pos="0.007371350612269622 0.0 0.12190576171833142" euler="0 0 0"> 
+								<joint name="robot:left_hand1" type="hinge" pos="-0.007371350612269622 0.0 -0.01111917419608036" axis="0 0 1" springref="-20" range="-90 90" stiffness=".22" damping=".03" frictionloss=".007" armature="0.001" />
+								<joint name="robot:left_hand2" type="hinge" pos="-0.007371350612269622 0.0 -0.014825565594773812" axis="1 0 0" range="-92 86" stiffness=".33" damping=".11" frictionloss=".007" armature="0.001" />
+								<joint name="robot:left_hand3" type="hinge" pos="-0.007371350612269622 0.0 -0.018531956993467266" axis="0 1 0" range="-53 48" stiffness=".38" damping=".11" frictionloss=".007" armature="0.001" />
+								<site name="torque_left_wrist" type="sphere" size="0.002" pos="0 0 0" group="4" />
+								<geom name="geom:left_hand1" type="box" pos="0 0 0" size="0.01802821749743656 0.006189881449883724 0.018531956993467266" mass="0.015480511610715375" condim="6" />
+								<geom name="geom:left_hand2" type="box" pos="-0.024220152011743042 0.0 -0.009265978496733633" size="0.006191934514306483 0.006189881449883724 0.009265978496733633" mass="0.0026583745022721187" condim="6" />
+								<geom name="geom:left_hand3" type="cylinder" pos="0.0 0.0 0.018531956993467266" size="0.006189881449883724 0.01792821749743656 0.0" mass="0.00396572948958833" euler="0 90 0" condim="6" />
+								<geom name="geom:left_hand4" type="cylinder" pos="-0.006191934514306483 0.0 -0.018531956993467266" size="0.006189881449883724 0.024120152011743043 0.0" mass="0.00533447373259609" euler="0 90 0" condim="6" />
+								
+								<body name="left_ffknuckle" pos="0.013459487532280785 0.0 0.018531956993467266">
+									<joint name="robot:left_ff_side" type="hinge" pos="0 0 0" axis="0 1 0" range="-25 25" stiffness=".003" damping="0.001" armature="0.0001" />
+									<joint name="robot:left_ff_knuckle" type="hinge" pos="0 0 0" axis="-1 0 0" range="-20 90" springref="45" stiffness="0.0008" damping="0.0005" armature="0.0001" />
+									<site name="torque_left_ff_knuckle" type="sphere" size="0.002" pos="0 0 0" group="4" />
+									<geom name="geom:left_ffknuckle1" type="capsule" pos="0.0 0.0 0.011124827299507947" size="0.004468729965155776 0.011124827299507947 0.0" mass="0.001852424528756067" condim="6" />
+									
+									<body name="left_ffmiddle" pos="0.0 0.0 0.022249654599015893">
+										<joint name="robot:left_ff_middle" type="hinge" pos="0 0 0" axis="-1 0 0" range="-5 100" springref="45" stiffness="0.0006" damping="0.0005" armature="0.0001" />
+										<site name="torque_left_ff_middle" type="sphere" size="0.002" pos="0 0 0" group="4" />
+										<geom name="geom:left_ffmiddle1" type="capsule" pos="0.0 0.0 0.005562413649753973" size="0.004245293466897987 0.005562413649753973 0.0" mass="0.0009878760304358246" condim="6" />
+										
+										<body name="left_ffdistal" pos="0.0 0.0 0.011124827299507947">
+											<joint name="robot:left_ff_distal" type="hinge" pos="0 0 0" axis="-1 0 0" range="-5 80" springref="30" stiffness="0.0006" damping="0.0005" armature="0.0001" />
+											<site name="torque_left_ff_distal" type="sphere" size="0.002" pos="0 0 0" group="4" />
+											<geom name="geom:left_ffdistal1" type="capsule" pos="0.0 0.0 0.0035458992529774293" size="0.004033028793553088 0.0035458992529774293 0.0" mass="0.0006567748541096962" condim="6" />
+										</body>
+									</body>
+								</body>
+								
+								<body name="left_mfknuckle" pos="0.0 0.0 0.018531956993467266">
+									<joint name="robot:left_mf_side" type="hinge" pos="0 0 0" axis="0 1 0" range="-25 25" stiffness=".003" damping="0.001" armature="0.0001" />
+									<joint name="robot:left_mf_knuckle" type="hinge" pos="0 0 0" axis="-1 0 0" range="-20 90" springref="45" stiffness="0.0010" damping="0.0005" armature="0.0001" />
+									<site name="torque_left_mf_knuckle" type="sphere" size="0.002" pos="0 0 0" group="4" />
+									<geom name="geom:left_mfknuckle1" type="capsule" pos="0.0 0.0 0.012360919221675495" size="0.004703926279111343 0.012360919221675495 0.0" mass="0.0022604360090027705" condim="6" />
+									
+									<body name="left_mfmiddle" pos="0.0 0.0 0.02472183844335099">
+										<joint name="robot:left_mf_middle" type="hinge" pos="0 0 0" axis="-1 0 0" range="-5 100" springref="45" stiffness="0.0007" damping="0.0005" armature="0.0001" />
+										<site name="torque_left_mf_middle" type="sphere" size="0.002" pos="0 0 0" group="4" />
+										<geom name="geom:left_mfmiddle1" type="capsule" pos="0.0 0.0 0.006180459610837748" size="0.004468729965155776 0.006180459610837748 0.0" mass="0.001195359853880847" condim="6" />
+										
+										<body name="left_mfdistal" pos="0.0 0.0 0.012360919221675495">
+											<joint name="robot:left_mf_distal" type="hinge" pos="0 0 0" axis="-1 0 0" range="-5 80" springref="30" stiffness="0.0006" damping="0.0005" armature="0.0001" />
+											<site name="torque_left_mf_distal" type="sphere" size="0.002" pos="0 0 0" group="4" />
+											<geom name="geom:left_mfdistal1" type="capsule" pos="0.0 0.0 0.004057812877388755" size="0.004245293466897987 0.004057812877388755 0.0" mass="0.0008111137010247257" condim="6" />
+										</body>
+									</body>
+								</body>
+								
+								<body name="left_rfknuckle" pos="-0.013459487532280785 0.0 0.018531956993467266">
+									<joint name="robot:left_rf_side" type="hinge" pos="0 0 0" axis="0 1 0" range="-25 25" stiffness=".003" damping="0.001" armature="0.0001" />
+									<joint name="robot:left_rf_knuckle" type="hinge" pos="0 0 0" axis="-1 0 0" range="-20 90" springref="45" stiffness="0.0009" damping="0.0005" armature="0.0001" />
+									<site name="torque_left_rf_knuckle" type="sphere" size="0.002" pos="0 0 0" group="4" />
+									<geom name="geom:left_rfknuckle1" type="capsule" pos="0.0 0.0 0.011124827299507947" size="0.004468729965155776 0.011124827299507947 0.0" mass="0.0018522524982463385" condim="6" />
+									
+									<body name="left_rfmiddle" pos="0.0 0.0 0.022249654599015893">
+										<joint name="robot:left_rf_middle" type="hinge" pos="0 0 0" axis="-1 0 0" range="-5 100" springref="45" stiffness="0.0007" damping="0.0005" armature="0.0001" />
+										<site name="torque_left_rf_middle" type="sphere" size="0.002" pos="0 0 0" group="4" />
+										<geom name="geom:left_rfmiddle1" type="capsule" pos="0.0 0.0 0.005562413649753973" size="0.004245293466897987 0.005562413649753973 0.0" mass="0.0009880047472175819" condim="6" />
+										
+										<body name="left_rfdistal" pos="0.0 0.0 0.011124827299507947">
+											<joint name="robot:left_rf_distal" type="hinge" pos="0 0 0" axis="-1 0 0" range="-5 80" springref="30" stiffness="0.0006" damping="0.0005" armature="0.0001" />
+											<site name="torque_left_rf_distal" type="sphere" size="0.002" pos="0 0 0" group="4" />
+											<geom name="geom:left_rfdistal1" type="capsule" pos="0.0 0.0 0.0035458992529774293" size="0.004033028793553088 0.0035458992529774293 0.0" mass="0.0006571307796299425" condim="6" />
+										</body>
+									</body>
+								</body>
+								
+								<body name="left_lfmetacarpal" pos="-0.01577469031025699 0.0 0.003264455271147975">
+									<joint name="robot:left_lf_meta" type="hinge" pos="0 0 0" axis="-0.571 0 -0.821" range="0 40" stiffness=".01" damping=".001" armature="0.0001" />
+									<site name="torque_left_lf_meta" type="sphere" size="0.002" pos="0 0 0" group="4" />
+									<geom name="geom:left_lfmetacarpal1" type="box" pos="-0.009387901771459723 0.0 -0.003264455271147975" size="0.0053494944443328125 0.006289881449883725 0.009265978496733633" mass="0.002341796112467528" condim="6" contype="4" conaffinity="25" />
+									<geom name="geom:left_lfmetacarpal2" type="cylinder" pos="-0.009387901771459723 0.0 0.006001523225585658" size="0.006289881449883725 0.005249494444332812 0.0" mass="0.0012031497562215246" euler="0 90 0" condim="6" contype="4" conaffinity="25" />
+									
+									<body name="left_lfknuckle" pos="-0.009420569499014632 0.0 0.006001523225585658">
+										<joint name="robot:left_lf_side" type="hinge" pos="0 0 0" axis="0 1 0" range="-25 25" stiffness="0.003" damping="0.001" armature="0.0001" />
+										<joint name="robot:left_lf_knuckle" type="hinge" pos="0 0 0" axis="-1 0 0" range="-20 90" springref="45" stiffness="0.0007" damping="0.0005" armature="0.0001" />
+										<site name="torque_left_lf_knuckle" type="sphere" size="0.002" pos="0 0 0" group="4" />
+										<geom name="geom:left_lfknuckle1" type="capsule" pos="0.0 0.0 0.010877608915074437" size="0.004280572913991323 0.010877608915074437 0.0" mass="0.001648680073352652" condim="6" />
+										
+										<body name="left_lfmiddle" pos="0.0 0.0 0.021755217830148874">
+											<joint name="robot:left_lf_middle" type="hinge" pos="0 0 0" axis="-1 0 0" range="-5 100" springref="45" stiffness="0.0006" damping="0.0005" armature="0.0001" />
+											<site name="torque_left_lf_middle" type="sphere" size="0.002" pos="0 0 0" group="4" />
+											<geom name="geom:left_lfmiddle1" type="capsule" pos="0.0 0.0 0.005438804457537218" size="0.004066544268291756 0.005438804457537218 0.0" mass="0.0008725705385759935" condim="6" />
+											
+											<body name="left_lfdistal" pos="0.0 0.0 0.010877608915074437">
+												<joint name="robot:left_lf_distal" type="hinge" pos="0 0 0" axis="-1 0 0" range="-5 80" springref="30" stiffness="0.0006" damping="0.0005" armature="0.0001" />
+												<site name="torque_left_lf_distal" type="sphere" size="0.002" pos="0 0 0" group="4" />
+												<geom name="geom:left_lfdistal1" type="capsule" pos="0.0 0.0 0.0035071959300986347" size="0.003863217054877168 0.0035071959300986347 0.0" mass="0.000586371680348331" condim="6" />
+											</body>
+										</body>
+									</body>
+								</body>
+								
+								<body name="left_thbase" pos="0.012952516075845192 0.004483424406337013 -0.017034144166128293" euler="0 80 -30">
+									<joint name="robot:left_th_swivel" type="hinge" pos="0 0 0" axis="-3 -5 1" range="-10 110" springref="40" stiffness="0.003" damping="0.001" armature="0.0001" />
+									<joint name="robot:left_th_adduction" type="hinge" pos="0 0 0" axis="-1 2 0" range="-60 0" springref="-35" stiffness="0.004" damping="0.001" armature="0.0001" />
+									
+									<site name="torque_left_th_base" type="sphere" size="0.002" pos="0 0 0" group="4" />
+									<geom name="geom:left_thbase1" type="capsule" pos="0.0 0.0 0.009270689416256622" size="0.00583814541974861 0.009270689416256622 0.0" mass="0.0029812392179277085" condim="6" contype="4" conaffinity="25" />
+									
+									<body name="left_thhub" pos="0.0 0.0 0.018541378832513243">
+										<joint name="robot:left_th_pivot" type="hinge" pos="0 0 0" axis="-1 0 0" range="-10 10" springref="0" stiffness="0.002" damping="0.001" armature="0.0001" />
+										<joint name="robot:left_th_middle" type="hinge" pos="0 0 0" axis="0 -1 0" range="0 90" springref="30" stiffness="0.004" damping="0.001" armature="0.0001" />
+										<site name="torque_left_th_hub" type="sphere" size="0.002" pos="0 0 0" group="4" />
+										<geom name="geom:left_thhub1" type="capsule" pos="0.0 0.0 0.006489482591379635" size="0.00554623814876118 0.006489482591379635 0.0" mass="0.0020721908932894526" condim="6" />
+										
+										<body name="left_thdistal" pos="0.0 0.0 0.01297896518275927">
+											<joint name="robot:left_th_distal" type="hinge" pos="0 0 0" axis="0 -1 0" range="0 90" springref="20" stiffness="0.004" damping="0.001" armature="0.0001" />
+											<site name="torque_left_th_distal" type="sphere" size="0.002" pos="0 0 0" group="4" />
+											<geom name="geom:left_thdistal1" type="capsule" pos="0.0 0.0 0.0060259481205668045" size="0.0052689262413231205 0.0060259481205668045 0.0" mass="0.0017413478436245633" condim="6" />
+										</body>
+									</body>
+								</body>
+							</body>
+						</body>
+					</body>
+				</body>
+				<body name="head" pos="0.0 0.0 0.13448007119254723">
+					<geom name="head" type="sphere" material="head" size="0.07577515820199607 0.0 0.0" mass="1.9615339559649685" pos="0.010309545333604907 0.0 0.07577515820199607" />
+					<site name="vestibular" type="sphere" size="0.01" pos="0.01 0.0 0.07577515820199607" group="4" />
+					<site name="torque_neck" type="sphere" size="0.01" pos="0 0 0" group="4" />
+					<joint name="robot:head_swivel" type="hinge" pos="0 0 0" axis="0 0 1" range="-111 111" stiffness=".23" damping=".29" frictionloss=".018" armature="0.005" />
+					<joint name="robot:head_tilt" type="hinge" pos="0.0 0.0 0.012629193033666013" axis="0 1 0" range="-70 81" stiffness=".45" damping=".53" frictionloss=".018" armature="0.005" />
+					<joint name="robot:head_tilt_side" type="hinge" pos="0.0 0.0 0.025258386067332026" axis="1 0 0" range="-70 70" stiffness=".37" damping=".29" frictionloss=".018" armature="0.005" />
+					<body name="left_eye" pos="0.07216681733523436 0.025258386067332026 0.06946056168516307">
+						<site name="torque_left_eye" type="sphere" size="0.01" pos="0 0 0" group="4" />
+						<joint name="robot:left_eye_horizontal" type="hinge" pos="0 0 0" axis="0 0 1" range="-45 45" stiffness=".00065" damping=".00042" frictionloss=".000054" armature=".0002" />
+						<joint name="robot:left_eye_vertical" type="hinge" pos="0 0 0" axis="0 -1 0" range="-47 33" stiffness=".00065" damping=".00042" frictionloss=".000054" armature=".0002" />
+						<joint name="robot:left_eye_torsional" type="hinge" pos="0 0 0" axis="-1 0 0" range="-8 8" stiffness=".00267" damping=".00042" frictionloss=".000037" armature=".0002" />
+						<geom name="geom:left_eye1" type="sphere" material="eye_left" size="0.011598238500305521 0.0 0.0" mass="0.006935114466958432" pos="0 0 0" />
+						<camera name="eye_left" mode="fixed" fovy="60" pos="0.01125 0 0" euler="90 -90 0" />
+					<camera name="fovea_left" mode="fixed" fovy="24" pos="0.01125 0 0" euler="90 -90 0" /><camera name="ring_left" mode="fixed" fovy="150" pos="0.01125 0 0" euler="90 -90 0" /></body>
+					<body name="right_eye" pos="0.07216681733523436 -0.025258386067332026 0.06946056168516307">
+						<site name="torque_right_eye" type="sphere" size="0.01" pos="0 0 0" group="4" />
+						<joint name="robot:right_eye_horizontal" type="hinge" pos="0 0 0" axis="0 0 -1" range="-45 45" stiffness=".00065" damping=".00042" frictionloss=".000054" armature=".0002" />
+						<joint name="robot:right_eye_vertical" type="hinge" pos="0 0 0" axis="0 -1 0" range="-47 33" stiffness=".00065" damping=".00042" frictionloss=".000054" armature=".0002" />
+						<joint name="robot:right_eye_torsional" type="hinge" pos="0 0 0" axis="1 0 0" range="-8 8" stiffness=".00267" damping=".00042" frictionloss=".000037" armature=".0002" />
+						<geom name="geom:right_eye1" type="sphere" material="eye_right" size="0.011598238500305521 0.0 0.0" mass="0.006935114466958432" pos="0 0 0" />
+						<camera name="eye_right" mode="fixed" fovy="60" pos="0.01125 0 0" euler="90 -90 0" />
+					<camera name="fovea_right" mode="fixed" fovy="24" pos="0.01125 0 0" euler="90 -90 0" /></body>
+				</body>
+			</body>
+		</body>
+			
+		<body name="right_upper_leg" pos="0.005 -0.052354058250533644 -0.007">
+			
+			<joint name="robot:right_hip1" type="hinge" pos="0 0 0" axis="0 1 0" springref="-10" range="-133 20" stiffness="1.72" damping="1.27" frictionloss=".08" armature=".005" />
+			<joint name="robot:right_hip2" type="hinge" pos="0 0 0" axis="1 0 0" range="-51 17" stiffness="3.51" damping="1.99" frictionloss=".062" armature=".005" />
+			<joint name="robot:right_hip3" type="hinge" pos="0 0 0" axis="0 0 -1" range="-32 41" stiffness="2.16" damping="0.75" frictionloss=".027" armature=".005" />
+			<site name="torque_right_hip" type="sphere" size="0.01" pos="0 0 0" group="4" />
+			<geom name="geom:right_upper_leg1" type="capsule" material="pants_leg" contype="2" conaffinity="3" size="0.04008980082807367 0.07343065426213564 0.0" mass="1.08819842010976" pos="0.0 0.0 -0.07578043519852398" euler="0 0 0" />
+			<body name="right_lower_leg" pos="0.0 -0.0 -0.15361025591828298">
+				<joint name="robot:right_knee" type="hinge" pos="0 0 0" axis="0 -1 0" springref="-30" range="-145 4" stiffness="1.63" damping="0.53" frictionloss=".065" armature=".003" />
+				<site name="torque_right_knee" type="sphere" size="0.01" pos="0 0 0" group="4" />
+				<geom name="geom:right_lower_leg1" type="capsule" size="0.031015166301087947 0.04922028392213606 0.0" mass="0.4254109899079293" pos="0.0 0.0 -0.04922028392213606" euler="0 0 0" />
+				<geom name="geom:right_lower_leg2" type="capsule" size="0.022279778455241574 0.03132199885954113 0.0" mass="0.1447865958301479" pos="0.0 0.0 -0.14766085176640817" euler="0 0 0" />
+				<body name="right_foot" pos="0.0 -0.0 -0.19688113568854423">
+					<joint name="robot:right_foot1" type="hinge" pos="0.0 -0.0 0.01664977063328723" axis="0 -1 0" springref="-10" range="-63 32" stiffness="1.29" damping="0.6" frictionloss=".019" armature=".003" />
+					<joint name="robot:right_foot2" type="hinge" pos="0.0 -0.0 0.01664977063328723" axis="1 0 0" range="-33 31" stiffness="0.96" damping="0.37" frictionloss=".011" armature=".0025" />
+					<joint name="robot:right_foot3" type="hinge" pos="0.0 -0.0 0.01664977063328723" axis="0 0 1" range="-20 30" stiffness="1.15" damping="0.38" frictionloss=".012" armature=".002" />
+					<site name="torque_right_ankle" type="sphere" size="0.01" pos="0 0 0" group="4" />
+					<geom name="geom:right_foot1" type="cylinder" size="0.027478185309255106 0.010999847088858154 0.0" mass="0.04277326427486009" pos="-0.017805854814546898 0.0 0.0" euler="0 0 0" />
+					<geom name="geom:right_foot2" type="box" size="0.038950307406821344 0.027578185309255106 0.011099847088858153" mass="0.07826401855030286" pos="0.021144452592274446 0.0 0.0" euler="0 0 0" friction="2 0.02 0.01" />
+					<geom name="geom:right_foot3" type="cylinder" size="0.010999847088858154 0.027378185309255107 0.0" mass="0.016974434730254263" pos="0.06009475999909579 0.0 0.0" euler="90 0 0" friction="2 0.02 0.01" />
+					<body name="right_big_toe" pos="0.06009475999909579 0.019304729716478574 0.0">
+						<joint name="robot:right_big_toe" type="hinge" pos="0 0 0" axis="0 -1 0" range="-60 80" frictionloss=".002" armature=".0001" stiffness=".053" damping=".02" />
+						<site name="torque_right_big_toe" type="sphere" size="0.01" pos="0 0 0" group="4" />
+						<geom name="geom:right_big_toe1" type="box" size="0.010572226296137221 0.007721891886591429 0.010999847088858154" mass="0.006035777898792805" pos="0.010572226296137221 0.0 0.0" euler="0 0 0" friction="2 0.02 0.01" />
+						<geom name="geom:right_big_toe2" type="cylinder" size="0.011099847088858153 0.00827345559277653 0.0" mass="0.005346801046591387" pos="0.021144452592274442 0.0 0.0" euler="90 0 0" friction="2 0.02 0.01" />
+					</body>
+					<body name="right_toes" pos="0.06009475999909579 -0.008273455592776532 0.0">
+						<joint name="robot:right_toes" type="hinge" pos="0 0 0" axis="0 -1 0" range="-60 80" frictionloss=".002" armature=".0001" stiffness=".053" damping=".02" />
+						<site name="torque_right_toes" type="sphere" size="0.01" pos="0 0 0" group="4" />
+						<geom name="geom:right_toes1" type="box" size="0.010572226296137221 0.01765003859792327 0.010999847088858154" mass="0.013722017098724438" pos="0.010572226296137221 0.0 0.0" euler="0 0 0" friction="2 0.02 0.01" />
+						<geom name="geom:right_toes2" type="cylinder" size="0.011099847088858153 0.01820160230410837 0.0" mass="0.011704791716635752" pos="0.021144452592274442 0.0 0.0" euler="90 0 0" friction="2 0.02 0.01" />
+					</body>
+				</body>
+			</body>
+		</body>
+
+		<body name="left_upper_leg" pos="0.005 0.052354058250533644 -0.007">
+			
+			<joint name="robot:left_hip1" type="hinge" pos="0 0 0" axis="0 1 0" springref="-10" range="-133 20" stiffness="1.72" damping="1.27" frictionloss=".08" armature=".005" />
+			<joint name="robot:left_hip2" type="hinge" pos="0 0 0" axis="-1 0 0" range="-51 17" stiffness="3.51" damping="1.99" frictionloss=".062" armature=".005" />
+			<joint name="robot:left_hip3" type="hinge" pos="0 0 0" axis="0 0 1" range="-32 41" stiffness="2.16" damping="0.75" frictionloss=".027" armature=".005" />
+			<site name="torque_left_hip" type="sphere" size="0.01" pos="0 0 0" group="4" />
+			<geom name="geom:left_upper_leg1" type="capsule" material="pants_leg" contype="2" conaffinity="3" size="0.04008980082807367 0.07343065426213564 0.0" mass="1.08819842010976" pos="0.0 0.0 -0.07578043519852398" euler="0 0 0" />
+			<body name="left_lower_leg" pos="0.0 0.0 -0.15361025591828298">
+				<joint name="robot:left_knee" type="hinge" pos="0 0 0" axis="0 -1 0" springref="-30" range="-145 4" stiffness="1.63" damping="0.53" frictionloss=".065" armature=".003" />
+				<site name="torque_left_knee" type="sphere" size="0.01" pos="0 0 0" group="4" />
+				<geom name="geom:left_lower_leg1" type="capsule" size="0.031015166301087947 0.04922028392213606 0.0" mass="0.4254109899079293" pos="0.0 0.0 -0.04922028392213606" euler="0 0 0" />
+				<geom name="geom:left_lower_leg2" type="capsule" size="0.022279778455241574 0.03132199885954113 0.0" mass="0.1447865958301479" pos="0.0 0.0 -0.14766085176640817" euler="0 0 0" />
+				<body name="left_foot" pos="0.0 0.0 -0.19688113568854423">
+					<joint name="robot:left_foot1" type="hinge" pos="0.0 0.0 0.01664977063328723" axis="0 -1 0" springref="-10" range="-63 32" stiffness="1.29" damping="0.6" frictionloss=".019" armature=".003" />
+					<joint name="robot:left_foot2" type="hinge" pos="0.0 0.0 0.01664977063328723" axis="-1 0 0" range="-33 31" stiffness="0.96" damping="0.37" frictionloss=".011" armature=".0025" />
+					<joint name="robot:left_foot3" type="hinge" pos="0.0 0.0 0.01664977063328723" axis="0 0 -1" range="-20 30" stiffness="1.15" damping="0.38" frictionloss=".012" armature=".002" />
+					<site name="torque_left_ankle" type="sphere" size="0.01" pos="0 0 0" group="4" />
+					<geom name="geom:left_foot1" type="cylinder" size="0.027478185309255106 0.010999847088858154 0.0" mass="0.04277326427486009" pos="-0.017805854814546898 0.0 0.0" euler="0 0 0" />
+					<geom name="geom:left_foot2" type="box" size="0.038950307406821344 0.027578185309255106 0.011099847088858153" mass="0.07826401855030286" pos="0.021144452592274446 0.0 0.0" euler="0 0 0" friction="2 0.02 0.01" />
+					<geom name="geom:left_foot3" type="cylinder" size="0.010999847088858154 0.027378185309255107 0.0" mass="0.016974434730254263" pos="0.06009475999909579 0.0 0.0" euler="90 0 0" friction="2 0.02 0.01" />
+					<body name="left_toes" pos="0.06009475999909579 0.008273455592776532 0.0">
+						<joint name="robot:left_toes" type="hinge" pos="0 0 0" axis="0 -1 0" range="-60 80" frictionloss=".002" armature=".0001" stiffness=".053" damping=".02" />
+						<site name="torque_left_toes" type="sphere" size="0.01" pos="0 0 0" group="4" />
+						<geom name="geom:left_toes1" type="box" size="0.010572226296137221 0.01765003859792327 0.010999847088858154" mass="0.013722017098724438" pos="0.010572226296137221 0.0 0.0" euler="0 0 0" friction="2 0.02 0.01" />
+						<geom name="geom:left_toes2" type="cylinder" size="0.011099847088858153 0.01820160230410837 0.0" mass="0.011704791716635752" pos="0.021144452592274442 0.0 0.0" euler="90 0 0" friction="2 0.02 0.01" />
+					</body>
+					<body name="left_big_toe" pos="0.06009475999909579 -0.019304729716478574 0.0">
+						<joint name="robot:left_big_toe" type="hinge" pos="0 0 0" axis="0 -1 0" range="-60 80" frictionloss=".002" armature=".0001" stiffness=".053" damping=".02" />
+						<site name="torque_left_big_toe" type="sphere" size="0.01" pos="0 0 0" group="4" />
+						<geom name="geom:left_big_toe1" type="box" size="0.010572226296137221 0.007721891886591429 0.010999847088858154" mass="0.006035777898792805" pos="0.010572226296137221 0.0 0.0" euler="0 0 0" friction="2 0.02 0.01" />
+						<geom name="geom:left_big_toe2" type="cylinder" size="0.011099847088858153 0.00827345559277653 0.0" mass="0.005346801046591387" pos="0.021144452592274442 0.0 0.0" euler="90 0 0" friction="2 0.02 0.01" />
+					</body>
+				</body>
+			</body>
+		</body>
+	</body>
+</body>
+    <body name="mobile" pos="0.06 0.0 1.05">
+      <joint name="mobile_swing" type="ball" damping="0.015" />
+      <geom name="mobile_string" type="capsule" fromto="0 0 0  0 0 -0.60" size="0.004" mass="0.005" rgba="0.92 0.92 0.86 1" condim="3" />
+      <body name="mobile_frame" pos="0 0 -0.60">
+        <joint name="mobile_spin" type="hinge" axis="0 0 1" damping="0.010" />
+        <geom name="mobile_bar_x" type="capsule" fromto="-0.12 0 0  0.12 0 0" size="0.006" mass="0.010" rgba="0.85 0.85 0.80 1" condim="3" />
+        <geom name="mobile_bar_y" type="capsule" fromto="0 -0.12 0  0 0.12 0" size="0.006" mass="0.010" rgba="0.85 0.85 0.80 1" condim="3" />
+        <body name="mobile_el_e" pos="0.12 0 0">
+          <joint name="mobile_j_e" type="ball" damping="0.004" />
+          <geom name="mobile_str_e" type="capsule" fromto="0 0 0  0 0 -0.20" size="0.003" mass="0.002" rgba="0.9 0.9 0.85 1" condim="3" />
+          <geom name="mobile_el_e_g" type="sphere" pos="0 0 -0.235" size="0.035" mass="0.012" rgba="0.15 0.45 0.95 1" condim="6" />
+        </body>
+        <body name="mobile_el_w" pos="-0.12 0 0">
+          <joint name="mobile_j_w" type="ball" damping="0.004" />
+          <geom name="mobile_str_w" type="capsule" fromto="0 0 0  0 0 -0.20" size="0.003" mass="0.002" rgba="0.9 0.9 0.85 1" condim="3" />
+          <geom name="mobile_el_w_g" type="box" pos="0 0 -0.23" size="0.03 0.03 0.03" mass="0.012" rgba="0.95 0.80 0.10 1" condim="6" />
+        </body>
+        <body name="mobile_el_n" pos="0 0.12 0">
+          <joint name="mobile_j_n" type="ball" damping="0.004" />
+          <geom name="mobile_str_n" type="capsule" fromto="0 0 0  0 0 -0.20" size="0.003" mass="0.002" rgba="0.9 0.9 0.85 1" condim="3" />
+          <geom name="mobile_el_n_g" type="capsule" fromto="0 0 -0.20  0 0 -0.27" size="0.022" mass="0.012" rgba="0.20 0.75 0.35 1" condim="6" />
+        </body>
+        <body name="mobile_el_s" pos="0 -0.12 0">
+          <joint name="mobile_j_s" type="ball" damping="0.004" />
+          <geom name="mobile_str_s" type="capsule" fromto="0 0 0  0 0 -0.20" size="0.003" mass="0.002" rgba="0.9 0.9 0.85 1" condim="3" />
+          <geom name="mobile_el_s_g" type="ellipsoid" pos="0 0 -0.235" size="0.045 0.025 0.030" mass="0.012" rgba="0.95 0.95 0.95 1" condim="6" />
+        </body>
+        <body name="mobile_el_c" pos="0 0 0">
+          <joint name="mobile_j_c" type="ball" damping="0.004" />
+          <geom name="mobile_str_c" type="capsule" fromto="0 0 0  0 0 -0.21" size="0.003" mass="0.002" rgba="0.9 0.9 0.85 1" condim="3" />
+          <geom name="mobile_el_c_g" type="sphere" pos="0 0 -0.255" size="0.045" mass="0.015" rgba="0.55 0.25 0.85 1" condim="6" />
+        </body>
+      </body>
+    </body>
+
+    <body name="target" mocap="true" pos="0.05 0.0 0.45">
+      <geom name="target_geom" type="sphere" material="matgeom" size="0.025" condim="6" rgba="1 0.2 0.2 1" />
+    <geom name="caregiver_pad" type="box" size=".035 .035 .008" mass=".02" rgba=".3 .65 .3 0" contype="1" conaffinity="1" solref=".04 1" friction="1 .005 .0001" /><geom name="caregiver_ring_0" type="capsule" fromto="0.028 0.0 0 0.014000000000000004 0.02424871130596428 0" size=".006" mass=".003" rgba=".9 .7 .1 0" contype="1" conaffinity="1" /><geom name="caregiver_ring_1" type="capsule" fromto="0.014000000000000004 0.02424871130596428 0 -0.013999999999999993 0.024248711305964284 0" size=".006" mass=".003" rgba=".9 .7 .1 0" contype="1" conaffinity="1" /><geom name="caregiver_ring_2" type="capsule" fromto="-0.013999999999999993 0.024248711305964284 0 -0.028 3.429011037612589e-18 0" size=".006" mass=".003" rgba=".9 .7 .1 0" contype="1" conaffinity="1" /><geom name="caregiver_ring_3" type="capsule" fromto="-0.028 3.429011037612589e-18 0 -0.014000000000000012 -0.024248711305964277 0" size=".006" mass=".003" rgba=".9 .7 .1 0" contype="1" conaffinity="1" /><geom name="caregiver_ring_4" type="capsule" fromto="-0.014000000000000012 -0.024248711305964277 0 0.014000000000000004 -0.02424871130596428 0" size=".006" mass=".003" rgba=".9 .7 .1 0" contype="1" conaffinity="1" /><geom name="caregiver_ring_5" type="capsule" fromto="0.014000000000000004 -0.02424871130596428 0 0.028 -6.858022075225178e-18 0" size=".006" mass=".003" rgba=".9 .7 .1 0" contype="1" conaffinity="1" /></body>
+    <body name="box_light" pos="0.05 0.30 0.04">
+      <freejoint /><geom name="box_light_geom" type="box" size="0.03 0.03 0.03" mass="0.05" rgba="0.95 0.95 0.95 1" condim="6" />
+    </body>
+    <body name="box_medium" pos="0.15 0.30 0.04">
+      <freejoint /><geom name="box_medium_geom" type="box" size="0.03 0.03 0.03" mass="0.4" rgba="0.5 0.5 0.5 1" condim="6" />
+    </body>
+    <body name="box_heavy" pos="0.25 0.30 0.04">
+      <freejoint /><geom name="box_heavy_geom" type="box" size="0.03 0.03 0.03" mass="2.0" rgba="0.45 0.1 0.1 1" condim="6" />
+    </body>
+    <geom name="pen_wall_n" type="box" pos="0 0.7 0.12" size="0.72 0.02 0.12" rgba="0.93 0.90 0.84 1" condim="3" />
+    <geom name="pen_wall_s" type="box" pos="0 -0.7 0.12" size="0.72 0.02 0.12" rgba="0.93 0.90 0.84 1" condim="3" />
+    <geom name="pen_wall_e" type="box" pos="0.7 0 0.12" size="0.02 0.72 0.12" rgba="0.93 0.90 0.84 1" condim="3" />
+    <geom name="pen_wall_w" type="box" pos="-0.7 0 0.12" size="0.02 0.72 0.12" rgba="0.93 0.90 0.84 1" condim="3" />
+    <geom name="nursery_ceiling" type="plane" pos="0 0 1.05" zaxis="0 0 -1" size="2.2 2.2 0.01" material="ceilmat" contype="0" conaffinity="0" group="0" />
+    <geom name="pen_art_n" type="plane" pos="0 0.677 0.12" zaxis="0 -1 0" size="0.72 0.12 0.01" material="penmat_n" contype="0" conaffinity="0" group="0" />
+    <geom name="pen_art_s" type="plane" pos="0 -0.677 0.12" zaxis="0 1 0" size="0.72 0.12 0.01" material="penmat_s" contype="0" conaffinity="0" group="0" />
+    <geom name="pen_art_e" type="plane" pos="0.677 0 0.12" zaxis="-1 0 0" size="0.12 0.72 0.01" material="penmat_e" contype="0" conaffinity="0" group="0" />
+    <geom name="pen_art_w" type="plane" pos="-0.677 0 0.12" zaxis="1 0 0" size="0.12 0.72 0.01" material="penmat_w" contype="0" conaffinity="0" group="0" />
+
+    <camera name="watch_cam" mode="targetbody" target="upper_body" pos="1.0 -1.0 0.9" />
+    <body name="squeaker" mocap="true" pos="-0.45 0 0.10">
+      <geom name="squeaker_base" type="cylinder" size="0.062 0.012" rgba="0.16 0.35 0.75 1" condim="6" />
+      <geom name="squeaker_geom" type="ellipsoid" pos="0 0 0.038" size="0.048 0.048 0.034" rgba="0.92 0.15 0.12 1" condim="6" />
+    </body>
+    <body name="dragonfly" mocap="true" pos="0.30 0.30 0.50">
+      <geom name="dragonfly_thorax" type="ellipsoid" pos="0 0 0" size="0.013 0.009 0.009" rgba="0.05 0.45 0.42 1" contype="0" conaffinity="0" />
+      <geom name="dragonfly_abdomen" type="capsule" fromto="-0.060 0 0.001  -0.012 0 0" size="0.0035" rgba="0.10 0.60 0.85 1" contype="0" conaffinity="0" />
+      <geom name="dragonfly_head" type="sphere" pos="0.017 0 0.002" size="0.0065" rgba="0.08 0.35 0.35 1" contype="0" conaffinity="0" />
+      <geom name="dragonfly_eye_l" type="sphere" pos="0.020 0.0045 0.005" size="0.0038" rgba="0.02 0.08 0.10 1" contype="0" conaffinity="0" />
+      <geom name="dragonfly_eye_r" type="sphere" pos="0.020 -0.0045 0.005" size="0.0038" rgba="0.02 0.08 0.10 1" contype="0" conaffinity="0" />
+      <geom name="dragonfly_wing_fl" type="ellipsoid" pos="0.005 0.034 0.006" size="0.010 0.034 0.0007" euler="6 0 10" rgba="0.82 0.90 0.98 0.75" contype="0" conaffinity="0" />
+      <geom name="dragonfly_wing_fr" type="ellipsoid" pos="0.005 -0.034 0.006" size="0.010 0.034 0.0007" euler="-6 0 -10" rgba="0.82 0.90 0.98 0.75" contype="0" conaffinity="0" />
+      <geom name="dragonfly_wing_hl" type="ellipsoid" pos="-0.010 0.032 0.005" size="0.011 0.031 0.0007" euler="6 0 -7" rgba="0.82 0.90 0.98 0.75" contype="0" conaffinity="0" />
+      <geom name="dragonfly_wing_hr" type="ellipsoid" pos="-0.010 -0.032 0.005" size="0.011 0.031 0.0007" euler="-6 0 7" rgba="0.82 0.90 0.98 0.75" contype="0" conaffinity="0" />
+    </body>
+    <body name="bouquet" pos="0.42 0.40 0.14">
+      <geom name="table_top" type="cylinder" pos="0 0 -0.012" size="0.10 0.012" rgba="0.60 0.42 0.26 1" contype="0" conaffinity="0" />
+      <geom name="table_leg1" type="capsule" fromto="-0.06 -0.06 -0.02  -0.07 -0.07 -0.14" size="0.008" rgba="0.50 0.34 0.20 1" contype="0" conaffinity="0" />
+      <geom name="table_leg2" type="capsule" fromto="0.06 -0.06 -0.02  0.07 -0.07 -0.14" size="0.008" rgba="0.50 0.34 0.20 1" contype="0" conaffinity="0" />
+      <geom name="table_leg3" type="capsule" fromto="0.06 0.06 -0.02  0.07 0.07 -0.14" size="0.008" rgba="0.50 0.34 0.20 1" contype="0" conaffinity="0" />
+      <geom name="table_leg4" type="capsule" fromto="-0.06 0.06 -0.02  -0.07 0.07 -0.14" size="0.008" rgba="0.50 0.34 0.20 1" contype="0" conaffinity="0" />
+      <geom name="vase" type="cylinder" pos="0 0 0.05" size="0.035 0.05" rgba="0.55 0.65 0.75 1" contype="0" conaffinity="0" />
+      <geom name="stem1" type="capsule" fromto="0 0 0.09  -0.05 -0.04 0.24" size="0.0035" rgba="0.20 0.55 0.20 1" contype="0" conaffinity="0" />
+      <geom name="stem2" type="capsule" fromto="0 0 0.09  0.05 0.03 0.28" size="0.0035" rgba="0.22 0.60 0.22 1" contype="0" conaffinity="0" />
+      <geom name="stem3" type="capsule" fromto="0 0 0.09  0.00 0.06 0.21" size="0.0035" rgba="0.18 0.50 0.18 1" contype="0" conaffinity="0" />
+      <geom name="stem4" type="capsule" fromto="0 0 0.09  -0.03 0.05 0.30" size="0.0035" rgba="0.20 0.55 0.20 1" contype="0" conaffinity="0" />
+      <geom name="flower1" type="ellipsoid" pos="-0.05 -0.04 0.25" size="0.030 0.030 0.014" rgba="0.95 0.20 0.25 1" contype="0" conaffinity="0" />
+      <geom name="flower2" type="ellipsoid" pos="0.05 0.03 0.29" size="0.028 0.028 0.013" rgba="0.98 0.85 0.15 1" contype="0" conaffinity="0" />
+      <geom name="flower3" type="ellipsoid" pos="0.00 0.06 0.22" size="0.026 0.026 0.012" rgba="0.95 0.95 0.95 1" contype="0" conaffinity="0" />
+      <geom name="flower4" type="ellipsoid" pos="-0.03 0.05 0.31" size="0.028 0.028 0.013" rgba="0.70 0.35 0.85 1" contype="0" conaffinity="0" />
+      <geom name="fcenter1" type="sphere" pos="-0.05 -0.04 0.258" size="0.009" rgba="0.45 0.30 0.10 1" contype="0" conaffinity="0" />
+      <geom name="fcenter2" type="sphere" pos="0.05 0.03 0.297" size="0.009" rgba="0.45 0.30 0.10 1" contype="0" conaffinity="0" />
+      <geom name="fcenter3" type="sphere" pos="0.00 0.06 0.227" size="0.008" rgba="0.45 0.30 0.10 1" contype="0" conaffinity="0" />
+      <geom name="fcenter4" type="sphere" pos="-0.03 0.05 0.317" size="0.009" rgba="0.45 0.30 0.10 1" contype="0" conaffinity="0" />
+    </body>
+    <body name="bee" mocap="true" pos="-0.30 -0.30 0.45">
+      <geom name="bee_body" type="ellipsoid" size="0.017 0.011 0.011" rgba="0.98 0.80 0.12 1" contype="0" conaffinity="0" />
+      <geom name="bee_stripe1" type="ellipsoid" pos="0.005 0 0" size="0.0035 0.0113 0.0113" rgba="0.05 0.05 0.05 1" contype="0" conaffinity="0" />
+      <geom name="bee_stripe2" type="ellipsoid" pos="-0.004 0 0" size="0.0035 0.0113 0.0113" rgba="0.05 0.05 0.05 1" contype="0" conaffinity="0" />
+      <geom name="bee_head" type="sphere" pos="0.019 0 0.002" size="0.006" rgba="0.08 0.08 0.08 1" contype="0" conaffinity="0" />
+      <geom name="bee_wing_l" type="ellipsoid" pos="0.002 0.018 0.012" size="0.019 0.011 0.0008" euler="35 0 20" rgba="0.95 0.95 1.0 0.95" contype="0" conaffinity="0" />
+      <geom name="bee_wing_r" type="ellipsoid" pos="0.002 -0.018 0.012" size="0.019 0.011 0.0008" euler="-35 0 -20" rgba="0.95 0.95 1.0 0.95" contype="0" conaffinity="0" />
+    </body>
+
+  <body name="caregiver_head" mocap="true" pos="0 0 2"><geom name="caregiver_head_geom" type="ellipsoid" size=".086 .072 .112" pos="0 0 0" rgba=".82 .60 .46 1" contype="0" conaffinity="0" material="caregiver_matte" /><geom name="caregiver_hair" type="ellipsoid" size=".091 .064 .096" pos="0 .027 .032" rgba=".16 .085 .055 1" contype="0" conaffinity="0" material="caregiver_matte" /><geom name="caregiver_hair_top" type="ellipsoid" size=".083 .059 .032" pos="0 .006 .087" rgba=".16 .085 .055 1" contype="0" conaffinity="0" material="caregiver_matte" /><geom name="caregiver_ear_l" type="ellipsoid" size=".013 .017 .027" pos="-0.084 .004 -.005" rgba=".82 .60 .46 1" contype="0" conaffinity="0" material="caregiver_matte" /><geom name="caregiver_ear_inner_l" type="ellipsoid" size=".006 .010 .017" pos="-0.092 -.002 -.005" rgba=".66 .40 .32 1" contype="0" conaffinity="0" material="caregiver_matte" /><geom name="caregiver_eye_l" type="ellipsoid" size=".019 .007 .010" pos="-0.031 -.068 .026" rgba=".96 .94 .89 1" contype="0" conaffinity="0" material="caregiver_matte" /><geom name="caregiver_iris_l" type="ellipsoid" size=".008 .0027 .0075" pos="-0.031 -.075 .026" rgba=".23 .13 .075 1" contype="0" conaffinity="0" material="caregiver_matte" /><geom name="caregiver_pupil_l" type="ellipsoid" size=".0038 .0015 .0045" pos="-0.031 -.0775 .026" rgba=".035 .025 .02 1" contype="0" conaffinity="0" material="caregiver_matte" /><geom name="caregiver_glint_l" type="sphere" size=".0018" pos="-0.033 -.079 .029" rgba="1 .98 .92 1" contype="0" conaffinity="0" material="caregiver_matte" /><geom name="caregiver_lid_l" type="ellipsoid" size=".021 .005 .0037" pos="-0.031 -.069 .035" rgba=".82 .60 .46 1" contype="0" conaffinity="0" material="caregiver_matte" /><geom name="caregiver_brow_l" type="ellipsoid" size=".021 .003 .0034" pos="-0.032 -.061 .048" rgba=".16 .085 .055 1" contype="0" conaffinity="0" material="caregiver_matte" /><geom name="caregiver_hair_side_l" type="ellipsoid" size=".017 .033 .055" pos="-0.072 .016 .046" rgba=".16 .085 .055 1" contype="0" conaffinity="0" material="caregiver_matte" /><geom name="caregiver_ear_r" type="ellipsoid" size=".013 .017 .027" pos="0.084 .004 -.005" rgba=".82 .60 .46 1" contype="0" conaffinity="0" material="caregiver_matte" /><geom name="caregiver_ear_inner_r" type="ellipsoid" size=".006 .010 .017" pos="0.092 -.002 -.005" rgba=".66 .40 .32 1" contype="0" conaffinity="0" material="caregiver_matte" /><geom name="caregiver_eye_r" type="ellipsoid" size=".019 .007 .010" pos="0.031 -.068 .026" rgba=".96 .94 .89 1" contype="0" conaffinity="0" material="caregiver_matte" /><geom name="caregiver_iris_r" type="ellipsoid" size=".008 .0027 .0075" pos="0.031 -.075 .026" rgba=".23 .13 .075 1" contype="0" conaffinity="0" material="caregiver_matte" /><geom name="caregiver_pupil_r" type="ellipsoid" size=".0038 .0015 .0045" pos="0.031 -.0775 .026" rgba=".035 .025 .02 1" contype="0" conaffinity="0" material="caregiver_matte" /><geom name="caregiver_glint_r" type="sphere" size=".0018" pos="0.028999999999999998 -.079 .029" rgba="1 .98 .92 1" contype="0" conaffinity="0" material="caregiver_matte" /><geom name="caregiver_lid_r" type="ellipsoid" size=".021 .005 .0037" pos="0.031 -.069 .035" rgba=".82 .60 .46 1" contype="0" conaffinity="0" material="caregiver_matte" /><geom name="caregiver_brow_r" type="ellipsoid" size=".021 .003 .0034" pos="0.032 -.061 .048" rgba=".16 .085 .055 1" contype="0" conaffinity="0" material="caregiver_matte" /><geom name="caregiver_hair_side_r" type="ellipsoid" size=".017 .033 .055" pos="0.072 .016 .046" rgba=".16 .085 .055 1" contype="0" conaffinity="0" material="caregiver_matte" /><geom name="caregiver_nose_bridge" type="ellipsoid" size=".009 .008 .021" pos="0 -.066 .015" rgba=".82 .60 .46 1" contype="0" conaffinity="0" material="caregiver_matte" /><geom name="caregiver_nose" type="ellipsoid" size=".011 .013 .012" pos="0 -.073 -.004" rgba=".82 .60 .46 1" contype="0" conaffinity="0" material="caregiver_matte" /><geom name="caregiver_mouth" type="ellipsoid" size=".019 .003 .001" pos="0 -.069 -.044" rgba=".16 .045 .035 1" contype="0" conaffinity="0" material="caregiver_matte" /><geom name="caregiver_upper_lip" type="ellipsoid" size=".023 .004 .0035" pos="0 -.072 -.042" rgba=".58 .28 .24 1" contype="0" conaffinity="0" material="caregiver_matte" /><geom name="caregiver_lower_lip" type="ellipsoid" size=".021 .004 .004" pos="0 -.072 -.047" rgba=".69 .36 .30 1" contype="0" conaffinity="0" material="caregiver_matte" /></body><body name="caregiver_torso" mocap="true" pos="0 0 2"><geom name="caregiver_torso_geom" type="ellipsoid" size=".18 .095 .23" pos="0 0 0" rgba=".27 .49 .52 1" contype="0" conaffinity="0" material="caregiver_matte" /><geom name="caregiver_neck" type="capsule" size=".032 .06" pos="0 0 0" rgba=".82 .60 .46 1" contype="0" conaffinity="0" material="caregiver_matte" /><geom name="caregiver_upperarm_l" type="capsule" size=".042 .13" pos="0 0 0" rgba=".27 .49 .52 1" contype="0" conaffinity="0" material="caregiver_matte" /><geom name="caregiver_forearm_l" type="capsule" size=".026 .13" pos="0 0 0" rgba=".82 .60 .46 1" contype="0" conaffinity="0" material="caregiver_matte" /><geom name="caregiver_upperarm_r" type="capsule" size=".042 .13" pos="0 0 0" rgba=".27 .49 .52 1" contype="0" conaffinity="0" material="caregiver_matte" /><geom name="caregiver_forearm_r" type="capsule" size=".026 .13" pos="0 0 0" rgba=".82 .60 .46 1" contype="0" conaffinity="0" material="caregiver_matte" /></body><body name="caregiver_hand_l" mocap="true" pos="0 0 2"><geom name="caregiver_hand_l_geom" type="ellipsoid" size=".037 .025 .014" pos="0 0 0" rgba=".82 .60 .46 1" contype="0" conaffinity="0" material="caregiver_matte" /><geom name="caregiver_finger_l_0" type="capsule" size=".006 .015" pos="-0.021 -.033 0" rgba=".82 .60 .46 1" contype="0" conaffinity="0" material="caregiver_matte" quat=".70710678 .70710678 0 0" /><geom name="caregiver_finger_l_1" type="capsule" size=".006 .015" pos="-0.007 -.033 0" rgba=".82 .60 .46 1" contype="0" conaffinity="0" material="caregiver_matte" quat=".70710678 .70710678 0 0" /><geom name="caregiver_finger_l_2" type="capsule" size=".006 .015" pos="0.007 -.033 0" rgba=".82 .60 .46 1" contype="0" conaffinity="0" material="caregiver_matte" quat=".70710678 .70710678 0 0" /><geom name="caregiver_finger_l_3" type="capsule" size=".006 .015" pos="0.021 -.033 0" rgba=".82 .60 .46 1" contype="0" conaffinity="0" material="caregiver_matte" quat=".70710678 .70710678 0 0" /><geom name="caregiver_thumb_l" type="ellipsoid" size=".010 .023 .010" pos="-.036 -.008 -.003" rgba=".82 .60 .46 1" contype="0" conaffinity="0" material="caregiver_matte" /></body><body name="caregiver_hand_r" mocap="true" pos="0 0 2"><geom name="caregiver_hand_r_geom" type="ellipsoid" size=".037 .025 .014" pos="0 0 0" rgba=".82 .60 .46 1" contype="0" conaffinity="0" material="caregiver_matte" /><geom name="caregiver_finger_r_0" type="capsule" size=".006 .015" pos="-0.021 -.033 0" rgba=".82 .60 .46 1" contype="0" conaffinity="0" material="caregiver_matte" quat=".70710678 .70710678 0 0" /><geom name="caregiver_finger_r_1" type="capsule" size=".006 .015" pos="-0.007 -.033 0" rgba=".82 .60 .46 1" contype="0" conaffinity="0" material="caregiver_matte" quat=".70710678 .70710678 0 0" /><geom name="caregiver_finger_r_2" type="capsule" size=".006 .015" pos="0.007 -.033 0" rgba=".82 .60 .46 1" contype="0" conaffinity="0" material="caregiver_matte" quat=".70710678 .70710678 0 0" /><geom name="caregiver_finger_r_3" type="capsule" size=".006 .015" pos="0.021 -.033 0" rgba=".82 .60 .46 1" contype="0" conaffinity="0" material="caregiver_matte" quat=".70710678 .70710678 0 0" /><geom name="caregiver_thumb_r" type="ellipsoid" size=".010 .023 .010" pos="-.036 -.008 -.003" rgba=".82 .60 .46 1" contype="0" conaffinity="0" material="caregiver_matte" /></body></worldbody>
+</mujoco>

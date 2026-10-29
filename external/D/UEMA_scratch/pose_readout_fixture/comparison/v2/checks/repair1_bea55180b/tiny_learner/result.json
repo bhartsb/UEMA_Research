@@ -1,0 +1,53 @@
+{
+ "worktree": "C:\\Users\\bhart\\Documents\\UEMA_wt\\pose_runtime_repair1",
+ "commit_pinned": "bea55180bc273468c2b3005df99c9096f1c79052",
+ "files": [
+  "mimo_bridge/tests/test_pose_replay_tiny.py"
+ ],
+ "started": "Oct 15, 2026 05:14:27 PM",
+ "before": {
+  "head": "bea55180bc273468c2b3005df99c9096f1c79052",
+  "clean": true
+ },
+ "exit_code": 1,
+ "seconds": 29.1,
+ "tail": ", 'a')\n        # the random streams' digest read at once: rng_state reads the process-global Python, numpy and torch streams (only\n        # noise_rng is the learner's own), so a read after the second rebuild would see that rebuild's streams for both\n        # (the pose-focused-review-corrections-and-separable-checks-20261015, item 2)\n        rng1 = SM.rng_digest(m1)\n        m2, r2, s2 = _rebuild(record, start, end, tmp_path, 'b')\n        rng2 = SM.rng_digest(m2)\n>       assert s1 is not None and s2 is not None, (r1['reasons'], r2['reasons'])\nE       AssertionError: ([\"plain module fields that may not change changed during the replay (DERIVED or SETTING): ['wellness._rom_limit']\"], [\"plain module fields that may not change changed during the replay (DERIVED or SETTING): ['wellness._rom_limit']\"])\nE       assert (None is not None)\n\nmimo_bridge\\tests\\test_pose_replay_tiny.py:155: AssertionError\n_ test_another_model_rebuilt_on_the_owners_record_installs_over_the_owners_end _\n\nworld = <mimo_bridge.datasource.SingleEnvSource object at 0x000001AD21CDD090>\ntmp_path = WindowsPath('D:/UEMA_Research/external/D/UEMA_scratch/pytest/pytest-of-bhart/pytest-4887/test_another_model_rebuilt_on_0')\n\n    def test_another_model_rebuilt_on_the_owners_record_installs_over_the_owners_end(world, tmp_path):\n        record, x_start, x_end = _owner_run(world, tmp_path, 'x')\n        # M: X's checkpoints, then one more training step on its end, saved again as M's end (other parameters)\n        m = make_model(tmp_path / 'm' / 'ckpt')\n        m.load_checkpoint(x_end)\n        CS.restore_learner(m, CS.load(x_end)['learner'])\n        frames = world.reset()\n        # the paired transition reset the trainer makes after every world reset (the overseer's\n        # pose-state-ownership-repair-and-scoped-checks-20261015, item 3): the restored self history ends at X's step E-1 in\n        # X's episode, and the self-state guard refuses a step across that body/time boundary without it; learned values stay\n        m.reset_transition_state()\n        m.step(frames, m.dev_limits(0), train=True, step_index=E, executed_action=None)\n        m_end = m.save_checkpoint(E)                      # the rebuild reads only M's end weights and runtime items\n        _r, rec, state = _rebuild(record, x_start, m_end, tmp_path, 'rm')\n>       assert state is not None, rec['reasons']\nE       AssertionError: [\"plain module fields that may not change changed during the replay (DERIVED or SETTING): ['wellness._rom_limit']\"]\nE       assert None is not None\n\nmimo_bridge\\tests\\test_pose_replay_tiny.py:182: AssertionError\n=========================== short test summary info ===========================\nFAILED mimo_bridge/tests/test_pose_replay_tiny.py::test_the_own_copy_rebuilds_the_window_from_its_own_start\nFAILED mimo_bridge/tests/test_pose_replay_tiny.py::test_a_rebuild_repeats_bit_for_bit\nFAILED mimo_bridge/tests/test_pose_replay_tiny.py::test_another_model_rebuilt_on_the_owners_record_installs_over_the_owners_end\n3 failed, 1 passed in 28.35s\n",
+ "per_file": {
+  "mimo_bridge.tests": {
+   "collected": 4,
+   "passed": 1,
+   "failed": 3,
+   "errors": 0,
+   "skipped": 0
+  }
+ },
+ "failures": [
+  {
+   "test": "mimo_bridge.tests.test_pose_replay_tiny::test_the_own_copy_rebuilds_the_window_from_its_own_start",
+   "kind": "failure",
+   "message": "AssertionError: [\"plain module fields that may not change changed during the replay (DERIVED or SETTING): ['wellness._rom_limit']\"]\nassert None is not None"
+  },
+  {
+   "test": "mimo_bridge.tests.test_pose_replay_tiny::test_a_rebuild_repeats_bit_for_bit",
+   "kind": "failure",
+   "message": "AssertionError: ([\"plain module fields that may not change changed during the replay (DERIVED or SETTING): ['wellness._rom_limit']\"], [\"plain module fields that may not change changed during the replay (DERIVED or SETTING): ['wellness._rom_limit']\"])\nassert (None is not None)"
+  },
+  {
+   "test": "mimo_bridge.tests.test_pose_replay_tiny::test_another_model_rebuilt_on_the_owners_record_installs_over_the_owners_end",
+   "kind": "failure",
+   "message": "AssertionError: [\"plain module fields that may not change changed during the replay (DERIVED or SETTING): ['wellness._rom_limit']\"]\nassert None is not None"
+  }
+ ],
+ "after": {
+  "head": "bea55180bc273468c2b3005df99c9096f1c79052",
+  "clean": true
+ },
+ "totals": {
+  "collected": 4,
+  "passed": 1,
+  "failed": 3,
+  "errors": 0,
+  "skipped": 0
+ },
+ "verdict": "fail"
+}

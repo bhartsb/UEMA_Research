@@ -1,0 +1,580 @@
+diff --git a/Source/Python/mimo_bridge/tests/test_commit_guard.py b/Source/Python/mimo_bridge/tests/test_commit_guard.py
+index ea90e50..ecfbd4d 100644
+--- a/Source/Python/mimo_bridge/tests/test_commit_guard.py
++++ b/Source/Python/mimo_bridge/tests/test_commit_guard.py
+@@ -53,6 +53,175 @@ def test_commit_reading_keeps_its_three_numbers_for_every_caller(monkeypatch):
+     assert committed == 67.2 and free_ram == 7.0 and limit < 73.8
+ 
+ 
++# THE LAUNCH-CAPACITY READING (the operator's decision of Oct 13, 2026; the independent reviews' corrections,
++# Saved/gof_coordination/reviews/commit_guard_operator_edit_review_20261013.txt and
++# commit_guard_correction_rereview_20261013.txt). The Oct 13 machine: 29.708 GiB physical, c:\pagefile.sys set to
++# 56000 64000 MB and running at 56,000 MB (active minimum 56,000, maximum 64,000), Windows' limit 84.3955 GiB, C: 32.41
++# GiB free.
++PHYS13 = 29.708
++LIMIT13 = PHYS13 + 56000 / 1024.0
++ENTRIES13 = [("c:\\pagefile.sys", "C:/", 56000 / 1024.0, 64000 / 1024.0)]
++ACTIVE13 = [("C:\\pagefile.sys", 56000 / 1024.0, 56000 / 1024.0, 64000 / 1024.0)]
++
++
++def _cap(limit, entries, active, free, volumes=None, backed=None):
++    return G.launch_capacity(limit, PHYS13, limit if backed is None else backed, entries, active,
++                             free_of=lambda d: free[d], volume_of=lambda d: (volumes or {}).get(d, d))
++
++
++def test_the_oct_13_launch_counts_the_page_files_growth_room():
++    cap = _cap(LIMIT13, ENTRIES13, ACTIVE13, {"C:/": 32.41})
++    assert cap["valid"] and abs(cap["growth_gb"] - 8000 / 1024.0) < 1e-9
++    assert abs(cap["limit_gb"] - (LIMIT13 + 8000 / 1024.0)) < 1e-9
++    assert G.verdict(49.2, cap["limit_gb"], 32.0, 6.0)
++    assert not G.verdict(49.2, LIMIT13, 32.0, 6.0), "Windows' current limit alone refused it"
++
++
++def test_a_drive_near_its_reserve_counts_only_the_room_above_it():
++    cap = _cap(LIMIT13, ENTRIES13, ACTIVE13, {"C:/": 14.0})
++    assert abs(cap["growth_gb"] - 2.0) < 1e-9
++    cap = _cap(LIMIT13, ENTRIES13, ACTIVE13, {"C:/": 11.0})
++    assert cap["valid"] and cap["growth_gb"] == 0.0 and cap["limit_gb"] == LIMIT13
++
++
++def test_room_on_one_drive_never_backs_a_page_file_on_another():
++    # the first review's example: C's file at its largest (no growth left) with room on C; D's file can grow 20 with
++    # no room above D's reserve; physical 30, so the limit is 30 + 40 + 10 = 80
++    entries = [("c:\\pagefile.sys", "C:/", 40.0, 40.0), ("d:\\pagefile.sys", "D:/", 10.0, 30.0)]
++    active = [("c:\\pagefile.sys", 40.0, 40.0, 40.0), ("d:\\pagefile.sys", 10.0, 10.0, 30.0)]
++    cap = G.launch_capacity(80.0, 30.0, 80.0, entries, active, free_of=lambda d: 32.0 if d == "C:/" else 12.0,
++                            volume_of=lambda d: d)
++    assert cap["valid"] and cap["growth_gb"] == 0.0 and cap["limit_gb"] == 80.0
++
++
++def test_two_files_on_one_volume_share_its_room_once():
++    entries = [("c:\\pagefile.sys", "C:/", 10.0, 20.0), ("e:\\pagefile.sys", "E:/", 10.0, 20.0)]
++    active = [("c:\\pagefile.sys", 10.0, 10.0, 20.0), ("e:\\pagefile.sys", 10.0, 10.0, 20.0)]
++    cap = G.launch_capacity(50.0, 30.0, 50.0, entries, active, free_of=lambda d: 17.0,
++                            volume_of=lambda d: "one volume")
++    assert abs(cap["growth_gb"] - 5.0) < 1e-9, "17 free - 12 reserve = 5, counted once for both files"
++
++
++def test_the_active_allocation_wins_over_the_size_at_boot():
++    # a page file already grown to 60,000 MB: only 4,000 MB of growth remain
++    limit = PHYS13 + 60000 / 1024.0
++    active = [("C:\\pagefile.sys", 60000 / 1024.0, 56000 / 1024.0, 64000 / 1024.0)]
++    cap = _cap(limit, ENTRIES13, active, {"C:/": 32.41})
++    assert abs(cap["growth_gb"] - 4000 / 1024.0) < 1e-9
++
++
++def test_unreadable_or_inconsistent_readings_use_the_ordinary_limit():
++    ordinary = LIMIT13 - 3.0                     # a filling drive can hold the ordinary limit under Windows' limit
++    free = {"C:/": 32.41}
++    for why, cap in (
++            ("no configured sizes", _cap(LIMIT13, None, ACTIVE13, free, backed=ordinary)),
++            ("unreadable active sizes", _cap(LIMIT13, ENTRIES13, None, free, backed=ordinary)),
++            ("unreadable volume", _cap(LIMIT13, ENTRIES13, ACTIVE13, free, volumes={"C:/": None}, backed=ordinary)),
++            ("unreadable free space", _cap(LIMIT13, ENTRIES13, ACTIVE13, {"C:/": None}, backed=ordinary)),
++            ("allocations do not add up to the limit", _cap(LIMIT13 + 3.0, ENTRIES13, ACTIVE13, free, backed=ordinary)),
++            ("allocation outside the active range",
++             _cap(LIMIT13, ENTRIES13, [("C:\\pagefile.sys", 70.0, 56000 / 1024.0, 64000 / 1024.0)], free,
++                  backed=ordinary)),
++            ("a configured file that is not active",
++             _cap(LIMIT13, ENTRIES13, [("D:\\pagefile.sys", 56000 / 1024.0, 56000 / 1024.0, 64000 / 1024.0)], free,
++                  backed=ordinary))):
++        assert not cap["valid"] and cap["growth_gb"] == 0.0 and cap["limit_gb"] == ordinary, why
++
++
++def test_a_changed_setting_not_yet_active_counts_no_growth():
++    # the registry already says 70,000-80,000 MB while the file in use runs at 56,000-64,000 MB
++    cap = _cap(LIMIT13, [("c:\\pagefile.sys", "C:/", 70000 / 1024.0, 80000 / 1024.0)], ACTIVE13, {"C:/": 32.41})
++    assert not cap["valid"] and "not yet active" in cap["why"]
++    # only the maximum changed (the second review's case): allocation and sum unchanged, still no credit
++    cap = _cap(LIMIT13, [("c:\\pagefile.sys", "C:/", 56000 / 1024.0, 72000 / 1024.0)], ACTIVE13, {"C:/": 32.41})
++    assert not cap["valid"] and cap["growth_gb"] == 0.0 and cap["limit_gb"] == LIMIT13
++
++
++def _reply(base, entries):
++    """Bytes as NtQuerySystemInformation(144) returns them at address `base`: the 40-byte entries, then their names."""
++    import struct
++    heads = len(entries) * G.PAGEFILE_EX_BYTES
++    names = [("\\??\\" + n).encode("utf-16-le") for n, _t, _lo, _hi in entries]
++    out, at = b"", heads
++    for i, (n, total, lo, hi) in enumerate(entries):
++        nxt = G.PAGEFILE_EX_BYTES if i + 1 < len(entries) else 0
++        out += struct.pack(G.PAGEFILE_EX_FORMAT, nxt, total, 0, 0, len(names[i]), len(names[i]), base + at, lo, hi)
++        at += len(names[i])
++    return out + b"".join(names)
++
++
++def test_the_native_reply_is_read_within_its_bounds():
++    base, mb = 0x10000, 256                                         # 256 pages of 4 KiB = 1 MB
++    raw = _reply(base, [("C:\\pagefile.sys", 56000 * mb, 56000 * mb, 64000 * mb), ("D:\\pagefile.sys", 10 * mb,
++                                                                                    10 * mb, 20 * mb)])
++    got = G.parse_pagefile_ex(raw, base, 4096)
++    assert [g[0] for g in got] == ["C:\\pagefile.sys", "D:\\pagefile.sys"]
++    assert abs(got[0][1] - 56000 / 1024.0) < 1e-9 and abs(got[0][3] - 64000 / 1024.0) < 1e-9
++    import struct
++    one = _reply(base, [("C:\\pagefile.sys", 56000 * mb, 56000 * mb, 64000 * mb)])
++
++    def changed(field, value):                                     # the first entry with one field replaced
++        vals = list(struct.unpack_from(G.PAGEFILE_EX_FORMAT, one, 0))
++        vals[field] = value
++        return struct.pack(G.PAGEFILE_EX_FORMAT, *vals) + one[G.PAGEFILE_EX_BYTES:]
++
++    for why, bad, page in (("unknown page size", one, None),
++                           ("a reply shorter than one entry", one[:G.PAGEFILE_EX_BYTES - 1], 4096),
++                           ("a next offset past the reply", changed(0, 4000), 4096),
++                           ("a next offset that does not advance by an entry", changed(0, 8), 4096),
++                           ("a name pointer before the reply", changed(6, base - 2), 4096),
++                           ("a name running past the reply", changed(4, 400), 4096),
++                           ("an odd name length", changed(4, 33), 4096),
++                           ("an empty name", changed(4, 0), 4096)):
++        assert G.parse_pagefile_ex(bad, base, page) is None, why
++
++
++def _machine(monkeypatch, committed, limit, physical, pages, entries, active, free):
++    monkeypatch.setattr(G, "_performance", lambda: (committed, limit, 2.0, physical))
++    monkeypatch.setattr(G, "page_files", lambda: pages)
++    monkeypatch.setattr(G, "configured_page_files", lambda: entries)
++    monkeypatch.setattr(G, "active_page_files", lambda: active)
++    monkeypatch.setattr(G, "volume_id", lambda d: 1)
++    monkeypatch.setattr(G, "disk_free_gib", lambda d: free)
++    monkeypatch.setattr(G, "disk_free_or_none", lambda d: free)
++    monkeypatch.setattr(G, "heavy_job_extra_gb", lambda: (0.0, None))
++
++
++def test_runtime_readings_never_include_the_launch_growth(monkeypatch):
++    # the same sample: commit_reading (the watchers' runtime stops, machine_stats) keeps the current-backed limit while
++    # the launch admission counts the growth
++    _machine(monkeypatch, 82.0, LIMIT13, PHYS13, [("C:/", 56000 / 1024.0, 64000 / 1024.0)], ENTRIES13, ACTIVE13, 32.41)
++    committed, limit, _free = G.commit_reading()
++    assert limit <= LIMIT13 + 1e-9, "the runtime room stays 2.4 GiB, never 10.2"
++    assert G.main(["--need-gb", "1"]) == 3
++    assert G.main(["--need-gb", "1", "--launch-capacity"]) == 0
++
++
++def test_the_flag_keeps_the_ordinary_refusal_when_the_reading_is_invalid(monkeypatch, capsys):
++    # the second review's example: physical 29.71, Windows' limit 73.8, c:\pagefile.sys 40000 60000 MB, 14 GiB free:
++    # the ordinary limit is 29.71 + 39.0625 + 2.0 = 70.7725; with the active sizes unreadable, 64 committed + 2 needed
++    # + 6 reserved is refused with and without the flag
++    import json
++    _machine(monkeypatch, 64.0, 73.8, RAM, PAGES, [("c:\\pagefile.sys", "C:/", 40000 / 1024.0, 60000 / 1024.0)], None,
++             14.0)
++    assert G.main(["--need-gb", "2"]) == 3
++    assert G.main(["--need-gb", "2", "--launch-capacity", "--json"]) == 3
++    rec = json.loads(capsys.readouterr().out.splitlines()[-1])
++    assert not rec["launch_capacity"]["valid"] and abs(rec["limit_gb"] - 70.77) < 0.01
++
++
++def test_the_json_record_names_the_reading_it_judged(monkeypatch, capsys):
++    import json
++    _machine(monkeypatch, 49.2, LIMIT13, PHYS13, [("C:/", 56000 / 1024.0, 64000 / 1024.0)], ENTRIES13, ACTIVE13, 32.41)
++    assert G.main(["--need-gb", "32", "--json"]) == 3
++    plain = json.loads(capsys.readouterr().out)
++    assert plain["reading"] == "current_backed" and "launch_capacity" not in plain
++    assert G.main(["--need-gb", "32", "--json", "--launch-capacity"]) == 0
++    launch = json.loads(capsys.readouterr().out)
++    assert launch["reading"] == "launch_capacity" and launch["launch_capacity"]["valid"]
++    assert launch["current_backed_limit_gb"] == plain["limit_gb"]
++
++
+ # A running heavy job's unused declared need stays free (2026-09-26, the heads repair's re-review, finding m6): agents'
+ # light readings, each allowed, took the machine from 52.8 to 59.5 GB committed beside a trial arm whose stop line was
+ # 62.8 GB. These tests use their own lock file, never the runners' real one.
+diff --git a/Source/Python/mimo_bridge/tools/commit_guard.py b/Source/Python/mimo_bridge/tools/commit_guard.py
+index 99cc19e..085fde8 100644
+--- a/Source/Python/mimo_bridge/tools/commit_guard.py
++++ b/Source/Python/mimo_bridge/tools/commit_guard.py
+@@ -1,8 +1,8 @@
+ # Copyright (c) 2026 Mind Machine Learning, Inc. All rights reserved.
+ # Licensed under the Mind Machine Learning Noncommercial License 1.0; see the LICENSE file.
+ """Refuse to start heavy work beside the live trainer when Windows' commit charge is near its limit.
+ 
+-    python -m mimo_bridge.tools.commit_guard [--need-gb 3] [--json]
++    python -m mimo_bridge.tools.commit_guard [--need-gb 3] [--json] [--launch-capacity]
+ 
+ Exit 0 and print the reading when the committed memory plus the work's own need stays at least
+ --reserve-gb (default 6) under the commit limit; exit 3 otherwise. Windows fails the NEXT process
+@@ -19,8 +19,28 @@ statistics agent at that time), under the observer
+ recorders' reserve and near the hourly watcher's 8 GB training stop. The limit judged now is Windows'
+ current limit, but never more than physical memory plus the page file's size at boot plus the room
+ the page file's drive has above DISK_RESERVE_GIB; and a drive already under that reserve refuses all
+-work. commit_reading() returns that limit, so every caller (the ability scheduler, the probe suite,
+-the liveness probe, machine_stats) judges by it unchanged.
++work when the guard's own main() runs (callers of commit_reading() that never call disk_short do not
++get that refusal). commit_reading() returns that limit, so every caller (the ability scheduler, the
++probe suite, the liveness probe, machine_stats, the watchers' runtime stops) judges by it unchanged.
++
++A SEPARATE LAUNCH-CAPACITY READING (the operator's decision of Oct 13, 2026: "yes i don't want this
++fucking happening again"; "I give you explicit permission to make this edit"). On Oct 13 the adoption
++launch waited at 49.2 of 84.4 GiB committed for a 32 GiB need while c:\\pagefile.sys (56,000 MB
++allocated, up to 64,000 MB) could still grow 7.81 GiB into a C: with 32.41 GiB free. --launch-capacity
++admits against launch_capacity(): Windows' current limit plus the growth each page file can still
++make, read per file and per volume: the file's allocated size and its ACTIVE minimum and maximum from
++Windows itself (active_page_files), its volume's free space above DISK_RESERVE_GIB counted once per
++volume. The reading is valid only when the registry's startup setting equals the active one for every
++page file, every allocation lies in its active range, every volume is readable and the allocations add
++up to Windows' limit minus physical memory; otherwise it uses the ordinary guard's limit
++(effective_limit), so the flag never admits what the ordinary guard refuses without verified growth.
++It is a reading for admitting a launch only: commit_reading() and the runtime stops never use it,
++because growth Windows may make later is not memory backing that exists now. Earlier versions were
++held by independent reviews: the first put the growth into commit_reading() and pooled it across
++drives (Saved/gof_coordination/reviews/commit_guard_operator_edit_review_20261013.txt; kept in
++Saved/gof_coordination/guard_edit_20261013/); the second used Windows' raw limit on invalid readings
++and trusted the registry's largest size without checking it was active
++(Saved/gof_coordination/reviews/commit_guard_correction_rereview_20261013.txt).
+ """
+ from __future__ import annotations
+ 
+@@ -28,6 +48,7 @@ import argparse
+ import json
+ import os
+ import shutil
++import struct
+ import sys
+ 
+ # the observer's recorders never take the last 12 GiB of a disk (observer_record.DEFAULT_RESERVE_BYTES),
+@@ -187,6 +208,205 @@ def commit_reading():
+     return committed, effective_limit(current, physical, page_files()), free_ram
+ 
+ 
++# the active allocations must add up to Windows' limit minus physical memory within this much (read Oct 13, 2026 at
++# 11:24 AM PDT: 84.3955 - 29.7080 = 54.6875 GiB; the active c:\pagefile.sys 56,000 MB = 54.6875 GiB, a difference of 0)
++ALLOCATION_TOLERANCE_GIB = 0.25
++# the registry's sizes are whole MB; the active sizes are whole 4 KiB pages: a size matches within one MB
++SIZE_MATCH_GIB = 1.0 / 1024.0
++
++
++def configured_page_files():
++    """[(path, drive, size at boot GiB, largest size GiB)] from the registry's PagingFiles (the setting Windows reads at
++    startup), or None as page_files()."""
++    try:
++        import winreg
++        key = winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE,
++                             r"SYSTEM\CurrentControlSet\Control\Session Manager\Memory Management")
++        entries = winreg.QueryValueEx(key, "PagingFiles")[0]
++    except (ImportError, OSError):
++        return None
++    out = []
++    for entry in entries or []:
++        parts = str(entry).split()
++        if len(parts) < 3 or not parts[0][:1].isalpha() or parts[0][1:2] != ":":
++            return None
++        try:
++            initial, largest = float(parts[1]), float(parts[2])
++        except ValueError:
++            return None
++        if initial <= 0 or largest < initial:
++            return None
++        out.append((parts[0], parts[0][:2].upper() + "/", initial / 1024.0, largest / 1024.0))
++    return out or None
++
++
++# SystemPageFileInformationEx (class 144) as 64-bit Windows returns it, one entry per active page file: NextEntryOffset,
++# TotalSize, TotalInUse, PeakUsage (4 unsigned 32-bit), the name as a UNICODE_STRING (Length, MaximumLength as unsigned
++# 16-bit, 4 bytes of padding, a 64-bit pointer), MinimumSize, MaximumSize (2 unsigned 32-bit): 40 bytes. The sizes are
++# in pages of the system page size. Layout as in System Informer's phnt/include/ntexapi.h
++# (SYSTEM_PAGEFILE_INFORMATION_EX); Microsoft documents that such internal structures can change, so the parser checks
++# every count, offset and name bound against the returned bytes and returns None on anything else.
++PAGEFILE_EX_FORMAT = "<IIIIHH4xQII"
++PAGEFILE_EX_BYTES = struct.calcsize(PAGEFILE_EX_FORMAT)
++
++
++def parse_pagefile_ex(raw, base, page_bytes):
++    """[(path, allocated GiB, active minimum GiB, active maximum GiB)] from the bytes NtQuerySystemInformation returned
++    (`raw`, exactly the returned count) at buffer address `base`, or None when the page size is unknown, an entry or its
++    name runs outside the returned bytes, a next-entry offset does not advance by at least one entry, or a name's
++    length is zero or odd. The name is read from `raw`, never through its pointer."""
++    if not page_bytes or page_bytes <= 0 or not raw:
++        return None
++    unit = float(page_bytes) / GIB
++    out, off, seen = [], 0, set()
++    while True:
++        if off in seen or off < 0 or off + PAGEFILE_EX_BYTES > len(raw):
++            return None
++        seen.add(off)
++        nxt, total, _use, _peak, length, _cap, ptr, lo, hi = struct.unpack_from(PAGEFILE_EX_FORMAT, raw, off)
++        start = ptr - base
++        if length == 0 or length % 2 or start < 0 or start + length > len(raw):
++            return None
++        try:
++            name = raw[start:start + length].decode("utf-16-le")
++        except UnicodeDecodeError:
++            return None
++        out.append((name[4:] if name.startswith("\\??\\") else name, total * unit, lo * unit, hi * unit))
++        if nxt == 0:
++            return out
++        if nxt < PAGEFILE_EX_BYTES:
++            return None
++        off += nxt
++
++
++def _page_bytes():
++    """The system page size in bytes (GetSystemInfo dwPageSize), or None when it cannot be read."""
++    try:
++        import ctypes
++        from ctypes import wintypes
++
++        class SYSTEM_INFO(ctypes.Structure):
++            _fields_ = [("wProcessorArchitecture", wintypes.WORD), ("wReserved", wintypes.WORD),
++                        ("dwPageSize", wintypes.DWORD), ("lpMinimumApplicationAddress", ctypes.c_void_p),
++                        ("lpMaximumApplicationAddress", ctypes.c_void_p), ("dwActiveProcessorMask", ctypes.c_size_t),
++                        ("dwNumberOfProcessors", wintypes.DWORD), ("dwProcessorType", wintypes.DWORD),
++                        ("dwAllocationGranularity", wintypes.DWORD), ("wProcessorLevel", wintypes.WORD),
++                        ("wProcessorRevision", wintypes.WORD)]
++
++        si = SYSTEM_INFO()
++        ctypes.windll.kernel32.GetSystemInfo(ctypes.byref(si))
++        return int(si.dwPageSize) or None
++    except Exception:
++        return None
++
++
++def active_page_files():
++    """[(path, allocated GiB, active minimum GiB, active maximum GiB)] for the page files Windows is using now, from
++    NtQuerySystemInformation(SystemPageFileInformationEx = 144) read through parse_pagefile_ex (read Oct 13, 2026 at
++    11:31 AM PDT: \\??\\C:\\pagefile.sys, 56,000 MB allocated, minimum 56,000 MB, maximum 64,000 MB). None off
++    64-bit Windows, when the query fails, when the returned count exceeds the buffer, or when the reply is malformed."""
++    if sys.platform != "win32":
++        return None
++    try:
++        import ctypes
++        from ctypes import wintypes
++        if ctypes.sizeof(ctypes.c_void_p) != 8:
++            return None
++        page_bytes = _page_bytes()
++        if not page_bytes:
++            return None
++        buf = ctypes.create_string_buffer(65536)
++        got = wintypes.ULONG(0)
++        if ctypes.windll.ntdll.NtQuerySystemInformation(144, buf, len(buf), ctypes.byref(got)) != 0:
++            return None
++        if not 0 < got.value <= len(buf):
++            return None
++        return parse_pagefile_ex(buf.raw[:got.value], ctypes.addressof(buf), page_bytes)
++    except Exception:
++        return None
++
++
++def disk_free_or_none(drive):
++    """Free space on `drive` in GiB, or None when it cannot be read (the launch-capacity reading keeps an unreadable
++    disk apart from a measured zero; disk_free_gib, used by the ordinary guard, reads an error as 0.0)."""
++    try:
++        return shutil.disk_usage(drive).free / GIB
++    except OSError:
++        return None
++
++
++def volume_id(drive):
++    """The volume serial number of `drive` (two letters on one volume share it), or None when unreadable."""
++    try:
++        dev = os.stat(drive).st_dev
++    except OSError:
++        return None
++    return dev or None
++
++
++def launch_capacity(current_limit, physical_total, backed_limit, entries, active, free_of=None, volume_of=None):
++    """The launch-admission reading (module note, A SEPARATE LAUNCH-CAPACITY READING): a dict with valid, limit_gb,
++    growth_gb, why and one record per file and per volume. Valid: limit_gb = Windows' current limit plus the growth each
++    volume can still hold above DISK_RESERVE_GIB, up to each page file's ACTIVE maximum. Invalid (any reading missing or
++    inconsistent, or the startup setting differing from the active one): limit_gb = `backed_limit`, the ordinary guard's
++    effective_limit, so the flag never admits what the ordinary guard refuses without verified growth. Never a runtime
++    reading: commit_reading() does not use it."""
++    free_of = free_of or disk_free_or_none
++    volume_of = volume_of or volume_id
++    rec = dict(valid=False, current_limit_gb=current_limit, physical_gb=physical_total, ordinary_limit_gb=backed_limit,
++               growth_gb=0.0, limit_gb=backed_limit, files=[], volumes=[], why=None)
++
++    def invalid(why):
++        return dict(rec, why=why + ": the ordinary guard's limit is used")
++
++    if not entries:
++        return invalid("no configured page-file sizes (system-managed or unreadable)")
++    if not active:
++        return invalid("the active page-file sizes are unreadable")
++    by_path = {}
++    for path, alloc, lo, hi in active:
++        by_path[str(path).lower()] = (alloc, lo, hi)
++    if len(by_path) != len(active) or set(by_path) != {str(p).lower() for p, _d, _i, _l in entries}:
++        return invalid("the configured page files %s are not the active ones %s"
++                       % (sorted(p for p, _d, _i, _l in entries), sorted(p for p, _a, _lo, _hi in active)))
++    files = []
++    for path, drive, initial, largest in entries:
++        alloc, lo, hi = by_path[str(path).lower()]
++        files.append(dict(path=path, drive=drive, boot_gb=initial, largest_gb=largest, allocated_gb=alloc,
++                          active_min_gb=lo, active_max_gb=hi, volume=volume_of(drive)))
++    rec["files"] = files
++    for f in files:
++        if abs(f["boot_gb"] - f["active_min_gb"]) > SIZE_MATCH_GIB or abs(f["largest_gb"] - f["active_max_gb"]) > SIZE_MATCH_GIB:
++            return invalid("%s is set to %.0f-%.0f MB for the next startup but runs at %.0f-%.0f MB (a changed setting "
++                           "not yet active)" % (f["path"], 1024 * f["boot_gb"], 1024 * f["largest_gb"],
++                                                1024 * f["active_min_gb"], 1024 * f["active_max_gb"]))
++        if not f["active_min_gb"] - SIZE_MATCH_GIB <= f["allocated_gb"] <= f["active_max_gb"] + SIZE_MATCH_GIB:
++            return invalid("%s is allocated %.2f GiB, outside its active range %.2f-%.2f GiB"
++                           % (f["path"], f["allocated_gb"], f["active_min_gb"], f["active_max_gb"]))
++        if f["volume"] is None:
++            return invalid("the volume of %s is unreadable" % f["drive"])
++    in_files = current_limit - physical_total
++    total_alloc = sum(f["allocated_gb"] for f in files)
++    if abs(total_alloc - in_files) > ALLOCATION_TOLERANCE_GIB:
++        return invalid("the page files' allocations add up to %.2f GiB, not Windows' limit minus physical memory "
++                       "%.2f GiB" % (total_alloc, in_files))
++    growth = 0.0
++    for vol in dict.fromkeys(f["volume"] for f in files):
++        on = [f for f in files if f["volume"] == vol]
++        free = free_of(on[0]["drive"])
++        if free is None:
++            return invalid("the free space of %s is unreadable" % on[0]["drive"])
++        can_grow = sum(max(0.0, f["active_max_gb"] - f["allocated_gb"]) for f in on)
++        room = max(0.0, free - DISK_RESERVE_GIB)
++        counted = min(can_grow, room)
++        rec["volumes"].append(dict(volume=vol, drives=sorted({f["drive"] for f in on}), free_gb=free,
++                                   files_can_grow_gb=can_grow, room_above_reserve_gb=room, counted_gb=counted))
++        growth += counted
++    return dict(rec, valid=True, growth_gb=growth, limit_gb=current_limit + growth,
++                why="Windows' current limit plus the growth each volume can hold above %.0f GiB, up to each page "
++                    "file's active maximum" % DISK_RESERVE_GIB)
++
++
+ def disk_short(pages=None, free_of=None):
+     """[(drive, free GiB)] for every page-file drive already under DISK_RESERVE_GIB."""
+     pages = page_files() if pages is None else pages
+@@ -206,6 +426,9 @@ def main(argv=None):
+     ap.add_argument("--reserve-gb", type=float, default=6.0,
+                     help="headroom that must remain under the commit limit afterwards")
+     ap.add_argument("--json", action="store_true")
++    ap.add_argument("--launch-capacity", action="store_true",
++                    help="admit a LAUNCH against launch_capacity() (Windows' current limit plus the page files' "
++                         "verified growth room per volume); never for a runtime stop")
+     a = ap.parse_args(argv)
+     raw = _performance()
+     if raw is None:
+@@ -213,26 +436,37 @@ def main(argv=None):
+         return 0
+     committed, current, free_ram, physical = raw
+     pages = page_files()
+-    limit = effective_limit(current, physical, pages)
++    backed = effective_limit(current, physical, pages)
++    cap = (launch_capacity(current, physical, backed, configured_page_files(), active_page_files())
++           if a.launch_capacity else None)
++    limit = cap["limit_gb"] if cap else backed
+     short = disk_short(pages)
+     extra, holder = heavy_job_extra_gb()
+     ok = verdict(committed, limit, a.need_gb + extra, a.reserve_gb) and not short
+     rec = {"committed_gb": round(committed, 2), "limit_gb": round(limit, 2), "windows_limit_gb": round(current, 2),
+            "free_ram_gb": round(free_ram, 2), "need_gb": a.need_gb, "reserve_gb": a.reserve_gb,
+            "disk_reserve_gb": DISK_RESERVE_GIB, "disk_short": [[d, round(f, 1)] for d, f in short],
+-           "heavy_job": (holder or {}).get("job"), "heavy_job_unused_gb": round(extra, 2), "allowed": ok}
++           "heavy_job": (holder or {}).get("job"), "heavy_job_unused_gb": round(extra, 2), "allowed": ok,
++           "reading": "launch_capacity" if cap else "current_backed", "current_backed_limit_gb": round(backed, 2)}
++    if cap:
++        rec["launch_capacity"] = cap
+     if a.json:
+-        print(json.dumps(rec))
++        print(json.dumps(rec, default=str))
+     else:
+         why = ("; %s has %.1f GB free, under the %.0f GB the page file's drive keeps"
+                % (short[0][0].rstrip("/"), short[0][1], DISK_RESERVE_GIB)) if short else ""
+         heavy = ("; the running heavy job %s may still commit %.1f GB of its declared %.1f GB, kept free too"
+                  % (holder.get("job"), extra, float(holder["need_gb"]))) if extra > 0 else ""
+-        print("%s: %.1f of %.1f GB committed (Windows' limit %.1f GB; the guard never counts on the page file "
+-              "growing into the last %.0f GB of its drive), %.1f GB RAM free; this work needs %.1f GB and %.1f GB "
+-              "must stay free under the limit%s%s" % ("ALLOWED" if ok else "REFUSED", committed, limit, current,
+-                                                       DISK_RESERVE_GIB, free_ram, a.need_gb, a.reserve_gb, heavy,
+-                                                       why))
++        if cap:
++            judged = ("launch capacity: Windows' limit %.1f GB plus %.1f GB the page files can still grow above the "
++                      "last %.0f GB of their drives (%s); the current-backed limit is %.1f GB"
++                      % (current, cap["growth_gb"], DISK_RESERVE_GIB, cap["why"], backed))
++        else:
++            judged = ("Windows' limit %.1f GB; the guard never counts on the page file growing into the last %.0f GB "
++                      "of its drive" % (current, DISK_RESERVE_GIB))
++        print("%s: %.1f of %.1f GB committed (%s), %.1f GB RAM free; this work needs %.1f GB and %.1f GB must stay "
++              "free under the limit%s%s" % ("ALLOWED" if ok else "REFUSED", committed, limit, judged, free_ram,
++                                            a.need_gb, a.reserve_gb, heavy, why))
+     return 0 if ok else 3
+ 
+ 
+diff --git a/Source/Python/mimo_bridge/tools/training_preflight.py b/Source/Python/mimo_bridge/tools/training_preflight.py
+index c3d3f8b..4e3f867 100644
+--- a/Source/Python/mimo_bridge/tools/training_preflight.py
++++ b/Source/Python/mimo_bridge/tools/training_preflight.py
+@@ -299,8 +299,9 @@ configuration's run, written in a file of its own, docs/gain_of_function_v4/pref
+ (`adoption`, from a JSON file). The record is read and never written: its gates, its states and its history stay byte
+ for byte as they were, and no gate is qualified for normal training.
+ THE ROUTE ADMITS ONLY THE ADOPTIONS ADOPTION_ROUTES NAMES, and the entry pins every value the decision names (above
+-ADOPTION_ROUTES). Eleven entries (THE FIFTH, THE SIXTH and THE SEVENTH ENTRY below;
+-the eighth and the ninth, the arm-consistency matched pair's control and treatment branches; THE TENTH AND THE ELEVENTH ENTRY below). The first,
++ADOPTION_ROUTES). Twelve entries (THE FIFTH, THE SIXTH and THE SEVENTH ENTRY below;
++the eighth and the ninth, the arm-consistency matched pair's control and treatment branches; THE TENTH AND THE ELEVENTH ENTRY below; THE TWELFTH
++ENTRY below). The first,
+ the decision's: the preserved checkpoint
+ D:/UEMA_Research/external/D/UEMA_preserved/body1_extension_B1E_skip13_485975/run/checkpoints/ckpt_step_489350, start 489,350, end 494,025 (4,675
+ model steps), wall cap 20,683 s, and the configuration's fingerprint, filled in two steps: (1) the coordinator writes the
+@@ -510,6 +511,18 @@ boundary); CONTROL_POLL_STEPS (25) stays the default cadence the first-reading a
+ FAIL with their exceptions; nothing here qualifies normal training. An entry that pins none of these keys is judged
+ exactly as before.
+ 
++THE TWELFTH ENTRY, THE UNBLENDED TARGET-CANDIDATE RUN AT 496,250 (built under proxy decision
++reach-target-unblended-build-decision-20261024 of Oct 24, 2026, which
++grants no execution budget; bound to the later decision of the overseer that authorizes the run, its id, message and sha256
++written by the package's seal_authorization.py). One configuration, one run: the s2 ON command (7f4f971dc00a4c90's) with
++--planner-target-candidate-unblended on and new output locations, at the branch commit 46e0c8363 (a48cac796 plus only the
++unblended target candidate); the same preserved complete 496,250 of S4R_measure_496000, end 496,256 (6 model steps), wall
++cap 300 s; training row target_unblended_496250_u_run_c2; command template the package's command_u.json. It pins the keys of
++THE TENTH AND THE ELEVENTH ENTRY (decision_message_sha256, to_commit, code_hash, and owner_bound with the package's owner
++policy_exec.py, the 300 s trainer limit, the 100 s save reserve and the same exception), and every check of that
++paragraph and of THE ADOPTION applies to it unchanged: used once; the seven gates of its record stay FAIL with their
++exceptions; nothing here qualifies normal training.
++
+ THE LINKED RECOVERY OF A USED ADOPTION (proxy decision proxy-adoption-recovery-489625-20261013 of Oct 13, 2026, Saved/gof_coordination/mailbox/
+ proxy-adoption-recovery-489625-20261013/message.json, item 7: "Keep original adoption fingerprint eea1e8bc7f446fb6 used,
+ its stopped receipt and its INCOMPLETE result. Register one linked recovery/extension naming that used record, actual
+@@ -1173,6 +1186,49 @@ ADOPTION_ROUTES = (
+                                      "ned owner's: the trainer's tree ended at its row's claim + 300 s, the complete save included, and sn"
+                                      "apshot_and_stop requested at the claim + 200 s when no end save has begun; the seven gates stay FAIL"
+                                      " for normal training"))),
++    # THE TWELFTH ENTRY, the unblended target-candidate run u at 496,250 (built under the
++    # reach-target-unblended-build-decision-20261024; bound to the later decision of the overseer that authorizes the run):
++    # configuration 66a6cdbcc2f65852 (the s2 ON command with --planner-target-candidate-unblended on and new output locations) at
++    # the branch commit 46e0c8363, from the preserved complete 496,250 of S4R_measure_496000 to 496,256 (6 model steps),
++    # 300 s for the trainer including its complete save; owner_bound (THE TWELFTH ENTRY in the module text); from_commit
++    # the code that trained the start (START's lineage.json code_commit d6a12e317), to_commit and code_hash the code
++    # that runs
++    dict(fingerprint="66a6cdbcc2f65852",
++         checkpoint="D:/UEMA_Research/external/D/UEMA_preserved/s4r_measure_S4R_measure_496000/run/checkpoints/ckpt_step_496250",
++         manifest="D:/UEMA_Research/external/D/UEMA_preserved/s4r_measure_S4R_measure_496000/MANIFEST.json",
++         manifest_sha256="ccaab681c309d354178ab4f095f28e1520c64b3b8b2ca96a4399f2e49097e353",
++         preserved_root="D:/UEMA_Research/external/D/UEMA_preserved",
++         model_sha256="54893ddcd802711f05fc2db830b0d95b15cbf8af58b4e4762b9b260434e3ff4c",
++         latent_sha256="d6da9591646cd61c58850f94a055ed7cc62a7ef55c4d89f4b9958c596bd49876",
++         predecessor_run="D:/UEMA_Research/external/D/UEMA_preserved/s4r_measure_S4R_measure_496000/run",
++         outcome_receipt="D:/UEMA_Research/external/D/UEMA_scratch/h84/d1_planner_recovery/attempts/s4r_measure_496000_a1/evidence/owner/"
++                         "arm_end.json",
++         outcome_receipt_sha256="bba4852b9f0b7c387a9c9b9c3d2658e14dbba987c397920d06def09bb68f3ed1",
++         decision="u-c2-learning-authorized-20261025",
++         decision_message="C:/Users/bhart/Documents/UEMA_devA_private/Saved/gof_coordination/mailbox/"
++                          "u-c2-learning-authorized-20261025/message.json",
++         decision_text_sha256="5e1dc05b6df99bb91f6155342b9f59e905a34dca8338cfff5196928042d912de",
++         decision_message_sha256="0c2ae21c7202d270d6c9d9049dfd3f3e2337fcefd6786ef597d78d7cdbef016d",
++         decision_author="the overseer",
++         delegation_record="C:/Users/bhart/Documents/UEMA_devA_private/Saved/gof_coordination/"
++                           "OPERATOR_PROXY_DELEGATION_2026-10-13.txt",
++         delegation_words=("The operator's written delegation of October 13, 2026 authorizes this route.",
++                           "You will determin launch conditions in my absense!"),
++         from_commit="d6a12e31725bc18dd81d187d77854cffb8a04260",
++         to_commit="46e0c83630250f7a3e260c654955b727922bf8b9",
++         code_hash="c08bad00fffcc62ae36af1a56d5e6f6bc1018a6e285980762e71072664b75b45",
++         command_template="D:/UEMA_Research/external/D/UEMA_scratch/h84/d1_planner_recovery/target_unblended_496250_package_c2/command_u.json",
++         command_template_sha256="7ec196865724ac416a8843dff5cfa6b199a2e2631cdf1c0cc806da49d67b6bb8",
++         run_row="target_unblended_496250_u_run_c2",
++         start=496250, end=496256, wall_cap_s=300,
++         owner_bound=dict(owner="D:/UEMA_Research/external/D/UEMA_scratch/h84/d1_planner_recovery/target_unblended_496250_package_c2/policy_exec.py",
++                          owner_sha256="5f1bfbcfadff6bf3a5e28c4d7ef70311d1f099ac57b68b4867be021f5d7be41b", trainer_limit_s=300, save_reserve_s=100,
++                          exception=("no full 50-model-step statistics window is available in a run of 6 model steps (--report-every 50: t"
++                                     "he first full stats record of a run resumed at 496,250 would come at 496,300), so the run carries no"
++                                     " long-window watcher stop line and supports no long-window convergence claim; its bounds are its pin"
++                                     "ned owner's: the trainer's tree ended at its row's claim + 300 s, the complete save included, and sn"
++                                     "apshot_and_stop requested at the claim + 200 s when no end save has begun; the seven gates stay FAIL"
++                                     " for normal training"))),
+ )
+ # the flags the launch may set apart from the command template (the decision: "Replace only the resume/output/checkpoint-
+ # storage/latent-resume/latent-output locations and --max-steps (494025)"); every other flag reads as the template's

@@ -1,0 +1,2063 @@
+{
+  "probe": "planner_repair_probe_v2",
+  "v2": "planner_candidates_v2",
+  "checkpoint": "D:\\UEMA_Research\\external\\D\\UEMA_scratch\\planner_repair_trial\\rerun_2026-10-01\\runs\\on\\checkpoints\\ckpt_step_456925",
+  "judge_sha256": "92080172cc163643bef56a384b4366013ec9f7b866913280e2b0ef9698148887",
+  "script_sha256": "90ee4b676770021d16ee02b1cf2b170e0e65cbba08c86757677c083cd52a848f",
+  "v2_script_sha256": "7819ad7ada108a27c02a696723c7567ae96369e484e88c6718c3467fa47ef515",
+  "bodies": 8,
+  "starts_per_body": 2,
+  "spacing_steps": 10,
+  "perturb_scales": [
+    2.0,
+    4.0
+  ],
+  "extra_per_scale": 2,
+  "arg_overrides": null,
+  "learning": false,
+  "production_adoption": false,
+  "v2_rules": {
+    "forward_model_flat": "flat unless BOTH the slope of Judge B's predicted-outcome difference on its actual-outcome difference AND the pooled captured share of the between-candidate token difference over Judge B's four senses (planner route, 50 ms) have 95% body intervals entirely above 0",
+    "evaluator_flat": "flat unless the slope of Judge B's actual-outcome difference on the grounded wellness difference (50 ms) has a 95% body interval entirely above 0",
+    "planner_ignores_predicted_wellness": "the planner's objective gives predicted wellness weight 0 (intention_gen._wellness_w) and the chosen order's mean rank by predicted wellness is not better than chance (the interval's upper end is not below (K + 1) / 2)",
+    "depth_claim": "looking further ahead causes a better physical decision only when the order selected by predicted wellness at 150 ms beats the order selected at 50 ms in actual grounded wellness averaged over the order's tenure, paired over the same starts, 95% body interval above 0"
+  },
+  "production_tie_band": 0.0734,
+  "repair_build": {
+    "version": "planner_repair_v2",
+    "wellness_forecast": "shadow",
+    "body_copy": "on",
+    "plan_select": "off",
+    "causal_perturb_scale": 1.0,
+    "forecast_tie_band": null,
+    "forecast_difference_scale": null,
+    "forecast_tie_band_measurement": null,
+    "load": {
+      "file": true,
+      "wellness_forecast": "loaded",
+      "body_copy": "loaded"
+    }
+  },
+  "evaluated_starts": 16,
+  "tenure_steps": 5,
+  "judge": "planner_repair_judge_v1",
+  "v2_summary": {
+    "starts": 16,
+    "bodies": 8,
+    "candidates": 5,
+    "moments": 5,
+    "tie_band": {
+      "production": 0.0734,
+      "remeasured_planner_route": 0.0875779628753662,
+      "remeasured_learning_route": 0.0875689908862114,
+      "evaluator_on_actual_outcomes": 0.08875319063663482,
+      "decomposition": {
+        "forward_model_share": 0.004079273684483937,
+        "evaluator_share": 1.0101790508164834,
+        "cross_share": -0.014258324500967368,
+        "p90_abs_forward_model_part": 0.004656915366649625,
+        "p90_abs_evaluator_part": 0.08875319063663482
+      },
+      "definition": "90th percentile over candidate pairs of |predicted difference - grounded difference| one moment after the order, on the 0-to-5 sum"
+    },
+    "wellness_differences": {
+      "grounded_abs": {
+        "median": 0.022391565144062042,
+        "p90": 0.08821898102760314
+      },
+      "judge_actual_abs": {
+        "median": 0.0012343749403953552,
+        "p90": 0.0039461135864257806
+      },
+      "judge_predicted_abs": {
+        "median": 0.0012251436710357666,
+        "p90": 0.00343477725982666
+      },
+      "sign_agreement_predicted_vs_grounded": 0.49375,
+      "sign_agreement_actual_judge_vs_grounded": 0.4375,
+      "decided_pairs_production": {
+        "value": 0.0,
+        "interval": [
+          0.0,
+          0.0
+        ],
+        "bodies": 8,
+        "draws_used": 5000
+      },
+      "decided_pairs_remeasured": {
+        "value": 0.0,
+        "interval": [
+          0.0,
+          0.0
+        ],
+        "bodies": 8,
+        "draws_used": 5000
+      },
+      "decided_pairs_if_forecasts_were_perfect": {
+        "value": 0.0,
+        "interval": [
+          0.0,
+          0.0
+        ],
+        "bodies": 8,
+        "draws_used": 5000
+      }
+    },
+    "evaluator": {
+      "transfer": {
+        "value": -0.0007500150397820323,
+        "interval": [
+          -0.007211595491624446,
+          0.01826410889918953
+        ],
+        "bodies": 8,
+        "draws_used": 5000
+      },
+      "corr": {
+        "value": -0.014042220931706588,
+        "interval": [
+          -0.2117842462830894,
+          0.20016610533408175
+        ],
+        "bodies": 8,
+        "draws_used": 5000
+      },
+      "definition": "slope of Judge B's difference between two candidates' ACTUAL outcomes on their grounded wellness difference, one moment after (1 = sees the whole true difference, 0 = blind to it)",
+      "per_term": {
+        "prediction_error": {
+          "share_of_grounded_difference": 0.4312435511088677,
+          "grounded_abs_median": 0.007482469081878662,
+          "judge_actual_abs_median": 0.0004433095455169678,
+          "judge_predicted_abs_median": 0.00042107701301574707,
+          "evaluator_transfer": 0.000746635767989519,
+          "evaluator_corr": 0.022783392881730116
+        },
+        "tactile_comfort": {
+          "share_of_grounded_difference": 0.571109706874521,
+          "grounded_abs_median": 0.01913072168827057,
+          "judge_actual_abs_median": 0.0014405697584152222,
+          "judge_predicted_abs_median": 0.001297086477279663,
+          "evaluator_transfer": -0.002761536101722019,
+          "evaluator_corr": -0.043320566361658874
+        },
+        "capability": {
+          "share_of_grounded_difference": 4.433128416755016e-05,
+          "grounded_abs_median": 0.00022873282432556152,
+          "judge_actual_abs_median": 0.0005091428756713867,
+          "judge_predicted_abs_median": 0.00045880675315856934,
+          "evaluator_transfer": -0.19402954294532887,
+          "evaluator_corr": -0.08670171471665755
+        },
+        "coherence": {
+          "share_of_grounded_difference": 0.0,
+          "grounded_abs_median": 0.0,
+          "judge_actual_abs_median": 0.0002849102020263672,
+          "judge_predicted_abs_median": 0.00043283402919769287,
+          "evaluator_transfer": null,
+          "evaluator_corr": null
+        },
+        "motor_state": {
+          "share_of_grounded_difference": 0.0004076890350772618,
+          "grounded_abs_median": 0.0,
+          "judge_actual_abs_median": 0.00017127394676208496,
+          "judge_predicted_abs_median": 0.0002473890781402588,
+          "evaluator_transfer": 0.01538038147327253,
+          "evaluator_corr": 0.06355949096073907
+        }
+      },
+      "candidate_spread_median": {
+        "predicted": 0.0027869492769241333,
+        "predicted_senses_present_motor": 0.001515515148639679,
+        "present_senses_candidate_motor": 0.0024810656905174255,
+        "actual": 0.0036639273166656494,
+        "grounded": 0.06144782900810242
+      }
+    },
+    "forward_model": {
+      "transfer_judge_units": {
+        "value": 0.06083021937986335,
+        "interval": [
+          -0.037775009677616725,
+          0.28025598878850666
+        ],
+        "bodies": 8,
+        "draws_used": 5000
+      },
+      "corr_judge_units": {
+        "value": 0.08252444192906458,
+        "interval": [
+          -0.0567858716011343,
+          0.30220749968320915
+        ],
+        "bodies": 8,
+        "draws_used": 5000
+      },
+      "definition": "slope of Judge B's difference between two candidates' PREDICTED outcomes on its difference between their ACTUAL outcomes (1 = the forecast hands Judge B every difference reality does, 0 = none)",
+      "senses": {
+        "planner": {
+          "1": {
+            "vision": {
+              "captured_share": {
+                "value": 0.3086771174286352,
+                "interval": [
+                  0.10347190058717674,
+                  0.5709565936707371
+                ],
+                "bodies": 8,
+                "draws_used": 5000
+              },
+              "predicted_over_realised_difference": 1.0821389843109892,
+              "predicted_difference_over_prediction_error": 0.16582995960730185,
+              "realised_difference_over_prediction_error": 0.15324275533136603,
+              "prediction_error_mean": 0.008371726758555745,
+              "persistence_error_mean": 0.008706205867409302,
+              "predicted_difference_mean": 0.0013882831102146674,
+              "realised_difference_mean": 0.0012829064753624082
+            },
+            "tactile": {
+              "captured_share": {
+                "value": -0.25981700893502346,
+                "interval": [
+                  -0.4433670375087017,
+                  0.02683029692963936
+                ],
+                "bodies": 8,
+                "draws_used": 5000
+              },
+              "predicted_over_realised_difference": 2.5157718915807488,
+              "predicted_difference_over_prediction_error": 0.6113380469300073,
+              "realised_difference_over_prediction_error": 0.24300217717508638,
+              "prediction_error_mean": 0.05324844305332086,
+              "persistence_error_mean": 0.0303748803330403,
+              "predicted_difference_mean": 0.03255279917828089,
+              "realised_difference_mean": 0.012939487593140573
+            },
+            "audio": {
+              "captured_share": {
+                "value": 0.0002889335265339268,
+                "interval": [
+                  -7.506442678529365e-05,
+                  0.00048442010642017904
+                ],
+                "bodies": 8,
+                "draws_used": 5000
+              },
+              "predicted_over_realised_difference": 2.591645716602674e-05,
+              "predicted_difference_over_prediction_error": 3.388252307258883e-05,
+              "realised_difference_over_prediction_error": 1.3073748026410266,
+              "prediction_error_mean": 0.04797522158605431,
+              "persistence_error_mean": 0.0381021855342262,
+              "predicted_difference_mean": 1.6255215523020466e-06,
+              "realised_difference_mean": 0.06272159585272727
+            },
+            "proprioception": {
+              "captured_share": {
+                "value": 0.2286297446962156,
+                "interval": [
+                  0.07593903611205532,
+                  0.34505956405178245
+                ],
+                "bodies": 8,
+                "draws_used": 5000
+              },
+              "predicted_over_realised_difference": 0.37698962828904387,
+              "predicted_difference_over_prediction_error": 0.36784031879382667,
+              "realised_difference_over_prediction_error": 0.9757306068691037,
+              "prediction_error_mean": 0.005182065189689862,
+              "persistence_error_mean": 0.005811440624432565,
+              "predicted_difference_mean": 0.0019061725113859109,
+              "realised_difference_mean": 0.0050562996123713465
+            },
+            "vestibular": {
+              "captured_share": {
+                "value": -0.05556860148166673,
+                "interval": [
+                  -0.08852456223045943,
+                  0.03192662008661829
+                ],
+                "bodies": 8,
+                "draws_used": 5000
+              },
+              "predicted_over_realised_difference": 0.37127215841522054,
+              "predicted_difference_over_prediction_error": 4.025620189714515e-06,
+              "realised_difference_over_prediction_error": 1.0842774224972647e-05,
+              "prediction_error_mean": 4.2353722694042075e-08,
+              "persistence_error_mean": 7.601810547505869e-13,
+              "predicted_difference_mean": 1.705000011867056e-13,
+              "realised_difference_mean": 4.592318527585985e-13
+            },
+            "judge_senses": {
+              "captured_share": {
+                "value": -0.021850559792943383,
+                "interval": [
+                  -0.06596804018685742,
+                  0.04649717364866195
+                ],
+                "bodies": 8,
+                "draws_used": 5000
+              },
+              "predicted_over_realised_difference": 0.4371799236970232,
+              "predicted_difference_over_prediction_error": 0.3123338100288608,
+              "realised_difference_over_prediction_error": 0.7144285295344808,
+              "prediction_error_mean": 0.11477745658762077,
+              "persistence_error_mean": 0.08299471235910837,
+              "predicted_difference_mean": 0.03584888032143376,
+              "realised_difference_mean": 0.08200028953360161
+            }
+          },
+          "2": {
+            "vision": {
+              "captured_share": {
+                "value": 0.27782565812684096,
+                "interval": [
+                  0.09735613392513116,
+                  0.4794919888197323
+                ],
+                "bodies": 8,
+                "draws_used": 5000
+              },
+              "predicted_over_realised_difference": 0.6523760726926494,
+              "predicted_difference_over_prediction_error": 0.3099538279254699,
+              "realised_difference_over_prediction_error": 0.4751152608129098,
+              "prediction_error_mean": 0.026502848810484314,
+              "persistence_error_mean": 0.030352238513203428,
+              "predicted_difference_mean": 0.0082146594397396,
+              "realised_difference_mean": 0.012591907924878371
+            },
+            "tactile": {
+              "captured_share": {
+                "value": -0.08130650978454936,
+                "interval": [
+                  -0.46850807619190826,
+                  0.5085085883625854
+                ],
+                "bodies": 8,
+                "draws_used": 5000
+              },
+              "predicted_over_realised_difference": 4.399693570289882,
+              "predicted_difference_over_prediction_error": 1.0386907666752396,
+              "realised_difference_over_prediction_error": 0.23608252485793085,
+              "prediction_error_mean": 0.12019624782931312,
+              "persistence_error_mean": 0.03307201426778072,
+              "predicted_difference_mean": 0.12484673280931635,
+              "realised_difference_mean": 0.028376233665993834
+            },
+            "audio": {
+              "captured_share": {
+                "value": 0.0011247671440586218,
+                "interval": [
+                  -0.0012334366662772886,
+                  0.006079757048196974
+                ],
+                "bodies": 8,
+                "draws_used": 5000
+              },
+              "predicted_over_realised_difference": 0.0003223446533972255,
+              "predicted_difference_over_prediction_error": 0.0004347072999688935,
+              "realised_difference_over_prediction_error": 1.348579216026901,
+              "prediction_error_mean": 0.08047136728253008,
+              "persistence_error_mean": 0.0776451260771355,
+              "predicted_difference_mean": 3.498149079619381e-05,
+              "realised_difference_mean": 0.10852201340248724
+            },
+            "proprioception": {
+              "captured_share": {
+                "value": 0.2943455032723471,
+                "interval": [
+                  0.09780480885476599,
+                  0.46338341434629193
+                ],
+                "bodies": 8,
+                "draws_used": 5000
+              },
+              "predicted_over_realised_difference": 0.564913039999382,
+              "predicted_difference_over_prediction_error": 0.5916757676117953,
+              "realised_difference_over_prediction_error": 1.0473749510410357,
+              "prediction_error_mean": 0.012770490266580972,
+              "persistence_error_mean": 0.01451692353555999,
+              "predicted_difference_mean": 0.007555989631258257,
+              "realised_difference_mean": 0.013375491617730268
+            },
+            "vestibular": {
+              "captured_share": {
+                "value": -0.257552400456744,
+                "interval": [
+                  -0.4237951277345416,
+                  -0.018990082959561387
+                ],
+                "bodies": 8,
+                "draws_used": 5000
+              },
+              "predicted_over_realised_difference": 9.28413959153193,
+              "predicted_difference_over_prediction_error": 1.9195626441273267e-05,
+              "realised_difference_over_prediction_error": 2.0675719329749855e-06,
+              "prediction_error_mean": 1.4655612571520308e-07,
+              "persistence_error_mean": 8.417319325001917e-13,
+              "predicted_difference_mean": 2.813236641909321e-12,
+              "realised_difference_mean": 3.030153321343074e-13
+            },
+            "judge_senses": {
+              "captured_share": {
+                "value": 0.03223675773347353,
+                "interval": [
+                  -0.03572777526501296,
+                  0.1923117977194523
+                ],
+                "bodies": 8,
+                "draws_used": 5000
+              },
+              "predicted_over_realised_difference": 0.8636097685288854,
+              "predicted_difference_over_prediction_error": 0.5861957323899489,
+              "realised_difference_over_prediction_error": 0.6787738556831092,
+              "prediction_error_mean": 0.2399409541889085,
+              "persistence_error_mean": 0.15558630239367963,
+              "predicted_difference_mean": 0.14065236337111042,
+              "realised_difference_mean": 0.1628656466110897
+            }
+          },
+          "3": {
+            "vision": {
+              "captured_share": {
+                "value": 0.2684089130485454,
+                "interval": [
+                  0.11624051896895841,
+                  0.5007196603445666
+                ],
+                "bodies": 8,
+                "draws_used": 5000
+              },
+              "predicted_over_realised_difference": 0.544016001304669,
+              "predicted_difference_over_prediction_error": 0.45353829453603695,
+              "realised_difference_over_prediction_error": 0.8336855780865879,
+              "prediction_error_mean": 0.05032583048733226,
+              "persistence_error_mean": 0.05898251497531881,
+              "predicted_difference_mean": 0.022824691330334365,
+              "realised_difference_mean": 0.04195591908251923
+            },
+            "tactile": {
+              "captured_share": {
+                "value": 0.18137559164510406,
+                "interval": [
+                  -0.12671548562085083,
+                  0.641830673240119
+                ],
+                "bodies": 8,
+                "draws_used": 5000
+              },
+              "predicted_over_realised_difference": 3.764419633180801,
+              "predicted_difference_over_prediction_error": 1.1791418457977265,
+              "realised_difference_over_prediction_error": 0.3132333694693313,
+              "prediction_error_mean": 0.21518619890648738,
+              "persistence_error_mean": 0.08629169535623189,
+              "predicted_difference_mean": 0.25373505176879224,
+              "realised_difference_mean": 0.06740349814677678
+            },
+            "audio": {
+              "captured_share": {
+                "value": 0.005337869255388399,
+                "interval": [
+                  -0.00014058213792136196,
+                  0.014260733896422458
+                ],
+                "bodies": 8,
+                "draws_used": 5000
+              },
+              "predicted_over_realised_difference": 0.001355603118390258,
+              "predicted_difference_over_prediction_error": 0.0019201346945375093,
+              "realised_difference_over_prediction_error": 1.4164431082289164,
+              "prediction_error_mean": 0.07664499758823133,
+              "persistence_error_mean": 0.11285731732228263,
+              "predicted_difference_mean": 0.0001471687190319067,
+              "realised_difference_mean": 0.1085632786140722
+            },
+            "proprioception": {
+              "captured_share": {
+                "value": 0.3800285320905701,
+                "interval": [
+                  0.14240482130515658,
+                  0.5828972703188312
+                ],
+                "bodies": 8,
+                "draws_used": 5000
+              },
+              "predicted_over_realised_difference": 0.7628887676887571,
+              "predicted_difference_over_prediction_error": 0.7816614328537417,
+              "realised_difference_over_prediction_error": 1.0246073424594493,
+              "prediction_error_mean": 0.021393789553912985,
+              "persistence_error_mean": 0.02508782653230367,
+              "predicted_difference_mean": 0.016722700196883034,
+              "realised_difference_mean": 0.02192023385997151
+            },
+            "vestibular": {
+              "captured_share": {
+                "value": -0.5515766918269631,
+                "interval": [
+                  -0.8749463659211667,
+                  -0.22128571570880745
+                ],
+                "bodies": 8,
+                "draws_used": 5000
+              },
+              "predicted_over_realised_difference": 40.03770685421363,
+              "predicted_difference_over_prediction_error": 4.3200487366408664e-05,
+              "realised_difference_over_prediction_error": 1.0789950464373856e-06,
+              "prediction_error_mean": 3.1344330881168194e-07,
+              "persistence_error_mean": 8.327702529368803e-13,
+              "predicted_difference_mean": 1.3540903702404395e-11,
+              "realised_difference_mean": 3.382037775467485e-13
+            },
+            "judge_senses": {
+              "captured_share": {
+                "value": 0.13507382901113352,
+                "interval": [
+                  0.05623803335697713,
+                  0.2542866470478138
+                ],
+                "bodies": 8,
+                "draws_used": 5000
+              },
+              "predicted_over_realised_difference": 1.2234240649827905,
+              "predicted_difference_over_prediction_error": 0.8071213119831195,
+              "realised_difference_over_prediction_error": 0.6597232595669702,
+              "prediction_error_mean": 0.36355081653596394,
+              "persistence_error_mean": 0.28321935418613703,
+              "predicted_difference_mean": 0.2934296120150416,
+              "realised_difference_mean": 0.2398429297033397
+            }
+          }
+        },
+        "learning": {
+          "1": {
+            "vision": {
+              "captured_share": {
+                "value": 0.30864628834929975,
+                "interval": [
+                  0.10225849619083925,
+                  0.573169362288327
+                ],
+                "bodies": 8,
+                "draws_used": 5000
+              },
+              "predicted_over_realised_difference": 1.0874365495849114,
+              "predicted_difference_over_prediction_error": 0.18897889351034633,
+              "realised_difference_over_prediction_error": 0.17378383463612845,
+              "prediction_error_mean": 0.007382196842695868,
+              "persistence_error_mean": 0.008706205867409302,
+              "predicted_difference_mean": 0.0013950793910082373,
+              "realised_difference_mean": 0.0012829064753624082
+            },
+            "tactile": {
+              "captured_share": {
+                "value": -0.2587853779514909,
+                "interval": [
+                  -0.4415070915053201,
+                  0.026679568271360768
+                ],
+                "bodies": 8,
+                "draws_used": 5000
+              },
+              "predicted_over_realised_difference": 2.507670693812735,
+              "predicted_difference_over_prediction_error": 0.6076442618014535,
+              "realised_difference_over_prediction_error": 0.24231421745315915,
+              "prediction_error_mean": 0.053399621900608686,
+              "persistence_error_mean": 0.0303748803330403,
+              "predicted_difference_mean": 0.03244797383027209,
+              "realised_difference_mean": 0.012939487593140573
+            },
+            "audio": {
+              "captured_share": {
+                "value": 0.00029951771161505124,
+                "interval": [
+                  -6.422762200460436e-05,
+                  0.0004988332183586191
+                ],
+                "bodies": 8,
+                "draws_used": 5000
+              },
+              "predicted_over_realised_difference": 2.513779280898126e-05,
+              "predicted_difference_over_prediction_error": 3.304161887169684e-05,
+              "realised_difference_over_prediction_error": 1.3144200496350535,
+              "prediction_error_mean": 0.04771807602154411,
+              "persistence_error_mean": 0.0381021855342262,
+              "predicted_difference_mean": 1.5766824811945164e-06,
+              "realised_difference_mean": 0.06272159585272727
+            },
+            "proprioception": {
+              "captured_share": {
+                "value": 0.22875849184286362,
+                "interval": [
+                  0.07595363151454664,
+                  0.3452380555002769
+                ],
+                "bodies": 8,
+                "draws_used": 5000
+              },
+              "predicted_over_realised_difference": 0.3775178051120418,
+              "predicted_difference_over_prediction_error": 0.37669880996855276,
+              "realised_difference_over_prediction_error": 0.9978305787637064,
+              "prediction_error_mean": 0.005067292704775603,
+              "persistence_error_mean": 0.005811440624432565,
+              "predicted_difference_mean": 0.0019088431316512985,
+              "realised_difference_mean": 0.0050562996123713465
+            },
+            "vestibular": {
+              "captured_share": {
+                "value": -0.05447756191975288,
+                "interval": [
+                  -0.08849165736510906,
+                  0.034068076623183965
+                ],
+                "bodies": 8,
+                "draws_used": 5000
+              },
+              "predicted_over_realised_difference": 0.3698616454862209,
+              "predicted_difference_over_prediction_error": 5.413480043943781e-06,
+              "realised_difference_over_prediction_error": 1.4636500188677871e-05,
+              "prediction_error_mean": 3.13757965933577e-08,
+              "persistence_error_mean": 7.601810547505869e-13,
+              "predicted_difference_mean": 1.6985224872098116e-13,
+              "realised_difference_mean": 4.592318527585985e-13
+            },
+            "judge_senses": {
+              "captured_share": {
+                "value": -0.02167221814687643,
+                "interval": [
+                  -0.06562351677357432,
+                  0.0464383921834027
+                ],
+                "bodies": 8,
+                "draws_used": 5000
+              },
+              "predicted_over_realised_difference": 0.43601642431716015,
+              "predicted_difference_over_prediction_error": 0.31482221081662143,
+              "realised_difference_over_prediction_error": 0.7220420912117257,
+              "prediction_error_mean": 0.11356718746962428,
+              "persistence_error_mean": 0.08299471235910837,
+              "predicted_difference_mean": 0.035753473035412826,
+              "realised_difference_mean": 0.08200028953360161
+            }
+          },
+          "2": {
+            "vision": {
+              "captured_share": {
+                "value": 0.2795787951512895,
+                "interval": [
+                  0.09732714584808252,
+                  0.4814902417786948
+                ],
+                "bodies": 8,
+                "draws_used": 5000
+              },
+              "predicted_over_realised_difference": 0.6570266422081744,
+              "predicted_difference_over_prediction_error": 0.32668185767324864,
+              "realised_difference_over_prediction_error": 0.49721249746481627,
+              "prediction_error_mean": 0.025325002869159376,
+              "persistence_error_mean": 0.030352238513203428,
+              "predicted_difference_mean": 0.008273218982877337,
+              "realised_difference_mean": 0.012591907924878371
+            },
+            "tactile": {
+              "captured_share": {
+                "value": -0.08128826644055945,
+                "interval": [
+                  -0.46857222997540326,
+                  0.5085808327103553
+                ],
+                "bodies": 8,
+                "draws_used": 5000
+              },
+              "predicted_over_realised_difference": 4.3963681100992025,
+              "predicted_difference_over_prediction_error": 1.037036513413099,
+              "realised_difference_over_prediction_error": 0.23588482298169036,
+              "prediction_error_mean": 0.12029698777269968,
+              "persistence_error_mean": 0.03307201426778072,
+              "predicted_difference_mean": 0.12475236877389868,
+              "realised_difference_mean": 0.028376233665993834
+            },
+            "audio": {
+              "captured_share": {
+                "value": 0.001159591882765069,
+                "interval": [
+                  -0.0010214793053329755,
+                  0.006075215942913375
+                ],
+                "bodies": 8,
+                "draws_used": 5000
+              },
+              "predicted_over_realised_difference": 0.0003251133583957039,
+              "predicted_difference_over_prediction_error": 0.00043709653996700887,
+              "realised_difference_over_prediction_error": 1.3444434954130902,
+              "prediction_error_mean": 0.08071890992275808,
+              "persistence_error_mean": 0.0776451260771355,
+              "predicted_difference_mean": 3.528195623714622e-05,
+              "realised_difference_mean": 0.10852201340248724
+            },
+            "proprioception": {
+              "captured_share": {
+                "value": 0.2944646604109256,
+                "interval": [
+                  0.09771130295743893,
+                  0.46372631270623754
+                ],
+                "bodies": 8,
+                "draws_used": 5000
+              },
+              "predicted_over_realised_difference": 0.5655285621870918,
+              "predicted_difference_over_prediction_error": 0.5978003153390227,
+              "realised_difference_over_prediction_error": 1.0570647626127405,
+              "prediction_error_mean": 0.012653426820008784,
+              "persistence_error_mean": 0.01451692353555999,
+              "predicted_difference_mean": 0.007564222543120497,
+              "realised_difference_mean": 0.013375491617730268
+            },
+            "vestibular": {
+              "captured_share": {
+                "value": -0.2516793586963613,
+                "interval": [
+                  -0.4200959357275838,
+                  -0.010075653165798434
+                ],
+                "bodies": 8,
+                "draws_used": 5000
+              },
+              "predicted_over_realised_difference": 9.206358722239296,
+              "predicted_difference_over_prediction_error": 2.2241195864074555e-05,
+              "realised_difference_over_prediction_error": 2.4158515364329355e-06,
+              "prediction_error_mean": 1.2542796093410485e-07,
+              "persistence_error_mean": 8.417319325001917e-13,
+              "predicted_difference_mean": 2.789667845966918e-12,
+              "realised_difference_mean": 3.030153321343074e-13
+            },
+            "judge_senses": {
+              "captured_share": {
+                "value": 0.03240847014818015,
+                "interval": [
+                  -0.03572617418463936,
+                  0.1923319405947026
+                ],
+                "bodies": 8,
+                "draws_used": 5000
+              },
+              "predicted_over_realised_difference": 0.863442323057454,
+              "predicted_difference_over_prediction_error": 0.5884034729820948,
+              "realised_difference_over_prediction_error": 0.6814623944985172,
+              "prediction_error_mean": 0.23899432738462592,
+              "persistence_error_mean": 0.15558630239367963,
+              "predicted_difference_mean": 0.14062509225613368,
+              "realised_difference_mean": 0.1628656466110897
+            }
+          },
+          "3": {
+            "vision": {
+              "captured_share": {
+                "value": 0.27126399928974193,
+                "interval": [
+                  0.11760203738003633,
+                  0.5029562789886529
+                ],
+                "bodies": 8,
+                "draws_used": 5000
+              },
+              "predicted_over_realised_difference": 0.5491070195788443,
+              "predicted_difference_over_prediction_error": 0.46922520980306864,
+              "realised_difference_over_prediction_error": 0.8545241511626575,
+              "prediction_error_mean": 0.04909857612032896,
+              "persistence_error_mean": 0.05898251497531881,
+              "predicted_difference_mean": 0.023038289681093293,
+              "realised_difference_mean": 0.04195591908251923
+            },
+            "tactile": {
+              "captured_share": {
+                "value": 0.18095836126167714,
+                "interval": [
+                  -0.1272115146702095,
+                  0.6421177999615029
+                ],
+                "bodies": 8,
+                "draws_used": 5000
+              },
+              "predicted_over_realised_difference": 3.764544894466821,
+              "predicted_difference_over_prediction_error": 1.1776188811139576,
+              "realised_difference_over_prediction_error": 0.3128183921633762,
+              "prediction_error_mean": 0.21547165970846702,
+              "persistence_error_mean": 0.08629169535623189,
+              "predicted_difference_mean": 0.25374349481765235,
+              "realised_difference_mean": 0.06740349814677678
+            },
+            "audio": {
+              "captured_share": {
+                "value": 0.005429554014352374,
+                "interval": [
+                  -7.089843275269879e-05,
+                  0.014363887296311148
+                ],
+                "bodies": 8,
+                "draws_used": 5000
+              },
+              "predicted_over_realised_difference": 0.0013621414826154444,
+              "predicted_difference_over_prediction_error": 0.0019217172424786917,
+              "realised_difference_over_prediction_error": 1.410805901593135,
+              "prediction_error_mean": 0.07695125069400297,
+              "persistence_error_mean": 0.11285731732228263,
+              "predicted_difference_mean": 0.0001478785452889659,
+              "realised_difference_mean": 0.1085632786140722
+            },
+            "proprioception": {
+              "captured_share": {
+                "value": 0.38010878359692224,
+                "interval": [
+                  0.14227422341223325,
+                  0.5830196740769739
+                ],
+                "bodies": 8,
+                "draws_used": 5000
+              },
+              "predicted_over_realised_difference": 0.7636051482156178,
+              "predicted_difference_over_prediction_error": 0.7863756097668652,
+              "realised_difference_over_prediction_error": 1.029819680504325,
+              "prediction_error_mean": 0.021285506846438106,
+              "persistence_error_mean": 0.02508782653230367,
+              "predicted_difference_mean": 0.016738403425564548,
+              "realised_difference_mean": 0.02192023385997151
+            },
+            "vestibular": {
+              "captured_share": {
+                "value": -0.5455978873045648,
+                "interval": [
+                  -0.8672283967145046,
+                  -0.21542482435600013
+                ],
+                "bodies": 8,
+                "draws_used": 5000
+              },
+              "predicted_over_realised_difference": 39.461256299711714,
+              "predicted_difference_over_prediction_error": 4.729798188646768e-05,
+              "realised_difference_over_prediction_error": 1.1985929066027537e-06,
+              "prediction_error_mean": 2.8216734446171596e-07,
+              "persistence_error_mean": 8.327702529368803e-13,
+              "predicted_difference_mean": 1.3345945947302928e-11,
+              "realised_difference_mean": 3.382037775467485e-13
+            },
+            "judge_senses": {
+              "captured_share": {
+                "value": 0.13550485155526254,
+                "interval": [
+                  0.056637703615479235,
+                  0.25446690484266266
+                ],
+                "bodies": 8,
+                "draws_used": 5000
+              },
+              "predicted_over_realised_difference": 1.22441827588095,
+              "predicted_difference_over_prediction_error": 0.8094333125787527,
+              "realised_difference_over_prediction_error": 0.6610758174091922,
+              "prediction_error_mean": 0.362806993369237,
+              "persistence_error_mean": 0.28321935418613703,
+              "predicted_difference_mean": 0.2936680664695991,
+              "realised_difference_mean": 0.2398429297033397
+            }
+          }
+        }
+      },
+      "route_disagreement_over_candidate_difference": {
+        "vision": 0.08707193766669959,
+        "tactile": 0.00018835533013861504,
+        "audio": 10.429761243360996,
+        "proprioception": 0.010482401171713432,
+        "vestibular": 4823.995234510205
+      },
+      "motor_token_change_median": 0.5242452919483185
+    },
+    "chain": {
+      "transfer": {
+        "value": 0.003658784400109116,
+        "interval": [
+          -0.0070710246595415025,
+          0.008660745471849186
+        ],
+        "bodies": 8,
+        "draws_used": 5000
+      },
+      "corr": {
+        "value": 0.09293212363986529,
+        "interval": [
+          -0.11098583482553086,
+          0.29533418820205337
+        ],
+        "bodies": 8,
+        "draws_used": 5000
+      },
+      "definition": "slope of the planner's predicted wellness difference on the grounded difference: the whole route the production tie is judged on"
+    },
+    "planner": {
+      "objective_wellness_weight": 0.0,
+      "chance_rank": 3.0,
+      "chosen_rank_by_predicted_wellness": {
+        "value": 3.25,
+        "interval": [
+          2.375,
+          3.9375
+        ],
+        "bodies": 8,
+        "draws_used": 5000
+      },
+      "chosen_rank_by_own_objective": {
+        "value": 1.0,
+        "interval": [
+          1.0,
+          1.0
+        ],
+        "bodies": 8,
+        "draws_used": 5000
+      },
+      "chosen_rank_by_actual_wellness_over_tenure": {
+        "value": 3.5,
+        "interval": [
+          2.75,
+          4.1875
+        ],
+        "bodies": 8,
+        "draws_used": 5000
+      },
+      "chosen_rank_by_actual_goal_distance": {
+        "value": 2.875,
+        "interval": [
+          2.0625,
+          3.625
+        ],
+        "bodies": 8,
+        "draws_used": 5000
+      },
+      "chosen_actual_wellness_minus_alternatives": {
+        "mean": -0.012770405644550953,
+        "interval": [
+          -0.030051580769941327,
+          0.002441193489357868
+        ],
+        "bodies": 8,
+        "bodies_above_zero": 3,
+        "bodies_below_zero": 5
+      },
+      "starts_where_an_alternative_was_predicted_better_beyond_the_band": 0,
+      "production_record_outcomes": {
+        "best": 0,
+        "tied": 16,
+        "behind": 0
+      },
+      "production_record_gap_abs_p90": 0.002595067024230957
+    },
+    "depth": {
+      "wellness": {
+        "differs_share": 0.1875,
+        "picks": [
+          [
+            2,
+            2
+          ],
+          [
+            2,
+            2
+          ],
+          [
+            3,
+            3
+          ],
+          [
+            4,
+            3
+          ],
+          [
+            2,
+            2
+          ],
+          [
+            3,
+            3
+          ],
+          [
+            4,
+            1
+          ],
+          [
+            4,
+            4
+          ],
+          [
+            2,
+            2
+          ],
+          [
+            2,
+            2
+          ],
+          [
+            2,
+            2
+          ],
+          [
+            1,
+            2
+          ],
+          [
+            0,
+            0
+          ],
+          [
+            0,
+            0
+          ],
+          [
+            2,
+            2
+          ],
+          [
+            4,
+            4
+          ]
+        ],
+        "predicted_difference_at_150ms": 0.0,
+        "wellness_tenure_depth3_minus_depth1": {
+          "mean": -0.0037853015586733763,
+          "interval": [
+            -0.00749816671013831,
+            -0.0008386081084608976
+          ],
+          "bodies": 8,
+          "bodies_above_zero": 0,
+          "bodies_below_zero": 3
+        },
+        "wellness_150ms_depth3_minus_depth1": {
+          "mean": -0.006497097201645374,
+          "interval": [
+            -0.013675621710717678,
+            -0.001422857865691185
+          ],
+          "bodies": 8,
+          "bodies_above_zero": 0,
+          "bodies_below_zero": 3
+        },
+        "turn_closed_share_depth3_minus_depth1": {
+          "mean": -0.005250879876562302,
+          "interval": [
+            -0.02963144212134592,
+            0.01276060935736506
+          ],
+          "bodies": 8,
+          "bodies_above_zero": 2,
+          "bodies_below_zero": 1
+        },
+        "position_closed_share_depth3_minus_depth1": {
+          "mean": -0.011348874505317463,
+          "interval": [
+            -0.04154746164171857,
+            0.006293464934628616
+          ],
+          "bodies": 8,
+          "bodies_above_zero": 2,
+          "bodies_below_zero": 1
+        },
+        "eye_error_deg_depth3_minus_depth1": {
+          "mean": 0.5725300098725221,
+          "interval": [
+            -0.5994915538500645,
+            2.254080230828038
+          ],
+          "bodies": 8,
+          "bodies_above_zero": 2,
+          "bodies_below_zero": 1
+        },
+        "next_prediction_error_depth3_minus_depth1": {
+          "mean": -0.009383765315942583,
+          "interval": [
+            -0.030443043783452597,
+            0.0020007719856948826
+          ],
+          "bodies": 8,
+          "bodies_above_zero": 2,
+          "bodies_below_zero": 1
+        },
+        "goal_distance_end_depth3_minus_depth1": {
+          "mean": -0.028417203575372696,
+          "interval": [
+            -0.10713954642415047,
+            0.018924910575151443
+          ],
+          "bodies": 8,
+          "bodies_above_zero": 2,
+          "bodies_below_zero": 1
+        }
+      },
+      "objective": {
+        "differs_share": 0.3125,
+        "picks": [
+          [
+            0,
+            0
+          ],
+          [
+            0,
+            1
+          ],
+          [
+            0,
+            0
+          ],
+          [
+            0,
+            4
+          ],
+          [
+            0,
+            0
+          ],
+          [
+            0,
+            0
+          ],
+          [
+            0,
+            3
+          ],
+          [
+            0,
+            0
+          ],
+          [
+            0,
+            3
+          ],
+          [
+            0,
+            4
+          ],
+          [
+            0,
+            0
+          ],
+          [
+            0,
+            0
+          ],
+          [
+            0,
+            0
+          ],
+          [
+            0,
+            0
+          ],
+          [
+            0,
+            0
+          ],
+          [
+            0,
+            0
+          ]
+        ],
+        "predicted_difference_at_150ms": 0.0,
+        "wellness_tenure_depth3_minus_depth1": {
+          "mean": 0.002089505642652506,
+          "interval": [
+            9.533297270536423e-05,
+            0.004983695968985541
+          ],
+          "bodies": 8,
+          "bodies_above_zero": 4,
+          "bodies_below_zero": 0
+        },
+        "wellness_150ms_depth3_minus_depth1": {
+          "mean": -0.008187943138182163,
+          "interval": [
+            -0.022105363197624683,
+            0.0025850050151348114
+          ],
+          "bodies": 8,
+          "bodies_above_zero": 1,
+          "bodies_below_zero": 3
+        },
+        "turn_closed_share_depth3_minus_depth1": {
+          "mean": -0.0012575000997500432,
+          "interval": [
+            -0.01801049564645015,
+            0.016081779500471197
+          ],
+          "bodies": 8,
+          "bodies_above_zero": 2,
+          "bodies_below_zero": 2
+        },
+        "position_closed_share_depth3_minus_depth1": {
+          "mean": -0.021699809704911414,
+          "interval": [
+            -0.06455143823865662,
+            0.011190674660495373
+          ],
+          "bodies": 8,
+          "bodies_above_zero": 2,
+          "bodies_below_zero": 2
+        },
+        "eye_error_deg_depth3_minus_depth1": {
+          "mean": 2.2962684009925725,
+          "interval": [
+            -0.3610327237012617,
+            5.843745012828624
+          ],
+          "bodies": 8,
+          "bodies_above_zero": 3,
+          "bodies_below_zero": 1
+        },
+        "next_prediction_error_depth3_minus_depth1": {
+          "mean": -0.013675200869329274,
+          "interval": [
+            -0.032535649448982434,
+            0.0025926238551619452
+          ],
+          "bodies": 8,
+          "bodies_above_zero": 1,
+          "bodies_below_zero": 3
+        },
+        "goal_distance_end_depth3_minus_depth1": {
+          "mean": -0.05039288476109505,
+          "interval": [
+            -0.13768361499533055,
+            0.028876841068267822
+          ],
+          "bodies": 8,
+          "bodies_above_zero": 1,
+          "bodies_below_zero": 3
+        }
+      },
+      "against_the_planners_own_choice": {
+        "wellness_tenure_wellness_depth3_minus_chosen": {
+          "mean": 0.0059338279068470445,
+          "interval": [
+            -0.006628334443084845,
+            0.021564304456114885
+          ],
+          "bodies": 8,
+          "bodies_above_zero": 3,
+          "bodies_below_zero": 4
+        },
+        "turn_closed_share_wellness_depth3_minus_chosen": {
+          "mean": 0.004675216485746966,
+          "interval": [
+            -0.06599036748485887,
+            0.06631001984555068
+          ],
+          "bodies": 8,
+          "bodies_above_zero": 4,
+          "bodies_below_zero": 3
+        },
+        "next_prediction_error_wellness_depth3_minus_chosen": {
+          "mean": -0.009916800538576354,
+          "interval": [
+            -0.04637317675325221,
+            0.024381699014422668
+          ],
+          "bodies": 8,
+          "bodies_above_zero": 3,
+          "bodies_below_zero": 4
+        },
+        "goal_distance_end_wellness_depth3_minus_chosen": {
+          "mean": 0.003412450198084116,
+          "interval": [
+            -0.08434225469827651,
+            0.10374639398651164
+          ],
+          "bodies": 8,
+          "bodies_above_zero": 3,
+          "bodies_below_zero": 4
+        }
+      },
+      "structural": {
+        "checks": 8,
+        "production_asked_3_returned_length": [
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1
+        ],
+        "production_depth_forced_to_one": true,
+        "world_mode_first_order_identical": [
+          true,
+          true,
+          true,
+          true,
+          true,
+          true,
+          true,
+          true
+        ],
+        "world_mode_deeper_plan_emptied": [
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false
+        ]
+      }
+    },
+    "controllability": {
+      "turn_closed_share": {
+        "chosen": 0.07486485369333096,
+        "hold": 0.16430911328790143,
+        "reflex": 0.17215372584242106,
+        "perturb_1": 0.07138970099348074,
+        "perturb_2": 0.1193981093196087
+      },
+      "closer_share": {
+        "chosen": 0.6000000238418579,
+        "hold": 0.6599999964237213,
+        "reflex": 0.7200000286102295,
+        "perturb_1": 0.5399999916553497,
+        "perturb_2": 0.6399999856948853
+      },
+      "chance_share": {
+        "chosen": 0.36198853604503295,
+        "hold": 0.3364705506090224,
+        "reflex": 0.33569418760744596,
+        "perturb_1": 0.37156720512987823,
+        "perturb_2": 0.3694044843067049
+      },
+      "position_closed_share": {
+        "chosen": 0.11718545573755895,
+        "hold": 0.008562918061167157,
+        "reflex": 0.011801892964816152,
+        "perturb_1": 0.05092268102195391,
+        "perturb_2": 0.06075842579010493
+      },
+      "eye_error_deg": {
+        "chosen": 39.96683079469783,
+        "hold": 5.162946978895135,
+        "reflex": 17.373875307042294,
+        "perturb_1": 29.812919633178716,
+        "perturb_2": 33.90104031562295
+      }
+    },
+    "ranking": {
+      "goal_distance_50ms": {
+        "what": "the planner's predicted distance to its goal 50 ms ahead against the actual distance 50 ms after each command ran from the same saved state",
+        "per_100": 58.75,
+        "interval": [
+          51.25,
+          66.875
+        ],
+        "chance_per_100": 50.0,
+        "pairs_judged": 160,
+        "pairs_right": 94.0,
+        "actual_ties_left_out": 0,
+        "forecast_ties_counted_half": 0,
+        "starts": 16,
+        "starts_left_out": 0,
+        "bodies": 8,
+        "spread_ratio": 1.6414416062612784,
+        "spread_ratio_interval": [
+          1.0305640294679859,
+          1.8639180442135268
+        ],
+        "reference": "reflex",
+        "planners": {
+          "chosen": {
+            "mean": -0.01692360360175371,
+            "interval": [
+              -0.0653853568714112,
+              0.03838996009435502
+            ],
+            "bodies": 8,
+            "bodies_better": 6,
+            "bodies_worse": 2
+          }
+        },
+        "better_than_chance": true,
+        "below_chance": false,
+        "case": "case_3_planner_not_better",
+        "without_chosen": {
+          "what": "the planner's predicted distance to its goal 50 ms ahead against the actual distance 50 ms after each command ran from the same saved state (the four candidates the planner did not choose)",
+          "per_100": 51.041666666666664,
+          "interval": [
+            40.625,
+            61.458333333333336
+          ],
+          "chance_per_100": 50.0,
+          "pairs_judged": 96,
+          "pairs_right": 49.0,
+          "actual_ties_left_out": 0,
+          "forecast_ties_counted_half": 0,
+          "starts": 16,
+          "starts_left_out": 0,
+          "bodies": 8,
+          "spread_ratio": 1.6967826150938077,
+          "spread_ratio_interval": [
+            1.047821420708441,
+            2.060817836686359
+          ],
+          "reference": null,
+          "planners": {},
+          "better_than_chance": false,
+          "below_chance": false,
+          "case": "case_2_wrong_order"
+        }
+      },
+      "goal_distance_end": {
+        "what": "the same forecast against the actual distance to the goal at the end of the order's tenure",
+        "per_100": 51.25,
+        "interval": [
+          40.0,
+          62.5
+        ],
+        "chance_per_100": 50.0,
+        "pairs_judged": 160,
+        "pairs_right": 82.0,
+        "actual_ties_left_out": 0,
+        "forecast_ties_counted_half": 0,
+        "starts": 16,
+        "starts_left_out": 0,
+        "bodies": 8,
+        "spread_ratio": 0.3311208779178256,
+        "spread_ratio_interval": [
+          0.273458127517507,
+          0.41402166997952955
+        ],
+        "reference": "reflex",
+        "planners": {
+          "chosen": {
+            "mean": -0.00831380533054471,
+            "interval": [
+              -0.13862093307543547,
+              0.12619171198457474
+            ],
+            "bodies": 8,
+            "bodies_better": 3,
+            "bodies_worse": 5
+          }
+        },
+        "better_than_chance": false,
+        "below_chance": false,
+        "case": "case_1_under_separated",
+        "without_chosen": {
+          "what": "the same forecast against the actual distance to the goal at the end of the order's tenure (the four candidates the planner did not choose)",
+          "per_100": 50.0,
+          "interval": [
+            37.5,
+            63.541666666666664
+          ],
+          "chance_per_100": 50.0,
+          "pairs_judged": 96,
+          "pairs_right": 48.0,
+          "actual_ties_left_out": 0,
+          "forecast_ties_counted_half": 0,
+          "starts": 16,
+          "starts_left_out": 0,
+          "bodies": 8,
+          "spread_ratio": 0.32464924029942716,
+          "spread_ratio_interval": [
+            0.2485281425500662,
+            0.41025848286090416
+          ],
+          "reference": null,
+          "planners": {},
+          "better_than_chance": false,
+          "below_chance": false,
+          "case": "case_1_under_separated"
+        }
+      },
+      "wellness_50ms": {
+        "what": "the planner route's predicted wellness 50 ms ahead (Judge B's five-term sum) against the grounded wellness 50 ms after each command",
+        "per_100": 49.044585987261144,
+        "interval": [
+          41.139240506329116,
+          56.05095541401274
+        ],
+        "chance_per_100": 50.0,
+        "pairs_judged": 157,
+        "pairs_right": 77.0,
+        "actual_ties_left_out": 3,
+        "forecast_ties_counted_half": 0,
+        "starts": 16,
+        "starts_left_out": 0,
+        "bodies": 8,
+        "spread_ratio": 0.05316409262890929,
+        "spread_ratio_interval": [
+          0.022409367712139975,
+          0.06325231827836145
+        ],
+        "reference": null,
+        "planners": {},
+        "better_than_chance": false,
+        "below_chance": false,
+        "case": "case_1_under_separated",
+        "without_chosen": {
+          "what": "the planner route's predicted wellness 50 ms ahead (Judge B's five-term sum) against the grounded wellness 50 ms after each command (the four candidates the planner did not choose)",
+          "per_100": 48.93617021276596,
+          "interval": [
+            40.625,
+            58.064516129032256
+          ],
+          "chance_per_100": 50.0,
+          "pairs_judged": 94,
+          "pairs_right": 46.0,
+          "actual_ties_left_out": 2,
+          "forecast_ties_counted_half": 0,
+          "starts": 16,
+          "starts_left_out": 0,
+          "bodies": 8,
+          "spread_ratio": 0.04867460355248916,
+          "spread_ratio_interval": [
+            0.022475066433055926,
+            0.11278853453205334
+          ],
+          "reference": null,
+          "planners": {},
+          "better_than_chance": false,
+          "below_chance": false,
+          "case": "case_1_under_separated"
+        }
+      },
+      "wellness_tenure": {
+        "what": "the same forecast against the grounded wellness averaged over the order's tenure",
+        "per_100": 49.375,
+        "interval": [
+          40.0,
+          58.125
+        ],
+        "chance_per_100": 50.0,
+        "pairs_judged": 160,
+        "pairs_right": 79.0,
+        "actual_ties_left_out": 0,
+        "forecast_ties_counted_half": 0,
+        "starts": 16,
+        "starts_left_out": 0,
+        "bodies": 8,
+        "spread_ratio": 0.05098732332547896,
+        "spread_ratio_interval": [
+          0.04673463445591931,
+          0.0723794572792391
+        ],
+        "reference": null,
+        "planners": {},
+        "better_than_chance": false,
+        "below_chance": false,
+        "case": "case_1_under_separated",
+        "without_chosen": {
+          "what": "the same forecast against the grounded wellness averaged over the order's tenure (the four candidates the planner did not choose)",
+          "per_100": 46.875,
+          "interval": [
+            35.416666666666664,
+            59.375
+          ],
+          "chance_per_100": 50.0,
+          "pairs_judged": 96,
+          "pairs_right": 45.0,
+          "actual_ties_left_out": 0,
+          "forecast_ties_counted_half": 0,
+          "starts": 16,
+          "starts_left_out": 0,
+          "bodies": 8,
+          "spread_ratio": 0.05774154307914848,
+          "spread_ratio_interval": [
+            0.043575672545191936,
+            0.07989779389979916
+          ],
+          "reference": null,
+          "planners": {},
+          "better_than_chance": false,
+          "below_chance": false,
+          "case": "case_1_under_separated"
+        }
+      },
+      "planner": "chosen",
+      "reference": "reflex",
+      "wellness_searched": false,
+      "rules": {
+        "statistic": "of all pairs of candidate commands tried from the same saved state, how many in 100 the forecast's order picks the pair's actual winner (lower = better for both); 50 = chance, 80 to 90 = a ranking a planner can optimize",
+        "ties": "a pair whose actual outcomes differ by no more than 1 in 100 of that start's actual standard deviation has no winner and is left out; a pair the forecast scores exactly equal counts half right",
+        "interval": "95%, whole bodies resampled with replacement, 5000 draws",
+        "spread_ratio": "median over starts of the standard deviation of the candidates' forecasts over that of their actual outcomes: 0 = the forecast gives every command the same outcome, 1 = it separates them as much as reality does",
+        "case": "better than chance when the interval's lower end is above 50: then case_3_planner_not_better when a planner's command does not beat the reference command its search started from in the actual outcome (paired body interval of planner minus reference not entirely below 0), else ranking_used (better_than_chance without a planner comparison). Below chance (the interval's upper end under 50): case_2_wrong_order. Otherwise case_1_under_separated when the spread ratio is below 1 and case_2_wrong_order when it is 1 or more; undetermined with fewer than two bodies or no pair with an actual winner"
+      },
+      "notes": {
+        "planner_comparison": "case 3 compares the chosen order with the controller's own proposal for the goal distances always, and for wellness only when the planner's objective weighs predicted wellness (planner_wellness_weight above 0): a planner that does not search on wellness cannot be faulted for not improving it",
+        "without_chosen": "each outcome's without_chosen block is the same statistic over the four candidates the planner did not choose (6 pairs a start): the chosen order was selected by searching this forecast, so the pairs containing it favor the forecast's own errors"
+      }
+    }
+  },
+  "v2_verdict": {
+    "forward_model_flat": true,
+    "evaluator_flat": true,
+    "planner_ignores_predicted_wellness": true,
+    "flat_stages": [
+      "forward model",
+      "evaluator",
+      "planner"
+    ],
+    "first_flat_stage_along_the_route": "forward model",
+    "forward_model_transfer": 0.06083021937986335,
+    "evaluator_transfer": -0.0007500150397820323,
+    "forward_model_captured_share": -0.021850559792943383,
+    "depth3_better_physical_decision": false,
+    "rules": {
+      "forward_model_flat": "flat unless BOTH the slope of Judge B's predicted-outcome difference on its actual-outcome difference AND the pooled captured share of the between-candidate token difference over Judge B's four senses (planner route, 50 ms) have 95% body intervals entirely above 0",
+      "evaluator_flat": "flat unless the slope of Judge B's actual-outcome difference on the grounded wellness difference (50 ms) has a 95% body interval entirely above 0",
+      "planner_ignores_predicted_wellness": "the planner's objective gives predicted wellness weight 0 (intention_gen._wellness_w) and the chosen order's mean rank by predicted wellness is not better than chance (the interval's upper end is not below (K + 1) / 2)",
+      "depth_claim": "looking further ahead causes a better physical decision only when the order selected by predicted wellness at 150 ms beats the order selected at 50 ms in actual grounded wellness averaged over the order's tenure, paired over the same starts, 95% body interval above 0"
+    }
+  },
+  "forecast_scorer": {
+    "judge": "planner_repair_judge_v1",
+    "horizon": "tenure",
+    "starts": 16,
+    "pairs": 160,
+    "bodies": 8,
+    "folds": [
+      {
+        "fit_bodies": [
+          0,
+          2,
+          4,
+          6
+        ],
+        "judged_bodies": [
+          1,
+          3,
+          5,
+          7
+        ],
+        "scale": -0.2683717941087416,
+        "pair_band": null,
+        "max_band": null,
+        "decided_pairs": 0,
+        "decided_starts_selection": 0
+      },
+      {
+        "fit_bodies": [
+          1,
+          3,
+          5,
+          7
+        ],
+        "judged_bodies": [
+          0,
+          2,
+          4,
+          6
+        ],
+        "scale": -0.27375394177055634,
+        "pair_band": null,
+        "max_band": null,
+        "decided_pairs": 0,
+        "decided_starts_selection": 0
+      }
+    ],
+    "slope_bodies_above_zero": 3,
+    "slope_bodies": 8,
+    "slope_sign_test_p": 0.85546875,
+    "transfer": {
+      "value": -0.07593857667060246,
+      "interval": [
+        -0.14817950908955752,
+        0.03740998698737076
+      ],
+      "bodies": 8,
+      "draws_used": 5000
+    },
+    "sign_agreement": 0.49375,
+    "decided_pairs": 0,
+    "decided_right": 0,
+    "decided_wrong": 0,
+    "decided_sign_test_p": 1.0,
+    "decided_starts": 0,
+    "decided_starts_right": 0,
+    "decided_starts_sign_test_p": 1.0,
+    "decided_pairs_per_body": {
+      "value": 0.0,
+      "interval": [
+        0.0,
+        0.0
+      ],
+      "bodies": 8,
+      "draws_used": 5000
+    },
+    "selection": {
+      "decided_starts": 0,
+      "right": 0,
+      "wrong": 0,
+      "sign_test_p": 1.0
+    },
+    "min_decided": 5,
+    "alpha": 0.05,
+    "production_constants": {
+      "difference_scale": -0.27074890849173106,
+      "tie_band": null,
+      "pair_band": null
+    },
+    "definition": "bodies split in halves; scale and bands measured on one half, pairs judged on the other, both ways; counts with exact one-sided sign tests (planner_repair_judge.py docstring)",
+    "passed": false,
+    "why_not": [
+      "slope above 0 in 3 of 8 bodies (p 0.855)",
+      "0 decided pairs, 5 needed",
+      "decided pairs 0 right of 0 (p 1.000)",
+      "decided starts 0 right of 0 (p 1.000)"
+    ]
+  },
+  "forecast_scorer_with_extra_candidates": {
+    "judge": "planner_repair_judge_v1",
+    "horizon": "tenure",
+    "starts": 16,
+    "pairs": 576,
+    "bodies": 8,
+    "folds": [
+      {
+        "fit_bodies": [
+          0,
+          2,
+          4,
+          6
+        ],
+        "judged_bodies": [
+          1,
+          3,
+          5,
+          7
+        ],
+        "scale": -0.04297886529684342,
+        "pair_band": null,
+        "max_band": null,
+        "decided_pairs": 0,
+        "decided_starts_selection": 0
+      },
+      {
+        "fit_bodies": [
+          1,
+          3,
+          5,
+          7
+        ],
+        "judged_bodies": [
+          0,
+          2,
+          4,
+          6
+        ],
+        "scale": -0.1602036511909837,
+        "pair_band": null,
+        "max_band": null,
+        "decided_pairs": 0,
+        "decided_starts_selection": 0
+      }
+    ],
+    "slope_bodies_above_zero": 4,
+    "slope_bodies": 8,
+    "slope_sign_test_p": 0.63671875,
+    "transfer": {
+      "value": -0.03911836613364557,
+      "interval": [
+        -0.13359292401947864,
+        0.12117133264386316
+      ],
+      "bodies": 8,
+      "draws_used": 5000
+    },
+    "sign_agreement": 0.4947916666666667,
+    "decided_pairs": 0,
+    "decided_right": 0,
+    "decided_wrong": 0,
+    "decided_sign_test_p": 1.0,
+    "decided_starts": 0,
+    "decided_starts_right": 0,
+    "decided_starts_sign_test_p": 1.0,
+    "decided_pairs_per_body": {
+      "value": 0.0,
+      "interval": [
+        0.0,
+        0.0
+      ],
+      "bodies": 8,
+      "draws_used": 5000
+    },
+    "selection": {
+      "decided_starts": 0,
+      "right": 0,
+      "wrong": 0,
+      "sign_test_p": 1.0
+    },
+    "min_decided": 5,
+    "alpha": 0.05,
+    "production_constants": {
+      "difference_scale": -0.09520766538413523,
+      "tie_band": null,
+      "pair_band": null
+    },
+    "definition": "bodies split in halves; scale and bands measured on one half, pairs judged on the other, both ways; counts with exact one-sided sign tests (planner_repair_judge.py docstring)",
+    "passed": false,
+    "why_not": [
+      "slope above 0 in 4 of 8 bodies (p 0.637)",
+      "0 decided pairs, 5 needed",
+      "decided pairs 0 right of 0 (p 1.000)",
+      "decided starts 0 right of 0 (p 1.000)"
+    ]
+  },
+  "forecast_scorer_next": {
+    "judge": "planner_repair_judge_v1",
+    "horizon": "next",
+    "starts": 16,
+    "pairs": 160,
+    "bodies": 8,
+    "folds": [
+      {
+        "fit_bodies": [
+          0,
+          2,
+          4,
+          6
+        ],
+        "judged_bodies": [
+          1,
+          3,
+          5,
+          7
+        ],
+        "scale": 0.9309854236854002,
+        "pair_band": 0.07918107916912838,
+        "max_band": 0.028345515463998616,
+        "decided_pairs": 0,
+        "decided_starts_selection": 1
+      },
+      {
+        "fit_bodies": [
+          1,
+          3,
+          5,
+          7
+        ],
+        "judged_bodies": [
+          0,
+          2,
+          4,
+          6
+        ],
+        "scale": -1.7546992150779506,
+        "pair_band": null,
+        "max_band": null,
+        "decided_pairs": 0,
+        "decided_starts_selection": 0
+      }
+    ],
+    "slope_bodies_above_zero": 4,
+    "slope_bodies": 8,
+    "slope_sign_test_p": 0.63671875,
+    "transfer": {
+      "value": -0.06992862818252402,
+      "interval": [
+        -0.18321899727567578,
+        0.07244850517975111
+      ],
+      "bodies": 8,
+      "draws_used": 5000
+    },
+    "sign_agreement": 0.43125,
+    "decided_pairs": 0,
+    "decided_right": 0,
+    "decided_wrong": 0,
+    "decided_sign_test_p": 1.0,
+    "decided_starts": 0,
+    "decided_starts_right": 0,
+    "decided_starts_sign_test_p": 1.0,
+    "decided_pairs_per_body": {
+      "value": 0.0,
+      "interval": [
+        0.0,
+        0.0
+      ],
+      "bodies": 8,
+      "draws_used": 5000
+    },
+    "selection": {
+      "decided_starts": 1,
+      "right": 0,
+      "wrong": 1,
+      "sign_test_p": 1.0
+    },
+    "min_decided": 5,
+    "alpha": 0.05,
+    "production_constants": {
+      "difference_scale": -0.7397162832215655,
+      "tie_band": null,
+      "pair_band": null
+    },
+    "definition": "bodies split in halves; scale and bands measured on one half, pairs judged on the other, both ways; counts with exact one-sided sign tests (planner_repair_judge.py docstring)",
+    "passed": false,
+    "why_not": [
+      "slope above 0 in 4 of 8 bodies (p 0.637)",
+      "0 decided pairs, 5 needed",
+      "decided pairs 0 right of 0 (p 1.000)",
+      "decided starts 0 right of 0 (p 1.000)"
+    ]
+  },
+  "forecast_unavailable_starts": 0,
+  "forward_model": {
+    "tactile": {
+      "per_body": {
+        "0": -1.930678792758824,
+        "1": 0.03738447020401954,
+        "2": -0.1525271820636433,
+        "3": -0.4551269198873222,
+        "4": -0.23627864210424465,
+        "5": -0.17882037615559288,
+        "6": 0.2576822545758071,
+        "7": 0.15297913113563905
+      },
+      "bodies_above_zero": 3,
+      "bodies": 8,
+      "sign_test_p": 0.85546875,
+      "passed": false
+    },
+    "proprioception": {
+      "per_body": {
+        "0": -0.04579871747379219,
+        "1": 0.3227023463619656,
+        "2": 0.07847641621122224,
+        "3": -0.0605934253323381,
+        "4": 0.38338348460547605,
+        "5": 0.39869332840971017,
+        "6": 0.06418384563405176,
+        "7": 0.1635472179689341
+      },
+      "bodies_above_zero": 6,
+      "bodies": 8,
+      "sign_test_p": 0.14453125,
+      "passed": false
+    },
+    "passed": false,
+    "definition": "per body, the planner route's 50 ms captured share of the realised between-candidate token difference; passed when the bodies above 0 pass an exact one-sided sign test (p < 0.05)"
+  },
+  "forward_model_pooled_v1": {
+    "tactile": {
+      "value": -0.25981700893502346,
+      "interval": [
+        -0.4433670375087017,
+        0.02683029692963936
+      ],
+      "above_zero": false
+    },
+    "proprioception": {
+      "value": 0.2286297446962156,
+      "interval": [
+        0.07593903611205532,
+        0.34505956405178245
+      ],
+      "above_zero": true
+    },
+    "passed": false
+  },
+  "diversity": {
+    "x1": {
+      "ns": 0.05,
+      "pairs": 48,
+      "median": {
+        "value": 0.018071854114532382,
+        "interval": [
+          0.012382426857948214,
+          0.026706770062446594
+        ],
+        "bodies": 8,
+        "draws_used": 5000
+      },
+      "p90": 0.07517172724008593,
+      "over_production_band_per_100": 10.416666666666668,
+      "over_forecast_band_per_100": null
+    },
+    "x2": {
+      "ns": 0.1,
+      "pairs": 48,
+      "median": {
+        "value": 0.02012021839618705,
+        "interval": [
+          0.007249295711517778,
+          0.03644468933343914
+        ],
+        "bodies": 8,
+        "draws_used": 5000
+      },
+      "p90": 0.07244550228118901,
+      "over_production_band_per_100": 10.416666666666668,
+      "over_forecast_band_per_100": null
+    },
+    "x4": {
+      "ns": 0.2,
+      "pairs": 48,
+      "median": {
+        "value": 0.02418400049209568,
+        "interval": [
+          0.01799240112304723,
+          0.03559926152229309
+        ],
+        "bodies": 8,
+        "draws_used": 5000
+      },
+      "p90": 0.051206767261028095,
+      "over_production_band_per_100": 2.083333333333333,
+      "over_forecast_band_per_100": null
+    }
+  },
+  "diversity_next": {
+    "x1": {
+      "ns": 0.05,
+      "pairs": 48,
+      "median": {
+        "value": 0.01580246537923813,
+        "interval": [
+          0.010778188705444336,
+          0.024604573845863342
+        ],
+        "bodies": 8,
+        "draws_used": 5000
+      },
+      "p90": 0.07724896669387818,
+      "over_production_band_per_100": 14.583333333333334,
+      "over_forecast_band_per_100": null
+    },
+    "x2": {
+      "ns": 0.1,
+      "pairs": 48,
+      "median": {
+        "value": 0.021486498415470123,
+        "interval": [
+          0.01386549323797226,
+          0.035457029938697815
+        ],
+        "bodies": 8,
+        "draws_used": 5000
+      },
+      "p90": 0.0805446669459343,
+      "over_production_band_per_100": 12.5,
+      "over_forecast_band_per_100": null
+    },
+    "x4": {
+      "ns": 0.2,
+      "pairs": 48,
+      "median": {
+        "value": 0.027597911655902863,
+        "interval": [
+          0.01685968041419983,
+          0.03689361494034523
+        ],
+        "bodies": 8,
+        "draws_used": 5000
+      },
+      "p90": 0.06203347891569138,
+      "over_production_band_per_100": 4.166666666666666,
+      "over_forecast_band_per_100": null
+    }
+  },
+  "elapsed_s": 4949.864533662796,
+  "memory": {
+    "peak_private_commit_gib": 17.700843811035156
+  }
+}

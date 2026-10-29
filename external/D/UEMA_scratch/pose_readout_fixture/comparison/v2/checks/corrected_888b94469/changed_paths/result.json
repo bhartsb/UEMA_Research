@@ -1,0 +1,50 @@
+{
+ "worktree": "C:\\Users\\bhart\\Documents\\UEMA_wt\\pose_runtime",
+ "commit_pinned": "888b944697c0aa7e120f8aeb2ea3505676496532",
+ "files": [
+  "mimo_bridge/tests/test_reset_measured_pose.py",
+  "mimo_bridge/tests/test_resume_env_migration.py",
+  "mimo_bridge/tests/test_pose_record_wiring.py"
+ ],
+ "started": "Oct 15, 2026 03:55:14 PM",
+ "before": {
+  "head": "888b944697c0aa7e120f8aeb2ea3505676496532",
+  "clean": true
+ },
+ "exit_code": 1,
+ "seconds": 21.7,
+ "tail": "    self.caregiver = Caregiver(self, caregiver_mode, caregiver_speech_dir,\nE                                    ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nE                                              caregiver_replay or None, record_dir=caregiver_record_dir or None,\nE                                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nE                                              status_dir=run_dir,present_seconds=caregiver_present_seconds,\nE                                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nE                                              absent_seconds=caregiver_absent_seconds,\nE                                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nE                                              toy_hand_off=toy_hand_off)\nE                                              ^^^^^^^^^^^^^^^^^^^^^^^^^^\nE                 File \"C:\\Users\\bhart\\Documents\\UEMA_wt\\pose_runtime\\Source\\Python\\mimo_bridge\\caregiver.py\", line 194, in __init__\nE                   self.bank = SpeechBank(speech_dir)\nE                               ~~~~~~~~~~^^^^^^^^^^^^\nE                 File \"C:\\Users\\bhart\\Documents\\UEMA_wt\\pose_runtime\\Source\\Python\\mimo_bridge\\speech.py\", line 48, in __init__\nE                   manifest = json.loads((directory / 'manifest.json').read_text(encoding='utf-8'))\nE                                         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^\nE                 File \"C:\\Users\\bhart\\AppData\\Local\\Programs\\Python\\Python313\\Lib\\pathlib\\_local.py\", line 546, in read_text\nE                   return PathBase.read_text(self, encoding, errors, newline)\nE                          ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nE                 File \"C:\\Users\\bhart\\AppData\\Local\\Programs\\Python\\Python313\\Lib\\pathlib\\_abc.py\", line 632, in read_text\nE                   with self.open(mode='r', encoding=encoding, errors=errors, newline=newline) as f:\nE                        ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nE                 File \"C:\\Users\\bhart\\AppData\\Local\\Programs\\Python\\Python313\\Lib\\pathlib\\_local.py\", line 537, in open\nE                   return io.open(self, mode, buffering, encoding, errors, newline)\nE                          ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nE               FileNotFoundError: [Errno 2] No such file or directory: 'C:\\\\Users\\\\bhart\\\\Documents\\\\UEMA_wt\\\\pose_runtime\\\\Saved\\\\mimo_bridge\\\\caregiver_speech_exchange_v1_final\\\\manifest.json'\n\nmimo_bridge\\datasource.py:795: RuntimeError\n=========================== short test summary info ===========================\nFAILED mimo_bridge/tests/test_resume_env_migration.py::test_a_changed_hand_off_reaches_the_rebuilt_crib_world\nFAILED mimo_bridge/tests/test_resume_env_migration.py::test_a_two_body_pool_restores_migrated_worlds_and_keeps_saved_ones_by_default\n2 failed, 36 passed in 20.46s\n",
+ "per_file": {
+  "mimo_bridge.tests": {
+   "collected": 38,
+   "passed": 36,
+   "failed": 2,
+   "errors": 0,
+   "skipped": 0
+  }
+ },
+ "failures": [
+  {
+   "test": "mimo_bridge.tests.test_resume_env_migration::test_a_changed_hand_off_reaches_the_rebuilt_crib_world",
+   "kind": "failure",
+   "message": "FileNotFoundError: [Errno 2] No such file or directory: 'C:\\\\Users\\\\bhart\\\\Documents\\\\UEMA_wt\\\\pose_runtime\\\\Saved\\\\mimo_bridge\\\\caregiver_speech_exchange_v1_final\\\\manifest.json'"
+  },
+  {
+   "test": "mimo_bridge.tests.test_resume_env_migration::test_a_two_body_pool_restores_migrated_worlds_and_keeps_saved_ones_by_default",
+   "kind": "failure",
+   "message": "RuntimeError: worker failed to start:\nTraceback (most recent call last):\n  File \"C:\\Users\\bhart\\Documents\\UEMA_wt\\pose_runtime\\Source\\Python\\mimo_bridge\\datasource.py\", line 642, in _worker_main\n    env = BridgeEnv(**env_kwargs)\n  File \"C:\\Users\\bhart\\Documents\\UEMA_wt\\pose_runtime\\Source\\Python\\mimo_bridge\\env.py\", line 1457, in __init__\n    self.caregiver = Caregiver(self, caregiver_mode, caregiver_speech_dir,\n                     ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n                               caregiver_replay or None, record_dir=caregiver_record_dir or None,\n           "
+  }
+ ],
+ "after": {
+  "head": "888b944697c0aa7e120f8aeb2ea3505676496532",
+  "clean": true
+ },
+ "totals": {
+  "collected": 38,
+  "passed": 36,
+  "failed": 2,
+  "errors": 0,
+  "skipped": 0
+ },
+ "verdict": "fail"
+}

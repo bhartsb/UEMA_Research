@@ -1,0 +1,229 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>UEMA Build Progress</title>
+<style>
+:root{--bg:#f6f7f9;--card:#fff;--ink:#16202b;--muted:#5d6977;--line:#d9dee6;--accent:#2742a8;
+--run:#0f7a53;--run-bg:#e6f5ee;--done:#4b5563;--done-bg:#eef0f3;--stale:#8a5100;--stale-bg:#fff4e0;
+--fail:#a3262a;--fail-bg:#fdecec}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0f1318;--card:#171d24;--ink:#e6ebf1;
+--muted:#9aa6b4;--line:#2a333e;--accent:#8ea8ff;--run:#5fd3a2;--run-bg:#12372a;--done:#c3cad3;--done-bg:#252c35;
+--stale:#f2b35c;--stale-bg:#3a2a10;--fail:#ff9a9a;--fail-bg:#3d1719}}
+:root[data-theme="dark"]{--bg:#0f1318;--card:#171d24;--ink:#e6ebf1;--muted:#9aa6b4;--line:#2a333e;--accent:#8ea8ff;
+--run:#5fd3a2;--run-bg:#12372a;--done:#c3cad3;--done-bg:#252c35;--stale:#f2b35c;--stale-bg:#3a2a10;
+--fail:#ff9a9a;--fail-bg:#3d1719}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 system-ui,-apple-system,"Segoe UI",Arial,sans-serif}
+main{max-width:1100px;margin:0 auto;padding:24px 16px 60px}
+h1{font-size:26px;margin:0 0 4px}
+h2{font-size:18px;margin:26px 0 2px;overflow-wrap:anywhere}
+.meta{color:var(--muted);font-size:13px}
+.wfline{color:var(--muted);font-size:13px;margin:0 0 8px;overflow-wrap:anywhere}
+.banner{border:1px solid var(--stale);background:var(--stale-bg);color:var(--ink);border-radius:10px;
+padding:10px 14px;margin:12px 0;font-size:14px}
+.banner b{color:var(--stale)}
+.big{display:flex;gap:10px;flex-wrap:wrap;margin:14px 0}
+.chip{background:var(--card);border:1px solid var(--line);border-radius:999px;padding:5px 14px;font-weight:600}
+.chip.alert{border-color:var(--fail);color:var(--fail)}
+.list{display:grid;gap:8px}
+.agent{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 14px;
+display:grid;grid-template-columns:auto 1fr auto;gap:4px 12px;align-items:start}
+.state{font-size:12px;font-weight:700;border-radius:6px;padding:2px 8px;white-space:nowrap}
+.running{color:var(--run);background:var(--run-bg)}.finished{color:var(--done);background:var(--done-bg)}
+.quiet,.stopped,.queued{color:var(--stale);background:var(--stale-bg)}.failed{color:var(--fail);background:var(--fail-bg)}
+.superseded{color:var(--muted);background:none;border:1px solid var(--line)}
+.name{font-weight:650;overflow-wrap:anywhere}
+.phase{font-weight:400;color:var(--muted);font-size:13px}
+.age{color:var(--muted);font-size:13px;white-space:nowrap}
+.doing,.log,.flag,.loghead{grid-column:2/-1;font-size:13px;color:var(--muted);overflow-wrap:anywhere}
+.doing{color:var(--ink)}
+.flag{color:var(--stale);font-weight:600}
+.flag.failed-text{color:var(--fail);background:none}
+.loghead{font-size:12px;margin-top:2px}
+a{color:var(--accent)}
+code{font-size:12.5px;overflow-wrap:anywhere}
+details{margin-top:6px}summary{cursor:pointer;color:var(--muted)}
+#fc{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 16px;margin:4px 0 18px}
+#fc h2{margin:0 0 6px}#fc .when{font-size:17px;font-weight:650;margin:4px 0 8px}
+#fc table{border-collapse:collapse;width:100%;font-size:13.5px}#fc td,#fc th{text-align:left;padding:4px 6px;border-top:1px solid var(--line);vertical-align:top}
+#fc th{color:var(--muted);font-weight:600}#fc .small{color:var(--muted);font-size:12.5px;margin-top:8px}
+@media (max-width:560px){#fc .hide-narrow{display:none}}
+@media (max-width:560px){.agent{grid-template-columns:auto 1fr}.age{grid-column:2}}
+</style>
+</head>
+<body>
+<main>
+<h1>Build progress</h1>
+<div class="banner" id="banner" hidden></div>
+<p class="meta" id="meta">Reading the build's records…</p>
+<div class="big" id="big"></div>
+<section id="fc" hidden></section>
+<div id="wfs"></div>
+<p class="meta">The VS Code extension's agent count leaves out agents that run inside a workflow, so this page reads
+the workflows' own records: <code>Source/Python/mimo_bridge/tools/build_status.py --watch</code> writes
+<code>Saved/mimo_bridge/build_status.json</code> every 15 seconds and this page re-reads it every 10 seconds.
+"Last active" is when the agent last added anything to its transcript (the file the builder keeps of its work); a running agent with nothing new for more than
+10 minutes is marked. Each agent's own log is a file in <code>docs/gain_of_function_v3/agents/</code>; select an
+agent's name to open it. The plan is <a href="gain_of_function_v3/DESIGN.md">DESIGN.md</a> and the step-by-step
+record <a href="gain_of_function_v3/WORKLOG.md">WORKLOG.md</a>; all master files: <a href="index.html">index</a>.</p>
+</main>
+<script>
+(function(){
+  var NAMES={"wf_d847db34-2b4":"Survey of the addendum's claims","wf_827b02f5-848":"Build of items 1-10",
+             "wf_93da0a3e-702":"Explainer, addendum v3 and review"};
+  var QUIET_S=600, ORDER={running:0,queued:1,failed:2,stopped:3,finished:4,superseded:5};
+  var lastGood=null;
+  function el(t,c,x){var e=document.createElement(t);if(c)e.className=c;if(x!=null)e.textContent=x;return e;}
+  function ago(s){if(s==null)return"never";s=Math.max(0,Math.round(s));if(s<90)return s+" s ago";
+    if(s<5400)return Math.round(s/60)+" min ago";return (s/3600).toFixed(1)+" h ago";}
+  function mins(s){return s<5400?Math.round(s/60)+" min":(s/3600).toFixed(1)+" h";}
+  function plural(n,one,many){return n+" "+(n===1?one:many);}
+  // Records from the first writer (commit b29370e59, still running until restarted) carry the log text raw:
+  // "IN PROGRESS - x ## NEXT - y
+  // ## Files touched ...", cut at 300 characters. Keep the first section and cut it at a word.
+  function tidyLog(t){
+    t=String(t).split(" ## ")[0].replace(/^IN PROGRESS\s*[-:]\s*/,"In progress: ").replace(/^NEXT\s*[-:]\s*/,"Next: ");
+    if(t.length>=295&&!/[.!?…]$/.test(t)){var i=t.lastIndexOf(" ");if(i>150)t=t.slice(0,i).replace(/[\s,;:-]+$/,"")+" …";}
+    return t;
+  }
+  function secondsSince(a,now){
+    if(a.last_activity!=null)return now-a.last_activity;
+    return a.seconds_since_activity;
+  }
+  function banner(nodes){
+    var b=document.getElementById("banner");b.innerHTML="";
+    if(!nodes){b.hidden=true;return;}
+    nodes.forEach(function(n){b.appendChild(n);});b.hidden=false;
+  }
+  function drawAgent(a,now,ended){
+    var r=el("div","agent");
+    var since=secondsSince(a,now);
+    var quiet=a.state==="running"&&since!=null&&since>QUIET_S;
+    var chipText=a.state==="superseded"?"redone":(quiet?"running, quiet":a.state);
+    r.appendChild(el("span","state "+(quiet?"quiet":a.state),chipText));
+    var nm=el("span","name");
+    if(a.log){var l=document.createElement("a");l.href=a.log.replace(/^docs\//,"").split("/").map(encodeURIComponent).join("/");l.textContent=a.label;nm.appendChild(l);}
+    else nm.appendChild(document.createTextNode(a.label));
+    if(a.phase)nm.appendChild(el("span","phase"," · "+a.phase));
+    r.appendChild(nm);
+    r.appendChild(el("span","age",since==null?"no transcript yet":"last active "+ago(since)));
+    if(quiet)r.appendChild(el("div","flag","Nothing new in its transcript for "+mins(since)+
+      " (this page marks more than 10 min). It may be waiting on a long command, or it may have stopped."));
+    if(a.state==="failed")r.appendChild(el("div","flag failed-text",
+      "The workflow's journal records this agent as failed; it returned no result."));
+    if(a.state==="stopped")r.appendChild(el("div","flag","Its workflow ended ("+(ended||"ended")+
+      ") without a result from this agent."));
+    if(a.state==="queued")r.appendChild(el("div","flag",
+      "An attempt from before this workflow was resumed; the resumed run starts this job again when its turn comes."));
+    if(a.state==="superseded")r.appendChild(el("div","flag",
+      "An earlier attempt of this job. A later attempt replaced it (running or finished), so it is not counted."));
+    if(a.state==="running"&&a.last_action)r.appendChild(el("div","doing","Last tool call: "+a.last_action));
+    if(a.log_now&&a.log_now.length){
+      r.appendChild(el("div","loghead","From its log"+(a.log_written?", written "+ago(now-a.log_written):"")+":"));
+      var seen={};
+      a.log_now.forEach(function(t){t=tidyLog(t);if(seen[t])return;seen[t]=1;r.appendChild(el("div","log",t));});
+    }
+    return r;
+  }
+  function drawForecast(f){
+    var box=document.getElementById("fc");box.innerHTML="";
+    if(!f){box.hidden=true;return;}
+    box.hidden=false;
+    box.appendChild(el("h2",null,"When will it be done?"));
+    if(f.error){box.appendChild(el("p","flag failed-text","The forecast could not be made: "+f.error));return;}
+    var a=f.all_done||{};
+    box.appendChild(el("div","when","Everything done: most likely around "+a.p50_clock+
+      (a.lower_bound?" at the earliest":"")+"."));
+    box.appendChild(el("p",null,"8 times out of 10 it lands between "+a.p10_clock+" and "+a.p90_clock+
+      ". \"Done\" means the last step below: the probe results written into addendum v3."));
+    var t=el("table"),hr=el("tr");
+    ["Step","Most likely done","8 times out of 10"].forEach(function(h){hr.appendChild(el("th",null,h));});
+    t.appendChild(hr);
+    (f.stages||[]).forEach(function(s){
+      var tr=el("tr"), nm=el("td");
+      nm.appendChild(el("b",null,s.name));
+      if(s.what)nm.appendChild(el("div",null,s.what));
+      var now=[];
+      if(s.running)now.push(s.running===1?"1 agent working on it now":s.running+" agents working on it now");
+      if(s.waiting)now.push(s.waiting+" more waiting their turn");
+      if(s.not_started&&!s.running)now.push("not started yet");
+      if(s.after&&s.after.length&&!s.running)now.push("starts after: "+s.after.join("; "));
+      if(s.wait_minutes!=null)now.push("takes "+s.wait_minutes+" minutes ("+(s.wait_source||"measured")+")");
+      if(now.length)nm.appendChild(el("div","small",now.join(" · ")));
+      (s.notes||[]).forEach(function(n){nm.appendChild(el("div","small",n));});
+      tr.appendChild(nm);
+      tr.appendChild(el("td",null,s.p50_clock+(s.lower_bound?" at the earliest":"")));
+      tr.appendChild(el("td",null,s.p10_clock+" to "+s.p90_clock));
+      t.appendChild(tr);
+    });
+    box.appendChild(t);
+    var b=f.basis||{},W={build:"a model fix or build",fix:"a repair job",verify:"a re-check of a repair",review:"a review"},parts=[];
+    ["build","fix","verify","review"].forEach(function(k){var r=b["recent:"+k];
+      if(r)parts.push(W[k]+" took "+Math.round(r.p50_min)+" minutes in the middle case ("+
+        Math.round(r.p10_min)+" to "+Math.round(r.p90_min)+" minutes, from "+r.agents+" that finished)");});
+    var how=el("div","small");
+    how.appendChild(el("p",null,"How these times are worked out: the program looks at how long each agent of this build "+
+      "really took, and assumes a new job takes about as long as finished jobs of the same kind: "+parts.join("; ")+
+      ". For a job already running, it only counts finished jobs that ran longer than this one has so far."));
+    how.appendChild(el("p",null,"Not counted: pauses if the usage limit stops the agents again, and new work a check turns up. "+
+      "The list of steps is docs/gain_of_function_v3/build_plan.json (updated "+(f.plan_updated||"?")+")."));
+    box.appendChild(how);
+  }
+  function draw(d){
+    lastGood=d;
+    var now=Date.now()/1000, age=now-d.written, every=d.every_s||15, staleLine=Math.max(60,4*every);
+    var hours=d.window_hours||36;
+    document.getElementById("meta").textContent="Read at "+new Date().toLocaleTimeString()+" · records written "+
+      d.written_local+" · shows every workflow with any activity in the last "+hours+" hours";
+    if(age>staleLine){
+      var b1=el("b",null,"These records are "+mins(age)+" old. ");
+      var t=el("span",null,"The writer rewrites them every "+every+" s, so it has most likely stopped: every count, "+
+        "state and time below is as of "+d.written_local+", not now. Restart it from Source/Python with ");
+      banner([b1,t,el("code",null,"python -m mimo_bridge.tools.build_status --watch"),document.createTextNode(".")]);
+    } else banner(null);
+    var big=document.getElementById("big");big.innerHTML="";
+    big.appendChild(el("span","chip",plural(d.running,"agent","agents")+" running"));
+    if(d.queued)big.appendChild(el("span","chip",plural(d.queued,"agent","agents")+" waiting to run again"));
+    big.appendChild(el("span","chip",plural(d.finished,"agent","agents")+" finished"));
+    if(d.failed)big.appendChild(el("span","chip alert",plural(d.failed,"agent","agents")+" failed"));
+    if(d.stopped)big.appendChild(el("span","chip alert",plural(d.stopped,"agent","agents")+" stopped without a result"));
+    if(d.superseded)big.appendChild(el("span","chip",plural(d.superseded,"earlier attempt","earlier attempts")+
+      " redone (not counted: a session limit cut them off, or they were duplicates)"));
+    drawForecast(d.forecast);
+    var box=document.getElementById("wfs");box.innerHTML="";
+    d.workflows.forEach(function(w){
+      var failed=w.failed||0, stopped=w.stopped||0;
+      box.appendChild(el("h2",null,NAMES[w.workflow]||w.name||w.workflow));
+      var parts=[w.running+" running"];
+      if(w.queued)parts.push(w.queued+" waiting to run again");
+      parts.push(w.finished+" finished");
+      if(failed)parts.push(failed+" failed");
+      if(stopped)parts.push(stopped+" stopped without a result");
+      if(w.superseded)parts.push(w.superseded+" earlier attempts redone");
+      var line=parts.join(", ")+" · "+(w.ended?"workflow ended ("+w.ended+")":"workflow still going");
+      if(w.description)line+=" · "+w.description;
+      box.appendChild(el("p","wfline",line));
+      var list=el("div","list");
+      var ag=w.agents.slice().sort(function(a,b){return (ORDER[a.state]||0)-(ORDER[b.state]||0);});
+      ag.forEach(function(a){list.appendChild(drawAgent(a,now,w.ended));});
+      if(w.running===0){var det=el("details");
+        det.appendChild(el("summary",null,"show its "+plural(w.agents.length,"agent","agents")));
+        det.appendChild(list);box.appendChild(det);} else box.appendChild(list);
+    });
+  }
+  function load(){
+    fetch("../Saved/mimo_bridge/build_status.json",{cache:"no-store"}).then(function(r){if(!r.ok)throw new Error("HTTP "+r.status);return r.json();})
+      .then(draw).catch(function(e){
+        var msg="Could not read the build records ("+e.message+"). Open this page through the dashboard: "+
+          "http://127.0.0.1:8766/files/docs/build_status.html";
+        if(lastGood)msg+=" The list below is from the last read that worked, records written "+lastGood.written_local+".";
+        banner([el("b",null,"No fresh records. "),el("span",null,msg)]);
+      });
+  }
+  load(); setInterval(load,10000);
+})();
+</script>
+</body>
+</html>

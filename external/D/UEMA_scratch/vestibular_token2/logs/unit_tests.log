@@ -1,0 +1,27 @@
+test_vestibular_input_path.py: exit 0 in 19 s: 14 passed in 18.35s
+test_vestibular_input_path_watch.py: exit 0 in 11 s: 23 passed in 10.66s
+test_motor_asked_change_watch.py: exit 0 in 43 s: 61 passed in 42.88s
+test_vestibular_repair_watch.py: exit 0 in 16 s: 35 passed in 15.56s
+test_h84_hourly_watch.py: exit 1 in 21 s: 1 failed, 46 passed in 20.31s
+    ............................F..................                          [100%]
+    ================================== FAILURES ===================================
+    ___ test_every_printed_line_on_a_real_segment_31_record_has_no_bare_decimal ___
+    
+    tmp_path = WindowsPath('D:/UEMA_Research/external/D/UEMA_scratch/vestibular_token2/pytest/tmp_test_h84_hourly_watch/test_every_printed_line_on_a_r0')
+    monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x0000014AF4B49DD0>
+    
+        def test_every_printed_line_on_a_real_segment_31_record_has_no_bare_decimal(tmp_path, monkeypatch):
+            """DESIGN section 11 on the watcher's own output, read from the lineage's real stats: the last
+            hour of segment 31's records (the run that stopped at step 344,400)."""
+            stats = SEG31 / 'replay_training_stats.jsonl'
+            if not stats.exists():
+    >           pytest.fail("segment 31's stats are gone from %s; the scan needs one real record" % stats)
+    E           Failed: segment 31's stats are gone from C:\Users\bhart\Documents\UEMA_wt\vestibular_token2\Saved\mimo_bridge\experiments\H84_fresh_drivers_20260918_seg31_toy_and_push\replay_training_stats.jsonl; the scan needs one real record
+    
+    mimo_bridge\tests\test_h84_hourly_watch.py:690: Failed
+    =========================== short test summary info ===========================
+    FAILED mimo_bridge/tests/test_h84_hourly_watch.py::test_every_printed_line_on_a_real_segment_31_record_has_no_bare_decimal
+    1 failed, 46 passed in 20.31s
+test_motor_asked_change.py: exit 0 in 33 s: 24 passed in 32.21s
+
+{"exit_code": 1, "seconds": 143.6, "peak_ram_gb": 0.58, "peak_commit_gb": 0.97, "commit_room_at_start_gb": 50.7, "lowest_commit_room_gb": 46.4, "stopped_for_commit_room": false, "ram_limit_gb": 2.9, "commit_limit_gb": 6.0, "processes": 18, "processes_held_to_the_ram_limit": 18, "most_processes_above_200_mb_at_once": 1}

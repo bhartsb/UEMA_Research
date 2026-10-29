@@ -1,0 +1,248 @@
+{
+ "verdict": "pass",
+ "held": 14,
+ "total": 14,
+ "cases": [
+  {
+   "case": "N1_real_manifest_refused_without_execution",
+   "expected": "REFUSED with exactly \"M13: no execution authorization: a real launch needs the execution decision for speed_candidate1_492800\"",
+   "got": {
+    "verdict": "REFUSED",
+    "problems": [
+     "M13: no execution authorization: a real launch needs the execution decision for speed_candidate1_492800"
+    ],
+    "execution": "judged"
+   },
+   "holds": true,
+   "detail": null
+  },
+  {
+   "case": "N2_planted_execution_section_allowed",
+   "expected": "ALLOWED (the scratch mailbox given as execution_mailbox)",
+   "got": {
+    "verdict": "ALLOWED",
+    "problems": [],
+    "execution": "judged"
+   },
+   "holds": true,
+   "detail": []
+  },
+  {
+   "case": "N3_planted_section_outside_the_real_mailbox",
+   "expected": "REFUSED by M13 naming the mailbox",
+   "got": {
+    "verdict": "REFUSED",
+    "problems": [
+     "M13: no execution authorization: the execution decision's message D:\\UEMA_Research\\external\\D\\UEMA_scratch\\speed_10x\\candidate1_checks\\package_checks_run1\\mailbox\\check-baseline-planted-execution-n2\\message.json does not lie under the mailbox D:/UEMA_Research/Saved/gof_coordination/mailbox"
+    ],
+    "execution": "judged"
+   },
+   "holds": true,
+   "detail": [
+    "M13: no execution authorization: the execution decision's message D:\\UEMA_Research\\external\\D\\UEMA_scratch\\speed_10x\\candidate1_checks\\package_checks_run1\\mailbox\\check-baseline-planted-execution-n2\\message.json does not lie under the mailbox D:/UEMA_Research/Saved/gof_coordination/mailbox"
+   ]
+  },
+  {
+   "case": "N4_preparation_decision_in_execution",
+   "expected": "REFUSED by M13 naming the preparation decision",
+   "got": {
+    "verdict": "REFUSED",
+    "problems": [
+     "M13: no execution authorization: the execution section names the preparation decision speed-budget4-candidate1-next-20261015, which authorizes preparation and no launch",
+     "M13: no execution authorization: the quoted words do not name the run speed_candidate1_492800",
+     "M13: no execution authorization: the quoted words do not name the command file's sha256 02deb1db2eb6e50d222e2850b72a40bf13556a12a0525e10c5fd4a388f039af2"
+    ],
+    "execution": "judged"
+   },
+   "holds": true,
+   "detail": [
+    "M13: no execution authorization: the execution section names the preparation decision speed-budget4-candidate1-next-20261015, which authorizes preparation and no launch",
+    "M13: no execution authorization: the quoted words do not name the run speed_candidate1_492800",
+    "M13: no execution authorization: the quoted words do not name the command file's sha256 02deb1db2eb6e50d222e2850b72a40bf13556a12a0525e10c5fd4a388f039af2"
+   ]
+  },
+  {
+   "case": "N5_words_without_the_command_sha256",
+   "expected": "REFUSED by M13 naming the command file's sha256",
+   "got": {
+    "verdict": "REFUSED",
+    "problems": [
+     "M13: no execution authorization: the quoted words do not name the command file's sha256 02deb1db2eb6e50d222e2850b72a40bf13556a12a0525e10c5fd4a388f039af2"
+    ],
+    "execution": "judged"
+   },
+   "holds": true,
+   "detail": [
+    "M13: no execution authorization: the quoted words do not name the command file's sha256 02deb1db2eb6e50d222e2850b72a40bf13556a12a0525e10c5fd4a388f039af2"
+   ]
+  },
+  {
+   "case": "N6_dry_run_copy_not_judged_by_m13",
+   "expected": "no M13 problem; the checked execution reads 'not judged'",
+   "got": {
+    "verdict": "REFUSED",
+    "problems": [
+     "M7: a stand-in trainer is set and the manifest is not a dry-run copy under D:/UEMA_Research/external/D/UEMA_scratch/speed_10x/candidate1_checks: a real launch never carries one"
+    ],
+    "execution": "not judged: a dry-run copy (its dry_run section; M7 admits it only with the stand-in)"
+   },
+   "holds": true,
+   "detail": [
+    "M7: a stand-in trainer is set and the manifest is not a dry-run copy under D:/UEMA_Research/external/D/UEMA_scratch/speed_10x/candidate1_checks: a real launch never carries one"
+   ]
+  },
+  {
+   "case": "N7_m6_another_commit",
+   "expected": "REFUSED by M6 naming speed candidate 1",
+   "got": {
+    "verdict": "REFUSED",
+    "problems": [
+     "M6: the manifest's code names commit af05c7c1a90422b9d58b1cb7484d3de1ef113f9f on base af05c7c1a90422b9d58b1cb7484d3de1ef113f9f with 17 changed files; this validator admits only speed candidate 1, commit c5d38c8b2d7bd0c58b8e2b81ae65e13f3ccaa1ce on base af05c7c1a90422b9d58b1cb7484d3de1ef113f9f with the 17 files of CHANGED_FILES",
+     "M6: tree C:\\Users\\bhart\\Documents\\UEMA_wt\\speed_candidate1 is at c5d38c8b2d7bd0c58b8e2b81ae65e13f3ccaa1ce, not the pinned commit af05c7c1a90422b9d58b1cb7484d3de1ef113f9f",
+     "M13: no execution authorization: a real launch needs the execution decision for speed_candidate1_492800"
+    ],
+    "execution": "judged"
+   },
+   "holds": true,
+   "detail": [
+    "M6: the manifest's code names commit af05c7c1a90422b9d58b1cb7484d3de1ef113f9f on base af05c7c1a90422b9d58b1cb7484d3de1ef113f9f with 17 changed files; this validator admits only speed candidate 1, commit c5d38c8b2d7bd0c58b8e2b81ae65e13f3ccaa1ce on base af05c7c1a90422b9d58b1cb7484d3de1ef113f9f with the 17 files of CHANGED_FILES",
+    "M6: tree C:\\Users\\bhart\\Documents\\UEMA_wt\\speed_candidate1 is at c5d38c8b2d7bd0c58b8e2b81ae65e13f3ccaa1ce, not the pinned commit af05c7c1a90422b9d58b1cb7484d3de1ef113f9f",
+    "M13: no execution authorization: a real launch needs the execution decision for speed_candidate1_492800"
+   ]
+  },
+  {
+   "case": "N8_m6_not_the_17_files",
+   "expected": "REFUSED by M6 naming speed candidate 1's 17 files",
+   "got": {
+    "verdict": "REFUSED",
+    "problems": [
+     "M6: the manifest's code names commit c5d38c8b2d7bd0c58b8e2b81ae65e13f3ccaa1ce on base af05c7c1a90422b9d58b1cb7484d3de1ef113f9f with 16 changed files; this validator admits only speed candidate 1, commit c5d38c8b2d7bd0c58b8e2b81ae65e13f3ccaa1ce on base af05c7c1a90422b9d58b1cb7484d3de1ef113f9f with the 17 files of CHANGED_FILES",
+     "M6: the files that differ from attempt 4's code af05c7c1a90422b9d58b1cb7484d3de1ef113f9f are ['Source/Python/lem/model/hand_response.py', 'Source/Python/lem/model/intention_generator.py', 'Source/Python/lem/tests/test_planner_selection.py', 'Source/Python/mimo_bridge/continuation_state.py', 'Source/Python/mimo_bridge/datasource.py', 'Source/Python/mimo_bridge/hand_target_control.py', 'Source/Python/mimo_bridge/lem_model.py', 'Source/Python/mimo_bridge/tests/test_hand_goal_integration.py', 'Source/Python/mimo_bridge/tests/test_hand_response.py', 'Source/Python/mimo_bridge/tests/test_hand_target_control.py', 'Source/Python/mimo_bridge/tests/test_reset_measured_pose.py', 'Source/Python/mimo_bridge/tests/test_resume_env_migration.py', 'Source/Python/mimo_bridge/tools/lineage_series.py', 'Source/Python/mimo_bridge/train_mimo.py', 'docs/gain_of_function_v4/speed_hand_search/compare_hand_search.py', 'docs/gain_of_function_v4/speed_planner_reuse/S5_prefix_boundary_statement.txt', 'docs/gain_of_function_v4/speed_planner_reuse/compare_planner_reuse.py'], not the pinned ['Source/Python/lem/model/hand_response.py', 'Source/Python/lem/model/intention_generator.py', 'Source/Python/lem/tests/test_planner_selection.py', 'Source/Python/mimo_bridge/continuation_state.py', 'Source/Python/mimo_bridge/datasource.py', 'Source/Python/mimo_bridge/hand_target_control.py', 'Source/Python/mimo_bridge/lem_model.py', 'Source/Python/mimo_bridge/tests/test_hand_goal_integration.py', 'Source/Python/mimo_bridge/tests/test_hand_response.py', 'Source/Python/mimo_bridge/tests/test_hand_target_control.py', 'Source/Python/mimo_bridge/tests/test_reset_measured_pose.py', 'Source/Python/mimo_bridge/tests/test_resume_env_migration.py', 'Source/Python/mimo_bridge/tools/lineage_series.py', 'Source/Python/mimo_bridge/train_mimo.py', 'docs/gain_of_function_v4/speed_hand_search/compare_hand_search.py', 'docs/gain_of_function_v4/speed_planner_reuse/S5_prefix_boundary_statement.txt']",
+     "M13: no execution authorization: a real launch needs the execution decision for speed_candidate1_492800"
+    ],
+    "execution": "judged"
+   },
+   "holds": true,
+   "detail": [
+    "M6: the manifest's code names commit c5d38c8b2d7bd0c58b8e2b81ae65e13f3ccaa1ce on base af05c7c1a90422b9d58b1cb7484d3de1ef113f9f with 16 changed files; this validator admits only speed candidate 1, commit c5d38c8b2d7bd0c58b8e2b81ae65e13f3ccaa1ce on base af05c7c1a90422b9d58b1cb7484d3de1ef113f9f with the 17 files of CHANGED_FILES",
+    "M6: the files that differ from attempt 4's code af05c7c1a90422b9d58b1cb7484d3de1ef113f9f are ['Source/Python/lem/model/hand_response.py', 'Source/Python/lem/model/intention_generator.py', 'Source/Python/lem/tests/test_planner_selection.py', 'Source/Python/mimo_bridge/continuation_state.py', 'Source/Python/mimo_bridge/datasource.py', 'Source/Python/mimo_bridge/hand_target_control.py', 'Source/Python/mimo_bridge/lem_model.py', 'Source/Python/mimo_bridge/tests/test_hand_goal_integration.py', 'Source/Python/mimo_bridge/tests/test_hand_response.py', 'Source/Python/mimo_bridge/tests/test_hand_target_control.py', 'Source/Python/mimo_bridge/tests/test_reset_measured_pose.py', 'Source/Python/mimo_bridge/tests/test_resume_env_migration.py', 'Source/Python/mimo_bridge/tools/lineage_series.py', 'Source/Python/mimo_bridge/train_mimo.py', 'docs/gain_of_function_v4/speed_hand_search/compare_hand_search.py', 'docs/gain_of_function_v4/speed_planner_reuse/S5_prefix_boundary_statement.txt', 'docs/gain_of_function_v4/speed_planner_reuse/compare_planner_reuse.py'], not the pinned ['Source/Python/lem/model/hand_response.py', 'Source/Python/lem/model/intention_generator.py', 'Source/Python/lem/tests/test_planner_selection.py', 'Source/Python/mimo_bridge/continuation_state.py', 'Source/Python/mimo_bridge/datasource.py', 'Source/Python/mimo_bridge/hand_target_control.py', 'Source/Python/mimo_bridge/lem_model.py', 'Source/Python/mimo_bridge/tests/test_hand_goal_integration.py', 'Source/Python/mimo_bridge/tests/test_hand_response.py', 'Source/Python/mimo_bridge/tests/test_hand_target_control.py', 'Source/Python/mimo_bridge/tests/test_reset_measured_pose.py', 'Source/Python/mimo_bridge/tests/test_resume_env_migration.py', 'Source/Python/mimo_bridge/tools/lineage_series.py', 'Source/Python/mimo_bridge/train_mimo.py', 'docs/gain_of_function_v4/speed_hand_search/compare_hand_search.py', 'docs/gain_of_function_v4/speed_planner_reuse/S5_prefix_boundary_statement.txt']",
+    "M13: no execution authorization: a real launch needs the execution decision for speed_candidate1_492800"
+   ]
+  },
+  {
+   "case": "N9_m7_planner_reuse_absent",
+   "expected": "REFUSED by M7 naming the five added flags",
+   "got": {
+    "verdict": "REFUSED",
+    "problems": [
+     "M6: the configuration fingerprint reads 9a289751aa4180ba, not the pinned 845a5c3dfe5b4a3c",
+     "M7: the manifest's added flags read [('--phase-timings', 'on'), ('--hand-call-capture', 'on'), ('--worker-burst', 'on'), ('--profile-trace', 'off')], not the five [('--phase-timings', 'on'), ('--hand-call-capture', 'on'), ('--worker-burst', 'on'), ('--profile-trace', 'off'), ('--planner-reuse', 'on')] in that sequence",
+     "M7: the command's --planner-reuse reads None, not 'on'",
+     "M13: no execution authorization: a real launch needs the execution decision for speed_candidate1_492800"
+    ],
+    "execution": "judged"
+   },
+   "holds": true,
+   "detail": [
+    "M6: the configuration fingerprint reads 9a289751aa4180ba, not the pinned 845a5c3dfe5b4a3c",
+    "M7: the manifest's added flags read [('--phase-timings', 'on'), ('--hand-call-capture', 'on'), ('--worker-burst', 'on'), ('--profile-trace', 'off')], not the five [('--phase-timings', 'on'), ('--hand-call-capture', 'on'), ('--worker-burst', 'on'), ('--profile-trace', 'off'), ('--planner-reuse', 'on')] in that sequence",
+    "M7: the command's --planner-reuse reads None, not 'on'",
+    "M13: no execution authorization: a real launch needs the execution decision for speed_candidate1_492800"
+   ]
+  },
+  {
+   "case": "N10_m7_worker_burst_off",
+   "expected": "REFUSED by M7 naming --worker-burst",
+   "got": {
+    "verdict": "REFUSED",
+    "problems": [
+     "M6: the configuration fingerprint reads 17d1130df0e0a780, not the pinned 845a5c3dfe5b4a3c",
+     "M7: the manifest's added flags read [('--phase-timings', 'on'), ('--hand-call-capture', 'on'), ('--worker-burst', 'off'), ('--profile-trace', 'off'), ('--planner-reuse', 'on')], not the five [('--phase-timings', 'on'), ('--hand-call-capture', 'on'), ('--worker-burst', 'on'), ('--profile-trace', 'off'), ('--planner-reuse', 'on')] in that sequence",
+     "M7: the command's --worker-burst reads 'off', not 'on'",
+     "M13: no execution authorization: a real launch needs the execution decision for speed_candidate1_492800"
+    ],
+    "execution": "judged"
+   },
+   "holds": true,
+   "detail": [
+    "M6: the configuration fingerprint reads 17d1130df0e0a780, not the pinned 845a5c3dfe5b4a3c",
+    "M7: the manifest's added flags read [('--phase-timings', 'on'), ('--hand-call-capture', 'on'), ('--worker-burst', 'off'), ('--profile-trace', 'off'), ('--planner-reuse', 'on')], not the five [('--phase-timings', 'on'), ('--hand-call-capture', 'on'), ('--worker-burst', 'on'), ('--profile-trace', 'off'), ('--planner-reuse', 'on')] in that sequence",
+    "M7: the command's --worker-burst reads 'off', not 'on'",
+    "M13: no execution authorization: a real launch needs the execution decision for speed_candidate1_492800"
+   ]
+  },
+  {
+   "case": "N11_m7_flags_in_another_sequence",
+   "expected": "REFUSED by M7 naming the sequence",
+   "got": {
+    "verdict": "REFUSED",
+    "problems": [
+     "M7: the manifest's added flags read [('--phase-timings', 'on'), ('--hand-call-capture', 'on'), ('--worker-burst', 'on'), ('--planner-reuse', 'on'), ('--profile-trace', 'off')], not the five [('--phase-timings', 'on'), ('--hand-call-capture', 'on'), ('--worker-burst', 'on'), ('--profile-trace', 'off'), ('--planner-reuse', 'on')] in that sequence",
+     "M13: no execution authorization: a real launch needs the execution decision for speed_candidate1_492800"
+    ],
+    "execution": "judged"
+   },
+   "holds": true,
+   "detail": [
+    "M7: the manifest's added flags read [('--phase-timings', 'on'), ('--hand-call-capture', 'on'), ('--worker-burst', 'on'), ('--planner-reuse', 'on'), ('--profile-trace', 'off')], not the five [('--phase-timings', 'on'), ('--hand-call-capture', 'on'), ('--worker-burst', 'on'), ('--profile-trace', 'off'), ('--planner-reuse', 'on')] in that sequence",
+    "M13: no execution authorization: a real launch needs the execution decision for speed_candidate1_492800"
+   ]
+  },
+  {
+   "case": "N12_m5_comparison_input_changed",
+   "expected": "REFUSED by M5 naming the comparison's A input",
+   "got": {
+    "verdict": "REFUSED",
+    "problems": [
+     "M5: the comparison's A input D:\\UEMA_Research\\external\\D\\UEMA_scratch\\speed_10x\\baseline_A_492800_attempt4_cost_breakdown.json hashes to af84a0840f2a4d130170d3d52a0a1dfee27831b7cd9add823551dde6618d72cd, not its pinned 0000000000000000000000000000000000000000000000000000000000000000",
+     "M13: no execution authorization: a real launch needs the execution decision for speed_candidate1_492800"
+    ],
+    "execution": "judged"
+   },
+   "holds": true,
+   "detail": [
+    "M5: the comparison's A input D:\\UEMA_Research\\external\\D\\UEMA_scratch\\speed_10x\\baseline_A_492800_attempt4_cost_breakdown.json hashes to af84a0840f2a4d130170d3d52a0a1dfee27831b7cd9add823551dde6618d72cd, not its pinned 0000000000000000000000000000000000000000000000000000000000000000",
+    "M13: no execution authorization: a real launch needs the execution decision for speed_candidate1_492800"
+   ]
+  },
+  {
+   "case": "N13_bounds_with_the_comparison_step",
+   "expected": "comparison_s 300, comparison_memory_gib 4.0, whole_s 9,580 (9,080 + 300 + 200); the manifest's bounds equal them",
+   "got": {
+    "comparison_s": 300.0,
+    "comparison_memory_gib": 4.0,
+    "whole_s": 9580.0,
+    "manifest_equal": true
+   },
+   "holds": true,
+   "detail": null
+  },
+  {
+   "case": "N14_cleanup_fault_id_names_the_candidate",
+   "expected": "id speed-candidate1-492800-cleanup-fault-driver; the reporter called once; nothing sent",
+   "got": {
+    "id": "speed-candidate1-492800-cleanup-fault-driver",
+    "sent": false,
+    "calls": [
+     "speed-candidate1-492800-cleanup-fault-driver"
+    ]
+   },
+   "holds": true,
+   "detail": null
+  }
+ ],
+ "manifest": "C:/Users/bhart/Documents/UEMA_wt/speed_candidate1_harness/docs/gain_of_function_v4/speed_candidate1_harness/package/manifest.json",
+ "manifest_sha256": "8775b12f73848c6555ffc12c4e22c4190ad25c997c233421ff45d991092dd32b",
+ "cases_scope": "changed",
+ "program": "C:\\Users\\bhart\\Documents\\UEMA_wt\\speed_candidate1_harness\\docs\\gain_of_function_v4\\speed_candidate1_harness\\check_baseline.py",
+ "program_sha256": "12fbc33aa38f93600cdceb676d4ee7743cd8014389d501027a99aef04c77d708",
+ "admission_sha256": "c40717723fd6eeb6b05c3cb671f3365a0856543afcb9c1fe72043c77b4b1ce78",
+ "driver_sha256": "3158c1e1d4921418a32c3fcd78f0386884023b7b8e83da8f3e7d776e36d944a9",
+ "breakdown_sha256": "a6022ab800f616f0fe341f24dbf7cf3fe04ab5c90e4d8ccd7f59f0c8e7c10264",
+ "reader": "C:\\Users\\bhart\\Documents\\UEMA_wt\\speed_hand_search\\docs\\gain_of_function_v4\\speed_hand_search\\read_phase_timings.py",
+ "reader_sha256": "2de271a979f5959fd45cb4ee7489c24a7f491f1ae4cc1d49a52960c4c83ad53c",
+ "out": "D:\\UEMA_Research\\external\\D\\UEMA_scratch\\speed_10x\\candidate1_checks\\package_checks_run1",
+ "fixture_tree": null,
+ "started": "Oct 15, 2026, 11:18:41 AM PDT",
+ "ended": "Oct 15, 2026, 11:19:02 AM PDT"
+}

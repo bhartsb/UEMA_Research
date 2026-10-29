@@ -1,0 +1,70 @@
+Wellness and homeostatic-self architecture — initial candidate and adversarial review
+Reviewer: sequence_architecture_review. October27,2026. Initial reporting bound5minutes.
+Scope: source/research review and this note only. No execution, tests, training or source changes.
+
+SOURCE FACTS THAT THE NEW DESIGN MUST HONOR
+
+1. lem/skin_mechanics.py explicitly says the signal is a reversible mechanical aversion reference, not tissue damage or injury probability. It accumulates pressure/shear exposure and recovers. Calling its pain reading 'injury' is incorrect.
+2. mimo_bridge/proprio_adapter.py FatigueModel tracks ten body-set capacities from mechanical effort and recovery. With body_function modulation it affects actuator gain/force. That is a physical function consequence, not merely a number in a reward display.
+3. lem/model/wellness.py capability averages those capacity readings. Its coherence can mean controlled-self extent, certainty, or fallback prediction agreement depending on source; those quantities are not interchangeable. The comments document a previous certainty-versus-extent reversal. The motor-state preference pulls commands toward the centre; the boundary variant is only a proxy whose frame issue is documented. It is not measured anatomical damage.
+4. Existing raw summed motor wellness and detrended normalized remembered-goal rank have different purposes. Neither should silently become an integrated time reward. In particular, subtracting a running average erases maintained benefit, while scale-dominated raw sums can make an incidental channel dominate.
+
+RECOMMENDED OBJECTIVE STRUCTURE
+
+Choose a finite cumulative objective with an independently enforced damage constraint. Do not bury serious bodily harm inside a weighted sum that sufficiently large curiosity can outweigh.
+
+For one actual interval of duration dt:
+  utility = dt * [ C - D - eta * effort ]
+  D = sum_j alpha_j * deficit_j^2
+  deficit_j = clamp(distance(measured body quantity j, permitted healthy band j)
+                    / declared severity scale j, 0, 1)
+  C = conservative, verified retained control/self-extension score in [0,1]
+  effort = measured mechanical power / declared reference power, clipped to [0,1]
+  sum_j alpha_j = 1; eta is a declared small effort tradeoff, not a learned preference.
+
+The recommended comparison is expected discounted utility under constraints on new persistent functional damage and severe physical-limit violations. Temporary discomfort/fatigue can be worthwhile when its integral is smaller than the later measured benefit. Lasting loss continues to impose deficit cost every interval and has a separate risk/cost limit. The actual utility is never calculated from the actor's own prediction of its wellness.
+
+This formula is a concrete proposed objective consumer, not a claim that UEMA already implements it. It explicitly retains useful levels over time instead of detrending them away. The existing priorities motivate the separation, but choosing healthy bands, severity scales and eta is an explicit engineering calibration. Do not invent medically meaningful thresholds for MIMo. Use measured existing simulator functional limits where they exist; missing severe-impact/damage limits remain missing physical qualifications, not zero risk.
+
+What goes into D: physically grounded reversible capacity deficits, aversive exposure outside its ordinary operating band, and persistent loss of functional capacity if the plant models it. Do not include raw prediction error as bodily damage. A surprising but harmless movement should teach prediction, not acquire an injury penalty. Penalize deviations outside useful bands, rather than every departure from a preferred pose; otherwise the learner is pushed toward immobility.
+
+What C means: reliable control that is available and maintained, including the existing controlled-self extension concept. Current command/actual-effect agreement above a shuffled-command control provides evidence, but its raw per-command payout alone invites endless shaking. Maintain an evidence-backed capacity/control state and reward its verified availability, not the number of commands or contacts. Each external entity must retain sensory identity, attributable effect above the matched baseline, and conservative uncertainty. Fading evidence decreases confidence; the policy cannot directly edit the authoritative record. A single touch or an object merely following camera motion is not control. Retention and restoring control are useful, but neither ownership labels nor felt certainty count as proof. This producer needs matched evidence and identity-invariance tests before adoption.
+
+Learning progress and curiosity: use them to select informative bounded experience when bodily risk permits; do not let repeated surprise, sensor noise or self-generated mistakes create unlimited exploitation utility. Evaluate improvement on held-out examples with a frozen comparison model; preserve a novelty/experience ledger so forgetting does not renew a previously collected bonus. Prediction learning still trains from all real transient errors. Separate the exploration budget from the finite physical utility above; this is an explicit design change to how an existing channel is consumed, not deletion of the channel.
+
+The critic learns the finite utility from actual intervals plus declared continuation; the policy learns delayed control benefit versus accumulated deficit. A separate cost critic predicts new damage/violations. Imagined outcomes guide choice, but actual physical outcomes supervise both. Severe limits are checked by an independent physical supervisor. There is no named fall/get-up/grasp policy inside that supervisor; it constrains energy/forces/ranges and records intervention. Learned coordination must supply the behavior.
+
+PERSISTENT DAMAGE VERSUS A PHYSICS PROXY
+
+A fall is a trajectory, not intrinsically an injury label. A soft controlled descent can be safe; a short hard impact can be damaging. The supervisor must inspect actual impact/contact stress, joint strain and functional consequence, with body-part and duration dependence, rather than a rule 'height fell so punish'. Current skin exposure cannot provide tissue-injury truth. If the simulation lacks a damage plant, implement a separately named engineering damage proxy with declared thresholds and persistence, and qualify it against functional losses it actually causes. Do not label it human injury probability. If no such model is included, the document can honestly specify avoidance of measured harmful load and preserved actuator function, but cannot claim to have modeled lasting injury.
+
+Damage state belongs to the world/body and checkpoint, not the policy. Recovery dynamics belong to the plant. An episode reset or relaunch must not silently restore a damaged body and erase its cost from the experience record. Real-world deployment requires a separately calibrated physical envelope; a simulator-derived proxy does not transfer as a safety certificate.
+
+ADVERSARIAL ITERATION 1 — NAIVE DEFICIT-REDUCTION REWARD
+
+Candidate: reward decreases in discomfort/deficit.
+Counterexample: deliberately increase deficit, then recover; discounted recovery, positive-only clipping or resets can pay repeatedly. Comfortable inactivity may also dominate all learning.
+Revision: charge absolute deficit occupancy over actual time, never a separately clipped positive recovery bonus. Reward verified retained useful control as a level. Keep failures and interrupted recovery in the same record; do not reset damage. This makes recovery beneficial because it stops a continuing cost, not because creating the problem minted a prize.
+
+ADVERSARIAL ITERATION 2 — SINGLE WEIGHTED WELLNESS SUM
+
+Candidate: utility above with severe damage folded into D only.
+Counterexample: enough expected control/novelty can compensate severe damage; a learned critic may underrate rare impacts. Mean safety over a batch can hide one injured body. An uncertainty gate that forbids all novel states freezes learning.
+Revision: maintain per-body hard physical constraints and a separate damage cost/risk budget; no other reward buys an exemption. Preserve bounded low-energy exploration where prediction is uncertain. Calibrate harm prediction on actual outcomes and check tail errors, not just mean loss. Limit cumulative risk across repeated choices; do not renew a probability budget every50ms. True harm interrupts; prediction surprise alone does not.
+
+ADVERSARIAL ITERATION 3 — CONTROL/SELF-EXTENSION PAYOUT
+
+Candidate: reward command-effect agreement or growth in self membership.
+Counterexample: shake continuously to get effects, split one object into many identities, enlarge self labels without control, make prediction trivially easy by freezing, or repeatedly drop/regrasp for a growth bonus.
+Revision: score verified available control, bounded independently of entity count, with matched shuffled/hold controls and persistent identities. Validate controlled retention without constant actuation. No one-time growth payout that resets on loss. Never use self-confidence as its own teacher. Use actual retained function and causal effect evidence. If this signal does not distinguish stable control from those exploits, repair the producer before using it to teach the actor.
+
+WHAT SETTLES THE DESIGN WITHOUT A TASK SCRIPT
+
+Compare the same preserved states under passive comfort, useful movement with temporary effort, controlled descent/landing, harmful-impact proxy, and recovery. The objective should prefer useful effort over inert comfort when its later verified benefit exceeds cost; prefer a safe slower plan over a high-risk shortcut; prefer recovery after a harmful event without ever preferring to create that event; and not prefer shaking or relabeling to stable control. Record per-channel finite contributions and per-body constraint status. These are offline ranking/contract questions before physical policy adoption. Then learning must improve whole-sequence completion and disturbance recovery on free objects under unchanged generic objective. A posed fall animation illustrates the mechanism, not an observed trained recovery or injury experiment.
+
+PRIMARY SOURCES
+
+Keramati & Gutkin2014, Homeostatic reinforcement learning: https://elifesciences.org/articles/04811 . Supports linking reinforcement learning to physiological regulation; does not calibrate MIMo's injury model or establish this proposed objective.
+Achiam et al.2017, Constrained Policy Optimization: https://proceedings.mlr.press/v70/achiam17a.html . Supports distinguishing performance objective from safety costs/constraints; approximate neural implementation is not an absolute physical guarantee.
+
+Initial disposition: recommend the cumulative level objective plus independently constrained harm, with three specific exploit revisions above. The control-capacity teacher and damage plant/proxy must be defined as real producers with actual measurements, not hidden inside 'wellness'. Parent and reviewer should now challenge the concrete draft, especially numerical example arithmetic, harm timing, reset handling and control evidence.

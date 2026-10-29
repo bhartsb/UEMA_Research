@@ -1,0 +1,1206 @@
+{
+ "title": "How often a body part ends closer to its ordered orientation 250 ms after the order, out of 100",
+ "measured": "2026-09-23",
+ "question": "When an order tells a body part (a wrist, an elbow, a finger...) to turn to a new orientation, is the part closer to that orientation 250 ms later (the time an order is held: 5 model steps x 5 physics ticks of 10 ms) than it was when the order was given? Closer = the angle between the part's world orientation and the ordered world orientation is smaller after 250 ms than at the order. Counted per part per order.",
+ "scale": "0 of 100 = no part ever ends closer; 100 of 100 = every part always ends closer. The chance line is the count the same real 250 ms turns reach against a target at the same distance in a random direction (the order ignored).",
+ "headline": {
+  "live_model_orders": {
+   "closer_out_of_100": 54.2,
+   "closer": 3318,
+   "part_orders": 6125,
+   "halves_by_body": [
+    53.3,
+    54.7
+   ],
+   "halves_by_time": [
+    54.3,
+    54.0
+   ],
+   "interval_95pct": [
+    52.9,
+    55.6
+   ]
+  },
+  "physics_only_reachable_pose": {
+   "closer_out_of_100": 87.4,
+   "closer": 4372,
+   "part_orders": 5000,
+   "halves_by_time": [
+    87.8,
+    87.0
+   ],
+   "halves_alternate": [
+    87.0,
+    87.9
+   ],
+   "interval_95pct": [
+    86.3,
+    88.5
+   ]
+  },
+  "physics_only_independent_random_turns": {
+   "closer_out_of_100": 69.1,
+   "closer": 3457,
+   "part_orders": 5000,
+   "halves_by_time": [
+    69.0,
+    69.3
+   ],
+   "halves_alternate": [
+    68.4,
+    69.9
+   ],
+   "interval_95pct": [
+    67.8,
+    70.5
+   ]
+  },
+  "chance_order_ignored": {
+   "closer_out_of_100": 31.3,
+   "part_orders": 6125,
+   "interval_95pct": [
+    30.7,
+    32.0
+   ],
+   "halves_by_body": [
+    31.2,
+    31.4
+   ],
+   "halves_by_time": [
+    30.8,
+    31.9
+   ],
+   "same_line_on_physics_turns": {
+    "reachable_pose": 28.8,
+    "independent_turns": 30.8
+   },
+   "why_not_50": "A turn about as large as the distance to the target lands closer to a randomly placed target about 1 time in 4 (exactly 25 in 100 for equal sizes in the small-angle limit); 50 holds only for turns much smaller than the distance. The live parts turned a median 13.7 degrees against a median ordered distance of 23.8 degrees."
+  }
+ },
+ "live_by_author": {
+  "planner": {
+   "closer_out_of_100": 51.7,
+   "part_orders": 3125,
+   "whole_orders": 125,
+   "interval_95pct": [
+    49.8,
+    53.5
+   ],
+   "chance_out_of_100": 32.9,
+   "ordered_distance_deg_median": 30.6,
+   "turn_deg_median": 16.2,
+   "strength_median": 0.39,
+   "distance_closed": {
+    "pooled_pct": -4.8,
+    "median_pct": 1.4
+   }
+  },
+  "reflex": {
+   "closer_out_of_100": 52.8,
+   "part_orders": 1125,
+   "whole_orders": 45,
+   "interval_95pct": [
+    49.8,
+    55.9
+   ],
+   "chance_out_of_100": 25.3,
+   "ordered_distance_deg_median": 9.2,
+   "turn_deg_median": 7.9,
+   "strength_median": 0.48,
+   "distance_closed": {
+    "pooled_pct": -12.9,
+    "median_pct": 3.4
+   }
+  },
+  "reflex_noise": {
+   "closer_out_of_100": 59.1,
+   "part_orders": 1875,
+   "whole_orders": 75,
+   "interval_95pct": [
+    57.0,
+    61.3
+   ],
+   "chance_out_of_100": 32.3,
+   "ordered_distance_deg_median": 24.1,
+   "turn_deg_median": 14.1,
+   "strength_median": 0.52,
+   "distance_closed": {
+    "pooled_pct": 1.6,
+    "median_pct": 6.5
+   }
+  }
+ },
+ "live_by_author_labels": {
+  "planner": "the planner's first action (lem_model last_action_source 'planner'; no babble is added to it)",
+  "reflex_noise": "the motor controller's output with babble added (babble noise 0.05, during a babble bout)",
+  "reflex": "the motor controller's output alone (between babble bouts, babble 0)"
+ },
+ "distance_closed_in_250ms": {
+  "note": "How much of the ordered distance was closed: pooled = (sum of distances before - sum after) / sum before; median = median of each part-order's share. Negative = ended farther away.",
+  "live": {
+   "pooled_pct": -3.4,
+   "median_pct": 3.3
+  },
+  "reachable_pose": {
+   "pooled_pct": 44.2,
+   "median_pct": 51.0
+  },
+  "independent_turns": {
+   "pooled_pct": 17.6,
+   "median_pct": 23.7
+  }
+ },
+ "cases": {
+  "live_model_orders": {
+   "closer_out_of_100": 54.2,
+   "closer": 3318,
+   "part_orders": 6125,
+   "whole_orders": 245,
+   "closer_out_of_100_95pct_interval": [
+    52.9,
+    55.6
+   ],
+   "halves": {
+    "bodies_first_half_vs_second_half": {
+     "first": 53.3,
+     "second": 54.7,
+     "part_orders": [
+      2450,
+      3675
+     ]
+    },
+    "time_first_half_vs_second_half": {
+     "first": 54.3,
+     "second": 54.0,
+     "part_orders": [
+      3125,
+      3000
+     ]
+    }
+   },
+   "chance_out_of_100_on_these_turns": 31.3,
+   "ordered_distance_deg_median": 23.8,
+   "turn_in_250ms_deg_median": 13.7,
+   "distance_after_250ms_deg_median": 23.4,
+   "by_ordered_distance_quarter": [
+    {
+     "ordered_distance_deg": [
+      0.0,
+      13.85
+     ],
+     "part_orders": 1531,
+     "closer_out_of_100": 43.4,
+     "chance_out_of_100": 22.9,
+     "turn_deg_median": 7.9
+    },
+    {
+     "ordered_distance_deg": [
+      13.85,
+      23.81
+     ],
+     "part_orders": 1531,
+     "closer_out_of_100": 52.3,
+     "chance_out_of_100": 28.4,
+     "turn_deg_median": 14.0
+    },
+    {
+     "ordered_distance_deg": [
+      23.81,
+      35.55
+     ],
+     "part_orders": 1531,
+     "closer_out_of_100": 60.7,
+     "chance_out_of_100": 35.1,
+     "turn_deg_median": 15.4
+    },
+    {
+     "ordered_distance_deg": [
+      35.55,
+      null
+     ],
+     "part_orders": 1532,
+     "closer_out_of_100": 60.4,
+     "chance_out_of_100": 38.9,
+     "turn_deg_median": 18.3
+    }
+   ],
+   "by_part": {
+    "wrist_L": {
+     "n": 245,
+     "closer_per_100": 62.4,
+     "chance_per_100": 33.3,
+     "ordered_distance_deg_median": 25.3,
+     "turn_deg_median": 12.8
+    },
+    "thumb_L": {
+     "n": 245,
+     "closer_per_100": 42.0,
+     "chance_per_100": 25.0,
+     "ordered_distance_deg_median": 25.0,
+     "turn_deg_median": 20.4
+    },
+    "index_L": {
+     "n": 245,
+     "closer_per_100": 34.3,
+     "chance_per_100": 26.4,
+     "ordered_distance_deg_median": 24.3,
+     "turn_deg_median": 19.8
+    },
+    "middle_L": {
+     "n": 245,
+     "closer_per_100": 35.1,
+     "chance_per_100": 24.5,
+     "ordered_distance_deg_median": 24.1,
+     "turn_deg_median": 21.0
+    },
+    "ring_L": {
+     "n": 245,
+     "closer_per_100": 30.6,
+     "chance_per_100": 24.9,
+     "ordered_distance_deg_median": 23.7,
+     "turn_deg_median": 20.1
+    },
+    "pinky_L": {
+     "n": 245,
+     "closer_per_100": 35.9,
+     "chance_per_100": 25.6,
+     "ordered_distance_deg_median": 22.7,
+     "turn_deg_median": 18.6
+    },
+    "wrist_R": {
+     "n": 245,
+     "closer_per_100": 53.1,
+     "chance_per_100": 28.7,
+     "ordered_distance_deg_median": 22.5,
+     "turn_deg_median": 16.3
+    },
+    "thumb_R": {
+     "n": 245,
+     "closer_per_100": 33.9,
+     "chance_per_100": 24.5,
+     "ordered_distance_deg_median": 22.8,
+     "turn_deg_median": 20.4
+    },
+    "index_R": {
+     "n": 245,
+     "closer_per_100": 26.9,
+     "chance_per_100": 25.9,
+     "ordered_distance_deg_median": 25.9,
+     "turn_deg_median": 22.4
+    },
+    "middle_R": {
+     "n": 245,
+     "closer_per_100": 35.9,
+     "chance_per_100": 24.0,
+     "ordered_distance_deg_median": 24.4,
+     "turn_deg_median": 23.5
+    },
+    "ring_R": {
+     "n": 245,
+     "closer_per_100": 36.3,
+     "chance_per_100": 25.3,
+     "ordered_distance_deg_median": 26.4,
+     "turn_deg_median": 21.4
+    },
+    "pinky_R": {
+     "n": 245,
+     "closer_per_100": 35.5,
+     "chance_per_100": 24.9,
+     "ordered_distance_deg_median": 27.0,
+     "turn_deg_median": 22.7
+    },
+    "head": {
+     "n": 245,
+     "closer_per_100": 82.4,
+     "chance_per_100": 40.9,
+     "ordered_distance_deg_median": 22.0,
+     "turn_deg_median": 5.6
+    },
+    "upperarm_L": {
+     "n": 245,
+     "closer_per_100": 60.0,
+     "chance_per_100": 33.1,
+     "ordered_distance_deg_median": 24.9,
+     "turn_deg_median": 13.0
+    },
+    "lowerarm_L": {
+     "n": 245,
+     "closer_per_100": 40.4,
+     "chance_per_100": 34.3,
+     "ordered_distance_deg_median": 26.9,
+     "turn_deg_median": 13.0
+    },
+    "upperarm_R": {
+     "n": 245,
+     "closer_per_100": 65.3,
+     "chance_per_100": 27.9,
+     "ordered_distance_deg_median": 19.2,
+     "turn_deg_median": 15.0
+    },
+    "lowerarm_R": {
+     "n": 245,
+     "closer_per_100": 51.4,
+     "chance_per_100": 29.3,
+     "ordered_distance_deg_median": 25.3,
+     "turn_deg_median": 18.3
+    },
+    "thigh_L": {
+     "n": 245,
+     "closer_per_100": 82.9,
+     "chance_per_100": 40.3,
+     "ordered_distance_deg_median": 22.1,
+     "turn_deg_median": 7.8
+    },
+    "calf_L": {
+     "n": 245,
+     "closer_per_100": 71.4,
+     "chance_per_100": 37.2,
+     "ordered_distance_deg_median": 21.2,
+     "turn_deg_median": 8.3
+    },
+    "thigh_R": {
+     "n": 245,
+     "closer_per_100": 84.9,
+     "chance_per_100": 37.6,
+     "ordered_distance_deg_median": 24.4,
+     "turn_deg_median": 8.0
+    },
+    "calf_R": {
+     "n": 245,
+     "closer_per_100": 64.1,
+     "chance_per_100": 37.3,
+     "ordered_distance_deg_median": 23.2,
+     "turn_deg_median": 8.9
+    },
+    "foot_L": {
+     "n": 245,
+     "closer_per_100": 88.2,
+     "chance_per_100": 32.9,
+     "ordered_distance_deg_median": 21.7,
+     "turn_deg_median": 12.8
+    },
+    "foot_R": {
+     "n": 245,
+     "closer_per_100": 89.4,
+     "chance_per_100": 33.4,
+     "ordered_distance_deg_median": 21.1,
+     "turn_deg_median": 11.6
+    },
+    "lower_trunk": {
+     "n": 245,
+     "closer_per_100": 61.6,
+     "chance_per_100": 45.7,
+     "ordered_distance_deg_median": 28.0,
+     "turn_deg_median": 3.3
+    },
+    "chest": {
+     "n": 245,
+     "closer_per_100": 50.2,
+     "chance_per_100": 40.8,
+     "ordered_distance_deg_median": 20.4,
+     "turn_deg_median": 5.4
+    }
+   }
+  },
+  "physics_only_reachable_pose": {
+   "closer_out_of_100": 87.4,
+   "closer": 4372,
+   "part_orders": 5000,
+   "whole_orders": 200,
+   "closer_out_of_100_95pct_interval": [
+    86.3,
+    88.5
+   ],
+   "halves": {
+    "trials_first_half_vs_second_half": {
+     "first": 87.8,
+     "second": 87.0,
+     "part_orders": [
+      2500,
+      2500
+     ]
+    },
+    "alternate_trials": {
+     "first": 87.0,
+     "second": 87.9,
+     "part_orders": [
+      2500,
+      2500
+     ]
+    }
+   },
+   "chance_out_of_100_on_these_turns": 28.8,
+   "ordered_distance_deg_median": 4.6,
+   "turn_in_250ms_deg_median": 3.8,
+   "distance_after_250ms_deg_median": 1.6,
+   "by_ordered_distance_quarter": [
+    {
+     "ordered_distance_deg": [
+      0.0,
+      2.19
+     ],
+     "part_orders": 1250,
+     "closer_out_of_100": 80.8,
+     "chance_out_of_100": 35.6,
+     "turn_deg_median": 0.5
+    },
+    {
+     "ordered_distance_deg": [
+      2.19,
+      4.61
+     ],
+     "part_orders": 1250,
+     "closer_out_of_100": 91.9,
+     "chance_out_of_100": 30.9,
+     "turn_deg_median": 2.3
+    },
+    {
+     "ordered_distance_deg": [
+      4.61,
+      8.61
+     ],
+     "part_orders": 1250,
+     "closer_out_of_100": 92.1,
+     "chance_out_of_100": 26.8,
+     "turn_deg_median": 5.7
+    },
+    {
+     "ordered_distance_deg": [
+      8.61,
+      null
+     ],
+     "part_orders": 1250,
+     "closer_out_of_100": 85.0,
+     "chance_out_of_100": 22.0,
+     "turn_deg_median": 12.7
+    }
+   ],
+   "by_part": {
+    "wrist_L": {
+     "n": 200,
+     "closer_per_100": 97.0,
+     "chance_per_100": 28.6,
+     "ordered_distance_deg_median": 4.7,
+     "turn_deg_median": 3.9
+    },
+    "thumb_L": {
+     "n": 200,
+     "closer_per_100": 83.5,
+     "chance_per_100": 20.7,
+     "ordered_distance_deg_median": 5.8,
+     "turn_deg_median": 6.3
+    },
+    "index_L": {
+     "n": 200,
+     "closer_per_100": 76.5,
+     "chance_per_100": 21.4,
+     "ordered_distance_deg_median": 9.2,
+     "turn_deg_median": 8.9
+    },
+    "middle_L": {
+     "n": 200,
+     "closer_per_100": 87.0,
+     "chance_per_100": 19.6,
+     "ordered_distance_deg_median": 8.4,
+     "turn_deg_median": 9.0
+    },
+    "ring_L": {
+     "n": 200,
+     "closer_per_100": 86.5,
+     "chance_per_100": 20.3,
+     "ordered_distance_deg_median": 8.7,
+     "turn_deg_median": 9.2
+    },
+    "pinky_L": {
+     "n": 200,
+     "closer_per_100": 76.0,
+     "chance_per_100": 21.9,
+     "ordered_distance_deg_median": 8.4,
+     "turn_deg_median": 8.1
+    },
+    "wrist_R": {
+     "n": 200,
+     "closer_per_100": 99.5,
+     "chance_per_100": 30.2,
+     "ordered_distance_deg_median": 4.8,
+     "turn_deg_median": 4.0
+    },
+    "thumb_R": {
+     "n": 200,
+     "closer_per_100": 81.0,
+     "chance_per_100": 19.9,
+     "ordered_distance_deg_median": 5.9,
+     "turn_deg_median": 7.1
+    },
+    "index_R": {
+     "n": 200,
+     "closer_per_100": 75.5,
+     "chance_per_100": 19.9,
+     "ordered_distance_deg_median": 9.4,
+     "turn_deg_median": 9.3
+    },
+    "middle_R": {
+     "n": 200,
+     "closer_per_100": 86.5,
+     "chance_per_100": 18.5,
+     "ordered_distance_deg_median": 9.3,
+     "turn_deg_median": 10.5
+    },
+    "ring_R": {
+     "n": 200,
+     "closer_per_100": 86.0,
+     "chance_per_100": 21.5,
+     "ordered_distance_deg_median": 8.9,
+     "turn_deg_median": 8.8
+    },
+    "pinky_R": {
+     "n": 200,
+     "closer_per_100": 68.5,
+     "chance_per_100": 21.9,
+     "ordered_distance_deg_median": 9.3,
+     "turn_deg_median": 8.9
+    },
+    "head": {
+     "n": 200,
+     "closer_per_100": 90.0,
+     "chance_per_100": 40.3,
+     "ordered_distance_deg_median": 2.6,
+     "turn_deg_median": 0.9
+    },
+    "upperarm_L": {
+     "n": 200,
+     "closer_per_100": 98.5,
+     "chance_per_100": 27.9,
+     "ordered_distance_deg_median": 3.4,
+     "turn_deg_median": 3.0
+    },
+    "lowerarm_L": {
+     "n": 200,
+     "closer_per_100": 98.0,
+     "chance_per_100": 27.4,
+     "ordered_distance_deg_median": 3.5,
+     "turn_deg_median": 3.3
+    },
+    "upperarm_R": {
+     "n": 200,
+     "closer_per_100": 96.0,
+     "chance_per_100": 29.3,
+     "ordered_distance_deg_median": 3.2,
+     "turn_deg_median": 2.7
+    },
+    "lowerarm_R": {
+     "n": 200,
+     "closer_per_100": 96.0,
+     "chance_per_100": 27.9,
+     "ordered_distance_deg_median": 3.4,
+     "turn_deg_median": 2.9
+    },
+    "thigh_L": {
+     "n": 200,
+     "closer_per_100": 92.0,
+     "chance_per_100": 39.5,
+     "ordered_distance_deg_median": 2.5,
+     "turn_deg_median": 0.9
+    },
+    "calf_L": {
+     "n": 200,
+     "closer_per_100": 99.0,
+     "chance_per_100": 39.4,
+     "ordered_distance_deg_median": 2.3,
+     "turn_deg_median": 0.9
+    },
+    "thigh_R": {
+     "n": 200,
+     "closer_per_100": 91.5,
+     "chance_per_100": 38.7,
+     "ordered_distance_deg_median": 2.5,
+     "turn_deg_median": 1.0
+    },
+    "calf_R": {
+     "n": 200,
+     "closer_per_100": 97.0,
+     "chance_per_100": 38.5,
+     "ordered_distance_deg_median": 2.4,
+     "turn_deg_median": 1.0
+    },
+    "foot_L": {
+     "n": 200,
+     "closer_per_100": 93.0,
+     "chance_per_100": 33.4,
+     "ordered_distance_deg_median": 3.3,
+     "turn_deg_median": 1.9
+    },
+    "foot_R": {
+     "n": 200,
+     "closer_per_100": 94.5,
+     "chance_per_100": 34.6,
+     "ordered_distance_deg_median": 3.0,
+     "turn_deg_median": 1.7
+    },
+    "lower_trunk": {
+     "n": 200,
+     "closer_per_100": 63.0,
+     "chance_per_100": 42.5,
+     "ordered_distance_deg_median": 0.8,
+     "turn_deg_median": 0.1
+    },
+    "chest": {
+     "n": 200,
+     "closer_per_100": 74.0,
+     "chance_per_100": 37.3,
+     "ordered_distance_deg_median": 1.2,
+     "turn_deg_median": 0.4
+    }
+   }
+  },
+  "physics_only_independent_random_turns": {
+   "closer_out_of_100": 69.1,
+   "closer": 3457,
+   "part_orders": 5000,
+   "whole_orders": 200,
+   "closer_out_of_100_95pct_interval": [
+    67.8,
+    70.5
+   ],
+   "halves": {
+    "trials_first_half_vs_second_half": {
+     "first": 69.0,
+     "second": 69.3,
+     "part_orders": [
+      2500,
+      2500
+     ]
+    },
+    "alternate_trials": {
+     "first": 68.4,
+     "second": 69.9,
+     "part_orders": [
+      2500,
+      2500
+     ]
+    }
+   },
+   "chance_out_of_100_on_these_turns": 30.8,
+   "ordered_distance_deg_median": 20.0,
+   "turn_in_250ms_deg_median": 14.6,
+   "distance_after_250ms_deg_median": 15.3,
+   "by_ordered_distance_quarter": [
+    {
+     "ordered_distance_deg": [
+      0.0,
+      20.0
+     ],
+     "part_orders": 1152,
+     "closer_out_of_100": 69.0,
+     "chance_out_of_100": 30.8,
+     "turn_deg_median": 15.0
+    },
+    {
+     "ordered_distance_deg": [
+      20.0,
+      20.0
+     ],
+     "part_orders": 745,
+     "closer_out_of_100": 67.4,
+     "chance_out_of_100": 31.0,
+     "turn_deg_median": 14.6
+    },
+    {
+     "ordered_distance_deg": [
+      20.0,
+      20.0
+     ],
+     "part_orders": 1178,
+     "closer_out_of_100": 67.7,
+     "chance_out_of_100": 30.7,
+     "turn_deg_median": 14.7
+    },
+    {
+     "ordered_distance_deg": [
+      20.0,
+      null
+     ],
+     "part_orders": 1925,
+     "closer_out_of_100": 70.8,
+     "chance_out_of_100": 30.9,
+     "turn_deg_median": 14.5
+    }
+   ],
+   "by_part": {
+    "wrist_L": {
+     "n": 200,
+     "closer_per_100": 97.0,
+     "chance_per_100": 29.3,
+     "ordered_distance_deg_median": 20.0,
+     "turn_deg_median": 16.3
+    },
+    "thumb_L": {
+     "n": 200,
+     "closer_per_100": 49.0,
+     "chance_per_100": 22.4,
+     "ordered_distance_deg_median": 20.0,
+     "turn_deg_median": 21.4
+    },
+    "index_L": {
+     "n": 200,
+     "closer_per_100": 54.0,
+     "chance_per_100": 25.4,
+     "ordered_distance_deg_median": 20.0,
+     "turn_deg_median": 19.9
+    },
+    "middle_L": {
+     "n": 200,
+     "closer_per_100": 61.0,
+     "chance_per_100": 25.5,
+     "ordered_distance_deg_median": 20.0,
+     "turn_deg_median": 19.5
+    },
+    "ring_L": {
+     "n": 200,
+     "closer_per_100": 64.0,
+     "chance_per_100": 25.5,
+     "ordered_distance_deg_median": 20.0,
+     "turn_deg_median": 19.1
+    },
+    "pinky_L": {
+     "n": 200,
+     "closer_per_100": 63.5,
+     "chance_per_100": 25.3,
+     "ordered_distance_deg_median": 20.0,
+     "turn_deg_median": 19.1
+    },
+    "wrist_R": {
+     "n": 200,
+     "closer_per_100": 97.5,
+     "chance_per_100": 29.5,
+     "ordered_distance_deg_median": 20.0,
+     "turn_deg_median": 16.1
+    },
+    "thumb_R": {
+     "n": 200,
+     "closer_per_100": 47.5,
+     "chance_per_100": 22.0,
+     "ordered_distance_deg_median": 20.0,
+     "turn_deg_median": 22.5
+    },
+    "index_R": {
+     "n": 200,
+     "closer_per_100": 58.0,
+     "chance_per_100": 24.2,
+     "ordered_distance_deg_median": 20.0,
+     "turn_deg_median": 20.6
+    },
+    "middle_R": {
+     "n": 200,
+     "closer_per_100": 55.0,
+     "chance_per_100": 23.6,
+     "ordered_distance_deg_median": 20.0,
+     "turn_deg_median": 21.5
+    },
+    "ring_R": {
+     "n": 200,
+     "closer_per_100": 52.0,
+     "chance_per_100": 26.0,
+     "ordered_distance_deg_median": 20.0,
+     "turn_deg_median": 19.5
+    },
+    "pinky_R": {
+     "n": 200,
+     "closer_per_100": 57.5,
+     "chance_per_100": 25.3,
+     "ordered_distance_deg_median": 20.0,
+     "turn_deg_median": 19.3
+    },
+    "head": {
+     "n": 200,
+     "closer_per_100": 100.0,
+     "chance_per_100": 36.3,
+     "ordered_distance_deg_median": 20.0,
+     "turn_deg_median": 11.3
+    },
+    "upperarm_L": {
+     "n": 200,
+     "closer_per_100": 88.5,
+     "chance_per_100": 34.1,
+     "ordered_distance_deg_median": 20.0,
+     "turn_deg_median": 12.7
+    },
+    "lowerarm_L": {
+     "n": 200,
+     "closer_per_100": 48.5,
+     "chance_per_100": 32.8,
+     "ordered_distance_deg_median": 20.0,
+     "turn_deg_median": 13.4
+    },
+    "upperarm_R": {
+     "n": 200,
+     "closer_per_100": 88.5,
+     "chance_per_100": 34.9,
+     "ordered_distance_deg_median": 20.0,
+     "turn_deg_median": 12.2
+    },
+    "lowerarm_R": {
+     "n": 200,
+     "closer_per_100": 51.5,
+     "chance_per_100": 33.2,
+     "ordered_distance_deg_median": 20.0,
+     "turn_deg_median": 13.5
+    },
+    "thigh_L": {
+     "n": 200,
+     "closer_per_100": 93.0,
+     "chance_per_100": 36.0,
+     "ordered_distance_deg_median": 20.0,
+     "turn_deg_median": 11.8
+    },
+    "calf_L": {
+     "n": 200,
+     "closer_per_100": 62.0,
+     "chance_per_100": 35.2,
+     "ordered_distance_deg_median": 20.0,
+     "turn_deg_median": 11.9
+    },
+    "thigh_R": {
+     "n": 200,
+     "closer_per_100": 94.0,
+     "chance_per_100": 35.4,
+     "ordered_distance_deg_median": 20.0,
+     "turn_deg_median": 11.2
+    },
+    "calf_R": {
+     "n": 200,
+     "closer_per_100": 58.0,
+     "chance_per_100": 35.7,
+     "ordered_distance_deg_median": 20.0,
+     "turn_deg_median": 11.6
+    },
+    "foot_L": {
+     "n": 200,
+     "closer_per_100": 98.0,
+     "chance_per_100": 32.5,
+     "ordered_distance_deg_median": 20.0,
+     "turn_deg_median": 14.2
+    },
+    "foot_R": {
+     "n": 200,
+     "closer_per_100": 99.5,
+     "chance_per_100": 32.1,
+     "ordered_distance_deg_median": 20.0,
+     "turn_deg_median": 14.1
+    },
+    "lower_trunk": {
+     "n": 200,
+     "closer_per_100": 43.0,
+     "chance_per_100": 44.1,
+     "ordered_distance_deg_median": 20.0,
+     "turn_deg_median": 4.2
+    },
+    "chest": {
+     "n": 200,
+     "closer_per_100": 48.0,
+     "chance_per_100": 44.8,
+     "ordered_distance_deg_median": 20.0,
+     "turn_deg_median": 3.5
+    }
+   }
+  },
+  "physics_only_as_whole_body_following_is_written": {
+   "note": "whole_body_following.py exactly as written (row n-1 = chest left unordered, the gaze row ordered); counts over the 24 parts it orders",
+   "read_as_goal_line": "never: measured on the gauge that took the last row, the chest, for the eyes (env.py before commit b55ee9a4d); lineage_series reads physics_only_on_the_repaired_gauge",
+   "reachable_pose": {
+    "closer_out_of_100": 88.1,
+    "part_orders": 4800,
+    "chance_out_of_100": 28.4,
+    "tool_gauge_mean": 0.826
+   },
+   "independent_turns": {
+    "closer_out_of_100": 69.0,
+    "part_orders": 4800,
+    "chance_out_of_100": 30.2,
+    "tool_gauge_mean": 0.518
+   }
+  },
+  "physics_only_on_the_repaired_gauge": {
+   "note": "tools/whole_body_following.py on the repaired gauge (commit b55ee9a4d and later): the eyes' row found by name and left out, the chest ordered and scored, each order read over exactly its own 25 frames. lineage_series reads its goal lines from this case only (fix-rows-r2-lineage_series, 2026-09-23).",
+   "measured": "2026-09-23",
+   "code_commit_by_seed": {
+    "0": "07fc7bab2184f6dc3aaeaeeb35055e19f68db8df",
+    "1": "7f3b705e2a70545986cd39f71dbd1abd63c3dcd6",
+    "2": "7f3b705e2a70545986cd39f71dbd1abd63c3dcd6",
+    "3": "7f3b705e2a70545986cd39f71dbd1abd63c3dcd6"
+   },
+   "code_note": "HEAD when each run ended. env.py, tools/whole_body_following.py, action_decoder.py, tools/command_following.py, body_layout.py and lem/model/body_sets.py are the same in c90a758f4 (03:38, before the runs began) and in every commit named here, and had no uncommitted edits.",
+   "gauge_code_uncommitted": false,
+   "layout": "trunk_v1",
+   "angle_deg": 20.0,
+   "strength": 0.5,
+   "decoder_gain": 6.0,
+   "hold_ticks": 25,
+   "seeds": [
+    0,
+    1,
+    2,
+    3
+   ],
+   "orders_per_arm": 200,
+   "parts_scored": [
+    "wrist_L",
+    "thumb_L",
+    "index_L",
+    "middle_L",
+    "ring_L",
+    "pinky_L",
+    "wrist_R",
+    "thumb_R",
+    "index_R",
+    "middle_R",
+    "ring_R",
+    "pinky_R",
+    "head",
+    "upperarm_L",
+    "lowerarm_L",
+    "upperarm_R",
+    "lowerarm_R",
+    "thigh_L",
+    "calf_L",
+    "thigh_R",
+    "calf_R",
+    "foot_L",
+    "foot_R",
+    "lower_trunk",
+    "chest"
+   ],
+   "scale": "Each reading is the env gauge's averaged cosine over the scored parts: -1 = every part turned exactly against its order, 0 = the turn is unrelated to the order, +1 = exactly as ordered. The pages show it as a percentage of the way from 'unrelated' to 'exactly as ordered'.",
+   "reachable_pose": {
+    "held_250ms_mean": 0.8227,
+    "one_frame_10ms_mean": 0.4897,
+    "held_250ms": {
+     "mean": 0.8227,
+     "orders": 200,
+     "interval_95pct": [
+      0.813,
+      0.8323
+     ],
+     "halves_by_seed": [
+      0.8287,
+      0.8167
+     ],
+     "halves_by_time": [
+      0.8067,
+      0.8387
+     ],
+     "per_seed": {
+      "0": 0.8265,
+      "1": 0.8308,
+      "2": 0.8104,
+      "3": 0.823
+     }
+    },
+    "one_frame_10ms": {
+     "mean": 0.4897,
+     "orders": 200,
+     "interval_95pct": [
+      0.4757,
+      0.5038
+     ],
+     "halves_by_seed": [
+      0.496,
+      0.4833
+     ],
+     "halves_by_time": [
+      0.478,
+      0.5013
+     ],
+     "per_seed": {
+      "0": 0.4994,
+      "1": 0.4927,
+      "2": 0.4651,
+      "3": 0.5015
+     }
+    },
+    "parts_per_order": {
+     "min": 25,
+     "max": 25,
+     "mean": 25.0
+    },
+    "commanded_turn_deg_mean": 6.57,
+    "one_frame_every_tick_mean": 0.4649
+   },
+   "independent_turns": {
+    "held_250ms_mean": 0.53,
+    "one_frame_10ms_mean": 0.2046,
+    "held_250ms": {
+     "mean": 0.53,
+     "orders": 200,
+     "interval_95pct": [
+      0.5156,
+      0.543
+     ],
+     "halves_by_seed": [
+      0.5329,
+      0.5271
+     ],
+     "halves_by_time": [
+      0.5203,
+      0.5397
+     ],
+     "per_seed": {
+      "0": 0.5448,
+      "1": 0.5209,
+      "2": 0.5179,
+      "3": 0.5363
+     }
+    },
+    "one_frame_10ms": {
+     "mean": 0.2046,
+     "orders": 200,
+     "interval_95pct": [
+      0.1929,
+      0.2164
+     ],
+     "halves_by_seed": [
+      0.2055,
+      0.2037
+     ],
+     "halves_by_time": [
+      0.1944,
+      0.2148
+     ],
+     "per_seed": {
+      "0": 0.2215,
+      "1": 0.1895,
+      "2": 0.2036,
+      "3": 0.2038
+     }
+    },
+    "parts_per_order": {
+     "min": 25,
+     "max": 25,
+     "mean": 25.0
+    },
+    "commanded_turn_deg_mean": 20.0,
+    "one_frame_every_tick_mean": 0.2338
+   },
+   "identity_check": {
+    "tool_run_seed0": {
+     "consistent": 0.8265351879486015,
+     "independent": 0.5448203757407492
+    },
+    "this_loop_seed0": {
+     "consistent": 0.8265351879486015,
+     "independent": 0.5448203757407492
+    },
+    "identical": true
+   },
+   "method": "tools/whole_body_following.run's loop, unchanged: one body in the crib, vision off, mechanical_v4, age 24, decoder gain 6, cmd_horizon 25, strength 0.5, 20-degree turns, each order held 25 ticks (250 ms), trials alternating a posture the body really reached (reachable_pose, the tool's 'consistent' orders: three unchained parts driven for 40 ticks, every part's pose there recorded, 60 ticks back at rest, then one order to that pose) and every part but the eyes turned 20 degrees about its own random axis (independent_turns). 4 processes, seeds 0, 1, 2, 3, 100 trials each. Read beside the tool's own reading, with no change to the physics: held_250ms = env.py cmd_response_slow.cos on the hold's last tick (the tool's reading; the trainer logs it as cmd_response_cos_held on an order's last model step); one_frame_10ms = env.py cmd_response.cos on ticks 5, 10, 15, 20 and 25 of the hold, the last frame of each 5-frame model step, averaged per order (the frames train_mimo's follow_bout averages, in bouts); parts_scored = every part the gauge scored on at least one order, by name (strength above 0, not the eyes' row, an ordered turn of at least 1e-4 rad), checked against the gauge's own count on every order. Intervals resample whole orders (2,000 resamples). Seed 0 reproduces whole_body_following.run(6, 0.5, 100, 20, 0) on the same code to the last digit (identity_check).",
+   "differences_from_the_live_world": "As the other physics cases (see uncertainty): no caregiver, mobile or critters, body_function off, fixed strength 0.5, fixed 20-degree turns, each order from rest with no babble and no blend toward the previous order.",
+   "scripts": {
+    "measure": "\"\"\"Physics-only following references on the repaired gauge, for lineage_series' goal lines.\n\nThe loop is tools/whole_body_following.run exactly as committed at b55ee9a4d and later (same world:\ncrib, vision off, mechanical_v4, age 24, decoder gain 6, cmd_horizon 25; same DRIVERS, rest_order,\n_turn, strength 0.5, 20-degree turns, 25-tick hold; same scene tag; trials alternate reachable pose\nand independent turns). Nothing changes the physics; three things are read beside the tool's own\nreading:\n\n1. the tool's reading: env.py cmd_response_slow.cos on the hold's last tick (the 250 ms held gauge\n   that the trainer logs as cmd_response_cos_held on an order's last model step), with its scored\n   part count n;\n2. the parts that gauge scored, BY NAME: every row with strength above 0, not the eyes' row (found\n   by name), whose ordered turn is at least 1e-4 rad (env.py _command_response's own lines). The\n   list's length is checked against the gauge's n on every trial;\n3. the one-frame gauge, env.py cmd_response.cos (10 ms), read the way train_mimo samples follow_bout:\n   the last frame of each 5-frame model step, ticks 5, 10, 15, 20 and 25 of the hold, averaged per\n   order; also its mean over every tick.\n\nusage: python follow_anchor_measure.py <trials> <seed> <out.json>   (run with the cwd where the scene\nfiles may be written; the tool writes them under ./Saved/mimo_bridge/scenes_test)\"\"\"\nimport json\nimport math\nimport os\nimport subprocess\nimport sys\nimport time\n\nos.environ[\"CUDA_VISIBLE_DEVICES\"] = \"-1\"\nimport numpy as np\n\nimport mimo_bridge\nfrom mimo_bridge.action_decoder import quat_xyzw_to_mat, rotmat_log\nfrom mimo_bridge.body_layout import names_for\nfrom mimo_bridge.env import BridgeEnv\nfrom mimo_bridge.tools import whole_body_following as W\nfrom mimo_bridge.tools.command_following import _turn, rest_order\n\nTRIALS, SEED, OUT = int(sys.argv[1]), int(sys.argv[2]), sys.argv[3]\nKP, STRENGTH, ANGLE, HOLD, MODEL_STEP_FRAMES = 6.0, 0.5, 20.0, 25, 5\n\n\ndef scored_parts(env, order, xq0, names, gaze):\n    \"\"\"The rows env.py _command_response scores for this order and start pose, by name.\"\"\"\n    out = []\n    for i in range(len(names)):\n        if i == gaze or order[i, 8] <= 0:\n            continue\n        q0 = xq0[i]\n        R0 = quat_xyzw_to_mat([q0[1], q0[2], q0[3], q0[0]])\n        if np.linalg.norm(rotmat_log(quat_xyzw_to_mat(order[i, 3:7]) @ R0.T)) < 1e-4:\n            continue\n        out.append(names[i])\n    return out\n\n\ndef main():\n    names = list(names_for(\"trunk_v1\"))\n    rng = np.random.default_rng(SEED)\n    env = BridgeEnv(scene=\"crib\", run_dir=os.path.join(\"Saved\", \"mimo_bridge\", \"scenes_test\"), vision=False,\n                    tag=f\"_wholebody_{KP:g}_{STRENGTH:g}\", age=24, contact_profile=\"mechanical_v4\",\n                    caregiver_seconds=0, kp=KP, body_layout=\"trunk_v1\", cmd_horizon=HOLD)\n    assert list(env.proprio.handle_names) == names, env.proprio.handle_names\n    rows = []\n    t0 = time.time()\n    try:\n        env.reset()\n        n = len(names)\n        gaze = names.index(\"gaze\")\n        for _ in range(20):\n            env.step(rest_order(env, n), None, None, render=False)\n        for t in range(TRIALS):\n            kind = \"consistent\" if t % 2 == 0 else \"independent\"\n            if kind == \"consistent\":\n                drive = rest_order(env, n)\n                for group in W.DRIVERS:\n                    h = group[int(rng.integers(len(group)))]\n                    i = names.index(h)\n                    drive[i, 3:7] = _turn(drive[i, 3:7], rng.normal(size=3), math.radians(ANGLE))\n                    drive[i, 8] = STRENGTH\n                for _ in range(40):\n                    env.step(drive, None, None, render=False)\n                target = rest_order(env, n)\n                for _ in range(60):\n                    env.step(rest_order(env, n), None, None, render=False)\n                order = target.copy()\n            else:\n                order = rest_order(env, n)\n                for i in range(n):\n                    if i != gaze:\n                        order[i, 3:7] = _turn(order[i, 3:7], rng.normal(size=3), math.radians(ANGLE))\n            order[:, 8] = STRENGTH\n            order[gaze, 8] = 0.0\n            xq0 = np.array([env.data.xquat[b] for b in env.proprio.body_ids[:n]])\n            parts = scored_parts(env, order, xq0, names, gaze)\n            held = None\n            frame_samples, frame_all = [], []\n            for k in range(HOLD):\n                out = env.step(order, None, None, render=False)\n                one = (out.info.get(\"cmd_response\") or {}).get(\"cos\")\n                if one is not None:\n                    frame_all.append(float(one))\n                    if (k + 1) % MODEL_STEP_FRAMES == 0:\n                        frame_samples.append(float(one))\n                cr = out.info.get(\"cmd_response_slow\")\n                if cr and cr.get(\"cos\") is not None and k == HOLD - 1:\n                    held = (float(cr[\"cos\"]), float(cr.get(\"ratio\", 0.0)), int(cr.get(\"n\", 0)))\n            wcos, mag = W._weighted_cos(env, order, xq0, names)\n            if held is not None:\n                assert held[2] == len(parts), (t, held[2], parts)\n            rows.append(dict(kind=kind, trial=t, held_cos=held[0] if held else None,\n                             held_ratio=held[1] if held else None, held_n=held[2] if held else None,\n                             parts=parts, weighted_cos=wcos, mean_turn_deg=math.degrees(mag),\n                             one_frame_samples=frame_samples,\n                             one_frame_as_follow_bout=float(np.mean(frame_samples)) if frame_samples else None,\n                             one_frame_every_tick=float(np.mean(frame_all)) if frame_all else None))\n            for _ in range(60):\n                env.step(rest_order(env, n), None, None, render=False)\n            if t % 10 == 0:\n                print(f\"seed {SEED} trial {t} {time.time() - t0:.0f}s\", flush=True)\n    finally:\n        env.close()\n    root = os.path.dirname(os.path.dirname(os.path.abspath(mimo_bridge.__file__)))\n    head = subprocess.run([\"git\", \"-C\", root, \"rev-parse\", \"HEAD\"], capture_output=True, text=True).stdout.strip()\n    dirty = subprocess.run([\"git\", \"-C\", root, \"status\", \"--porcelain\", \"--\", \"mimo_bridge/env.py\",\n                            \"mimo_bridge/tools/whole_body_following.py\", \"mimo_bridge/action_decoder.py\",\n                            \"mimo_bridge/tools/command_following.py\"],\n                           capture_output=True, text=True).stdout.strip()\n    with open(OUT, \"w\", encoding=\"utf-8\") as f:\n        json.dump(dict(kp=KP, strength=STRENGTH, angle_deg=ANGLE, hold_ticks=HOLD, seed=SEED, trials=TRIALS,\n                       layout=\"trunk_v1\", names=names, source=os.path.abspath(mimo_bridge.__file__),\n                       commit=head, gauge_files_uncommitted=dirty, seconds=round(time.time() - t0, 1),\n                       rows=rows), f)\n    print(\"done\", OUT, flush=True)\n\n\nif __name__ == \"__main__\":\n    main()\n",
+    "analyse": "\"\"\"Combine the per-seed runs of follow_anchor_measure.py into the stored case (printed as JSON).\n\nPer arm (reachable pose = whole_body_following's 'consistent' orders; independent turns): the mean of\nthe 250 ms held reading and of the one-frame reading sampled as follow_bout samples it, each with a\n95% interval from resampling whole orders (2,000 resamples, rng seed 7), halves (seeds 0-1 against\n2-3, and first against second half of each seed's orders) and the per-seed means; the parts the gauge\nscored, by name, and how many per order. Also checks seed 0 against the tool's own run() output on\nthe same seed (rowfix/fg_run/new100.json) when that file exists.\"\"\"\nimport json\nimport os\nimport sys\n\nimport numpy as np\n\nS = os.path.dirname(os.path.abspath(__file__))\nseeds = [int(x) for x in sys.argv[1].split(\",\")]\nruns = {s: json.load(open(os.path.join(S, \"anchor_run\", f\"seed{s}.json\"), encoding=\"utf-8\")) for s in seeds}\nrng = np.random.default_rng(7)\n\n\ndef ci(values, reps=2000):\n    v = np.asarray(values, dtype=float)\n    idx = rng.integers(len(v), size=(reps, len(v)))\n    m = v[idx].mean(1)\n    return [round(float(np.percentile(m, 2.5)), 4), round(float(np.percentile(m, 97.5)), 4)]\n\n\ndef arm(kind):\n    rows = [(s, r) for s in seeds for r in runs[s][\"rows\"] if r[\"kind\"] == kind]\n    out = {}\n    for key, name in ((\"held_cos\", \"held_250ms\"), (\"one_frame_as_follow_bout\", \"one_frame_10ms\")):\n        vals = [r[key] for _, r in rows if r[key] is not None]\n        first = [r[key] for s, r in rows if r[key] is not None and s in seeds[:len(seeds) // 2]]\n        second = [r[key] for s, r in rows if r[key] is not None and s in seeds[len(seeds) // 2:]]\n        per_seed = {str(s): round(float(np.mean([r[key] for s2, r in rows if s2 == s and r[key] is not None])), 4)\n                    for s in seeds}\n        n_half = {s: len([1 for s2, _ in rows if s2 == s]) // 2 for s in seeds}\n        early, late = [], []\n        seen = {s: 0 for s in seeds}\n        for s, r in rows:\n            if r[key] is None:\n                continue\n            (early if seen[s] < n_half[s] else late).append(r[key])\n            seen[s] += 1\n        out[name + \"_mean\"] = round(float(np.mean(vals)), 4)\n        out[name] = dict(mean=round(float(np.mean(vals)), 4), orders=len(vals), interval_95pct=ci(vals),\n                         halves_by_seed=[round(float(np.mean(first)), 4), round(float(np.mean(second)), 4)],\n                         halves_by_time=[round(float(np.mean(early)), 4), round(float(np.mean(late)), 4)],\n                         per_seed=per_seed)\n    counts = [len(r[\"parts\"]) for _, r in rows]\n    out[\"parts_per_order\"] = dict(min=min(counts), max=max(counts), mean=round(float(np.mean(counts)), 2))\n    out[\"commanded_turn_deg_mean\"] = round(float(np.mean([r[\"mean_turn_deg\"] for _, r in rows])), 2)\n    out[\"one_frame_every_tick_mean\"] = round(float(np.mean([r[\"one_frame_every_tick\"] for _, r in rows\n                                                            if r[\"one_frame_every_tick\"] is not None])), 4)\n    return out, rows\n\n\nreach, rrows = arm(\"consistent\")\nind, irows = arm(\"independent\")\nnames = runs[seeds[0]][\"names\"]\nscored = [n for n in names if any(n in r[\"parts\"] for _, r in rrows + irows)]\ncheck = {}\np = os.path.join(S, \"fg_run\", \"new100.json\")\nif 0 in runs and os.path.isfile(p) and runs[0][\"trials\"] == 100:\n    tool = json.load(open(p, encoding=\"utf-8\"))\n    mine = {k: float(np.mean([r[\"held_cos\"] for r in runs[0][\"rows\"] if r[\"kind\"] == k and r[\"held_cos\"] is not None]))\n            for k in (\"consistent\", \"independent\")}\n    check = dict(tool_run_seed0=dict(consistent=tool[\"consistent\"][\"direction_match_mean\"],\n                                     independent=tool[\"independent\"][\"direction_match_mean\"]),\n                 this_loop_seed0=mine,\n                 identical=all(abs(mine[k] - tool[k][\"direction_match_mean\"]) < 1e-12 for k in mine))\nprint(json.dumps(dict(seeds=seeds, trials_per_seed={str(s): runs[s][\"trials\"] for s in seeds},\n                      commits={str(s): runs[s][\"commit\"] for s in seeds},\n                      gauge_files_uncommitted={str(s): runs[s][\"gauge_files_uncommitted\"] for s in seeds},\n                      seconds={str(s): runs[s][\"seconds\"] for s in seeds},\n                      layout=runs[seeds[0]][\"layout\"], parts_scored=scored, reachable_pose=reach,\n                      independent_turns=ind, identity_check=check), indent=1))\n"
+   }
+  }
+ },
+ "live_run_details": {
+  "bodies": {
+   "0": {
+    "latches": 50,
+    "sources": {
+     "planner": 25,
+     "reflex_noise": 16,
+     "reflex": 9
+    },
+    "bout_steps": {
+     "on": 162,
+     "off": 88
+    },
+    "seconds": 382.34358835220337,
+    "start": "episode companion, body 0 of 8 at step 344400"
+   },
+   "1": {
+    "latches": 50,
+    "sources": {
+     "planner": 25,
+     "reflex_noise": 16,
+     "reflex": 9
+    },
+    "bout_steps": {
+     "on": 162,
+     "off": 88
+    },
+    "seconds": 387.72055077552795,
+    "start": "episode companion, body 1 of 8 at step 344400"
+   },
+   "2": {
+    "latches": 50,
+    "sources": {
+     "planner": 25,
+     "reflex_noise": 16,
+     "reflex": 9
+    },
+    "bout_steps": {
+     "on": 162,
+     "off": 88
+    },
+    "seconds": 440.1822946071625,
+    "start": "episode companion, body 2 of 8 at step 344400"
+   },
+   "3": {
+    "latches": 50,
+    "sources": {
+     "planner": 25,
+     "reflex_noise": 16,
+     "reflex": 9
+    },
+    "bout_steps": {
+     "on": 162,
+     "off": 88
+    },
+    "seconds": 402.99722361564636,
+    "start": "episode companion, body 3 of 8 at step 344400"
+   },
+   "4": {
+    "latches": 50,
+    "sources": {
+     "planner": 25,
+     "reflex_noise": 16,
+     "reflex": 9
+    },
+    "bout_steps": {
+     "on": 162,
+     "off": 88
+    },
+    "seconds": 433.8115916252136,
+    "start": "episode companion, body 4 of 8 at step 344400"
+   }
+  },
+  "strength_median": 0.44,
+  "sim_seconds_between_latch_and_scoring": [
+   0.25
+  ]
+ },
+ "method": {
+  "live": "Checkpoint Saved/mimo_bridge/experiments/H84_fresh_drivers_20260918_seg31_toy_and_push/checkpoints/ckpt_step_344400, loaded with mimo_bridge/tools/gof_probe_harness.load_frozen (CPU, learning off) and load_episode; one Session per body of the saved 8-body episode (world, context, memory as saved); each body lived 250 model steps (12.5 s) under Session.observe() + Session.policy_act(), which latches res.motor_for_action (the executed order after babble and the 0.35 smoother) every motor_hold = 5 steps on the trainer's global step. The trainer's babble bouts (train_mimo.py: babble on 2-5 s, off 1-3 s, one schedule for all bodies) were replayed from the episode's saved schedule state by setting Session.dev['exploration_noise'] to 0.05 or 0 before each step. Part orientation = MuJoCo xquat of env.proprio.body_ids (checked equal to the decoder's handle bodies), read at the latch and at the next latch (sim time 0.25 s later, checked on every row). The order's quaternion (columns 3-6, x y z w) is a world orientation target: action_decoder.ActionDecoder.decode turns R_target x R_current^T (R_current = data.xmat of the handle body) into joint changes. Rows: every part with strength > 0 except the gaze row (row 23 in trunk_v1); all 25 body parts had strength > 0 on every order. Angles by gof_probe_harness.rotation_deg_xyzw.",
+  "physics": "The loop of mimo_bridge/tools/whole_body_following.run (same BridgeEnv: crib, vision off, mechanical_v4, age 24, decoder kp 6, cmd_horizon 25; same DRIVERS, command_following.rest_order and _turn; strength 0.5, turn 20 degrees, order held 25 ticks), 400 trials alternating reachable-pose and independent-turn orders, seed 0. Pose read before the first tick and after the 25th. Here the gaze row (23) is left unordered and the chest is ordered; the tool as written leaves row n-1 (chest) unordered instead, reported separately. Parts asked to turn less than 1e-4 rad are skipped, the env gauge's own line.",
+  "chance": "For every scored part-order: 200 targets at the same angular distance from the starting orientation as the ordered one, each about a uniformly random world axis; the share of them the part's real 250 ms end orientation is closer to.",
+  "spread": "Halves: live split by body (bodies 0-1 vs 2-4) and by time (first vs second half of each body's orders); physics split by first vs second half of trials and by alternating trials. 95% intervals resample whole orders (all parts of one order together), 2,000 resamples.",
+  "scripts": {
+   "live": "\"\"\"Case 1: the live model's own latched orders. For each latched order and each body part with\nstrength > 0 (gaze row skipped): is the part closer to the ordered world orientation 250 ms\nlater (at the next latch) than it was at the latch? Also the chance count: the part's real\n250 ms turn scored against random targets of the same distance.\"\"\"\nimport os, sys, json, time, math\nfrom pathlib import Path\nos.environ.setdefault(\"CUDA_VISIBLE_DEVICES\", \"-1\")\nimport numpy as np\nimport torch\n\nfrom mimo_bridge.tools import gof_probe_harness as H\n\nSCRATCH = Path(sys.argv[1])\nSTEPS = int(sys.argv[2])            # model steps per body\nBODIES = [int(x) for x in sys.argv[3].split(\",\")]\nOUT = SCRATCH / sys.argv[4]\nCKPT = r\"D:\\UEMA_Research\\Saved\\mimo_bridge\\experiments\\H84_fresh_drivers_20260918_seg31_toy_and_push\\checkpoints\\ckpt_step_344400\"\nH.PROBES_ROOT = SCRATCH / \"probe_root\"          # the sessions' scene folders go to scratch\nN_RAND = 200\nrng = np.random.default_rng(12345)\n\n\ndef qmul(a, b):\n    return H.quat_mul_xyzw(a, b)\n\n\ndef chance_share(q0, q1, d0_deg):\n    \"\"\"Share of random targets (q0 turned d0 degrees about a uniformly random world axis) that\n    q1 is closer to than q0 was (q0's distance to each is d0 by construction).\"\"\"\n    axes = rng.normal(size=(N_RAND, 3))\n    hits = 0\n    for ax in axes:\n        qt = qmul(H.axis_angle_xyzw(ax, d0_deg), q0)\n        if H.rotation_deg_xyzw(q1, qt) < d0_deg:\n            hits += 1\n    return hits / N_RAND\n\n\ndef rotvec_cos(q0, qt, q1):\n    from mimo_bridge.action_decoder import quat_xyzw_to_mat, rotmat_log\n    R0, Rt, R1 = quat_xyzw_to_mat(q0), quat_xyzw_to_mat(qt), quat_xyzw_to_mat(q1)\n    wc, wg = rotmat_log(Rt @ R0.T), rotmat_log(R1 @ R0.T)\n    nc, ng = np.linalg.norm(wc), np.linalg.norm(wg)\n    if nc < 1e-4:\n        return None\n    return float(np.dot(wc, wg) / (nc * ng)) if ng > 1e-6 else 0.0\n\n\nt_all = time.time()\nfz = H.load_frozen(CKPT, threads=4)\nep, note = H.load_episode(fz)\nprint(\"episode:\", note, flush=True)\nbabble = float(getattr(fz.args, \"babble_noise\", 0.0) or 0.0)\nBOUTS = str(getattr(fz.args, \"babble_bouts\", \"off\")) in (\"on\", \"real\") and not bool(getattr(fz.args, \"no_babble\", False))\n_st0 = ep[\"trainer\"]\nprint(\"bout state at save:\", _st0.get(\"bout_on\"), _st0.get(\"bout_until\"), _st0.get(\"step\"), \"bouts\", BOUTS, flush=True)\nresult = dict(checkpoint=CKPT, episode_note=note, babble=babble, steps_per_body=STEPS, bodies={}, rows=[])\nfor b in BODIES:\n    t0 = time.time()\n    s = H.Session(fz, episode=ep, body=b, babble=babble)\n    env = s.env\n    dec_ids = [h.body_id for h in env.decoder.handles]\n    prop_ids = [int(x) for x in env.proprio.body_ids]\n    assert dec_ids == prop_ids, (dec_ids, prop_ids)\n    assert abs(s.clock.held_order_seconds - 0.25) < 1e-9, s.clock.held_order_seconds\n    names = s.handle_names\n    gi = s.gaze_idx\n    # THE TRAINER'S BABBLE BOUTS (train_mimo.py, before model.step): babble on for 2-5 s, off for\n    # 1-3 s, one schedule for all bodies, restored from the episode's saved schedule state\n    st = ep[\"trainer\"]\n    bout_on, bout_until = bool(st[\"bout_on\"]), int(st[\"bout_until\"])\n    bout_rng = np.random.default_rng()\n    bout_rng.bit_generator.state = st[\"bout_rng\"]\n    tsec = float(s.clock.model_step_seconds)\n    bout_steps = {True: 0, False: 0}\n    pending = None\n    latches = 0\n    sources = {}\n    try:\n        for k in range(STEPS):\n            step = s._policy_i\n            if BOUTS:\n                if step >= bout_until:\n                    bout_on = not bout_on\n                    dur_s = bout_rng.uniform(2.0, 5.0) if bout_on else bout_rng.uniform(1.0, 3.0)\n                    bout_until = step + max(1, int(dur_s / tsec))\n                s.dev[\"exploration_noise\"] = babble if bout_on else 0.0\n            bout_steps[bout_on] += 1\n            s.observe()\n            latch = s._held is None or s._policy_i % s.hold == 0\n            sim_t = float(s.frames[0].sim_time)\n            if latch:\n                pos, quat = s.pose()\n                if pending is not None:\n                    elapsed = sim_t - pending[\"sim_t\"]\n                    order, q0s = pending[\"order\"], pending[\"quat\"]\n                    for i in range(len(names)):\n                        if i == gi or order[i, 8] <= 0:\n                            continue\n                        qt = order[i, 3:7].astype(np.float64)\n                        qt = qt / np.linalg.norm(qt)\n                        q0, q1 = q0s[i], quat[i]\n                        d0 = H.rotation_deg_xyzw(q0, qt)\n                        d1 = H.rotation_deg_xyzw(q1, qt)\n                        turn = H.rotation_deg_xyzw(q0, q1)\n                        result[\"rows\"].append(dict(\n                            body=b, latch=pending[\"latch\"], step=pending[\"step\"], src=pending[\"src\"],\n                            noise=pending[\"noise\"], part=names[i], strength=float(order[i, 8]), d0=d0, d1=d1, turn=turn,\n                            closer=bool(d1 < d0), elapsed=elapsed,\n                            chance=chance_share(q0, q1, d0), cos=rotvec_cos(q0, qt, q1)))\n                src = getattr(s.model, \"last_action_source\", None)\n                noise_now = float(s.dev[\"exploration_noise\"])\n                sources[src] = sources.get(src, 0) + 1\n            s.policy_act()\n            if latch:\n                pending = dict(order=np.array(s._held[0], dtype=np.float64), quat=quat, sim_t=sim_t,\n                               src=src, noise=noise_now, latch=latches, step=int(s._policy_i - 1))\n                latches += 1\n            if k % 25 == 0:\n                print(f\"body {b} step {k} latches {latches} rows {len(result['rows'])} \"\n                      f\"{(time.time()-t0)/(k+1):.2f}s/step\", flush=True)\n    finally:\n        s.close()\n    result[\"bodies\"][str(b)] = dict(latches=latches, sources=sources, bout_steps={\"on\": bout_steps[True], \"off\": bout_steps[False]}, seconds=time.time() - t0,\n                                    start=s.start)\n    OUT.write_text(json.dumps(result), encoding=\"utf-8\")\n    print(\"body\", b, \"done\", result[\"bodies\"][str(b)], flush=True)\nresult[\"seconds\"] = time.time() - t_all\nOUT.write_text(json.dumps(result), encoding=\"utf-8\")\nprint(\"done\", flush=True)\n",
+   "physics": "\"\"\"Cases 2 and 3: physics only, no model. The loop of mimo_bridge/tools/whole_body_following.py\nrun() (same env, same DRIVERS, same rest_order/_turn, same kp/strength/angle/hold), with the\ncloser-or-not count added: for each part ordered (strength > 0, gaze row excluded), is the part\ncloser to its ordered world orientation after exactly 25 ticks (250 ms) than at the order?\nThe tool's own gauge (cmd_response_slow.cos, read at ticks 26-27 as the tool does) is kept for\ncross-reference with the recorded anchor.\"\"\"\nimport os, sys, json, math, time\nfrom pathlib import Path\nimport numpy as np\n\nfrom mimo_bridge.tools.command_following import _turn, rest_order\nfrom mimo_bridge.tools.whole_body_following import DRIVERS\nfrom mimo_bridge.tools.gof_probe_harness import rotation_deg_xyzw, axis_angle_xyzw, quat_mul_xyzw\n\nSCRATCH = Path(sys.argv[1])\nTRIALS = int(sys.argv[2])\nSEED = int(sys.argv[3])\nOUT = SCRATCH / sys.argv[4]\nKP = float(sys.argv[5]) if len(sys.argv) > 5 else 6.0\nSTRENGTH = float(sys.argv[6]) if len(sys.argv) > 6 else 0.5\nANGLE = float(sys.argv[7]) if len(sys.argv) > 7 else 20.0\nORIG = len(sys.argv) > 8 and sys.argv[8] == \"orig\"     # the tool exactly as written: row n-1 unordered\nHOLD = 25\nN_RAND = 200\ncrng = np.random.default_rng(SEED + 999)\n\n\ndef chance_share(q0, q1, d0):\n    hits = 0\n    for ax in crng.normal(size=(N_RAND, 3)):\n        qt = quat_mul_xyzw(axis_angle_xyzw(ax, d0), q0)\n        if rotation_deg_xyzw(q1, qt) < d0:\n            hits += 1\n    return hits / N_RAND\n\n\ndef xyzw(env, ids):\n    return np.array([[q[1], q[2], q[3], q[0]] for q in (np.array(env.data.xquat[b], dtype=np.float64) for b in ids)])\n\n\ndef main():\n    from mimo_bridge.env import BridgeEnv\n    from mimo_bridge.body_layout import names_for\n    names = list(names_for(\"trunk_v1\"))\n    rng = np.random.default_rng(SEED)\n    env = BridgeEnv(scene=\"crib\", run_dir=str(SCRATCH / \"scenes\"), vision=False,\n                    tag=f\"_closer_{KP:g}_{STRENGTH:g}_{SEED}\", age=24, contact_profile=\"mechanical_v4\",\n                    caregiver_seconds=0, kp=KP, body_layout=\"trunk_v1\", cmd_horizon=HOLD)\n    rows, gauge = [], []\n    t0 = time.time()\n    try:\n        env.reset()\n        n = len(names)\n        # whole_body_following.py uses gaze = n - 1, which in trunk_v1 is \"chest\" (row 25); the\n        # gaze row is 23. The real gaze row is excluded here and the chest is ordered like any part.\n        gaze = names.index(\"gaze\")\n        unordered = (n - 1) if ORIG else gaze\n        ids = list(env.proprio.body_ids[:n])\n        assert [h.body_id for h in env.decoder.handles] == [int(x) for x in env.proprio.body_ids]\n        dt = float(env.dt)\n        for _ in range(20):\n            env.step(rest_order(env, n), None, None, render=False)\n        for t in range(TRIALS):\n            kind = \"consistent\" if t % 2 == 0 else \"independent\"\n            if kind == \"consistent\":\n                drive = rest_order(env, n)\n                for group in DRIVERS:\n                    h = group[int(rng.integers(len(group)))]\n                    i = names.index(h)\n                    drive[i, 3:7] = _turn(drive[i, 3:7], rng.normal(size=3), math.radians(ANGLE))\n                    drive[i, 8] = STRENGTH\n                for _ in range(40):\n                    env.step(drive, None, None, render=False)\n                target = rest_order(env, n)\n                for _ in range(60):\n                    env.step(rest_order(env, n), None, None, render=False)\n                order = target.copy()\n            else:\n                order = rest_order(env, n)\n                for i in range(n):\n                    if i != unordered:\n                        order[i, 3:7] = _turn(order[i, 3:7], rng.normal(size=3), math.radians(ANGLE))\n            order[:, 8] = STRENGTH\n            order[unordered, 8] = 0.0\n            q0s = xyzw(env, ids)\n            sim0 = float(env.data.time)\n            cos_t = []\n            q1s = None\n            for k in range(HOLD + 2):\n                out = env.step(order, None, None, render=False)\n                if k == HOLD - 1:\n                    q1s = xyzw(env, ids)\n                    elapsed = float(env.data.time) - sim0\n                cr = out.info.get(\"cmd_response_slow\")\n                if cr and cr.get(\"cos\") is not None and k >= HOLD:\n                    cos_t.append(float(cr[\"cos\"]))\n            if cos_t:\n                gauge.append(dict(kind=kind, trial=t, cos=float(np.mean(cos_t))))\n            for i in range(n):\n                if i == gaze or order[i, 8] <= 0:\n                    continue\n                qt = order[i, 3:7] / np.linalg.norm(order[i, 3:7])\n                d0 = rotation_deg_xyzw(q0s[i], qt)\n                if math.radians(d0) < 1e-4:        # the env gauge's own skip line for a zero ask\n                    continue\n                d1 = rotation_deg_xyzw(q1s[i], qt)\n                rows.append(dict(kind=kind, trial=t, part=names[i], d0=d0, d1=d1,\n                                 turn=rotation_deg_xyzw(q0s[i], q1s[i]), closer=bool(d1 < d0),\n                                 chance=chance_share(q0s[i], q1s[i], d0), elapsed=elapsed))\n            for _ in range(60):\n                env.step(rest_order(env, n), None, None, render=False)\n            if t % 20 == 0:\n                print(f\"trial {t} rows {len(rows)} {time.time()-t0:.0f}s\", flush=True)\n    finally:\n        env.close()\n    OUT.write_text(json.dumps(dict(kp=KP, strength=STRENGTH, angle_deg=ANGLE, hold_ticks=HOLD, seed=SEED,\n                                   trials=TRIALS, dt=dt, orig=ORIG, rows=rows, gauge=gauge, seconds=time.time() - t0)),\n                   encoding=\"utf-8\")\n    print(\"done\", len(rows), flush=True)\n\n\nif __name__ == \"__main__\":\n    main()\n",
+   "analysis": "import json, sys, math\nfrom pathlib import Path\nimport numpy as np\n\nSP = Path(sys.argv[1])\nMIN_RAD = 1e-4\nrng = np.random.default_rng(7)\n\n\ndef per100(rows, key=\"closer\"):\n    return 100.0 * float(np.mean([float(r[key]) for r in rows])) if rows else None\n\n\ndef cluster_ci(rows, cluster_key, key=\"closer\", reps=2000):\n    groups = {}\n    for r in rows:\n        groups.setdefault(cluster_key(r), []).append(float(r[key]))\n    g = list(groups.values())\n    sums = np.array([sum(x) for x in g]); cnts = np.array([len(x) for x in g])\n    idx = rng.integers(len(g), size=(reps, len(g)))\n    vals = 100.0 * sums[idx].sum(1) / cnts[idx].sum(1)\n    return [float(np.percentile(vals, 2.5)), float(np.percentile(vals, 97.5))], len(g)\n\n\ndef summary(rows, cluster_key, halves):\n    rows = [r for r in rows if math.radians(r[\"d0\"]) >= MIN_RAD]\n    out = dict(closer_per_100=per100(rows), part_orders=len(rows),\n               closer_count=int(sum(r[\"closer\"] for r in rows)),\n               chance_per_100=per100(rows, \"chance\"),\n               ties=int(sum(r[\"d1\"] == r[\"d0\"] for r in rows)),\n               ordered_distance_deg_median=float(np.median([r[\"d0\"] for r in rows])),\n               turn_in_250ms_deg_median=float(np.median([r[\"turn\"] for r in rows])),\n               distance_after_deg_median=float(np.median([r[\"d1\"] for r in rows])))\n    ci, ng = cluster_ci(rows, cluster_key)\n    out[\"closer_per_100_95pct_interval_resampling_whole_orders\"] = ci\n    out[\"whole_orders\"] = ng\n    ci2, _ = cluster_ci(rows, cluster_key, \"chance\")\n    out[\"chance_per_100_95pct_interval\"] = ci2\n    out[\"halves\"] = {}\n    for name, fn in halves.items():\n        a = [r for r in rows if fn(r) == 0]; b = [r for r in rows if fn(r) == 1]\n        out[\"halves\"][name] = dict(first=per100(a), second=per100(b), n_first=len(a), n_second=len(b),\n                                   chance_first=per100(a, \"chance\"), chance_second=per100(b, \"chance\"))\n    # by ordered distance quartile\n    d0s = np.array([r[\"d0\"] for r in rows])\n    qs = np.percentile(d0s, [25, 50, 75])\n    bins = []\n    edges = [0.0] + list(qs) + [1e9]\n    for lo, hi in zip(edges[:-1], edges[1:]):\n        x = [r for r in rows if lo <= r[\"d0\"] < hi]\n        bins.append(dict(ordered_distance_deg=[round(lo, 2), round(hi, 2) if hi < 1e8 else None], part_orders=len(x),\n                         closer_per_100=per100(x), chance_per_100=per100(x, \"chance\"),\n                         turn_deg_median=float(np.median([r[\"turn\"] for r in x])) if x else None))\n    out[\"by_ordered_distance_quarter\"] = bins\n    parts = {}\n    for r in rows:\n        parts.setdefault(r[\"part\"], []).append(r)\n    out[\"by_part\"] = {p: dict(n=len(x), closer_per_100=round(per100(x), 1), chance_per_100=round(per100(x, \"chance\"), 1),\n                              ordered_distance_deg_median=round(float(np.median([r[\"d0\"] for r in x])), 1),\n                              turn_deg_median=round(float(np.median([r[\"turn\"] for r in x])), 1))\n                      for p, x in parts.items()}\n    return out, rows\n\n\nres = {}\nlive = json.loads((SP / sys.argv[2]).read_text(encoding=\"utf-8\"))\nL = live[\"rows\"]\nnb = sorted({r[\"body\"] for r in L})\nmaxl = {b: max(r[\"latch\"] for r in L if r[\"body\"] == b) for b in nb}\nhalf_b = set(nb[:len(nb) // 2])\ns, Lf = summary(L, lambda r: (r[\"body\"], r[\"latch\"]),\n                {\"bodies_first_half_vs_second_half\": lambda r: 0 if r[\"body\"] in half_b else 1,\n                 \"time_first_half_vs_second_half\": lambda r: 0 if r[\"latch\"] <= maxl[r[\"body\"]] / 2 else 1})\ns[\"elapsed_s_values\"] = sorted({round(r[\"elapsed\"], 4) for r in L})\ns[\"by_author\"] = {}\nfor src in sorted({r[\"src\"] for r in Lf}, key=str):\n    x = [r for r in Lf if r[\"src\"] == src]\n    ci, ng = cluster_ci(x, lambda r: (r[\"body\"], r[\"latch\"]))\n    s[\"by_author\"][str(src)] = dict(closer_per_100=per100(x), part_orders=len(x), whole_orders=ng,\n                                   closer_per_100_95pct_interval=ci, chance_per_100=per100(x, \"chance\"),\n                                   ordered_distance_deg_median=float(np.median([r[\"d0\"] for r in x])),\n                                   turn_deg_median=float(np.median([r[\"turn\"] for r in x])),\n                                   strength_median=float(np.median([r[\"strength\"] for r in x])))\ns[\"strength_median\"] = float(np.median([r[\"strength\"] for r in Lf]))\ns[\"bodies\"] = live[\"bodies\"]\nres[\"live\"] = s\nfor tag in sys.argv[3:]:\n    P = json.loads((SP / tag).read_text(encoding=\"utf-8\"))\n    R = P[\"rows\"]\n    mt = max(r[\"trial\"] for r in R)\n    for kind in (\"consistent\", \"independent\"):\n        x = [r for r in R if r[\"kind\"] == kind]\n        o, _ = summary(x, lambda r: r[\"trial\"],\n                       {\"trials_first_half_vs_second_half\": lambda r: 0 if r[\"trial\"] <= mt / 2 else 1,\n                        \"alternate_trials\": lambda r: (r[\"trial\"] // 2) % 2})\n        g = [a[\"cos\"] for a in P[\"gauge\"] if a[\"kind\"] == kind]\n        o[\"tool_gauge_cmd_response_slow_cos_mean\"] = float(np.mean(g)) if g else None\n        o[\"tool_gauge_trials\"] = len(g)\n        o[\"settings\"] = dict(kp=P[\"kp\"], strength=P[\"strength\"], angle_deg=P[\"angle_deg\"], hold_ticks=P[\"hold_ticks\"],\n                             seed=P[\"seed\"], orig=P.get(\"orig\"), elapsed_s_values=sorted({round(r[\"elapsed\"], 4) for r in x}))\n        res[f\"{tag}:{kind}\"] = o\nprint(json.dumps(res, indent=1))\n"
+  }
+ },
+ "uncertainty": [
+  "The live count covers 5 of the 8 saved bodies (245 whole orders, 6,125 part-orders): the folder Saved/mimo_bridge/caregiver_speech_exchange_v1_final (the caregiver's speech bank named in the episode's world settings) disappeared during the measurement, after body 4 was built, so body 5's world could not be built. This measurement did not restore it.",
+  "The probe runs the model with learning off, on the CPU; the live run learns every step. Over 12.5 s per body the trained weights are unchanged here.",
+  "All bodies share one babble-bout schedule, as in training, so every body got the same author mix: per 50 orders, 25 planner, 16 controller with babble, 9 controller alone. The controller-alone count rests on 45 whole orders.",
+  "The executed order is 0.35 x the new order + 0.65 x the previous blended order (smooth_actions 0.35). The author label names the new part only.",
+  "The physics cases differ from the live world: no caregiver, mobile or critters, body_function off (live: modulate, fatigue scales actuator force), fixed strength 0.5 (live median 0.44), fixed 20-degree turns (live median ordered distance 23.8 degrees); the reachable-pose orders ask for small turns (median 4.6 degrees).",
+  "Code: the probe ran on the current working tree (lem_model.py and train_mimo.py carry uncommitted edits; the motor synergy they add is off for this run). Commit 1c6ec9a6f (finger reach clip) states that segment 31 already ran it."
+ ],
+ "findings_beside_the_count": [
+  "env.py line 2349: _command_response takes gaze_idx = len(proprio.body_ids) - 1, which in the trunk_v1 layout (26 rows) is 'chest'; the gaze row is 23. So the live following gauge (cmd_response and cmd_response_slow, the source of the 0.14 reading) scores the gaze row's order against the eye body's rotation whenever that row's strength is above 0, and never scores the chest. whole_body_following.py lines 79 and 172 repeat it (gaze = n - 1), so its independent case never ordered the chest and did order the gaze row.",
+  "The recorded anchor in Saved/mimo_bridge/scale_anchors.json (whole_body_following, measured 2026-09-19: 0.63 reachable pose, 0.37 independent turns on the tool's own gauge) does not reproduce on today's code: the tool as written, same seed 0, same first 40 trials, reads 0.80 and 0.52; over 200 trials each, 0.83 and 0.52 as written, 0.85 and 0.55 with the gaze row fixed. Commits after the anchor changed the fingers (30c0c7a8e finger armature, 1c6ec9a6f finger reach clip); which change moved it is unmeasured.",
+  "The env's 250 ms gauge (cmd_response_slow) spans 26 physics ticks, not 25: an order entered at tick k is scored after tick k+25's physics.",
+  "Live, 54 of 100 parts end closer, yet summed over all part-orders the distance to the ordered orientation grows 3.4% in 250 ms (the median part closes 3.3%): the parts that miss end farther away by more than the parts that hit gain."
+ ]
+}

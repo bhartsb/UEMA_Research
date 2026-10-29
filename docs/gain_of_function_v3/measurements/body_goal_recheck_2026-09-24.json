@@ -1,0 +1,96 @@
+{
+  "checkpoint": "Saved\\mimo_bridge\\experiments\\H84_fresh_drivers_20260918_seg36_supervised_planner\\checkpoints\\ckpt_step_375906",
+  "bodies": 8,
+  "starts_per_body": 3,
+  "private_warmup_steps": 20,
+  "start_spacing_steps": 10,
+  "new_target_seed_base": 95700,
+  "learning": false,
+  "production_switches_changed": false,
+  "correction": "Add the most recent completed order's measured-minus-predicted world displacement and world rotation-vector change to the new 250 ms forecast. No tuned weight, clamp, or future controller outcome.",
+  "held_out": "Later states after twenty private policy steps and distinct target seeds; none of the eight preceding calibration targets is reused.",
+  "comparison": "Controller, uncorrected body-head search and past-order-corrected body-head search from the same snapshots, goal and random state.",
+  "unchanged": "30 search updates, learning rate 0.1, baseline retained, +/-1.80 cm per raw coordinate and 11 degrees per part before normal smoothing; strength and gaze fixed.",
+  "acceptance": "Actual goal error improves over both the controller and uncorrected body-head choice, with 95% paired uncertainty computed across the eight body means.",
+  "scope": "Auditor-supplied reachable physical goals; goal-memory integration is still required before autonomous use.",
+  "comparisons": {
+    "controller": {
+      "bodies": 8,
+      "trials": 24,
+      "candidate": "past_order_corrected",
+      "baseline": "controller",
+      "candidate_mean": 0.4195371400564909,
+      "baseline_mean": 0.4301659371703863,
+      "error_difference_mean": -0.010628797113895423,
+      "error_difference_ci95": [
+        -0.052762868783126304,
+        0.035754993138834845
+      ],
+      "error_reduction_percent": 2.4708597765344287,
+      "error_reduction_percent_ci95": [
+        -8.325221804872045,
+        12.480588949319305
+      ],
+      "bodies_improved": 5,
+      "improvement_above_uncertainty": false
+    },
+    "uncorrected": {
+      "bodies": 8,
+      "trials": 24,
+      "candidate": "past_order_corrected",
+      "baseline": "uncorrected",
+      "candidate_mean": 0.4195371400564909,
+      "baseline_mean": 0.44853669342895347,
+      "error_difference_mean": -0.02899955337246258,
+      "error_difference_ci95": [
+        -0.07255225939055285,
+        0.01426689699292185
+      ],
+      "error_reduction_percent": 6.465369232284668,
+      "error_reduction_percent_ci95": [
+        -3.2083917635961523,
+        15.692857783219985
+      ],
+      "bodies_improved": 5,
+      "improvement_above_uncertainty": false
+    }
+  },
+  "weights_unchanged": true,
+  "passed_private_comparison": false,
+  "production_adoption": false,
+  "direct_vs_controller": {
+    "bodies": 8,
+    "trials": 24,
+    "candidate": "uncorrected",
+    "baseline": "controller",
+    "candidate_mean": 0.44853669342895347,
+    "baseline_mean": 0.4301659371703863,
+    "error_difference_mean": 0.018370756258567156,
+    "error_difference_ci95": [
+      -0.018300150008872182,
+      0.05344817042350767
+    ],
+    "error_reduction_percent": -4.270620863057917,
+    "error_reduction_percent_ci95": [
+      -11.975257627612525,
+      4.4352431110805774
+    ],
+    "bodies_improved": 2,
+    "improvement_above_uncertainty": false
+  },
+  "physical_units": {
+    "controller": {
+      "position_error_cm": 1.0300279359022777,
+      "rotation_error_deg": 7.563722789287567
+    },
+    "uncorrected": {
+      "position_error_cm": 1.0405210703611374,
+      "rotation_error_deg": 7.70712282260259
+    },
+    "past_order_corrected": {
+      "position_error_cm": 1.0128803501526515,
+      "rotation_error_deg": 7.640038390954335
+    }
+  },
+  "trials_sha256": "ad5028418030c8f232da4e8c794c6f153c5aff6ab6ec40b71cc0600e9b6150fb"
+}

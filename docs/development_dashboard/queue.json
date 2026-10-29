@@ -1,0 +1,254 @@
+{
+  "schema": 1,
+  "jobs": [
+    {
+      "id": "toy-interventions-20260913",
+      "title": "Does the toy control its looking?",
+      "question": "From identical starting bodies, keep, move, remove or interrupt the toy, then measure where the eyes settle.",
+      "decision": "Use the physical responses to distinguish lack of target selection, lack of correction and failure to hold a completed look.",
+      "scope": "Four frozen worlds; model commands only, with reflexes and scheduled holds removed. Includes a pose-hold reference and full physical replay. Acquisition, retention and transfer require their own calibrated comparisons.",
+      "module": "mimo_bridge.tools.developmental_probe",
+      "checkpoint": "D:/UEMA_Research/Saved/mimo_bridge/experiments/H78_self_learning_20260912_232251/checkpoints/ckpt_step_3995492",
+      "args": [
+        "--checkpoint",
+        "D:/UEMA_Research/Saved/mimo_bridge/experiments/H78_self_learning_20260912_232251/checkpoints/ckpt_step_3995492",
+        "--profile",
+        "toy",
+        "--worlds",
+        "4",
+        "--steps",
+        "160",
+        "--seed",
+        "51421"
+      ],
+      "max_attempts": 2
+    },
+    {
+      "id": "body-only-movement-20260913",
+      "title": "What can it do with only its body and floor?",
+      "question": "Measure coordinated posture changes and travel with no adult, moving mobile or visible target directing the movement.",
+      "decision": "Compare model control with an achieved-pose hold. Identify actual turns, support changes and displacement before deciding which learning mechanism needs repair.",
+      "scope": "Four copied worlds from the same checkpoint. Body-axis orientation prevents turning around the pen from counting as rolling. These observations do not by themselves establish purposeful rolling or crawling.",
+      "module": "mimo_bridge.tools.developmental_probe",
+      "checkpoint": "D:/UEMA_Research/Saved/mimo_bridge/experiments/H78_self_learning_20260912_232251/checkpoints/ckpt_step_3995492",
+      "args": [
+        "--checkpoint",
+        "D:/UEMA_Research/Saved/mimo_bridge/experiments/H78_self_learning_20260912_232251/checkpoints/ckpt_step_3995492",
+        "--profile",
+        "body_floor",
+        "--worlds",
+        "4",
+        "--steps",
+        "200",
+        "--seed",
+        "51521"
+      ],
+      "max_attempts": 2
+    },
+    {
+      "id": "stillness-learning-v1-20260913",
+      "title": "Does forced stillness help learning?",
+      "question": "Compare equal experience with and without scheduled body holds, keeping exploration timing identical.",
+      "decision": "Keep, remove or revise the timer from retained control and body functioning; no verdict from motion amount.",
+      "scope": "Eight independent matched learner pairs with end and retention tests. Original parent learning preserved, each copied arm has its own checkpoint. No live schedule or skill reward is changed by this experiment.",
+      "module": "mimo_bridge.tools.stillness_learning_trial",
+      "checkpoint": "D:/UEMA_Research/external/D/UEMA_recordings/checkpoint_runs/H79_grounded_self_20260913/checkpoints/ckpt_step_3995492",
+      "args": [
+        "--checkpoint",
+        "D:/UEMA_Research/external/D/UEMA_recordings/checkpoint_runs/H79_grounded_self_20260913/checkpoints/ckpt_step_3995492",
+        "--worlds",
+        "8",
+        "--train-steps",
+        "900",
+        "--probe-steps",
+        "100",
+        "--retention-steps",
+        "180",
+        "--seed",
+        "71700"
+      ],
+      "abilities": [
+        "gaze_control",
+        "weight_shift",
+        "roll_over"
+      ],
+      "max_attempts": 2
+    },
+    {
+      "id": "stillness-learning-v2-20260913",
+      "title": "Does forced stillness help learning?",
+      "question": "Compare equal experience with and without scheduled body holds, keeping exploration timing identical.",
+      "decision": "Keep, remove or revise the timer from retained control and body functioning; no verdict from motion amount.",
+      "scope": "Eight independent matched learner pairs with end and retention tests. Original parent learning preserved, each copied arm has its own checkpoint. No live schedule or skill reward is changed by this experiment. Uses complete restored-model replay and external checkpoint body limits; waits for recording space.",
+      "module": "mimo_bridge.tools.stillness_learning_trial",
+      "checkpoint": "D:/UEMA_Research/external/D/UEMA_recordings/checkpoint_runs/H79_grounded_self_20260913/checkpoints/ckpt_step_3995492",
+      "args": [
+        "--checkpoint",
+        "D:/UEMA_Research/external/D/UEMA_recordings/checkpoint_runs/H79_grounded_self_20260913/checkpoints/ckpt_step_3995492",
+        "--worlds",
+        "8",
+        "--train-steps",
+        "900",
+        "--probe-steps",
+        "100",
+        "--retention-steps",
+        "180",
+        "--seed",
+        "71700"
+      ],
+      "abilities": [
+        "gaze_control",
+        "weight_shift",
+        "roll_over"
+      ],
+      "max_attempts": 2
+    }
+  ],
+  "recurring": [
+    {
+      "id": "development-v3-action-forecast",
+      "minimum_new_steps": 5000,
+      "minimum_hours": 3,
+      "job": {
+        "title": "Can it distinguish its own actions in what it predicts?",
+        "question": "Compare actual consequences with the brain forecast, a held-state guess, and a swapped action.",
+        "decision": "Locate the action information that survives in each sense; require later retained behavior before crediting agency.",
+        "scope": "Independent copied worlds, full native replay. This tests sensory prediction at the actual action cadence; it does not establish awareness.",
+        "module": "mimo_bridge.tools.developmental_representation_probe",
+        "args": [
+          "--worlds",
+          "8",
+          "--steps",
+          "4",
+          "--seed",
+          "62100"
+        ],
+        "abilities": [
+          "action_self_recognition"
+        ],
+        "max_attempts": 2
+      }
+    },
+    {
+      "id": "development-v3-toy",
+      "minimum_new_steps": 5000,
+      "minimum_hours": 3,
+      "job": {
+        "title": "Does the target control looking?",
+        "question": "Does the target control looking?",
+        "decision": "Record actual outcomes and compare later checkpoints on the same declarations; run calibrated acquisition, retention and transfer before assigning an ability.",
+        "scope": "Frozen copied checkpoint; every world first proves exact replay of forecasts, commands, memory, schemas, RNG and physical state. Actual interventions are descriptive until acquisition, retention and transfer comparisons qualify.",
+        "module": "mimo_bridge.tools.developmental_probe",
+        "args": [
+          "--profile",
+          "toy",
+          "--worlds",
+          "4",
+          "--steps",
+          "160",
+          "--seed",
+          "61600"
+        ],
+        "abilities": [
+          "gaze_control",
+          "head_lift_and_look"
+        ],
+        "max_attempts": 2
+      }
+    },
+    {
+      "id": "development-v3-body-floor",
+      "minimum_new_steps": 5000,
+      "minimum_hours": 3,
+      "job": {
+        "title": "Does the body acquire new postures without adult direction?",
+        "question": "Does the body acquire new postures without adult direction?",
+        "decision": "Record actual outcomes and compare later checkpoints on the same declarations; run calibrated acquisition, retention and transfer before assigning an ability.",
+        "scope": "Frozen copied checkpoint; every world first proves exact replay of forecasts, commands, memory, schemas, RNG and physical state. Actual interventions are descriptive until acquisition, retention and transfer comparisons qualify.",
+        "module": "mimo_bridge.tools.developmental_probe",
+        "args": [
+          "--profile",
+          "body_floor",
+          "--worlds",
+          "4",
+          "--steps",
+          "160",
+          "--seed",
+          "61700"
+        ],
+        "abilities": [
+          "head_control",
+          "weight_shift",
+          "roll_over",
+          "prone_prop"
+        ],
+        "max_attempts": 2
+      }
+    },
+    {
+      "id": "development-v3-free-objects",
+      "minimum_new_steps": 5000,
+      "minimum_hours": 3,
+      "job": {
+        "title": "Does it control a free object?",
+        "question": "Does it control a free object?",
+        "decision": "Record actual outcomes and compare later checkpoints on the same declarations; run calibrated acquisition, retention and transfer before assigning an ability.",
+        "scope": "Frozen copied checkpoint; every world first proves exact replay of forecasts, commands, memory, schemas, RNG and physical state. Actual interventions are descriptive until acquisition, retention and transfer comparisons qualify.",
+        "module": "mimo_bridge.tools.developmental_probe",
+        "args": [
+          "--profile",
+          "free_objects",
+          "--worlds",
+          "4",
+          "--steps",
+          "160",
+          "--seed",
+          "61800"
+        ],
+        "abilities": [
+          "grasp",
+          "place_release",
+          "bimanual_hold"
+        ],
+        "max_attempts": 2
+      }
+    },
+    {
+      "id": "development-v3-support",
+      "minimum_new_steps": 5000,
+      "minimum_hours": 3,
+      "job": {
+        "title": "What support and mobility can this body control?",
+        "question": "What support and mobility can this body control?",
+        "decision": "Record actual outcomes and compare later checkpoints on the same declarations; run calibrated acquisition, retention and transfer before assigning an ability.",
+        "scope": "Frozen copied checkpoint; every world first proves exact replay of forecasts, commands, memory, schemas, RNG and physical state. Actual interventions are descriptive until acquisition, retention and transfer comparisons qualify.",
+        "module": "mimo_bridge.tools.developmental_probe",
+        "args": [
+          "--profile",
+          "support",
+          "--worlds",
+          "4",
+          "--steps",
+          "160",
+          "--seed",
+          "61900"
+        ],
+        "abilities": [
+          "sit_balance",
+          "crawl",
+          "kneel",
+          "pull_to_stand",
+          "stand"
+        ],
+        "max_attempts": 2
+      }
+    }
+  ],
+  "cancelled_jobs": {
+    "development-v2-toy-step-3995492": "Comparison retired: prior instrument did not restore all mutable learner state. Physical observations retained. Replacement verifies full native brain and physics replay.",
+    "development-v2-body-floor-step-3995492": "Comparison retired: prior instrument did not restore all mutable learner state. Physical observations retained. Replacement verifies full native brain and physics replay.",
+    "development-v2-free-objects-step-3995492": "Comparison retired: prior instrument did not restore all mutable learner state. Physical observations retained. Replacement verifies full native brain and physics replay.",
+    "development-v2-support-step-3995492": "Comparison retired: prior instrument did not restore all mutable learner state. Physical observations retained. Replacement verifies full native brain and physics replay.",
+    "stillness-learning-v1-20260913": "Startup failed before fitting: external checkpoint body limits were unresolved. Replacement includes repaired limits and complete learner replay."
+  }
+}

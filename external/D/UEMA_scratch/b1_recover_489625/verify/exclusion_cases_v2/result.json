@@ -1,0 +1,545 @@
+{
+ "tool": "check_exclusion_cases.py",
+ "script_sha256": "22fe95d19133f0fbac99baee47f8a7f52ac36f20ef87c94dc81a5ceb48b282e6",
+ "exclusion_sha256": "d3e44cdec5f8af7badf07cfe8be236756c12b657c0a47473e8264d1549f2559e",
+ "record_sha256": "4a780d0ab62e4017b9cefd09383348b9ec3a1d3a1156b1e2e3eb45441b0d58ba",
+ "at": "Oct 13, 2026 01:10:19 PM PDT",
+ "cases": [
+  {
+   "case": "A the closed lineage (the recovery's own start)",
+   "expect": "EXCLUDED",
+   "got": "EXCLUDED",
+   "held": true,
+   "reasons": [
+    "the completed historical asked-change watch (deploy H84_fresh_drivers_20260918_seg41m_0402, switch 474875, judged through 484900 with all seven lines held, own state closed, M6 alert kept) is excluded for this run, which starts at 489625 on the unchanged lineage; the module's own walk stops at its floor 477525, below which the deployment began"
+   ],
+   "module": {
+    "evaluate": "None (no switch reaches the run)",
+    "start": 489625,
+    "floor": 477525,
+    "horizon_steps": 10000,
+    "close_slack": 2000
+   },
+   "walk": [
+    [
+     "B1R_skip13_489625",
+     489625
+    ],
+    [
+     "B1A_skip13_489350",
+     489350
+    ],
+    [
+     "B1E_skip13_485975",
+     485975
+    ],
+    [
+     "B1C_skip13_484675",
+     484675
+    ],
+    [
+     "B1LO_skip13_481800",
+     481800
+    ],
+    [
+     "H84_fresh_drivers_20260918_seg41o_1431",
+     479350
+    ],
+    [
+     "H84_fresh_drivers_20260918_seg41m_0402",
+     474875
+    ]
+   ],
+   "closure": {
+    "at": "Oct 13, 2026, 04:32:29 AM PDT",
+    "state": "pass",
+    "deploy": "H84_fresh_drivers_20260918_seg41m_0402",
+    "switch_step": 474875,
+    "judged_newest_step": 484900,
+    "watch_over": true,
+    "own_state_closed": true,
+    "lines_state": {
+     "M1": "held",
+     "M2": "held",
+     "M3": "held",
+     "M6": "held",
+     "M4_early": "held",
+     "M4": "held",
+     "M5": "held"
+    },
+    "alerts": [
+     "M6-alert:unit"
+    ],
+    "chain": [
+     "H84_fresh_drivers_20260918_seg41m_0402",
+     "H84_fresh_drivers_20260918_seg41o_1431",
+     "B1LO_skip13_481800",
+     "B1C_skip13_484675",
+     "B1E_skip13_485975"
+    ]
+   },
+   "state": {
+    "file": "D:\\UEMA_Research\\external\\D\\UEMA_scratch\\b1_recover_489625\\verify\\exclusion_cases_v2\\A\\run\\B1R_skip13_489625\\arm_asked_change_state.json",
+    "sha256": "fb805eaf05c0fa4743d4f0f5132d31139da235b6448bd7f65dac59aba589beaf",
+    "want_sha256": "fb805eaf05c0fa4743d4f0f5132d31139da235b6448bd7f65dac59aba589beaf",
+    "closed": {
+     "time": 1791860417.1708424,
+     "run": "D:\\UEMA_Research\\external\\D\\UEMA_scratch\\body1_continuation\\run\\B1C_skip13_484675",
+     "newest_step": 484900
+    },
+    "alerts": [
+     "M6-alert:unit"
+    ]
+   }
+  },
+  {
+   "case": "B an arbitrary not_reached (the deployment's parent at 474,875)",
+   "expect": "REFUSE",
+   "got": "REFUSE",
+   "held": true,
+   "reasons": [
+    "A3 (an arbitrary not_reached, not this lineage): the ancestry reaches D:\\UEMA_Research\\Saved\\mimo_bridge\\experiments\\H84_fresh_drivers_20260918_seg41h_0223, which began at model step 472275, below the closed deployment's switch at 474875, without passing through that deployment"
+   ],
+   "module": {
+    "evaluate": "None (no switch reaches the run)",
+    "start": 474875,
+    "floor": 462775,
+    "horizon_steps": 10000,
+    "close_slack": 2000
+   },
+   "walk": [
+    [
+     "B1R_skip13_489625",
+     474875
+    ],
+    [
+     "H84_fresh_drivers_20260918_seg41h_0223",
+     472275
+    ]
+   ],
+   "closure": null,
+   "state": null
+  },
+  {
+   "case": "C unknown ancestry (a parent folder that does not exist)",
+   "expect": "REFUSE",
+   "got": "REFUSE",
+   "held": true,
+   "reasons": [
+    "A3 (unknown ancestry): the parent D:\\UEMA_Research\\external\\D\\UEMA_scratch\\b1_recover_489625\\verify\\exclusion_cases_v2\\C\\no_such_run named by D:\\UEMA_Research\\external\\D\\UEMA_scratch\\b1_recover_489625\\verify\\exclusion_cases_v2\\C\\run\\B1R_skip13_489625 does not exist"
+   ],
+   "module": {
+    "evaluate": "None (no switch reaches the run)",
+    "start": 489625,
+    "floor": 477525,
+    "horizon_steps": 10000,
+    "close_slack": 2000
+   },
+   "walk": [
+    [
+     "B1R_skip13_489625",
+     489625
+    ]
+   ],
+   "closure": null,
+   "state": null
+  },
+  {
+   "case": "D absent closure evidence (the passes file does not exist)",
+   "expect": "REFUSE",
+   "got": "REFUSE",
+   "held": true,
+   "reasons": [
+    "A4 (absent or other closure evidence): the closure evidence D:\\UEMA_Research\\external\\D\\UEMA_scratch\\b1_recover_489625\\verify\\exclusion_cases_v2\\D_no_such_passes.jsonl does not exist"
+   ],
+   "module": {
+    "evaluate": "None (no switch reaches the run)",
+    "start": 489625,
+    "floor": 477525,
+    "horizon_steps": 10000,
+    "close_slack": 2000
+   },
+   "walk": [
+    [
+     "B1R_skip13_489625",
+     489625
+    ],
+    [
+     "B1A_skip13_489350",
+     489350
+    ],
+    [
+     "B1E_skip13_485975",
+     485975
+    ],
+    [
+     "B1C_skip13_484675",
+     484675
+    ],
+    [
+     "B1LO_skip13_481800",
+     481800
+    ],
+    [
+     "H84_fresh_drivers_20260918_seg41o_1431",
+     479350
+    ],
+    [
+     "H84_fresh_drivers_20260918_seg41m_0402",
+     474875
+    ]
+   ],
+   "closure": null,
+   "state": null
+  },
+  {
+   "case": "D2 closure evidence whose last pass reads M3 crossed",
+   "expect": "REFUSE",
+   "got": "REFUSE",
+   "held": true,
+   "reasons": [
+    "A4 (absent or other closure evidence): the closure evidence D:\\UEMA_Research\\external\\D\\UEMA_scratch\\b1_recover_489625\\verify\\exclusion_cases_v2\\D2_passes_M3_crossed.jsonl hashes 66c55b825c0bda26a119485e36e7ce373b8334758682ef62f9833727b0b1d82e, not the pinned 7eb41b336a03caa5bcebc177174190e440f72d32e86f212ae803bfde83d0cb44; the closure evidence's last pass does not read all seven lines held: {'M1': 'held', 'M2': 'held', 'M3': 'crossed', 'M6': 'held', 'M4_early': 'held', 'M4': 'held', 'M5': 'held'}"
+   ],
+   "module": {
+    "evaluate": "None (no switch reaches the run)",
+    "start": 489625,
+    "floor": 477525,
+    "horizon_steps": 10000,
+    "close_slack": 2000
+   },
+   "walk": [
+    [
+     "B1R_skip13_489625",
+     489625
+    ],
+    [
+     "B1A_skip13_489350",
+     489350
+    ],
+    [
+     "B1E_skip13_485975",
+     485975
+    ],
+    [
+     "B1C_skip13_484675",
+     484675
+    ],
+    [
+     "B1LO_skip13_481800",
+     481800
+    ],
+    [
+     "H84_fresh_drivers_20260918_seg41o_1431",
+     479350
+    ],
+    [
+     "H84_fresh_drivers_20260918_seg41m_0402",
+     474875
+    ]
+   ],
+   "closure": {
+    "at": "Oct 13, 2026, 04:32:29 AM PDT",
+    "state": "pass",
+    "deploy": "H84_fresh_drivers_20260918_seg41m_0402",
+    "switch_step": 474875,
+    "judged_newest_step": 484900,
+    "watch_over": true,
+    "own_state_closed": true,
+    "lines_state": {
+     "M1": "held",
+     "M2": "held",
+     "M3": "crossed",
+     "M6": "held",
+     "M4_early": "held",
+     "M4": "held",
+     "M5": "held"
+    },
+    "alerts": [
+     "M6-alert:unit"
+    ],
+    "chain": [
+     "H84_fresh_drivers_20260918_seg41m_0402",
+     "H84_fresh_drivers_20260918_seg41o_1431",
+     "B1LO_skip13_481800",
+     "B1C_skip13_484675",
+     "B1E_skip13_485975"
+    ]
+   },
+   "state": null
+  },
+  {
+   "case": "E the carried state file unreadable",
+   "expect": "REFUSE",
+   "got": "REFUSE",
+   "held": true,
+   "reasons": [
+    "A5: the carried state file D:\\UEMA_Research\\external\\D\\UEMA_scratch\\b1_recover_489625\\verify\\exclusion_cases_v2\\E\\run\\B1R_skip13_489625\\arm_asked_change_state.json cannot be read (Expecting property name enclosed in double quotes: line 1 column 2 (char 1))"
+   ],
+   "module": {
+    "evaluate": "None (no switch reaches the run)",
+    "start": 489625,
+    "floor": 477525,
+    "horizon_steps": 10000,
+    "close_slack": 2000
+   },
+   "walk": [
+    [
+     "B1R_skip13_489625",
+     489625
+    ],
+    [
+     "B1A_skip13_489350",
+     489350
+    ],
+    [
+     "B1E_skip13_485975",
+     485975
+    ],
+    [
+     "B1C_skip13_484675",
+     484675
+    ],
+    [
+     "B1LO_skip13_481800",
+     481800
+    ],
+    [
+     "H84_fresh_drivers_20260918_seg41o_1431",
+     479350
+    ],
+    [
+     "H84_fresh_drivers_20260918_seg41m_0402",
+     474875
+    ]
+   ],
+   "closure": {
+    "at": "Oct 13, 2026, 04:32:29 AM PDT",
+    "state": "pass",
+    "deploy": "H84_fresh_drivers_20260918_seg41m_0402",
+    "switch_step": 474875,
+    "judged_newest_step": 484900,
+    "watch_over": true,
+    "own_state_closed": true,
+    "lines_state": {
+     "M1": "held",
+     "M2": "held",
+     "M3": "held",
+     "M6": "held",
+     "M4_early": "held",
+     "M4": "held",
+     "M5": "held"
+    },
+    "alerts": [
+     "M6-alert:unit"
+    ],
+    "chain": [
+     "H84_fresh_drivers_20260918_seg41m_0402",
+     "H84_fresh_drivers_20260918_seg41o_1431",
+     "B1LO_skip13_481800",
+     "B1C_skip13_484675",
+     "B1E_skip13_485975"
+    ]
+   },
+   "state": {
+    "file": "D:\\UEMA_Research\\external\\D\\UEMA_scratch\\b1_recover_489625\\verify\\exclusion_cases_v2\\E\\run\\B1R_skip13_489625\\arm_asked_change_state.json",
+    "sha256": "92072df399cb74703f8e86f450d552bc0bb01eeeb98a90985a1b7772c8fd0016",
+    "want_sha256": "fb805eaf05c0fa4743d4f0f5132d31139da235b6448bd7f65dac59aba589beaf"
+   }
+  },
+  {
+   "case": "E2 the carried state file absent",
+   "expect": "REFUSE",
+   "got": "REFUSE",
+   "held": true,
+   "reasons": [
+    "A5: the carried state file D:\\UEMA_Research\\external\\D\\UEMA_scratch\\b1_recover_489625\\verify\\exclusion_cases_v2\\E2\\run\\B1R_skip13_489625\\arm_asked_change_state.json does not exist"
+   ],
+   "module": {
+    "evaluate": "None (no switch reaches the run)",
+    "start": 489625,
+    "floor": 477525,
+    "horizon_steps": 10000,
+    "close_slack": 2000
+   },
+   "walk": [
+    [
+     "B1R_skip13_489625",
+     489625
+    ],
+    [
+     "B1A_skip13_489350",
+     489350
+    ],
+    [
+     "B1E_skip13_485975",
+     485975
+    ],
+    [
+     "B1C_skip13_484675",
+     484675
+    ],
+    [
+     "B1LO_skip13_481800",
+     481800
+    ],
+    [
+     "H84_fresh_drivers_20260918_seg41o_1431",
+     479350
+    ],
+    [
+     "H84_fresh_drivers_20260918_seg41m_0402",
+     474875
+    ]
+   ],
+   "closure": {
+    "at": "Oct 13, 2026, 04:32:29 AM PDT",
+    "state": "pass",
+    "deploy": "H84_fresh_drivers_20260918_seg41m_0402",
+    "switch_step": 474875,
+    "judged_newest_step": 484900,
+    "watch_over": true,
+    "own_state_closed": true,
+    "lines_state": {
+     "M1": "held",
+     "M2": "held",
+     "M3": "held",
+     "M6": "held",
+     "M4_early": "held",
+     "M4": "held",
+     "M5": "held"
+    },
+    "alerts": [
+     "M6-alert:unit"
+    ],
+    "chain": [
+     "H84_fresh_drivers_20260918_seg41m_0402",
+     "H84_fresh_drivers_20260918_seg41o_1431",
+     "B1LO_skip13_481800",
+     "B1C_skip13_484675",
+     "B1E_skip13_485975"
+    ]
+   },
+   "state": {
+    "file": "D:\\UEMA_Research\\external\\D\\UEMA_scratch\\b1_recover_489625\\verify\\exclusion_cases_v2\\E2\\run\\B1R_skip13_489625\\arm_asked_change_state.json",
+    "sha256": null,
+    "want_sha256": "fb805eaf05c0fa4743d4f0f5132d31139da235b6448bd7f65dac59aba589beaf"
+   }
+  },
+  {
+   "case": "F an active watch (a run resuming 484,675, inside the watch)",
+   "expect": "ACTIVE",
+   "got": "ACTIVE",
+   "held": true,
+   "reasons": [
+    "A2: the watch reaches this run (switch 474875 in H84_fresh_drivers_20260918_seg41m_0402): the asked-change watcher is required and the exclusion does not apply"
+   ],
+   "module": {
+    "evaluate": "a judgment",
+    "start": 484675,
+    "floor": 472575,
+    "horizon_steps": 10000,
+    "close_slack": 2000
+   },
+   "walk": [],
+   "closure": null,
+   "state": null
+  },
+  {
+   "case": "G unreadable active-watch data (the module's evaluate raises)",
+   "expect": "REFUSE",
+   "got": "REFUSE",
+   "held": true,
+   "reasons": [
+    "A2: the asked-change watch's data cannot be read for this run (unreadable active-watch data): OSError: stand-in: a stats file of the lineage cannot be read"
+   ],
+   "module": null,
+   "walk": [],
+   "closure": null,
+   "state": null
+  },
+  {
+   "case": "G2 the deployment's stats unreadable through the real reader (returns [])",
+   "expect": "REFUSE",
+   "got": "REFUSE",
+   "held": true,
+   "reasons": [
+    "A3 (an arbitrary not_reached, not this lineage): the ancestry reaches D:\\UEMA_Research\\Saved\\mimo_bridge\\experiments\\H84_fresh_drivers_20260918_seg41h_0223, which began at model step 472275, below the closed deployment's switch at 474875, without passing through that deployment",
+    "the deployment's stats read through the real reader's OSError path 1 times"
+   ],
+   "module": {
+    "evaluate": "None (no switch reaches the run)",
+    "start": 489625,
+    "floor": 477525,
+    "horizon_steps": 10000,
+    "close_slack": 2000
+   },
+   "walk": [
+    [
+     "B1R_skip13_489625",
+     489625
+    ],
+    [
+     "B1A_skip13_489350",
+     489350
+    ],
+    [
+     "B1E_skip13_485975",
+     485975
+    ],
+    [
+     "B1C_skip13_484675",
+     484675
+    ],
+    [
+     "B1LO_skip13_481800",
+     481800
+    ],
+    [
+     "H84_fresh_drivers_20260918_seg41o_1431",
+     479350
+    ],
+    [
+     "H84_fresh_drivers_20260918_seg41m_0402",
+     474875
+    ],
+    [
+     "H84_fresh_drivers_20260918_seg41h_0223",
+     472275
+    ]
+   ],
+   "closure": null,
+   "state": null
+  },
+  {
+   "case": "H a changed module source",
+   "expect": "REFUSE",
+   "got": "REFUSE",
+   "held": true,
+   "reasons": [
+    "A1: C:\\Users\\bhart\\Documents\\UEMA_wt\\b1_adopt_489350\\docs\\gain_of_function_v4\\motor_asked_change_watch.py hashes 56a615855365b72a2a3a87743983fdc138e97a8a4b33b6867bf67857f117f77a, not the pinned 0000000000000000000000000000000000000000000000000000000000000000"
+   ],
+   "module": null,
+   "walk": [],
+   "closure": null,
+   "state": null
+  },
+  {
+   "case": "I a changed exclusion record",
+   "expect": "REFUSE",
+   "got": "REFUSE",
+   "held": true,
+   "reasons": [
+    "A1: the exclusion record D:\\UEMA_Research\\external\\D\\UEMA_scratch\\b1_recover_489625\\verify\\exclusion_cases_v2\\I_record.json reads switch_step 474876, not 474875"
+   ],
+   "module": null,
+   "walk": [],
+   "closure": null,
+   "state": null
+  }
+ ],
+ "held": 12,
+ "of": 12,
+ "verdict": "pass",
+ "seconds": 4.7,
+ "writes": "only under D:\\UEMA_Research\\external\\D\\UEMA_scratch\\b1_recover_489625\\verify\\exclusion_cases_v2"
+}

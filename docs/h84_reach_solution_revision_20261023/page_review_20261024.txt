@@ -1,0 +1,296 @@
+INDEPENDENT HOSTILE READ OF ONE PAGE UPDATE
+Page: docs/H84_REACH_SOLUTION_REVISED_2026-10-23.html, the uncommitted diff (header line, section 6's records sentence, all of section 7, section 8's new sources item).
+Reader: an independent reviewer agent that did not write the page; it edited nothing except this file. Written Oct 24, 2026, 2:35 AM PDT (clock).
+Standard: docs/GUIDE_WRITING_A_CLEAR_DOCUMENT_2026-10-23.html (read whole; sections 5 and 8 applied) and the style guide (MECHANISM NEVER METAPHOR, ONE WORD PER THING, writing rules, NEVER NAME A CHECK WITHOUT ITS FACTS).
+Reader written for: a careful newcomer who has only the page's own words, read top to bottom once.
+
+RESULT: 44 findings (HIGH 16, MEDIUM 21, LOW 7). Cognitive load of section 7: 6 of 10.
+Every number of the changed text was checked against its file; 5 disagree (list near the end). Mechanism statements were checked against the code at D:/UEMA_wt/target_candidate_20261023 and the a2 code at C:/Users/bhart/Documents/UEMA_wt/s4r_pose_fields_s1_20261022.
+
+Quoted sentences use the page's text with the HTML entities shown as the characters they render (x for &times;, deg for &deg;).
+
+====================================================================================================
+A. SECTION 7: HEADING AND STEP 1'S RESULT
+====================================================================================================
+
+1 [HIGH] The heading rests on a direction word with no distances.
+Sentence: "Step 1 ran: the direct command left each hand nearer to T than the recorded planner command did, in all 16 hand comparisons. The planner's search could not produce such a command; a change that adds one was built and reviewed, and the overseer chose a two-run test of it."
+Fails: this is the form the operator rejected at 3:05 PM on Oct 23 ("Nearer is a subjective term. I want to see the three way comparisons"), forbidden by the guide's rule 15 and checklist item 8. "Nearer" here compares two commands only and says nothing about the start. "such a command" and "adds one" have no referent a newcomer can pin down. "adds one" also overstates: the body would receive a 0.35 blend of the added version, not a command like step 1's unblended direct command (finding 15).
+Needs: distances in the heading, e.g. "Step 1 ran: after 3 s the direct command left the hands a median 1.49 cm (left) and 1.94 cm (right) from T; the recorded planner command 4.85 and 8.36 cm; at the start 5.13 and 7.62 cm." Then name the thing: "The planner's search cannot request T's positions; a switch that adds one version built from T was built and reviewed, and the overseer chose a two-run test of it."
+
+2 [HIGH] The table is called three-way but the direct command has no predicted row.
+Sentence: caption "Step 1, three-way, medians over 8 bodies (D in cm)" and its six rows.
+Fails: checklist items 8 and 10 require start, predicted and measured, or "unmeasured" in those words. The reader cannot tell whether the predicted value was left out or never existed.
+Needs: a row "Direct command: D the body head predicted: unmeasured (the body head never scored the direct command)".
+
+3 [HIGH] Section 4's promise of "the same three-way table as section 2" is not kept, and the table hides the plainest reading.
+Sentence: the six-row table, and "The direct command left the hand nearer than the planner command in 16 of 16 hand comparisons at 250 ms and in 16 of 16 at 3 s."
+Fails: section 4 says "Every step reports its result as the same three-way table as section 2 (start, predicted and measured D per hand), so progress is read the same way every time." Section 2's table counts commands that made the hand nearer or farther than its start, within 2.0 cm at the start and end, and measured minus predicted. Section 7 gives medians and a planner-against-direct count only. From step1_three_way_20261024.json (per_hand): the recorded planner command left 9 of 16 hands farther from T than they started (nearer for 4 of 8 left and 3 of 8 right hands, at 250 ms and again at 3 s); the direct command left 15 of 16 nearer (the exception is body 3's right hand: 1.69 cm at the start, 2.20 cm at 3 s). Within 2.0 cm at 3 s: direct command 10 of 16 hands (5 left, 5 right), planner command 0 of 16. Planner command, measured minus predicted D at 250 ms: median -0.71 cm (left), +1.77 cm (right). Medians in different rows come from different bodies and cannot be subtracted from each other; the page gives no warning.
+Needs: section 2's rows for both commands (nearer and farther than the start, within 2.0 cm, measured minus predicted), and a collapsed per-body table from per_hand, as section 2 has.
+
+4 [MEDIUM] The planner's predicted row has no why.
+Sentence: row "Planner command: D the body head predicted for 250 ms | 5.66 | 6.81" beside "D at the start | 5.13 | 7.62".
+Fails: the reader sees the planner choose a command whose predicted left-hand D (5.66 cm) is above the start (5.13 cm) and is given no reason. Per hand, the body head predicted the chosen command would leave the hand farther from T for 5 of 8 left hands and 2 of 8 right hands.
+Needs: "The pose-error score (section 2) covers all 25 body parts, not the two hands, so the planner can choose a command that the body head predicts will move a hand away from T; it did so for 5 of 8 left hands and 2 of 8 right hands."
+
+5 [HIGH] "16 of 16" has no size, so the plan's own outcome rule cannot be applied.
+Sentence: "The direct command left the hand nearer than the planner command in 16 of 16 hand comparisons at 250 ms and in 16 of 16 at 3 s."
+Fails: section 4, step 1, "The line and the outcomes": "a difference comparable to the start check's mismatch is not a winner". The page gives the mismatch (0.0000847 cm) but not the smallest difference. From result.json: the smallest planner-minus-direct difference is 0.50 cm at 250 ms and 1.52 cm at 3 s, both body 4's left hand (reach-baseline-result-decision-20261023, 10:13 PM: "smallest advantage0.50346cm and1.51795cm").
+Needs: "In all 16 comparisons the direct command's D was smaller by at least 0.50 cm at 250 ms and 1.52 cm at 3 s (body 4's left hand), against a start mismatch of 0.0000847 cm."
+
+6 [HIGH] The arrival definition drops "first", body 6 disappears, and the order to keep both counts is not followed.
+Sentence: "Arrived and stayed (both hands within 2.0 cm by model step 40, then at every one of the next 20): the direct command in 2 of 8 bodies (bodies 2 and 5), the planner command in 0 of 8."
+Fails: 2 of 8 is the first-arrival rule's count (result.json summary, stayed_after_first_arrival). The parenthetical has no "first", and read as written body 6 also qualifies: under the direct command its two hands were within 2.0 cm at model step 3, the right hand left the line at model step 4 (2.45 cm), and both hands were within 2.0 cm at every model step from 9 to 60, 52 model steps (stayed_after_any_arrival true, stayed_from 9). The any-arrival count is 3 of 8 (bodies 2, 5 and 6). The overseer, 9:09 PM: "Preserve both first-arrival and any-arrival staying counts; use the declared first-arrival rule for the primary reading." The overseer, 10:13 PM: "Keep the2cm and first-arrival definitions accessible". The opening's definition ("after arriving") carries the same ambiguity.
+Needs: "(both hands within 2.0 cm by model step 40, then at every one of the 20 model steps after the first time both were): the direct command in 2 of 8 bodies (2 and 5), the planner command in 0 of 8. Counted from a later re-entry instead, 3 of 8: body 6's hands re-entered at model step 9 and stayed within 2.0 cm to model step 60."
+
+7 [MEDIUM] The opening promises one-hand results, E and falls beside the counts; section 7 gives none of them.
+Sentence (opening): "Beside the two-hand counts the page reports one-hand results, the whole-body error E ..., falls, and contacts with anything other than the floor, because hands at the target do not by themselves show that the whole pose is right."
+Fails: from the D1 work record, reach_baseline_20261023.result_20261023: one hand, the direct command's left hand arrived and stayed in bodies 2, 3, 5, 6 and 7 and its right hand in 2 and 5 (any-arrival rule: 0, 2, 5 and 6); the planner command's left hand newly arrived in bodies 6 and 7 and stayed in neither. E at 3 s (whole_body_E_at_60), bodies 0 to 7: planner 17.24, 15.82, 5.51, 4.28, 4.07, 31.07, 5.17, 5.48; direct 2.39, 1.18, 1.37, 1.09, 0.91, 0.92, 0.51, 1.92; start 21.62, 7.88, 5.54, 3.64, 4.18, 30.93, 3.93, 9.16. Medians computed from these lists: start 6.71, planner 5.495, direct 1.135; direct below planner in 8 of 8 bodies. E here is the pose-error score of section 2 (body 0's E at the start, 21.62 in result.json, equals the planner trace's measured start score 21.62). Falls: "no fall flag in either arm".
+Needs: an E row in the table (start, planner, direct; 0 = every part at T) and one sentence each for one-hand results and falls.
+
+8 [MEDIUM] The body 3 sentence has no stated purpose and hides what happened to that hand.
+Sentence: "Body 3's right hand started 1.69 cm from T, inside the 2.0 cm line before any command, so it is not counted as arriving."
+Fails: no number on the page counts single-hand arrivals, and body 3 fails the both-hands count anyway (under the direct command both hands were within 2.0 cm only at model steps 11 to 13), so the reader cannot tell why the sentence is there. It is there because the overseer required it (9:09 PM: "A hand already within2cm is reported as starting close, not newly reached"; 10:13 PM: "note body3's right hand started close"), and the page does not say so. It omits what both commands did to that hand: the direct command took it to 1.72 cm at 250 ms and 2.20 cm at 3 s, the only hand the direct command left farther from T than it started; the planner command took it to 4.80 and 4.33 cm.
+Needs: "Body 3's right hand started 1.69 cm from T, already inside the 2.0 cm line, so by rule it is reported as starting close, not as arriving. Both commands moved it out of the line: the direct command to 2.20 cm at 3 s, the planner command to 4.33 cm."
+
+9 [HIGH] The body 5 contact: the object is unnamed, the plural is wrong, it contradicts the plan's contact rule, and the real reason is missing.
+Sentence: "The direct command is not a finished answer: both hands arrived and stayed in only 2 of 8 bodies, and body 5's hands touched something other than the floor in 41 of its 60 model steps."
+Fails: (a) "something other than the floor" withholds the fact. result.json bodies.5.arms.D.contacts names the right hand's finger parts (right_ffmiddle, right_mfknuckle, right_mfmiddle) against the object "mobile" (kind "object", 41 model steps); the left foot's toes touched the pen wall. "hands", plural, is not what the file shows. (b) Section 4 says such contacts are "reported and not treated as harmful by themselves", and the work record reads "reported and not counted as a failure". Offering the contact as evidence that the answer is unfinished contradicts the page's own rule, with no why. (c) "only 2 of 8" is 3 of 8 under the any-arrival rule (finding 6). (d) The reason the direct command is not an answer is the and is absent: 10:13 PM, "It is not a trained planner improvement. Do not enable D as a general controller from this result".
+Needs: "The direct command is not a controller: it holds one saved pose, and the overseer ruled at 10:13 PM 'Do not enable D as a general controller from this result'. Under it, body 5's right-hand fingers touched the mobile (a toy object in the scene) in 41 of the 60 model steps; the plan reports such contacts and does not count them as failures." Define the mobile once.
+
+10 [HIGH] The rule is quoted but not the ruling, and section 4 gives a different rule for the same outcome.
+Sentence: "the overseer had set the rule for this outcome in its decision of 9:09 PM, before the run: if the direct command consistently helps, the next decision concerns how the planner produces its commands; if both commands miss, the next work inspects the sent commands and how the joints and contacts responded."
+Fails: the reader must infer which branch applied and who decided what followed. Section 4, step 1, says for this outcome "If the direct command arrives on bodies where the planner command does not: the difficulty is in choosing commands, and steps 2 and 3 address it"; section 7 does not reconcile the two.
+Needs: "The result fell under the first branch. The decision of 10:13 PM accepted it 'as evidence for prioritizing planner command generation/selection', ordered the read of the planner's code below, and kept the second attempt held."
+
+11 [HIGH] The page never says how this work relates to the plan's steps 2 and 3.
+Sentence: section 7 as a whole, against section 4's heading "Measure what a direct command achieves. Then test uninterrupted planner commands on their own. Then choose one repair from the evidence."
+Fails: the change built from T is neither step 2 (the planner picks every command, --intention-every 5) nor one of the four repairs in step 3's table. Section 7 does not say that the sequence changed or what state step 2 is in. None of the decisions of 10:13 PM, 11:21 PM or 1:58 AM schedules step 2; the 1:58 AM decision keeps "Planner frequency ... unchanged" in the two runs; the work record's later_steps still lists "an isolated command-schedule change" first. The h1 still reads "the plan" and section 4 still reads as if step 2 is next.
+Needs: "This change is not step 2 or one of step 3's listed repairs; the overseer chose it from step 1's result. Step 2 (the planner picking every command) has no decision yet." The header should say so too (finding 39).
+
+12 [MEDIUM] The second attempt's status was dropped.
+Sentence: section 1's row "It is a candidate, held until the overseer decides after the baseline below." The old section 7 heading read "the second attempt stays a held candidate"; the new section 7 does not mention it.
+Fails: the page promised a decision after the baseline and does not report it.: 10:13 PM "do not release r2"; 11:21 PM "r2 remains held"; 1:58 AM "r2 remains held."
+Needs: "The second attempt of the arm-consistency test stays held (10:13 PM, 11:21 PM and 1:58 AM)."
+
+====================================================================================================
+B. SECTION 7: "WHY THE PLANNER DID NOT SEND A COMMAND LIKE THE DIRECT ONE"
+====================================================================================================
+
+13 [MEDIUM] A sentence fragment whose "the run" points to the wrong run, with no who and no decision.
+Sentence: "A read of the run's code (commit 7dd0eabda) and of its record of the decision at model step 496,260, on October 23 from 10:13:58 PM to 10:19:03 PM PDT."
+Fails: no verb. "the run" follows a paragraph about the baseline, which has no planner and no learner; what was read is the October 23 learning run's code and its saved record of the planner's decision at model step 496,260 (the decision whose command step 1 replayed). Who read it, and under which decision, is not said: the builder, under the decision of 10:13 PM, capped at 15 minutes, read-only.
+Needs: "Under the decision of 10:13 PM, the builder read the learning run's code (commit 7dd0eabda) and that run's saved record of the planner's decision at model step 496,260 (the decision whose command step 1 replayed), from 10:13:58 PM to 10:19:03 PM, without running anything."
+
+14 [MEDIUM] "wrist" is undefined and "far" has no number.
+Sentence: "In the 8 bodies the first command's requested wrist positions lay 5.37 cm to 26.56 cm from T's, so every version inside the box stayed far from T, and the direct command was never among the versions the body head scored."
+Fails: "wrist" appears nowhere above on the page. The command's hand rows are wrist_L and wrist_R in the code (action_decoder.POSITION_HANDLES), while D is measured at the hand point (the palm origin); the reader cannot tell whether "wrist" is the hand point under a second name. "far" is a size word without a number: the box allows 1.80 cm per axis, at most 3.12 cm in a straight line, so every version kept each requested wrist at least 5.37 - 3.12 = 2.25 cm from T's (arithmetic from the page's own two numbers).
+Needs: one clause defining the wrist row ("each hand's command row requests the wrist's position, a point other than the hand point"), and "kept each requested wrist at least 2.25 cm from T's" in place of "stayed far from T".
+
+15 [HIGH] The blend is stated, but not what it means for step 1 or for the change.
+Sentence: "A second limit acts after the choice: the command the body receives is a blend, 0.35 x the newly chosen command + 0.65 x the blended command of the model step before (the setting --smooth-actions 0.35)."
+Fails: the mechanism matches the code (a2 lem_model.py smooth_blend, line 5220; the learning run's args.json has smooth_actions 0.35 and smooth_source proposal, under which the previous value is the previous model step's blended proposal). What follows from it is missing. Step 1's planner command was the command the run recorded as sent, after the blend, while step 1's direct command was held without the blend (work record, target_candidate_repair_20261023.build.t_versus_d: "after dispatch T passes the 0.35 smoothing and D did not"). So the 16 of 16 compares an unblended T command with a blended planner command, and a version built from T, once chosen, moves the command the body receives only 0.35 of the way from the previous blended command in its first 250 ms (work record, planner_trace_20261023.proposal.could_still_fail: "smoothing passes 35% of a change per command, so the executed command approaches D over several commands, not at once as in the baseline"). Without this, the reader expects the chosen test to reproduce step 1's 1.98 and 2.56 cm at 250 ms.
+Needs: two sentences stating both facts, placed before the description of the test.
+
+16 [LOW] The box has no why.
+Sentence: "The planner's search starts from the first command and changes it only inside a fixed box: ..."
+Fails: the reader is not told why the search is confined. The code (physical_goal.py, PhysicalTrustRegion docstring): "Bound a forecast-driven search using observed movement scales" and "These are achieved-motion scales, not a measured region of forecast reliability." The 1.80 cm and 11.0 deg are the same scales as section 2's pose-error score.
+Needs: "(the box's sides are the pose-error score's scales of section 2, one typical 250 ms movement; the code states they are not a measured region where the body head's predictions hold)".
+
+====================================================================================================
+C. SECTION 7: "THE CHANGE, BUILT AND REVIEWED"
+====================================================================================================
+
+17 [HIGH] The computation leaves the position rows unnamed, the ignored numbers undefined, misdescribes the finger rows, and uses "first command" for something the page's definition does not cover.
+Sentence: "Computation: one extra version of the command: the first command with T's turns on its 15 body-part rows other than the fingers, and T's positions on the rows whose positions the command execution path uses; the strengths, radii, eye row, finger goals and the numbers the execution path ignores are kept from the first command."
+Fails: (a) "the rows whose positions the command execution path uses" are never named on the page. In the code (action_decoder.POSITION_HANDLES under --position-rows all, minus the finger rows) they are 4: wrist_L, wrist_R, head and lower_trunk. (b) "the numbers the execution path ignores" are not defined on this page: the x, y, z of the other 11 non-finger rows and every radius (PhysicalTrustRegion docstring). (c) The finger rows are not kept; they are rebuilt from the kept finger joint goal on the new wrist rows (TARGET_CANDIDATE_CONSTRUCTION: "the finger rows re-assembled from the iteration-0 composite's own finger joint goal on the new wrist rows"). (d) The code builds from the iteration-0 composite, which physical_goal.py lines 28-36 call "NOT the motor controller's raw command": its eye row comes from the gaze-only visual search and its finger goal from the hand stage. The page's opening defines the first command as the motor controller's output, so "eye row, finger goals ... kept from the first command" is inaccurate under the page's own definition.
+Needs: "T's positions on the 4 rows whose positions the execution path uses (the two wrists, the head, the lower trunk) and T's turns on all 15 non-finger body rows; the finger rows are rebuilt on the new wrists from the first command's finger joint goal; the strengths, radii, eye row and the positions of the other 11 body rows (which the motors ignore and the body head reads) are kept." And one clause where the first command is defined: "(as the planner uses it, the controller's command with the eye row and finger goal set by the planner's gaze and hand stages)".
+
+18 [HIGH] The differences between the extra version and step 1's direct command are not stated, though the overseer ordered them recorded.
+Sentence: the change paragraph as a whole, with the heading's "a change that adds one".
+Fails: the overseer, reach-target-candidate-build-20261023, 11:21 PM: "The baseline D also changed some inert predictor inputs; therefore the new candidate is not byte-identical to that baseline. Record that difference instead of hiding it." The work record (build.t_versus_d and t_versus_d_correction_20261024): the same positions on the 4 rows and the same 15 turns (up to quaternion sign); different x, y, z on the 11 orientation-only rows (up to 40.02 cm; the motors ignore them, the body head reads them); different finger rows; different strengths (the direct command used the planner command's sent strengths, the extra version uses the controller's, up to 0.261 apart on the 0-to-1 scale); and the blend (finding 15). The page lists none of these, and its heading says the change adds "such a command".
+Needs: one sentence beside the computation listing these four differences.
+
+19 [LOW] "conversion" carries two meanings.
+Sentence: "It goes through the same conversion and blend as a sent command and is scored once by the same pose-error score."
+Fails: section 4 uses "motor-control conversion" for the step from a command to motor controls; here "conversion" is the planner's execution transform before that (TARGET_CANDIDATE_SCORING: "planned_execution: the execution conversion, the smoother with the decision's previous executed command, the eyes' row, the executed fields"). Undefined, and a second meaning for one word.
+Needs: "the same steps a sent command goes through before the body head scores it (the blend, the eye row, and the fields the motors ignore held at the first command's values)", or one defined name.
+
+20 [LOW] Three names for the planner's selection.
+Sentences: "Whether the body head would have scored the direct command lower than the planner's choice is unmeasured."; "Output: for each body the extra version replaces the search's choice only if its predicted score is below the search's choice's ...; otherwise the planner's result is unchanged."
+Fails: "the planner's choice", "the search's choice" and "the planner's result" name one thing (ONE WORD PER THING). When the search found nothing better, what the extra version replaces is the first command (TARGET_CANDIDATE_RULE: "replaces the ordinary result (the search's selection after its own keep rule, or the iteration-0 composite)"). The page's condition still gives the code's outcome, because a search choice that fell back already fails one of the two baselines; this is naming, not logic.
+Needs: one name, defined once: "the planner's result (the search's choice, or the first command when no version passed)".
+
+21 [MEDIUM] Switch-off equality is stated without its check's facts.
+Sentence: "A switch, --planner-target-candidate, turns it on; it is off by default, and with it off the planner's outputs equal those of the code before the change."
+Fails: the style guide: a check carries what it compares and on how many cases. Sources: work record build.tests, "with the switch off two deterministic scenarios gave byte-identical digests on base and branch"; review2_report.txt, "Switch off still matches base 7dd0eabda in 3 scenarios, apart from process object ids". Also unstated: the run's settings-file and code hashes change even with the switch off (review1_report.txt, recommendation 5), which is why the new preflight records are needed.
+Needs: "In 3 test scenarios run by the reviewer, the switch-off outputs were byte-identical to the code before the change; the settings and code hashes still differ, so each launch needs its own preflight record."
+
+22 [HIGH] The test counts show only the passing set.
+Sentence: "It was committed from 12:03 AM to 1:50 AM PDT, October 24 (branch repair/target-candidate-20261023, commits 4a2ca6866 to fbc296d5e): its 22 tests passed, and run together with the planner's 10 existing test files 164 passed and 0 failed."
+Fails: the style guide: a set of tests is given with how many passed and failed and, for each failure, what it expected and found. The work record (build.tests; review_20261024.fixes.remaining_failures) and the overseer ("Do not repeat the164/299test suites"; "Existing matching-base failures remain recorded, not reclassified as passes") name a second set: 13 more existing files, 299 tests, 291 passed, 5 failed, 3 skipped, the same 5 failing on the code before the change (4 in test_build_explainer.py and test_transition_contract.py::test_canonical_transition_runs_the_whole_stack). A reader of this page concludes every test passes.
+Needs: "A wider set of 299 existing tests: 291 passed, 5 failed and 3 skipped; the same 5 fail on the code before the change (4 explainer-page checks and one whole-stack transition test)."
+
+23 [MEDIUM] "writing" is a coined stand-in for the quaternion's sign, and 1,200 is unexplained.
+Sentence: "First: a turn written as 4 numbers has two equal writings, the 4 numbers or all 4 negated; the change had copied T's writing, which was the opposite of the first command's in 720 of 1,200 recorded body-part rows, while every sent command used the first command's writing; ..."
+Fails: "writing" replaces the real term, the quaternion's sign (guide rule 9: no invented terms; the real term with a one-line definition). 1,200 is not explained: review1_report.txt counts 10 planner decisions x 8 bodies x 15 rows of the October 23 learning run's records. One sentence holds four clauses joined by semicolons.
+Needs: "The 4 numbers of a turn (a quaternion) describe the same turn when all 4 are negated; which of the two is used is the quaternion's sign. In the October 23 learning run's records (10 planner decisions x 8 bodies x 15 rows = 1,200 rows), T's sign was opposite to the first command's on 720 rows; every sent command had the first command's sign."
+
+24 [HIGH] The stated mechanism contradicts the code: the body head's own command input ignores the sign.
+Sentence: "... the motors turn the body the same either way, but the body head reads the 4 numbers as written, so its score changed with the writing; the change now writes each turn the same way as the first command."
+Fails: review1_report.txt: "The body head's own command input is made sign-independent (efference.py:560-563, 620-630). The motor encoder reads the raw numbers: torch.cat([ach, action9]) (encoder_registry.py:297). ... The body head reads that latent." The branch's efference.py _order_input applies canonical_order_quaternions ("q and -q read as one command"). The sign reaches the score through the motor encoder, the transformer and the transformer's output that the body head reads. Also missing: the size and why it mattered. The sign alone moved the score from 0.029855 to 0.029892 with the search's choice at 0.029862 between them, so it could reverse which version won (review1_report.txt; work record review_20261024.round1.required).
+Needs: "The body head's own copy of the command ignores the sign, but the transformer receives the 4 numbers as written and the body head also reads the transformer's output, so the score changed with the sign: in one test case enough to reverse which version won (0.029855 against 0.029892, the search's choice at 0.029862 between them)."
+
+25 [MEDIUM] The second review's recommendations are understated.
+Sentence: "At 1:45 AM it required no change and recommended one more test, which was added."
+Fails: review2_report.txt lists three recommended changes and a fourth item needing no action: (1) a test pinning the executed-offset record (added as T12 in fbc296d5e); (2) the comparison package's design file still named the old record keys and pinned dae5d76d3 (re-pinned to fbc296d5e); (3) the work record's T-versus-D wording lacked "up to quaternion sign" (corrected in t_versus_d_correction_20261024); (4) no action. The page reports one of the three. Round 1's six recommendations (three applied in 34b255e0b) go unmentioned.
+Needs: "At 1:45 AM its second reading required no change and recommended three, all made: one more test, the test plan's file re-pinned to the reviewed commit, and a wording correction in the work record."
+
+26 [MEDIUM] The change paragraph is too long to hold in one pass.
+Sentence: the paragraph beginning "The change, built and reviewed." (about 370 words, 13 sentences, one sentence with four semicolon clauses).
+Fails: the reader must hold the extra version's definition through the switch, the commit times, the test counts and two review rounds in one block.
+Needs: Input, Computation and Output as a 3-item list; the review's two required changes as a 2-item list; commit hashes and test counts moved to section 8 or to one short "Record" line.
+
+====================================================================================================
+D. SECTION 7: "THE TEST THE OVERSEER CHOSE"
+====================================================================================================
+
+27 [MEDIUM] No why for moving the start to 496,250; "These T".
+Sentence: "These T are not step 1's (step 1 started at model step 496,260), so the result is not a rerun of step 1."
+Fails: the consequence is given but not why the overseer moved the start. The package design: "the 496,260 learner state was never saved (a2's only checkpoint is 496,350)"; 1:58 AM: "it avoids the10step reconstruction, extra checkpoint and conditional historical-control substitution. It measures the actual chooser and dispatch on8fully saved starts." "These T" makes a plural of a single record's letter.
+Needs: "The learned state at model step 496,260 was never saved (the run's saved states are at 496,250 and 496,350), so both runs start at 496,250, where the targets differ from step 1's; the result is not a rerun of step 1."
+
+28 [HIGH] What the test cannot show, its pass line, and what follows each outcome are missing.
+Sentences: "Per body the result gives: ... and whether each run's learned state saved completely." through "Neither run's learned state is used for further training without a new decision."
+Fails: the opening says every measurement reports arrived and stayed; a 6-model-step run cannot reach model step 40 or 20 model steps of staying. The overseer, 1:58 AM: "250ms movement is this outcome; no1second hold claim." Not on the page. No pass line is stated and nothing says what follows each outcome (the style guide: a test states its pass line and what happens on pass and on fail); "If candidate never wins, report its score/rejection evidence before proposing another run." Also unstated: the overseer accepted the change for this comparison only ("Accept the reviewed repair at fbc296d5e ..., not production adoption").
+Needs: "Each run lasts 6 model steps, so arriving by model step 40 and staying for 20 cannot be measured and are not claimed. There is no pass line: the result goes to the overseer, and if the extra version is never chosen, its scores and reasons are reported before any other run is proposed. The overseer accepted the change for this comparison only, not for training."
+
+29 [MEDIUM] "learning included" has no why, the run reference is now ambiguous, and the order has no why.
+Sentence: "Two short learning runs from one saved state, model step 496,250 with all eight worlds (the start of the run of October 23), first with the switch off, then with it on, each for exactly 6 model steps, with every other setting as in that run, learning included."
+Fails: a newcomer expects a comparison to freeze learning; the reason: "Learning remains on as required by the actual a2 decision path; these are short learning continuations, not frozen probes." Since step 1 also ran on October 23 (10:00 PM), "the run of October 23" and "that run" no longer pick out one run. The order has a reason: "Start ON only after OFF exits successfully, complete eight-world checkpoint/companion verified".
+Needs: "the learning run of October 23 (2:52 AM)"; one clause for why learning stays on; one clause for the order.
+
+30 [MEDIUM] 300 s per run without its measured basis.
+Sentence: "One 900 s budget covers everything, at most 300 s per run including its save."
+Fails: section 4, step 2, tells the reader the October 23 run took 421.9 s of trainer time and 75.7 s to save for 100 model steps; with no basis given, 300 s per run looks unreachable. Package cost_basis (work record comparison_package_20261024): load 72.682 s, 2.6811 s per model step, end save and exit 81.062 s, 169.83 s per 6-model-step run (the overseer: "an estimate, not a guarantee").
+Needs: "measured basis from the same run: 72.7 s to load, 2.68 s per model step, 81.1 s to save and exit, 169.8 s in all for 6 model steps".
+
+31 [LOW] "learned state" is a new, undefined term.
+Sentences: "whether each run's learned state saved completely"; "Neither run's learned state is used for further training without a new decision."
+Fails: the page elsewhere says "saved state", "complete preserved state", "The model and all eight worlds were saved".
+Needs: one name with a one-line definition (the model's weights and the eight worlds' state, saved at model step 496,256).
+
+====================================================================================================
+E. SECTION 7: "THE STATE AT 2:08 AM PDT, OCTOBER 24"
+====================================================================================================
+
+32 [MEDIUM] Two names for the preflight's gates.
+Sentence: "... their preflight records (the project's seven checks before any changed training configuration runs) ..."
+Fails: section 4, step 2, calls them "the project's seven gates", as the style guide does. ONE WORD PER THING.
+Needs: "seven gates".
+
+33 [HIGH] The trigger that ends the wait is missing; the Tests rows are missing; "sealed" is undefined.
+Sentence: "the builder is building the two exact launch commands, their preflight records (...), the program that runs and stops the two runs inside the budget, and the program that checks the two runs' identity and reads the result; an independent reviewer reads them next, and their hashes are then sealed."
+Fails: the style guide: a wait carries the trigger that ends it. Under the 1:58 AM decision, once the review's required items are fixed, the hashes sealed and the resource checks pass, the runs start "without another acknowledgement/signature loop", and any material change returns to the overseer. Section 4 ("Each step starts only on the decision") and section 6 ("No live run is authorized by this page") lead the reader to expect another decision. The two runs' Tests rows ("lifecycle rows" in the decision) are missing from the list, though section 1 says no job runs without one. "hashes ... sealed" is undefined.
+Needs: "When the reviewer's required items are fixed and each file's sha256 hash is recorded (sealed: a later edit shows as a different hash), the two runs start under this decision once the disk and memory checks pass; a change to the science, code or schedule goes back to the overseer." Add "their Tests rows" to the list.
+
+34 [HIGH] The free-space number is not in its cited source; "launch check" is undefined and a second name; the page file has no why.
+Sentence: "The disk that holds Windows' page file, C:, had 9.77 GiB free, under the 12 GiB that the launch check requires: ..."
+Fails: (a) Section 8 names file_management.json, key storage_issue_installer_payload_recreation_20261023, as the source. It reads "C: had 10,623,115,264 bytes free (9.89 GiB)" at 1:05:57 AM. 9.77 GiB was read live by the page-update script (scratchpad page_update_section7.py: FREE = shutil.disk_usage("C:/").free / 2 ** 30) and written to no record; the only file holding that value is the scratchpad file dardntvf_precheck_dry.json (checked_at 2:11:18 AM, c_free_bytes 10,492,841,984 = 9.77 GiB), after the page's stated 2:08 AM. (b) "the launch check" is defined nowhere; section 6 calls it "a resource check" and the records call it the commit guard. (c) Why free space on the page file's disk decides a training launch is not said. commit_guard.py: Windows grows the page file into its disk as memory commitment nears the limit; the guard keeps 12 GiB free on that disk (DISK_RESERVE_GIB = 12.0) and refuses work below it. The 12 GiB is right.
+Needs: the reading with its time and a file that holds it; one name ("the commit guard, section 6's resource check"); one clause of why.
+
+35 [MEDIUM] "the same checks" are named without their facts, and the 14 GiB aim is missing.
+Sentence: "the overseer authorized one more removal of that folder, after the same checks, before the runs; installing or turning off that update is the operator's setting."
+Fails: "the same checks" are listed nowhere on the page. The overseer, 1:58 AM: resolved path and parents strictly under the Temp folder, no reparse points, 1,215 files and 7,736,427,412 bytes, no installer process reading or writing it, contents stable; removal by Remove-Item -LiteralPath only. The decision's "Aim14GiBfree before execution" is missing.
+Needs: the five checks in one clause, and the 14 GiB aim.
+
+36 [MEDIUM] The operator's setting has no why.
+Sentence: same as finding 35, the clause "installing or turning off that update is the operator's setting."
+Fails: file_management.json: the folder came back after each of two removals (after the 9:42:37 PM removal its download began 44 min 52 s later), and the download task started again at 11:31 PM, so a removal lasts until the next download; the lasting fix is a machine setting the overseer left to the operator ("No installer settings changes").
+Needs: "The folder has come back after each of two removals, the second time 45 minutes later, so a removal is temporary; installing the pending Visual Studio 18.7.4 update or turning off its automatic download would stop it, and that machine setting is the operator's."
+
+====================================================================================================
+F. STEP 1'S CHECKS, SECTION 4'S OPEN FACTS, HEADER, SECTION 6, SECTION 8
+====================================================================================================
+
+37 [MEDIUM] The start check is reported by one of its four screens, the repeat check is missing, and 282.6 s does not match the run's own clock times.
+Sentences: "The baseline ran on October 23 from 10:00:21 PM to 10:04:33 PM PDT (Tests row reach_baseline_8start_a2) and used 282.6 s of its 900 s budget. All eight rebuilt starts passed the start check (the largest hand-point mismatch was 0.0000847 cm, against the 0.2 cm screen)."
+Fails: (a) the start check has four screens and a repeat check, which the overseer made conditions of any paired claim (9:09 PM: "Keep the specified start-fidelity and repeat checks; failed screens cannot support a paired claim"). Work record result_20261023.fidelity_and_repeat: largest turn mismatch 0.0001092 deg against the 1 deg screen; contact pairs matched in all 8; the repeat of the planner command reproduced its digests over 60 model steps in all 8. Only the hand-point screen is given. (b) 10:00:21 PM to 10:04:33 PM is 252 s, yet the run "used 282.6 s". The 282.622 s counts every executable step from the first check at 9:21:28 PM, including the package's 54-test row (10:00:02 to 10:00:12 PM) and the launch checks, with the clock stopped from 9:21:33 to 9:59:59 PM for the disk (work record result_20261023.budget). A reader cannot reconcile the two. (For information: the Tests row's last_run reads 10:00:26 to 10:04:32 PM; the page follows the work record's 10:00:21 to 10:04:33.)
+Needs: the four screens' values and the repeat result in that sentence; one clause saying what the 282.6 s covers.
+
+38 [MEDIUM] Section 4's two open facts are never closed, and the required statement is absent.
+Sentence: section 4, step 1: "Two open facts the build must settle first, by reading the recording's headers and the code that wrote them: ..."; section 7 does not return to them.
+Fails: work record build_20261023.settled_facts: the recording holds full positions and contact pairs per model step for all eight bodies but no velocities, so each start was rebuilt by replaying model steps 496,250 to 496,259 from the saved 496,250 state; the replay input was the recorded command fed through the decoder, with the stored motor controls compared only. The overseer, 9:09 PM: "State explicitly that this is a direct BODY-target comparison with unchanged finger goals." Section 7 does not state it.
+Needs: one sentence each.
+
+39 [MEDIUM] The header understates the update.
+Sentence: "... section 7 updated in place at 2:08 AM PDT, October 24, with step 1's result and the decision of 1:58 AM"
+Fails: sections 6 and 8 changed too; the update carries two more the overseer decisions (10:13 PM and 11:21 PM) and work outside the plan's three steps (finding 11), while the h1 and section 4 still read as if step 2 comes next.
+Needs: "sections 6 to 8 updated in place at 2:08 AM PDT, October 24: step 1's result, the decisions of 10:13 PM, 11:21 PM and 1:58 AM, and the next work, a test of a planner change outside the plan's three steps".
+
+40 [MEDIUM] Section 6's new sentence depends on section 7, and its commit list for the key is incomplete.
+Sentence: "From October 23, 10:08 PM to October 24, 2:03 AM, the key reach_baseline_20261023 gained step 1's result, the reading of the planner's code, the change's build and reviews and the chosen test of it (commits 9ee459f15, 68c980a08, 89da39911, 2fd509f46, 581847745 and 9251a5435), and the planner action record's two issues point to them (commits 8c538a222, 89da39911, 581847745 and 9251a5435)."
+Fails: "the change", "the reading of the planner's code" and "the overseer's chosen test" are defined only in section 7, below (checklist item 5: no sentence depends on a later section). Commit 892779037 (11:16:40 PM) also added to this key (launcher_and_tmp_20261023, the launcher repair) and is not listed. "reading" here means a read of code, while section 7 uses "reading" for a measurement ("The reading is the planner's decision ...").
+Needs: move the sentence to section 8 (or to the end of section 7), and add 892779037 with what it added, or narrow the claim to the listed items.
+
+41 [MEDIUM] The decisions that ordered the read and the build are not named.
+Sentences: the heading's "a change that adds one was built and reviewed"; "A read of the run's code ..."; section 8's list of decisions.
+Fails: section 6 says the overseer owns decisions, yet section 7 never names the decisions under which the read (reach-baseline-result-decision-20261023, 10:13 PM) and the build (reach-target-candidate-build-20261023, 11:21 PM) were done, and section 8 lists only the 9:09 PM and 1:58 AM decisions. The 11:21 PM decision also told the page owner what to add: "the search only allowed small changes around its first command; the new choice offers the saved target directly and must still survive prediction and physical checks."
+Needs: both decisions named in section 7 at the read and at the build, and listed in section 8.
+
+42 [LOW] Section 8's new item leaves several section 7 numbers without a file.
+Sentence: section 8's item "Section 7's numbers: ...".
+Fails: no file is named for the 9.77 GiB (none exists; finding 34), the 12 GiB (commit_guard.py, DISK_RESERVE_GIB = 12.0), --smooth-actions 0.35 and the blend's previous value (the learning run's args.json at D:/UEMA_Research/external/D/UEMA_preserved/s4r_pose_learning_S4R_pose_learning_a2_496250/run/args.json: smooth_actions 0.35, smooth_source proposal), or the branch's commit times (the branch's git log). The result file sits in the folder attempts/reach_baseline_8start_a1 while the Tests row is reach_baseline_8start_a2; one clause would stop a reader taking a1 for another attempt.
+Needs: those files added.
+
+43 [LOW] Words a newcomer meets undefined in section 7.
+Sentences: "commit 7dd0eabda"; "branch repair/target-candidate-20261023"; "a the builder subagent"; "The disk that holds Windows' page file"; "their hashes are then sealed".
+Fails: commit, branch, subagent, page file and sealed have no one-line definition anywhere on the page (guide checklist item 6).
+Needs: one clause each at first use, or drop the word where the sentence stands without it.
+
+44 [LOW] Section 3, item 2 (not part of this update) conflicts with the code that section 7 now relies on.
+Sentence: "The program that turns rows into motor controls (the command execution path) solves for the arm's seven joint angles, inside their ranges, that make the summed position and turn error of the three arm rows smallest".
+Fails: action_decoder.py: "Arm and leg segments stay orientation-only: the arm is solved as one group whose wrist already carries position rows". Only the wrist's position enters the arm solve, so section 7's "rows whose positions the command execution path uses" inherits a wrong picture from this sentence.
+Needs: "... that make the wrist's position error and the three arm rows' turn errors smallest".
+
+====================================================================================================
+NUMBERS CHECKED
+====================================================================================================
+
+Matching their files:
+- The 12 medians, recomputed from result.json (bodies.<b>.arms.P/D.at.<0,5,60>.palm_cm and bodies.<b>.forecast.hands.<h>.forecast_to_target_cm) and equal to step1_three_way_20261024.json: start 5.13 / 7.62 (5.1327 / 7.6215); predicted 5.66 / 6.81 (5.6553 / 6.8117); planner at 250 ms 4.63 / 7.50 (4.6322 / 7.4984); planner at 3 s 4.85 / 8.36 (4.8488 / 8.3632); direct at 250 ms 1.98 / 2.56 (1.9791 / 2.5626); direct at 3 s 1.49 / 1.94 (1.4948 / 1.9419).
+- 16 of 16 at 250 ms and 16 of 16 at 3 s.
+- 10:00:21 to 10:04:33 PM; 282.6 s (282.622); 0.0000847 cm; 0.2 cm screen; 60 model steps; bodies 2 and 5 under the first-arrival rule; planner 0 of 8; body 3's 1.69 cm (1.6935); body 5's 41 of 60 (41 entries in hand_nonfloor_steps).
+- 9:09 PM (created 04:09:03 UTC); 10:13:58 to 10:19:03 PM; commit 7dd0eabda; model step 496,260; 1.80 cm and 11.0 deg; 5.37 to 26.56 cm; 0.35 and 0.65; --smooth-actions 0.35 (args.json).
+- 15 rows; 12:03 AM to 1:50 AM (4a2ca6866 at 00:03:45, fbc296d5e at 01:50:23); 22 tests; 10 files; 164 passed, 0 failed; 1:01 AM (08:01:13 UTC); 720 of 1,200; 1:45 AM (08:45:46 UTC).
+- 1:58 AM (08:58:31 UTC); 496,250; 6 model steps (--max-steps 496256); 496,255; 900 s; 300 s; 496,260.
+- 12 GiB (DISK_RESERVE_GIB = 12.0); 7,736,427,412 bytes; 10:27 to 10:35 PM (10:27:29 to 10:35:41); removal at 9:42 PM (9:42:37).
+- Header's 2:08 AM: the page file was last written at 2:08:38 AM.
+- Section 6: 10:08 PM (9ee459f15, 22:08:55) and 2:03 AM (9251a5435, 02:03:15); each listed commit touches the file it is listed for.
+
+Disagreeing with their files:
+1. "9.77 GiB free": the cited file_management.json (recurrence_20261023_2232) reads 10,623,115,264 bytes = 9.89 GiB at 1:05:57 AM. 9.77 GiB (10,492,841,984 bytes) is only in the uncited scratchpad file dardntvf_precheck_dry.json (2:11:18 AM); the update script read it live at 2:08 AM and saved it nowhere.
+2. "recommended one more test": review2_report.txt recommends three changes (plus one no-action item).
+3. "body 5's hands touched": result.json names only the right hand's finger parts (against the object "mobile"); the 41 is right.
+4. "2 of 8 bodies (bodies 2 and 5)": right for the first-arrival rule, but the page's parenthetical has no "first", and read as written the result file gives 3 of 8 (body 6: stayed_after_any_arrival true from model step 9).
+5. Section 6's commit list for the key omits 892779037 (11:16:40 PM), which also changed it.
+
+====================================================================================================
+MECHANISM STATEMENTS AGAINST THE CODE
+====================================================================================================
+- The box (PhysicalTrustRegion.assemble, physical_goal.py lines 291-298 in the a2 code and the branch): matches. It acts on the 15 non-finger body rows; the 11 orientation-only rows' positions and the eye row are held; finger joints move at most 11.0 deg.
+- The blend (smooth_blend, a2 lem_model.py line 5220; args smooth_source proposal): matches "the blended command of the model step before".
+- The extra version (target_candidate_command): matches except the finger rows (rebuilt on the new wrists, not kept) and the unnamed position rows (4: wrist_L, wrist_R, head, lower_trunk).
+- The selection (target_candidate_selection, TARGET_CANDIDATE_RULE): the page's condition gives the code's outcome.
+- The sign (branch efference.py _order_input; encoder_registry.py line 297): does not match. The body head's own command input is sign-independent; the dependence enters through the motor encoder and the transformer.
+- "first command" against ITERATION0 (physical_goal.py lines 28-36): the planner's starting command is not the motor controller's raw output.
+
+====================================================================================================
+COGNITIVE LOAD OF SECTION 7: 6 of 10
+====================================================================================================
+Why 6: the heading repeats the direction-word pattern the operator rejected; four paragraphs run past 200 words with stacked colons and semicolons; six words arrive undefined (wrist, launch check, page file, sealed, learned state, "writing"); several sentences leave out their why (body 3, body 5's contact, 496,250, learning on, the operator's setting); the reader cannot place the work against the plan's own steps.
+
+The three changes that would most lower it:
+1. Replace the direction words in the heading and the result paragraph with the three-way distances, and put every step 1 reading in one table built like section 2's: start, predicted (direct command: "unmeasured") and measured D; counts nearer than the start and within 2.0 cm; the smallest difference against the start mismatch; E; both arrival counts with the word "first". Give body 3 and body 5 rows that carry their facts.
+2. Before the test, add one paragraph saying what the extra version is not and what the test cannot show: it is not step 1's direct command (blended 0.35 per command, the controller's strengths, different values on the 11 ignored rows), so its 250 ms reading cannot repeat step 1's; there is no arrival or staying reading and no pass line; name the trigger that starts the runs, and place the work against the plan's steps 2 and 3 and the held second attempt.
+3. Cut the change paragraph to a 3-item Input/Computation/Output list that names the 4 position rows. Move commit times and test counts (with the 5 base failures) to section 8. Rewrite the sign sentence with the real term and the corrected mechanism. Define or drop wrist, launch check, page file, sealed and learned state.

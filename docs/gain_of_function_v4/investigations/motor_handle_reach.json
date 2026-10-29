@@ -1,0 +1,699 @@
+{
+ "schema": 1,
+ "id": "motor_handle_reach",
+ "title": "Where is one body handle's command lost on its way to the predicted consequence?",
+ "question": "Each of the 26 body handles gets its own part of the command. When one handle's part changes, at which stage between the command and the predicted next proprioception does that change stop being carried as that handle's own change?",
+ "about": "The first investigation drawn as a live process-of-elimination diagram (the style guide, the operator's rule of Oct 5, 2026). This file declares the stages, the registry rows and files whose readings answer each stage, and the branch taken for each verdict. Every verdict, time, commit and evidence value on the diagram is computed on each read from those rows' runner records and results (Source/Python/mimo_bridge/tools/elimination.py). Revised Oct 5, 2026 on the dashboard review's finding F11: the question is where each handle's change loses its own direction, so the motor-token stages are read by a direction reading against the real changes' own, the size readings are related readings, and the reading taken at the predicted next proprioception names the three components it is taken after. Revised Oct 7, 2026 12:02 AM PDT by the coordinator: the attention cap experiment's handle-direction check (row attention_cap_qual_handle_direction) added as related readings of the transformer stage and the prediction stage, shown and never deciding.",
+ "written_at": "Oct 5, 2026 1:20 PM PDT",
+ "written_by": "the dashboard fix agent, branch dashboard/recovery-2026-10-05 (the first version: the dashboard agent, 10:27 AM PDT)",
+ "input": {
+  "name": "26 handle commands",
+  "component": "MOTOR_CONTROLLER",
+  "what": "The command of one model step: 26 body handles x 9 numbers (target position in units of 200 cm, orientation as 4 numbers, radius, strength from 0 to 1), from the motor controller, or from the planner when it authors the command."
+ },
+ "stages": [
+  {
+   "key": "raw_input",
+   "name": "raw motor-encoder input",
+   "component": "SENSE_MOTOR",
+   "question": "Does each handle's asked change (its commanded position minus its achieved position) exist in the 19 numbers per handle the motor encoder receives: the achieved pose's 10 numbers, then the executed command's 9, positions divided by 200 cm?",
+   "sources": [
+    {
+     "row": "motor_encoder_asked_change_stages_455800",
+     "in": "result",
+     "key": [
+      "verdict"
+     ],
+     "kind": "verdict",
+     "label": "the row's verdict on checkpoint 455,800 and 2,000 recorded motor encoder inputs",
+     "means": "pass = its route check held (the motor token computed again from the recorded inputs equals the recorded token) and its positive control held: a linear read-out fitted on 6 bodies and tested on the 7th recovers each handle's asked position change from that handle's own 19 input numbers at a held-out share of 90 of every 100 or more",
+     "show": [
+      {
+       "in": "result_file",
+       "key": [
+        "pools",
+        "without_body_2",
+        "per_handle",
+        "input_row_19",
+        "groups",
+        "asked_position_change_cm",
+        "r2_pooled"
+       ],
+       "form": "share",
+       "label": "asked position change recovered from each handle's own 19 input numbers, held-out share of its variance pooled over 25 handles (100 of every 100 = exact, 0 = no better than the mean)"
+      },
+      {
+       "in": "result_file",
+       "key": [
+        "pools",
+        "without_body_2",
+        "per_handle",
+        "input_row_19",
+        "groups",
+        "asked_turn_deg",
+        "r2_pooled"
+       ],
+       "form": "share",
+       "label": "asked turn recovered by the same linear read-out from the same 19 numbers (the two orientations given as absolute quaternions)"
+      },
+      {
+       "in": "result_file",
+       "key": [
+        "pools",
+        "without_body_2",
+        "per_handle",
+        "relative_orientation_quaternion",
+        "groups",
+        "asked_turn_deg",
+        "r2_pooled"
+       ],
+       "form": "share",
+       "label": "asked turn recovered from the command's orientation relative to the achieved one (4 numbers per handle)"
+      }
+     ]
+    }
+   ],
+   "related": [],
+   "defects": [],
+   "to_decide": {
+    "text": "A linear read-out of each handle's asked change from the motor encoder's recorded input rows, fitted on other bodies, with a declared line, run by the test runner so that its record is sealed: row motor_encoder_asked_change_stages_455800 is that test on checkpoint 455,800, run by a runner of the older kind"
+   },
+   "branches": {
+    "PASS": {
+     "next": "per_handle_encoder",
+     "text": "The asked change enters the motor encoder: go on to its per-handle network."
+    },
+    "FAIL": {
+     "next": null,
+     "text": "The asked change is missing from the motor encoder's input rows: the packing of the command into the motor input (SENSE_MOTOR) is the place to repair."
+    },
+    "UNKNOWN": {
+     "next": null,
+     "text": "Test this stage first: every later stage reads a change that starts here."
+    }
+   }
+  },
+  {
+   "key": "per_handle_encoder",
+   "name": "per-handle encoder",
+   "component": "MOTOR_ENCODER",
+   "question": "After each handle's own network (its 19 numbers to 192, one handle at a time), is that handle's asked change still recoverable by a linear read-out?",
+   "sources": [
+    {
+     "row": "motor_encoder_asked_change_stages_455800",
+     "in": "result_file",
+     "key": [
+      "pools",
+      "without_body_2",
+      "per_handle",
+      "per_handle_output",
+      "groups",
+      "asked_position_change_cm",
+      "r2_pooled"
+     ],
+     "kind": "reading",
+     "form": "share",
+     "label": "asked position change recovered from each handle's per-handle network output by a read-out fitted on 6 bodies and tested on the 7th, held-out share pooled over 25 handles (100 of every 100 = exact, 0 = no better than the mean, below 0 = worse than the mean)",
+     "means": "a reading with no line for this question: the row declared none for the per-handle output"
+    },
+    {
+     "row": "motor_encoder_asked_change_mechanism_455800",
+     "in": "result_file",
+     "key": [
+      "time_held_out",
+      "per_handle",
+      "per_handle_output",
+      "groups",
+      "asked_position_change_cm",
+      "r2_pooled"
+     ],
+     "kind": "reading",
+     "form": "share",
+     "label": "the same read-out fitted on the same 7 bodies with one block of 50 model steps held out, held-out share pooled over 25 handles",
+     "means": "a reading with no line for this question: the row declared none for the per-handle output"
+    }
+   ],
+   "related": [],
+   "defects": [],
+   "to_decide": {
+    "text": "A read-out of each handle's asked change from its per-handle network output with a declared line; rows motor_encoder_asked_change_stages_455800 and motor_encoder_asked_change_mechanism_455800 measured it on checkpoint 455,800 without one"
+   },
+   "branches": {
+    "PASS": {
+     "next": "pool",
+     "text": "The per-handle network keeps the asked change: go on to the pooling attention."
+    },
+    "FAIL": {
+     "next": "pool",
+     "text": "The per-handle network loses the asked change; MOTOR_ENCODER_REPAIR's path computes each handle's asked change from the raw input rows, around this stage: go on to the pooling attention."
+    },
+    "UNKNOWN": {
+     "next": "pool",
+     "text": "Not decided. MOTOR_ENCODER_REPAIR's path computes each handle's asked change from the raw input rows, around this stage, so the stages after it are read first."
+    }
+   }
+  },
+  {
+   "key": "pool",
+   "name": "pooling attention",
+   "component": "MOTOR_ENCODER",
+   "question": "With both paths beside the pool switched off, does each handle's change of the motor token keep a direction of its own: are the 26 handles' token changes, made through the 2 attention layers among the handles and the 4 pooling heads (each a softmax-weighted sum over the 26 handles), no nearer to one shared line than the 26 handles' real changes of proprioception are?",
+   "sources": [
+    {
+     "file": "D:/UEMA_Research/external/D/UEMA_scratch/investigate_1005/handle_reach_481800/analysis.json",
+     "key": [
+      "mean_abs_cos_between_handles",
+      "token_both_off"
+     ],
+     "kind": "compare",
+     "against": [
+      "mean_abs_cos_between_handles",
+      "real_proprioception"
+     ],
+     "met_when": "at_or_below",
+     "form": "share",
+     "time_key": [
+      "written"
+     ],
+     "label": "how much the 26 handles' changes of the motor token share one line, with both paths beside the pool off: the mean, over pairs of handles, of the size of the cosine between their token changes (100 of every 100 = all on one shared line, 0 = every pair at right angles), at 16 states of 8 bodies of checkpoint 481,800; against the same measure of the 26 handles' real changes of proprioception one model step later",
+     "means": "at or below the real changes' own sharing = the token keeps the handles at least as far apart as the body's own consequences are; the file was computed from the samples of row investigate_motor_handle_reach_481800 after its run ended, so it is no registry result"
+    }
+   ],
+   "related": [
+    {
+     "row": "investigate_motor_handle_reach_481800",
+     "in": "result_file",
+     "key": [
+      "failing_handles",
+      "both_off",
+      "L1"
+     ],
+     "of": [
+      "per_handle"
+     ],
+     "kind": "failures",
+     "label": "a size reading: handles whose command, its target orientation turned 20 degrees about 3 random axes (the eyes: the eye command moved 10 degrees), changes the motor token by less than 2.9 in every 100,000 of the token's length, with the asked-change path and the all-element path both off, at 16 states of 8 bodies of checkpoint 481,800",
+     "means": "no handle listed = every handle's command changes the motor token through the pool alone (the row's line L1 under its condition named both off); a size line says whether the token changes, not whether the change keeps its handle's own direction"
+    },
+    {
+     "file": "docs/gain_of_function_v3/measurements/per_handle_readability_ckpt_step_344400.json",
+     "key": [
+      "largest_gap",
+      "handles_below"
+     ],
+     "of": [
+      "per_handle_share"
+     ],
+     "kind": "failures",
+     "time_key": [
+      "measured"
+     ],
+     "label": "a size reading of Sep 22: handles whose 20-degree command turn moved the motor token by less than the line drawn in the largest gap between the 26 handles' token changes, at 16 states of checkpoint 344,400 (the motor encoder alone: no path beside the pool existed)",
+     "means": "no handle listed = every handle's command reached the motor token"
+    },
+    {
+     "file": "docs/gain_of_function_v3/measurements/liveness_sweep_ckpt_step_344400.json",
+     "key": [
+      "attention",
+      "encoder_registry.encoders.motor.pool_attn",
+      "entropy_share_of_uniform"
+     ],
+     "kind": "reading",
+     "form": "share",
+     "label": "spread of the pool's attention over the 26 handles on checkpoint 344,400, 24 model steps of 4 bodies (100 of every 100 = even weight on all 26 handles, 0 = all weight on one handle); DESIGN.md section 10 of gain of function v3",
+     "means": "a reading of how many handles the pool reads, not whether a command reaches the token"
+    },
+    {
+     "row": "motor_encoder_asked_change_stages_455800",
+     "in": "result_file",
+     "key": [
+      "attention",
+      "pooling_spread"
+     ],
+     "kind": "reading",
+     "form": "share",
+     "label": "the same spread on checkpoint 455,800, over 2,000 recorded inputs",
+     "means": "a reading of how many handles the pool reads, not whether a command reaches the token"
+    }
+   ],
+   "defects": [
+    "MOTOR_POOL_SATURATED"
+   ],
+   "to_decide": {
+    "text": "One handle's command changed at a time with the two paths beside the pool off, and the sharing of one line between the 26 handles' token changes compared with that of their real changes, written into the result file of a run of the test runner so that its record is sealed; row investigate_motor_handle_reach_481800 changed the commands that way, and its sharing was computed afterwards outside its run"
+   },
+   "branches": {
+    "PASS": {
+     "next": "repaired_path",
+     "text": "Each handle's token change keeps a direction of its own through the pool alone: go on to the motor token as deployed."
+    },
+    "FAIL": {
+     "next": "repaired_path",
+     "text": "The pool folds the handles' changes onto a shared line; the two paths beside it take every handle's own row around it: go on to the motor token as deployed."
+    },
+    "UNKNOWN": {
+     "next": "repaired_path",
+     "text": "Not decided; the motor token as deployed is read next."
+    }
+   }
+  },
+  {
+   "key": "repaired_path",
+   "name": "repaired motor path",
+   "component": "MOTOR_ENCODER_REPAIR",
+   "question": "As deployed in run seg41o_1431 (the asked-change path and the liveness repair's all-element path both on beside the pool), does each handle's change of the motor token keep a direction of its own: are the 26 handles' token changes no nearer to one shared line than their real changes of proprioception are?",
+   "sources": [
+    {
+     "file": "D:/UEMA_Research/external/D/UEMA_scratch/investigate_1005/handle_reach_481800/analysis.json",
+     "key": [
+      "mean_abs_cos_between_handles",
+      "token_deployed"
+     ],
+     "kind": "compare",
+     "against": [
+      "mean_abs_cos_between_handles",
+      "real_proprioception"
+     ],
+     "met_when": "at_or_below",
+     "form": "share",
+     "time_key": [
+      "written"
+     ],
+     "label": "how much the 26 handles' changes of the motor token share one line as deployed: the mean, over pairs of handles, of the size of the cosine between their token changes (100 of every 100 = all on one shared line, 0 = every pair at right angles), at 16 states of 8 bodies of checkpoint 481,800; against the same measure of the 26 handles' real changes of proprioception one model step later",
+     "means": "at or below the real changes' own sharing = the deployed token keeps the handles at least as far apart as the body's own consequences are; computed after the run of row investigate_motor_handle_reach_481800, so it is no registry result"
+    }
+   ],
+   "related": [
+    {
+     "row": "investigate_motor_handle_reach_481800",
+     "in": "result_file",
+     "key": [
+      "failing_handles",
+      "deployed",
+      "L1"
+     ],
+     "of": [
+      "per_handle"
+     ],
+     "kind": "failures",
+     "label": "a size reading: handles whose command, its target orientation turned 20 degrees about 3 random axes (the eyes: the eye command moved 10 degrees), changes the motor token by less than 2.9 in every 100,000 of the token's length, as deployed, at 16 states of 8 bodies of checkpoint 481,800",
+     "means": "no handle listed = every handle's command changes the motor token (the row's line L1 as deployed); a size line says whether the token changes, not whether the change keeps its handle's own direction"
+    },
+    {
+     "file": "D:/UEMA_Research/external/D/UEMA_scratch/investigate_1005/handle_reach_481800/analysis.json",
+     "key": [
+      "mean_abs_cos_between_handles",
+      "predicted_proprioception_deployed"
+     ],
+     "kind": "reading",
+     "form": "share",
+     "time_key": [
+      "written"
+     ],
+     "label": "what the two paths beside the pool do to the prediction: how much the 26 handles' changes of the predicted next proprioception share one line as deployed (100 of every 100 = all on one shared line, 0 = every pair at right angles)",
+     "means": "with both paths off the predicted changes share one line far less: the two paths raise the sharing of the handles' predicted changes, while the token's own sharing stays near that of the real changes",
+     "show": [
+      {
+       "key": [
+        "mean_abs_cos_between_handles",
+        "predicted_proprioception_both_off"
+       ],
+       "form": "share",
+       "label": "the same sharing of the predicted changes with both paths beside the pool off"
+      },
+      {
+       "key": [
+        "mean_abs_cos_between_handles",
+        "real_proprioception"
+       ],
+       "form": "share",
+       "label": "the same sharing of the handles' real changes of proprioception"
+      }
+     ]
+    },
+    {
+     "row": "motor_asked_change_production_segment",
+     "in": "result",
+     "key": [
+      "verdict"
+     ],
+     "kind": "reading",
+     "form": "text",
+     "label": "MOTOR_ENCODER_REPAIR's own segment in production, its watch's reading so far; its line S2 (the motor token carries the asked change) is read after the watch",
+     "means": "the watch's own words; the segment's run ended at a relaunch before the hold of training"
+    },
+    {
+     "row": "planner_search_mechanism_controls",
+     "in": "result",
+     "key": [
+      "side_paths_at_the_starting_command",
+      "481800",
+      "both",
+      "gradient"
+     ],
+     "kind": "reading",
+     "form": "share",
+     "label": "share of the motor token's gradient with respect to the command that the two paths beside the pool carry together, at 32 planning decisions of checkpoint 481,800 (100 of every 100 = all of it, 0 = none)",
+     "means": "a reading of how much of the command's route into the motor token runs through the two paths"
+    }
+   ],
+   "defects": [
+    "MOTOR_TOKEN_ASKED_CHANGE"
+   ],
+   "to_decide": {
+    "text": "One handle's command changed at a time as deployed, and the sharing of one line between the 26 handles' token changes compared with that of their real changes, written into the result file of a run of the test runner so that its record is sealed"
+   },
+   "branches": {
+    "PASS": {
+     "next": "transformer",
+     "text": "Each handle's token change keeps a direction of its own: go on to the transformer."
+    },
+    "FAIL": {
+     "next": null,
+     "text": "The handles' changes already share one line in the motor token even with the paths beside the pool: the motor encoder and its two paths are the place to repair."
+    },
+    "UNKNOWN": {
+     "next": null,
+     "text": "Test this stage before the prediction: a direction lost in the motor token cannot be found again after it."
+    }
+   }
+  },
+  {
+   "key": "transformer",
+   "name": "transformer blocks",
+   "component": "TRANSFORMER",
+   "question": "Through the transformer's blocks (attention and routing), does each handle's change keep a direction of its own, as it does in the motor token, and if not, at which block do the 26 handles' changes fall onto one shared direction?",
+   "sources": [
+    {
+     "row": "investigate_handle_merge_location_481800",
+     "in": "result_file",
+     "key": [
+      "stages",
+      "deployed",
+      "b0_after_cm@proprioception",
+      "M"
+     ],
+     "kind": "compare",
+     "against": [
+      "real",
+      "M"
+     ],
+     "met_when": "at_or_below",
+     "form": "share",
+     "label": "how much the handles' changes share one line in the proprioception slot right after block 0's cross-modal attention: the mean, over pairs of body handles, of the size of the cosine between their changes at the same state and axis (100 of every 100 = all on one shared line, 0 = every pair at right angles), at 16 states of 8 bodies of checkpoint 481,800, as deployed; against the same measure of the real changes of proprioception one model step later",
+     "means": "at or below the real changes' own sharing = the handles' changes keep their own directions through block 0's cross-modal attention; above it = they fall onto one shared direction there, where one attention head alone carries the motor slot's change to the proprioception slot",
+     "show": [
+      {
+       "in": "result_file",
+       "key": [
+        "stages",
+        "deployed",
+        "token",
+        "M"
+       ],
+       "form": "share",
+       "label": "the same sharing in the motor token, before the transformer"
+      },
+      {
+       "in": "result_file",
+       "key": [
+        "stages",
+        "deployed",
+        "b1_after_cm@vestibular",
+        "M"
+       ],
+       "form": "share",
+       "label": "the same sharing in the vestibular slot after block 1's cross-modal attention, the only slot the proprioception prediction head reads"
+      },
+      {
+       "in": "result_file",
+       "key": [
+        "merge_rule",
+        "largest",
+        "stage"
+       ],
+       "form": "text",
+       "label": "the stage with the largest rise of the sharing along the slot that carries most of the prediction's change, by the row's rule declared before its run"
+      }
+     ]
+    }
+   ],
+   "related": [
+    {
+     "row": "planner_search_mechanism_controls",
+     "in": "result",
+     "key": [
+      "share_of_the_live_change_left_with_all_held",
+      "met"
+     ],
+     "kind": "verdict",
+     "label": "the row's own line on checkpoints 479,350 and 481,800: with every attention module of the predictor's route held at its weights at the search's starting command, the planner's selected command changes by under 1 in every 100 of its live change when the present tokens change by 1 in every 100,000",
+     "means": "met = the attention switching which element it reads is where the search's small input change is amplified (PREDICTOR_ATTENTION_SWITCHING); it reads the attention's switching, not where the handles' directions merge",
+     "show": [
+      {
+       "in": "result",
+       "key": [
+        "share_of_the_live_change_left_with_all_held",
+        "481800"
+       ],
+       "form": "share",
+       "label": "share of the live change left with every attention module held, checkpoint 481,800"
+      },
+      {
+       "in": "result",
+       "key": [
+        "share_of_the_live_change_left_with_all_held",
+        "479350"
+       ],
+       "form": "share",
+       "label": "the same share, checkpoint 479,350"
+      }
+     ]
+    },
+    {
+     "row": "planner_search_mechanism_offline",
+     "in": "result",
+     "key": [
+      "line_3_held_motor_encoder_attention_share_of_the_live_change",
+      "met"
+     ],
+     "kind": "verdict",
+     "label": "the row's own line 3 on checkpoints 479,350 and 481,800: with only the motor encoder's attention held, the planner's selected command changes by under 1 in every 100 of its live change",
+     "means": "not met = the motor encoder's attention alone does not carry all of the amplification; the rest is in the forward model's attention (row planner_search_mechanism_controls)",
+     "show": [
+      {
+       "in": "result",
+       "key": [
+        "line_3_held_motor_encoder_attention_share_of_the_live_change",
+        "481800"
+       ],
+       "form": "text",
+       "label": "checkpoint 481,800: degrees on the average body handle, held against live"
+      }
+     ]
+    },
+    {
+     "row": "attention_cap_qual_handle_direction",
+     "in": "result_file",
+     "key": [
+      "M",
+      "C1",
+      "cm0"
+     ],
+     "kind": "compare",
+     "against": [
+      "M",
+      "C1",
+      "real"
+     ],
+     "met_when": "at_or_below",
+     "form": "share",
+     "label": "how much the handles' changes share one line in the proprioception slot right after block 0's cross-modal attention, control run 1 (the mean, over pairs of body handles, of the size of the cosine between their changes; 100 of every 100 = all on one shared line, 0 = every pair at right angles), on the end checkpoints of the cap experiment's runs (model step 484,675; control run 1 with the cap off, the cap arm with it on), the first 2 states of each of 8 bodies, the 20-degree turns of one handle's command; against the same measure of the real changes of proprioception",
+     "means": "at or below the real changes' own sharing = the handles' changes keep their own directions through block 0's cross-modal attention on a checkpoint trained 2,875 model steps past 481,800 without the cap; a related reading, deciding nothing here",
+     "show": [
+      {
+       "key": [
+        "M",
+        "L",
+        "cm0"
+       ],
+       "form": "share",
+       "in": "result_file",
+       "label": "the same sharing right after block 0's cross-modal attention on the cap arm (the cap on)"
+      },
+      {
+       "key": [
+        "M",
+        "C1",
+        "token"
+       ],
+       "form": "share",
+       "in": "result_file",
+       "label": "the same sharing in the motor token, control run 1"
+      },
+      {
+       "key": [
+        "M",
+        "C1",
+        "real"
+       ],
+       "form": "share",
+       "in": "result_file",
+       "label": "the same sharing of the real changes of proprioception"
+      }
+     ]
+    }
+   ],
+   "defects": [
+    "PREDICTION_HANDLE_DIRECTION_LOST",
+    "PREDICTOR_ATTENTION_SWITCHING",
+    "TRANSFORMER_BLOCK0_ATTENTION_SATURATED"
+   ],
+   "to_decide": {
+    "defect": "PREDICTION_HANDLE_DIRECTION_LOST",
+    "row": "investigate_handle_merge_location_481800",
+    "text": "The reading exists (row investigate_handle_merge_location_481800, Oct 5, 2026 2:43 to 3:26 PM PDT) but ran under a runner of the older kind, so it is history here. The next run of the same reading through the test runner decides the stage: the repair run's measurement of its causal-controllability gate, on its last checkpoint and on 481,800. The old run is not run again only to fill this box (the operator's word)."
+   },
+   "branches": {
+    "PASS": {
+     "next": "prediction_heads",
+     "text": "The handles' changes stay apart through every block: go on to the prediction heads and the all-slot path."
+    },
+    "FAIL": {
+     "next": null,
+     "text": "The handles' changes merge at the block the reading names: that block's attention and routing is the place to repair, a model-level repair addressed in training (the operator's decision of Oct 5)."
+    },
+    "UNKNOWN": {
+     "next": "prediction_heads",
+     "text": "Not decided: the predicted next proprioception, read after the transformer, the prediction heads and the all-slot path, is read next; this stage's per-block reading splits a fault found there."
+    }
+   }
+  },
+  {
+   "key": "prediction_heads",
+   "name": "prediction heads and all-slot path",
+   "component": "PREDICTION_HEADS",
+   "components": [
+    "TRANSFORMER",
+    "PREDICTION_HEADS",
+    "PREDICTOR_REPAIR"
+   ],
+   "question": "At the predicted next proprioception (the eyes: vision), read after the transformer, the prediction heads and PREDICTOR_REPAIR's all-slot path as deployed, does changing handle N's command change the prediction toward handle N's own real consequence more than toward the other 25 handles' real consequences?",
+   "sources": [
+    {
+     "row": "investigate_motor_handle_reach_481800",
+     "in": "result_file",
+     "key": [
+      "failing_handles",
+      "deployed",
+      "L3"
+     ],
+     "of": [
+      "per_handle"
+     ],
+     "kind": "failures",
+     "label": "handles whose predicted change does not point at their own real change more than at the other handles' real changes: the direction agreement (cosine) of a handle's predicted change with its own real change one model step later in the restored world, minus its mean agreement with the real changes of the other 25 handles, with its 95% interval from resampling the 8 bodies not wholly above 0; as deployed",
+     "means": "no handle listed = each handle's predicted change points at its own consequence (the row's line L3 as deployed)",
+     "show": [
+      {
+       "in": "result_file",
+       "key": [
+        "failing_handles",
+        "deployed",
+        "L2"
+       ],
+       "of": [
+        "per_handle"
+       ],
+       "form": "list",
+       "label": "handles whose command does not change the predicted next proprioception (the eyes: vision) by more than 10 times the predicted route's rounding floor (the row's line L2)"
+      }
+     ]
+    },
+    {
+     "file": "D:/UEMA_Research/external/D/UEMA_scratch/investigate_1005/handle_reach_481800/analysis.json",
+     "key": [
+      "mean_abs_cos_between_handles",
+      "predicted_proprioception_deployed"
+     ],
+     "kind": "compare",
+     "against": [
+      "mean_abs_cos_between_handles",
+      "real_proprioception"
+     ],
+     "met_when": "at_or_below",
+     "form": "share",
+     "time_key": [
+      "written"
+     ],
+     "label": "how much the 26 handles' changes of the predicted next proprioception share one line as deployed (100 of every 100 = all on one shared line, 0 = every pair at right angles); against the same measure of their real changes",
+     "means": "at or below the real changes' own sharing = the predictions keep the handles as far apart as the body's consequences are; computed after the run of row investigate_motor_handle_reach_481800, so it is no registry result"
+    }
+   ],
+   "related": [
+    {
+     "row": "attention_cap_qual_handle_direction",
+     "in": "result_file",
+     "key": [
+      "handles_above_zero",
+      "C1"
+     ],
+     "kind": "reading",
+     "form": "count",
+     "label": "body handles whose predicted change of proprioception points at their own real consequence more than at the other handles' (own-minus-swapped score with its interval wholly above 0), control run 1, on the end checkpoints of the cap experiment's runs (model step 484,675; control run 1 with the cap off, the cap arm with it on), the first 2 states of each of 8 bodies, the 20-degree turns of one handle's command",
+     "means": "a related reading of this stage's question on a checkpoint trained 2,875 model steps past 481,800 without the cap; deciding nothing here",
+     "show": [
+      {
+       "key": [
+        "handles_above_zero",
+        "L"
+       ],
+       "form": "count",
+       "in": "result_file",
+       "label": "the same count on the cap arm (the cap on)"
+      },
+      {
+       "key": [
+        "handles_with_effect",
+        "C1"
+       ],
+       "form": "count",
+       "in": "result_file",
+       "label": "body handles with a physical effect, control run 1 (the count's largest possible value)"
+      },
+      {
+       "key": [
+        "M",
+        "C1",
+        "pred"
+       ],
+       "form": "share",
+       "in": "result_file",
+       "label": "how much the handles' predicted changes share one line, control run 1 (100 of every 100 = all on one shared line)"
+      }
+     ]
+    }
+   ],
+   "defects": [
+    "PREDICTION_HANDLE_DIRECTION_LOST"
+   ],
+   "to_decide": {
+    "text": "One handle's command changed at a time, the predicted change compared by direction with each handle's real change in the restored world, run by the test runner so that its record is sealed: row investigate_motor_handle_reach_481800, its line L3, was run by a runner of the older kind"
+   },
+   "branches": {
+    "PASS": {
+     "next": null,
+     "text": "Each handle's predicted change points at its own consequence: the path holds from the command to the prediction, and the planner's use of it (PLANNER_SEARCH) is the next question."
+    },
+    "FAIL": {
+     "next": null,
+     "text": "The prediction changes, but not toward the handle that moved: the fault lies after the motor token and at or before this reading, in the transformer, the prediction heads or the all-slot path; the per-block reading of the transformer stage and a reading at the heads' input split it."
+    },
+    "UNKNOWN": {
+     "next": null,
+     "text": "Test this stage: it decides whether the predictions carry each handle's own consequence."
+    }
+   }
+  }
+ ]
+}

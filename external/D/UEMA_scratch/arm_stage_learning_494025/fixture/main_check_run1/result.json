@@ -1,0 +1,88 @@
+{
+ "row": "arm_stage_recorder_main_check_20261014",
+ "run": 1,
+ "at": "Oct 14, 2026 04:46:12 AM PDT",
+ "code": {
+  "head": "d6660665052f6ea44f7a202a5ec5d2b759786a04",
+  "status": "",
+  "reader_sha256": "7f860496435a4864a34d404b7cc8bba1a5e109844f5b4663adaf8950ec80145a",
+  "wrapper_sha256": "2779a0a67b94d1f5a6fcb47c34a2a46d03407b3207600e1783a171a99a81a74c",
+  "job_sha256": "046ea466d9d8ab4ed891dab481dfa48bdfc7a9b19ad19291bcb349a810c1aba2",
+  "bound_commit": "d6660665052f6ea44f7a202a5ec5d2b759786a04",
+  "bound_reader_sha256": "7f860496435a4864a34d404b7cc8bba1a5e109844f5b4663adaf8950ec80145a",
+  "bound_wrapper_sha256": "2779a0a67b94d1f5a6fcb47c34a2a46d03407b3207600e1783a171a99a81a74c",
+  "bound": true
+ },
+ "parts": {
+  "T_tests": {
+   "tests": 53,
+   "failures": 1,
+   "errors": 0,
+   "skipped": 0,
+   "failed": [
+    {
+     "test": "mimo_bridge.tests.test_arm_stage_provenance::test_a_raised_latch_record_is_counted_as_a_recorder_error",
+     "kind": "failure",
+     "message": "RuntimeError: a planted latch-record fault",
+     "text": "order(tmp_path, \"ARM1\")\n    \n        def boom(*a, **k):\n            raise RuntimeError(\"a planted latch-record fault\")\n        monkeypatch.setattr(rec, \"_arm_latch\", boom)\n>       rec.on_latch(model, 30, latched=True, order_seq=3, send_motor=SEND, gaze_out=None, source=\"planner\",\n                     modifier=ARM_STAGE_MODIFIER, frames=_frames(1))\n\nmimo_bridge\\tests\\test_arm_stage_provenance.py:551: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\nmimo_bridge\\causal_chain.py:453: in on_latch\n    self._fail(\"the latch record at step %d\" % step)\nmimo_bridge\\causal_chain.py:451: in on_latch\n    self._on_latch(model, step, latched, order_seq, send_motor, gaze_out, source, modifier, frames)\nmimo_bridge\\causal_chain.py:492: in _on_latch\n    self._fail(\"the arm stage's latch record at step %d\" % step)\nmimo_bridge\\causal_chain.py:488: in _on_latch\n    arm_exec = self._arm_latch(model, step, latched, order_seq, source, modifier, plan, reached, frames)\n               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\n\na = (<test_arm_stage_provenance._Model object at 0x00000209587B88D0>, 30, True, 3, 'planner', 'arm_stage_memory', ...)\nk = {}\n\n    def boom(*a, **k):\n>       raise RuntimeError(\"a planted latch-record fault\")\nE       RuntimeError: a planted latch-record fault\n\nmimo_bridge\\tests\\test_arm_stage_provenance.py:549: RuntimeError"
+    }
+   ],
+   "skipped_names": [],
+   "deselected_note": "not chain_changes_no_order and not trainer_writes_the_three_blocks",
+   "passed": 52,
+   "exit_code": 1,
+   "seconds": 26.5,
+   "command": [
+    "D:\\UEMA_Research\\.venv_mimo\\Scripts\\python.exe",
+    "-B",
+    "-m",
+    "pytest",
+    "-q",
+    "-p",
+    "no:cacheprovider",
+    "--junitxml",
+    "D:\\UEMA_Research\\external\\D\\UEMA_scratch\\arm_stage_learning_494025\\fixture\\main_check_run1\\tests.junit.xml",
+    "-k",
+    "not chain_changes_no_order and not trainer_writes_the_three_blocks",
+    "mimo_bridge/tests/test_arm_stage_provenance.py",
+    "mimo_bridge/tests/test_arm_stage.py",
+    "mimo_bridge/tests/test_causal_chain.py"
+   ],
+   "files": {
+    "mimo_bridge/tests/test_arm_stage_provenance.py": "9100e41d1ef6bbc20081c4018ddc7935613de05a993c5514589b6e2de1bc3d90",
+    "mimo_bridge/tests/test_arm_stage.py": "acf10c4f49fcfeeb35ae1d2f418989b72905834660a036a0e8ad6dee65b3b657",
+    "mimo_bridge/tests/test_causal_chain.py": "80fd3cd84698ca2ededef3b75d0ddec7b79292c3e22efbf01bff8bd1cd37de3d"
+   }
+  },
+  "M_micro_run": {
+   "exit_code": 0,
+   "seconds": 29.1,
+   "command": [
+    "D:\\UEMA_Research\\.venv_mimo\\Scripts\\python.exe",
+    "-B",
+    "D:\\UEMA_Research\\external\\D\\UEMA_scratch\\arm_stage_learning_494025\\fixture\\main_check.py",
+    "--out",
+    "D:\\UEMA_Research\\external\\D\\UEMA_scratch\\arm_stage_learning_494025\\fixture\\main_check_run1\\micro"
+   ],
+   "verdict": "pass",
+   "held": 8,
+   "of": 8,
+   "error": null,
+   "result": "D:\\UEMA_Research\\external\\D\\UEMA_scratch\\arm_stage_learning_494025\\fixture\\main_check_run1\\micro\\result.json",
+   "checks": {
+    "K1_main_exited_normally": true,
+    "K2_launch_provenance": true,
+    "K3_complete_two_hold_unit_by_50": true,
+    "K4_identities": true,
+    "K5_reconciliation": true,
+    "K6_end_flush": true,
+    "K7_reader_incomplete_no_invalid": true,
+    "K8_nothing_written_outside": true
+   }
+  }
+ },
+ "python": "D:\\UEMA_Research\\.venv_mimo\\Scripts\\python.exe",
+ "pid": 55848,
+ "verdict": "fail",
+ "seconds": 55.7
+}

@@ -1,0 +1,51 @@
+Independent adversarial iteration3 review — October27,2026
+Reviewer: sequence_architecture_review. Five-minute bounded review.
+Reviewed whole draft: docs/H84_WELLNESS_FALL_AND_RECOVERY_2026-10-27.html.
+No training, tests, model code or physical state changed.
+
+Overall: the objective is now explicitly chosen, finite and connected to temporal learning. The three distinctions (effort, surprise, damage), local retained control, persistent world-owned damage, event-level evidence and physically bounded fallback address the prior design failures. Worked arithmetic is correct:0.5*(0.3-0.2-.05*.8)+2.5*.6=1.53 versus0.90. Kinematic illustrations are correctly distinguished from force or injury evidence. The source correctly states current skin pain is not tissue damage.
+
+Remaining concrete algorithm fixes before acceptance:
+
+HIGH F1 — Specify the constrained actor algorithm and cost horizon.
+Current 'using a constrained actor update' still hides the computation. Recommended initial explicit choice: projected primal-dual actor learning, maximizing Qutility minus nonnegative multipliers times severe-event probability and upper-tail damage cost relative to their remaining budgets. Update multipliers by projected ascent from calibrated real constraint violations. Freeze critics/teachers for actor gradients. This approximate optimizer does not ensure safety; independent per-body candidate admission checks separate risk/physical constraints before dispatch. Define damage constraint cost as undiscounted cumulative new physical damage over the remaining externally fixed operating window; only utility uses the10second discount. An average-cost critic is not enough for CVaR.
+
+HIGH F2 — Distinguish event hazard from window risk.
+A probability head must identify its target duration. Per-interval conditional severe-event hazard supports risk-ledger debit; remaining-window event probability supports candidate admission. Define how the latter is formed (survival-product of conditional hazards in the explicit forecast plus a qualified remaining-window head, or a directly trained duration-conditioned window head) without double counting. Store whether a severe event already occurred. Do not discount severe risk to hide late events. The cost-distribution critic needs remaining-window time as input and actual undiscounted damage targets. Missing continuation remains unqualified rather than zero risk.
+
+HIGH F3 — Damage-event accumulation must be causal and counted once.
+'Collect peak...accumulate kappa*e' can mean either repeated full charges at every sample or waiting until contact ends. Maintain an event ID per qualified region/contact episode, prior peak/excess and the accumulated contribution. At each physics sample charge only the increase in the event's excess. Specify event start/end using calibrated contact/noise threshold and separation duration, preserve open events across checkpoints, and keep sustained exposure disjoint or combine it through a declared maximum contribution. This catches a damaging transient immediately without multiplying it by sampling frequency. Repeated contact chatter must not create fresh event IDs that overcharge the same impact.
+
+MEDIUM F4 — Make control confidence and policy provenance explicit.
+Choose the interval estimator: for example95percent Wilson bounds for independent matched binary trials; use episode-block resampling when windows are correlated. Retain failures and guard interventions. Sample sizes and uncertainty must be shown. c_j is a conservative score, not a formal joint-probability guarantee across the catalogue.
+Success is policy-dependent. Pin the probe/reference policy version with catalogue, labels and frozen teacher. Define C as local controllability under that retained reference policy or qualified probe-policy bank. An actor update must not silently relabel old evidence as success under the new actor. Requalify before changing the reference meaning. Current sensory relationship validity remains a separate present-time gate.
+
+MEDIUM F5 — Freeze teacher weights is insufficient to stop reward exploitation.
+The actor/planner can find unsupported inputs with inflated C even when the teacher cannot learn. Define the teacher's supported context and predictive uncertainty. For imagined unsupported relationships, grant no positive C credit until actual bounded acquisition supplies matched evidence; retain uncertainty rather than manufacture a success. Continue exploration within the physical envelope. Audit selected high-C candidates against actual local retained-control results. Never use imagined capacity as a new authoritative label.
+
+LOW F6 — Parameter sensitivity statement is too absolute.
+Safe alternatives may rationally exchange preference when effort price or temporal discount changes. It is not always a unit bug. Require robustness of the predeclared qualitative counterexamples (injury farming, dangerous novelty, false self expansion, etc.); report near-tie tradeoffs separately. Do not promise one exact action ranking invariant to every reasonable parameter.
+
+Review disposition: endorse this objective architecture after the concrete local corrections F1–F5. Calibration of physical thresholds and empirical policy performance are appropriately listed as implementation/qualification work rather than invented values. Those empirical tasks do not justify leaving an algorithm unnamed. No operational launch/adoption follows from document acceptance.
+
+FINAL DELTA REVIEW
+
+F1–F5 substantially addressed in revised HTML: named projected primal-dual update, undiscounted finite-window damage, distinct hazard/window heads, online incremental event accounting, Wilson/block uncertainty, pinned reference-policy teacher, and support gating for imagined C. These are concrete design improvements. No runtime was performed.
+
+One remaining blocking computation, reported promptly to parent:
+
+F7 — Candidate-specific risk composition. The text specifies a duration-conditioned window head but does not state how different three-second command sequences receive different full-window risk. A state-only head at the shared starting state gives every candidate the same result. For each candidate, predict conditional hazards h_k from its effective commands and its advanced state. Compose survival along that same trajectory, then attach a qualified remaining-window continuation: P_candidate =1-prod_k(1-h_k)*(1-P_tail(endpoint,remaining_time)). Conditional hazards are conditioned on survival; include the event-already-occurred flag. The tail's continuation policy must be named. A base-policy tail is not automatically a certificate for arbitrary future replanning. Each later replanning decision must obey the residual risk ledger and the declared continuation qualification. Compute cumulative damage along each sampled trajectory and attach its conditional tail before estimating the cost distribution/CVaR; do not add unrelated marginal quantiles as if their correlation were known. An initial-state window head can be a calibration check but cannot replace the command-conditioned calculation.
+
+Additional bounded local precision fixes:
+
+- A right-censored window with no event observed is not a negative severe-event label. Window-head binary loss uses complete windows or known positives; interval hazard likelihood may use observed survival/event intervals. Missing future is not zero harm.
+- An absorbing catastrophe convention must charge recorded new damage once, then continue utility deficit for persistent loss. Do not invent repeated NEW damage every interval merely because damaged state persists. A declared complete-function-loss convention can use C=0,D=1,E=0 for the remaining utility calculation, with its provenance explicit rather than pretending future readings were observed.
+- F6 remains unchanged in this delta: ordinary near-tie rankings can rationally change with effort price/discount. Require stable anti-exploit conclusions, and report genuine tradeoffs rather than calling every reversal a unit fault.
+
+These are local completion edits, not an architecture restart. After F7 and these wording clarifications, remaining body thresholds, learned accuracy and measured runtime are empirical qualification tasks. The central objective choice and its anti-exploit reasoning are accepted at proposed-design level.
+
+FINAL ACCEPTANCE — bounded local delta
+
+Read the corrected paragraphs on disk. F7 now composes candidate-specific conditional survival probabilities across predicted paths, attaches a named pinned-feedback-policy tail, aggregates damage on the same paths before CVaR, and requires renewed admission for later replanning. The text explicitly avoids an independence claim or certification of an arbitrary future policy. Censored no-event windows are not negative event labels. The catastrophe convention charges the recorded damage once and preserves continuing functional-deficit utility. F6 now distinguishes required anti-exploit robustness from legitimate safe-action tradeoffs.
+
+Accepted for delivery as a concrete proposed wellness/homeostatic-control design. All blocking algorithm findings raised in these three review passes and local deltas are resolved at document level. Physical-load calibration, measurement of learned prediction/control, runtime and validation of the control teacher remain explicitly identified empirical qualification work. This acceptance does not authorize implementation/training or certify the illustrative motion as learned physical recovery. No additional design review loop is required by this reviewer for the addressed findings.

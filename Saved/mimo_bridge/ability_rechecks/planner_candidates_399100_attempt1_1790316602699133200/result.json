@@ -1,0 +1,1397 @@
+{
+  "probe": "planner_candidates_v1",
+  "checkpoint": "D:\\UEMA_Research\\Saved\\mimo_bridge\\experiments\\H84_fresh_drivers_20260918_seg40\\checkpoints\\ckpt_step_399100",
+  "script_sha256": "1467b636320afa138034ab8497a0f13961df94e2a59a5e324eef6c1286ba9401",
+  "source_sha256": {
+    "Source/Python/mimo_bridge/lem_model.py": "58b18295968b7bc47f2a4eed764af4666423b52ca150b586d98974cc0b4ac54d",
+    "Source/Python/mimo_bridge/causal_chain.py": "62f3b2b4dc0c9b9cdecb50421528519f0d2909f1874abe79840ed961006655de",
+    "Source/Python/mimo_bridge/tools/gof_probe_harness.py": "353cc8f2e5179e1d56364c88c0f639369286c1b1caafb579721e9270e9f9bb99",
+    "Source/Python/lem/model/predictive_state.py": "8ae9514e39ccb9050e68bbe9a30144d3c7a8a86fb5b6a7d26a79cd8fbd3eb287",
+    "Source/Python/lem/model/wellness.py": "10df3c1d6c5cd11b53ef3087ca6affb8e7b44bba99e08ff56db421880afefa4f",
+    "Source/Python/lem/model/intention_generator.py": "2575c943f58934c96160a1ca86e92116dc6d9909573882efd0ac22e7a8f05c7a",
+    "Source/Python/mimo_bridge/hand_target_control.py": "f40c645e81efc8fab58f2286e074dfb944e77aa71c6143e6d931a7ac22f89053"
+  },
+  "bodies": 8,
+  "starts_per_body": 2,
+  "spacing_steps": 10,
+  "candidates": [
+    "chosen",
+    "hold",
+    "reflex",
+    "perturb_1",
+    "perturb_2"
+  ],
+  "depths": [
+    1,
+    2,
+    3
+  ],
+  "learning": false,
+  "production_adoption": false,
+  "candidate_definition": "LemLite._causal_plan_record's candidates at the saved planning event: the planner's chosen first order, hold (every handle where it is, the eyes at the last realised eye command), the controller's own proposal, and two perturbations of the chosen order at the babble's sizes from the production seed",
+  "execution": "each candidate through the decision's own execution transform, smoother and hand path; held for the order's tenure (motor_hold moments) with the eyes at its gaze command; the saved world's reflex and saccades run as in production; every branch replayed and its physical trace required bit-identical",
+  "rules": {
+    "forward_model_flat": "flat unless BOTH the slope of Judge B's predicted-outcome difference on its actual-outcome difference AND the pooled captured share of the between-candidate token difference over Judge B's four senses (planner route, 50 ms) have 95% body intervals entirely above 0",
+    "evaluator_flat": "flat unless the slope of Judge B's actual-outcome difference on the grounded wellness difference (50 ms) has a 95% body interval entirely above 0",
+    "planner_ignores_predicted_wellness": "the planner's objective gives predicted wellness weight 0 (intention_gen._wellness_w) and the chosen order's mean rank by predicted wellness is not better than chance (the interval's upper end is not below (K + 1) / 2)",
+    "depth_claim": "looking further ahead causes a better physical decision only when the order selected by predicted wellness at 150 ms beats the order selected at 50 ms in actual grounded wellness averaged over the order's tenure, paired over the same starts, 95% body interval above 0"
+  },
+  "production_tie_band": 0.0734,
+  "guard": {
+    "committed_gb": 29.168655395507812,
+    "limit_gb": 68.77046585083008,
+    "need_gb": 12.0,
+    "reserve_gb": 6.0
+  },
+  "memory_budget_note": "12 GiB declared from the sibling probes' budget (the harness measured the v4 probe suite at 8.24 GB peak private commit); this run records its own peak",
+  "checkpoint_episode": "episode companion restored (8 bodies saved; 8 caregiver recording tape(s) replaced by a plain list)",
+  "evaluated_starts": 16,
+  "tenure_steps": 5,
+  "model_step_ms": 50,
+  "summary": {
+    "starts": 16,
+    "bodies": 8,
+    "candidates": 5,
+    "moments": 5,
+    "tie_band": {
+      "production": 0.0734,
+      "remeasured_planner_route": 0.05793383866548538,
+      "remeasured_learning_route": 0.05789254233241081,
+      "evaluator_on_actual_outcomes": 0.059478694200515735,
+      "decomposition": {
+        "forward_model_share": 0.09664085282336003,
+        "evaluator_share": 0.9666807874088977,
+        "cross_share": -0.06332164023225775,
+        "p90_abs_forward_model_part": 0.020284241437911976,
+        "p90_abs_evaluator_part": 0.059478694200515735
+      },
+      "definition": "90th percentile over candidate pairs of |predicted difference - grounded difference| one moment after the order, on the 0-to-5 sum"
+    },
+    "wellness_differences": {
+      "grounded_abs": {
+        "median": 0.018647219985723495,
+        "p90": 0.06171201169490814
+      },
+      "judge_actual_abs": {
+        "median": 0.0019394606351852417,
+        "p90": 0.009685081243515014
+      },
+      "judge_predicted_abs": {
+        "median": 0.00144929438829422,
+        "p90": 0.009813152253627772
+      },
+      "sign_agreement_predicted_vs_grounded": 0.5875,
+      "sign_agreement_actual_judge_vs_grounded": 0.69375,
+      "decided_pairs_production": {
+        "value": 0.0,
+        "interval": [
+          0.0,
+          0.0
+        ],
+        "bodies": 8,
+        "draws_used": 5000
+      },
+      "decided_pairs_remeasured": {
+        "value": 0.0,
+        "interval": [
+          0.0,
+          0.0
+        ],
+        "bodies": 8,
+        "draws_used": 5000
+      },
+      "decided_pairs_if_forecasts_were_perfect": {
+        "value": 0.0,
+        "interval": [
+          0.0,
+          0.0
+        ],
+        "bodies": 8,
+        "draws_used": 5000
+      }
+    },
+    "evaluator": {
+      "transfer": {
+        "value": 0.06917141637084344,
+        "interval": [
+          0.018243396763392657,
+          0.12697309277083652
+        ],
+        "bodies": 8,
+        "draws_used": 5000
+      },
+      "corr": {
+        "value": 0.38118609054566155,
+        "interval": [
+          0.13715208179007288,
+          0.55179709795916
+        ],
+        "bodies": 8,
+        "draws_used": 5000
+      },
+      "definition": "slope of Judge B's difference between two candidates' ACTUAL outcomes on their grounded wellness difference, one moment after (1 = sees the whole true difference, 0 = blind to it)",
+      "per_term": {
+        "prediction_error": {
+          "share_of_grounded_difference": 0.19128601830688513,
+          "grounded_abs_median": 0.0017651021480560303,
+          "judge_actual_abs_median": 0.000418931245803833,
+          "judge_predicted_abs_median": 0.00034430623054504395,
+          "evaluator_transfer": 0.14835804229522412,
+          "evaluator_corr": 0.711979169117361
+        },
+        "tactile_comfort": {
+          "share_of_grounded_difference": 0.8753208527058214,
+          "grounded_abs_median": 0.009501412510871887,
+          "judge_actual_abs_median": 0.0016567222774028778,
+          "judge_predicted_abs_median": 0.0013127252459526062,
+          "evaluator_transfer": 0.015767607441303236,
+          "evaluator_corr": 0.1313597826935597
+        },
+        "capability": {
+          "share_of_grounded_difference": 3.937550428312315e-05,
+          "grounded_abs_median": 0.0001577436923980713,
+          "judge_actual_abs_median": 0.00028207898139953613,
+          "judge_predicted_abs_median": 0.0002702772617340088,
+          "evaluator_transfer": -0.18219960182145006,
+          "evaluator_corr": -0.07232603917627019
+        },
+        "coherence": {
+          "share_of_grounded_difference": 0.0,
+          "grounded_abs_median": 0.0,
+          "judge_actual_abs_median": 0.0005724132061004639,
+          "judge_predicted_abs_median": 0.0004581362009048462,
+          "evaluator_transfer": null,
+          "evaluator_corr": null
+        },
+        "motor_state": {
+          "share_of_grounded_difference": 0.0001278988930362421,
+          "grounded_abs_median": 0.0,
+          "judge_actual_abs_median": 0.00011408329010009766,
+          "judge_predicted_abs_median": 9.056925773620605e-05,
+          "evaluator_transfer": -0.030290637533873697,
+          "evaluator_corr": -0.050286543682869826
+        }
+      },
+      "candidate_spread_median": {
+        "predicted": 0.0061691030859947205,
+        "predicted_senses_present_motor": 0.0009348392486572266,
+        "present_senses_candidate_motor": 0.004272468388080597,
+        "actual": 0.006354372948408127,
+        "grounded": 0.05827295407652855
+      }
+    },
+    "forward_model": {
+      "transfer_judge_units": {
+        "value": 0.12065612301940458,
+        "interval": [
+          -0.33064128938205434,
+          0.9440251242169635
+        ],
+        "bodies": 8,
+        "draws_used": 5000
+      },
+      "corr_judge_units": {
+        "value": 0.08624335685274016,
+        "interval": [
+          -0.3360177494178869,
+          0.35120178648803085
+        ],
+        "bodies": 8,
+        "draws_used": 5000
+      },
+      "definition": "slope of Judge B's difference between two candidates' PREDICTED outcomes on its difference between their ACTUAL outcomes (1 = the forecast hands Judge B every difference reality does, 0 = none)",
+      "senses": {
+        "planner": {
+          "1": {
+            "vision": {
+              "captured_share": {
+                "value": 0.22899680640105496,
+                "interval": [
+                  0.09060161649986156,
+                  0.665889125970445
+                ],
+                "bodies": 8,
+                "draws_used": 5000
+              },
+              "predicted_over_realised_difference": 1.458428844999412,
+              "predicted_difference_over_prediction_error": 0.15477413486448005,
+              "realised_difference_over_prediction_error": 0.10612388488829051,
+              "prediction_error_mean": 0.0157632107852296,
+              "persistence_error_mean": 0.006899341239135705,
+              "predicted_difference_mean": 0.0024397373119703527,
+              "realised_difference_mean": 0.0016728531668415655
+            },
+            "tactile": {
+              "captured_share": {
+                "value": 7.054404676160026e-07,
+                "interval": [
+                  1.2200051491697957e-07,
+                  2.094702164351742e-06
+                ],
+                "bodies": 8,
+                "draws_used": 5000
+              },
+              "predicted_over_realised_difference": 8.138782169869979e-10,
+              "predicted_difference_over_prediction_error": 3.561972277859134e-10,
+              "realised_difference_over_prediction_error": 0.43765420962434215,
+              "prediction_error_mean": 0.022401310759266407,
+              "persistence_error_mean": 0.02191279955529849,
+              "predicted_difference_mean": 7.979284791221449e-12,
+              "realised_difference_mean": 0.009804027954896011
+            },
+            "audio": {
+              "captured_share": {
+                "value": -0.00011327474655019082,
+                "interval": [
+                  -0.0004724302515051525,
+                  0.00028928327220831664
+                ],
+                "bodies": 8,
+                "draws_used": 5000
+              },
+              "predicted_over_realised_difference": 1.042616855446873e-05,
+              "predicted_difference_over_prediction_error": 3.096405957737305e-06,
+              "realised_difference_over_prediction_error": 0.2969840686500472,
+              "prediction_error_mean": 0.06828697150516685,
+              "persistence_error_mean": 0.09074378201312232,
+              "predicted_difference_mean": 2.1144418540443622e-07,
+              "realised_difference_mean": 0.02028014263339429
+            },
+            "proprioception": {
+              "captured_share": {
+                "value": -4.9134614060088016e-05,
+                "interval": [
+                  -0.00017214008534381913,
+                  6.501246317633484e-06
+                ],
+                "bodies": 8,
+                "draws_used": 5000
+              },
+              "predicted_over_realised_difference": 2.5134964609789194e-06,
+              "predicted_difference_over_prediction_error": 7.99484134793351e-07,
+              "realised_difference_over_prediction_error": 0.3180764911369638,
+              "prediction_error_mean": 0.0037185818777758805,
+              "persistence_error_mean": 0.0024221097291671463,
+              "predicted_difference_mean": 2.9729472152118846e-09,
+              "realised_difference_mean": 0.001182793475688454
+            },
+            "vestibular": {
+              "captured_share": {
+                "value": -0.029344571227963592,
+                "interval": [
+                  -0.4106339286762302,
+                  0.21036150309028911
+                ],
+                "bodies": 8,
+                "draws_used": 5000
+              },
+              "predicted_over_realised_difference": 540.1036704445129,
+              "predicted_difference_over_prediction_error": 1.0780052757089999e-06,
+              "realised_difference_over_prediction_error": 1.9959228842525482e-09,
+              "prediction_error_mean": 2.5992026045960166e-05,
+              "persistence_error_mean": 4.621869502471046e-14,
+              "predicted_difference_mean": 2.8019541203910794e-11,
+              "realised_difference_mean": 5.187807959322017e-14
+            },
+            "judge_senses": {
+              "captured_share": {
+                "value": 0.01155833993118525,
+                "interval": [
+                  0.004170435863483313,
+                  0.031444137378157155
+                ],
+                "bodies": 8,
+                "draws_used": 5000
+              },
+              "predicted_over_realised_difference": 0.07407301989518335,
+              "predicted_difference_over_prediction_error": 0.022147136948842783,
+              "realised_difference_over_prediction_error": 0.29899060386874976,
+              "prediction_error_mean": 0.11017007492743876,
+              "persistence_error_mean": 0.12197803253672368,
+              "predicted_difference_mean": 0.002439951737082257,
+              "realised_difference_mean": 0.032939817230820324
+            }
+          },
+          "2": {
+            "vision": {
+              "captured_share": {
+                "value": 0.3095354275406453,
+                "interval": [
+                  0.1465449265940452,
+                  0.7041183172149915
+                ],
+                "bodies": 8,
+                "draws_used": 5000
+              },
+              "predicted_over_realised_difference": 1.306266947676948,
+              "predicted_difference_over_prediction_error": 0.23749141897759943,
+              "realised_difference_over_prediction_error": 0.18180925376696683,
+              "prediction_error_mean": 0.04734463499833429,
+              "persistence_error_mean": 0.019085027290715817,
+              "predicted_difference_mean": 0.011243944546730925,
+              "realised_difference_mean": 0.008607692758916577
+            },
+            "tactile": {
+              "captured_share": {
+                "value": -5.475349036606327e-07,
+                "interval": [
+                  -7.400771301396782e-06,
+                  8.202062617612994e-06
+                ],
+                "bodies": 8,
+                "draws_used": 5000
+              },
+              "predicted_over_realised_difference": 2.1580066574030807e-08,
+              "predicted_difference_over_prediction_error": 9.579507891835854e-09,
+              "realised_difference_over_prediction_error": 0.4439053910687986,
+              "prediction_error_mean": 0.02656350650779422,
+              "persistence_error_mean": 0.027644915473795505,
+              "predicted_difference_mean": 2.544653202262478e-10,
+              "realised_difference_mean": 0.01179168374450097
+            },
+            "audio": {
+              "captured_share": {
+                "value": -0.004241328503810164,
+                "interval": [
+                  -0.007964366964161376,
+                  -0.0017163947590172035
+                ],
+                "bodies": 8,
+                "draws_used": 5000
+              },
+              "predicted_over_realised_difference": 0.00033965842179750356,
+              "predicted_difference_over_prediction_error": 0.00012038468704648517,
+              "realised_difference_over_prediction_error": 0.3544286828202237,
+              "prediction_error_mean": 0.06087066773041946,
+              "persistence_error_mean": 0.09136259925829834,
+              "predicted_difference_mean": 7.327896285037129e-06,
+              "realised_difference_mean": 0.021574310586080066
+            },
+            "proprioception": {
+              "captured_share": {
+                "value": -0.0005671691860527128,
+                "interval": [
+                  -0.0011238204138307535,
+                  0.0008445385130605205
+                ],
+                "bodies": 8,
+                "draws_used": 5000
+              },
+              "predicted_over_realised_difference": 0.00011264702455658251,
+              "predicted_difference_over_prediction_error": 4.3463071139497146e-05,
+              "realised_difference_over_prediction_error": 0.3858341692608638,
+              "prediction_error_mean": 0.009082826364090413,
+              "persistence_error_mean": 0.007238282835307211,
+              "predicted_difference_mean": 3.947675284101618e-07,
+              "realised_difference_mean": 0.0035044647647294964
+            },
+            "vestibular": {
+              "captured_share": {
+                "value": -1.9691090241436924,
+                "interval": [
+                  -8.97491847113895,
+                  2.081221488732461
+                ],
+                "bodies": 8,
+                "draws_used": 5000
+              },
+              "predicted_over_realised_difference": 25309.099986119923,
+              "predicted_difference_over_prediction_error": 1.2161077821544696e-05,
+              "realised_difference_over_prediction_error": 4.805021841240543e-10,
+              "prediction_error_mean": 0.0001040224630343502,
+              "persistence_error_mean": 5.634930473212606e-14,
+              "predicted_difference_mean": 1.2650252681494892e-09,
+              "realised_difference_mean": 4.998302068596897e-14
+            },
+            "judge_senses": {
+              "captured_share": {
+                "value": 0.056530178431281615,
+                "interval": [
+                  0.02300365195004954,
+                  0.11388086138028267
+                ],
+                "bodies": 8,
+                "draws_used": 5000
+              },
+              "predicted_over_realised_difference": 0.2474081950619959,
+              "predicted_difference_over_prediction_error": 0.07821173044524848,
+              "realised_difference_over_prediction_error": 0.3161242513638244,
+              "prediction_error_mean": 0.1438616356006384,
+              "persistence_error_mean": 0.14533082485811688,
+              "predicted_difference_mean": 0.011251667465009692,
+              "realised_difference_mean": 0.045478151854227114
+            }
+          },
+          "3": {
+            "vision": {
+              "captured_share": {
+                "value": 0.2866248118771797,
+                "interval": [
+                  0.14184453895362717,
+                  0.6056427362957204
+                ],
+                "bodies": 8,
+                "draws_used": 5000
+              },
+              "predicted_over_realised_difference": 1.1299969362162743,
+              "predicted_difference_over_prediction_error": 0.31214556101509755,
+              "realised_difference_over_prediction_error": 0.2762357587094863,
+              "prediction_error_mean": 0.08781465003450387,
+              "persistence_error_mean": 0.03616937516994802,
+              "predicted_difference_mean": 0.027410953200364664,
+              "realised_difference_mean": 0.02425754647808919
+            },
+            "tactile": {
+              "captured_share": {
+                "value": -2.5058316383648945e-07,
+                "interval": [
+                  -7.439123961696498e-06,
+                  7.177359155962428e-06
+                ],
+                "bodies": 8,
+                "draws_used": 5000
+              },
+              "predicted_over_realised_difference": 6.92388104135275e-08,
+              "predicted_difference_over_prediction_error": 6.693499065945773e-08,
+              "realised_difference_over_prediction_error": 0.9667264682869298,
+              "prediction_error_mean": 0.03174153142366281,
+              "persistence_error_mean": 0.03549334297997127,
+              "predicted_difference_mean": 2.124619109359754e-09,
+              "realised_difference_mean": 0.03068537857121615
+            },
+            "audio": {
+              "captured_share": {
+                "value": 0.00023116819524432734,
+                "interval": [
+                  -0.012665903535981066,
+                  0.0052263236502537724
+                ],
+                "bodies": 8,
+                "draws_used": 5000
+              },
+              "predicted_over_realised_difference": 0.0010953931692484066,
+              "predicted_difference_over_prediction_error": 0.0009178280565897815,
+              "realised_difference_over_prediction_error": 0.8378982837911435,
+              "prediction_error_mean": 0.05544829428013846,
+              "persistence_error_mean": 0.0873925104071946,
+              "predicted_difference_mean": 5.0892000180357784e-05,
+              "realised_difference_mean": 0.046460030616474295
+            },
+            "proprioception": {
+              "captured_share": {
+                "value": -0.00043249330297154205,
+                "interval": [
+                  -0.0013244406196344905,
+                  0.0019942437797075253
+                ],
+                "bodies": 8,
+                "draws_used": 5000
+              },
+              "predicted_over_realised_difference": 0.00042463827974132984,
+              "predicted_difference_over_prediction_error": 0.00020214225738211512,
+              "realised_difference_over_prediction_error": 0.4760339965234668,
+              "prediction_error_mean": 0.015481369255203242,
+              "persistence_error_mean": 0.013259597804507079,
+              "predicted_difference_mean": 3.129438928612858e-06,
+              "realised_difference_mean": 0.007369658078209926
+            },
+            "vestibular": {
+              "captured_share": {
+                "value": -19.45094883590182,
+                "interval": [
+                  -53.14395771283753,
+                  10.394275026006165
+                ],
+                "bodies": 8,
+                "draws_used": 5000
+              },
+              "predicted_over_realised_difference": 310812.96342256153,
+              "predicted_difference_over_prediction_error": 6.510429755827645e-05,
+              "realised_difference_over_prediction_error": 2.0946455013127876e-10,
+              "prediction_error_mean": 0.00023403314260025298,
+              "persistence_error_mean": 5.774646993674693e-14,
+              "predicted_difference_mean": 1.5236563354345413e-08,
+              "realised_difference_mean": 4.90216469305714e-14
+            },
+            "judge_senses": {
+              "captured_share": {
+                "value": 0.0639900019015054,
+                "interval": [
+                  0.028618683716104376,
+                  0.128854979735434
+                ],
+                "bodies": 8,
+                "draws_used": 5000
+              },
+              "predicted_over_realised_difference": 0.25249900520672536,
+              "predicted_difference_over_prediction_error": 0.1441838198792605,
+              "realised_difference_over_prediction_error": 0.571027278943989,
+              "prediction_error_mean": 0.19048584499350835,
+              "persistence_error_mean": 0.17231482636162093,
+              "predicted_difference_mean": 0.027464976764092743,
+              "realised_difference_mean": 0.10877261374398954
+            }
+          }
+        },
+        "learning": {
+          "1": {
+            "vision": {
+              "captured_share": {
+                "value": 0.23128026722597245,
+                "interval": [
+                  0.0921416560617963,
+                  0.6623829869955118
+                ],
+                "bodies": 8,
+                "draws_used": 5000
+              },
+              "predicted_over_realised_difference": 1.4405230782779024,
+              "predicted_difference_over_prediction_error": 0.17887579500136572,
+              "realised_difference_over_prediction_error": 0.12417419595610077,
+              "prediction_error_mean": 0.013471826042126886,
+              "persistence_error_mean": 0.006899341239135705,
+              "predicted_difference_mean": 0.002409783593405549,
+              "realised_difference_mean": 0.0016728531668415655
+            },
+            "tactile": {
+              "captured_share": {
+                "value": 6.464900304938775e-07,
+                "interval": [
+                  1.0102342919506109e-07,
+                  1.946357880229829e-06
+                ],
+                "bodies": 8,
+                "draws_used": 5000
+              },
+              "predicted_over_realised_difference": 8.571714475693441e-10,
+              "predicted_difference_over_prediction_error": 3.7742464787193065e-10,
+              "realised_difference_over_prediction_error": 0.4403140689557295,
+              "prediction_error_mean": 0.022265988407201537,
+              "persistence_error_mean": 0.02191279955529849,
+              "predicted_difference_mean": 8.40373283410853e-12,
+              "realised_difference_mean": 0.009804027954896011
+            },
+            "audio": {
+              "captured_share": {
+                "value": -0.00011340009537278412,
+                "interval": [
+                  -0.0004712351263654137,
+                  0.00027220823992994377
+                ],
+                "bodies": 8,
+                "draws_used": 5000
+              },
+              "predicted_over_realised_difference": 1.0422034601993735e-05,
+              "predicted_difference_over_prediction_error": 3.0132270052019393e-06,
+              "realised_difference_over_prediction_error": 0.2891208022496403,
+              "prediction_error_mean": 0.07014418359244684,
+              "persistence_error_mean": 0.09074378201312232,
+              "predicted_difference_mean": 2.113603482586036e-07,
+              "realised_difference_mean": 0.02028014263339429
+            },
+            "proprioception": {
+              "captured_share": {
+                "value": -6.179183401678676e-05,
+                "interval": [
+                  -0.00018594706912059334,
+                  4.61923930379694e-07
+                ],
+                "bodies": 8,
+                "draws_used": 5000
+              },
+              "predicted_over_realised_difference": 2.731336901433994e-06,
+              "predicted_difference_over_prediction_error": 1.3226317038255958e-06,
+              "realised_difference_over_prediction_error": 0.48424334000364205,
+              "prediction_error_mean": 0.0024425601303666006,
+              "persistence_error_mean": 0.0024221097291671463,
+              "predicted_difference_mean": 3.2306074669232463e-09,
+              "realised_difference_mean": 0.001182793475688454
+            },
+            "vestibular": {
+              "captured_share": {
+                "value": -0.11281007322424616,
+                "interval": [
+                  -0.5889268293413362,
+                  0.16362805333550273
+                ],
+                "bodies": 8,
+                "draws_used": 5000
+              },
+              "predicted_over_realised_difference": 444.6829609783284,
+              "predicted_difference_over_prediction_error": 8.878551383696133e-07,
+              "realised_difference_over_prediction_error": 1.9966025602066704e-09,
+              "prediction_error_mean": 2.5983177937951867e-05,
+              "persistence_error_mean": 4.621869502471046e-14,
+              "predicted_difference_mean": 2.306929804338254e-11,
+              "realised_difference_mean": 5.187807959322017e-14
+            },
+            "judge_senses": {
+              "captured_share": {
+                "value": 0.011673756593177076,
+                "interval": [
+                  0.0041938480575791194,
+                  0.03133941962409471
+                ],
+                "bodies": 8,
+                "draws_used": 5000
+              },
+              "predicted_over_realised_difference": 0.07316367834943781,
+              "predicted_difference_over_prediction_error": 0.022247939280169562,
+              "realised_difference_over_prediction_error": 0.30408448265696736,
+              "prediction_error_mean": 0.10832455817214186,
+              "persistence_error_mean": 0.12197803253672368,
+              "predicted_difference_mean": 0.0024099981927650075,
+              "realised_difference_mean": 0.032939817230820324
+            }
+          },
+          "2": {
+            "vision": {
+              "captured_share": {
+                "value": 0.3123276726032522,
+                "interval": [
+                  0.14808923108986216,
+                  0.705909826058916
+                ],
+                "bodies": 8,
+                "draws_used": 5000
+              },
+              "predicted_over_realised_difference": 1.3039508533444681,
+              "predicted_difference_over_prediction_error": 0.25651226662851573,
+              "realised_difference_over_prediction_error": 0.1967192750942985,
+              "prediction_error_mean": 0.0437562244716001,
+              "persistence_error_mean": 0.019085027290715817,
+              "predicted_difference_mean": 0.01122400831831627,
+              "realised_difference_mean": 0.008607692758916577
+            },
+            "tactile": {
+              "captured_share": {
+                "value": -1.8877830738075767e-06,
+                "interval": [
+                  -8.653057369562971e-06,
+                  6.724173956994148e-06
+                ],
+                "bodies": 8,
+                "draws_used": 5000
+              },
+              "predicted_over_realised_difference": 2.2740864681172585e-08,
+              "predicted_difference_over_prediction_error": 1.0032487462499317e-08,
+              "realised_difference_over_prediction_error": 0.44116561103348567,
+              "prediction_error_mean": 0.02672847440868629,
+              "persistence_error_mean": 0.027644915473795505,
+              "predicted_difference_mean": 2.6815308439687903e-10,
+              "realised_difference_mean": 0.01179168374450097
+            },
+            "audio": {
+              "captured_share": {
+                "value": -0.004115010793755304,
+                "interval": [
+                  -0.007919002926065663,
+                  -0.0015318589626179657
+                ],
+                "bodies": 8,
+                "draws_used": 5000
+              },
+              "predicted_over_realised_difference": 0.00034631566130971904,
+              "predicted_difference_over_prediction_error": 0.00012033362309820688,
+              "realised_difference_over_prediction_error": 0.34746803723262576,
+              "prediction_error_mean": 0.06209005800333893,
+              "persistence_error_mean": 0.09136259925829834,
+              "predicted_difference_mean": 7.47152163791959e-06,
+              "realised_difference_mean": 0.021574310586080066
+            },
+            "proprioception": {
+              "captured_share": {
+                "value": -0.0005529572999884742,
+                "interval": [
+                  -0.0010900121945317165,
+                  0.0007999874139852192
+                ],
+                "bodies": 8,
+                "draws_used": 5000
+              },
+              "predicted_over_realised_difference": 0.00011028428204269415,
+              "predicted_difference_over_prediction_error": 5.307962502562316e-05,
+              "realised_difference_over_prediction_error": 0.4812981872165114,
+              "prediction_error_mean": 0.007281275637036666,
+              "persistence_error_mean": 0.007238282835307211,
+              "predicted_difference_mean": 3.864873805221116e-07,
+              "realised_difference_mean": 0.0035044647647294964
+            },
+            "vestibular": {
+              "captured_share": {
+                "value": -2.2099831227728437,
+                "interval": [
+                  -8.991316391804597,
+                  1.8440512679921741
+                ],
+                "bodies": 8,
+                "draws_used": 5000
+              },
+              "predicted_over_realised_difference": 26294.845868530032,
+              "predicted_difference_over_prediction_error": 1.263820352392759e-05,
+              "realised_difference_over_prediction_error": 4.806342500395918e-10,
+              "prediction_error_mean": 0.00010399388034009575,
+              "persistence_error_mean": 5.634930473212606e-14,
+              "predicted_difference_mean": 1.3142958249811022e-09,
+              "realised_difference_mean": 4.998302068596897e-14
+            },
+            "judge_senses": {
+              "captured_share": {
+                "value": 0.05711934059585337,
+                "interval": [
+                  0.02300220527205624,
+                  0.11417146487968602
+                ],
+                "bodies": 8,
+                "draws_used": 5000
+              },
+              "predicted_over_realised_difference": 0.24697280204986635,
+              "predicted_difference_over_prediction_error": 0.08031020466584755,
+              "realised_difference_over_prediction_error": 0.32517833542509716,
+              "prediction_error_mean": 0.13985603252066198,
+              "persistence_error_mean": 0.14533082485811688,
+              "predicted_difference_mean": 0.011231866595487795,
+              "realised_difference_mean": 0.045478151854227114
+            }
+          },
+          "3": {
+            "vision": {
+              "captured_share": {
+                "value": 0.2888424694322718,
+                "interval": [
+                  0.14539858207435666,
+                  0.6071771300968571
+                ],
+                "bodies": 8,
+                "draws_used": 5000
+              },
+              "predicted_over_realised_difference": 1.1291973155206947,
+              "predicted_difference_over_prediction_error": 0.32821900686705907,
+              "realised_difference_over_prediction_error": 0.29066576970714003,
+              "prediction_error_mean": 0.08345511926818852,
+              "persistence_error_mean": 0.03616937516994802,
+              "predicted_difference_mean": 0.0273915563641768,
+              "realised_difference_mean": 0.02425754647808919
+            },
+            "tactile": {
+              "captured_share": {
+                "value": -4.34804066247566e-07,
+                "interval": [
+                  -7.351458130183955e-06,
+                  6.734695132862134e-06
+                ],
+                "bodies": 8,
+                "draws_used": 5000
+              },
+              "predicted_over_realised_difference": 6.856472270044355e-08,
+              "predicted_difference_over_prediction_error": 6.601179648011111e-08,
+              "realised_difference_over_prediction_error": 0.9627661847115453,
+              "prediction_error_mean": 0.031872098395738534,
+              "persistence_error_mean": 0.03549334297997127,
+              "predicted_difference_mean": 2.1039344726935677e-09,
+              "realised_difference_mean": 0.03068537857121615
+            },
+            "audio": {
+              "captured_share": {
+                "value": 0.0005254913545447851,
+                "interval": [
+                  -0.012640754671237068,
+                  0.005546432342213548
+                ],
+                "bodies": 8,
+                "draws_used": 5000
+              },
+              "predicted_over_realised_difference": 0.0010722796381365345,
+              "predicted_difference_over_prediction_error": 0.0008859922176609083,
+              "realised_difference_over_prediction_error": 0.8262697398606146,
+              "prediction_error_mean": 0.0562286483156357,
+              "persistence_error_mean": 0.0873925104071946,
+              "predicted_difference_mean": 4.981814481724537e-05,
+              "realised_difference_mean": 0.046460030616474295
+            },
+            "proprioception": {
+              "captured_share": {
+                "value": -0.0004130131971354667,
+                "interval": [
+                  -0.0013007489835388435,
+                  0.0020319801398077375
+                ],
+                "bodies": 8,
+                "draws_used": 5000
+              },
+              "predicted_over_realised_difference": 0.00042398680812692454,
+              "predicted_difference_over_prediction_error": 0.0002346439843517001,
+              "realised_difference_over_prediction_error": 0.55342284206507,
+              "prediction_error_mean": 0.013316505062766132,
+              "persistence_error_mean": 0.013259597804507079,
+              "predicted_difference_mean": 3.1246378055670313e-06,
+              "realised_difference_mean": 0.007369658078209926
+            },
+            "vestibular": {
+              "captured_share": {
+                "value": -18.54690030689416,
+                "interval": [
+                  -52.359446717314725,
+                  11.13894802184063
+                ],
+                "bodies": 8,
+                "draws_used": 5000
+              },
+              "predicted_over_realised_difference": 306483.32962044317,
+              "predicted_difference_over_prediction_error": 6.42095761817001e-05,
+              "realised_difference_over_prediction_error": 2.0950430244026286e-10,
+              "prediction_error_mean": 0.0002339887360764308,
+              "persistence_error_mean": 5.774646993674693e-14,
+              "predicted_difference_mean": 1.50243175747593e-08,
+              "realised_difference_mean": 4.90216469305714e-14
+            },
+            "judge_senses": {
+              "captured_share": {
+                "value": 0.06461154716654517,
+                "interval": [
+                  0.02933610870687011,
+                  0.12956646450964956
+                ],
+                "bodies": 8,
+                "draws_used": 5000
+              },
+              "predicted_over_realised_difference": 0.2523107637675075,
+              "predicted_difference_over_prediction_error": 0.1484510697623406,
+              "realised_difference_over_prediction_error": 0.5883659798958529,
+              "prediction_error_mean": 0.1848723710423289,
+              "persistence_error_mean": 0.17231482636162093,
+              "predicted_difference_mean": 0.027444501250734082,
+              "realised_difference_mean": 0.10877261374398954
+            }
+          }
+        }
+      },
+      "route_disagreement_over_candidate_difference": {
+        "vision": 0.06871760411408487,
+        "tactile": 3311055.753052754,
+        "audio": 213.71941567249087,
+        "proprioception": 100847.94146531967,
+        "vestibular": 8.956040016295272
+      },
+      "motor_token_change_median": 0.163053959608078
+    },
+    "chain": {
+      "transfer": {
+        "value": 0.06951502691644872,
+        "interval": [
+          0.00449286377871338,
+          0.1575492708652036
+        ],
+        "bodies": 8,
+        "draws_used": 5000
+      },
+      "corr": {
+        "value": 0.2738201207456012,
+        "interval": [
+          0.06468989510271653,
+          0.40375876272380284
+        ],
+        "bodies": 8,
+        "draws_used": 5000
+      },
+      "definition": "slope of the planner's predicted wellness difference on the grounded difference: the whole route the production tie is judged on"
+    },
+    "planner": {
+      "objective_wellness_weight": 0.0,
+      "chance_rank": 3.0,
+      "chosen_rank_by_predicted_wellness": {
+        "value": 2.6875,
+        "interval": [
+          2.0,
+          3.4375
+        ],
+        "bodies": 8,
+        "draws_used": 5000
+      },
+      "chosen_rank_by_own_objective": {
+        "value": 1.0625,
+        "interval": [
+          1.0,
+          1.1875
+        ],
+        "bodies": 8,
+        "draws_used": 5000
+      },
+      "chosen_rank_by_actual_wellness_over_tenure": {
+        "value": 2.3125,
+        "interval": [
+          1.8125,
+          2.9375
+        ],
+        "bodies": 8,
+        "draws_used": 5000
+      },
+      "chosen_rank_by_actual_goal_distance": {
+        "value": 2.75,
+        "interval": [
+          2.0,
+          3.625
+        ],
+        "bodies": 8,
+        "draws_used": 5000
+      },
+      "chosen_actual_wellness_minus_alternatives": {
+        "mean": 0.006198814348317733,
+        "interval": [
+          -0.0010168706148396343,
+          0.012801859946921484
+        ],
+        "bodies": 8,
+        "bodies_above_zero": 7,
+        "bodies_below_zero": 1
+      },
+      "starts_where_an_alternative_was_predicted_better_beyond_the_band": 0,
+      "production_record_outcomes": {
+        "best": 0,
+        "tied": 16,
+        "behind": 0
+      },
+      "production_record_gap_abs_p90": 0.01333153247833252
+    },
+    "depth": {
+      "wellness": {
+        "differs_share": 0.25,
+        "picks": [
+          [
+            2,
+            1
+          ],
+          [
+            2,
+            2
+          ],
+          [
+            4,
+            4
+          ],
+          [
+            2,
+            2
+          ],
+          [
+            2,
+            2
+          ],
+          [
+            2,
+            2
+          ],
+          [
+            4,
+            4
+          ],
+          [
+            0,
+            0
+          ],
+          [
+            1,
+            2
+          ],
+          [
+            1,
+            1
+          ],
+          [
+            0,
+            0
+          ],
+          [
+            3,
+            4
+          ],
+          [
+            4,
+            0
+          ],
+          [
+            0,
+            0
+          ],
+          [
+            0,
+            0
+          ],
+          [
+            1,
+            1
+          ]
+        ],
+        "predicted_difference_at_150ms": 0.0,
+        "wellness_tenure_depth3_minus_depth1": {
+          "mean": -0.0012154700234532356,
+          "interval": [
+            -0.003775454685091967,
+            0.0005467545241117644
+          ],
+          "bodies": 8,
+          "bodies_above_zero": 2,
+          "bodies_below_zero": 2
+        },
+        "wellness_150ms_depth3_minus_depth1": {
+          "mean": -0.002993358299136162,
+          "interval": [
+            -0.00750343594700098,
+            0.0
+          ],
+          "bodies": 8,
+          "bodies_above_zero": 1,
+          "bodies_below_zero": 3
+        },
+        "turn_closed_share_depth3_minus_depth1": {
+          "mean": 0.006365062292156741,
+          "interval": [
+            -0.0145932595266886,
+            0.03008944402846652
+          ],
+          "bodies": 8,
+          "bodies_above_zero": 2,
+          "bodies_below_zero": 2
+        },
+        "position_closed_share_depth3_minus_depth1": {
+          "mean": 0.009941872442117895,
+          "interval": [
+            -0.004212568364082556,
+            0.028658227049200798
+          ],
+          "bodies": 8,
+          "bodies_above_zero": 2,
+          "bodies_below_zero": 2
+        },
+        "eye_error_deg_depth3_minus_depth1": {
+          "mean": 2.0726179436452288,
+          "interval": [
+            -0.9618713636734092,
+            6.1791036865329945
+          ],
+          "bodies": 8,
+          "bodies_above_zero": 2,
+          "bodies_below_zero": 2
+        },
+        "next_prediction_error_depth3_minus_depth1": {
+          "mean": 0.005100608394332083,
+          "interval": [
+            -0.00014106862208791487,
+            0.014594564014169007
+          ],
+          "bodies": 8,
+          "bodies_above_zero": 3,
+          "bodies_below_zero": 1
+        },
+        "goal_distance_end_depth3_minus_depth1": {
+          "mean": -0.04020082484930754,
+          "interval": [
+            -0.10311765689402819,
+            -0.003581082448363304
+          ],
+          "bodies": 8,
+          "bodies_above_zero": 0,
+          "bodies_below_zero": 4
+        }
+      },
+      "objective": {
+        "differs_share": 0.3125,
+        "picks": [
+          [
+            0,
+            0
+          ],
+          [
+            0,
+            0
+          ],
+          [
+            0,
+            0
+          ],
+          [
+            0,
+            3
+          ],
+          [
+            0,
+            1
+          ],
+          [
+            0,
+            0
+          ],
+          [
+            0,
+            3
+          ],
+          [
+            0,
+            0
+          ],
+          [
+            0,
+            0
+          ],
+          [
+            0,
+            1
+          ],
+          [
+            0,
+            0
+          ],
+          [
+            4,
+            4
+          ],
+          [
+            0,
+            0
+          ],
+          [
+            0,
+            0
+          ],
+          [
+            0,
+            1
+          ],
+          [
+            0,
+            0
+          ]
+        ],
+        "predicted_difference_at_150ms": 0.0,
+        "wellness_tenure_depth3_minus_depth1": {
+          "mean": -0.003995540644973539,
+          "interval": [
+            -0.009414572454988945,
+            0.0008767911233007464
+          ],
+          "bodies": 8,
+          "bodies_above_zero": 1,
+          "bodies_below_zero": 4
+        },
+        "wellness_150ms_depth3_minus_depth1": {
+          "mean": -0.011482210829854012,
+          "interval": [
+            -0.021249585784971714,
+            -0.002395838499069214
+          ],
+          "bodies": 8,
+          "bodies_above_zero": 1,
+          "bodies_below_zero": 4
+        },
+        "turn_closed_share_depth3_minus_depth1": {
+          "mean": -0.014381689563997005,
+          "interval": [
+            -0.03195877493480165,
+            0.002142888696197709
+          ],
+          "bodies": 8,
+          "bodies_above_zero": 2,
+          "bodies_below_zero": 3
+        },
+        "position_closed_share_depth3_minus_depth1": {
+          "mean": -0.010247624788205865,
+          "interval": [
+            -0.030757592418831164,
+            0.001635746736595535
+          ],
+          "bodies": 8,
+          "bodies_above_zero": 1,
+          "bodies_below_zero": 4
+        },
+        "eye_error_deg_depth3_minus_depth1": {
+          "mean": -7.176296050981885,
+          "interval": [
+            -15.897031487608917,
+            -0.22924406396121244
+          ],
+          "bodies": 8,
+          "bodies_above_zero": 1,
+          "bodies_below_zero": 4
+        },
+        "next_prediction_error_depth3_minus_depth1": {
+          "mean": 0.004924298741934764,
+          "interval": [
+            -0.0038105153411800074,
+            0.017341108689197426
+          ],
+          "bodies": 8,
+          "bodies_above_zero": 3,
+          "bodies_below_zero": 2
+        },
+        "goal_distance_end_depth3_minus_depth1": {
+          "mean": 0.001963723450899124,
+          "interval": [
+            -0.04947583191096783,
+            0.0631323792040348
+          ],
+          "bodies": 8,
+          "bodies_above_zero": 3,
+          "bodies_below_zero": 2
+        }
+      },
+      "against_the_planners_own_choice": {
+        "wellness_tenure_wellness_depth3_minus_chosen": {
+          "mean": 0.001685485430061806,
+          "interval": [
+            -0.004753233003430112,
+            0.00923880476038902
+          ],
+          "bodies": 8,
+          "bodies_above_zero": 5,
+          "bodies_below_zero": 2
+        },
+        "turn_closed_share_wellness_depth3_minus_chosen": {
+          "mean": 0.018421370674400354,
+          "interval": [
+            -0.03681970651234019,
+            0.07538675522825104
+          ],
+          "bodies": 8,
+          "bodies_above_zero": 4,
+          "bodies_below_zero": 3
+        },
+        "next_prediction_error_wellness_depth3_minus_chosen": {
+          "mean": -0.0044561664647858375,
+          "interval": [
+            -0.021163619603482293,
+            0.011606611974502811
+          ],
+          "bodies": 8,
+          "bodies_above_zero": 2,
+          "bodies_below_zero": 5
+        },
+        "goal_distance_end_wellness_depth3_minus_chosen": {
+          "mean": -0.002962975762784481,
+          "interval": [
+            -0.13152543588075788,
+            0.1188981318846345
+          ],
+          "bodies": 8,
+          "bodies_above_zero": 4,
+          "bodies_below_zero": 3
+        }
+      },
+      "structural": {
+        "checks": 8,
+        "production_asked_3_returned_length": [
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1
+        ],
+        "production_depth_forced_to_one": true,
+        "world_mode_first_order_identical": [
+          true,
+          true,
+          true,
+          true,
+          true,
+          true,
+          true,
+          true
+        ],
+        "world_mode_deeper_plan_emptied": [
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false
+        ]
+      }
+    },
+    "controllability": {
+      "turn_closed_share": {
+        "chosen": 0.11618502031606492,
+        "hold": 0.06638389451969656,
+        "reflex": 0.14653882018126108,
+        "perturb_1": 0.10437635725827005,
+        "perturb_2": 0.15549043657170758
+      },
+      "closer_share": {
+        "chosen": 0.6399999856948853,
+        "hold": 0.6200000047683716,
+        "reflex": 0.6599999964237213,
+        "perturb_1": 0.6599999964237213,
+        "perturb_2": 0.6800000071525574
+      },
+      "chance_share": {
+        "chosen": 0.35372243965171785,
+        "hold": 0.3430580152608007,
+        "reflex": 0.3507282928971166,
+        "perturb_1": 0.37254073522283704,
+        "perturb_2": 0.3616449880129443
+      },
+      "position_closed_share": {
+        "chosen": 0.09634230265179172,
+        "hold": 0.037710629395272977,
+        "reflex": 0.035311053831717454,
+        "perturb_1": 0.0651243438981089,
+        "perturb_2": 0.09119713112325473
+      },
+      "eye_error_deg": {
+        "chosen": 44.88213378060493,
+        "hold": 4.23363279365976,
+        "reflex": 7.301054006275564,
+        "perturb_1": 43.10697921562527,
+        "perturb_2": 36.85996101061416
+      }
+    }
+  },
+  "verdict": {
+    "forward_model_flat": true,
+    "evaluator_flat": false,
+    "planner_ignores_predicted_wellness": true,
+    "flat_stages": [
+      "forward model",
+      "planner"
+    ],
+    "first_flat_stage_along_the_route": "forward model",
+    "forward_model_transfer": 0.12065612301940458,
+    "evaluator_transfer": 0.06917141637084344,
+    "forward_model_captured_share": 0.01155833993118525,
+    "depth3_better_physical_decision": false,
+    "rules": {
+      "forward_model_flat": "flat unless BOTH the slope of Judge B's predicted-outcome difference on its actual-outcome difference AND the pooled captured share of the between-candidate token difference over Judge B's four senses (planner route, 50 ms) have 95% body intervals entirely above 0",
+      "evaluator_flat": "flat unless the slope of Judge B's actual-outcome difference on the grounded wellness difference (50 ms) has a 95% body interval entirely above 0",
+      "planner_ignores_predicted_wellness": "the planner's objective gives predicted wellness weight 0 (intention_gen._wellness_w) and the chosen order's mean rank by predicted wellness is not better than chance (the interval's upper end is not below (K + 1) / 2)",
+      "depth_claim": "looking further ahead causes a better physical decision only when the order selected by predicted wellness at 150 ms beats the order selected at 50 ms in actual grounded wellness averaged over the order's tenure, paired over the same starts, 95% body interval above 0"
+    }
+  },
+  "passed": false,
+  "route_checks_max": {
+    "alternatives_execution_max_abs_cm": 0.0,
+    "chosen_vs_production_order_max_abs": 7.62939453125e-06,
+    "chosen_vs_production_hand_goal_max_abs_rad": 0.0,
+    "record_pred_wellness_max_abs": 4.76837158203125e-07,
+    "record_goal_distance_max_abs": 1.2516975402832031e-06
+  },
+  "exact_replay": true,
+  "all_candidate_traces_replayed_exactly": true,
+  "observation_replay_checks": 8,
+  "weights_unchanged": true,
+  "memory": {
+    "peak_private_commit_gib": 5.544452667236328,
+    "private_commit_gib": 4.231403350830078
+  },
+  "elapsed_s": 949.5405383110046,
+  "definitions": {
+    "tie_band": "the approximate evaluator's error on the difference between two candidates, 90th percentile; a predicted gap inside it counts as tied (0-to-5 wellness sum)",
+    "transfer": "how much of one stage's difference between two candidates reaches the next stage (regression slope through zero over candidate pairs): 1 = all of it, 0 = none",
+    "captured_share": "how much of the ACTUAL token difference between two candidates the PREDICTED difference foresaw along its direction: 1 = all of it, 0 = none, negative = the wrong way",
+    "turn_closed_share": "of every body handle's ordered turn, the share the body closed over the order's tenure: 1 = arrived, 0 = no nearer, below 0 = further away",
+    "eye_error_deg": "the eyes' mean azimuth/elevation distance from their command at the order's end, degrees; the decoder drives each eye joint to its signed command inside the joint limits, so this is the travel still left (servo speed, joint limits, reflex and saccade overrides); hold commands where the eyes already are",
+    "depth": "1 = 50 ms, 3 = 150 ms (the order held); the order's tenure is motor_hold moments"
+  }
+}

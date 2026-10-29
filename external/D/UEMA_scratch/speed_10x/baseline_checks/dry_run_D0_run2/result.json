@@ -1,0 +1,165 @@
+{
+ "verdict": "pass",
+ "held": 13,
+ "total": 13,
+ "results": [
+  {
+   "expectation": "driver exit 0 (pass) and nothing reported",
+   "holds": true,
+   "got": {
+    "exit": 0,
+    "reports": []
+   }
+  },
+  {
+   "expectation": "the admission ALLOWED on the copy, with the stand-in",
+   "holds": true,
+   "got": {
+    "verdict": "ALLOWED",
+    "problems": []
+   }
+  },
+  {
+   "expectation": "the owner log holds every step",
+   "holds": true,
+   "got": [
+    "attempt recorded; interval open",
+    "stage",
+    "helpers started",
+    "stage",
+    "start copy made and checked",
+    "stage",
+    "memory guard",
+    "stage",
+    "STAND-IN TRAINER (the driver dry run)",
+    "trainer started",
+    "trainer ended",
+    "stage",
+    "stage",
+    "stage",
+    "row end",
+    "release",
+    "driver done"
+   ]
+  },
+  {
+   "expectation": "the stand-in trainer exited 0, cleanup verified, both end times recorded",
+   "holds": true,
+   "got": {
+    "exit_code": 0,
+    "cleanup_verified": true,
+    "stopped": null,
+    "owner_after_marker_s": 0.792
+   }
+  },
+  {
+   "expectation": "the pinned memory guard allowed 32 GB",
+   "holds": true,
+   "got": "ALLOWED: 33.8 of 84.4 GB committed (Windows' limit 84.4 GB; the guard never counts on the page file growing into the last 12 GB of its drive), 11.6 GB RAM free; this work needs 32.0 GB and 6.0 GB must stay free under the limit"
+  },
+  {
+   "expectation": "the end state: ckpt_step_493000, its companion, latest.pt",
+   "holds": true,
+   "got": {
+    "stage_done": {
+     "run": "SPEED_A_492800",
+     "ok": true,
+     "steps": 493000,
+     "resumed_from": "start/run/checkpoints/ckpt_step_492800",
+     "final_checkpoint": "D:\\UEMA_Research\\external\\D\\UEMA_scratch\\speed_10x\\baseline_checks\\dry_run_D0_run2\\root\\run\\SPEED_A_492800\\checkpoints\\ckpt_step_493000",
+     "finished_at": 1791974790.0319295,
+     "finished_at_human": "2026-10-14 03:46:30",
+     "elapsed_min": 29866230.000532158,
+     "exception": null
+    },
+    "latest_complete": "D:\\UEMA_Research\\external\\D\\UEMA_scratch\\speed_10x\\baseline_checks\\dry_run_D0_run2\\root\\run\\SPEED_A_492800\\checkpoints\\ckpt_step_493000",
+    "worlds": {
+     "path": "D:\\UEMA_Research\\external\\D\\UEMA_scratch\\speed_10x\\baseline_checks\\dry_run_D0_run2\\root\\run\\SPEED_A_492800\\caregiver\\checkpoint_state\\SPEED_A_492800\\ckpt_step_493000_fixture.pt.gz",
+     "recorded": "da927fc74738d7045235cb184ea0e06da84b4b4a2dd2321fcbcecfbc59fa2037",
+     "sha256": "da927fc74738d7045235cb184ea0e06da84b4b4a2dd2321fcbcecfbc59fa2037",
+     "inside_outputs": true
+    },
+    "latent_latest": {
+     "path": "D:\\UEMA_Research\\external\\D\\UEMA_scratch\\speed_10x\\baseline_checks\\dry_run_D0_run2\\root\\latent_body\\output\\latest.pt",
+     "exists": true
+    }
+   }
+  },
+  {
+   "expectation": "the reader pass",
+   "holds": true,
+   "got": {
+    "verdict": "pass",
+    "problems": []
+   }
+  },
+  {
+   "expectation": "baseline_receipt.json verdict pass, no reason; the trace's absence named apart (with the trace off: the attribution reads off, no failure)",
+   "holds": true,
+   "got": {
+    "verdict": "pass",
+    "reasons": [],
+    "attribution": null,
+    "identity": [],
+    "writes": 0
+   }
+  },
+  {
+   "expectation": "the phase breakdown (pass) and the trace summary (an attribution failure) written under the manifest's prefix (with the trace off: the phase breakdown alone, no trace summary)",
+   "holds": true,
+   "got": {
+    "prefix": "baseline_A_492800_attempt4",
+    "trace_on": false,
+    "label": "pass",
+    "trace_state": null,
+    "trace_files": []
+   }
+  },
+  {
+   "expectation": "the release closed the interval",
+   "holds": true,
+   "got": {
+    "release": "closed",
+    "interval": "closed",
+    "faults": [],
+    "survivors": []
+   }
+  },
+  {
+   "expectation": "the scratch row's run PASS",
+   "holds": true,
+   "got": "PASS: key 'verdict' of D:\\UEMA_Research\\external\\D\\UEMA_scratch\\speed_10x\\baseline_checks\\dry_run_D0_run2\\root\\receipts\\baseline_receipt.json"
+  },
+  {
+   "expectation": "no process left that names this check's folder",
+   "holds": true,
+   "got": []
+  },
+  {
+   "expectation": "the earlier attempts' receipts unchanged; the real output root not created",
+   "holds": true,
+   "got": {
+    "earlier": {
+     "D:/UEMA_Research/external/D/UEMA_scratch/speed_10x/baseline_A_492800/receipts/baseline_receipt.json": "b811d0364a50200bb01107cd2874501cc9dc391ff3b45856d2e3da4416539866",
+     "D:/UEMA_Research/external/D/UEMA_scratch/speed_10x/baseline_A_492800_attempt2/receipts/baseline_receipt.json": "78d8523a45389be8562fb07be95b93c9d2a68d691aeacc0c8cef558844380d5b",
+     "D:/UEMA_Research/external/D/UEMA_scratch/speed_10x/baseline_A_492800_attempt3/receipts/baseline_receipt.json": "b92403c870843dae719ba54ba823c4180c6f9e860b425d69595c22e93c381e9b"
+    },
+    "real_root_exists": false
+   }
+  }
+ ],
+ "manifest": "C:\\Users\\bhart\\Documents\\UEMA_wt\\speed_baseline_a\\docs\\gain_of_function_v4\\speed_baseline_a\\package\\manifest.json",
+ "manifest_sha256": "227b2de5d5d12bf94a11052b69f8788e7194061c74ee04a3a62f9c43f5d81f78",
+ "variant": "quick",
+ "copy": "D:\\UEMA_Research\\external\\D\\UEMA_scratch\\speed_10x\\baseline_checks\\dry_run_D0_run2\\manifest.json",
+ "copy_sha256": "469df498db7d2f18d8692de69cbb83ac5ae7583b0db867a9377236aee42c84fb",
+ "driver_seconds": 37.5,
+ "driver_process_exit": 0,
+ "program": "C:\\Users\\bhart\\Documents\\UEMA_wt\\speed_baseline_a\\docs\\gain_of_function_v4\\speed_baseline_a\\dry_run_check.py",
+ "program_sha256": "4620aa117df97529b3b792c0a8b4ec3b41a3baa3e2c39f697a7e36c3284e01d3",
+ "driver_sha256": "5c132ff56f2566334ed55c8fb6c2529611ed7a07363a82d1af5bb140c2538b6b",
+ "admission_sha256": "fe71fc83a969790b554058639e90cd60964f7e9cd1ead32b55a716bb01be7471",
+ "out": "D:\\UEMA_Research\\external\\D\\UEMA_scratch\\speed_10x\\baseline_checks\\dry_run_D0_run2",
+ "started": "Oct 14, 2026, 03:46:11 AM PDT",
+ "ended": "Oct 14, 2026, 03:46:50 AM PDT"
+}

@@ -1,0 +1,1643 @@
+{
+ "schema": 1,
+ "id": "probe_path_first_burst_481800",
+ "title": "Where does the learning-off probe path leave the training path at the first burst after 481,800?",
+ "question": "From checkpoint 481,800's saved state, with learning off and the finger fix off, at which stage does the probe path (one body per model update on the processor) part from the training path (control runs 1 and 2, equal to each other through model step 481,806) at the first burst, does the skipped learning update cause the first command difference, and do the probe path's movement and sensor readings still match training's within differences declared beforehand?",
+ "about": "The operator's decisions: received by 7:29 AM PDT, Oct 9, 2026, trace the first-burst difference with the same saved body states, commands, timing and physics settings, learning off, the finger fix off; correct differences that change movement; verify movement and sensor readings before stop limits are set. Received by 8:53 AM PDT, Oct 9: replay training's exact update on a separate checkpoint copy and compare its command with training's recorded command; match the learning-off measurement statistically, spread and largest errors included, against differences declared beforehand; keep the planner's 23-degree jump a separate defect. The walk reads the measurements made under a substitution first (the world driven with training's commands, twice; training's own model step replayed, twice, on both code versions and with learning off), then the probe path's instrument (the twin check: the pilot's own loop and the instrumented one in one process, handed the same pictures), then its own computation and goal, then the statistical match. elimination.py lists a stage followed by a met stage as gone around, so a substituted measurement read after one of the probe path's own would seem to carry its signal past it; read first, each decides only its own candidate. A learning-off stage that reads not met followed by met statistics is listed as gone around, which here is the outcome the operator's rule accepts: the command differs, the statistics match. Control run 2 is the reference: the observer daemon's 72-hour housekeeping removed control run 1's first world and model records at 9:07 AM PDT, Oct 9; control run 2's equal them through 481,806 and every run's records are read from copies made at 9:23 AM PDT. Four rows decide the stages (drafts in D:/UEMA_Research/external/D/UEMA_scratch/finger_investigation/probe_path/rows_v2/): probe_path_world_same_command_481800, probe_path_update_replay_481800, probe_path_command_481800 and probe_path_learning_off_match_481800; the twin row probe_path_instrumentation_twin_481800 decides the instrument's two stages (draft in D:/UEMA_Research/external/D/UEMA_scratch/finger_investigation/probe_path/rows_v3/), and the command and verification rows' records are re-judged under the repeat rule with its result by probe_path_command_rejudge_481800 and probe_path_learning_off_match_rejudge_481800 (drafts in D:/UEMA_Research/external/D/UEMA_scratch/finger_investigation/probe_path/rows_v4/); all run by docs/gain_of_function_v4/probe_path_investigation/probe_path_trace.py (the trainer arms by update_replay.py beside it). Design note: PROBE_PATH_FIRST_BURST_DESIGN.md beside the tool.",
+ "written_at": "Oct 9, 2026 3:51 PM PDT",
+ "written_by": "the probe path investigator (agent), branch investigate/probe-path-first-burst-2026-10-09; the twin's stages and the re-judgement rows on branch investigate/probe-path-rejudge-fixes-2026-10-09",
+ "input": {
+  "name": "the saved state at 481,800",
+  "component": "CHECKPOINTS",
+  "what": "Checkpoint 481,800 of run seg41o_1431 and its episode companion: the 8 bodies' saved worlds (MuJoCo state, run-time-edited model fields, random streams), the learner's weights, optimizer state and each body's learner state, and the trainer's state (the command in force, the babble bout schedule); the finger fix off (the matched comparison's control arm command, control run 1's configuration, which control run 2 shares)."
+ },
+ "stages": [
+  {
+   "key": "restored_state",
+   "name": "restored saved state",
+   "component": "PROBE_HARNESS",
+   "components": [
+    "PROBE_HARNESS",
+    "CHECKPOINTS",
+    "WORLD"
+   ],
+   "question": "Does the probe path restore each of the 8 bodies exactly as checkpoint 481,800's episode companion saved it: MuJoCo's integration state, the actuator gains and force ranges, the world's random stream, and the first frame byte for byte? (The other model fields the world edits while it runs, the caregiver's visibility, collision masks and mounts, are named beside it where they differ from the snapshot: the caregiver's own restore recomputes them in training as in the probe.)",
+   "sources": [
+    {
+     "row": "probe_path_world_same_command_481800",
+     "in": "result_file",
+     "key": [
+      "stages",
+      "restored_state",
+      "met"
+     ],
+     "kind": "verdict",
+     "label": "the world row's restore check on checkpoint 481,800, every body: the restored world's hash over its integration state, actuator gains and force ranges and random stream, and its first frame, each against the episode companion's",
+     "means": "met = every body's restored world and first frame equal the saved ones; a difference of one hash or one byte in any body is unmet",
+     "show": [
+      {
+       "in": "result_file",
+       "key": [
+        "stages",
+        "restored_state",
+        "bodies_equal"
+       ],
+       "label": "bodies whose restored world and first frame equal the saved ones, of 8",
+       "form": "count"
+      },
+      {
+       "in": "result_file",
+       "key": [
+        "stages",
+        "restored_state",
+        "mutable_fields_differing"
+       ],
+       "label": "run-time-edited model fields differing from the snapshot after the restore, any body (none = every one equal); deciding nothing",
+       "form": "list"
+      }
+     ]
+    }
+   ],
+   "related": [],
+   "defects": [],
+   "to_decide": {
+    "text": "Row probe_path_world_same_command_481800, the operator's decisive split (draft in D:/UEMA_Research/external/D/UEMA_scratch/finger_investigation/probe_path/rows_v2/), checks every body's restore before it hands the worlds training's commands",
+    "row": "probe_path_world_same_command_481800"
+   },
+   "branches": {
+    "PASS": {
+     "next": "world_settings",
+     "text": "The probe's worlds start from the saved state: go on to how they are built."
+    },
+    "FAIL": {
+     "next": null,
+     "text": "The restore is the place to repair (the probe harness's slicing of the companion or the world's restore): nothing later can be compared with training."
+    },
+    "UNKNOWN": {
+     "next": null,
+     "text": "Test this first: the world row decides it together with the decisive split."
+    }
+   }
+  },
+  {
+   "key": "world_settings",
+   "name": "physics settings and timing",
+   "component": "WORLD",
+   "components": [
+    "WORLD",
+    "PROBE_HARNESS"
+   ],
+   "question": "Is each body's world built with training's physics settings and timing: every MuJoCo option and dynamics field of the model (masses, inertias, joints, damping, armature, contacts, actuators, tendons, constraints) equal to training's saved world model, the same kinematic structure, 10 ms per physics step made of two MuJoCo steps of 5 ms, 5 physics steps per model step with the eyes drawn on the 5th, and the probe's world settings different from training's only in names that build nothing physical (where scene files are written and what is recorded)?",
+   "sources": [
+    {
+     "row": "probe_path_world_same_command_481800",
+     "in": "result_file",
+     "key": [
+      "stages",
+      "world_settings",
+      "met"
+     ],
+     "kind": "verdict",
+     "label": "the world row's settings check, every body: the dynamics fields of the probe's restored world against control run 2's saved world model, the world record headers' structure and step lengths, the physics steps per model step, the render flags, and the world settings against control run 2's after its migration",
+     "means": "met = every body's world is built as training's; any dynamics field, structure, step length, render flag or physical setting that differs is unmet and named in the result",
+     "show": [
+      {
+       "in": "result_file",
+       "key": [
+        "stages",
+        "world_settings",
+        "bodies_equal"
+       ],
+       "label": "bodies built with training's settings and timing, of 8",
+       "form": "count"
+      }
+     ]
+    }
+   ],
+   "related": [],
+   "defects": [],
+   "to_decide": {
+    "text": "Row probe_path_world_same_command_481800 reads the probe's world settings and dynamics fields against control run 2's saved world model and world record headers",
+    "row": "probe_path_world_same_command_481800"
+   },
+   "branches": {
+    "PASS": {
+     "next": "world_repeats_same_command",
+     "text": "The worlds are built as training's: go on to whether they repeat themselves under one command."
+    },
+    "FAIL": {
+     "next": null,
+     "text": "A setting, a dynamics field or the timing differs: the fields the result names are the place to repair, in the probe path's world build."
+    },
+    "UNKNOWN": {
+     "next": null,
+     "text": "Test this with the decisive split: the same row decides both."
+    }
+   }
+  },
+  {
+   "key": "world_repeats_same_command",
+   "name": "the probe's world run twice under training's commands",
+   "component": "WORLD",
+   "components": [
+    "WORLD",
+    "SENSORY_FRAME",
+    "PROBE_HARNESS"
+   ],
+   "question": "Driven twice, in two folders, from the same restored state with control run 2's own recorded commands, does the probe's world give the same record at every model step on every body: the qpos, actuator commands and poses, the sensor readings and the contact pairs? The gaze reflex steers the eyes from the left eye's picture, and the graphics driver returned different pictures of one unchanged scene, so the world may not repeat itself even under one command.",
+   "sources": [
+    {
+     "row": "probe_path_world_same_command_481800",
+     "in": "result_file",
+     "key": [
+      "stages",
+      "world_repeats_same_command",
+      "met"
+     ],
+     "kind": "verdict",
+     "label": "the world row's two replay arms (replay and replay_again, two folders, model steps 481,800 to 481,899), compared with each other record by record before either is compared with training",
+     "means": "met = every record of the two runs equal on every body; one differing number is unmet, and the result names the first differing model step, body, hinges and the record's gaze reflex and saccade flags",
+     "show": [
+      {
+       "in": "result_file",
+       "key": [
+        "stages",
+        "world_repeats_same_command",
+        "records_equal"
+       ],
+       "label": "records equal between the two runs",
+       "form": "count"
+      },
+      {
+       "in": "result_file",
+       "key": [
+        "stages",
+        "world_repeats_same_command",
+        "records_compared"
+       ],
+       "label": "records compared (8 bodies x 100 model steps)",
+       "form": "count"
+      },
+      {
+       "in": "result_file",
+       "key": [
+        "stages",
+        "world_repeats_same_command",
+        "why"
+       ],
+       "label": "the first difference, with its hinges and the gaze reflex and saccade flags",
+       "form": "text"
+      }
+     ]
+    }
+   ],
+   "related": [],
+   "defects": [],
+   "to_decide": {
+    "text": "Row probe_path_world_same_command_481800 runs the replay arm twice in two folders and compares the two runs record by record before either is compared with training",
+    "row": "probe_path_world_same_command_481800"
+   },
+   "branches": {
+    "PASS": {
+     "next": "movement_same_command",
+     "text": "The probe's world repeats itself under one command: a difference from training is read next."
+    },
+    "FAIL": {
+     "next": null,
+     "text": "The probe's world does not repeat itself under one command: the first difference names its hinges and the record's gaze reflex and saccade flags (an eye hinge with the reflex set points at the eyes' pictures); that is repaired or accounted for before any record is compared with training."
+    },
+    "UNKNOWN": {
+     "next": null,
+     "text": "Test this with the decisive split: the same row decides it."
+    }
+   }
+  },
+  {
+   "key": "movement_same_command",
+   "name": "movement under training's own commands",
+   "component": "COMMAND_EXECUTION_PATH",
+   "components": [
+    "COMMAND_EXECUTION_PATH",
+    "WORLD",
+    "CAREGIVER"
+   ],
+   "question": "Driven with training's own recorded commands (control run 2's world record of each model step: the 26 x 9 command in force, the 44 hinge goals, the handle mask and the eye command), 5 physics steps per model step, do the probe's worlds move exactly as training's did: every qpos number after each burst (whole multiples of 1 microradian or micrometre), the actuator commands MuJoCo held, and the mocap and object poses equal to control run 2's record, body by body, from the first burst after 481,800 through the 100th?",
+   "sources": [
+    {
+     "row": "probe_path_world_same_command_481800",
+     "in": "result_file",
+     "key": [
+      "stages",
+      "movement_same_command",
+      "met"
+     ],
+     "kind": "verdict",
+     "label": "the operator's decisive split on checkpoint 481,800: the probe's 8 restored worlds driven with control run 2's recorded commands, each world record compared with control run 2's, model steps 481,800 to 481,899",
+     "means": "met = every record of every body equals control run 2's, field for field; one differing number is unmet, and the result names the first differing model step, body and field",
+     "show": [
+      {
+       "in": "result_file",
+       "key": [
+        "stages",
+        "movement_same_command",
+        "records_equal"
+       ],
+       "label": "records equal to control run 2's",
+       "form": "count"
+      },
+      {
+       "in": "result_file",
+       "key": [
+        "stages",
+        "movement_same_command",
+        "records_compared"
+       ],
+       "label": "records compared (8 bodies x 100 model steps)",
+       "form": "count"
+      },
+      {
+       "in": "result_file",
+       "key": [
+        "stages",
+        "movement_same_command",
+        "largest_hinge_difference_deg"
+       ],
+       "label": "the largest difference of a hinge angle from control run 2's, over every body and record (0 = the same angle)",
+       "form": "unit",
+       "unit": "degrees"
+      },
+      {
+       "in": "result_file",
+       "key": [
+        "stages",
+        "movement_same_command",
+        "why"
+       ],
+       "label": "the first difference",
+       "form": "text"
+      }
+     ]
+    }
+   ],
+   "related": [],
+   "defects": [],
+   "to_decide": {
+    "text": "Row probe_path_world_same_command_481800 hands the probe's restored worlds control run 2's recorded commands through the probe's own world source and compares every world record",
+    "row": "probe_path_world_same_command_481800"
+   },
+   "branches": {
+    "PASS": {
+     "next": "sensors_same_command",
+     "text": "Under the same command the probe's worlds move as training's: a difference on the probe path comes from what it commands."
+    },
+    "FAIL": {
+     "next": null,
+     "text": "Under the same command the worlds move differently: the probe path's world stepping or settings are the place to repair, from the first differing burst and body the result names; the command stages are read only after that repair."
+    },
+    "UNKNOWN": {
+     "next": null,
+     "text": "The operator's decisive split: test this first."
+    }
+   }
+  },
+  {
+   "key": "sensors_same_command",
+   "name": "sensor readings under training's own commands",
+   "component": "SENSORY_FRAME",
+   "components": [
+    "WORLD",
+    "SENSORY_FRAME"
+   ],
+   "question": "Under the same commands, are the sensor readings the world record holds equal to control run 2's at every burst: each contact pair with its first and last physics step, peak and mean force, position and normal; at each of the 5 physics steps the head's accelerometer and gyro magnitudes, the force from outside the body, the largest contact force and the force on the head; and the eyes' ray hits?",
+   "sources": [
+    {
+     "row": "probe_path_world_same_command_481800",
+     "in": "result_file",
+     "key": [
+      "stages",
+      "sensors_same_command",
+      "met"
+     ],
+     "kind": "verdict",
+     "label": "the decisive split's sensor readings, every body and record of model steps 481,800 to 481,899, against control run 2's world record",
+     "means": "met = every contact pair, fast-lane value and ray hit equals control run 2's; one differing value is unmet and the result names the first",
+     "show": [
+      {
+       "in": "result_file",
+       "key": [
+        "stages",
+        "sensors_same_command",
+        "records_equal"
+       ],
+       "label": "records whose sensor readings equal control run 2's",
+       "form": "count"
+      }
+     ]
+    }
+   ],
+   "related": [
+    {
+     "row": "probe_path_world_same_command_481800",
+     "in": "result_file",
+     "key": [
+      "model_on_training_world",
+      "window",
+      "proprioception",
+      "ratio"
+     ],
+     "kind": "reading",
+     "form": "share",
+     "label": "the proprioception prediction ratio of the probe's learner (learning off) on the replayed worlds over model steps 481,800 to 481,899, bodies other than body 2: summed prediction errors over summed no-change errors (0 of every 100 = exact, 100 of every 100 = no better than 'nothing changes')",
+     "means": "the sensor readings as the model's tokens on training's world: its distance from control run 2's first record is the computation's share without the command's",
+     "show": [
+      {
+       "in": "result_file",
+       "key": [
+        "model_on_training_world",
+        "training_first_records",
+        "C2",
+        "proprioception",
+        "ratio"
+       ],
+       "label": "the same ratio in control run 2's first full record (learning on)",
+       "form": "share"
+      },
+      {
+       "in": "result_file",
+       "key": [
+        "model_on_training_world",
+        "window",
+        "tactile",
+        "ratio"
+       ],
+       "label": "tactile on the replayed worlds",
+       "form": "share"
+      },
+      {
+       "in": "result_file",
+       "key": [
+        "model_on_training_world",
+        "training_first_records",
+        "C2",
+        "tactile",
+        "ratio"
+       ],
+       "label": "tactile in control run 2's first full record",
+       "form": "share"
+      }
+     ]
+    }
+   ],
+   "defects": [],
+   "to_decide": {
+    "text": "Row probe_path_world_same_command_481800 compares the contact pairs, the fast lane and the ray hits of every record",
+    "row": "probe_path_world_same_command_481800"
+   },
+   "branches": {
+    "PASS": {
+     "next": "replay_reproduces_training",
+     "text": "The world's sensor readings under the same command are training's: go on to training's own model step, replayed."
+    },
+    "FAIL": {
+     "next": null,
+     "text": "The sensor readings differ where the movement does not: the world's sensing code or its settings are the place to repair."
+    },
+    "UNKNOWN": {
+     "next": null,
+     "text": "Test this with the decisive split: the same row decides it."
+    }
+   }
+  },
+  {
+   "key": "replay_reproduces_training",
+   "name": "training's model step 481,800, replayed",
+   "component": "CHECKPOINTS",
+   "components": [
+    "CHECKPOINTS",
+    "TRANSFORMER",
+    "PLANNER_SEARCH"
+   ],
+   "question": "Run again on a scratch copy of checkpoint 481,800 and its companion, with control runs 1 and 2's own code (commit 6525899f7) and launch command (the graphics card under bfloat16, 8 bodies in their own world processes, the learning update before the planner, the saved optimizer, replay, memory and random streams), does training's model step 481,800 latch control run 2's recorded command on every body, number for number: the 26 x 9 command, the 44 hinge goals, the handle mask and the eye command, and does a second run of it (arm on_again) latch the same?",
+   "sources": [
+    {
+     "row": "probe_path_update_replay_481800",
+     "in": "result_file",
+     "key": [
+      "stages",
+      "replay_reproduces_training",
+      "met"
+     ],
+     "kind": "verdict",
+     "label": "the replay row's arm on: train_mimo.main itself for one model step, its command read from its own world records and compared with control run 2's record of 481,800, every body",
+     "means": "met = all 8 bodies latch control run 2's command, float32 for float32; one differing number is unmet: the replay is then no reference for the update's effect",
+     "show": [
+      {
+       "in": "result_file",
+       "key": [
+        "stages",
+        "replay_reproduces_training",
+        "bodies_equal"
+       ],
+       "label": "bodies latching control run 2's exact command, of 8",
+       "form": "count"
+      },
+      {
+       "in": "result_file",
+       "key": [
+        "readings_beside",
+        "on_latch_record_equal"
+       ],
+       "label": "the replay's planning record of 481,800 (goal, objective per body, selected iteration) equal to control run 2's in every field but the time",
+       "form": "text"
+      },
+      {
+       "in": "result_file",
+       "key": [
+        "readings_beside",
+        "on_model_record_481800_equal"
+       ],
+       "label": "the replay's prediction errors of 481,800 (8 bodies x 5 senses) equal to control run 2's model record",
+       "form": "text"
+      }
+     ]
+    }
+   ],
+   "related": [
+    {
+     "row": "probe_path_update_replay_481800",
+     "in": "result_file",
+     "key": [
+      "readings_beside",
+      "on_again_against_on",
+      "bodies_equal"
+     ],
+     "kind": "reading",
+     "form": "count",
+     "label": "bodies whose second run of arm on (arm on_again) latched arm on's command, of 8",
+     "means": "whether training's own model step repeats on the graphics card: when the two runs differ, a difference from control run 2's record does not show that the replay is wrong",
+     "show": []
+    }
+   ],
+   "defects": [],
+   "to_decide": {
+    "text": "Row probe_path_update_replay_481800 replays training's model step 481,800 on a checkpoint copy in five trainer arms and one probe arm (draft in D:/UEMA_Research/external/D/UEMA_scratch/finger_investigation/probe_path/rows_v2/)",
+    "row": "probe_path_update_replay_481800"
+   },
+   "branches": {
+    "PASS": {
+     "next": "code_version_481800",
+     "text": "The replay repeats training's model step: its other arms are training's own path with one thing changed."
+    },
+    "FAIL": {
+     "next": "plain_run_is_the_departed_path",
+     "text": "The replay does not repeat training's command: arm on is no reference for the update's effect (the stages read against it are not judged) until the difference the result names is repaired in the replay; the probe path's own measurement is read next, its instrument first. When arms on and on_again differ from each other the stage reads not judged: training's own step does not repeat."
+    },
+    "UNKNOWN": {
+     "next": null,
+     "text": "Test this: the replay row decides it, with training stopped and the graphics card free."
+    }
+   }
+  },
+  {
+   "key": "code_version_481800",
+   "name": "the probe path's code on training's model step",
+   "component": "CHECKPOINTS",
+   "components": [
+    "CHECKPOINTS",
+    "TRANSFORMER",
+    "PLANNER_SEARCH"
+   ],
+   "question": "On the probe path's code (this checkout, trainer code add5725e, whose finger fix and other new switches are off), does the same replay latch the same command on every body and produce the same updated weights and planner weights as control runs 1 and 2's code?",
+   "sources": [
+    {
+     "row": "probe_path_update_replay_481800",
+     "in": "result_file",
+     "key": [
+      "stages",
+      "code_version_481800",
+      "met"
+     ],
+     "kind": "verdict",
+     "label": "the replay row's arm on_current_code against its arm on: every body's command, the weights after the update and the weights the planner ran on",
+     "means": "met = all 8 commands and both weight hashes equal; a differing body or weight is unmet and named; not judged unless the replay is training and arm on_again repeats arm on",
+     "show": [
+      {
+       "in": "result_file",
+       "key": [
+        "stages",
+        "code_version_481800",
+        "bodies_equal"
+       ],
+       "label": "bodies latching arm on's exact command on the probe path's code, of 8",
+       "form": "count"
+      },
+      {
+       "in": "result_file",
+       "key": [
+        "stages",
+        "code_version_481800",
+        "weights",
+        "update_equal"
+       ],
+       "label": "the weights after the update equal on both codes",
+       "form": "text"
+      }
+     ]
+    }
+   ],
+   "related": [],
+   "defects": [],
+   "to_decide": {
+    "text": "Row probe_path_update_replay_481800 runs training's model step on both code trees",
+    "row": "probe_path_update_replay_481800"
+   },
+   "branches": {
+    "PASS": {
+     "next": "learning_off_command",
+     "text": "The code versions compute model step 481,800 alike: the probe path's code is not a candidate; training's own path with learning off is read next."
+    },
+    "FAIL": {
+     "next": "learning_off_command",
+     "text": "The probe path's code computes training's model step otherwise: a named candidate beside the others, the bodies and weights in the result; training's own path with learning off is read next."
+    },
+    "UNKNOWN": {
+     "next": "learning_off_command",
+     "text": "Not decided; training's own path with learning off is read next."
+    }
+   }
+  },
+  {
+   "key": "learning_off_command",
+   "name": "the command with learning off, on training's own path",
+   "component": "PLANNER_SEARCH",
+   "components": [
+    "TRANSFORMER",
+    "PLANNER_GOAL_SELECTION",
+    "PLANNER_SEARCH",
+    "MOTOR_CONTROLLER"
+   ],
+   "question": "With learning off at model step 481,800 on training's own path (the replay with no backward pass, no update and no training-only bookkeeping, as the probe path runs; 8 bodies on the graphics card under bfloat16), does each body latch the command the replay with learning on latched?",
+   "sources": [
+    {
+     "row": "probe_path_update_replay_481800",
+     "in": "result_file",
+     "key": [
+      "stages",
+      "learning_off_command",
+      "met"
+     ],
+     "kind": "verdict",
+     "label": "the replay row's arm learning_off against its arm on, every body, float32 for float32",
+     "means": "met = learning off leaves training's own command unchanged on all 8 bodies; unmet = the skipped learning by itself changes the command (the bodies and sizes in the result); not judged unless the replay is training and arm on_again repeats arm on",
+     "show": [
+      {
+       "in": "result_file",
+       "key": [
+        "stages",
+        "learning_off_command",
+        "bodies_equal"
+       ],
+       "label": "bodies whose command is unchanged with learning off, of 8",
+       "form": "count"
+      },
+      {
+       "in": "result_file",
+       "key": [
+        "stages",
+        "learning_off_command",
+        "rotation_deg_mean_unequal"
+       ],
+       "label": "the mean target orientation difference of the changed bodies' commands (0 = the same, 180 = opposite)",
+       "form": "unit",
+       "unit": "degrees"
+      }
+     ]
+    }
+   ],
+   "related": [
+    {
+     "row": "probe_path_update_replay_481800",
+     "in": "result_file",
+     "key": [
+      "readings_beside",
+      "update_skipped",
+      "bodies_equal"
+     ],
+     "kind": "reading",
+     "form": "count",
+     "label": "bodies whose command is unchanged when only the optimizer's step is skipped (the arm update_skipped), of 8",
+     "means": "the update's own share of what learning off changes; the rest is the training-only bookkeeping before the planner",
+     "show": []
+    },
+    {
+     "row": "probe_path_update_replay_481800",
+     "in": "result_file",
+     "key": [
+      "readings_beside",
+      "w1_against_on_current_code",
+      "bodies_equal"
+     ],
+     "kind": "reading",
+     "form": "count",
+     "label": "bodies whose probe path (one body, the processor, 32-bit floats) latches training's command when it runs training's model step with training's own update, of 8",
+     "means": "what one body and the processor's arithmetic change at training's weights",
+     "show": [
+      {
+       "in": "result_file",
+       "key": [
+        "readings_beside",
+        "w1_against_on_current_code",
+        "rotation_deg_mean"
+       ],
+       "label": "their mean target orientation difference (0 = the same, 180 = opposite)",
+       "form": "unit",
+       "unit": "degrees"
+      }
+     ]
+    }
+   ],
+   "defects": [
+    "PROBE_PATH_DEPARTS_AT_FIRST_BURST",
+    "PLANNER_SEARCH_UNSTABLE"
+   ],
+   "to_decide": {
+    "text": "Row probe_path_update_replay_481800 runs training's model step 481,800 with learning off on a checkpoint copy",
+    "row": "probe_path_update_replay_481800",
+    "defect": "PROBE_PATH_DEPARTS_AT_FIRST_BURST"
+   },
+   "branches": {
+    "PASS": {
+     "next": "plain_run_is_the_departed_path",
+     "text": "Learning off leaves training's own command unchanged: the probe path's first command difference comes from its one body and the processor's arithmetic (the probe at training's weights beside it); its instrument, then its own computation and goal, are read next."
+    },
+    "FAIL": {
+     "next": "plain_run_is_the_departed_path",
+     "text": "The skipped learning changes training's own command at 481,800; no learning-off path can repeat it, so the match is read statistically after the probe path's instrument and its own computation and goal, as the operator decided; the planner's jump stays its own defect."
+    },
+    "UNKNOWN": {
+     "next": "plain_run_is_the_departed_path",
+     "text": "Not decided; the probe path's instrument and its own computation are read next."
+    }
+   }
+  },
+  {
+   "key": "plain_run_is_the_departed_path",
+   "name": "the twin's plain run is the probe path that departed",
+   "component": "PROBE_HARNESS",
+   "components": [
+    "PROBE_HARNESS",
+    "CHECKPOINTS"
+   ],
+   "question": "Is the twin check's plain run the probe path that departed: the file the switch effect pilot ran (finger_switch_prediction_effect.py at 3956c37d, sha256 1d974565...), the pilot's inputs (the trainer code hash, the model file, the loaded weights, each body's restored start state, the command file, the threads) and, on every body, the pilot's observe 0 number for number?",
+   "sources": [
+    {
+     "row": "probe_path_instrumentation_twin_481800",
+     "in": "result_file",
+     "key": [
+      "stages",
+      "plain_run_is_the_departed_path",
+      "met"
+     ],
+     "kind": "verdict",
+     "label": "the twin row on checkpoint 481,800, every body: the plain run's file, inputs and observe 0 against the switch effect pilot's control arm",
+     "means": "met = the plain run is the pilot's path on all 8 bodies; another file, input or observe 0 on any body is unmet and named",
+     "show": [
+      {
+       "in": "result_file",
+       "key": [
+        "stages",
+        "plain_run_is_the_departed_path",
+        "why"
+       ],
+       "label": "what was compared, or what differs",
+       "form": "text"
+      }
+     ]
+    }
+   ],
+   "related": [],
+   "defects": [],
+   "to_decide": {
+    "text": "Row probe_path_instrumentation_twin_481800 runs the pilot's own loop beside the instrumented one in one process, per body (draft in D:/UEMA_Research/external/D/UEMA_scratch/finger_investigation/probe_path/rows_v3/; design note section 12)",
+    "row": "probe_path_instrumentation_twin_481800"
+   },
+   "branches": {
+    "PASS": {
+     "next": "instrumentation_changes_nothing",
+     "text": "The twin's plain run is the probe path that departed: whether the instrumented run repeats it is read next."
+    },
+    "FAIL": {
+     "next": null,
+     "text": "The plain run is not the pilot's path: the twin cannot show what the instrumentation changes until the file, input or body the result names is repaired."
+    },
+    "UNKNOWN": {
+     "next": null,
+     "text": "Test this: the twin row decides it, with training stopped."
+    }
+   }
+  },
+  {
+   "key": "instrumentation_changes_nothing",
+   "name": "the instrumentation changes nothing",
+   "component": "PROBE_HARNESS",
+   "components": [
+    "PROBE_HARNESS",
+    "SENSORY_FRAME",
+    "PREDICTION_AUDIT"
+   ],
+   "question": "Run in one process from the same restored state and handed the same pictures (one picture store for both runs), does the instrumented probe path (probe_path_trace.py at c4acca5dd, sha256 67cbabb2..., the file the command and verification runs ran) repeat the plain one number for number at all 101 observes on every body: every audit number of every sense, the bout state, the babble noise and the finger joint error after every burst, MuJoCo asked for the same scenes, every instrumented picture handed from the store?",
+   "sources": [
+    {
+     "row": "probe_path_instrumentation_twin_481800",
+     "in": "result_file",
+     "key": [
+      "stages",
+      "instrumentation_changes_nothing",
+      "met"
+     ],
+     "kind": "verdict",
+     "label": "the twin row on checkpoint 481,800, every body: the instrumented run against the plain run of the same process, observe by observe, with the scene fingerprints and the store's hand-outs",
+     "means": "met = all 8 bodies repeat every number at all 101 observes with the same scenes: the command and verification rows' instrument changes nothing; one differing number is unmet, named by body, observe and field",
+     "show": [
+      {
+       "in": "result_file",
+       "key": [
+        "readings",
+        0,
+        "value"
+       ],
+       "label": "bodies whose instrumented run repeats its plain run number for number, of 8",
+       "form": "count"
+      },
+      {
+       "in": "result_file",
+       "key": [
+        "readings",
+        1,
+        "value"
+       ],
+       "label": "fresh pictures of an unchanged scene that came back different during the instrumented runs (0 = the driver drew every scene alike; each one is a picture the store replaced with the plain run's)",
+       "form": "count"
+      },
+      {
+       "in": "result_file",
+       "key": [
+        "stages",
+        "instrumentation_changes_nothing",
+        "why"
+       ],
+       "label": "the first difference, or what was compared",
+       "form": "text"
+      }
+     ]
+    }
+   ],
+   "related": [],
+   "defects": [
+    "PROBE_PATH_DEPARTS_AT_FIRST_BURST"
+   ],
+   "to_decide": {
+    "text": "Row probe_path_instrumentation_twin_481800 compares the instrumented run with the plain run of the same process, per body (draft in D:/UEMA_Research/external/D/UEMA_scratch/finger_investigation/probe_path/rows_v3/); the command and verification rows' records are re-judged with its result (rows probe_path_command_rejudge_481800 and probe_path_learning_off_match_rejudge_481800, drafts in D:/UEMA_Research/external/D/UEMA_scratch/finger_investigation/probe_path/rows_v4/)",
+    "row": "probe_path_instrumentation_twin_481800"
+   },
+   "branches": {
+    "PASS": {
+     "next": "computation_481800",
+     "text": "The instrumentation changes nothing in the probe path: the command and verification rows' own runs are read through their re-judgements."
+    },
+    "FAIL": {
+     "next": null,
+     "text": "With the pictures held equal the instrumented run differs from the plain one, from the observe and field the result names: the instrumentation, the arithmetic or state one run leaves to the next is found before the instrumented arm is read as the probe path; the command and verification rows stay invalid."
+    },
+    "UNKNOWN": {
+     "next": null,
+     "text": "Test this: the twin row decides it, with training stopped."
+    }
+   }
+  },
+  {
+   "key": "computation_481800",
+   "name": "the model's computation at 481,800",
+   "component": "PREDICTION_AUDIT",
+   "components": [
+    "ENCODER_REGISTRY",
+    "TRANSFORMER",
+    "PREDICTION_HEADS",
+    "PREDICTION_AUDIT"
+   ],
+   "question": "From the same restored inputs, is each sense's prediction error at model step 481,800 on the probe path (the processor, 32-bit floats, one body) within twice what bfloat16 rounding of the same computation produces of training's (control run 2's model record: the graphics card under bfloat16 autocast, eight bodies)?",
+   "sources": [
+    {
+     "row": "probe_path_command_481800",
+     "in": "result_file",
+     "key": [
+      "stages",
+      "computation_481800",
+      "met"
+     ],
+     "kind": "verdict",
+     "label": "the command row on checkpoint 481,800, every body: W of each sense's prediction error at 481,800 (the probe path against control run 2's model record) against twice the W of bfloat16 rounding (the same model step on the processor with the graphics card's mixed precision, against the probe path)",
+     "means": "met = every sense within its line: the probe path computes what training computes from the same inputs, up to the graphics card's arithmetic; a sense beyond it is unmet and named",
+     "show": [
+      {
+       "in": "result_file",
+       "key": [
+        "stages",
+        "computation_481800",
+        "senses",
+        "vision",
+        "W"
+       ],
+       "label": "vision: W of the probe path's prediction errors against control run 2's, over the 7 bodies other than body 2 (0 of every 100 = identical, 100 of every 100 = apart by control run 2's own size)",
+       "form": "share"
+      },
+      {
+       "in": "result_file",
+       "key": [
+        "stages",
+        "computation_481800",
+        "senses",
+        "tactile",
+        "W"
+       ],
+       "label": "tactile: W of the probe path's prediction errors against control run 2's, over the 7 bodies other than body 2 (0 of every 100 = identical, 100 of every 100 = apart by control run 2's own size)",
+       "form": "share"
+      },
+      {
+       "in": "result_file",
+       "key": [
+        "stages",
+        "computation_481800",
+        "senses",
+        "audio",
+        "W"
+       ],
+       "label": "audio: W of the probe path's prediction errors against control run 2's, over the 7 bodies other than body 2 (0 of every 100 = identical, 100 of every 100 = apart by control run 2's own size)",
+       "form": "share"
+      },
+      {
+       "in": "result_file",
+       "key": [
+        "stages",
+        "computation_481800",
+        "senses",
+        "proprioception",
+        "W"
+       ],
+       "label": "proprioception: W of the probe path's prediction errors against control run 2's, over the 7 bodies other than body 2 (0 of every 100 = identical, 100 of every 100 = apart by control run 2's own size)",
+       "form": "share"
+      },
+      {
+       "in": "result_file",
+       "key": [
+        "stages",
+        "computation_481800",
+        "senses",
+        "vestibular",
+        "W"
+       ],
+       "label": "vestibular: W of the probe path's prediction errors against control run 2's, over the 7 bodies other than body 2 (0 of every 100 = identical, 100 of every 100 = apart by control run 2's own size)",
+       "form": "share"
+      },
+      {
+       "in": "result_file",
+       "key": [
+        "stages",
+        "computation_481800",
+        "line",
+        "proprioception"
+       ],
+       "label": "proprioception's line: twice the W that bfloat16 rounding of the same computation produces at 481,800 (the processor run with the graphics card's mixed precision)",
+       "form": "share"
+      }
+     ]
+    },
+    {
+     "row": "probe_path_command_rejudge_481800",
+     "in": "result_file",
+     "key": [
+      "stages",
+      "computation_481800",
+      "met"
+     ],
+     "kind": "verdict",
+     "label": "the command row's records re-judged under the repeat rule with the twin's result (no arm runs): the same W of each sense's prediction error at 481,800 against twice bfloat16 rounding's W",
+     "means": "met = every sense within its line, on an instrument the twin shows changes nothing; a sense beyond it is unmet and named",
+     "show": [
+      {
+       "in": "result_file",
+       "key": [
+        "stages",
+        "computation_481800",
+        "senses",
+        "vision",
+        "W"
+       ],
+       "label": "vision: W of the probe path's prediction errors against control run 2's, over the 7 bodies other than body 2 (0 of every 100 = identical, 100 of every 100 = apart by control run 2's own size)",
+       "form": "share"
+      },
+      {
+       "in": "result_file",
+       "key": [
+        "stages",
+        "computation_481800",
+        "senses",
+        "tactile",
+        "W"
+       ],
+       "label": "tactile: W of the probe path's prediction errors against control run 2's, over the 7 bodies other than body 2 (0 of every 100 = identical, 100 of every 100 = apart by control run 2's own size)",
+       "form": "share"
+      },
+      {
+       "in": "result_file",
+       "key": [
+        "stages",
+        "computation_481800",
+        "senses",
+        "audio",
+        "W"
+       ],
+       "label": "audio: W of the probe path's prediction errors against control run 2's, over the 7 bodies other than body 2 (0 of every 100 = identical, 100 of every 100 = apart by control run 2's own size)",
+       "form": "share"
+      },
+      {
+       "in": "result_file",
+       "key": [
+        "stages",
+        "computation_481800",
+        "senses",
+        "proprioception",
+        "W"
+       ],
+       "label": "proprioception: W of the probe path's prediction errors against control run 2's, over the 7 bodies other than body 2 (0 of every 100 = identical, 100 of every 100 = apart by control run 2's own size)",
+       "form": "share"
+      },
+      {
+       "in": "result_file",
+       "key": [
+        "stages",
+        "computation_481800",
+        "senses",
+        "vestibular",
+        "W"
+       ],
+       "label": "vestibular: W of the probe path's prediction errors against control run 2's, over the 7 bodies other than body 2 (0 of every 100 = identical, 100 of every 100 = apart by control run 2's own size)",
+       "form": "share"
+      },
+      {
+       "in": "result_file",
+       "key": [
+        "stages",
+        "computation_481800",
+        "line",
+        "proprioception"
+       ],
+       "label": "proprioception's line: twice the W that bfloat16 rounding of the same computation produces at 481,800 (the processor run with the graphics card's mixed precision)",
+       "form": "share"
+      }
+     ]
+    }
+   ],
+   "related": [
+    {
+     "file": "D:/UEMA_Research/external/D/UEMA_scratch/finger_investigation/switch_effect/pilot_0538/pilot_result.json",
+     "key": [
+      "representativeness",
+      "proprioception",
+      "first_transition",
+      "W"
+     ],
+     "kind": "reading",
+     "form": "share",
+     "label": "the switch effect pilot's proprioception W at 481,800, the same quantity against control run 1 (0 of every 100 = identical)",
+     "means": "the reading that opened this question: 18 to 67 in 1,000 over the pilot's four senses; a file that is no registry row, shown as history"
+    }
+   ],
+   "defects": [
+    "PROBE_STATES_DIFFER_WITH_THREAD_SETTINGS"
+   ],
+   "to_decide": {
+    "text": "Row probe_path_command_481800 ran the probe path at the pilot's thread settings (4 environment and 4 torch threads) and the same model step with the graphics card's mixed precision; its records are re-judged by row probe_path_command_rejudge_481800 under the repeat rule with the twin's result (draft in D:/UEMA_Research/external/D/UEMA_scratch/finger_investigation/probe_path/rows_v4/)",
+    "row": "probe_path_command_rejudge_481800"
+   },
+   "branches": {
+    "PASS": {
+     "next": "goal_choice_481800",
+     "text": "The model's inputs to the command agree with training's up to arithmetic: go on to the goal the planner picks."
+    },
+    "FAIL": {
+     "next": "goal_choice_481800",
+     "text": "From the same inputs the model computes differently beyond arithmetic (a part coupled across the batch of bodies, or a restored learner state); the goal is read next."
+    },
+    "UNKNOWN": {
+     "next": "goal_choice_481800",
+     "text": "Not decided; the goal is read next."
+    }
+   }
+  },
+  {
+   "key": "goal_choice_481800",
+   "name": "the planner's goal at 481,800",
+   "component": "PLANNER_GOAL_SELECTION",
+   "components": [
+    "GOAL_RING",
+    "WELLNESS_CHANNELS",
+    "PLANNER_GOAL_SELECTION"
+   ],
+   "question": "Does each body's planner at 481,800 on the probe path pick, from the goal ring of the last 200 model steps, the model step that training's planner picked (control run 2's causal-chain record of 481,800: the goal's ring index for each of the 8 bodies)?",
+   "sources": [
+    {
+     "row": "probe_path_command_481800",
+     "in": "result_file",
+     "key": [
+      "stages",
+      "goal_choice_481800",
+      "met"
+     ],
+     "kind": "verdict",
+     "label": "the command row: each body's goal ring index at 481,800 on the probe path against control run 2's causal-chain record",
+     "means": "met = all 8 bodies pick training's model step; a body that picks another one, or does not plan, is unmet and named",
+     "show": [
+      {
+       "in": "result_file",
+       "key": [
+        "stages",
+        "goal_choice_481800",
+        "bodies_equal"
+       ],
+       "label": "bodies whose planner picked training's goal, of 8",
+       "form": "count"
+      }
+     ]
+    },
+    {
+     "row": "probe_path_command_rejudge_481800",
+     "in": "result_file",
+     "key": [
+      "stages",
+      "goal_choice_481800",
+      "met"
+     ],
+     "kind": "verdict",
+     "label": "the command row's records re-judged under the repeat rule with the twin's result: each body's goal ring index at 481,800 against control run 2's causal-chain record",
+     "means": "met = all 8 bodies pick training's model step, on an instrument the twin shows changes nothing; a body that picks another one, or does not plan, is unmet and named",
+     "show": [
+      {
+       "in": "result_file",
+       "key": [
+        "stages",
+        "goal_choice_481800",
+        "bodies_equal"
+       ],
+       "label": "bodies whose planner picked training's goal, of 8",
+       "form": "count"
+      }
+     ]
+    }
+   ],
+   "related": [
+    {
+     "row": "probe_path_command_481800",
+     "in": "result_file",
+     "key": [
+      "reported",
+      "command_481800",
+      "bodies_equal"
+     ],
+     "kind": "reading",
+     "form": "count",
+     "label": "bodies whose probe path latched control run 2's exact command at 481,800, of 8 (reported, not judged: training's planner runs after the model step's update)",
+     "means": "the probe path's first command difference, which the next stage tests against training's own path with learning off",
+     "show": [
+      {
+       "in": "result_file",
+       "key": [
+        "reported",
+        "command_481800",
+        "bodies",
+        "0",
+        "rotation_deg_mean"
+       ],
+       "label": "body 0: the mean over its 25 body handles of the target orientation's difference from control run 2's (0 = the same, 180 = opposite)",
+       "form": "unit",
+       "unit": "degrees"
+      },
+      {
+       "in": "result_file",
+       "key": [
+        "reported",
+        "first_burst_probe_path",
+        "largest_hinge_difference_deg"
+       ],
+       "label": "the largest hinge angle difference after the probe path's own first burst",
+       "form": "unit",
+       "unit": "degrees"
+      }
+     ]
+    }
+   ],
+   "defects": [],
+   "to_decide": {
+    "text": "Row probe_path_command_481800 read each body's planning record at 481,800; row probe_path_command_rejudge_481800 re-judges its records under the repeat rule with the twin's result",
+    "row": "probe_path_command_rejudge_481800"
+   },
+   "branches": {
+    "PASS": {
+     "next": "movement_statistics",
+     "text": "The same goal: the command's difference starts after the goal; the statistical match is read next."
+    },
+    "FAIL": {
+     "next": "movement_statistics",
+     "text": "Another goal (the wellness evidence that needs other bodies' commands and the ranking's running statistics are named candidates); the statistical match is read next."
+    },
+    "UNKNOWN": {
+     "next": "movement_statistics",
+     "text": "Not decided; the statistical match is read next."
+    }
+   }
+  },
+  {
+   "key": "movement_statistics",
+   "name": "movement with learning off, against training's range",
+   "component": "WORLD",
+   "components": [
+    "COMMAND_EXECUTION_PATH",
+    "WORLD"
+   ],
+   "question": "Over the 16 windows of 100 model steps from 481,800 (481,800 to 483,399) with learning off, do the probe path's movements lie within the bands declared from training's own run-to-run difference (control run 2's average over the same windows, widened by control runs 1 and 2's differences at matched windows, counted for their correlation from one window to the next): the mean change of the body's hinge angles per burst, the eyes' hinge angles' change, the posture's drift from each window's first record and the finger joint error, each by its mean, spread and largest value per window over every body and model step, averaged over the 16 windows?",
+   "sources": [
+    {
+     "row": "probe_path_learning_off_match_481800",
+     "in": "result_file",
+     "key": [
+      "stages",
+      "movement_statistics",
+      "met"
+     ],
+     "kind": "verdict",
+     "label": "the learning-off match row: the probe path's own 1,600 model steps (16 windows of 100) on every body against the bands file written before the row (control run 2's 16-window averages, widened by control runs 1 and 2's matched-window differences; L beside, never a source)",
+     "means": "met = every movement summary's 16-window average inside its band; one outside is unmet and named with its value and the band's ends",
+     "show": [
+      {
+       "in": "result_file",
+       "key": [
+        "stages",
+        "movement_statistics",
+        "inside"
+       ],
+       "label": "summaries inside their declared bands",
+       "form": "count"
+      },
+      {
+       "in": "result_file",
+       "key": [
+        "stages",
+        "movement_statistics",
+        "summaries"
+       ],
+       "label": "summaries declared (each quantity's mean, spread and largest value, or its one value per window)",
+       "form": "count"
+      },
+      {
+       "in": "result_file",
+       "key": [
+        "stages",
+        "movement_statistics",
+        "outside"
+       ],
+       "label": "the summaries outside their bands: quantity, summary, the probe path's value and the band's two ends (none = every one inside)",
+       "form": "list"
+      },
+      {
+       "in": "result_file",
+       "key": [
+        "verify",
+        "probe",
+        "body_joint_change_deg",
+        "mean"
+       ],
+       "label": "the body's hinge angle change per burst on the probe path: its mean per window over every body and model step, averaged over the 16 windows",
+       "form": "unit",
+       "unit": "degrees"
+      },
+      {
+       "in": "result_file",
+       "key": [
+        "verify",
+        "probe",
+        "finger_joint_error_deg",
+        "mean"
+       ],
+       "label": "the finger joint error on the probe path: its mean per window over every body and model step, averaged over the 16 windows",
+       "form": "unit",
+       "unit": "degrees"
+      },
+      {
+       "in": "result_file",
+       "key": [
+        "verify",
+        "windows_read"
+       ],
+       "label": "verification windows whose world records were read, of 16",
+       "form": "count"
+      }
+     ]
+    },
+    {
+     "row": "probe_path_learning_off_match_rejudge_481800",
+     "in": "result_file",
+     "key": [
+      "stages",
+      "movement_statistics",
+      "met"
+     ],
+     "kind": "verdict",
+     "label": "the verification row's records re-judged under the repeat rule with the twin's result (no arm runs): the same 16-window averages against the same declared bands",
+     "means": "met = every movement summary's 16-window average inside its band, on an instrument the twin shows changes nothing; one outside is unmet and named",
+     "show": [
+      {
+       "in": "result_file",
+       "key": [
+        "stages",
+        "movement_statistics",
+        "inside"
+       ],
+       "label": "summaries inside their declared bands",
+       "form": "count"
+      },
+      {
+       "in": "result_file",
+       "key": [
+        "stages",
+        "movement_statistics",
+        "summaries"
+       ],
+       "label": "summaries declared (each quantity's mean, spread and largest value, or its one value per window)",
+       "form": "count"
+      },
+      {
+       "in": "result_file",
+       "key": [
+        "stages",
+        "movement_statistics",
+        "outside"
+       ],
+       "label": "the summaries outside their bands: quantity, summary, the probe path's value and the band's two ends (none = every one inside)",
+       "form": "list"
+      },
+      {
+       "in": "result_file",
+       "key": [
+        "verify",
+        "probe",
+        "body_joint_change_deg",
+        "mean"
+       ],
+       "label": "the body's hinge angle change per burst on the probe path: its mean per window over every body and model step, averaged over the 16 windows",
+       "form": "unit",
+       "unit": "degrees"
+      },
+      {
+       "in": "result_file",
+       "key": [
+        "verify",
+        "probe",
+        "finger_joint_error_deg",
+        "mean"
+       ],
+       "label": "the finger joint error on the probe path: its mean per window over every body and model step, averaged over the 16 windows",
+       "form": "unit",
+       "unit": "degrees"
+      },
+      {
+       "in": "result_file",
+       "key": [
+        "verify",
+        "windows_read"
+       ],
+       "label": "verification windows whose world records were read, of 16",
+       "form": "count"
+      }
+     ]
+    }
+   ],
+   "related": [
+    {
+     "file": "D:/UEMA_Research/external/D/UEMA_scratch/finger_investigation/probe_path/verify/training_bands.json",
+     "key": [
+      "bands",
+      "body_joint_change_deg",
+      "mean",
+      "departure_share"
+     ],
+     "kind": "reading",
+     "form": "share",
+     "label": "the smallest departure from control run 2's 16-window average that the band of the body's hinge angle change per burst (mean) rejects, in 100 of that average (from the bands file written before the row)",
+     "means": "what a met reading shows: a probe path departing by this much sits on the band's edge; the bands of the largest values reject only larger departures; a file that is no registry row, shown as history",
+     "show": [
+      {
+       "key": [
+        "bands",
+        "finger_joint_error_deg",
+        "mean",
+        "departure_share"
+       ],
+       "label": "the same for the finger joint error (mean)",
+       "form": "share"
+      },
+      {
+       "key": [
+        "bands",
+        "posture_drift_deg",
+        "mean",
+        "departure_share"
+       ],
+       "label": "the same for the posture's drift (mean)",
+       "form": "share"
+      },
+      {
+       "key": [
+        "bands",
+        "eye_joint_change_deg",
+        "largest",
+        "departure_share"
+       ],
+       "label": "the same for the eyes' hinge angle change (largest)",
+       "form": "share"
+      }
+     ]
+    }
+   ],
+   "defects": [],
+   "to_decide": {
+    "text": "Row probe_path_learning_off_match_481800 runs the learning-off probe path over 1,600 model steps (16 windows of 100) and reads it against the declared bands; once it has ended, row probe_path_learning_off_match_rejudge_481800 re-judges its records under the repeat rule with the twin's result (draft in D:/UEMA_Research/external/D/UEMA_scratch/finger_investigation/probe_path/rows_v4/)",
+    "row": "probe_path_learning_off_match_rejudge_481800"
+   },
+   "branches": {
+    "PASS": {
+     "next": "sensor_statistics",
+     "text": "The probe path moves within training's range: the sensor readings are read next."
+    },
+    "FAIL": {
+     "next": null,
+     "text": "The probe path moves outside training's range on the quantities named: no stop limit is set on its readings until the difference is corrected or the operator decides how the limits carry it."
+    },
+    "UNKNOWN": {
+     "next": null,
+     "text": "Test this after the rows before it."
+    }
+   }
+  },
+  {
+   "key": "sensor_statistics",
+   "name": "sensor readings with learning off, against training's range",
+   "component": "PREDICTION_AUDIT",
+   "components": [
+    "SENSORY_FRAME",
+    "PREDICTION_HEADS",
+    "PREDICTION_AUDIT"
+   ],
+   "question": "Over the same 16 windows, do the probe path's sensor readings lie within the declared bands: each sense's prediction error per model step (mean, spread, largest per window), each sense's prediction ratio and no-change sum per window, the 5 fast-lane readings at every physics step and the contact pairs per burst, each averaged over the 16 windows?",
+   "sources": [
+    {
+     "row": "probe_path_learning_off_match_481800",
+     "in": "result_file",
+     "key": [
+      "stages",
+      "sensor_statistics",
+      "met"
+     ],
+     "kind": "verdict",
+     "label": "the learning-off match row: the probe path's sensor readings against the declared bands",
+     "means": "met = every sensor summary's 16-window average inside its band; one outside is unmet and named",
+     "show": [
+      {
+       "in": "result_file",
+       "key": [
+        "stages",
+        "sensor_statistics",
+        "inside"
+       ],
+       "label": "summaries inside their declared bands",
+       "form": "count"
+      },
+      {
+       "in": "result_file",
+       "key": [
+        "stages",
+        "sensor_statistics",
+        "summaries"
+       ],
+       "label": "summaries declared (each quantity's mean, spread and largest value, or its one value per window)",
+       "form": "count"
+      },
+      {
+       "in": "result_file",
+       "key": [
+        "stages",
+        "sensor_statistics",
+        "outside"
+       ],
+       "label": "the summaries outside their bands: quantity, summary, the probe path's value and the band's two ends (none = every one inside)",
+       "form": "list"
+      },
+      {
+       "in": "result_file",
+       "key": [
+        "verify",
+        "probe",
+        "prediction_ratio_proprioception",
+        "value"
+       ],
+       "label": "proprioception's prediction ratio on the probe path: its next-model-step prediction error summed over the 7 bodies other than body 2, as a share of their summed no-change error (0 = exact, 100 = no better than predicting no change; probe_path_trace.window_sums), its one value per window averaged over the 16 windows",
+       "form": "share"
+      },
+      {
+       "in": "result_file",
+       "key": [
+        "verify",
+        "probe",
+        "prediction_ratio_tactile",
+        "value"
+       ],
+       "label": "tactile's prediction ratio on the probe path: its next-model-step prediction error summed over the 7 bodies other than body 2, as a share of their summed no-change error (0 = exact, 100 = no better than predicting no change; probe_path_trace.window_sums), its one value per window averaged over the 16 windows",
+       "form": "share"
+      },
+      {
+       "in": "result_file",
+       "key": [
+        "verify",
+        "windows_read"
+       ],
+       "label": "verification windows whose world records were read, of 16",
+       "form": "count"
+      }
+     ]
+    },
+    {
+     "row": "probe_path_learning_off_match_rejudge_481800",
+     "in": "result_file",
+     "key": [
+      "stages",
+      "sensor_statistics",
+      "met"
+     ],
+     "kind": "verdict",
+     "label": "the verification row's records re-judged under the repeat rule with the twin's result: the sensor readings against the declared bands",
+     "means": "met = every sensor summary's 16-window average inside its band, on an instrument the twin shows changes nothing; one outside is unmet and named",
+     "show": [
+      {
+       "in": "result_file",
+       "key": [
+        "stages",
+        "sensor_statistics",
+        "inside"
+       ],
+       "label": "summaries inside their declared bands",
+       "form": "count"
+      },
+      {
+       "in": "result_file",
+       "key": [
+        "stages",
+        "sensor_statistics",
+        "summaries"
+       ],
+       "label": "summaries declared (each quantity's mean, spread and largest value, or its one value per window)",
+       "form": "count"
+      },
+      {
+       "in": "result_file",
+       "key": [
+        "stages",
+        "sensor_statistics",
+        "outside"
+       ],
+       "label": "the summaries outside their bands: quantity, summary, the probe path's value and the band's two ends (none = every one inside)",
+       "form": "list"
+      },
+      {
+       "in": "result_file",
+       "key": [
+        "verify",
+        "probe",
+        "prediction_ratio_proprioception",
+        "value"
+       ],
+       "label": "proprioception's prediction ratio on the probe path: its next-model-step prediction error summed over the 7 bodies other than body 2, as a share of their summed no-change error (0 = exact, 100 = no better than predicting no change; probe_path_trace.window_sums), its one value per window averaged over the 16 windows",
+       "form": "share"
+      },
+      {
+       "in": "result_file",
+       "key": [
+        "verify",
+        "probe",
+        "prediction_ratio_tactile",
+        "value"
+       ],
+       "label": "tactile's prediction ratio on the probe path: its next-model-step prediction error summed over the 7 bodies other than body 2, as a share of their summed no-change error (0 = exact, 100 = no better than predicting no change; probe_path_trace.window_sums), its one value per window averaged over the 16 windows",
+       "form": "share"
+      },
+      {
+       "in": "result_file",
+       "key": [
+        "verify",
+        "windows_read"
+       ],
+       "label": "verification windows whose world records were read, of 16",
+       "form": "count"
+      }
+     ]
+    }
+   ],
+   "related": [
+    {
+     "file": "D:/UEMA_Research/external/D/UEMA_scratch/finger_investigation/probe_path/verify/pilot_against_bands.json",
+     "key": [
+      "persistence_within"
+     ],
+     "kind": "reading",
+     "form": "count",
+     "label": "summaries of the switch effect pilot's control arm whose departure from control run 2's first window is smaller than their band's half-width, of the 28 it recorded (written before any row ran; the pilot ran one window, so no band reads on it)",
+     "means": "a persistence reading: were each departure to hold over the 16 windows, the others would lie outside their bands, proprioception's no-change sum among them (27 in 100 below control run 2's first window, 1.31 half-widths); a file that is no registry row, shown as history",
+     "show": [
+      {
+       "key": [
+        "persistence_breaches"
+       ],
+       "label": "the pilot's summaries whose departure exceeds their band's half-width",
+       "form": "list"
+      }
+     ]
+    },
+    {
+     "file": "D:/UEMA_Research/external/D/UEMA_scratch/finger_investigation/probe_path/verify/training_bands.json",
+     "key": [
+      "bands",
+      "no_change_sum_proprioception",
+      "value",
+      "departure_share"
+     ],
+     "kind": "reading",
+     "form": "share",
+     "label": "the smallest departure from control run 2's 16-window average that the band of proprioception's no-change sum rejects, in 100 of that average (the coordinator's line: 24 in 100; from the bands file written before the row)",
+     "means": "what a met reading shows for the stop line's quantities; a file that is no registry row, shown as history",
+     "show": [
+      {
+       "key": [
+        "bands",
+        "prediction_ratio_proprioception",
+        "value",
+        "departure_share"
+       ],
+       "label": "the same for proprioception's prediction ratio",
+       "form": "share"
+      },
+      {
+       "key": [
+        "bands",
+        "prediction_ratio_tactile",
+        "value",
+        "departure_share"
+       ],
+       "label": "the same for tactile's prediction ratio",
+       "form": "share"
+      },
+      {
+       "key": [
+        "bands",
+        "no_change_sum_tactile",
+        "value",
+        "departure_share"
+       ],
+       "label": "the same for tactile's no-change sum",
+       "form": "share"
+      }
+     ]
+    }
+   ],
+   "defects": [
+    "PROBE_PATH_DEPARTS_AT_FIRST_BURST"
+   ],
+   "to_decide": {
+    "text": "Row probe_path_learning_off_match_481800 reads the sensor readings against the declared bands; once it has ended, row probe_path_learning_off_match_rejudge_481800 re-judges its records under the repeat rule with the twin's result",
+    "row": "probe_path_learning_off_match_rejudge_481800",
+    "defect": "PROBE_PATH_DEPARTS_AT_FIRST_BURST"
+   },
+   "branches": {
+    "PASS": {
+     "next": null,
+     "text": "Movement and sensor readings match training's within the declared differences: the stop limits can be set on the probe path's readings."
+    },
+    "FAIL": {
+     "next": null,
+     "text": "The sensor readings named lie outside training's range: no stop limit is set on them until the difference is corrected or the operator decides how the limits carry it."
+    },
+    "UNKNOWN": {
+     "next": null,
+     "text": "Test this with the movement: the same row decides both."
+    }
+   }
+  }
+ ]
+}

@@ -1,0 +1,701 @@
+INDEPENDENT HOSTILE READ OF THE REACH PLAN PAGE'S UPDATE OF 5:19 PM PDT, OCTOBER 24, 2026
+Written Oct 24, 2026, 5:39 PM PDT by a the builder subagent that did not write the page. Nothing was edited except this report.
+
+Page read: scratchpad/review_page3/draft1.html (92,812 bytes, a frozen copy of docs/H84_REACH_SOLUTION_REVISED_2026-10-23.html).
+Read whole from the top once as a newcomer, then the changed parts: the eyebrow's last clause, section 7's h2, section 7
+from "How the test ran, October 24" to just before "After reaching", and section 8's last source item. Standard:
+The style guide and docs/GUIDE_WRITING_A_CLEAR_DOCUMENT_2026-10-23.html (sections 5, 7 and 8).
+
+=====================================================================================================================
+SUMMARY
+=====================================================================================================================
+- 54 findings: 9 of high weight, 24 medium, 21 low.
+- 251 numbers, counts, times and colour marks of the new text checked against their files: 246 PASS, 4 FAIL, 1 with no
+  source. The 4 FAIL sit in three statements: the "smallest margin 0.34 rad (19.5°)" (true for the left arm only),
+  "stopped at its first step" (four stages ran before the tests row), and the source named for the five cost-basis
+  seconds (that file does not hold them). The one with no source is the proposal's 2.0 cm regression margin. One
+  decision is misstated (the removal "grant").
+- Cognitive load of the changed parts: 6 of 10 (1 = easy, 10 = unreadable).
+- The nine high-weight findings, one line each:
+  H1  Step 1's pointer "(the last part of this section)" now points at nothing: this update deleted the disk paragraph
+      it named, and the October 23 removal it explained is described nowhere.
+  H2  "sealed" is used three times and no longer defined: its only definition was in the deleted 2:52 AM paragraph.
+  H3  The identity check's 8 parts are one sentence of 153 words.
+  H4  "No joint reached its limit; the smallest margin was 0.34 rad" is false as written: 0.34 rad is the left arm's;
+      the same report puts the right elbow 0.10 rad from its limit.
+  H5  The h2's October 24 result is counts with "nearer" and no distances, the pattern the operator rejected in a
+      heading on October 23 (guide rule 15).
+  H6  The proposal's cost basis comes without the budget arithmetic: the run owner admits a trainer only when the
+      seconds used + 300 + 30 + 100 stay within 900 s, and 621.0 s are already used.
+  H7  The proposal's success and regression lines use "nearer" without its reference, and margins that do not come
+      from a measured spread, which the page's own section 5 requires.
+  H8  "Under the grant for this test, that exact folder was removed before each attempt": there were two separate
+      one-time decisions, the second "for this one occurrence only" and "cannot be reused".
+  H9  The heading "Why body 5's left hand missed" claims a cause that the section itself, and the overseer, say is not
+      established.
+
+=====================================================================================================================
+FINDINGS, grouped by the nine questions; high weight first in each group
+Each finding: the page's exact words, what fails, and the corrected wording or fact.
+=====================================================================================================================
+
+QUESTION 1. Terms used before they are defined, or not defined at all
+---------------------------------------------------------------------
+
+1. [HIGH] (H2) "Its sealed version read FAIL on two parts"; "The sealed reading's FAIL is kept beside it."; section 8:
+   "the sealed reading's result.json".
+   Fails: "sealed" has no definition anywhere in the draft (a search finds it only in these three places). The
+   committed version defined it in "The state at 2:52 AM PDT, October 24": "each file's sha256 hash is recorded
+   (sealed: a later edit would show as a different hash)". This update deleted that paragraph.
+   Fix, at first use: "Its sealed version (the reader as reviewed before the runs, its sha256 recorded so that any
+   later edit would show as a different hash) read FAIL on two parts".
+
+2. [MEDIUM] "...those 4 assumed that the admission program training_preflight.py in the main copy of the code was
+   still its earlier version..."
+   Fails: "the main copy of the code" is not defined. The page defines a branch ("a line of code versions kept apart
+   from the one training uses") but never the copy that launch commands run.
+   Fix: "in the project's main checkout (the copy of the code the launch commands run)". The tests' receipt records it
+   as installed_tp_is_main: true (attempts/target_matched_496250_s2_tests_a1/evidence/result.json).
+
+3. [MEDIUM] "The code it changes is the blend in Source/Python/mimo_bridge/lem_model.py on the change's branch (commit
+   a48cac796)"
+   Fails: a48cac796 appears here and in section 8 with no introduction, while section 8 lists the change's commits as
+   4a2ca6866, dae5d76d3, 34b255e0b and fbc296d5e. The reader cannot tell that both October 24 runs used a48cac796.
+   Facts: git log of D:/UEMA_wt/target_candidate_20261023: "a48cac796 Oct 24 03:58 AM Trainer: --control-poll-every
+   and --restore-readback (reach-target-matched-conditions-decision-20261024 C4, C5)". Tests row
+   target_matched_496250_off_run (registry line 87896): "the final branch commit a48cac796... (fbc296d5e plus only
+   the restored-world readback and the per-model-step control polling)". The successor decision: "Final trainer
+   a48cac796".
+   Fix, in "How the test ran": "Both runs used the change's branch at commit a48cac796: the reviewed change
+   (fbc296d5e) plus two trainer additions the overseer required at 3:01 AM, a stop request read at every model step and a
+   read-back of the restored worlds before the first model step (the read-back is what the identity check's seventh
+   part compares)."
+
+4. [MEDIUM] In the identity check: "the decision's recorded fields" and "the record's settings".
+   Fails: neither says what is compared, so the reader cannot see that the second part is where "the same T" (a
+   condition the page set above, under "Identity first.") is shown.
+   Facts (read_matched_pair_corrected.py docstring): P2 compares "the encoder and context hashes, the update counts,
+   the selected goal's ring index, age and token hash, the start gaps and goal distances, the start pose error, the
+   iteration-0 forecast and effort, the goal and start wrist positions, the timing"; P4: "identity.planner_settings
+   equal except ON's one appended element (the candidate's version); the launch's code hash and commit equal".
+   Fix: "the decision's 51 recorded fields, among them which saved record became T (its place in the 200-step memory,
+   its age and its token hash)"; "the planner's settings as each run's record lists them (equal except the on run's
+   added version tag), and the code's hash and commit".
+
+5. [MEDIUM] "A the builder subagent (...) read the saved arrays from 4:05 PM to 4:10 PM."
+   Fails: "the saved arrays" is undefined; the reader has not been told that a run saves arrays, or which.
+   Fix: "read the arrays each run's recorder saved for the decision of model step 496,250 (one capture file per run:
+   the start and end poses, T, the chosen command, the command before, the command sent and the body head's predicted
+   end pose)" (h1h2_table.py docstring; body5_report.txt "Sources").
+
+6. [LOW] "The commit guard (section 6's resource check) refuses work when C: ..."
+   Fails: "commit" is unexplained; a newcomer reads it as a git commit.
+   Fact (commit_guard.py line 1): "Refuse to start heavy work beside the live trainer when Windows' commit charge is
+   near its limit."
+   Fix: "The commit guard (section 6's resource check: it refuses heavy work when the memory Windows has promised to
+   programs nears its limit, and when C: ...)".
+
+7. [LOW] "The planner offered the extra version to all 8 bodies"
+   Fails: "offered" is not defined (the h2 uses "offer" too).
+   Fact (corrected_reading_result.json, definitions.offered): "the candidate was built from a valid stored target and
+   its evaluation is finite".
+   Fix: "offered (built from a valid saved T, its predicted score a finite number)".
+
+8. [LOW] the quote: "evidence of a useful candidate-selection change with a remaining failure, not successful
+   reaching or blanket adoption".
+   Fails: the page never says that the "candidate" is the page's "extra version"; sections 4 and 5 use "candidate
+   repair" for other repairs.
+   Fix: add "(the candidate is the extra version)".
+
+9. [LOW] "the package's 82 tests"; "the package had applied its reviewed change"
+   Fails: in section 7 "the package" is no longer described; the deleted 2:52 AM paragraph listed what it held.
+   Fix, at first use in section 7: "the test's package (its two launch commands, their preflight records, its Tests
+   rows, the program that runs and stops the two runs, and the identity check, all reviewed and sealed)".
+
+QUESTION 2. Forward references (and references broken by this update)
+----------------------------------------------------------------------
+
+10. [HIGH] (H1) Step 1's result, unchanged by this update: "the clock was stopped from 9:21:33 PM to 9:59:59 PM while
+    the disk was cleared (the last part of this section)."
+    Fails: the update moved the disk paragraph into "How the test ran, October 24" and rewrote it for October 24's
+    two removals only; the last part of section 7 is now "After reaching". The October 23 removal the pointer
+    explained (file_management.json, storage_issue_installer_payload_recreation_20261023.evidence: "the folder was
+    removed again at 9:42 PM PDT under reach-baseline-exact-cache-cleanup-20261023") is described nowhere in the
+    draft. The committed version said it: "after it had been removed at 9:42 PM to make room for step 1".
+    Fix: add to the disk paragraph "The same folder had been removed at 9:42 PM on October 23, while step 1's clock
+    was stopped, to make room for step 1", and change the pointer to "(the disk paragraph under 'How the test ran,
+    October 24')", or replace the pointer with that sentence.
+
+11. [MEDIUM] Eyebrow: "updated in place again at 5:19 PM PDT, October 24: section 7 gives the two-run test's result,
+    its corrected identity check, body 5's left hand, the reading of all 16 hands and the comparison now proposed to
+    the overseer"
+    Fails: at the top of the page none of "the two-run test", "identity check", "body 5" or "16 hands" has a meaning
+    yet, and the eyebrow is now a change log of 121 words that the reader crosses before the title. Guide section 2:
+    a status near the top must stand alone.
+    Fix: "UEMA on the MIMo infant body • the coordinating plan for reaching • adopted by the overseer at 5:59 PM PDT, October
+    23, 2026; last updated 5:19 PM PDT, October 24 (section 7: the test of October 24)", with the update history moved
+    into the review record.
+
+QUESTION 3. Sentences a fifth grader, given the page's own definitions, could not follow
+---------------------------------------------------------------------------------------
+
+12. [HIGH] (H3) "The identity check is a program (the pairing reader) that compares the two runs' saved files in 8
+    parts before any comparison is claimed: the decision's inputs (every sense's tokens, ...; the proprioception
+    encoder's input, the body's joint-angle sense, and its weights after the learning update; ...: 51 arrays,
+    compared bit for bit); the decision's recorded fields; ... and the two runs' settings, identical except the switch
+    and the output folders."
+    Fails: one sentence of 153 words, with a list inside a parenthesis inside a list. "the proprioception encoder's
+    input, the body's joint-angle sense, and its weights" reads as three items when the middle one defines the first.
+    Fix: a numbered list, one plain line per part (facts: corrected_reading_result.json gates P1 to P8):
+      1. The decision's inputs, 51 arrays compared bit for bit: each sense's tokens (current, raw and goal), the
+         input of the proprioception encoder (proprioception: the body's joint-angle sense) and that encoder's
+         weights after the learning update, the two random-number generators' states, the start pose, T, and the
+         other inputs the decision read.
+      2. The decision's 51 recorded fields, among them which saved record became T.
+      3. The planner's own result (the search's), equal in both runs, and every output equal for the 4 bodies not
+         sent the extra version.
+      4. The planner's settings in each run's record (equal except the on run's version tag), and the code's hash and
+         commit.
+      5. For the 4 bodies sent the extra version, the command sent equals the command scored, on every number the
+         command execution path uses.
+      6. The restore of the saved state: the same 24 network parts loaded, none rebuilt.
+      7. The restored worlds' state, read back field by field before the first model step (526 to 528 fields per
+         world).
+      8. The two runs' settings, identical except the switch and four output-location settings (P8 differing_keys:
+         caregiver_record_dir, checkpoint_storage, latent_body_output, out, planner_target_candidate).
+
+13. [MEDIUM] "Under the grant for this test, that exact folder was removed before each attempt, each time after
+    five checks (its full path, ...; ...; ...; ...; ...): at 9:52 AM, and at 3:51 PM after it had come back by 1:58 PM."
+    Fails: a five-item parenthetical inside one sentence, inside a paragraph that is a detour between the first and
+    second attempts of the reaching story.
+    Fix: give the five checks as a short list, and put the whole disk record in a collapsed block under the attempts
+    (or in section 6, "Limits and responsibilities"), with the removals described as two separate one-time decisions.
+
+14. [LOW] "Second, it compared the list of the 24 network parts each run loaded in sequence, and the two runs listed
+    the same 24 in a different sequence."
+    Fails: "each run loaded in sequence" reads as the runs loading one after the other.
+    Fix: "Second, it compared the two runs' lists of the 24 network parts each loaded, position by position; the lists
+    held the same 24 names in a different order."
+
+15. [LOW] "It was rejected for bodies 2 and 4 because ...; bodies 3 and 7 because it was not below the planner's own
+    result's ..."
+    Fails: grammar; "for" is missing before "bodies 3 and 7".
+    Fix: "...; and for bodies 3 and 7 because ...".
+
+QUESTION 4. Assertions without their why; superfluous sentences
+---------------------------------------------------------------
+
+16. [MEDIUM] "...78 passed and 4 failed, because those 4 assumed that the admission program training_preflight.py in
+    the main copy of the code was still its earlier version, while the package had applied its reviewed change to
+    that file before starting"
+    Fails: two whys are missing. (a) What the change was and why the runs needed it: no admission route existed for
+    the two runs' configurations, so two routes, entries 10 and 11, were added to training_preflight.py (D1,
+    execution_package_20261024.blocking_conditions.C1; execution_attempt_1_20261024.before_T0). (b) Why the fault was
+    not caught before the clock started: D1 execution_attempt_1_20261024.process_fault: "the builder did not run the sealed
+    tests in the post-change state before T0"; integration_test_lesson_20261024: "builder and reviewer ran the tests
+    only before the change".
+    Fix: "...because the package's steps had already added the two admission routes these runs need (entries 10 and
+    11) to the main checkout's training_preflight.py, and those 4 tests compared that file with its earlier version's
+    hash (c41d82f5...); the builder and the reviewer had run the tests only before that change."
+
+17. [MEDIUM] "The blend ... then placed the position the motors received 9.38 cm from T, because the command before
+    requested a point 14.43 cm from T. This is arithmetic, not a hypothesis."
+    Fails: the arithmetic is asserted, not shown; the reader cannot see why 14.43 becomes 9.38.
+    Fix: "Because the extra version's point was T itself, the blend left 0.65 of the command before's distance from
+    T: 0.65 x 14.43 cm = 9.38 cm. This is arithmetic, not a hypothesis."
+
+18. [MEDIUM] "the decision of 5:08 PM accepted the corrected result: the switch stays a tested experimental
+    option, off by default; ..."
+    Fails: the reason is dropped. The decision: "Keep the candidate implementation as a tested experimental
+    option, default off: there is measured benefit to retain, and a regression to resolve before production
+    adoption."
+    Fix: add "because, in the words, 'there is measured benefit to retain, and a regression to resolve before
+    production adoption'".
+
+19. [MEDIUM] "The commit guard (section 6's resource check) refuses work when C:, the disk that holds Windows' page
+    file (where Windows keeps memory contents that do not fit in memory), has less than 12 GiB free."
+    Fails: this update removed the why of the 12 GiB line (the committed text said the page file "grows into its disk
+    as memory use nears the limit"), and the paragraph never gives C:'s free space before the second removal, so the
+    reader cannot see that the removal was needed.
+    Facts: commit_guard.py lines 52 to 55 ("the observer's recorders never take the last 12 GiB of a disk ... and the
+    H84 hourly watcher stops training under 8 GB free ...: the page file must not be counted on to grow into
+    either"); file_management.json removal_20261024_s2.rechecks.c_free_bytes_before: 10,779,717,632 bytes (10.04 GiB,
+    under the 12 GiB line).
+    Fix: restore "Windows grows the page file into C: as memory use nears its limit" and add "C: had 10,779,717,632
+    bytes (10.04 GiB) free before the second removal".
+
+20. [MEDIUM] "After an independent review of the corrected reader, one corrected reading read PASS on all 8 parts."
+    Fails: the page names the two faults but never says what the correction changed, so the reader cannot judge
+    whether the check was loosened until it passed. The conditions ("compare membership/counts ... not a bare set
+    that hides duplicates"; "Do not drop another failing field merely because it differs") are not reflected.
+    Fact (D1 corrected_reading_20261024.reader): "two changes. P1: plan0 ... leaves the list of decision inputs that
+    must be bit-identical and joins the outputs P3 requires equal in every body not sent the candidate ... P6:
+    load_report.json's loaded_components compared as lists of unique valid component names by counts ..., every other
+    field exactly as before; a non-empty reinitialized_components still fails. P2 to P5, P7 and P8 unchanged".
+    Fix: "The corrected reader changed two things only: plan0 moved from the inputs to the outputs, where it must be
+    equal for the 4 bodies not sent the extra version (it was); and the two lists of network parts are compared by
+    their names and counts, so a missing, extra or repeated part still fails. An independent reviewer confirmed in the
+    code that plan0 is set after the search (lem_model.py lines 4422 and 4428) and that no other part was loosened;
+    the corrected reader's 16 tests passed, and 11 of 12 faults planted in it were caught" (review_rr/report.txt).
+
+21. [LOW] "...and 6 of the 8 ended nearer that received position than T."
+    Fails: what the count shows is not said.
+    Fix: add "so most hands went toward the position they were sent rather than toward T".
+
+22. [LOW] "Its 101 tests passed (Tests row target_matched_496250_s2_package_tests)."
+    Fails: the first attempt had 82 tests; the change is not explained.
+    Fact: the successor decision required the tests of the earlier file to read a pinned git copy (hash
+    c41d82f5...) and added installed-state checks (the main admission code equals the reviewed change; the two new
+    routes admit only the authorized commands; other routes stay refused).
+    Fix: "Its 101 tests (the earlier tests, now reading the earlier file from a pinned git copy, plus checks that the
+    installed file is the reviewed change and admits only these two runs) passed."
+
+QUESTION 5. Numbers against their files; numbers without meaning; direction words without distances
+---------------------------------------------------------------------------------------------------
+
+23. [HIGH] (H4) "No joint reached its limit; the smallest margin was 0.34 rad (19.5°)."
+    Fails: the source's 0.34 rad is the left arm's smallest margin. The same report gives the right elbow 0.10 rad
+    from its limit. As written, the sentence states the smallest margin of the whole body, and that is false.
+    Facts (body5_analysis/body5_report.txt): item 7, under "Left-arm joint angles": "No joint reached a limit. The
+    smallest margin was 0.34 rad, shoulder_horizontal from its −0.49 limit."; item 10: "The right elbow reached −2.448
+    rad, 0.10 rad from its −2.55 limit."
+    Fix: "No joint of the left arm reached its limit; the left arm's smallest margin was 0.34 rad (19.5°), at the
+    shoulder's horizontal joint. (The right elbow came within 0.10 rad, 5.7°, of its limit.)" The D1 record's
+    corrected_reading_20261024.body5_left_hand carries the same unqualified wording and needs the same correction.
+
+24. [HIGH] (H5) Section 7's h2: "...where the planner chose that command (4 of 8 bodies), 7 of their 8 hands ended
+    nearer T at 250 ms than in the run without the change and 1 farther; 5 of the 8 ended nearer than they started; no
+    hand was within 2.0 cm."
+    Fails: the October 24 half of the heading is counts with "nearer" and no distances, the pattern the operator
+    rejected in a heading on October 23 ("nearer its goal means fucking nothing to me ... I want to see the three way
+    comparisons"; guide rule 15). The whole h2 carries 16 numbers in three sentences.
+    Fix (medians over the same 8 hands, hands16_reading_20261024.json, summary.selected_8_hands_4_bodies): "...where
+    the planner chose that command (4 of 8 bodies), their 8 hands ended a median 7.67 cm from T at 250 ms (the body
+    head had predicted 9.20 cm), against 10.87 cm in the run without the change, from 11.51 cm at the start; 7 of the
+    8 ended nearer T than without the change and 1 farther; only 5 of the 8 ended nearer than they started; none was
+    within 2.0 cm." If the heading must stay short, move step 1's six distances into its own subsection.
+
+25. [HIGH] (H6) "The measured basis for its cost is the second attempt's own steps (budget-clock seconds): 21.6 s of
+    steps before its tests, 33.7 s of tests, 155.0 s for the on run's trainer, 5.8 s to close that run and 14.7 s for
+    the closing record with its reading."
+    Fails: the comparison that decides whether the run can happen is missing. The parts sum to 230.8 s, 240.8 s with
+    the 10.0 s of launch checks the basis leaves out; the question's budget has 278.97 s left (budget_ledger.jsonl line 13,
+    left_after_s 278.972). But the run owner of both attempts admits a trainer only when "E + 300 + 30 + 100 <= 900"
+    (Tests rows target_matched_496250_off_run, _on_run, _s2_off_run and _s2_on_run, registry lines 87901, 88342,
+    89044 and 89993), E being the seconds already used. With E at 621.0 s before any new step, 621.0 + 430 = 1,051 s,
+    above 900 s: the proposed run cannot be admitted under that rule inside this question's budget. The successor
+    decision also says: "Extra time beyond 900 seconds has NOT been authorized."
+    Fix, after the cost basis: "Together these are 240.8 s. This question has 279.0 s left of its 900 s, but the run
+    owner admits a trainer only while the seconds used plus 430 s stay within 900 s, which the 621.0 s used already
+    rules out; the overseer would have to set this comparison's budget."
+
+26. [HIGH] (H7) "The proposed lines, for the overseer to set before any run: success if the 8 hands' median measured D at
+    250 ms falls below the on run's 7.67 cm and more of them end nearer T than farther; regression if the median does
+    not fall, any hand ends more than 2.0 cm farther from T than in the on run, a fall flag rises, or one of those 4
+    bodies' measured pose-error score rises above the on run's."
+    Fails, four ways:
+    (a) "more of them end nearer T than farther" has no reference: nearer than in the on run, or than at their start?
+    (b) The page's own section 5: "The acceptable harm and the required improvement are set before the comparison,
+        from the measured spread between repeats". Neither "falls below 7.67 cm" (any fall counts) nor "more than 2.0
+        cm farther" comes from a measured spread; 2.0 cm is the arrival line reused as a harm margin with no why. The
+        test itself measured one spread: an identical command repeats to 0.00003 cm.
+    (c) A median that falls while fewer hands improve is neither success nor regression.
+    (d) "the 8 hands" and "those 4 bodies" assume the same 4 bodies choose the extra version again; scoring it without
+        the blend changes its predicted score, so the chosen set can change.
+    Fix: "success if the median measured D of the 8 hands of bodies 0, 1, 5 and 6 at 250 ms falls below the on run's
+    7.67 cm and more of these hands end nearer T than in the on run than end farther; regression if ... any hand ends
+    more than [margin] farther from T than in the on run, the margin set from [the measured spread between repeats, or
+    a stated reason]; if a different set of bodies chooses the unblended version, those bodies are reported separately
+    and neither success nor regression is read."
+
+27. [MEDIUM] The same cost-basis sentence.
+    Fails: the basis leaves out the steps between the tests' receipt and the trainer's start.
+    Fact (the run log tasks/bdj07qkt7.output): "168.9 run-tests receipt pass", "172.0 launch supervisor started",
+    "176.6 supervise world-start folder listed", "178.9 supervise trainer started": 10.0 s before the off run's
+    trainer; "349.0 supervise branch checks" to "357.0 supervise trainer started": 8.0 s before the on run's.
+    Fix: add "and 10.0 s of launch and branch checks before the trainer".
+
+28. [MEDIUM] Section 8's last item: "the times, the test counts and the first attempt: Tests rows ..., and the run
+    log's budget-clock lines in the D1 key's execution_s2_20261024"
+    Fails: the D1 key execution_s2_20261024 holds none of the budget-clock lines: no 21.6 s, 33.7 s, 155.0 s, 5.8 s,
+    and no 3:58:26 PM (a search of d1_planner_recovery.json for them returns nothing; the key gives the trainers'
+    164.955 s and 155.73 s and the closure's 14.679 s). Those five seconds and the 3:58:26 PM time are only in the
+    session's temporary run log C:/Users/bhart/AppData/Local/Temp/agent/.../tasks/bdj07qkt7.output, which the page
+    does not name and which is not a project file.
+    Fix: copy the run log's 28 lines into the evidence folder or the D1 key, and cite that file.
+
+29. [MEDIUM] "The first attempt began at 9:53:19 AM PDT and stopped at its first step, the Tests row that runs the
+    package's 82 tests"
+    Fails: the tests row was not the first step.
+    Fact (D1 execution_attempt_1_20261024.chain): "T0 9:53:19 AM PDT; start passed (10.8 s); register (4 rows, to 30.0
+    s); the four rows unblocked; both adoptions written ...; launch check ALLOWED for both commands at 9:54:24 AM;
+    run-tests 9:54:30 to 9:55:13 AM".
+    Fix: "...and stopped at its first Tests row, the one that runs the package's 82 tests, after its start check,
+    registration and launch check had passed".
+
+30. [MEDIUM] "The body head had predicted −0.12 cm of movement along that line."
+    Fails: the far end of the scale, the line's length for body 5, is missing (the 16-hand bullet gives only the
+    median line, 7.72 cm).
+    Fact: hands16 row body 5 left, on run: L 9.7; body5_report item 5: "−0.12 cm of movement out of 9.70 cm".
+    Fix: "The body head had predicted −0.12 cm of movement along that line, which is 9.70 cm long (0 = no movement
+    toward the received position, 9.70 cm = arriving at it)."
+
+31. [MEDIUM] "So each of the 8 received positions lay 0.65 × the command before's distance from T: a median 10.41 cm
+    (5.30 cm to 14.98 cm)."
+    Fails: no anchor; the reader cannot tell whether 10.41 cm is near or far compared with where the hands already
+    were.
+    Facts: the same 8 hands started a median 11.51 cm from T (hands16 summary.selected_8_hands_4_bodies.on.median_cm.
+    s_T). Counted by this reviewer from the rows' s_T and r_T: in 4 of the 8 hands the received position lay farther
+    from T than the hand's own start (body 0 right 13.97 against 12.18 cm; body 1 left 12.25 against 5.84 cm; body 5
+    left 9.38 against 3.30 cm; body 6 left 5.41 against 1.00 cm).
+    Fix: add "The hands started a median 11.51 cm from T, and for 4 of the 8 the received position lay farther from T
+    than the hand already was."
+
+32. [MEDIUM] The new text does not deliver an item the earlier text promised. "The test the overseer chose": "The result, per
+    body: ... the pose-error score, predicted and measured, in both runs". The new text gives the scores for the 4
+    chosen bodies only.
+    Facts (target_matched_s2_20261024.json): body 2 start 8.23, predicted 10.65, measured 9.87; body 3 7.58, 4.56,
+    4.34; body 4 3.31, 4.43, 2.98; body 7 11.69, 7.85, 11.71 (the same in both runs).
+    Fix: add these to the collapsed table of the 4 bodies for which the extra version was rejected.
+
+33. [LOW] "the 4 bodies whose sent command was the same in both runs (bodies 2, 3, 4 and 7) ended within 0.00003 cm
+    of each other"
+    Fails: 0.00003 cm is the hands' distance only (summary key same_command_largest_hand_difference_cm); the bodies'
+    joint positions stopped being bit-identical from the third model step (corrected_reading_result.json,
+    world_records_after_bursts: qpos unequal from record 496,252 for bodies 3, 4 and 7, at 496,254 for body 2).
+    Fix: "their hand points ended within 0.00003 cm of each other".
+
+34. [LOW] In the identity check: "that the command sent equals the command scored"
+    Fails: checked only for the 4 bodies sent the extra version, and only on the numbers the command execution path
+    uses (P5 "compared").
+    Fix: "that, for the 4 bodies sent the extra version, the command sent equals the command scored on every number the
+    command execution path uses".
+
+35. [LOW] "body 5's score fell from 28.11 to 22.66 between the runs while its left hand moved away from T."
+    Fails: a direction word without its distances, in the sentence that makes the point.
+    Fix: "...while its left hand ended farther from T (3.82 cm in the off run, 7.41 cm in the on run)".
+
+36. [LOW] "The off run trained from 3:52:32 PM to 3:55:17 PM and the on run from 3:55:31 PM to 3:58:06 PM"
+    Fails: those spans are each trainer process's whole run (loading, 6 model steps, the save), not training time.
+    Fix: "The off run's trainer ran from 3:52:32 PM to 3:55:17 PM (loading, 6 model steps and the save) ...".
+
+37. [LOW] Note for the writer; no page change unless the figure is questioned. The run log's last lines read
+    "CLOSED at 03:58:33 PM PDT" and "budget used now: 538.9 of 900", 6.4 s more than the 532.5 s the page and
+    budget_ledger.jsonl carry (the ledger starts from owner_end.json's unsuspended_s_at_close 532.504). If the 6.4 s
+    are the waiting program's own delay after the closure, the page's 621.0 s stands; the writer should confirm which.
+
+QUESTION 6. Vague size words, statuses without their facts, time estimates
+---------------------------------------------------------------------------
+
+No magnitude adverbs and no time estimates were found in the changed parts ("at most 10 minutes" and "at most 90 s"
+are the limits, not estimates).
+
+38. [MEDIUM] "The proposal now with the overseer, the one comparison that measures the missing piece: ..."
+    Fails: "the missing piece" has no referent in the sentence.
+    Fix: "The proposal now with the overseer, the one comparison that measures whether an extra version sent without the
+    blend moves the hands nearer T: ...".
+
+39. [LOW] "...each ended normally and saved the model and all eight worlds at model step 496,256, and both saved
+    states were checked complete."
+    Fails: "normally" and "checked complete" without their facts.
+    Facts (corrected_reading_result.json, branches): trainer_exit_code 0, stop_requested false, killed false;
+    complete_save true, the 7 checkpoint files and the worlds' companion file present, the companion's bytes and
+    sha256 equal to its receipt; aggregate_closeout.json: re-hashed after the reading, 10 files unchanged and 1
+    timestamp-only per branch, 0 content changes.
+    Fix: "each trainer exited with code 0 without a stop request; each saved its 7 checkpoint files and the eight
+    worlds' companion file, checked against the save's receipt (re-hashed after the reading: 10 of 11 files unchanged
+    per branch, lineage.json changed only in its time stamp)".
+
+40. [LOW] "After an independent review of the corrected reader"
+    Fails: a review named without what it checked or found. Facts (review_rr/report.txt): "VERDICT: READY. No required
+    item."; the causal classification confirmed in the code; the focused test 16 of 16; 11 of 12 planted faults caught.
+
+QUESTION 7. Software described as a person; two names for one thing
+--------------------------------------------------------------------
+
+41. [MEDIUM] "A lower whole-pose score is not hand reaching"
+    Fails: "whole-pose score" is a second name for the pose-error score, the page's canonical name, used in the table
+    caption just above.
+    Fix: "A lower pose-error score (it covers all 25 body parts) is not hand reaching".
+
+42. [LOW] "0.35 × the chosen command + 0.65 × the blended command of the model step before" and, in the same bullet,
+    "because the command before requested a point 14.43 cm from T"; later "0.65 × the command before".
+    Fails: two names for the same command.
+    Fix: name it once, "the command before (the blended command of the model step before)", then "the command before"
+    every time.
+
+43. [LOW] "the position the motors received" (five uses)
+    Fails: the motors receive motor controls. The position is the wrist row's requested position in the command sent
+    to the command execution path, which turns rows into motor controls (section 3, item 2). Section 7's earlier text
+    says "the command the body receives".
+    Fix: "the requested hand position in the sent command", then "the sent position".
+
+44. [LOW] "those 4 assumed that ..."; "does the body head also misjudge the movement ..."
+    Fails: person verbs for software (the style guide, MECHANISM NEVER METAPHOR).
+    Fix: "those 4 compared the file with its earlier version's hash"; "does the body head's predicted end point also
+    differ from the measured end point" (the own word was "misestimate").
+
+45. [LOW] "identity check", "the pairing reader", "the reader", "one corrected reading", and in the eyebrow "its
+    corrected identity check".
+    Fails: the check, the program and one run of it get more than one name, and the eyebrow calls the check
+    "corrected" when the program was.
+    Fix: "the identity check" for the check, "the pairing reader" for the program, "a reading" for one run of it.
+
+QUESTION 8. Decisions misstated; the required wording missing or weakened
+-----------------------------------------------------------------------------
+
+46. [HIGH] (H8) "Under the grant for this test, that exact folder was removed before each attempt, each time after
+    five checks ..."
+    Fails: there were two separate one-time decisions, not one grant covering each attempt.
+    Facts: file_management.json, storage_issue_installer_payload_recreation_20261023.state: "removed for the reach
+    comparison at 9:52 AM and 3:51 PM PDT Oct 24 under two separate one-time decisions". The first was part of
+    reach-target-matched-launch-decision-20261024, 1:58 AM (D1 runtime_decision_20261024.disk: "one new removal of
+    exactly C:/Users/bhart/AppData/Local/Temp/dardntvf"). The successor decision of 10:00 AM then said: "The
+    installer cleanup grant is USED. No further removal or closing operator programs is authorized." The second came
+    in reach-target-final-stage-cleanup-20261024, 3:03 PM: "ONE fresh exact removal ... for this one occurrence only
+    ... this grant cannot be reused." Read as written, the page records a standing authorization that never existed,
+    in a record about deletion authority.
+    Fix: "the overseer granted two separate one-time removals of that exact folder: one in its decision of 1:58 AM, used at
+    9:52 AM; then, after the folder came back by 1:58 PM, a second at 3:03 PM, for that one occurrence only and not
+    reusable, used at 3:51 PM. Each removal followed the same five checks: ...". (The five checks themselves match the
+    3:03 PM decision: "re-resolve target AND parents within the named user's Temp directory, no reparse redirection;
+    verify same counts/bytes and stable contents, no active installer reader/writer".)
+
+47. [MEDIUM] h2: "5 of the 8 ended nearer than they started"; body: "5 of the 8 ended nearer than they started in the
+    on run, 4 of 8 in the off run."
+    Fails: the required page wording (5:08 PM, "Status/page wording") reads "only 5of8moved closer than their own
+    starts"; the page drops "only" in both places, which softens the limitation the overseer asked to be stated.
+    Fix: "only 5 of the 8 ended nearer than they started".
+
+48. [MEDIUM] "A prediction need not point straight at a requested position when the body touches the floor or carries
+    momentum, so the direction alone does not show a fault in the code."
+    Fails: the causality sentence is present but sits at the end of the third 16-hand bullet, after the reader has
+    met the numbers that invite the conclusion it warns against (body 5: "The body head had predicted −0.12 cm of
+    movement along that line"; the second 16-hand bullet: "the body head predicted 1.42 cm; 7 of the 8 moved farther
+    than predicted").
+    Fix: put the sentence right after the body 5 along-line sentence, and repeat its point in the second 16-hand
+    bullet.
+
+49. [LOW] "Its question: is the remaining miss already present in the position the motors received, or does the body
+    head also misjudge the movement that position produces?"
+    Fails: the question reads "is the remaining miss mainly already present in the executed request"; without
+    "mainly", the third bullet ("The larger of the two") answers a question the page did not ask. "the remaining miss"
+    is also undefined in place.
+    Fix: "Its question: is the hands' remaining distance from T (a median 7.67 cm) mainly already present in the sent
+    position, or does the body head also predict the movement wrongly?"
+
+50. [LOW] Section 8's last item.
+    Fails: (a) the decisions behind two statements of the new text are not named: "the overseer directed one corrected second
+    attempt" (reach-target-tests-successor-decision-20261024, 10:00 AM) and the second removal
+    (reach-target-final-stage-cleanup-20261024, 3:03 PM); (b) the first attempt's facts are in the D1 key
+    execution_attempt_1_20261024, which the item does not name; (c) the Tests row target_matched_496250_s2_pairing
+    still reads FAIL (registry line 91104), and the corrected PASS has no row of its own (it is in
+    supplemental_receipts.jsonl, kind corrected_reading); a reader who opens the Tests page will see FAIL.
+    Fix: add the two decision files and the D1 key, and one clause saying where the corrected PASS is recorded.
+
+QUESTION 9. Causal claims stronger than the evidence (the causality paragraph is the line)
+---------------------------------------------------------------------------------------------
+
+51. [HIGH] (H9) Heading: "Why body 5's left hand missed, and what the 16 hands show"
+    Fails: the section establishes one arithmetic fact (the sent position lay 9.38 cm from T) and one measured
+    prediction error (1.75 cm predicted, 7.41 cm measured), and itself says the contact is "not a shown cause" and
+    that whether a command without the blend would do better "is unmeasured". The overseer (4:04 PM): "Separate what is
+    measured from causal hypotheses." A heading that promises the "why" claims more than the section shows.
+    Fix: "Body 5's left hand: what was measured, and what the 16 hands show".
+
+52. [MEDIUM] "The same direction of error appears without the extra version: in the off run 9 of all 16 hands moved
+    farther along that line than predicted (a median 2.04 cm against 1.79 cm)."
+    Fails: 9 of 16 is one more than half, the medians are 0.25 cm apart, and the 16 include near-ties (body 4 right
+    0.43 against 0.38 cm; body 7 left 5.53 against 5.60 cm; hands16 rows, off run). "The same direction of error
+    appears" claims a pattern the count does not show.
+    Fix: "Without the extra version the count is near half: in the off run 9 of all 16 hands moved farther along that
+    line than predicted (medians 2.04 cm against 1.79 cm)."
+
+53. [MEDIUM] "The larger of the two: in all 8 hands the received position's distance from T was larger than the body
+    head's prediction error."
+    Fails: the label ranks the two causes, but the two distances (medians 10.41 cm and 3.02 cm) neither add up to nor
+    divide the hands' 7.67 cm miss, and the closest case is close (body 1's right hand: 5.30 cm against 5.22 cm;
+    hands16 rows r_T and a_f).: "Whether reducing blending would improve the real movement is NOT settled." The
+    next sentence says it is unmeasured, but the label has already implied the answer.
+    Fix: "Sizes: in all 8 hands the sent position lay farther from T than the body head's predicted end lay from the
+    measured end (medians 10.41 cm and 3.02 cm; closest, body 1's right hand, 5.30 cm against 5.22 cm). These two
+    distances do not split the 7.67 cm miss between the blend and the prediction."
+
+54. [MEDIUM] "The left upper arm pressed on the floor in all 5 records while the elbow bent 0.553 rad (32°; 0.318 rad
+    in the off run). The contact and the elbow's movement are a mechanism to examine, not a shown cause of the miss."
+    Fails: the off run is compared for the elbow but not for the contact. In the off run the left upper arm also
+    touched the floor (body5_report item 8: "peak force per record of 10.5–35.9 N (OFF 11.5–15.5 N)"), so the contact
+    alone does not separate the runs. And the "mechanism to examine" is named but not stated.
+    Fix: "The left upper arm touched the floor in all 5 records of the command's 250 ms, at peak forces of 10.5 to
+    35.9 N (in the off run too, at 11.5 to 15.5 N), while the elbow bent 0.553 rad (32°; 0.318 rad in the off run).
+    The mechanism to examine, not shown: with the upper arm held on the floor, the motion toward the sent position came
+    from bending the elbow, which swings the hand upward (it ended 3.31 cm above the sent position)" (body5_report,
+    hypothesis H3).
+
+=====================================================================================================================
+NUMBER CHECK (every number of the new text, against the file that holds it, opened during this review)
+=====================================================================================================================
+Abbreviations used only in this list: TM = docs/h84_reach_solution_revision_20261023/target_matched_s2_20261024.json;
+H16 = docs/h84_reach_solution_revision_20261023/hands16_reading_20261024.json; CR = .../target_matched_496250_package_
+s2_reread/corrected_reading_result.json; LOG = tasks/bdj07qkt7.output; D1 = d1_planner_recovery.json, key
+reach_baseline_20261023.target_candidate_repair_20261023.runtime_decision_20261024; FM = file_management.json.
+
+h2, October 24 clause (6)
+ 4 of 8 bodies (0, 1, 5, 6) .................... TM summary.selected_bodies ............................ PASS
+ 7 of their 8 hands nearer than the off run .... TM summary.hands_nearer_with_on_than_off 7 ............. PASS
+ 1 farther (body 5 left, 3.82 to 7.41 cm) ...... TM bodies[5] off/on measured D_left ................... PASS
+ 5 of the 8 nearer than their start ............ TM summary.hands_nearer_than_start_on 5 ............... PASS
+ none within 2.0 cm ............................ TM summary.hands_within_2cm_at_250ms_any_run 0 ......... PASS
+ 250 ms ........................................ TM definitions.D ("the command's 25 physics steps") .... PASS
+
+How the test ran (29)
+ 9:53:19 AM .................................... D1 execution_attempt_1_20261024.chain "T0 9:53:19 AM" ... PASS
+ 82 tests, 78 passed, 4 failed ................. attempts/target_matched_496250_tests_a1/evidence/result.json
+                                                 pytest.tests 82, failures 4 ............................ PASS
+ "stopped at its first step" ................... D1 chain: start, register, unblock, adoptions, launch check
+                                                 ran first (9:53:19 to 9:54:30 AM) ...................... FAIL
+ the 4 failures' cause ......................... the same result.json, failed[] messages (c41d82f5 expected,
+                                                 7200511a found; 2 extra routes) ........................ PASS
+ three other rows closed as never run .......... registry status "cancelled" (lines 87926, 88367, 88800) . PASS
+ one corrected second attempt .................. reach-target-tests-successor-decision-20261024 ......... PASS
+ 12 GiB ........................................ commit_guard.py line 55 DISK_RESERVE_GIB = 12.0 ......... PASS
+ 7,736,427,412 bytes; 1,215 files .............. FM removal_20261024_s2.rechecks ........................ PASS
+ five checks ................................... reach-target-final-stage-cleanup-20261024 text ......... PASS
+ 9:52 AM ....................................... FM removal_20261024_attempt1.removed 09:52:48-49 AM ..... PASS
+ 3:51 PM ....................................... FM removal_20261024_s2.removal.started 03:51:12 PM ...... PASS
+ back by 1:58 PM ............................... FM removal_20261024_s2.attribution (1:58:20 PM) ........ PASS
+ 18,527,203,328 bytes = 17.25 GiB .............. FM removal_20261024_s2.removal.c_free_bytes_after;
+                                                 18,527,203,328 / 1,073,741,824 = 17.255 ................. PASS
+ 3:51:27 PM; 113.6 s carried; 900 s ............ D1 execution_s2_20261024.execution ..................... PASS
+ 101 tests passed .............................. attempts/target_matched_496250_s2_tests_a1/evidence/result.json
+                                                 pytest.tests 101, failures 0 ........................... PASS
+ 3:52:32 PM to 3:55:17 PM ...................... LOG lines 16, 18 ....................................... PASS
+ 3:55:31 PM to 3:58:06 PM ...................... LOG lines 22, 24 ....................................... PASS
+ model step 496,256; eight worlds .............. CR end_step 496256; companions ckpt_step_496256 ......... PASS
+ 3:58:26 PM; 532.5 s ........................... LOG line 28; budget_ledger.jsonl line 1 (532.504) ...... PASS
+
+Identity check (11)
+ 8 parts ....................................... CR gates P1 to P8 ...................................... PASS
+ 51 arrays, bit for bit ........................ CR gates.P1.compared 51; reader docstring ............... PASS
+ random-number generators' states .............. CR P1 names decision__torch_rng, decision__cuda_rng ..... PASS
+ proprioception encoder's input and weights .... reader docstring P1 .................................... PASS
+ sealed reading FAIL on 2 parts ................ attempts/..._s2_pairing_a1/evidence/result.json: P1, P6 FAIL PASS
+ 4:04 PM ....................................... The overseer message created_at 23:04:17 UTC ................. PASS
+ plan0 differs in exactly the 4 chosen bodies .. CR P3.named_outputs.plan0.differs_only_where_sent ...... PASS
+ 24 network parts, different order ............. review_rr/report.txt item (3) ......................... PASS
+ PASS on all 8 parts ........................... CR verdict pass, every gate PASS ........................ PASS
+ bodies 2, 3, 4, 7 within 0.00003 cm ........... TM summary.same_command_largest_hand_difference_cm 3e-05
+                                                 (hands only) ........................................... PASS
+
+The result (11 in the text, 56 in the table, 14 below it, 28 in the score table and its text, 25 in the rejected table)
+ offered 8, chosen 4 ........................... CR candidate_summary ..................................... PASS
+ 9.53, 3.78 against 8.23, 3.31 ................. TM bodies[2], [4] candidate_forecast_score, start.score . PASS
+ 4.70 against 4.56; 8.54 against 7.85 .......... TM bodies[3], [7] candidate/ordinary_forecast_score ..... PASS
+ model step 496,255 ............................ TM "what" ............................................... PASS
+ per-hand table: 40 values and 16 colour marks . TM bodies[0, 1, 5, 6] start/off/on (every cell compared) . PASS
+ 7 of 8 against the off run; 3.82, 7.41 ........ TM summary; bodies[5] ................................... PASS
+ 5 of 8 (on), 4 of 8 (off) against the start ... TM summary.hands_nearer_than_start_on/off ............... PASS
+ 17.31 to 17.78; 3.30 to 7.41; 1.00 to 4.13 .... TM bodies[0, 5, 6] D_left ............................... PASS
+ body 6 left started inside 2.0 cm, moved out .. TM bodies[6] start 1.0, off 4.53, on 4.13 ............... PASS
+ score table: 20 values ........................ TM bodies[0, 1, 5, 6] score ............................. PASS
+ lower with on in 4 of 4; below start 4 of 4;
+ 3 of 4 off; 23.55 to 36.18; 28.11 to 22.66 .... TM summary.scores_*; bodies[0], [5] .................... PASS
+ the overseer quote ................................... reach-target-pair-reader-decision-20261024 text ........ PASS
+ rejected table: 24 values; "within 0.00003 cm". TM bodies[2, 3, 4, 7]; summary ......................... PASS
+
+What the test does not measure (5): 6 model steps, 250 ms, model step 40, 20 model steps, 1 s .......... PASS
+                                                 (D1 corrected_reading_20261024.not_measured; the overseer 5:08 PM)
+
+Body 5's left hand (22)
+ at most 10 minutes ............................ The overseer 4:04 PM "10minutes wall time" .................... PASS
+ 4:05 PM to 4:10 PM ............................ body5_report.txt "4:05:48 PM to 4:10:30 PM" ............ PASS
+ T's position exactly .......................... H16 body 5 left, on: c_T 0.0 ........................... PASS
+ 0.35 and 0.65 ................................. body5_report item 4 (0.350 on x, y, z) ................. PASS
+ 9.38 cm; 14.43 cm ............................. H16 r_T 9.38, p_T 14.43; 0.65 x 14.43 = 9.38 ............ PASS
+ 1.75 cm; 7.41 cm; 7.12 cm ..................... H16 f_T, a_T, a_f ...................................... PASS
+ 5.43 cm along; 5.15 cm off .................... H16 a_along, a_perp .................................... PASS
+ height rose 6.33 cm; 3.31 cm above ............ body5_report item 6; H16 a z 10.31 - r z 7.00 .......... PASS
+ −0.12 cm ...................................... H16 f_along ............................................ PASS
+ smallest margin 0.34 rad (19.5°) .............. body5_report item 7 (left arm only) and item 10 (right
+                                                 elbow 0.10 rad) ......................................... FAIL as written
+ 5 records; 0.553 rad (32°); off 0.318 rad ..... body5_report items 7, 8 ............................... PASS
+
+The 16 hands (26)
+ 5:08 PM; at most 90 s ......................... The overseer message created_at 00:08:09 UTC Oct 25; its text .. PASS
+ 0.284 s ....................................... budget_ledger.jsonl line 13 ............................ PASS
+ 8 hands' requests exactly on T ................ H16 selected rows, on: c_T 0.0 (8 of 8) ............... PASS
+ 32 readings, to 0.0001 cm ..................... H16 largest_blend_residual_cm 0.0 in every group ....... PASS
+ median 10.41 (5.30 to 14.98) .................. H16 summary.selected.on r_T; rows ...................... PASS
+ median 7.67 (4.13 to 18.70) ................... H16 a_T; rows .......................................... PASS
+ 6 of 8 nearer the received position ........... H16 actual_end_nearer_request_than_T 6 ................. PASS
+ median 3.02 (0.80 to 7.12); 4.75 .............. H16 a_f; a_s ........................................... PASS
+ 7.72; 4.12; 1.42; 7 of 8 ...................... H16 L, a_along, f_along; actual_moved_farther_..._forecast PASS
+ off: 9 of 16; 2.04 against 1.79 ............... H16 summary.all_16_hands.off ........................... PASS
+ in all 8, sent distance > prediction error .... H16 prediction_error_larger_than_request_miss 0 ......... PASS
+
+The proposal (11)
+ model step 496,250 ............................ PASS
+ commit a48cac796 .............................. worktree HEAD a48cac796; registry line 87896 ........... PASS
+ lines 4630 to 4640 ............................ lem_model.py at a48cac796: the smooth_source "proposal"
+                                                 branch, smooth_blend(mfa, _last_smooth_prev, ...) ....... PASS
+ line 6808 ..................................... def _execution(...) "the same transform, smoother and hand
+                                                 assembly"; passed as execution_transform at line 6871 .... PASS
+ 7.67 cm ....................................... H16 ..................................................... PASS
+ 2.0 cm regression margin ...................... no source; no measured basis ........................... NO SOURCE
+ 21.6, 33.7, 155.0, 5.8, 14.7 s ................ LOG: 135.2-113.6, 168.9-135.2, 512.0-357.0, 517.8-512.0,
+                                                 532.5-517.8 ............................................. PASS against LOG
+                                                 the cited D1 key holds none of them .................... FAIL (source)
+
+The state (3)
+ 5:08 PM ....................................... The overseer message ........................................... PASS
+ 621.0 s of 900 s .............................. budget_ledger.jsonl line 13, used_after_s 621.028 ...... PASS
+
+Section 8's last item (4)
+ TM "built from the corrected reading's result and the two runs' decision records; their sha256 inside" ..... PASS
+ H16 "a copy of h1h2_analysis/result.json" (both 31,848 bytes; size only compared) ......................... PASS
+ "the run log's budget-clock lines in the D1 key's execution_s2_20261024" ................................... FAIL
+ commit 59d1e60fa for corrected_reading_20261024 (its commit message names that key) ........................ PASS
+
+Medians suggested in this report's fixes (start 11.51, off predicted 10.97, off measured 10.87, on predicted 9.20,
+on measured 7.67 cm) are H16 summary.selected_8_hands_4_bodies.{off,on}.median_cm; each was also recomputed by hand
+from the 8 rows.
+
+=====================================================================================================================
+COGNITIVE LOAD
+=====================================================================================================================
+Score for the changed parts: 6 of 10. The per-hand table, its three bullets and the "What the test does not measure"
+paragraph read at 2 to 3. The load comes from the 153-word identity sentence, the undefined "sealed", the disk detour
+with its five-item parenthetical, the h2 with 16 numbers and no distances for its October 24 result, and the 16-hand
+bullets, which compare quantities whose meaning the reader must build alone.
+
+The three changes that would lower it most:
+1. Make the identity check a numbered list of its 8 parts, define "sealed" at its first use, and state in two
+   sentences what the corrected reader changed (plan0 moved to the outputs; the network-part lists compared by names
+   and counts, so a missing, extra or repeated part still fails).
+2. Move the first attempt and the disk removals into one collapsed block, with the two misstatements fixed (four
+   stages ran before the tests row; two separate one-time removal decisions, not one grant), and restore the October
+   23 removal sentence that step 1's pointer needs.
+3. Lead the h2 and the 16-hand subsection with one three-way median line for the 8 chosen hands (start 11.51 cm; off
+   run measured 10.87 cm; on run predicted 9.20 cm and measured 7.67 cm; sent position 10.41 cm), retitle the body 5
+   subsection to its measured facts, and write the proposal's lines with explicit references, a margin with its
+   basis, and the budget arithmetic.
+
+=====================================================================================================================
+PROGRAMS RUN, AND THEIR SECONDS
+=====================================================================================================================
+No program's seconds were measured. Every file was read with the Read and Grep tools, and every median and count in
+this report was recomputed by hand from values those tools printed; no computing script was run.
+
+Shell commands that opened evidence or data files (all untimed, no timestamps taken, so no seconds can be stated):
+ 1. wc -c on 5 files of target_matched_496250_package_s2_reread (the corrected result, the receipts, the closeout,
+    the budget ledger, the focused test result), beside a directory listing.
+ 2. wc -c on the sealed pairing result.json and the s2 tests result.json, beside directory listings.
+ 3. head -c 3000 on attempts/target_matched_496250_tests_a1/evidence/result.json.
+ 4. python -c (the python on PATH, not the venv) reading that same result.json and printing its four failed tests.
+    This broke the brief's cost rule: it was a Python program run without time.perf_counter(), and a Read would have
+    served.
+ 5. wc -l -c on the run log tasks/bdj07qkt7.output.
+Commands that opened no evidence or data file: ls -l (file sizes and times only), directory listings of the mailbox
+and the review folder, git rev-parse/log/status in D:/UEMA_wt/target_candidate_20261023 (with a per-command
+safe.directory setting; no configuration written), git show of the page's committed version in the main checkout,
+and date.

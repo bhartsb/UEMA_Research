@@ -1,0 +1,1970 @@
+{
+  "schema": 1,
+  "reviewed_at": "2026-09-30",
+  "title": "Build accurate, repeatable control",
+  "summary": "",
+  "source": "docs/gain_of_function_v3/UEMA_Embodied_Gain_of_Function_Addendum_v3.html",
+  "fixed_definitions": [
+    {
+      "text": "150 ms",
+      "why": "the eye test and the planner judge an order 150 ms ahead (three model steps)"
+    },
+    {
+      "text": "250 ms",
+      "why": "one order stays in force for 250 ms"
+    },
+    {
+      "text": "150 degrees",
+      "why": "the supported-roll goal is a turn of 150 degrees from lying on the back"
+    },
+    {
+      "text": "25-degree",
+      "why": "the simulated index finger\u00e2\u20ac\u2122s sideways base joint range (the MIMo hand model)"
+    },
+    {
+      "text": "40 degrees",
+      "why": "the simulated little-finger base joint range (the MIMo hand model)"
+    },
+    {
+      "text": "3 cm cube",
+      "why": "the size of the object in the free-object test"
+    },
+    {
+      "text": "200 shuffled",
+      "why": "The causal-control test compares its result with 200 shuffled pairings of predictions and outcomes (mimo_bridge/tools/latent_body_intervention.py); a setting of the test, not a measurement."
+    }
+  ],
+  "restarts": {
+    "receipt": "Saved/gof_takeover_20260927/seg41_launch_receipt.json",
+    "title": "Segment 41 relaunches after stops"
+  },
+  "stages": [
+    {
+      "id": "predict",
+      "title": "Predict",
+      "definition": "Predict the resulting movement or sensation before the command is sent."
+    },
+    {
+      "id": "choose",
+      "title": "Choose & do",
+      "definition": "The learner chooses a command for its expected result, and the body achieves that result."
+    },
+    {
+      "id": "repeat",
+      "title": "Repeat & keep",
+      "definition": "Repeat the chosen result in independent trials and retain it after further learning. Separately, saving and restoring the model must preserve the result."
+    },
+    {
+      "id": "transfer",
+      "title": "Changed conditions",
+      "definition": "Keep the ability when the starting posture, object, or surroundings change."
+    }
+  ],
+  "highlights": [
+    {
+      "title": "Eye-angle prediction",
+      "value": "",
+      "tone": "evidence",
+      "source": "docs/gain_of_function_v3/probe_saved_gaze.py",
+      "meaning": "Where the eyes point 150 ms after an eye command, compared with assuming the eyes stay still, on a saved checkpoint (0% less error = no better than assuming stillness; 100% less = a perfect forecast). The test script chooses the eye commands, so this measures prediction, not a useful look. Next: choose and repeat a useful look.",
+      "measured": [
+        {
+          "scheduled": "gaze_prediction",
+          "show": "tile",
+          "into": "value"
+        },
+        {
+          "scheduled": "gaze_prediction",
+          "show": "trend",
+          "into": "meaning"
+        }
+      ],
+      "checked_at": "2026-10-21 16:02"
+    },
+    {
+      "title": "Hand choice from memory",
+      "value": "",
+      "tone": "evidence",
+      "source": "docs/gain_of_function_v3/compare_hand_memory_route_2026-09-24.py",
+      "meaning": "Hand-shape error with the learned hand stage against the same decision without it. The goal is the hand shape the planner itself chose from memory, on held-out bodies (bodies not used to fit the hand calibration). A round that fails keeps training paused for review (the operator's decision of Sep 25, 9:09 AM PDT).",
+      "measured": [
+        {
+          "scheduled": "hand_memory_route",
+          "show": "tile",
+          "into": "value"
+        },
+        {
+          "scheduled": "hand_memory_route",
+          "show": "trend",
+          "into": "meaning"
+        },
+        {
+          "scheduled": "hand_memory_route",
+          "show": "next",
+          "into": "meaning"
+        }
+      ],
+      "checked_at": "2026-10-21 16:02"
+    },
+    {
+      "title": "Planner choices",
+      "value": "",
+      "tone": "next",
+      "source": "docs/gain_of_function_v4/probe_planner_candidates.py",
+      "meaning": "Planner choices of the current training run whose predicted wellness separated the chosen command from its four alternatives (holding still, the controller's own command and two perturbed copies of it) by more than the tie band, the evaluator's measured error on a difference between two candidates. Every other choice is a tie, and while every choice ties no behaviour can reach the Development tab's 'selected intentionally' stage. The newest scheduled planner comparison gives what a production tie is, the planner-side reading of the forward model, and where the difference is lost:",
+      "measured": [
+        {
+          "file": "Saved/mimo_bridge/observer/H84_fresh_drivers_20260918/development.json",
+          "live": true,
+          "name": "the observer's report",
+          "time": "generated",
+          "say": "{best} of {judged} told apart",
+          "values": {
+            "best": {
+              "path": "horizon.choices.best",
+              "count": true
+            },
+            "judged": {
+              "path": "horizon.choices.judged",
+              "count": true
+            }
+          },
+          "assumes": [
+            {
+              "path": "horizon.choices.best",
+              "equals": 0,
+              "means": "no planner choice of the current run was told apart from its alternatives"
+            }
+          ],
+          "into": "value"
+        },
+        {
+          "scheduled": "planner_candidates",
+          "show": "tie",
+          "into": "meaning"
+        },
+        {
+          "scheduled": "planner_candidates",
+          "show": "captured",
+          "into": "meaning"
+        },
+        {
+          "scheduled": "planner_candidates",
+          "show": "headline",
+          "into": "meaning"
+        }
+      ],
+      "checked_at": "2026-10-21 16:02"
+    },
+    {
+      "title": "Learned movement map",
+      "value": "",
+      "tone": "next",
+      "source": "docs/gain_of_function_v3/compare_hand_body_goals_2026-09-24.py",
+      "meaning": "Scheduled rounds in which either learned planner ended closer to the goal pose than the starting controller (the motor controller's own proposal, before any planner search), beyond the sample uncertainty. The direct planner searches commands directly; the synergy planner searches through the learned movement map (the motor synergy: a compact intention mapped onto many joints). Newest round:",
+      "measured": [
+        {
+          "scheduled": "body_and_synergy",
+          "show": "tile",
+          "into": "value"
+        },
+        {
+          "scheduled": "body_and_synergy",
+          "show": "headline",
+          "into": "meaning"
+        }
+      ],
+      "checked_at": "2026-10-21 16:02"
+    }
+  ],
+  "capabilities": [
+    {
+      "id": "eyes",
+      "title": "Look where intended",
+      "detail": "Choose a useful gaze, predict the new view, and repeat the look from another head position.",
+      "stage_states": [
+        "concern",
+        "untested",
+        "untested",
+        "untested"
+      ],
+      "evidence": "Predict stays under investigation until the identical-input vision audit is repeated on a current checkpoint; the eye forecasts and the live vision check below do not replace it. Choosing a useful look has no test yet.",
+      "measured": [
+        {
+          "scheduled": "gaze_prediction",
+          "show": "headline",
+          "into": "evidence"
+        },
+        {
+          "scheduled": "gaze_prediction",
+          "show": "detail",
+          "into": "evidence"
+        },
+        {
+          "scheduled": "gaze_prediction",
+          "show": "trend",
+          "into": "evidence"
+        },
+        {
+          "training": true,
+          "say": "In the newest training record, vision's next-picture error was {ratio} of the error of 'the picture stays the same' over {n} recorded moments (100% = no better than the unchanged picture, 0% = exact).",
+          "values": {
+            "ratio": {
+              "path": "prediction_audit_per_body.senses.vision.all_bodies.ratio",
+              "percent": true
+            },
+            "n": {
+              "path": "prediction_audit_per_body.senses.vision.all_bodies.transitions",
+              "count": true
+            }
+          },
+          "assumes": [
+            {
+              "path": "prediction_audit_per_body.senses.vision.all_bodies.ratio",
+              "below": 1,
+              "means": "vision's next-picture prediction beats 'the picture stays the same' in live training"
+            }
+          ],
+          "into": "evidence"
+        }
+      ],
+      "next": "Repeat the identical-input vision audit on a current checkpoint in a training pause (it last ran on Sep 24, before the persistent-memory repair). Then compare a chosen useful look with holding the eyes still from the same saved states; that test is not built yet.",
+      "upgrades": [
+        1,
+        4,
+        7
+      ],
+      "source": "docs/gain_of_function_v3/ability_rechecks.json",
+      "checked_at": "2026-10-21 16:02"
+    },
+    {
+      "id": "reach",
+      "title": "Reach and move accurately",
+      "detail": "Choose a reachable position for a body part and arrive there, including while connected body parts move.",
+      "stage_states": [
+        "signal",
+        "concern",
+        "untested",
+        "untested"
+      ],
+      "evidence": "October 25: the completed six-step continuation saved step496256. In its short paired comparison,14 of16 hands ended nearer than control, with median3.47cm improvement after250ms. The full-model source review found that the active choice still pursues a remembered pose with a one-command forecast.",
+      "measured": [
+        {
+          "training": true,
+          "say": "In the newest training record, the body forecast (the efference body head) missed where each body handle went over a command's 250 ms tenure by {err} on average, against {nothing} for predicting no movement, over the {n} command tenures graded in that report (averaged over every body and body handle).",
+          "values": {
+            "err": {
+              "path": "efference.body_cm_err_latch",
+              "unit": "cm"
+            },
+            "nothing": {
+              "path": "efference.body_cm_do_nothing_latch",
+              "unit": "cm"
+            },
+            "n": {
+              "path": "efference.events_latch",
+              "count": true
+            }
+          },
+          "into": "evidence"
+        },
+        {
+          "file": "docs/gain_of_function_v3/measurements/motor_control_review_2026-09-23.json",
+          "name": "the motor control review of Sep 23",
+          "say": "Before the arm repair of Sep 23, the body forecast missed body positions 250 ms ahead by {err} on average, against {nothing} for assuming no movement, over {events} training events.",
+          "values": {
+            "err": {
+              "path": "body_prediction_before_repair.means.body_cm_err_latch",
+              "unit": "cm"
+            },
+            "nothing": {
+              "path": "body_prediction_before_repair.means.body_cm_do_nothing_latch",
+              "unit": "cm"
+            },
+            "events": {
+              "path": "body_prediction_before_repair.events",
+              "count": true
+            }
+          },
+          "into": "evidence"
+        },
+        {
+          "scheduled": "body_and_synergy",
+          "show": "headline",
+          "into": "evidence"
+        },
+        {
+          "scheduled": "body_and_synergy",
+          "show": "trend",
+          "into": "evidence"
+        }
+      ],
+      "next": "Repair the existing connection from candidate sequences to predicted body changes and later bodily consequences before treating pose continuation as whole-object acquisition. the overseer decision; the builder prepares the concrete package. See docs/H84_MODEL_CONNECTIONS.html.",
+      "upgrades": [
+        1,
+        2,
+        3,
+        5,
+        8
+      ],
+      "source": "docs/gain_of_function_v3/ability_rechecks.json",
+      "checked_at": "2026-10-25T16:29:01-07:00",
+      "model_review": "docs/H84_MODEL_CONNECTIONS.html"
+    },
+    {
+      "id": "hands",
+      "title": "Use hands and fingers",
+      "detail": "Open and close; move fingers separately; oppose the thumb; reach, grasp, release, reposition objects and coordinate both hands.",
+      "stage_states": [
+        "untested",
+        "concern",
+        "untested",
+        "untested"
+      ],
+      "evidence": "Existing finger geometry and hand-shape lessons are retained. October25 audit confirms hand shape is distinct from contact-sensitive gripping; caregiver ball-following moves the ball by code and is assisted experience.",
+      "measured": [
+        {
+          "scheduled": "hand_following",
+          "show": "headline",
+          "into": "evidence"
+        },
+        {
+          "scheduled": "hand_following",
+          "show": "trend",
+          "into": "evidence"
+        },
+        {
+          "scheduled": "hand_memory_route",
+          "show": "headline",
+          "into": "evidence"
+        },
+        {
+          "scheduled": "hand_memory_route",
+          "show": "trend",
+          "into": "evidence"
+        },
+        {
+          "scheduled": "body_and_synergy",
+          "show": "trend",
+          "into": "evidence"
+        }
+      ],
+      "next": "Include real contact support and continued holding in the general causal-loop repair and ability measurement. No scripted grasp sequence or new fixture run authorized by the source review.",
+      "upgrades": [
+        2,
+        5,
+        6,
+        8,
+        9
+      ],
+      "source": "docs/gain_of_function_v3/ability_rechecks.json",
+      "checked_at": "2026-10-25T16:29:01-07:00",
+      "model_review": "docs/H84_MODEL_CONNECTIONS.html"
+    },
+    {
+      "id": "touch",
+      "title": "Touch a chosen body part",
+      "detail": "Choose a reachable self-touch and predict where and when contact will happen. Nonstructural contact excludes ordinary neighbouring-part pairs identified by the simulator, such as the right hand resting against its thumb base.",
+      "stage_states": [
+        "concern",
+        "concern",
+        "untested",
+        "untested"
+      ],
+      "evidence": "The scheduled self-touch comparison is held, so its newest round dates from Sep 24. The scheduler's hold note, printed last, predates the fixes: the test's record lists them in its second to fourth versions, and an independent review of the fourth version was running when the record was last updated (Sep 25).",
+      "measured": [
+        {
+          "scheduled": "chosen_self_touch",
+          "show": "headline",
+          "into": "evidence"
+        },
+        {
+          "scheduled": "chosen_self_touch",
+          "show": "trend",
+          "into": "evidence"
+        },
+        {
+          "scheduled": "chosen_self_touch",
+          "show": "next",
+          "into": "evidence"
+        }
+      ],
+      "next": "Finish the review of the three-layer self-touch test (its fourth version), release the hold and run its first round (record: docs/gain_of_function_v4/agents/self_touch_layers.md).",
+      "upgrades": [
+        1,
+        2,
+        6,
+        9
+      ],
+      "source": "docs/gain_of_function_v4/agents/self_touch_layers.md",
+      "checked_at": "2026-09-30 20:32"
+    },
+    {
+      "id": "roll",
+      "title": "Turn, roll and support the body",
+      "detail": "Shift weight, turn onto the side, roll onto the belly and maintain support. Test chosen sequences through floor contact.",
+      "stage_states": [
+        "untested",
+        "untested",
+        "untested",
+        "untested"
+      ],
+      "evidence": "No supported-roll test of the learner has run. The private rolling search of Sep 23 that this card's score came from is missing today (checked Oct 21, 2026: not in the project's Saved folder, its git history or any removal receipt; the cleanup archives hold only pytest stand-ins of that path), so no current score is shown and its old result is not re-validated.",
+      "measured": [
+        {
+          "file": "Saved/gof_takeover_20260923/hand_program/rolling_continued/report.json",
+          "name": "the private rolling search of Sep 23",
+          "say": "In the private rolling search of Sep 23 ({n} movement sequences, no learner), the best sequence turned the body {deg} from lying on its back; the goal is 150 degrees followed by half a second supported near belly-down, and it was not reached.",
+          "values": {
+            "n": {
+              "path": "completed_candidates",
+              "count": true
+            },
+            "deg": {
+              "path": "best.maximum_roll_from_start_deg",
+              "unit": "degrees"
+            }
+          },
+          "into": "evidence"
+        }
+      ],
+      "next": "Find a full supported roll in physics, then compare learned choices with that reachable movement; neither test is scheduled.",
+      "upgrades": [
+        1,
+        2,
+        5,
+        8,
+        10
+      ],
+      "source": "Saved/gof_takeover_20260923/hand_program/rolling_continued/report.json",
+      "checked_at": "2026-10-21 16:31"
+    },
+    {
+      "id": "self_directed",
+      "title": "Choose useful goals and learn faster",
+      "detail": "Select actions for predicted benefits; acquire, retain and reuse abilities with less matched experience or computing time.",
+      "stage_states": [
+        "concern",
+        "concern",
+        "untested",
+        "untested"
+      ],
+      "evidence": "October 25 source review: measured wellness selects a recent goal, but predicted future wellness and needs do not choose the active body command. Original multistep design is greedy; later physical/hand clamps restrict planning to one command.",
+      "measured": [
+        {
+          "file": "Saved/mimo_bridge/observer/H84_fresh_drivers_20260918/development.json",
+          "live": true,
+          "name": "the observer's report",
+          "time": "generated",
+          "say": "In the current training run the planner's prediction told its chosen command apart from the alternatives in {best} of {judged} choices.",
+          "values": {
+            "best": {
+              "path": "horizon.choices.best",
+              "count": true
+            },
+            "judged": {
+              "path": "horizon.choices.judged",
+              "count": true
+            }
+          },
+          "assumes": [
+            {
+              "path": "horizon.choices.best",
+              "equals": 0,
+              "means": "no planner choice of the current run was told apart from its alternatives"
+            }
+          ],
+          "into": "evidence"
+        },
+        {
+          "scheduled": "planner_candidates",
+          "show": "tie",
+          "into": "evidence"
+        },
+        {
+          "scheduled": "planner_candidates",
+          "show": "captured",
+          "into": "evidence"
+        },
+        {
+          "scheduled": "planner_candidates",
+          "show": "headline",
+          "into": "evidence"
+        },
+        {
+          "scheduled": "planner_candidates",
+          "show": "trend",
+          "into": "evidence"
+        }
+      ],
+      "next": "Connect valid future state and future bodily value to sequence selection; preserve exploration and the value of sustained good conditions. the builder package, the overseer review; no launch authorized.",
+      "upgrades": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10
+      ],
+      "source": "docs/gain_of_function_v3/ability_rechecks.json",
+      "checked_at": "2026-10-25T16:29:01-07:00",
+      "model_review": "docs/H84_MODEL_CONNECTIONS.html"
+    }
+  ],
+  "investigations": [
+    {
+      "id": "planner",
+      "title": "Repair command selection",
+      "status": "Choices tie; the comparison names where",
+      "finding": "The scheduled planner comparison executes five candidate commands from the same saved states and finds where their difference is lost along the planner's route.",
+      "measured": [
+        {
+          "scheduled": "planner_candidates",
+          "show": "headline",
+          "into": "finding"
+        },
+        {
+          "scheduled": "planner_candidates",
+          "show": "trend",
+          "into": "finding"
+        },
+        {
+          "file": "Saved/mimo_bridge/observer/H84_fresh_drivers_20260918/development.json",
+          "live": true,
+          "name": "the observer's report",
+          "time": "generated",
+          "say": "In the current training run the planner's prediction told its chosen command apart from the alternatives in {best} of {judged} choices.",
+          "values": {
+            "best": {
+              "path": "horizon.choices.best",
+              "count": true
+            },
+            "judged": {
+              "path": "horizon.choices.judged",
+              "count": true
+            }
+          },
+          "assumes": [
+            {
+              "path": "horizon.choices.best",
+              "equals": 0,
+              "means": "no planner choice of the current run was told apart from its alternatives"
+            }
+          ],
+          "into": "finding"
+        },
+        {
+          "scheduled": "planner_candidates",
+          "show": "tie",
+          "into": "finding"
+        },
+        {
+          "scheduled": "planner_candidates",
+          "show": "captured",
+          "into": "finding"
+        }
+      ],
+      "next": "Two planner repairs were trained in the training pause of Oct 2 and failed their declared judges, so neither is in production (test registry rows planner_repair_rerun_*): the body copy, a small network that adds a command-driven term to the tactile and proprioception next-model-step predictions, was not credited against its matched control; the wellness forecaster, a small network that predicts the wellness sum's change over a held command, was not adopted. The planner recovery's pilot ended on Oct 21, 2026 at 10:31 AM PDT as FAIL (not converged), with no learning updates; its learning package then ran on Oct 22, 2026 as two bounded runs from the saved state at step 494,225 (the current search to step 496,225; the bounded-step search, which limits how far the search may move the motor controller's own command, to step 496,000): most of the captured commands with either search ended with the body farther from its remembered goal pose after the command's 250 ms, and some ended nearer; neither version was adopted (the Reach card). Next: repair the first flat stage the comparison names, then repeat the comparison.",
+      "completion": "Chosen commands differ from their alternatives beyond the tie band, and their actual outcomes improve in a paired physical test.",
+      "source": "docs/gain_of_function_v3/ability_rechecks.json",
+      "checked_at": "2026-10-22 06:29"
+    },
+    {
+      "id": "body_prediction",
+      "title": "Connect body predictions to decisions",
+      "status": "The planners lose to the starting controller",
+      "finding": "The goal is the pose a reference command reached from the same saved state; the controller's own command starts close to it.",
+      "measured": [
+        {
+          "scheduled": "body_and_synergy",
+          "show": "headline",
+          "into": "finding"
+        },
+        {
+          "scheduled": "body_and_synergy",
+          "show": "ranking",
+          "into": "finding"
+        },
+        {
+          "scheduled": "body_and_synergy",
+          "show": "trend",
+          "into": "finding"
+        }
+      ],
+      "next": "A fixed-start version of this comparison with an anchored search was added to the scheduler on Oct 18, 2026; it is ready for its first scheduled checkpoint once production training continues (the scheduler's own card shows that step). Find why the forecast ranks the commands as it does, repair it, and repeat the comparison.",
+      "completion": "Connect it to production only after reviewed physical comparisons show a benefit.",
+      "source": "docs/gain_of_function_v3/ability_rechecks.json",
+      "checked_at": "2026-10-21 16:15"
+    },
+    {
+      "id": "hand_targets",
+      "title": "Make hand targets compatible",
+      "status": "In production; rechecked on every scheduled round",
+      "finding": "Finger targets that follow the moving wrist, against the old fixed-world targets, with researcher-set goals.",
+      "measured": [
+        {
+          "scheduled": "hand_following",
+          "show": "headline",
+          "into": "finding"
+        },
+        {
+          "scheduled": "hand_following",
+          "show": "trend",
+          "into": "finding"
+        }
+      ],
+      "next": "Keep the scheduled recheck.",
+      "completion": "Prediction, planning and execution agree on finger targets that follow the moving wrist, and chosen hand movement is more accurate at equal learning experience.",
+      "source": "docs/gain_of_function_v3/ability_rechecks.json",
+      "checked_at": "2026-10-21 16:02"
+    },
+    {
+      "id": "hand_memory",
+      "title": "Keep the learned hand stage checked",
+      "status": "Rechecked on every scheduled round",
+      "finding": "The learned hand stage steers production's hand goals, so it is compared with the same decision without it on held-out bodies; a failed round keeps training paused for review. The operator lengthened the interval between rounds on Oct 1, after every completed round had passed, and each round now pauses training while it runs (the scheduler manifest's cadence note):",
+      "measured": [
+        {
+          "scheduled": "hand_memory_route",
+          "show": "cadence",
+          "into": "finding"
+        },
+        {
+          "scheduled": "hand_memory_route",
+          "show": "headline",
+          "into": "finding"
+        },
+        {
+          "scheduled": "hand_memory_route",
+          "show": "trend",
+          "into": "finding"
+        },
+        {
+          "scheduled": "hand_memory_route",
+          "show": "next",
+          "into": "finding"
+        }
+      ],
+      "next": "Keep the scheduled comparison; a failed round stops training for review.",
+      "completion": "The stage keeps improving the chosen hand shape across further learning and on changed starting postures.",
+      "source": "docs/gain_of_function_v3/ability_rechecks.json",
+      "checked_at": "2026-10-21 16:02"
+    },
+    {
+      "id": "synergy",
+      "title": "Test the learned movement map",
+      "status": "Control stays off;",
+      "finding": "The synergy planner searches through the learned movement map; its learned state is kept while the comparison repeats.",
+      "measured": [
+        {
+          "scheduled": "body_and_synergy",
+          "show": "trend",
+          "into": "finding"
+        },
+        {
+          "scheduled": "body_and_synergy",
+          "show": "tile",
+          "into": "status"
+        }
+      ],
+      "next": "Keep the scheduled comparison, including its fixed-start version with an anchored search (added to the scheduler on Oct 18, 2026); adopt a configuration only when it wins beyond the sample uncertainty.",
+      "completion": "Enable only configurations that improve physical command following under the declared adoption test.",
+      "source": "docs/gain_of_function_v3/ability_rechecks.json",
+      "checked_at": "2026-10-21 16:02"
+    },
+    {
+      "id": "latent_body",
+      "title": "Test the latent body hierarchy (shadow only)",
+      "status": "Repaired and refitted on Sep 30; steers nothing",
+      "finding": "The latent body hierarchy learns a compact code per body part beside training and steers nothing. The Sep 30 review found and repaired these defects: one loss term dominated, the unit scales were provisional, finger commands were learned on the requested wrist instead of the actual one, the offline fit read its file in time order, the tests missed planted defects, and the causal test centred its trial codes on zero. The morning causal test predates these repairs and is not evidence for the design. The in-training shadow continues from the refit since the 10:39 AM PDT restart.",
+      "next": "Judge the refit's causal-control result against the acceptance rule: from the same start, changing only the latent code must change the executed outcome as the model predicts, on unseen starting poses.",
+      "completion": "It stays shadow-only until the causal-control test passes on unseen starting poses.",
+      "source": "docs/gain_of_function_v4/measurements/latent_body_causal_refit_2026-09-30.json",
+      "checked_at": "2026-09-30 20:35",
+      "measured": [
+        {
+          "file": "docs/gain_of_function_v4/measurements/latent_body_causal_refit_2026-09-30.json",
+          "name": "the causal-control test of the Sep 30 refit",
+          "say": "In the causal-control test of the refit (one model step from the same saved moment, only one part's code changed), {ok} of {n} body parts moved when their code changed and moved the way the model predicted, beating 200 shuffled pairings; arms: {arm_ok} of {arm_n}.",
+          "values": {
+            "ok": {
+              "path": "summary.controllable",
+              "count": true
+            },
+            "n": {
+              "path": "summary.parts_tested",
+              "count": true
+            },
+            "arm_ok": {
+              "path": "summary.by_level.root.controllable",
+              "count": true
+            },
+            "arm_n": {
+              "path": "summary.by_level.root.tested",
+              "count": true
+            }
+          },
+          "into": "finding"
+        }
+      ]
+    },
+    {
+      "id": "function",
+      "title": "Test useful hand and body skills",
+      "status": "No grasp or supported roll yet; neither test is scheduled; the rolling search's source report is missing, no current score",
+      "finding": "In the free-object test, closing the hand around a 3 cm cube moved the cube onto the forearm and the open hand carried it; neither qualifies as a grasp. The private rolling search of Sep 23 this card also cited is missing today (checked Oct 21, 2026: not in the project's Saved folder, its git history or any removal receipt; the cleanup archives hold only pytest stand-ins of that path); its old result is not re-validated.",
+      "measured": [
+        {
+          "file": "Saved/gof_takeover_20260923/hand_program/rolling_continued/report.json",
+          "name": "the private rolling search of Sep 23",
+          "say": "In the private rolling search of Sep 23 ({n} movement sequences, no learner), the best sequence turned the body {deg} from lying on its back; the goal is 150 degrees followed by half a second supported near belly-down, and it was not reached.",
+          "values": {
+            "n": {
+              "path": "completed_candidates",
+              "count": true
+            },
+            "deg": {
+              "path": "best.maximum_roll_from_start_deg",
+              "unit": "degrees"
+            }
+          },
+          "into": "finding"
+        }
+      ],
+      "next": "Fit thumb and finger contact to the object and test retention while tilting the palm; compare jointly reachable joint angles with rolling commands. Neither test has a launch mechanism yet.",
+      "completion": "Each result records chosen action, physical outcome, repeat trials and changed starting conditions.",
+      "source": "docs/gain_of_function_v3/measurements/grasp_fixture_2026-09-23.json",
+      "checked_at": "2026-10-21 16:31"
+    }
+  ],
+  "events": [
+    {
+      "step": 344400,
+      "title": "Prediction paths added",
+      "phase": "Before",
+      "impact": "New eye, body and touch predictors began learning; earlier experience remains in the shared model.",
+      "retained": "Inherited model and all eight worlds retained.",
+      "next": "Compare useful abilities after equal experience.",
+      "source": "docs/gain_of_function_v3/TAKEOVER_REVIEW_2026-09-23.html",
+      "checked_at": "2026-09-30 20:32"
+    },
+    {
+      "step": 369250,
+      "title": "Arm and force limits repaired",
+      "phase": "Repaired",
+      "impact": "The old solver missed shoulder effects and distorted some joint forces. Those commands could impair coordination.",
+      "retained": "Real observed movements remain usable training data. The repaired controller changes which commands achieve a pose.",
+      "next": "Measure command following again under the repaired controls.",
+      "source": "docs/gain_of_function_v3/MOTOR_CONTROL_REVIEW_2026-09-23.md",
+      "checked_at": "2026-09-30 20:32"
+    },
+    {
+      "step": 372375,
+      "title": "Planner, gaze and exploration repaired",
+      "phase": "Repaired",
+      "impact": "Command selection could discard better moves; eye-command and exploration calculations could distort intended movements.",
+      "retained": "Past actual command/outcome lessons remain usable. Some planner scores described a different command and need replacing. Preserve the learned model and all eight worlds; measure recovery with matched physical tests.",
+      "next": "The repaired runtime passed its private qualification run and production resumed. The vision and hand repairs followed at step 380,200.",
+      "source": "docs/gain_of_function_v3/MOTOR_CONTROL_REVIEW_2026-09-23.md",
+      "fixes": [
+        {
+          "name": "Command selection",
+          "impact": "Keep the best evaluated command instead of returning an unchecked last attempt."
+        },
+        {
+          "name": "Imagined eye command",
+          "impact": "Predict the requested eye movement using the same transformation as the acting path."
+        },
+        {
+          "name": "Exploration rotations",
+          "impact": "Prevent new rotation components overwriting values still needed to calculate the remaining components."
+        },
+        {
+          "name": "Planning records",
+          "impact": "Keep a recorded executed plan even if a later decision in the reporting interval sends no new plan."
+        },
+        {
+          "name": "Frozen prediction weights",
+          "impact": "Exclude the extra gaze predictor from gradient accumulation during action search. Existing learning paths clear their gradients before learning."
+        },
+        {
+          "name": "Score precision",
+          "impact": "Save the full comparison scores so rounding cannot appear to contradict the selected command."
+        }
+      ],
+      "checked_at": "2026-09-30 20:32"
+    },
+    {
+      "step": 372575,
+      "title": "Startup monitor corrected",
+      "phase": "Resumed",
+      "impact": "The monitor mistook the Windows launcher for the supervisor and stopped training during startup. The process-ownership check is repaired.",
+      "retained": "The first resumed updates and all eight advanced worlds were saved. Training continued from that new checkpoint; none of those updates was discarded.",
+      "next": "Keep the corrected process-ownership checks and the planner monitor on every verified restart.",
+      "source": "docs/gain_of_function_v3/measurements/planner_repair_qualification_2026-09-23.json",
+      "checked_at": "2026-09-30 20:32"
+    },
+    {
+      "step": 380200,
+      "title": "Saved and stopped for vision and control repairs",
+      "phase": "Repairing",
+      "impact": "Visual prediction deteriorated on identical recorded inputs. The repair reduced that error in a private continuation of the saved model; one body-response check failed in that continuation.",
+      "retained": "The stopped checkpoint preserves the learned body model, all other weights, optimizer state and eight physical worlds. The visual repair was tested on a copy first and did not reset body learning.",
+      "next": "The full learning check passed at 3:48 AM PDT on Sep 24 with production's own window and line; production resumed at 4:03 AM PDT.",
+      "source": "docs/gain_of_function_v3/measurements/repair_source_2026-09-24.json",
+      "checked_at": "2026-09-30 20:32"
+    },
+    {
+      "step": 380200,
+      "title": "Finger targets follow the wrist",
+      "phase": "Repaired",
+      "impact": "Old commands could ask fingers and wrists to occupy incompatible positions. The new interface uses one feasible hand pose consistently for prediction, planning and movement; every physical comparison of its qualification improved.",
+      "retained": "Earlier observations remain recorded. Training separates old and new command formats so an old world-position target cannot be mistaken for a new wrist-relative hand goal.",
+      "next": "In production since 4:03 AM PDT on Sep 24 and rechecked on every scheduled round.",
+      "measured": [
+        {
+          "scheduled": "hand_following",
+          "show": "trend",
+          "into": "next"
+        }
+      ],
+      "source": "docs/gain_of_function_v3/measurements/hand_execution_2026-09-24.json",
+      "checked_at": "2026-10-21 16:02"
+    },
+    {
+      "step": 380200,
+      "title": "Body-response monitoring now separates real lessons",
+      "phase": "Monitor repaired",
+      "impact": "The broad response check included shuffled comparison commands and could hide weak responses during actual movement lessons. Both readings are now checked separately; warnings use complete production-length windows.",
+      "retained": "This changes the health report, not learned weights or recorded movements. The earlier broad reading alone cannot clear the body predictor.",
+      "next": "Both readings passed in the qualification (3:48 AM PDT on Sep 24) and are checked in every production window since.",
+      "source": "docs/gain_of_function_v3/VISUAL_REGRESSION_2026-09-24.md",
+      "checked_at": "2026-09-30 20:32"
+    },
+    {
+      "step": 382700,
+      "title": "Development observer recording",
+      "phase": "Added",
+      "impact": "From 6:31 AM PDT on Sep 24 (segment 38) recorders in each world and in the trainer write what the bodies do; a separate digester builds the Development tab and judges each capability against babble.",
+      "retained": "The recorders change nothing the learner sees or learns. In tests a recording world replies with the same bytes, and a learner trained with every recorder on ends with the same weights to the last bit; at production scale the weight differences stayed inside the graphics card's own run-to-run spread. Since Oct 8, 2026 (the observer's attribution rules and evidence pins, OBSERVER_DESIGN.md): an act of the hands alone is judged against each command in force during it, and digested raw chunks are removed after their retention period unless an evidence pin keeps them.",
+      "next": "Read capability progress on the Development tab.",
+      "source": "docs/gain_of_function_v4/OBSERVER_DESIGN.md",
+      "checked_at": "2026-10-21 16:02"
+    },
+    {
+      "step": 390650,
+      "title": "Training stopped by a full C: drive",
+      "phase": "Stopped",
+      "impact": "At 1:29 PM PDT on Sep 24 the hourly watcher stopped segment 38 when the free space on C: fell below its line; the final save failed for lack of room, so the updates after step 390,650 were not saved.",
+      "retained": "Training resumed at 3:37 PM PDT (the trainer's launch record) from checkpoint 390,650 as segment 39, with nothing reinitialized and every setting kept; only the unsaved updates were lost.",
+      "next": "The checkpoint archiver now handles long Windows paths, and the comparison scheduler runs its fixed code; both were restarted at 3:31 PM PDT.",
+      "source": "Saved/mimo_bridge/experiments/H84_fresh_drivers_20260918_seg39/continuation_receipt.json",
+      "checked_at": "2026-09-30 20:32"
+    },
+    {
+      "step": 397325,
+      "title": "Training resumed as segment 40",
+      "phase": "Resumed",
+      "impact": "From 9:28 PM to 9:45 PM PDT on Sep 24 training was stopped: the supervisor had counted the night\u00e2\u20ac\u2122s planned stops as failed starts and refused to relaunch. The count was repaired (a start that saved a newer checkpoint is not a failed start) and training resumed from checkpoint 397,325 as segment 40.",
+      "retained": "Every setting was kept; a qualification run saved its first checkpoint before the new supervisor attached.",
+      "next": "Segment 40 ran until the repair pause of Sep 25.",
+      "source": "Saved/mimo_bridge/experiments/H84_fresh_drivers_20260918_seg40/continuation_receipt.json",
+      "checked_at": "2026-09-30 20:32"
+    },
+    {
+      "step": 415075,
+      "title": "Production paused for repairs",
+      "phase": "Stopped",
+      "impact": "On Sep 25 at 8:11 PM PDT a planned evaluation pause stopped training at step 415,075; at 9:13 PM PDT the hourly watcher's free-memory line wrote a stop that requires repair before any restart. Under the operator's restart rule of Sep 26 (every known bug that can affect the restart configuration is fixed and qualified first), training stayed paused until Sep 29 while the repairs were built, reviewed and qualified.",
+      "retained": "The checkpoint at step 415,075 kept the learned model, the optimizer and all eight worlds; segment 41 continues from it.",
+      "next": "Segment 41 resumed from it on Sep 29.",
+      "source": "Saved/mimo_bridge/experiments/H84_fresh_drivers_20260918_seg40_resume_20260925_200754/stop_reason.json",
+      "checked_at": "2026-09-30 20:32"
+    },
+    {
+      "step": 415175,
+      "title": "Segment 41 started with the qualified repairs",
+      "phase": "Resumed",
+      "impact": "At 4:18 AM PDT on Sep 29 training resumed from the checkpoint of a smoke run from step 415,075 to step 415,175. Switched on: the persistent-memory repair (the memory\u00e2\u20ac\u2122s constant offset centred), the motor-input fold, the proprioception repair (--proprio-token-repair, its seventh version) and the fixed skin layout. The latent body hierarchy runs in shadow only: it learns beside training and steers nothing.",
+      "retained": "The smoke run reinitialized only the new motor-input fold; the continuation\u00e2\u20ac\u2122s reload reinitialized nothing, and all eight worlds continued.",
+      "next": "Watched by the hourly watcher, the persistent-memory repair\u00e2\u20ac\u2122s watcher and the scheduled comparisons.",
+      "source": "Saved/gof_takeover_20260927/seg41_launch.log",
+      "checked_at": "2026-10-02 22:30"
+    },
+    {
+      "step": 425100,
+      "title": "The memory repair met its vision goal",
+      "phase": "Measured",
+      "impact": "The persistent-memory repair's watcher judged its goal met for vision: the memory's varying part lowered vision's prediction error and carried information specific to each body. Tactile, audio and proprioception did not meet it.",
+      "retained": "A reading of the running repair; it changed no setting.",
+      "next": "The watcher keeps reading every report and would stop training on a declared stop line.",
+      "measured": [
+        {
+          "file": "Saved/gof_takeover_20260927/memory_watch/verdict.json",
+          "live": true,
+          "name": "the memory repair watcher's verdict",
+          "say": "",
+          "into": "impact",
+          "values": {},
+          "assumes": [
+            {
+              "path": "readings.GOAL.judged_at",
+              "equals": 425100,
+              "means": "the watcher's goal verdict was judged at step 425,100"
+            },
+            {
+              "path": "readings.GOAL.met",
+              "equals": true,
+              "means": "the watcher's goal verdict reads met"
+            }
+          ]
+        }
+      ],
+      "source": "Saved/gof_takeover_20260927/memory_watch/verdict.json",
+      "checked_at": "2026-10-02 22:30"
+    },
+    {
+      "step": 436675,
+      "title": "Latent body hierarchy reviewed and refitted",
+      "phase": "Repaired",
+      "impact": "On Sep 30 training resumed at 8:28 AM PDT from step 436,675 after a Windows restart with a larger page file. A review of the latent body hierarchy (shadow only) found and repaired defects in its loss, unit scales, finger command frame, offline fit, tests and causal test; its refit and causal-control test ran in a pause from step 436,925, and the in-training shadow continues from the refit since the 10:39 AM PDT restart.",
+      "retained": "The shadow never steers the body; the learned model, optimizer and eight worlds were restored at each restart.",
+      "next": "Judge the refit's causal-control result against the acceptance rule: from the same start, changing only the latent code must change the executed outcome as the model predicts, on unseen starting poses.",
+      "source": "docs/gain_of_function_v4/coordinator/latent_body_review_checklist_2026-09-30.md",
+      "checked_at": "2026-09-30 20:32"
+    }
+  ],
+  "attention": [
+    {
+      "id": "vision",
+      "title": "Vision prediction: repeat the identical-input audit",
+      "tone": "active",
+      "status": "Production model not audited on identical inputs since Sep 24; that audit's result file is missing, no current score",
+      "summary": "",
+      "detail": "The regression was found by an audit that gives two models the same saved moments. The live check above uses each training report's own moments, so it cannot stand in for that audit. The newest audit of the production model ran in the pause of Sep 24, 11:31 PM to 11:44 PM PDT; its result file is missing today (checked Oct 21, 2026: not in the project's Saved folder, its git history or any removal receipt; the cleanup archives hold only pytest stand-ins of that path), so its score is not shown and is not re-validated.",
+      "measured": [
+        {
+          "training": true,
+          "say": "In the newest training record, vision's next-picture error was {ratio} of the error of 'the picture stays the same' over {n} recorded moments (100% = no better than the unchanged picture, 0% = exact).",
+          "values": {
+            "ratio": {
+              "path": "prediction_audit_per_body.senses.vision.all_bodies.ratio",
+              "percent": true
+            },
+            "n": {
+              "path": "prediction_audit_per_body.senses.vision.all_bodies.transitions",
+              "count": true
+            }
+          },
+          "assumes": [
+            {
+              "path": "prediction_audit_per_body.senses.vision.all_bodies.ratio",
+              "below": 1,
+              "means": "vision's next-picture prediction beats 'the picture stays the same' in live training"
+            }
+          ],
+          "into": "summary"
+        },
+        {
+          "file": "Saved/gof_takeover_20260924/repair/visual_audit_pause_train64/result.json",
+          "name": "the identical-input vision audit of the Sep 24 night pause",
+          "say": "On the same {n} saved moments, the production model at step 399,225 missed the next picture by {after} times the error of 'the picture stays the same', against {before} times for the model that passed qualification at step 380,500 (1 time = no better than the unchanged picture, 0 = exact).",
+          "values": {
+            "n": {
+              "path": "windows",
+              "count": true
+            },
+            "after": {
+              "path": "models.after.total_mse",
+              "over": "models.after.persistence_mse"
+            },
+            "before": {
+              "path": "models.before.total_mse",
+              "over": "models.before.persistence_mse"
+            }
+          },
+          "into": "detail"
+        }
+      ],
+      "next": "Queue the identical-input audit as a training-pause job, as on Sep 24, on a current checkpoint, now that the persistent-memory repair has been on since step 415,075. The Sep 25 measurements re-trained the vision head on saved moments to find the cause and are in the vision record (docs/gain_of_function_v4/agents/vision_regression.md).",
+      "source": "docs/gain_of_function_v4/agents/vision_regression.md",
+      "checked_at": "2026-10-21 16:31"
+    },
+    {
+      "id": "body_test",
+      "title": "The planners' commands still lose to the starting controller",
+      "tone": "active",
+      "status": "Scheduled rounds:",
+      "summary": "",
+      "detail": "The goal is the pose a reference command reached from the same saved state; the starting controller's command starts close to it.",
+      "measured": [
+        {
+          "scheduled": "body_and_synergy",
+          "show": "trend",
+          "into": "summary"
+        },
+        {
+          "scheduled": "body_and_synergy",
+          "show": "headline",
+          "into": "detail"
+        },
+        {
+          "scheduled": "body_and_synergy",
+          "show": "ranking",
+          "into": "detail"
+        },
+        {
+          "scheduled": "body_and_synergy",
+          "show": "tile",
+          "into": "status"
+        }
+      ],
+      "next": "Find why the forecast ranks the commands as it does. The planner recovery's pilot ended on Oct 21, 2026 at 10:31 AM PDT as FAIL (not converged), with no learning updates; its learning package then ran on Oct 22, 2026 as two bounded runs from the saved state at step 494,225 (the current search to step 496,225; the bounded-step search, which limits how far the search may move the motor controller's own command, to step 496,000): most of the captured commands with either search ended with the body farther from its remembered goal pose after the command's 250 ms, and some ended nearer; neither version was adopted (the Reach card). A fixed-start version of this comparison with an anchored search was added to the scheduler on Oct 18, 2026; it is ready for its first scheduled checkpoint once production training continues (the scheduler's own card shows that step). Physical body goals stay off.",
+      "source": "docs/gain_of_function_v3/ability_rechecks.json",
+      "checked_at": "2026-10-22 06:29"
+    },
+    {
+      "id": "self_touch_held",
+      "title": "The self-touch comparison is held",
+      "tone": "overdue",
+      "status": "Held since Sep 25, 12:56 AM PDT",
+      "summary": "No self-touch round has run since Sep 24; the scheduler holds the test until its review is finished.",
+      "detail": "The scheduler's hold note, printed next, predates the fixes: the test's record lists them in its second to fourth versions, and an independent review of the fourth version was running when the record was last updated (Sep 25).",
+      "measured": [
+        {
+          "scheduled": "chosen_self_touch",
+          "show": "next",
+          "into": "detail"
+        },
+        {
+          "scheduled": "chosen_self_touch",
+          "show": "trend",
+          "into": "detail"
+        }
+      ],
+      "next": "Finish the review of the three-layer self-touch test (its fourth version), release the hold and run its first round (record: docs/gain_of_function_v4/agents/self_touch_layers.md).",
+      "source": "docs/gain_of_function_v4/agents/self_touch_layers.md",
+      "checked_at": "2026-09-30 20:32"
+    }
+  ],
+  "hand_actions": [
+    {
+      "id": "hand_1",
+      "title": "Open and close",
+      "definition": "Extend the fingers and bend them through their useful ranges, including while the wrist moves.",
+      "group": "Finger and hand movements",
+      "physical_status": "Source report missing; no current score",
+      "physical_detail": "The Sep 23 repertoire report this card's score came from is missing today (checked Oct 21, 2026: not in the project's Saved folder, its git history, the cleanup archives or any removal receipt), so no current score is shown and its old performance is not re-validated. Scheduled recheck with wrist-following targets (researcher-set goals, no learner):",
+      "measured": [
+        {
+          "scheduled": "hand_following",
+          "show": "detail",
+          "into": "physical_detail"
+        },
+        {
+          "file": "Saved/gof_takeover_20260923/hand_program/repertoire/report.json",
+          "name": "the hand repertoire test of Sep 23",
+          "say": "Earlier repertoire test (Sep 23, {sec} simulated seconds per stage): a coordinated curl ended {curl} from the requested bend angles on average, opening from neutral {open}, and reopening after the curl {reopen}.",
+          "values": {
+            "sec": {
+              "path": "declaration.seconds_per_stage"
+            },
+            "curl": {
+              "path": "trials.1.mean_flexion_error_deg",
+              "unit": "degrees"
+            },
+            "open": {
+              "path": "trials.0.mean_flexion_error_deg",
+              "unit": "degrees"
+            },
+            "reopen": {
+              "path": "trials.2.mean_flexion_error_deg",
+              "unit": "degrees"
+            }
+          },
+          "into": "physical_detail"
+        }
+      ],
+      "stage_states": [
+        "untested",
+        "untested",
+        "untested",
+        "untested"
+      ],
+      "stage_evidence": [
+        "No held-out prediction test for this named action is complete.",
+        "No learned-choice comparison for this named action has passed.",
+        "Repeated choice and retention after further learning have not been tested.",
+        "The named action has not passed on changed starts or objects."
+      ],
+      "next": "Locate or regenerate the repertoire report before citing its scores. Then: Compare model-chosen actions with feasible physical references from identical saved starts.",
+      "source": "docs/gain_of_function_v3/ability_rechecks.json",
+      "upgrades": [
+        2,
+        5,
+        8
+      ],
+      "checked_at": "2026-10-21 16:15"
+    },
+    {
+      "id": "hand_2",
+      "title": "Move one finger",
+      "definition": "Move a selected finger and measure unintended neighbouring movement. The simulated tendons couple some knuckles, so complete independence is not always physically possible.",
+      "group": "Finger and hand movements",
+      "physical_status": "Source report missing; no current score",
+      "physical_detail": "The Sep 23 repertoire report this card's score came from is missing today (checked Oct 21, 2026: not in the project's Saved folder, its git history, the cleanup archives or any removal receipt), so no current score is shown and its old performance is not re-validated; the hand capability programme of Sep 23 keeps, in prose, this card's two findings on how far a curled index or middle finger moves the others. Tendons couple neighbouring knuckles, so a curled finger pulls its neighbours.",
+      "measured": [
+        {
+          "file": "Saved/gof_takeover_20260923/hand_program/repertoire/report.json",
+          "name": "the hand repertoire test of Sep 23",
+          "say": "The coupling tendons allow {a}, {b} and {c} of separation between neighbouring knuckles; a full index-finger curl moved the other fingers by {index} on average and a middle-finger curl by {middle}.",
+          "values": {
+            "a": {
+              "path": "coupling_tendons.0.range_deg.1",
+              "unit": "degrees"
+            },
+            "b": {
+              "path": "coupling_tendons.1.range_deg.1",
+              "unit": "degrees"
+            },
+            "c": {
+              "path": "coupling_tendons.2.range_deg.1",
+              "unit": "degrees"
+            },
+            "index": {
+              "path": "trials.6.other_finger_mean_absolute_change_deg",
+              "unit": "degrees"
+            },
+            "middle": {
+              "path": "trials.7.other_finger_mean_absolute_change_deg",
+              "unit": "degrees"
+            }
+          },
+          "into": "physical_detail"
+        },
+        {
+          "scheduled": "hand_following",
+          "show": "detail",
+          "into": "physical_detail"
+        }
+      ],
+      "stage_states": [
+        "untested",
+        "untested",
+        "untested",
+        "untested"
+      ],
+      "stage_evidence": [
+        "No held-out prediction test for this named action is complete.",
+        "No learned-choice comparison for this named action has passed.",
+        "Repeated choice and retention after further learning have not been tested.",
+        "The named action has not passed on changed starts or objects."
+      ],
+      "next": "Locate or regenerate the repertoire report before citing its scores. Then: Compare model-chosen actions with feasible physical references from identical saved starts.",
+      "source": "Saved/gof_takeover_20260923/hand_program/repertoire/report.json",
+      "upgrades": [
+        2,
+        5,
+        8
+      ],
+      "checked_at": "2026-10-21 16:15"
+    },
+    {
+      "id": "hand_3",
+      "title": "Spread and gather",
+      "definition": "Move fingers apart and back together using the sideways joints at their bases.",
+      "group": "Finger and hand movements",
+      "physical_status": "Source report missing; no current score",
+      "physical_detail": "The Sep 23 repertoire report this card's score came from is missing today (checked Oct 21, 2026: not in the project's Saved folder, its git history, the cleanup archives or any removal receipt), so no current score is shown and its old performance is not re-validated. The simulated index finger has a sideways base joint with a 25-degree range in each direction. A physical spread-and-return test (fingers moving apart in opposite directions) is still pending.",
+      "measured": [
+        {
+          "file": "Saved/gof_takeover_20260923/hand_program/repertoire/report.json",
+          "name": "the hand repertoire test of Sep 23",
+          "say": "Measured instead on Sep 23: all fingers turned sideways together ended {side} from the requested side angle on average.",
+          "values": {
+            "side": {
+              "path": "trials.15.mean_flexion_error_deg",
+              "unit": "degrees"
+            }
+          },
+          "into": "physical_detail"
+        }
+      ],
+      "stage_states": [
+        "untested",
+        "untested",
+        "untested",
+        "untested"
+      ],
+      "stage_evidence": [
+        "No held-out prediction test for this named action is complete.",
+        "No learned-choice comparison for this named action has passed.",
+        "Repeated choice and retention after further learning have not been tested.",
+        "The named action has not passed on changed starts or objects."
+      ],
+      "next": "Locate or regenerate the repertoire report before citing its scores. Then: Compare model-chosen actions with feasible physical references from identical saved starts.",
+      "source": "docs/gain_of_function_v3/HAND_CAPABILITY_PROGRAM_2026-09-23.md",
+      "upgrades": [
+        2,
+        5,
+        8
+      ],
+      "checked_at": "2026-10-21 16:15"
+    },
+    {
+      "id": "hand_4",
+      "title": "Use the thumb",
+      "definition": "Bring the thumb toward the fingertips and control thumb bending.",
+      "group": "Finger and hand movements",
+      "physical_status": "Source report missing; no current score",
+      "physical_detail": "The Sep 23 repertoire report this card's score came from is missing today (checked Oct 21, 2026: not in the project's Saved folder, its git history, the cleanup archives or any removal receipt), so no current score is shown and its old performance is not re-validated. Sideways positioning and purposeful fingertip contact need separate measurements.",
+      "measured": [
+        {
+          "file": "Saved/gof_takeover_20260923/hand_program/repertoire/report.json",
+          "name": "the hand repertoire test of Sep 23",
+          "say": "A full thumb curl (Sep 23 repertoire test) ended {err} from the requested bend angles and moved the other fingers by {other} on average.",
+          "values": {
+            "err": {
+              "path": "trials.5.mean_flexion_error_deg",
+              "unit": "degrees"
+            },
+            "other": {
+              "path": "trials.5.other_finger_mean_absolute_change_deg",
+              "unit": "degrees"
+            }
+          },
+          "into": "physical_detail"
+        }
+      ],
+      "stage_states": [
+        "untested",
+        "untested",
+        "untested",
+        "untested"
+      ],
+      "stage_evidence": [
+        "No held-out prediction test for this named action is complete.",
+        "No learned-choice comparison for this named action has passed.",
+        "Repeated choice and retention after further learning have not been tested.",
+        "The named action has not passed on changed starts or objects."
+      ],
+      "next": "Locate or regenerate the repertoire report before citing its scores. Then: Test separate thumb bending, return and positioning goals, then contact a selected fingertip from the same saved starts.",
+      "source": "Saved/gof_takeover_20260923/hand_program/repertoire/report.json",
+      "upgrades": [
+        2,
+        5,
+        8
+      ],
+      "checked_at": "2026-10-21 16:15"
+    },
+    {
+      "id": "hand_5",
+      "title": "Oppose and return the thumb",
+      "definition": "Turn the thumb to face a fingertip, make controlled contact, then separate.",
+      "group": "Finger and hand movements",
+      "physical_status": "Not measured",
+      "physical_detail": "A separate physical reference test is required for this action.",
+      "stage_states": [
+        "untested",
+        "untested",
+        "untested",
+        "untested"
+      ],
+      "stage_evidence": [
+        "No held-out prediction test for this named action is complete.",
+        "No learned-choice comparison for this named action has passed.",
+        "Repeated choice and retention after further learning have not been tested.",
+        "The named action has not passed on changed starts or objects."
+      ],
+      "next": "Compare model-chosen actions with feasible physical references from identical saved starts.",
+      "source": "docs/gain_of_function_v3/HAND_CAPABILITY_PROGRAM_2026-09-23.md",
+      "upgrades": [
+        2,
+        5,
+        8
+      ],
+      "checked_at": "2026-09-30 20:32"
+    },
+    {
+      "id": "hand_6",
+      "title": "Shape the palm",
+      "definition": "Cup and flatten the little-finger edge of the palm to wrap around an object.",
+      "group": "Finger and hand movements",
+      "physical_status": "Not measured",
+      "physical_detail": "Each simulated hand has a base joint under the little finger that can bend through 40 degrees. This provides a specific cupping movement; its usable range under normal controls still needs a physical test.",
+      "stage_states": [
+        "untested",
+        "untested",
+        "untested",
+        "untested"
+      ],
+      "stage_evidence": [
+        "No held-out prediction test for this named action is complete.",
+        "No learned-choice comparison for this named action has passed.",
+        "Repeated choice and retention after further learning have not been tested.",
+        "The named action has not passed on changed starts or objects."
+      ],
+      "next": "Compare model-chosen actions with feasible physical references from identical saved starts.",
+      "source": "docs/gain_of_function_v3/HAND_CAPABILITY_PROGRAM_2026-09-23.md",
+      "upgrades": [
+        2,
+        5,
+        8
+      ],
+      "checked_at": "2026-09-30 20:32"
+    },
+    {
+      "id": "hand_7",
+      "title": "Bend and angle the wrist",
+      "definition": "Move the wrist forward, back and sideways while keeping the chosen grip.",
+      "group": "Finger and hand movements",
+      "physical_status": "Not measured",
+      "physical_detail": "A separate physical reference test is required for this action.",
+      "stage_states": [
+        "untested",
+        "untested",
+        "untested",
+        "untested"
+      ],
+      "stage_evidence": [
+        "No held-out prediction test for this named action is complete.",
+        "No learned-choice comparison for this named action has passed.",
+        "Repeated choice and retention after further learning have not been tested.",
+        "The named action has not passed on changed starts or objects."
+      ],
+      "next": "Compare model-chosen actions with feasible physical references from identical saved starts.",
+      "source": "docs/gain_of_function_v3/HAND_CAPABILITY_PROGRAM_2026-09-23.md",
+      "upgrades": [
+        2,
+        5,
+        8
+      ],
+      "checked_at": "2026-09-30 20:32"
+    },
+    {
+      "id": "hand_8",
+      "title": "Turn the forearm",
+      "definition": "Turn the palm up or down while preserving the finger goal.",
+      "group": "Finger and hand movements",
+      "physical_status": "Not measured",
+      "physical_detail": "A separate physical reference test is required for this action.",
+      "stage_states": [
+        "untested",
+        "untested",
+        "untested",
+        "untested"
+      ],
+      "stage_evidence": [
+        "No held-out prediction test for this named action is complete.",
+        "No learned-choice comparison for this named action has passed.",
+        "Repeated choice and retention after further learning have not been tested.",
+        "The named action has not passed on changed starts or objects."
+      ],
+      "next": "Compare model-chosen actions with feasible physical references from identical saved starts.",
+      "source": "docs/gain_of_function_v3/HAND_CAPABILITY_PROGRAM_2026-09-23.md",
+      "upgrades": [
+        2,
+        5,
+        8
+      ],
+      "checked_at": "2026-09-30 20:32"
+    },
+    {
+      "id": "hand_9",
+      "title": "Reach and orient",
+      "definition": "Bring the hand to an object with the palm and fingers positioned to use it.",
+      "group": "Using the hand",
+      "physical_status": "Not measured",
+      "physical_detail": "A separate physical reference test is required for this action.",
+      "stage_states": [
+        "untested",
+        "untested",
+        "untested",
+        "untested"
+      ],
+      "stage_evidence": [
+        "No held-out prediction test for this named action is complete.",
+        "No learned-choice comparison for this named action has passed.",
+        "Repeated choice and retention after further learning have not been tested.",
+        "The named action has not passed on changed starts or objects."
+      ],
+      "next": "Compare model-chosen actions with feasible physical references from identical saved starts.",
+      "source": "docs/gain_of_function_v3/HAND_CAPABILITY_PROGRAM_2026-09-23.md",
+      "upgrades": [
+        2,
+        5,
+        6,
+        8,
+        9
+      ],
+      "checked_at": "2026-09-30 20:32"
+    },
+    {
+      "id": "hand_10",
+      "title": "Touch, press and point",
+      "definition": "Select a contacting finger or hand surface and control the contact force.",
+      "group": "Using the hand",
+      "physical_status": "Not measured",
+      "physical_detail": "A separate physical reference test is required for this action.",
+      "stage_states": [
+        "untested",
+        "untested",
+        "untested",
+        "untested"
+      ],
+      "stage_evidence": [
+        "No held-out prediction test for this named action is complete.",
+        "No learned-choice comparison for this named action has passed.",
+        "Repeated choice and retention after further learning have not been tested.",
+        "The named action has not passed on changed starts or objects."
+      ],
+      "next": "Compare model-chosen actions with feasible physical references from identical saved starts.",
+      "source": "docs/gain_of_function_v3/HAND_CAPABILITY_PROGRAM_2026-09-23.md",
+      "upgrades": [
+        2,
+        5,
+        6,
+        8,
+        9
+      ],
+      "checked_at": "2026-09-30 20:32"
+    },
+    {
+      "id": "hand_11",
+      "title": "Whole-hand grasp",
+      "definition": "Close around an object, sustain contact and support its weight.",
+      "group": "Using the hand",
+      "physical_status": "Reference grip failed",
+      "physical_detail": "In the free-object test a generic curl pushed the 3 cm cube onto the forearm. Fit opposing thumb and finger contacts and test retention through palm tilt.",
+      "stage_states": [
+        "untested",
+        "untested",
+        "untested",
+        "untested"
+      ],
+      "stage_evidence": [
+        "No held-out prediction test for this named action is complete.",
+        "No learned-choice comparison for this named action has passed.",
+        "Repeated choice and retention after further learning have not been tested.",
+        "The named action has not passed on changed starts or objects."
+      ],
+      "next": "Establish an object-specific physical reference, then compare learned choices and repeatability.",
+      "source": "docs/gain_of_function_v3/measurements/grasp_fixture_2026-09-23.json",
+      "upgrades": [
+        2,
+        5,
+        6,
+        8,
+        9
+      ],
+      "checked_at": "2026-09-30 20:32"
+    },
+    {
+      "id": "hand_12",
+      "title": "Pinch",
+      "definition": "Hold a small object between thumb and finger.",
+      "group": "Using the hand",
+      "physical_status": "Not measured",
+      "physical_detail": "A separate physical reference test is required for this action.",
+      "stage_states": [
+        "untested",
+        "untested",
+        "untested",
+        "untested"
+      ],
+      "stage_evidence": [
+        "No held-out prediction test for this named action is complete.",
+        "No learned-choice comparison for this named action has passed.",
+        "Repeated choice and retention after further learning have not been tested.",
+        "The named action has not passed on changed starts or objects."
+      ],
+      "next": "Establish an object-specific physical reference, then compare learned choices and repeatability.",
+      "source": "docs/gain_of_function_v3/HAND_CAPABILITY_PROGRAM_2026-09-23.md",
+      "upgrades": [
+        2,
+        5,
+        6,
+        8,
+        9
+      ],
+      "checked_at": "2026-09-30 20:32"
+    },
+    {
+      "id": "hand_13",
+      "title": "Adjust a grip",
+      "definition": "Change finger force or placement when an object slips or its load changes.",
+      "group": "Using the hand",
+      "physical_status": "Not measured",
+      "physical_detail": "A separate physical reference test is required for this action.",
+      "stage_states": [
+        "untested",
+        "untested",
+        "untested",
+        "untested"
+      ],
+      "stage_evidence": [
+        "No held-out prediction test for this named action is complete.",
+        "No learned-choice comparison for this named action has passed.",
+        "Repeated choice and retention after further learning have not been tested.",
+        "The named action has not passed on changed starts or objects."
+      ],
+      "next": "Establish an object-specific physical reference, then compare learned choices and repeatability.",
+      "source": "docs/gain_of_function_v3/HAND_CAPABILITY_PROGRAM_2026-09-23.md",
+      "upgrades": [
+        2,
+        5,
+        6,
+        8,
+        9
+      ],
+      "checked_at": "2026-09-30 20:32"
+    },
+    {
+      "id": "hand_14",
+      "title": "Release and place",
+      "definition": "Open deliberately to let go or put an object in a chosen location.",
+      "group": "Using the hand",
+      "physical_status": "Not measured",
+      "physical_detail": "A separate physical reference test is required for this action.",
+      "stage_states": [
+        "untested",
+        "untested",
+        "untested",
+        "untested"
+      ],
+      "stage_evidence": [
+        "No held-out prediction test for this named action is complete.",
+        "No learned-choice comparison for this named action has passed.",
+        "Repeated choice and retention after further learning have not been tested.",
+        "The named action has not passed on changed starts or objects."
+      ],
+      "next": "Establish an object-specific physical reference, then compare learned choices and repeatability.",
+      "source": "docs/gain_of_function_v3/HAND_CAPABILITY_PROGRAM_2026-09-23.md",
+      "upgrades": [
+        2,
+        5,
+        6,
+        8,
+        9
+      ],
+      "checked_at": "2026-09-30 20:32"
+    },
+    {
+      "id": "hand_15",
+      "title": "Turn and reposition",
+      "definition": "Change an object\u00e2\u20ac\u2122s orientation or its position inside the hand.",
+      "group": "Coordinated object use",
+      "physical_status": "Not measured",
+      "physical_detail": "A separate physical reference test is required for this action.",
+      "stage_states": [
+        "untested",
+        "untested",
+        "untested",
+        "untested"
+      ],
+      "stage_evidence": [
+        "No held-out prediction test for this named action is complete.",
+        "No learned-choice comparison for this named action has passed.",
+        "Repeated choice and retention after further learning have not been tested.",
+        "The named action has not passed on changed starts or objects."
+      ],
+      "next": "Establish an object-specific physical reference, then compare learned choices and repeatability.",
+      "source": "docs/gain_of_function_v3/HAND_CAPABILITY_PROGRAM_2026-09-23.md",
+      "upgrades": [
+        2,
+        5,
+        6,
+        8,
+        9
+      ],
+      "checked_at": "2026-09-30 20:32"
+    },
+    {
+      "id": "hand_16",
+      "title": "Transfer hands",
+      "definition": "Pass an object from one hand to the other without dropping it.",
+      "group": "Coordinated object use",
+      "physical_status": "Not measured",
+      "physical_detail": "A separate physical reference test is required for this action.",
+      "stage_states": [
+        "untested",
+        "untested",
+        "untested",
+        "untested"
+      ],
+      "stage_evidence": [
+        "No held-out prediction test for this named action is complete.",
+        "No learned-choice comparison for this named action has passed.",
+        "Repeated choice and retention after further learning have not been tested.",
+        "The named action has not passed on changed starts or objects."
+      ],
+      "next": "Establish an object-specific physical reference, then compare learned choices and repeatability.",
+      "source": "docs/gain_of_function_v3/HAND_CAPABILITY_PROGRAM_2026-09-23.md",
+      "upgrades": [
+        2,
+        5,
+        6,
+        8,
+        9
+      ],
+      "checked_at": "2026-09-30 20:32"
+    },
+    {
+      "id": "hand_17",
+      "title": "Coordinate both hands",
+      "definition": "Hold an object with one hand while the other acts on it.",
+      "group": "Coordinated object use",
+      "physical_status": "Not measured",
+      "physical_detail": "A separate physical reference test is required for this action.",
+      "stage_states": [
+        "untested",
+        "untested",
+        "untested",
+        "untested"
+      ],
+      "stage_evidence": [
+        "No held-out prediction test for this named action is complete.",
+        "No learned-choice comparison for this named action has passed.",
+        "Repeated choice and retention after further learning have not been tested.",
+        "The named action has not passed on changed starts or objects."
+      ],
+      "next": "Establish an object-specific physical reference, then compare learned choices and repeatability.",
+      "source": "docs/gain_of_function_v3/HAND_CAPABILITY_PROGRAM_2026-09-23.md",
+      "upgrades": [
+        2,
+        5,
+        6,
+        8,
+        9
+      ],
+      "checked_at": "2026-09-30 20:32"
+    },
+    {
+      "id": "hand_18",
+      "title": "Use objects",
+      "definition": "Operate a button, container or simple tool through a chosen sequence.",
+      "group": "Coordinated object use",
+      "physical_status": "Not measured",
+      "physical_detail": "A separate physical reference test is required for this action.",
+      "stage_states": [
+        "untested",
+        "untested",
+        "untested",
+        "untested"
+      ],
+      "stage_evidence": [
+        "No held-out prediction test for this named action is complete.",
+        "No learned-choice comparison for this named action has passed.",
+        "Repeated choice and retention after further learning have not been tested.",
+        "The named action has not passed on changed starts or objects."
+      ],
+      "next": "Establish an object-specific physical reference, then compare learned choices and repeatability.",
+      "source": "docs/gain_of_function_v3/HAND_CAPABILITY_PROGRAM_2026-09-23.md",
+      "upgrades": [
+        2,
+        5,
+        6,
+        8,
+        9
+      ],
+      "checked_at": "2026-09-30 20:32"
+    }
+  ],
+  "upgrade_progress": [
+    {
+      "item": 1,
+      "definition": "Record the selected goal, forecast, action and actual outcome so control failures can be traced.",
+      "stage_states": [
+        "untested",
+        "untested",
+        "untested",
+        "untested"
+      ],
+      "stage_evidence": [
+        "Implementation and prediction evidence are linked; this does not mark a learned ability as passed.",
+        "The linked ability\u00e2\u20ac\u2122s physical choice test determines this stage.",
+        "Repeat and retain the linked chosen ability after further learning.",
+        "Repeat the linked ability after changing its starting conditions."
+      ],
+      "next": "Follow the linked capability comparison and its current repair.",
+      "source": "docs/gain_of_function_v3/UEMA_Embodied_Gain_of_Function_Addendum_v3.html",
+      "checked_at": "2026-09-30 20:32"
+    },
+    {
+      "item": 2,
+      "definition": "Use measured command following when valuing a bodily state.",
+      "stage_states": [
+        "untested",
+        "untested",
+        "untested",
+        "untested"
+      ],
+      "stage_evidence": [
+        "Implementation and prediction evidence are linked; this does not mark a learned ability as passed.",
+        "The linked ability\u00e2\u20ac\u2122s physical choice test determines this stage.",
+        "Repeat and retain the linked chosen ability after further learning.",
+        "Repeat the linked ability after changing its starting conditions."
+      ],
+      "next": "Follow the linked capability comparison and its current repair.",
+      "source": "docs/gain_of_function_v3/UEMA_Embodied_Gain_of_Function_Addendum_v3.html",
+      "checked_at": "2026-09-30 20:32"
+    },
+    {
+      "item": 3,
+      "definition": "Value improvement in prediction over time, alongside useful acquired abilities.",
+      "stage_states": [
+        "untested",
+        "untested",
+        "untested",
+        "untested"
+      ],
+      "stage_evidence": [
+        "Implementation and prediction evidence are linked; this does not mark a learned ability as passed.",
+        "The linked ability\u00e2\u20ac\u2122s physical choice test determines this stage.",
+        "Repeat and retain the linked chosen ability after further learning.",
+        "Repeat the linked ability after changing its starting conditions."
+      ],
+      "next": "Follow the linked capability comparison and its current repair.",
+      "source": "docs/gain_of_function_v3/UEMA_Embodied_Gain_of_Function_Addendum_v3.html",
+      "checked_at": "2026-09-30 20:32"
+    },
+    {
+      "item": 4,
+      "definition": "Compare wellness components on measured scales while giving harm avoidance priority.",
+      "stage_states": [
+        "untested",
+        "untested",
+        "untested",
+        "untested"
+      ],
+      "stage_evidence": [
+        "Implementation and prediction evidence are linked; this does not mark a learned ability as passed.",
+        "The linked ability\u00e2\u20ac\u2122s physical choice test determines this stage.",
+        "Repeat and retain the linked chosen ability after further learning.",
+        "Repeat the linked ability after changing its starting conditions."
+      ],
+      "next": "Follow the linked capability comparison and its current repair.",
+      "source": "docs/gain_of_function_v3/UEMA_Embodied_Gain_of_Function_Addendum_v3.html",
+      "checked_at": "2026-09-30 20:32"
+    },
+    {
+      "item": 5,
+      "definition": "Learn coordinated body movements from a compact set of movement controls.",
+      "stage_states": [
+        "untested",
+        "concern",
+        "untested",
+        "untested"
+      ],
+      "stage_evidence": [
+        "Implementation and prediction evidence are linked; this does not mark a learned ability as passed.",
+        "The synergy planner against the starting controller; both switches stay off, and the map learns only while production training runs.",
+        "Repeat and retain the linked chosen ability after further learning.",
+        "Repeat the linked ability after changing its starting conditions."
+      ],
+      "next": "Keep the scheduled comparison; adopt a configuration only when it wins beyond the sample uncertainty.",
+      "source": "docs/gain_of_function_v3/ability_rechecks.json",
+      "checked_at": "2026-10-21 16:02",
+      "measured": [
+        {
+          "scheduled": "body_and_synergy",
+          "show": "trend",
+          "into": "stage_evidence.1"
+        }
+      ]
+    },
+    {
+      "item": 6,
+      "definition": "Predict self-contact separately from contact with outside objects and compare alternative actions. Nonstructural contact excludes ordinary neighbouring-part pairs identified by the simulator, such as the right hand resting against its thumb base.",
+      "stage_states": [
+        "concern",
+        "concern",
+        "untested",
+        "untested"
+      ],
+      "stage_evidence": [
+        "Implementation and prediction evidence are linked; this does not mark a learned ability as passed.",
+        "The scheduled self-touch comparison is held; its rounds so far:",
+        "Repeat and retain the linked chosen ability after further learning.",
+        "Repeat the linked ability after changing its starting conditions."
+      ],
+      "next": "Finish the review of the three-layer self-touch test (its fourth version), release the hold and run its first round (record: docs/gain_of_function_v4/agents/self_touch_layers.md).",
+      "source": "docs/gain_of_function_v4/agents/self_touch_layers.md",
+      "checked_at": "2026-09-30 20:32",
+      "measured": [
+        {
+          "scheduled": "chosen_self_touch",
+          "show": "trend",
+          "into": "stage_evidence.1"
+        }
+      ]
+    },
+    {
+      "item": 7,
+      "definition": "Test whether the actual eye order improves predicted eye movement and the resulting view.",
+      "stage_states": [
+        "concern",
+        "untested",
+        "untested",
+        "untested"
+      ],
+      "stage_evidence": [
+        "Under investigation until the identical-input vision audit is repeated. Eye-angle and view forecasts on saved checkpoints, and live vision prediction:",
+        "The linked ability\u00e2\u20ac\u2122s physical choice test determines this stage.",
+        "Repeat and retain the linked chosen ability after further learning.",
+        "Repeat the linked ability after changing its starting conditions."
+      ],
+      "next": "Repeat the identical-input vision audit on a current checkpoint, then compare a chosen useful gaze with holding still from the same saved starts.",
+      "source": "docs/gain_of_function_v3/ability_rechecks.json",
+      "checked_at": "2026-10-21 16:02",
+      "measured": [
+        {
+          "scheduled": "gaze_prediction",
+          "show": "headline",
+          "into": "stage_evidence.0"
+        },
+        {
+          "scheduled": "gaze_prediction",
+          "show": "detail",
+          "into": "stage_evidence.0"
+        },
+        {
+          "training": true,
+          "say": "In the newest training record, vision's next-picture error was {ratio} of the error of 'the picture stays the same' over {n} recorded moments (100% = no better than the unchanged picture, 0% = exact).",
+          "values": {
+            "ratio": {
+              "path": "prediction_audit_per_body.senses.vision.all_bodies.ratio",
+              "percent": true
+            },
+            "n": {
+              "path": "prediction_audit_per_body.senses.vision.all_bodies.transitions",
+              "count": true
+            }
+          },
+          "assumes": [
+            {
+              "path": "prediction_audit_per_body.senses.vision.all_bodies.ratio",
+              "below": 1,
+              "means": "vision's next-picture prediction beats 'the picture stays the same' in live training"
+            }
+          ],
+          "into": "stage_evidence.0"
+        }
+      ]
+    },
+    {
+      "item": 8,
+      "definition": "Test whether body predictions guide more accurate movement toward a shared reachable goal.",
+      "stage_states": [
+        "signal",
+        "concern",
+        "untested",
+        "untested"
+      ],
+      "stage_evidence": [
+        "A prediction signal during training: the body forecast in the newest training record, and the same reading before the arm repair of Sep 23:",
+        "The body forecast is not connected to production goals (physical goals off).",
+        "Repeat and retain the linked chosen ability after further learning.",
+        "Repeat the linked ability after changing its starting conditions."
+      ],
+      "next": "Oct 22, 2026: the planner's learning package ran as two bounded runs from step 494,225 (the current search to step 496,225; the bounded-step search to step 496,000); most of the captured commands with either search ended with the body farther from its remembered goal pose, and some ended nearer, while the search score improved on every one; nothing was adopted (the Reach card). Earlier, Oct 21, 2026: The whole-body request repair is unresolved. The two physical comparisons run earlier on Oct 21, 2026 are withdrawn as evidence for or against the corrected limb mapping (their instruments changed its arm targets before movement). The corrected comparison, run on Oct 21, 2026 from 4:15 PM to 4:18 PM PDT on a saved command from a separate example (another run, body and command), not the movement in the operator's screenshot, from that example's original saved start with that fault removed, found that both versions, the corrected mapping and the run's mapping, moved the body farther from the remembered body pose than where it started. The correction is rejected for reaching adoption: the physical comparison's narrow scoring rule passed at 250 ms, which is not a reaching success, and the body did not reach its goal.",
+      "source": "docs/gain_of_function_v3/ability_rechecks.json",
+      "checked_at": "2026-10-22 06:29",
+      "measured": [
+        {
+          "training": true,
+          "say": "In the newest training record, the body forecast (the efference body head) missed where each body handle went over a command's 250 ms tenure by {err} on average, against {nothing} for predicting no movement, over the {n} command tenures graded in that report (averaged over every body and body handle).",
+          "values": {
+            "err": {
+              "path": "efference.body_cm_err_latch",
+              "unit": "cm"
+            },
+            "nothing": {
+              "path": "efference.body_cm_do_nothing_latch",
+              "unit": "cm"
+            },
+            "n": {
+              "path": "efference.events_latch",
+              "count": true
+            }
+          },
+          "into": "stage_evidence.0"
+        },
+        {
+          "file": "docs/gain_of_function_v3/measurements/motor_control_review_2026-09-23.json",
+          "name": "the motor control review of Sep 23",
+          "say": "Before the arm repair of Sep 23, the body forecast missed body positions 250 ms ahead by {err} on average, against {nothing} for assuming no movement, over {events} training events.",
+          "values": {
+            "err": {
+              "path": "body_prediction_before_repair.means.body_cm_err_latch",
+              "unit": "cm"
+            },
+            "nothing": {
+              "path": "body_prediction_before_repair.means.body_cm_do_nothing_latch",
+              "unit": "cm"
+            },
+            "events": {
+              "path": "body_prediction_before_repair.events",
+              "count": true
+            }
+          },
+          "into": "stage_evidence.0"
+        },
+        {
+          "scheduled": "body_and_synergy",
+          "show": "trend",
+          "into": "stage_evidence.1"
+        }
+      ]
+    },
+    {
+      "item": 9,
+      "definition": "Test deliberate arm viewing and a chosen reachable touch, including alternatives from the same start. Nonstructural contact excludes ordinary neighbouring-part pairs identified by the simulator, such as the right hand resting against its thumb base.",
+      "stage_states": [
+        "concern",
+        "concern",
+        "untested",
+        "untested"
+      ],
+      "stage_evidence": [
+        "Implementation and prediction evidence are linked; this does not mark a learned ability as passed.",
+        "The scheduled self-touch comparison is held; its rounds so far:",
+        "Repeat and retain the linked chosen ability after further learning.",
+        "Repeat the linked ability after changing its starting conditions."
+      ],
+      "next": "Finish the review of the three-layer self-touch test (its fourth version), release the hold and run its first round (record: docs/gain_of_function_v4/agents/self_touch_layers.md).",
+      "source": "docs/gain_of_function_v4/agents/self_touch_layers.md",
+      "checked_at": "2026-09-30 20:32",
+      "measured": [
+        {
+          "scheduled": "chosen_self_touch",
+          "show": "trend",
+          "into": "stage_evidence.1"
+        }
+      ]
+    },
+    {
+      "item": 10,
+      "definition": "Measure orientation, acceleration and balance; use these to test supported posture and rolling.",
+      "stage_states": [
+        "untested",
+        "untested",
+        "untested",
+        "untested"
+      ],
+      "stage_evidence": [
+        "Implementation and prediction evidence are linked; this does not mark a learned ability as passed.",
+        "The linked ability\u00e2\u20ac\u2122s physical choice test determines this stage.",
+        "Repeat and retain the linked chosen ability after further learning.",
+        "Repeat the linked ability after changing its starting conditions."
+      ],
+      "next": "Follow the linked capability comparison and its current repair.",
+      "source": "docs/gain_of_function_v3/UEMA_Embodied_Gain_of_Function_Addendum_v3.html",
+      "checked_at": "2026-09-30 20:32"
+    }
+  ]
+}

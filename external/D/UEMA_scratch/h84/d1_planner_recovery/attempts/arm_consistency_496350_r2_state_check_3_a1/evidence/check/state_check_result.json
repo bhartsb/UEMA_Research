@@ -1,0 +1,3565 @@
+{
+ "verdict": "PASS",
+ "scope": "parts B, C, D and E; part A not run: the replacement admission route is not yet built",
+ "part_a": {
+  "results": {},
+  "expected_exits": {},
+  "ok": {},
+  "not_run": "the replacement admission route is not yet built"
+ },
+ "part_b": {
+  "B1_both_pass": {
+   "got": {
+    "calls": {
+     "launches": [
+      "control",
+      "treatment"
+     ],
+     "claims": [
+      "arm_consistency_496350_r2_control_reading",
+      "arm_consistency_496350_r2_treatment_reading",
+      "arm_consistency_496350_r2_reading"
+     ],
+     "closes": [
+      [
+       "arm_consistency_496350_r2_control_reading",
+       true
+      ],
+      [
+       "arm_consistency_496350_r2_treatment_reading",
+       true
+      ],
+      [
+       "arm_consistency_496350_r2_reading",
+       true
+      ]
+     ]
+    },
+    "rc": 0,
+    "raised": null,
+    "final_reading_not_run": false,
+    "verdict": "PASS",
+    "blocks": [],
+    "judgement": {
+     "status": "own_valid",
+     "scientific_verdict": "NOT ADOPTED",
+     "by": null,
+     "scientific_verdict_meaning": "judge.py's own judgement of a completed comparison: both training branches and both readings completed",
+     "judge_exit_status": 2,
+     "judge_file": "D:\\UEMA_Research\\external\\D\\UEMA_scratch\\h84\\d1_planner_recovery\\attempts\\arm_consistency_496350_r2_state_check_3_a1\\evidence\\check\\B\\B1_both_pass\\final_reading\\judge_verdict.json",
+     "execution_verdict": "PASS",
+     "execution_write_error": null,
+     "branch_readings": [
+      {
+       "arm": "control",
+       "read": true,
+       "row_passed": true,
+       "exit_status": 0,
+       "reader_verdict": "PASS",
+       "reader_verdict_reason": "every window healthy",
+       "invalid_reasons": [],
+       "why": null,
+       "exception": null
+      },
+      {
+       "arm": "treatment",
+       "read": true,
+       "row_passed": true,
+       "exit_status": 0,
+       "reader_verdict": "PASS",
+       "reader_verdict_reason": "every window healthy",
+       "invalid_reasons": [],
+       "why": null,
+       "exception": null
+      }
+     ],
+     "training_ends": [
+      {
+       "arm": "control",
+       "recorded": true,
+       "launched": true,
+       "state": "completed",
+       "success": true,
+       "verdict": null,
+       "failures": [],
+       "resource_failure": null,
+       "guard_stop": null,
+       "last_saved_step": 496450,
+       "end_step": 496450,
+       "failed": false,
+       "summary": "control: training completed successfully at model step 496450"
+      },
+      {
+       "arm": "treatment",
+       "recorded": true,
+       "launched": true,
+       "state": "completed",
+       "success": true,
+       "verdict": null,
+       "failures": [],
+       "resource_failure": null,
+       "guard_stop": null,
+       "last_saved_step": 496450,
+       "end_step": 496450,
+       "failed": false,
+       "summary": "treatment: training completed successfully at model step 496450"
+      }
+     ]
+    }
+   },
+   "expected": {
+    "launches": [
+     "control",
+     "treatment"
+    ],
+    "claims": [
+     "arm_consistency_496350_r2_control_reading",
+     "arm_consistency_496350_r2_treatment_reading",
+     "arm_consistency_496350_r2_reading"
+    ],
+    "closes": [
+     [
+      "arm_consistency_496350_r2_control_reading",
+      true
+     ],
+     [
+      "arm_consistency_496350_r2_treatment_reading",
+      true
+     ],
+     [
+      "arm_consistency_496350_r2_reading",
+      true
+     ]
+    ],
+    "raises": false
+   },
+   "match": true
+  },
+  "B2_control_reader_exit_2": {
+   "got": {
+    "calls": {
+     "launches": [
+      "control"
+     ],
+     "claims": [
+      "arm_consistency_496350_r2_control_reading"
+     ],
+     "closes": [
+      [
+       "arm_consistency_496350_r2_control_reading",
+       false
+      ]
+     ]
+    },
+    "rc": 1,
+    "raised": null,
+    "final_reading_not_run": true,
+    "verdict": "FAIL",
+    "blocks": [
+     "the final reading: not every branch of the pair was launched with its reading row passing",
+     "control's reading row did not pass (exit status 2)",
+     "the final watcher check: missing (not run)",
+     "a required training branch did not complete successfully, so the experiment did not complete: treatment: not launched (control's reading row did not pass (exit status 2))",
+     "a required branch reading row did not pass, so the experiment did not complete: control: row did not pass, reader exit status 2, reader verdict 'FAIL', reader reason 'a required health failure (1): (state check)'; treatment: no reading (the branch was not launched or not read)",
+     "the judge: not run: the treatment branch was not launched (control's reading row did not pass (exit status 2))",
+     "the identical-state comparison: not run: the treatment branch was not launched (control's reading row did not pass (exit status 2))"
+    ],
+    "judgement": {
+     "status": "none",
+     "scientific_verdict": null,
+     "by": null,
+     "scientific_verdict_meaning": "no final comparison ran (the treatment branch was not launched (control's reading row did not pass (exit status 2))): judge.py gave no verdict and no verdict.json exists; the pair did not complete, and nothing here is evidence for or against the lesson",
+     "judge_exit_status": null,
+     "judge_file": null,
+     "execution_verdict": null,
+     "execution_write_error": null,
+     "branch_readings": [
+      {
+       "arm": "control",
+       "read": true,
+       "row_passed": false,
+       "exit_status": 2,
+       "reader_verdict": "FAIL",
+       "reader_verdict_reason": "a required health failure (1): (state check)",
+       "invalid_reasons": [],
+       "why": null,
+       "exception": null
+      },
+      {
+       "arm": "treatment",
+       "read": false,
+       "row_passed": false
+      }
+     ],
+     "training_ends": [
+      {
+       "arm": "control",
+       "recorded": true,
+       "launched": true,
+       "state": "completed",
+       "success": true,
+       "verdict": null,
+       "failures": [],
+       "resource_failure": null,
+       "guard_stop": null,
+       "last_saved_step": 496450,
+       "end_step": 496450,
+       "failed": false,
+       "summary": "control: training completed successfully at model step 496450"
+      },
+      {
+       "arm": "treatment",
+       "recorded": true,
+       "launched": false,
+       "state": "not_launched",
+       "success": null,
+       "verdict": null,
+       "failures": null,
+       "resource_failure": null,
+       "guard_stop": null,
+       "last_saved_step": null,
+       "end_step": 496450,
+       "failed": true,
+       "summary": "treatment: not launched (control's reading row did not pass (exit status 2))"
+      }
+     ]
+    }
+   },
+   "expected": {
+    "launches": [
+     "control"
+    ],
+    "claims": [
+     "arm_consistency_496350_r2_control_reading"
+    ],
+    "closes": [
+     [
+      "arm_consistency_496350_r2_control_reading",
+      false
+     ]
+    ],
+    "raises": false
+   },
+   "match": true
+  },
+  "B3_control_not_preserved": {
+   "got": {
+    "calls": {
+     "launches": [
+      "control"
+     ],
+     "claims": [
+      "arm_consistency_496350_r2_control_reading"
+     ],
+     "closes": [
+      [
+       "arm_consistency_496350_r2_control_reading",
+       false
+      ]
+     ]
+    },
+    "rc": 1,
+    "raised": null,
+    "final_reading_not_run": true,
+    "verdict": "FAIL",
+    "blocks": [
+     "the final reading: not every branch of the pair was launched with its reading row passing",
+     "control's end state was not preserved (verdict fail)",
+     "the final watcher check: missing (not run)",
+     "a required training branch did not complete successfully, so the experiment did not complete: treatment: not launched (control's end state was not preserved (verdict fail))",
+     "a required branch reading row did not pass, so the experiment did not complete: control: row did not pass, reader exit status 0, reader verdict 'PASS', reader reason 'every window healthy', the reading row did not pass: its endpoint was not preserved (verdict 'fail'); the arm's end receipt: D:\\UEMA_Research\\external\\D\\UEMA_scratch\\h84\\d1_planner_recovery\\attempts\\arm_consistency_496350_r2_state_check_3_a1\\evidence\\check\\B\\B3_control_not_preserved\\receipts\\control\\arm_end.json; treatment: no reading (the branch was not launched or not read)",
+     "the judge: not run: the control branch's endpoint was not preserved",
+     "the identical-state comparison: not run: the control branch's endpoint was not preserved"
+    ],
+    "judgement": {
+     "status": "none",
+     "scientific_verdict": null,
+     "by": null,
+     "scientific_verdict_meaning": "no final comparison ran (the control branch's endpoint was not preserved): judge.py gave no verdict and no verdict.json exists; the pair did not complete, and nothing here is evidence for or against the lesson",
+     "judge_exit_status": null,
+     "judge_file": null,
+     "execution_verdict": null,
+     "execution_write_error": null,
+     "branch_readings": [
+      {
+       "arm": "control",
+       "read": true,
+       "row_passed": false,
+       "exit_status": 0,
+       "reader_verdict": "PASS",
+       "reader_verdict_reason": "every window healthy",
+       "invalid_reasons": [],
+       "why": "the reading row did not pass: its endpoint was not preserved (verdict 'fail'); the arm's end receipt: D:\\UEMA_Research\\external\\D\\UEMA_scratch\\h84\\d1_planner_recovery\\attempts\\arm_consistency_496350_r2_state_check_3_a1\\evidence\\check\\B\\B3_control_not_preserved\\receipts\\control\\arm_end.json",
+       "exception": null
+      },
+      {
+       "arm": "treatment",
+       "read": false,
+       "row_passed": false
+      }
+     ],
+     "training_ends": [
+      {
+       "arm": "control",
+       "recorded": true,
+       "launched": true,
+       "state": "completed",
+       "success": true,
+       "verdict": null,
+       "failures": [],
+       "resource_failure": null,
+       "guard_stop": null,
+       "last_saved_step": 496450,
+       "end_step": 496450,
+       "failed": false,
+       "summary": "control: training completed successfully at model step 496450"
+      },
+      {
+       "arm": "treatment",
+       "recorded": true,
+       "launched": false,
+       "state": "not_launched",
+       "success": null,
+       "verdict": null,
+       "failures": null,
+       "resource_failure": null,
+       "guard_stop": null,
+       "last_saved_step": null,
+       "end_step": 496450,
+       "failed": true,
+       "summary": "treatment: not launched (control's end state was not preserved (verdict fail))"
+      }
+     ]
+    }
+   },
+   "expected": {
+    "launches": [
+     "control"
+    ],
+    "claims": [
+     "arm_consistency_496350_r2_control_reading"
+    ],
+    "closes": [
+     [
+      "arm_consistency_496350_r2_control_reading",
+      false
+     ]
+    ],
+    "raises": false
+   },
+   "match": true
+  },
+  "B4_control_guard_stop": {
+   "got": {
+    "calls": {
+     "launches": [
+      "control"
+     ],
+     "claims": [
+      "arm_consistency_496350_r2_control_reading"
+     ],
+     "closes": [
+      [
+       "arm_consistency_496350_r2_control_reading",
+       false
+      ]
+     ]
+    },
+    "rc": 1,
+    "raised": null,
+    "final_reading_not_run": true,
+    "verdict": "FAIL",
+    "blocks": [
+     "the final reading: not every branch of the pair was launched with its reading row passing",
+     "the engineering guard stopped control ({'file': 'D:\\\\UEMA_scratch\\\\h84\\\\d1_planner_recovery\\\\attempts\\\\arm_consistency_496350_r2_state_check_3_a1\\\\evidence\\\\check\\\\B\\\\B4_control_guard_stop\\\\receipts\\\\control\\\\guard\\\\stop.json'})",
+     "the final watcher check: missing (not run)",
+     "a required training branch did not complete successfully, so the experiment did not complete: control: the engineering guard stopped it ({'file': 'D:\\\\UEMA_scratch\\\\h84\\\\d1_planner_recovery\\\\attempts\\\\arm_consistency_496350_r2_state_check_3_a1\\\\evidence\\\\check\\\\B\\\\B4_control_guard_stop\\\\receipts\\\\control\\\\guard\\\\stop.json'}); treatment: not launched (the engineering guard stopped control ({'file': 'D:\\\\UEMA_scratch\\\\h84\\\\d1_planner_recovery\\\\attempts\\\\arm_consistency_496350_r2_state_check_3_a1\\\\evidence\\\\check\\\\B\\\\B4_control_guard_stop\\\\receipts\\\\control\\\\guard\\\\stop.json'}))",
+     "a required branch reading row did not pass, so the experiment did not complete: control: row did not pass, reader exit status 0, reader verdict 'PASS', reader reason 'every window healthy', the reading row did not pass: an engineering-guard stop is on record; the arm's end receipt: D:\\UEMA_Research\\external\\D\\UEMA_scratch\\h84\\d1_planner_recovery\\attempts\\arm_consistency_496350_r2_state_check_3_a1\\evidence\\check\\B\\B4_control_guard_stop\\receipts\\control\\arm_end.json; treatment: no reading (the branch was not launched or not read)",
+     "the judge: not run: the treatment branch was not launched (the engineering guard stopped control ({'file': 'D:\\\\UEMA_scratch\\\\h84\\\\d1_planner_recovery\\\\attempts\\\\arm_consistency_496350_r2_state_check_3_a1\\\\evidence\\\\check\\\\B\\\\B4_control_guard_stop\\\\receipts\\\\control\\\\guard\\\\stop.json'}))",
+     "the identical-state comparison: not run: the treatment branch was not launched (the engineering guard stopped control ({'file': 'D:\\\\UEMA_scratch\\\\h84\\\\d1_planner_recovery\\\\attempts\\\\arm_consistency_496350_r2_state_check_3_a1\\\\evidence\\\\check\\\\B\\\\B4_control_guard_stop\\\\receipts\\\\control\\\\guard\\\\stop.json'}))",
+     "the engineering guard stopped control: {'file': 'D:\\\\UEMA_scratch\\\\h84\\\\d1_planner_recovery\\\\attempts\\\\arm_consistency_496350_r2_state_check_3_a1\\\\evidence\\\\check\\\\B\\\\B4_control_guard_stop\\\\receipts\\\\control\\\\guard\\\\stop.json'}"
+    ],
+    "judgement": {
+     "status": "none",
+     "scientific_verdict": null,
+     "by": null,
+     "scientific_verdict_meaning": "no final comparison ran (the treatment branch was not launched (the engineering guard stopped control ({'file': 'D:\\\\UEMA_scratch\\\\h84\\\\d1_planner_recovery\\\\attempts\\\\arm_consistency_496350_r2_state_check_3_a1\\\\evidence\\\\check\\\\B\\\\B4_control_guard_stop\\\\receipts\\\\control\\\\guard\\\\stop.json'}))): judge.py gave no verdict and no verdict.json exists; the pair did not complete, and nothing here is evidence for or against the lesson",
+     "judge_exit_status": null,
+     "judge_file": null,
+     "execution_verdict": null,
+     "execution_write_error": null,
+     "branch_readings": [
+      {
+       "arm": "control",
+       "read": true,
+       "row_passed": false,
+       "exit_status": 0,
+       "reader_verdict": "PASS",
+       "reader_verdict_reason": "every window healthy",
+       "invalid_reasons": [],
+       "why": "the reading row did not pass: an engineering-guard stop is on record; the arm's end receipt: D:\\UEMA_Research\\external\\D\\UEMA_scratch\\h84\\d1_planner_recovery\\attempts\\arm_consistency_496350_r2_state_check_3_a1\\evidence\\check\\B\\B4_control_guard_stop\\receipts\\control\\arm_end.json",
+       "exception": null
+      },
+      {
+       "arm": "treatment",
+       "read": false,
+       "row_passed": false
+      }
+     ],
+     "training_ends": [
+      {
+       "arm": "control",
+       "recorded": true,
+       "launched": true,
+       "state": "completed",
+       "success": true,
+       "verdict": null,
+       "failures": [],
+       "resource_failure": null,
+       "guard_stop": {
+        "file": "D:\\UEMA_Research\\external\\D\\UEMA_scratch\\h84\\d1_planner_recovery\\attempts\\arm_consistency_496350_r2_state_check_3_a1\\evidence\\check\\B\\B4_control_guard_stop\\receipts\\control\\guard\\stop.json"
+       },
+       "last_saved_step": 496450,
+       "end_step": 496450,
+       "failed": true,
+       "summary": "control: the engineering guard stopped it ({'file': 'D:\\\\UEMA_scratch\\\\h84\\\\d1_planner_recovery\\\\attempts\\\\arm_consistency_496350_r2_state_check_3_a1\\\\evidence\\\\check\\\\B\\\\B4_control_guard_stop\\\\receipts\\\\control\\\\guard\\\\stop.json'})"
+      },
+      {
+       "arm": "treatment",
+       "recorded": true,
+       "launched": false,
+       "state": "not_launched",
+       "success": null,
+       "verdict": null,
+       "failures": null,
+       "resource_failure": null,
+       "guard_stop": null,
+       "last_saved_step": null,
+       "end_step": 496450,
+       "failed": true,
+       "summary": "treatment: not launched (the engineering guard stopped control ({'file': 'D:\\\\UEMA_scratch\\\\h84\\\\d1_planner_recovery\\\\attempts\\\\arm_consistency_496350_r2_state_check_3_a1\\\\evidence\\\\check\\\\B\\\\B4_control_guard_stop\\\\receipts\\\\control\\\\guard\\\\stop.json'}))"
+      }
+     ]
+    }
+   },
+   "expected": {
+    "launches": [
+     "control"
+    ],
+    "claims": [
+     "arm_consistency_496350_r2_control_reading"
+    ],
+    "closes": [
+     [
+      "arm_consistency_496350_r2_control_reading",
+      false
+     ]
+    ],
+    "raises": false
+   },
+   "match": true
+  },
+  "B5_treatment_not_completed": {
+   "got": {
+    "calls": {
+     "launches": [
+      "control",
+      "treatment"
+     ],
+     "claims": [
+      "arm_consistency_496350_r2_control_reading",
+      "arm_consistency_496350_r2_treatment_reading",
+      "arm_consistency_496350_r2_reading"
+     ],
+     "closes": [
+      [
+       "arm_consistency_496350_r2_control_reading",
+       true
+      ],
+      [
+       "arm_consistency_496350_r2_treatment_reading",
+       false
+      ],
+      [
+       "arm_consistency_496350_r2_reading",
+       false
+      ]
+     ]
+    },
+    "rc": 1,
+    "raised": null,
+    "final_reading_not_run": false,
+    "verdict": "FAIL",
+    "blocks": [
+     "the final reading: not every branch of the pair was launched with its reading row passing",
+     "(state check) the branch ended stopped",
+     "a required training branch did not complete successfully, so the experiment did not complete: treatment: (state check) the branch ended stopped",
+     "a required branch reading row did not pass, so the experiment did not complete: treatment: row did not pass, reader exit status 0, reader verdict 'PASS', reader reason 'every window healthy', the reading row did not pass: the branch did not complete (state 'stopped'); the arm's end receipt: D:\\UEMA_Research\\external\\D\\UEMA_scratch\\h84\\d1_planner_recovery\\attempts\\arm_consistency_496350_r2_state_check_3_a1\\evidence\\check\\B\\B5_treatment_not_completed\\receipts\\treatment\\arm_end.json"
+    ],
+    "judgement": {
+     "status": "own_valid",
+     "scientific_verdict": "NOT ADOPTED",
+     "by": null,
+     "scientific_verdict_meaning": "an execution failure: the pair did not complete (execution_why); judge.py was given the failed branches, so its verdict, if any, is forced by that failure and is not evidence for or against the lesson",
+     "judge_exit_status": 2,
+     "judge_file": "D:\\UEMA_Research\\external\\D\\UEMA_scratch\\h84\\d1_planner_recovery\\attempts\\arm_consistency_496350_r2_state_check_3_a1\\evidence\\check\\B\\B5_treatment_not_completed\\final_reading\\judge_verdict.json",
+     "execution_verdict": "FAIL",
+     "execution_write_error": null,
+     "branch_readings": [
+      {
+       "arm": "control",
+       "read": true,
+       "row_passed": true,
+       "exit_status": 0,
+       "reader_verdict": "PASS",
+       "reader_verdict_reason": "every window healthy",
+       "invalid_reasons": [],
+       "why": null,
+       "exception": null
+      },
+      {
+       "arm": "treatment",
+       "read": true,
+       "row_passed": false,
+       "exit_status": 0,
+       "reader_verdict": "PASS",
+       "reader_verdict_reason": "every window healthy",
+       "invalid_reasons": [],
+       "why": "the reading row did not pass: the branch did not complete (state 'stopped'); the arm's end receipt: D:\\UEMA_Research\\external\\D\\UEMA_scratch\\h84\\d1_planner_recovery\\attempts\\arm_consistency_496350_r2_state_check_3_a1\\evidence\\check\\B\\B5_treatment_not_completed\\receipts\\treatment\\arm_end.json",
+       "exception": null
+      }
+     ],
+     "training_ends": [
+      {
+       "arm": "control",
+       "recorded": true,
+       "launched": true,
+       "state": "completed",
+       "success": true,
+       "verdict": null,
+       "failures": [],
+       "resource_failure": null,
+       "guard_stop": null,
+       "last_saved_step": 496450,
+       "end_step": 496450,
+       "failed": false,
+       "summary": "control: training completed successfully at model step 496450"
+      },
+      {
+       "arm": "treatment",
+       "recorded": true,
+       "launched": true,
+       "state": "stopped",
+       "success": false,
+       "verdict": null,
+       "failures": [
+        "(state check) the branch ended stopped"
+       ],
+       "resource_failure": null,
+       "guard_stop": null,
+       "last_saved_step": 496450,
+       "end_step": 496450,
+       "failed": true,
+       "summary": "treatment: (state check) the branch ended stopped"
+      }
+     ]
+    }
+   },
+   "expected": {
+    "launches": [
+     "control",
+     "treatment"
+    ],
+    "claims": [
+     "arm_consistency_496350_r2_control_reading",
+     "arm_consistency_496350_r2_treatment_reading",
+     "arm_consistency_496350_r2_reading"
+    ],
+    "closes": [
+     [
+      "arm_consistency_496350_r2_control_reading",
+      true
+     ],
+     [
+      "arm_consistency_496350_r2_treatment_reading",
+      false
+     ],
+     [
+      "arm_consistency_496350_r2_reading",
+      false
+     ]
+    ],
+    "raises": false
+   },
+   "match": true
+  },
+  "B6_comparison_raises": {
+   "got": {
+    "calls": {
+     "launches": [
+      "control",
+      "treatment"
+     ],
+     "claims": [
+      "arm_consistency_496350_r2_control_reading",
+      "arm_consistency_496350_r2_treatment_reading",
+      "arm_consistency_496350_r2_reading"
+     ],
+     "closes": [
+      [
+       "arm_consistency_496350_r2_control_reading",
+       true
+      ],
+      [
+       "arm_consistency_496350_r2_treatment_reading",
+       true
+      ],
+      [
+       "arm_consistency_496350_r2_reading",
+       false
+      ]
+     ]
+    },
+    "rc": null,
+    "raised": "RuntimeError: the comparison raised (state check)",
+    "final_reading_not_run": false,
+    "verdict": null,
+    "blocks": null,
+    "judgement": null
+   },
+   "expected": {
+    "launches": [
+     "control",
+     "treatment"
+    ],
+    "claims": [
+     "arm_consistency_496350_r2_control_reading",
+     "arm_consistency_496350_r2_treatment_reading",
+     "arm_consistency_496350_r2_reading"
+    ],
+    "closes": [
+     [
+      "arm_consistency_496350_r2_control_reading",
+      true
+     ],
+     [
+      "arm_consistency_496350_r2_treatment_reading",
+      true
+     ],
+     [
+      "arm_consistency_496350_r2_reading",
+      false
+     ]
+    ],
+    "raises": true
+   },
+   "match": true
+  },
+  "B7_treatment_reader_raises": {
+   "got": {
+    "calls": {
+     "launches": [
+      "control",
+      "treatment"
+     ],
+     "claims": [
+      "arm_consistency_496350_r2_control_reading",
+      "arm_consistency_496350_r2_treatment_reading"
+     ],
+     "closes": [
+      [
+       "arm_consistency_496350_r2_control_reading",
+       true
+      ],
+      [
+       "arm_consistency_496350_r2_treatment_reading",
+       false
+      ]
+     ]
+    },
+    "rc": null,
+    "raised": "RuntimeError: the reader raised (state check)",
+    "final_reading_not_run": false,
+    "verdict": null,
+    "blocks": null,
+    "judgement": null
+   },
+   "expected": {
+    "launches": [
+     "control",
+     "treatment"
+    ],
+    "claims": [
+     "arm_consistency_496350_r2_control_reading",
+     "arm_consistency_496350_r2_treatment_reading"
+    ],
+    "closes": [
+     [
+      "arm_consistency_496350_r2_control_reading",
+      true
+     ],
+     [
+      "arm_consistency_496350_r2_treatment_reading",
+      false
+     ]
+    ],
+    "raises": true
+   },
+   "match": true
+  },
+  "B8_control_row_start_refused": {
+   "got": {
+    "calls": {
+     "launches": [
+      "control"
+     ],
+     "claims": [],
+     "closes": [],
+     "start_refusals": [
+      "arm_consistency_496350_r2_control_reading"
+     ]
+    },
+    "rc": 1,
+    "raised": null,
+    "final_reading_not_run": true,
+    "verdict": "FAIL",
+    "blocks": [
+     "the final reading: not every branch of the pair was launched with its reading row passing",
+     "control's reading row did not pass (not run: the branch's reading row's start was not admitted)",
+     "the final watcher check: missing (not run)",
+     "a required training branch did not complete successfully, so the experiment did not complete: treatment: not launched (control's reading row did not pass (not run: the branch's reading row's start was not admitted))",
+     "a required branch reading row did not pass, so the experiment did not complete: control: row did not pass, reader exit status None, reader verdict None, not run: the branch's reading row's start was not admitted; treatment: no reading (the branch was not launched or not read)",
+     "the judge: not run: the treatment branch was not launched (control's reading row did not pass (not run: the branch's reading row's start was not admitted))",
+     "the identical-state comparison: not run: the treatment branch was not launched (control's reading row did not pass (not run: the branch's reading row's start was not admitted))"
+    ],
+    "judgement": {
+     "status": "none",
+     "scientific_verdict": null,
+     "by": null,
+     "scientific_verdict_meaning": "no final comparison ran (the treatment branch was not launched (control's reading row did not pass (not run: the branch's reading row's start was not admitted))): judge.py gave no verdict and no verdict.json exists; the pair did not complete, and nothing here is evidence for or against the lesson",
+     "judge_exit_status": null,
+     "judge_file": null,
+     "execution_verdict": null,
+     "execution_write_error": null,
+     "branch_readings": [
+      {
+       "arm": "control",
+       "read": true,
+       "row_passed": false,
+       "exit_status": null,
+       "reader_verdict": null,
+       "reader_verdict_reason": null,
+       "invalid_reasons": null,
+       "why": "not run: the branch's reading row's start was not admitted",
+       "exception": null
+      },
+      {
+       "arm": "treatment",
+       "read": false,
+       "row_passed": false
+      }
+     ],
+     "training_ends": [
+      {
+       "arm": "control",
+       "recorded": true,
+       "launched": true,
+       "state": "completed",
+       "success": true,
+       "verdict": null,
+       "failures": [],
+       "resource_failure": null,
+       "guard_stop": null,
+       "last_saved_step": 496450,
+       "end_step": 496450,
+       "failed": false,
+       "summary": "control: training completed successfully at model step 496450"
+      },
+      {
+       "arm": "treatment",
+       "recorded": true,
+       "launched": false,
+       "state": "not_launched",
+       "success": null,
+       "verdict": null,
+       "failures": null,
+       "resource_failure": null,
+       "guard_stop": null,
+       "last_saved_step": null,
+       "end_step": 496450,
+       "failed": true,
+       "summary": "treatment: not launched (control's reading row did not pass (not run: the branch's reading row's start was not admitted))"
+      }
+     ]
+    }
+   },
+   "expected": {
+    "launches": [
+     "control"
+    ],
+    "claims": [],
+    "closes": [],
+    "raises": false
+   },
+   "match": true
+  },
+  "B9_control_row_close_fails": {
+   "got": {
+    "calls": {
+     "launches": [
+      "control"
+     ],
+     "claims": [
+      "arm_consistency_496350_r2_control_reading"
+     ],
+     "closes": [
+      [
+       "arm_consistency_496350_r2_control_reading",
+       true
+      ]
+     ]
+    },
+    "rc": 1,
+    "raised": null,
+    "final_reading_not_run": true,
+    "verdict": "FAIL",
+    "blocks": [
+     "the final reading: not every branch of the pair was launched with its reading row passing",
+     "control's reading row was not closed ((state check) the row's close failed)",
+     "the final watcher check: missing (not run)",
+     "the control branch's reading row's close: (state check) the row's close failed",
+     "a required training branch did not complete successfully, so the experiment did not complete: treatment: not launched (control's reading row was not closed ((state check) the row's close failed))",
+     "a required branch reading row did not pass, so the experiment did not complete: treatment: no reading (the branch was not launched or not read)",
+     "the judge: not run: the treatment branch was not launched (control's reading row was not closed ((state check) the row's close failed))",
+     "the identical-state comparison: not run: the treatment branch was not launched (control's reading row was not closed ((state check) the row's close failed))"
+    ],
+    "judgement": {
+     "status": "none",
+     "scientific_verdict": null,
+     "by": null,
+     "scientific_verdict_meaning": "no final comparison ran (the treatment branch was not launched (control's reading row was not closed ((state check) the row's close failed))): judge.py gave no verdict and no verdict.json exists; the pair did not complete, and nothing here is evidence for or against the lesson",
+     "judge_exit_status": null,
+     "judge_file": null,
+     "execution_verdict": null,
+     "execution_write_error": null,
+     "branch_readings": [
+      {
+       "arm": "control",
+       "read": true,
+       "row_passed": true,
+       "exit_status": 0,
+       "reader_verdict": "PASS",
+       "reader_verdict_reason": "every window healthy",
+       "invalid_reasons": [],
+       "why": null,
+       "exception": null
+      },
+      {
+       "arm": "treatment",
+       "read": false,
+       "row_passed": false
+      }
+     ],
+     "training_ends": [
+      {
+       "arm": "control",
+       "recorded": true,
+       "launched": true,
+       "state": "completed",
+       "success": true,
+       "verdict": null,
+       "failures": [],
+       "resource_failure": null,
+       "guard_stop": null,
+       "last_saved_step": 496450,
+       "end_step": 496450,
+       "failed": false,
+       "summary": "control: training completed successfully at model step 496450"
+      },
+      {
+       "arm": "treatment",
+       "recorded": true,
+       "launched": false,
+       "state": "not_launched",
+       "success": null,
+       "verdict": null,
+       "failures": null,
+       "resource_failure": null,
+       "guard_stop": null,
+       "last_saved_step": null,
+       "end_step": 496450,
+       "failed": true,
+       "summary": "treatment: not launched (control's reading row was not closed ((state check) the row's close failed))"
+      }
+     ]
+    }
+   },
+   "expected": {
+    "launches": [
+     "control"
+    ],
+    "claims": [
+     "arm_consistency_496350_r2_control_reading"
+    ],
+    "closes": [
+     [
+      "arm_consistency_496350_r2_control_reading",
+      true
+     ]
+    ],
+    "raises": false
+   },
+   "match": true
+  },
+  "B10_control_reader_raises": {
+   "got": {
+    "calls": {
+     "launches": [
+      "control"
+     ],
+     "claims": [
+      "arm_consistency_496350_r2_control_reading"
+     ],
+     "closes": [
+      [
+       "arm_consistency_496350_r2_control_reading",
+       false
+      ]
+     ]
+    },
+    "rc": null,
+    "raised": "RuntimeError: the reader raised (state check)",
+    "final_reading_not_run": false,
+    "verdict": null,
+    "blocks": null,
+    "judgement": null
+   },
+   "expected": {
+    "launches": [
+     "control"
+    ],
+    "claims": [
+     "arm_consistency_496350_r2_control_reading"
+    ],
+    "closes": [
+     [
+      "arm_consistency_496350_r2_control_reading",
+      false
+     ]
+    ],
+    "raises": true
+   },
+   "match": true
+  },
+  "B11_control_reader_exit_3": {
+   "got": {
+    "calls": {
+     "launches": [
+      "control"
+     ],
+     "claims": [
+      "arm_consistency_496350_r2_control_reading"
+     ],
+     "closes": [
+      [
+       "arm_consistency_496350_r2_control_reading",
+       false
+      ]
+     ]
+    },
+    "rc": 1,
+    "raised": null,
+    "final_reading_not_run": true,
+    "verdict": "FAIL",
+    "blocks": [
+     "INVALID: the final reading: not every branch of the pair was launched with its reading row passing",
+     "control's reading row did not pass (exit status 3)",
+     "the final watcher check: missing (not run)",
+     "a required training branch did not complete successfully, so the experiment did not complete: treatment: not launched (control's reading row did not pass (exit status 3))",
+     "a required branch reading row did not pass, so the experiment did not complete: control: row did not pass, reader exit status 3, reader verdict 'INVALID', reader reason 'measurement incomplete: (state check) required detail records missing'; treatment: no reading (the branch was not launched or not read)",
+     "the judge: not run: the treatment branch was not launched (control's reading row did not pass (exit status 3))",
+     "the identical-state comparison: not run: the treatment branch was not launched (control's reading row did not pass (exit status 3))"
+    ],
+    "judgement": {
+     "status": "none",
+     "scientific_verdict": null,
+     "by": null,
+     "scientific_verdict_meaning": "no final comparison ran (the treatment branch was not launched (control's reading row did not pass (exit status 3))): judge.py gave no verdict and no verdict.json exists; the pair did not complete, and nothing here is evidence for or against the lesson",
+     "judge_exit_status": null,
+     "judge_file": null,
+     "execution_verdict": null,
+     "execution_write_error": null,
+     "branch_readings": [
+      {
+       "arm": "control",
+       "read": true,
+       "row_passed": false,
+       "exit_status": 3,
+       "reader_verdict": "INVALID",
+       "reader_verdict_reason": "measurement incomplete: (state check) required detail records missing",
+       "invalid_reasons": [
+        {
+         "kind": "detail_records",
+         "text": "(state check) required detail records missing"
+        }
+       ],
+       "why": null,
+       "exception": null
+      },
+      {
+       "arm": "treatment",
+       "read": false,
+       "row_passed": false
+      }
+     ],
+     "training_ends": [
+      {
+       "arm": "control",
+       "recorded": true,
+       "launched": true,
+       "state": "completed",
+       "success": true,
+       "verdict": null,
+       "failures": [],
+       "resource_failure": null,
+       "guard_stop": null,
+       "last_saved_step": 496450,
+       "end_step": 496450,
+       "failed": false,
+       "summary": "control: training completed successfully at model step 496450"
+      },
+      {
+       "arm": "treatment",
+       "recorded": true,
+       "launched": false,
+       "state": "not_launched",
+       "success": null,
+       "verdict": null,
+       "failures": null,
+       "resource_failure": null,
+       "guard_stop": null,
+       "last_saved_step": null,
+       "end_step": 496450,
+       "failed": true,
+       "summary": "treatment: not launched (control's reading row did not pass (exit status 3))"
+      }
+     ]
+    }
+   },
+   "expected": {
+    "launches": [
+     "control"
+    ],
+    "claims": [
+     "arm_consistency_496350_r2_control_reading"
+    ],
+    "closes": [
+     [
+      "arm_consistency_496350_r2_control_reading",
+      false
+     ]
+    ],
+    "raises": false
+   },
+   "match": true
+  },
+  "B12_control_start_unverified": {
+   "got": {
+    "calls": {
+     "launches": [
+      "control"
+     ],
+     "claims": [
+      "arm_consistency_496350_r2_control_reading"
+     ],
+     "closes": [
+      [
+       "arm_consistency_496350_r2_control_reading",
+       false
+      ]
+     ]
+    },
+    "rc": 1,
+    "raised": null,
+    "final_reading_not_run": true,
+    "verdict": "FAIL",
+    "blocks": [
+     "the final reading: not every branch of the pair was launched with its reading row passing",
+     "control's reading row did not pass (the reading row did not pass: its start was not verified unchanged (start_unchanged None); the arm's end receipt: D:\\UEMA_Research\\external\\D\\UEMA_scratch\\h84\\d1_planner_recovery\\attempts\\arm_consistency_496350_r2_state_check_3_a1\\evidence\\check\\B\\B12_control_start_unverified\\receipts\\control\\arm_end.json)",
+     "the final watcher check: missing (not run)",
+     "a required training branch did not complete successfully, so the experiment did not complete: treatment: not launched (control's reading row did not pass (the reading row did not pass: its start was not verified unchanged (start_unchanged None); the arm's end receipt: D:\\UEMA_Research\\external\\D\\UEMA_scratch\\h84\\d1_planner_recovery\\attempts\\arm_consistency_496350_r2_state_check_3_a1\\evidence\\check\\B\\B12_control_start_unverified\\receipts\\control\\arm_end.json))",
+     "a required branch reading row did not pass, so the experiment did not complete: control: row did not pass, reader exit status 0, reader verdict 'PASS', reader reason 'every window healthy', the reading row did not pass: its start was not verified unchanged (start_unchanged None); the arm's end receipt: D:\\UEMA_Research\\external\\D\\UEMA_scratch\\h84\\d1_planner_recovery\\attempts\\arm_consistency_496350_r2_state_check_3_a1\\evidence\\check\\B\\B12_control_start_unverified\\receipts\\control\\arm_end.json; treatment: no reading (the branch was not launched or not read)",
+     "the judge: not run: the treatment branch was not launched (control's reading row did not pass (the reading row did not pass: its start was not verified unchanged (start_unchanged None); the arm's end receipt: D:\\UEMA_Research\\external\\D\\UEMA_scratch\\h84\\d1_planner_recovery\\attempts\\arm_consistency_496350_r2_state_check_3_a1\\evidence\\check\\B\\B12_control_start_unverified\\receipts\\control\\arm_end.json))",
+     "the identical-state comparison: not run: the treatment branch was not launched (control's reading row did not pass (the reading row did not pass: its start was not verified unchanged (start_unchanged None); the arm's end receipt: D:\\UEMA_Research\\external\\D\\UEMA_scratch\\h84\\d1_planner_recovery\\attempts\\arm_consistency_496350_r2_state_check_3_a1\\evidence\\check\\B\\B12_control_start_unverified\\receipts\\control\\arm_end.json))"
+    ],
+    "judgement": {
+     "status": "none",
+     "scientific_verdict": null,
+     "by": null,
+     "scientific_verdict_meaning": "no final comparison ran (the treatment branch was not launched (control's reading row did not pass (the reading row did not pass: its start was not verified unchanged (start_unchanged None); the arm's end receipt: D:\\UEMA_Research\\external\\D\\UEMA_scratch\\h84\\d1_planner_recovery\\attempts\\arm_consistency_496350_r2_state_check_3_a1\\evidence\\check\\B\\B12_control_start_unverified\\receipts\\control\\arm_end.json))): judge.py gave no verdict and no verdict.json exists; the pair did not complete, and nothing here is evidence for or against the lesson",
+     "judge_exit_status": null,
+     "judge_file": null,
+     "execution_verdict": null,
+     "execution_write_error": null,
+     "branch_readings": [
+      {
+       "arm": "control",
+       "read": true,
+       "row_passed": false,
+       "exit_status": 0,
+       "reader_verdict": "PASS",
+       "reader_verdict_reason": "every window healthy",
+       "invalid_reasons": [],
+       "why": "the reading row did not pass: its start was not verified unchanged (start_unchanged None); the arm's end receipt: D:\\UEMA_Research\\external\\D\\UEMA_scratch\\h84\\d1_planner_recovery\\attempts\\arm_consistency_496350_r2_state_check_3_a1\\evidence\\check\\B\\B12_control_start_unverified\\receipts\\control\\arm_end.json",
+       "exception": null
+      },
+      {
+       "arm": "treatment",
+       "read": false,
+       "row_passed": false
+      }
+     ],
+     "training_ends": [
+      {
+       "arm": "control",
+       "recorded": true,
+       "launched": true,
+       "state": "completed",
+       "success": true,
+       "verdict": null,
+       "failures": [],
+       "resource_failure": null,
+       "guard_stop": null,
+       "last_saved_step": 496450,
+       "end_step": 496450,
+       "failed": false,
+       "summary": "control: training completed successfully at model step 496450"
+      },
+      {
+       "arm": "treatment",
+       "recorded": true,
+       "launched": false,
+       "state": "not_launched",
+       "success": null,
+       "verdict": null,
+       "failures": null,
+       "resource_failure": null,
+       "guard_stop": null,
+       "last_saved_step": null,
+       "end_step": 496450,
+       "failed": true,
+       "summary": "treatment: not launched (control's reading row did not pass (the reading row did not pass: its start was not verified unchanged (start_unchanged None); the arm's end receipt: D:\\UEMA_Research\\external\\D\\UEMA_scratch\\h84\\d1_planner_recovery\\attempts\\arm_consistency_496350_r2_state_check_3_a1\\evidence\\check\\B\\B12_control_start_unverified\\receipts\\control\\arm_end.json))"
+      }
+     ]
+    }
+   },
+   "expected": {
+    "launches": [
+     "control"
+    ],
+    "claims": [
+     "arm_consistency_496350_r2_control_reading"
+    ],
+    "closes": [
+     [
+      "arm_consistency_496350_r2_control_reading",
+      false
+     ]
+    ],
+    "raises": false
+   },
+   "match": true
+  },
+  "B13_treatment_start_changed": {
+   "got": {
+    "calls": {
+     "launches": [
+      "control",
+      "treatment"
+     ],
+     "claims": [
+      "arm_consistency_496350_r2_control_reading",
+      "arm_consistency_496350_r2_treatment_reading",
+      "arm_consistency_496350_r2_reading"
+     ],
+     "closes": [
+      [
+       "arm_consistency_496350_r2_control_reading",
+       true
+      ],
+      [
+       "arm_consistency_496350_r2_treatment_reading",
+       false
+      ],
+      [
+       "arm_consistency_496350_r2_reading",
+       false
+      ]
+     ]
+    },
+    "rc": 1,
+    "raised": null,
+    "final_reading_not_run": false,
+    "verdict": "FAIL",
+    "blocks": [
+     "the final reading: not every branch of the pair was launched with its reading row passing",
+     "a required branch reading row did not pass, so the experiment did not complete: treatment: row did not pass, reader exit status 0, reader verdict 'PASS', reader reason 'every window healthy', the reading row did not pass: its start was not verified unchanged (start_unchanged False); the arm's end receipt: D:\\UEMA_Research\\external\\D\\UEMA_scratch\\h84\\d1_planner_recovery\\attempts\\arm_consistency_496350_r2_state_check_3_a1\\evidence\\check\\B\\B13_treatment_start_changed\\receipts\\treatment\\arm_end.json"
+    ],
+    "judgement": {
+     "status": "own_valid",
+     "scientific_verdict": "NOT ADOPTED",
+     "by": null,
+     "scientific_verdict_meaning": "an execution failure: the pair did not complete (execution_why); judge.py was given the failed branches, so its verdict, if any, is forced by that failure and is not evidence for or against the lesson",
+     "judge_exit_status": 2,
+     "judge_file": "D:\\UEMA_Research\\external\\D\\UEMA_scratch\\h84\\d1_planner_recovery\\attempts\\arm_consistency_496350_r2_state_check_3_a1\\evidence\\check\\B\\B13_treatment_start_changed\\final_reading\\judge_verdict.json",
+     "execution_verdict": "FAIL",
+     "execution_write_error": null,
+     "branch_readings": [
+      {
+       "arm": "control",
+       "read": true,
+       "row_passed": true,
+       "exit_status": 0,
+       "reader_verdict": "PASS",
+       "reader_verdict_reason": "every window healthy",
+       "invalid_reasons": [],
+       "why": null,
+       "exception": null
+      },
+      {
+       "arm": "treatment",
+       "read": true,
+       "row_passed": false,
+       "exit_status": 0,
+       "reader_verdict": "PASS",
+       "reader_verdict_reason": "every window healthy",
+       "invalid_reasons": [],
+       "why": "the reading row did not pass: its start was not verified unchanged (start_unchanged False); the arm's end receipt: D:\\UEMA_Research\\external\\D\\UEMA_scratch\\h84\\d1_planner_recovery\\attempts\\arm_consistency_496350_r2_state_check_3_a1\\evidence\\check\\B\\B13_treatment_start_changed\\receipts\\treatment\\arm_end.json",
+       "exception": null
+      }
+     ],
+     "training_ends": [
+      {
+       "arm": "control",
+       "recorded": true,
+       "launched": true,
+       "state": "completed",
+       "success": true,
+       "verdict": null,
+       "failures": [],
+       "resource_failure": null,
+       "guard_stop": null,
+       "last_saved_step": 496450,
+       "end_step": 496450,
+       "failed": false,
+       "summary": "control: training completed successfully at model step 496450"
+      },
+      {
+       "arm": "treatment",
+       "recorded": true,
+       "launched": true,
+       "state": "completed",
+       "success": true,
+       "verdict": null,
+       "failures": [],
+       "resource_failure": null,
+       "guard_stop": null,
+       "last_saved_step": 496450,
+       "end_step": 496450,
+       "failed": false,
+       "summary": "treatment: training completed successfully at model step 496450"
+      }
+     ]
+    }
+   },
+   "expected": {
+    "launches": [
+     "control",
+     "treatment"
+    ],
+    "claims": [
+     "arm_consistency_496350_r2_control_reading",
+     "arm_consistency_496350_r2_treatment_reading",
+     "arm_consistency_496350_r2_reading"
+    ],
+    "closes": [
+     [
+      "arm_consistency_496350_r2_control_reading",
+      true
+     ],
+     [
+      "arm_consistency_496350_r2_treatment_reading",
+      false
+     ],
+     [
+      "arm_consistency_496350_r2_reading",
+      false
+     ]
+    ],
+    "raises": false
+   },
+   "match": true
+  },
+  "B14_control_recorded_failure": {
+   "got": {
+    "calls": {
+     "launches": [
+      "control"
+     ],
+     "claims": [
+      "arm_consistency_496350_r2_control_reading"
+     ],
+     "closes": [
+      [
+       "arm_consistency_496350_r2_control_reading",
+       true
+      ]
+     ]
+    },
+    "rc": 1,
+    "raised": null,
+    "final_reading_not_run": true,
+    "verdict": "FAIL",
+    "blocks": [
+     "(state check) the final watcher check: STOP-LEVEL CROSSING",
+     "the final reading: not every branch of the pair was launched with its reading row passing",
+     "control's training end does not read success true (success False: (state check) the final watcher check: STOP-LEVEL CROSSING)",
+     "the final watcher check: missing (not run)",
+     "a required training branch did not complete successfully, so the experiment did not complete: control: (state check) the final watcher check: STOP-LEVEL CROSSING; treatment: not launched (control's training end does not read success true (success False: (state check) the final watcher check: STOP-LEVEL CROSSING))",
+     "a required branch reading row did not pass, so the experiment did not complete: treatment: no reading (the branch was not launched or not read)",
+     "the judge: not run: the treatment branch was not launched (control's training end does not read success true (success False: (state check) the final watcher check: STOP-LEVEL CROSSING))",
+     "the identical-state comparison: not run: the treatment branch was not launched (control's training end does not read success true (success False: (state check) the final watcher check: STOP-LEVEL CROSSING))"
+    ],
+    "judgement": {
+     "status": "none",
+     "scientific_verdict": null,
+     "by": null,
+     "scientific_verdict_meaning": "no final comparison ran (the treatment branch was not launched (control's training end does not read success true (success False: (state check) the final watcher check: STOP-LEVEL CROSSING))): judge.py gave no verdict and no verdict.json exists; the pair did not complete, and nothing here is evidence for or against the lesson",
+     "judge_exit_status": null,
+     "judge_file": null,
+     "execution_verdict": null,
+     "execution_write_error": null,
+     "branch_readings": [
+      {
+       "arm": "control",
+       "read": true,
+       "row_passed": true,
+       "exit_status": 0,
+       "reader_verdict": "PASS",
+       "reader_verdict_reason": "every window healthy",
+       "invalid_reasons": [],
+       "why": null,
+       "exception": null
+      },
+      {
+       "arm": "treatment",
+       "read": false,
+       "row_passed": false
+      }
+     ],
+     "training_ends": [
+      {
+       "arm": "control",
+       "recorded": true,
+       "launched": true,
+       "state": "completed",
+       "success": false,
+       "verdict": null,
+       "failures": [
+        "(state check) the final watcher check: STOP-LEVEL CROSSING"
+       ],
+       "resource_failure": null,
+       "guard_stop": null,
+       "last_saved_step": 496450,
+       "end_step": 496450,
+       "failed": true,
+       "summary": "control: (state check) the final watcher check: STOP-LEVEL CROSSING"
+      },
+      {
+       "arm": "treatment",
+       "recorded": true,
+       "launched": false,
+       "state": "not_launched",
+       "success": null,
+       "verdict": null,
+       "failures": null,
+       "resource_failure": null,
+       "guard_stop": null,
+       "last_saved_step": null,
+       "end_step": 496450,
+       "failed": true,
+       "summary": "treatment: not launched (control's training end does not read success true (success False: (state check) the final watcher check: STOP-LEVEL CROSSING))"
+      }
+     ]
+    }
+   },
+   "expected": {
+    "launches": [
+     "control"
+    ],
+    "claims": [
+     "arm_consistency_496350_r2_control_reading"
+    ],
+    "closes": [
+     [
+      "arm_consistency_496350_r2_control_reading",
+      true
+     ]
+    ],
+    "raises": false
+   },
+   "match": true
+  },
+  "B15_control_success_missing": {
+   "got": {
+    "calls": {
+     "launches": [
+      "control"
+     ],
+     "claims": [
+      "arm_consistency_496350_r2_control_reading"
+     ],
+     "closes": [
+      [
+       "arm_consistency_496350_r2_control_reading",
+       true
+      ]
+     ]
+    },
+    "rc": 1,
+    "raised": null,
+    "final_reading_not_run": true,
+    "verdict": "FAIL",
+    "blocks": [
+     "the arm's training end records no success and no failures",
+     "the final reading: not every branch of the pair was launched with its reading row passing",
+     "control's training end does not read success true (success None: no reason recorded)",
+     "the final watcher check: missing (not run)",
+     "a required training branch did not complete successfully, so the experiment did not complete: control: its end receipt does not read success true (no reason recorded); treatment: not launched (control's training end does not read success true (success None: no reason recorded))",
+     "a required branch reading row did not pass, so the experiment did not complete: treatment: no reading (the branch was not launched or not read)",
+     "the judge: not run: the treatment branch was not launched (control's training end does not read success true (success None: no reason recorded))",
+     "the identical-state comparison: not run: the treatment branch was not launched (control's training end does not read success true (success None: no reason recorded))"
+    ],
+    "judgement": {
+     "status": "none",
+     "scientific_verdict": null,
+     "by": null,
+     "scientific_verdict_meaning": "no final comparison ran (the treatment branch was not launched (control's training end does not read success true (success None: no reason recorded))): judge.py gave no verdict and no verdict.json exists; the pair did not complete, and nothing here is evidence for or against the lesson",
+     "judge_exit_status": null,
+     "judge_file": null,
+     "execution_verdict": null,
+     "execution_write_error": null,
+     "branch_readings": [
+      {
+       "arm": "control",
+       "read": true,
+       "row_passed": true,
+       "exit_status": 0,
+       "reader_verdict": "PASS",
+       "reader_verdict_reason": "every window healthy",
+       "invalid_reasons": [],
+       "why": null,
+       "exception": null
+      },
+      {
+       "arm": "treatment",
+       "read": false,
+       "row_passed": false
+      }
+     ],
+     "training_ends": [
+      {
+       "arm": "control",
+       "recorded": true,
+       "launched": true,
+       "state": "completed",
+       "success": null,
+       "verdict": null,
+       "failures": [],
+       "resource_failure": null,
+       "guard_stop": null,
+       "last_saved_step": 496450,
+       "end_step": 496450,
+       "failed": true,
+       "summary": "control: its end receipt does not read success true (no reason recorded)"
+      },
+      {
+       "arm": "treatment",
+       "recorded": true,
+       "launched": false,
+       "state": "not_launched",
+       "success": null,
+       "verdict": null,
+       "failures": null,
+       "resource_failure": null,
+       "guard_stop": null,
+       "last_saved_step": null,
+       "end_step": 496450,
+       "failed": true,
+       "summary": "treatment: not launched (control's training end does not read success true (success None: no reason recorded))"
+      }
+     ]
+    }
+   },
+   "expected": {
+    "launches": [
+     "control"
+    ],
+    "claims": [
+     "arm_consistency_496350_r2_control_reading"
+    ],
+    "closes": [
+     [
+      "arm_consistency_496350_r2_control_reading",
+      true
+     ]
+    ],
+    "raises": false
+   },
+   "match": true
+  }
+ },
+ "part_c": {
+  "C1_treatment_row_failed": {
+   "branch_failures": [
+    "treatment: its reading row did not pass ((state check) the treatment did not pass its row)"
+   ],
+   "match": true
+  },
+  "C2_both_rows_passed": {
+   "branch_failures": [],
+   "match": true
+  },
+  "C3_treatment_training_failed": {
+   "branch_failures": [
+    "execution failure (training end) treatment: (state check) a recorded failure"
+   ],
+   "match": true
+  }
+ },
+ "part_d": {
+  "D1_valid_improvement": {
+   "registry": "PASS",
+   "registry_why": "key 'verdict' of D:\\UEMA_Research\\external\\D\\UEMA_scratch\\h84\\d1_planner_recovery\\attempts\\arm_consistency_496350_r2_state_check_3_a1\\evidence\\check\\D\\D1_valid_improvement\\final_reading\\verdict.json",
+   "expected": "PASS",
+   "match": true,
+   "note": [],
+   "adapter": {
+    "at": "Oct 23, 2026, 04:23:02 PM PDT",
+    "verdict": "PASS",
+    "execution_why": "the final phase executed validly: both branch reading rows passed, the comparison exited 0 and judge.py wrote 'PROPOSE FOR ADOPTION (candidate-learning pilot; no automatic promotion)' (exit status 0)",
+    "execution_rule": "FAIL: a required training branch did not complete successfully (a recorded failure, a resource failure, an engineering-guard stop or a last saved step that is not the end step; no training-end record is a failure) or a required branch reading row did not pass (the reader's raw status kept), every failure named; for a completed pair INVALID: the phase raised, the comparison or the judgement is missing or invalid, or the judgement is not judge.py's own; else PASS, whatever the scientific verdict (a valid NOT ADOPTED only after both training branches and readings completed)",
+    "branch_readings": [
+     {
+      "arm": "control",
+      "read": true,
+      "row_passed": true,
+      "exit_status": 0,
+      "reader_verdict": "PASS",
+      "reader_verdict_reason": "every window healthy",
+      "invalid_reasons": [],
+      "why": null,
+      "exception": null
+     },
+     {
+      "arm": "treatment",
+      "read": true,
+      "row_passed": true,
+      "exit_status": 0,
+      "reader_verdict": "PASS",
+      "reader_verdict_reason": "every window healthy",
+      "invalid_reasons": [],
+      "why": null,
+      "exception": null
+     }
+    ],
+    "training_ends": [
+     {
+      "arm": "control",
+      "recorded": true,
+      "launched": true,
+      "state": "completed",
+      "success": true,
+      "verdict": null,
+      "failures": [],
+      "resource_failure": null,
+      "guard_stop": null,
+      "last_saved_step": 496450,
+      "end_step": 496450,
+      "failed": false,
+      "summary": "control: training completed successfully at model step 496450"
+     },
+     {
+      "arm": "treatment",
+      "recorded": true,
+      "launched": true,
+      "state": "completed",
+      "success": true,
+      "verdict": null,
+      "failures": [],
+      "resource_failure": null,
+      "guard_stop": null,
+      "last_saved_step": 496450,
+      "end_step": 496450,
+      "failed": false,
+      "summary": "treatment: training completed successfully at model step 496450"
+     }
+    ],
+    "scientific_verdict_meaning": "judge.py's own judgement of a completed comparison: both training branches and both readings completed",
+    "scientific_verdict": "PROPOSE FOR ADOPTION (candidate-learning pilot; no automatic promotion)",
+    "scientific_failing": [],
+    "scientific_invalid": [],
+    "scientific_by": null,
+    "scientific_why": null,
+    "judge_file": "D:\\UEMA_Research\\external\\D\\UEMA_scratch\\h84\\d1_planner_recovery\\attempts\\arm_consistency_496350_r2_state_check_3_a1\\evidence\\check\\D\\D1_valid_improvement\\final_reading\\judge_verdict.json",
+    "judge_file_sha256": "4cc15f553a11631ddf047a7779145cc38c3b40e57eadff0b4096bb69c9f98ce0",
+    "judge_exit_status": 0,
+    "judgement_is_judge_py_own": true,
+    "comparison_exit_status": 0,
+    "rows_and_judgement_ok": true
+   },
+   "owner_end_verdict": "PASS",
+   "judge_blocks": [],
+   "blocks": [],
+   "closes": [
+    [
+     "arm_consistency_496350_r2_control_reading",
+     true
+    ],
+    [
+     "arm_consistency_496350_r2_treatment_reading",
+     true
+    ],
+    [
+     "arm_consistency_496350_r2_reading",
+     true
+    ]
+   ],
+   "raised": null
+  },
+  "D2_valid_no_improvement": {
+   "registry": "PASS",
+   "registry_why": "key 'verdict' of D:\\UEMA_Research\\external\\D\\UEMA_scratch\\h84\\d1_planner_recovery\\attempts\\arm_consistency_496350_r2_state_check_3_a1\\evidence\\check\\D\\D2_valid_no_improvement\\final_reading\\verdict.json",
+   "expected": "PASS",
+   "match": true,
+   "note": [],
+   "adapter": {
+    "at": "Oct 23, 2026, 04:23:02 PM PDT",
+    "verdict": "PASS",
+    "execution_why": "the final phase executed validly: both branch reading rows passed, the comparison exited 0 and judge.py wrote 'NOT ADOPTED' (exit status 2)",
+    "execution_rule": "FAIL: a required training branch did not complete successfully (a recorded failure, a resource failure, an engineering-guard stop or a last saved step that is not the end step; no training-end record is a failure) or a required branch reading row did not pass (the reader's raw status kept), every failure named; for a completed pair INVALID: the phase raised, the comparison or the judgement is missing or invalid, or the judgement is not judge.py's own; else PASS, whatever the scientific verdict (a valid NOT ADOPTED only after both training branches and readings completed)",
+    "branch_readings": [
+     {
+      "arm": "control",
+      "read": true,
+      "row_passed": true,
+      "exit_status": 0,
+      "reader_verdict": "PASS",
+      "reader_verdict_reason": "every window healthy",
+      "invalid_reasons": [],
+      "why": null,
+      "exception": null
+     },
+     {
+      "arm": "treatment",
+      "read": true,
+      "row_passed": true,
+      "exit_status": 0,
+      "reader_verdict": "PASS",
+      "reader_verdict_reason": "every window healthy",
+      "invalid_reasons": [],
+      "why": null,
+      "exception": null
+     }
+    ],
+    "training_ends": [
+     {
+      "arm": "control",
+      "recorded": true,
+      "launched": true,
+      "state": "completed",
+      "success": true,
+      "verdict": null,
+      "failures": [],
+      "resource_failure": null,
+      "guard_stop": null,
+      "last_saved_step": 496450,
+      "end_step": 496450,
+      "failed": false,
+      "summary": "control: training completed successfully at model step 496450"
+     },
+     {
+      "arm": "treatment",
+      "recorded": true,
+      "launched": true,
+      "state": "completed",
+      "success": true,
+      "verdict": null,
+      "failures": [],
+      "resource_failure": null,
+      "guard_stop": null,
+      "last_saved_step": 496450,
+      "end_step": 496450,
+      "failed": false,
+      "summary": "treatment: training completed successfully at model step 496450"
+     }
+    ],
+    "scientific_verdict_meaning": "judge.py's own judgement of a completed comparison: both training branches and both readings completed",
+    "scientific_verdict": "NOT ADOPTED",
+    "scientific_failing": [
+     "(state check) a failing rule"
+    ],
+    "scientific_invalid": [],
+    "scientific_by": null,
+    "scientific_why": null,
+    "judge_file": "D:\\UEMA_Research\\external\\D\\UEMA_scratch\\h84\\d1_planner_recovery\\attempts\\arm_consistency_496350_r2_state_check_3_a1\\evidence\\check\\D\\D2_valid_no_improvement\\final_reading\\judge_verdict.json",
+    "judge_file_sha256": "98e8aba15b451647c72bb24a2de77cec51d9e319bb61ddd209b6cf1ed3cb7f18",
+    "judge_exit_status": 2,
+    "judgement_is_judge_py_own": true,
+    "comparison_exit_status": 0,
+    "rows_and_judgement_ok": true
+   },
+   "owner_end_verdict": "PASS",
+   "judge_blocks": [],
+   "blocks": [],
+   "closes": [
+    [
+     "arm_consistency_496350_r2_control_reading",
+     true
+    ],
+    [
+     "arm_consistency_496350_r2_treatment_reading",
+     true
+    ],
+    [
+     "arm_consistency_496350_r2_reading",
+     true
+    ]
+   ],
+   "raised": null
+  },
+  "D3_invalid_comparison": {
+   "registry": "INVALID",
+   "registry_why": "key 'verdict' of D:\\UEMA_Research\\external\\D\\UEMA_scratch\\h84\\d1_planner_recovery\\attempts\\arm_consistency_496350_r2_state_check_3_a1\\evidence\\check\\D\\D3_invalid_comparison\\final_reading\\verdict.json",
+   "expected": "INVALID",
+   "match": true,
+   "note": [],
+   "adapter": {
+    "at": "Oct 23, 2026, 04:23:02 PM PDT",
+    "verdict": "INVALID",
+    "execution_why": "the comparison did not exit 0 ((state check) the comparison exited 1)",
+    "execution_rule": "FAIL: a required training branch did not complete successfully (a recorded failure, a resource failure, an engineering-guard stop or a last saved step that is not the end step; no training-end record is a failure) or a required branch reading row did not pass (the reader's raw status kept), every failure named; for a completed pair INVALID: the phase raised, the comparison or the judgement is missing or invalid, or the judgement is not judge.py's own; else PASS, whatever the scientific verdict (a valid NOT ADOPTED only after both training branches and readings completed)",
+    "branch_readings": [
+     {
+      "arm": "control",
+      "read": true,
+      "row_passed": true,
+      "exit_status": 0,
+      "reader_verdict": "PASS",
+      "reader_verdict_reason": "every window healthy",
+      "invalid_reasons": [],
+      "why": null,
+      "exception": null
+     },
+     {
+      "arm": "treatment",
+      "read": true,
+      "row_passed": true,
+      "exit_status": 0,
+      "reader_verdict": "PASS",
+      "reader_verdict_reason": "every window healthy",
+      "invalid_reasons": [],
+      "why": null,
+      "exception": null
+     }
+    ],
+    "training_ends": [
+     {
+      "arm": "control",
+      "recorded": true,
+      "launched": true,
+      "state": "completed",
+      "success": true,
+      "verdict": null,
+      "failures": [],
+      "resource_failure": null,
+      "guard_stop": null,
+      "last_saved_step": 496450,
+      "end_step": 496450,
+      "failed": false,
+      "summary": "control: training completed successfully at model step 496450"
+     },
+     {
+      "arm": "treatment",
+      "recorded": true,
+      "launched": true,
+      "state": "completed",
+      "success": true,
+      "verdict": null,
+      "failures": [],
+      "resource_failure": null,
+      "guard_stop": null,
+      "last_saved_step": 496450,
+      "end_step": 496450,
+      "failed": false,
+      "summary": "treatment: training completed successfully at model step 496450"
+     }
+    ],
+    "scientific_verdict_meaning": "no valid judgement of a completed pair (execution_why); not evidence for or against the lesson",
+    "scientific_verdict": "NOT ADOPTED",
+    "scientific_failing": [],
+    "scientific_invalid": null,
+    "scientific_by": "the owner (the judge did not run)",
+    "scientific_why": "the comparison or a branch reading did not exit 0",
+    "judge_file": "D:\\UEMA_Research\\external\\D\\UEMA_scratch\\h84\\d1_planner_recovery\\attempts\\arm_consistency_496350_r2_state_check_3_a1\\evidence\\check\\D\\D3_invalid_comparison\\final_reading\\judge_verdict.json",
+    "judge_file_sha256": "9777958a88aa8dfa36aab7e52d6e2334a3d369d6c8d78ae15886878e12cd648a",
+    "judge_exit_status": null,
+    "judgement_is_judge_py_own": false,
+    "comparison_exit_status": 1,
+    "rows_and_judgement_ok": false
+   },
+   "owner_end_verdict": "INVALID",
+   "judge_blocks": [],
+   "blocks": [
+    "INVALID: the identical-state comparison: (state check) the comparison exited 1"
+   ],
+   "closes": [
+    [
+     "arm_consistency_496350_r2_control_reading",
+     true
+    ],
+    [
+     "arm_consistency_496350_r2_treatment_reading",
+     true
+    ],
+    [
+     "arm_consistency_496350_r2_reading",
+     false
+    ]
+   ],
+   "raised": null
+  },
+  "D3b_judge_invalid": {
+   "registry": "INVALID",
+   "registry_why": "key 'verdict' of D:\\UEMA_Research\\external\\D\\UEMA_scratch\\h84\\d1_planner_recovery\\attempts\\arm_consistency_496350_r2_state_check_3_a1\\evidence\\check\\D\\D3b_judge_invalid\\final_reading\\verdict.json",
+   "expected": "INVALID",
+   "match": true,
+   "note": [],
+   "adapter": {
+    "at": "Oct 23, 2026, 04:23:02 PM PDT",
+    "verdict": "INVALID",
+    "execution_why": "no valid judgement (the judge's verdict reads 'INVALID')",
+    "execution_rule": "FAIL: a required training branch did not complete successfully (a recorded failure, a resource failure, an engineering-guard stop or a last saved step that is not the end step; no training-end record is a failure) or a required branch reading row did not pass (the reader's raw status kept), every failure named; for a completed pair INVALID: the phase raised, the comparison or the judgement is missing or invalid, or the judgement is not judge.py's own; else PASS, whatever the scientific verdict (a valid NOT ADOPTED only after both training branches and readings completed)",
+    "branch_readings": [
+     {
+      "arm": "control",
+      "read": true,
+      "row_passed": true,
+      "exit_status": 0,
+      "reader_verdict": "PASS",
+      "reader_verdict_reason": "every window healthy",
+      "invalid_reasons": [],
+      "why": null,
+      "exception": null
+     },
+     {
+      "arm": "treatment",
+      "read": true,
+      "row_passed": true,
+      "exit_status": 0,
+      "reader_verdict": "PASS",
+      "reader_verdict_reason": "every window healthy",
+      "invalid_reasons": [],
+      "why": null,
+      "exception": null
+     }
+    ],
+    "training_ends": [
+     {
+      "arm": "control",
+      "recorded": true,
+      "launched": true,
+      "state": "completed",
+      "success": true,
+      "verdict": null,
+      "failures": [],
+      "resource_failure": null,
+      "guard_stop": null,
+      "last_saved_step": 496450,
+      "end_step": 496450,
+      "failed": false,
+      "summary": "control: training completed successfully at model step 496450"
+     },
+     {
+      "arm": "treatment",
+      "recorded": true,
+      "launched": true,
+      "state": "completed",
+      "success": true,
+      "verdict": null,
+      "failures": [],
+      "resource_failure": null,
+      "guard_stop": null,
+      "last_saved_step": 496450,
+      "end_step": 496450,
+      "failed": false,
+      "summary": "treatment: training completed successfully at model step 496450"
+     }
+    ],
+    "scientific_verdict_meaning": "no valid judgement of a completed pair (execution_why); not evidence for or against the lesson",
+    "scientific_verdict": "INVALID",
+    "scientific_failing": [
+     "(state check) a failing rule"
+    ],
+    "scientific_invalid": [
+     "(state check)"
+    ],
+    "scientific_by": null,
+    "scientific_why": null,
+    "judge_file": "D:\\UEMA_Research\\external\\D\\UEMA_scratch\\h84\\d1_planner_recovery\\attempts\\arm_consistency_496350_r2_state_check_3_a1\\evidence\\check\\D\\D3b_judge_invalid\\final_reading\\judge_verdict.json",
+    "judge_file_sha256": "02c0b0f256b6febcd9ae836f5f560b26b89f5f28ad200add42ecb2b653da4657",
+    "judge_exit_status": 2,
+    "judgement_is_judge_py_own": false,
+    "comparison_exit_status": 0,
+    "rows_and_judgement_ok": true
+   },
+   "owner_end_verdict": "INVALID",
+   "judge_blocks": [
+    "INVALID: the judge's verdict reads INVALID ((state check))"
+   ],
+   "blocks": [
+    "INVALID: the judge's verdict reads INVALID ((state check))"
+   ],
+   "closes": [
+    [
+     "arm_consistency_496350_r2_control_reading",
+     true
+    ],
+    [
+     "arm_consistency_496350_r2_treatment_reading",
+     true
+    ],
+    [
+     "arm_consistency_496350_r2_reading",
+     false
+    ]
+   ],
+   "raised": null
+  },
+  "D4_treatment_reader_raises": {
+   "registry": "INVALID",
+   "registry_why": "the row requires a verdict key and none was read: the row names no single existing result file",
+   "expected": "INVALID",
+   "match": true,
+   "note": [],
+   "adapter": null,
+   "owner_end_verdict": null,
+   "judge_blocks": [],
+   "blocks": [],
+   "closes": [
+    [
+     "arm_consistency_496350_r2_control_reading",
+     true
+    ],
+    [
+     "arm_consistency_496350_r2_treatment_reading",
+     false
+    ]
+   ],
+   "raised": "RuntimeError: the reader raised (state check)"
+  },
+  "D5_judge_skipped_for_time": {
+   "registry": "INVALID",
+   "registry_why": "key 'verdict' of D:\\UEMA_Research\\external\\D\\UEMA_scratch\\h84\\d1_planner_recovery\\attempts\\arm_consistency_496350_r2_state_check_3_a1\\evidence\\check\\D\\D5_judge_skipped_for_time\\final_reading\\verdict.json",
+   "expected": "INVALID",
+   "match": true,
+   "note": [],
+   "adapter": {
+    "at": "Oct 23, 2026, 04:23:03 PM PDT",
+    "verdict": "INVALID",
+    "execution_why": "no judgement of judge.py's own: the verdict file was written by the owner (the judge did not run) (RESOURCE: the whole-owner clock leaves -5.1 s for the judge)",
+    "execution_rule": "FAIL: a required training branch did not complete successfully (a recorded failure, a resource failure, an engineering-guard stop or a last saved step that is not the end step; no training-end record is a failure) or a required branch reading row did not pass (the reader's raw status kept), every failure named; for a completed pair INVALID: the phase raised, the comparison or the judgement is missing or invalid, or the judgement is not judge.py's own; else PASS, whatever the scientific verdict (a valid NOT ADOPTED only after both training branches and readings completed)",
+    "branch_readings": [
+     {
+      "arm": "control",
+      "read": true,
+      "row_passed": true,
+      "exit_status": 0,
+      "reader_verdict": "PASS",
+      "reader_verdict_reason": "every window healthy",
+      "invalid_reasons": [],
+      "why": null,
+      "exception": null
+     },
+     {
+      "arm": "treatment",
+      "read": true,
+      "row_passed": true,
+      "exit_status": 0,
+      "reader_verdict": "PASS",
+      "reader_verdict_reason": "every window healthy",
+      "invalid_reasons": [],
+      "why": null,
+      "exception": null
+     }
+    ],
+    "training_ends": [
+     {
+      "arm": "control",
+      "recorded": true,
+      "launched": true,
+      "state": "completed",
+      "success": true,
+      "verdict": null,
+      "failures": [],
+      "resource_failure": null,
+      "guard_stop": null,
+      "last_saved_step": 496450,
+      "end_step": 496450,
+      "failed": false,
+      "summary": "control: training completed successfully at model step 496450"
+     },
+     {
+      "arm": "treatment",
+      "recorded": true,
+      "launched": true,
+      "state": "completed",
+      "success": true,
+      "verdict": null,
+      "failures": [],
+      "resource_failure": null,
+      "guard_stop": null,
+      "last_saved_step": 496450,
+      "end_step": 496450,
+      "failed": false,
+      "summary": "treatment: training completed successfully at model step 496450"
+     }
+    ],
+    "scientific_verdict_meaning": "no valid judgement of a completed pair (execution_why); not evidence for or against the lesson",
+    "scientific_verdict": "NOT ADOPTED",
+    "scientific_failing": [],
+    "scientific_invalid": null,
+    "scientific_by": "the owner (the judge did not run)",
+    "scientific_why": "RESOURCE: the whole-owner clock leaves -5.1 s for the judge",
+    "judge_file": "D:\\UEMA_Research\\external\\D\\UEMA_scratch\\h84\\d1_planner_recovery\\attempts\\arm_consistency_496350_r2_state_check_3_a1\\evidence\\check\\D\\D5_judge_skipped_for_time\\final_reading\\judge_verdict.json",
+    "judge_file_sha256": "faf876869aafe1090d0053d8bc0d4a6494f62bbadad39dfa8d77299137d086d6",
+    "judge_exit_status": null,
+    "judgement_is_judge_py_own": false,
+    "comparison_exit_status": 0,
+    "rows_and_judgement_ok": true
+   },
+   "owner_end_verdict": "INVALID",
+   "judge_blocks": [
+    "INVALID: the judge: RESOURCE: the whole-owner clock leaves -5.1 s for the judge"
+   ],
+   "blocks": [
+    "INVALID: the judge: RESOURCE: the whole-owner clock leaves -5.1 s for the judge"
+   ],
+   "closes": [
+    [
+     "arm_consistency_496350_r2_control_reading",
+     true
+    ],
+    [
+     "arm_consistency_496350_r2_treatment_reading",
+     true
+    ],
+    [
+     "arm_consistency_496350_r2_reading",
+     false
+    ]
+   ],
+   "raised": null
+  },
+  "D6_judge_timeout_after_writing": {
+   "registry": "INVALID",
+   "registry_why": "key 'verdict' of D:\\UEMA_Research\\external\\D\\UEMA_scratch\\h84\\d1_planner_recovery\\attempts\\arm_consistency_496350_r2_state_check_3_a1\\evidence\\check\\D\\D6_judge_timeout_after_writing\\final_reading\\verdict.json",
+   "expected": "INVALID",
+   "match": true,
+   "note": [],
+   "adapter": {
+    "at": "Oct 23, 2026, 04:23:03 PM PDT",
+    "verdict": "INVALID",
+    "execution_why": "no judgement of judge.py's own: judge.py's exit status None does not match its verdict 'NOT ADOPTED'",
+    "execution_rule": "FAIL: a required training branch did not complete successfully (a recorded failure, a resource failure, an engineering-guard stop or a last saved step that is not the end step; no training-end record is a failure) or a required branch reading row did not pass (the reader's raw status kept), every failure named; for a completed pair INVALID: the phase raised, the comparison or the judgement is missing or invalid, or the judgement is not judge.py's own; else PASS, whatever the scientific verdict (a valid NOT ADOPTED only after both training branches and readings completed)",
+    "branch_readings": [
+     {
+      "arm": "control",
+      "read": true,
+      "row_passed": true,
+      "exit_status": 0,
+      "reader_verdict": "PASS",
+      "reader_verdict_reason": "every window healthy",
+      "invalid_reasons": [],
+      "why": null,
+      "exception": null
+     },
+     {
+      "arm": "treatment",
+      "read": true,
+      "row_passed": true,
+      "exit_status": 0,
+      "reader_verdict": "PASS",
+      "reader_verdict_reason": "every window healthy",
+      "invalid_reasons": [],
+      "why": null,
+      "exception": null
+     }
+    ],
+    "training_ends": [
+     {
+      "arm": "control",
+      "recorded": true,
+      "launched": true,
+      "state": "completed",
+      "success": true,
+      "verdict": null,
+      "failures": [],
+      "resource_failure": null,
+      "guard_stop": null,
+      "last_saved_step": 496450,
+      "end_step": 496450,
+      "failed": false,
+      "summary": "control: training completed successfully at model step 496450"
+     },
+     {
+      "arm": "treatment",
+      "recorded": true,
+      "launched": true,
+      "state": "completed",
+      "success": true,
+      "verdict": null,
+      "failures": [],
+      "resource_failure": null,
+      "guard_stop": null,
+      "last_saved_step": 496450,
+      "end_step": 496450,
+      "failed": false,
+      "summary": "treatment: training completed successfully at model step 496450"
+     }
+    ],
+    "scientific_verdict_meaning": "no valid judgement of a completed pair (execution_why); not evidence for or against the lesson",
+    "scientific_verdict": "NOT ADOPTED",
+    "scientific_failing": [
+     "(state check) a failing rule"
+    ],
+    "scientific_invalid": [],
+    "scientific_by": null,
+    "scientific_why": null,
+    "judge_file": "D:\\UEMA_Research\\external\\D\\UEMA_scratch\\h84\\d1_planner_recovery\\attempts\\arm_consistency_496350_r2_state_check_3_a1\\evidence\\check\\D\\D6_judge_timeout_after_writing\\final_reading\\judge_verdict.json",
+    "judge_file_sha256": "98e8aba15b451647c72bb24a2de77cec51d9e319bb61ddd209b6cf1ed3cb7f18",
+    "judge_exit_status": null,
+    "judgement_is_judge_py_own": false,
+    "comparison_exit_status": 0,
+    "rows_and_judgement_ok": true
+   },
+   "owner_end_verdict": "INVALID",
+   "judge_blocks": [
+    "INVALID: the judge: judge.py gave no judgement of its own (exit status None, verdict 'NOT ADOPTED')"
+   ],
+   "blocks": [
+    "INVALID: the judge: judge.py gave no judgement of its own (exit status None, verdict 'NOT ADOPTED')"
+   ],
+   "closes": [
+    [
+     "arm_consistency_496350_r2_control_reading",
+     true
+    ],
+    [
+     "arm_consistency_496350_r2_treatment_reading",
+     true
+    ],
+    [
+     "arm_consistency_496350_r2_reading",
+     false
+    ]
+   ],
+   "raised": null
+  },
+  "D7_judge_exit_2_no_file": {
+   "registry": "INVALID",
+   "registry_why": "key 'verdict' of D:\\UEMA_Research\\external\\D\\UEMA_scratch\\h84\\d1_planner_recovery\\attempts\\arm_consistency_496350_r2_state_check_3_a1\\evidence\\check\\D\\D7_judge_exit_2_no_file\\final_reading\\verdict.json",
+   "expected": "INVALID",
+   "match": true,
+   "note": [],
+   "adapter": {
+    "at": "Oct 23, 2026, 04:23:03 PM PDT",
+    "verdict": "INVALID",
+    "execution_why": "no valid judgement (the judge's verdict reads None)",
+    "execution_rule": "FAIL: a required training branch did not complete successfully (a recorded failure, a resource failure, an engineering-guard stop or a last saved step that is not the end step; no training-end record is a failure) or a required branch reading row did not pass (the reader's raw status kept), every failure named; for a completed pair INVALID: the phase raised, the comparison or the judgement is missing or invalid, or the judgement is not judge.py's own; else PASS, whatever the scientific verdict (a valid NOT ADOPTED only after both training branches and readings completed)",
+    "branch_readings": [
+     {
+      "arm": "control",
+      "read": true,
+      "row_passed": true,
+      "exit_status": 0,
+      "reader_verdict": "PASS",
+      "reader_verdict_reason": "every window healthy",
+      "invalid_reasons": [],
+      "why": null,
+      "exception": null
+     },
+     {
+      "arm": "treatment",
+      "read": true,
+      "row_passed": true,
+      "exit_status": 0,
+      "reader_verdict": "PASS",
+      "reader_verdict_reason": "every window healthy",
+      "invalid_reasons": [],
+      "why": null,
+      "exception": null
+     }
+    ],
+    "training_ends": [
+     {
+      "arm": "control",
+      "recorded": true,
+      "launched": true,
+      "state": "completed",
+      "success": true,
+      "verdict": null,
+      "failures": [],
+      "resource_failure": null,
+      "guard_stop": null,
+      "last_saved_step": 496450,
+      "end_step": 496450,
+      "failed": false,
+      "summary": "control: training completed successfully at model step 496450"
+     },
+     {
+      "arm": "treatment",
+      "recorded": true,
+      "launched": true,
+      "state": "completed",
+      "success": true,
+      "verdict": null,
+      "failures": [],
+      "resource_failure": null,
+      "guard_stop": null,
+      "last_saved_step": 496450,
+      "end_step": 496450,
+      "failed": false,
+      "summary": "treatment: training completed successfully at model step 496450"
+     }
+    ],
+    "scientific_verdict_meaning": "no valid judgement of a completed pair (execution_why); not evidence for or against the lesson",
+    "scientific_verdict": null,
+    "scientific_failing": null,
+    "scientific_invalid": null,
+    "scientific_by": null,
+    "scientific_why": null,
+    "judge_file": "D:\\UEMA_Research\\external\\D\\UEMA_scratch\\h84\\d1_planner_recovery\\attempts\\arm_consistency_496350_r2_state_check_3_a1\\evidence\\check\\D\\D7_judge_exit_2_no_file\\final_reading\\judge_verdict.json",
+    "judge_file_sha256": null,
+    "judge_exit_status": 2,
+    "judgement_is_judge_py_own": false,
+    "comparison_exit_status": 0,
+    "rows_and_judgement_ok": false
+   },
+   "owner_end_verdict": "INVALID",
+   "judge_blocks": [
+    "INVALID: the judge: judge.py gave no judgement of its own (exit status 2, verdict None)"
+   ],
+   "blocks": [
+    "INVALID: the judge: judge.py gave no judgement of its own (exit status 2, verdict None)"
+   ],
+   "closes": [
+    [
+     "arm_consistency_496350_r2_control_reading",
+     true
+    ],
+    [
+     "arm_consistency_496350_r2_treatment_reading",
+     true
+    ],
+    [
+     "arm_consistency_496350_r2_reading",
+     false
+    ]
+   ],
+   "raised": null
+  },
+  "D8_verdict_write_fails": {
+   "registry": "INVALID",
+   "registry_why": "the row requires a verdict key and none was read: the row names no single existing result file",
+   "expected": "INVALID",
+   "match": true,
+   "note": [],
+   "adapter": null,
+   "owner_end_verdict": "INVALID",
+   "judge_blocks": [],
+   "blocks": [
+    "INVALID: the execution verdict file verdict.json was not written and read back: OSError: (state check) the write of verdict.json failed"
+   ],
+   "closes": [
+    [
+     "arm_consistency_496350_r2_control_reading",
+     true
+    ],
+    [
+     "arm_consistency_496350_r2_treatment_reading",
+     true
+    ],
+    [
+     "arm_consistency_496350_r2_reading",
+     false
+    ]
+   ],
+   "raised": null
+  },
+  "D8b_verdict_read_back_differs": {
+   "registry": "INVALID",
+   "registry_why": "key 'verdict' of D:\\UEMA_Research\\external\\D\\UEMA_scratch\\h84\\d1_planner_recovery\\attempts\\arm_consistency_496350_r2_state_check_3_a1\\evidence\\check\\D\\D8b_verdict_read_back_differs\\final_reading\\verdict.json says PASS but the job ended with exit code 1",
+   "expected": "INVALID",
+   "match": true,
+   "note": [],
+   "adapter": {
+    "at": "Oct 23, 2026, 04:23:03 PM PDT",
+    "verdict": "PASS",
+    "execution_why": "the final phase executed validly: both branch reading rows passed, the comparison exited 0 and judge.py wrote 'NOT ADOPTED' (exit status 2)",
+    "execution_rule": "FAIL: a required training branch did not complete successfully (a recorded failure, a resource failure, an engineering-guard stop or a last saved step that is not the end step; no training-end record is a failure) or a required branch reading row did not pass (the reader's raw status kept), every failure named; for a completed pair INVALID: the phase raised, the comparison or the judgement is missing or invalid, or the judgement is not judge.py's own; else PASS, whatever the scientific verdict (a valid NOT ADOPTED only after both training branches and readings completed)",
+    "branch_readings": [
+     {
+      "arm": "control",
+      "read": true,
+      "row_passed": true,
+      "exit_status": 0,
+      "reader_verdict": "PASS",
+      "reader_verdict_reason": "every window healthy",
+      "invalid_reasons": [],
+      "why": null,
+      "exception": null
+     },
+     {
+      "arm": "treatment",
+      "read": true,
+      "row_passed": true,
+      "exit_status": 0,
+      "reader_verdict": "PASS",
+      "reader_verdict_reason": "every window healthy",
+      "invalid_reasons": [],
+      "why": null,
+      "exception": null
+     }
+    ],
+    "training_ends": [
+     {
+      "arm": "control",
+      "recorded": true,
+      "launched": true,
+      "state": "completed",
+      "success": true,
+      "verdict": null,
+      "failures": [],
+      "resource_failure": null,
+      "guard_stop": null,
+      "last_saved_step": 496450,
+      "end_step": 496450,
+      "failed": false,
+      "summary": "control: training completed successfully at model step 496450"
+     },
+     {
+      "arm": "treatment",
+      "recorded": true,
+      "launched": true,
+      "state": "completed",
+      "success": true,
+      "verdict": null,
+      "failures": [],
+      "resource_failure": null,
+      "guard_stop": null,
+      "last_saved_step": 496450,
+      "end_step": 496450,
+      "failed": false,
+      "summary": "treatment: training completed successfully at model step 496450"
+     }
+    ],
+    "scientific_verdict_meaning": "judge.py's own judgement of a completed comparison: both training branches and both readings completed",
+    "scientific_verdict": "NOT ADOPTED",
+    "scientific_failing": [
+     "(state check) a failing rule"
+    ],
+    "scientific_invalid": [],
+    "scientific_by": null,
+    "scientific_why": null,
+    "judge_file": "D:\\UEMA_Research\\external\\D\\UEMA_scratch\\h84\\d1_planner_recovery\\attempts\\arm_consistency_496350_r2_state_check_3_a1\\evidence\\check\\D\\D8b_verdict_read_back_differs\\final_reading\\judge_verdict.json",
+    "judge_file_sha256": "98e8aba15b451647c72bb24a2de77cec51d9e319bb61ddd209b6cf1ed3cb7f18",
+    "judge_exit_status": 2,
+    "judgement_is_judge_py_own": true,
+    "comparison_exit_status": 0,
+    "rows_and_judgement_ok": true
+   },
+   "owner_end_verdict": "INVALID",
+   "judge_blocks": [],
+   "blocks": [
+    "INVALID: the execution verdict file verdict.json was not written and read back: verdict.json read back differs from the record written"
+   ],
+   "closes": [
+    [
+     "arm_consistency_496350_r2_control_reading",
+     true
+    ],
+    [
+     "arm_consistency_496350_r2_treatment_reading",
+     true
+    ],
+    [
+     "arm_consistency_496350_r2_reading",
+     false
+    ]
+   ],
+   "raised": null
+  },
+  "D8c_verdict_and_receipt_writes_fail": {
+   "registry": "INVALID",
+   "registry_why": "the row requires a verdict key and none was read: the row names no single existing result file",
+   "expected": "INVALID",
+   "match": true,
+   "note": [],
+   "adapter": null,
+   "owner_end_verdict": "INVALID",
+   "judge_blocks": [],
+   "blocks": [
+    "INVALID: the execution verdict file verdict.json was not written and read back: OSError: (state check) the write of verdict.json failed (its failure receipt could not be written either: OSError: (state check) the write of verdict_write_failure.json failed)"
+   ],
+   "closes": [
+    [
+     "arm_consistency_496350_r2_control_reading",
+     true
+    ],
+    [
+     "arm_consistency_496350_r2_treatment_reading",
+     true
+    ],
+    [
+     "arm_consistency_496350_r2_reading",
+     false
+    ]
+   ],
+   "raised": null
+  },
+  "D9_treatment_reader_invalid": {
+   "registry": "FAIL",
+   "registry_why": "key 'verdict' of D:\\UEMA_Research\\external\\D\\UEMA_scratch\\h84\\d1_planner_recovery\\attempts\\arm_consistency_496350_r2_state_check_3_a1\\evidence\\check\\D\\D9_treatment_reader_invalid\\final_reading\\verdict.json",
+   "expected": "FAIL",
+   "match": true,
+   "note": [],
+   "adapter": {
+    "at": "Oct 23, 2026, 04:23:03 PM PDT",
+    "verdict": "FAIL",
+    "execution_why": "a required branch reading row did not pass, so the experiment did not complete: treatment: row did not pass, reader exit status 3, reader verdict 'INVALID', reader reason 'measurement incomplete: (state check) required detail records missing'",
+    "execution_rule": "FAIL: a required training branch did not complete successfully (a recorded failure, a resource failure, an engineering-guard stop or a last saved step that is not the end step; no training-end record is a failure) or a required branch reading row did not pass (the reader's raw status kept), every failure named; for a completed pair INVALID: the phase raised, the comparison or the judgement is missing or invalid, or the judgement is not judge.py's own; else PASS, whatever the scientific verdict (a valid NOT ADOPTED only after both training branches and readings completed)",
+    "branch_readings": [
+     {
+      "arm": "control",
+      "read": true,
+      "row_passed": true,
+      "exit_status": 0,
+      "reader_verdict": "PASS",
+      "reader_verdict_reason": "every window healthy",
+      "invalid_reasons": [],
+      "why": null,
+      "exception": null
+     },
+     {
+      "arm": "treatment",
+      "read": true,
+      "row_passed": false,
+      "exit_status": 3,
+      "reader_verdict": "INVALID",
+      "reader_verdict_reason": "measurement incomplete: (state check) required detail records missing",
+      "invalid_reasons": [
+       {
+        "kind": "detail_records",
+        "text": "(state check) required detail records missing"
+       }
+      ],
+      "why": null,
+      "exception": null
+     }
+    ],
+    "training_ends": [
+     {
+      "arm": "control",
+      "recorded": true,
+      "launched": true,
+      "state": "completed",
+      "success": true,
+      "verdict": null,
+      "failures": [],
+      "resource_failure": null,
+      "guard_stop": null,
+      "last_saved_step": 496450,
+      "end_step": 496450,
+      "failed": false,
+      "summary": "control: training completed successfully at model step 496450"
+     },
+     {
+      "arm": "treatment",
+      "recorded": true,
+      "launched": true,
+      "state": "completed",
+      "success": true,
+      "verdict": null,
+      "failures": [],
+      "resource_failure": null,
+      "guard_stop": null,
+      "last_saved_step": 496450,
+      "end_step": 496450,
+      "failed": false,
+      "summary": "treatment: training completed successfully at model step 496450"
+     }
+    ],
+    "scientific_verdict_meaning": "an execution failure: the pair did not complete (execution_why); judge.py was given the failed branches, so its verdict, if any, is forced by that failure and is not evidence for or against the lesson",
+    "scientific_verdict": "NOT ADOPTED",
+    "scientific_failing": [
+     "treatment: its reading row did not pass (exit status 3)"
+    ],
+    "scientific_invalid": null,
+    "scientific_by": "the owner (the judge did not run)",
+    "scientific_why": "the comparison or a branch reading did not exit 0",
+    "judge_file": "D:\\UEMA_Research\\external\\D\\UEMA_scratch\\h84\\d1_planner_recovery\\attempts\\arm_consistency_496350_r2_state_check_3_a1\\evidence\\check\\D\\D9_treatment_reader_invalid\\final_reading\\judge_verdict.json",
+    "judge_file_sha256": "f2e880f681646634c7cc7c0f6df1a10d630a4fd203eddee511f43db6ddb3292a",
+    "judge_exit_status": null,
+    "judgement_is_judge_py_own": false,
+    "comparison_exit_status": 0,
+    "rows_and_judgement_ok": false
+   },
+   "owner_end_verdict": "FAIL",
+   "judge_blocks": [],
+   "blocks": [
+    "INVALID: the final reading: not every branch of the pair was launched with its reading row passing",
+    "a required branch reading row did not pass, so the experiment did not complete: treatment: row did not pass, reader exit status 3, reader verdict 'INVALID', reader reason 'measurement incomplete: (state check) required detail records missing'"
+   ],
+   "closes": [
+    [
+     "arm_consistency_496350_r2_control_reading",
+     true
+    ],
+    [
+     "arm_consistency_496350_r2_treatment_reading",
+     false
+    ],
+    [
+     "arm_consistency_496350_r2_reading",
+     false
+    ]
+   ],
+   "raised": null
+  },
+  "D10a_failed_row_judge_no_file": {
+   "registry": "FAIL",
+   "registry_why": "key 'verdict' of D:\\UEMA_Research\\external\\D\\UEMA_scratch\\h84\\d1_planner_recovery\\attempts\\arm_consistency_496350_r2_state_check_3_a1\\evidence\\check\\D\\D10a_failed_row_judge_no_file\\final_reading\\verdict.json",
+   "expected": "FAIL",
+   "match": true,
+   "note": [],
+   "adapter": {
+    "at": "Oct 23, 2026, 04:23:04 PM PDT",
+    "verdict": "FAIL",
+    "execution_why": "a required branch reading row did not pass, so the experiment did not complete: treatment: row did not pass, reader exit status 0, reader verdict 'PASS', reader reason 'every window healthy', the reading row did not pass: its start was not verified unchanged (start_unchanged False); the arm's end receipt: D:\\UEMA_Research\\external\\D\\UEMA_scratch\\h84\\d1_planner_recovery\\attempts\\arm_consistency_496350_r2_state_check_3_a1\\evidence\\check\\D\\D10a_failed_row_judge_no_file\\receipts\\treatment\\arm_end.json",
+    "execution_rule": "FAIL: a required training branch did not complete successfully (a recorded failure, a resource failure, an engineering-guard stop or a last saved step that is not the end step; no training-end record is a failure) or a required branch reading row did not pass (the reader's raw status kept), every failure named; for a completed pair INVALID: the phase raised, the comparison or the judgement is missing or invalid, or the judgement is not judge.py's own; else PASS, whatever the scientific verdict (a valid NOT ADOPTED only after both training branches and readings completed)",
+    "branch_readings": [
+     {
+      "arm": "control",
+      "read": true,
+      "row_passed": true,
+      "exit_status": 0,
+      "reader_verdict": "PASS",
+      "reader_verdict_reason": "every window healthy",
+      "invalid_reasons": [],
+      "why": null,
+      "exception": null
+     },
+     {
+      "arm": "treatment",
+      "read": true,
+      "row_passed": false,
+      "exit_status": 0,
+      "reader_verdict": "PASS",
+      "reader_verdict_reason": "every window healthy",
+      "invalid_reasons": [],
+      "why": "the reading row did not pass: its start was not verified unchanged (start_unchanged False); the arm's end receipt: D:\\UEMA_Research\\external\\D\\UEMA_scratch\\h84\\d1_planner_recovery\\attempts\\arm_consistency_496350_r2_state_check_3_a1\\evidence\\check\\D\\D10a_failed_row_judge_no_file\\receipts\\treatment\\arm_end.json",
+      "exception": null
+     }
+    ],
+    "training_ends": [
+     {
+      "arm": "control",
+      "recorded": true,
+      "launched": true,
+      "state": "completed",
+      "success": true,
+      "verdict": null,
+      "failures": [],
+      "resource_failure": null,
+      "guard_stop": null,
+      "last_saved_step": 496450,
+      "end_step": 496450,
+      "failed": false,
+      "summary": "control: training completed successfully at model step 496450"
+     },
+     {
+      "arm": "treatment",
+      "recorded": true,
+      "launched": true,
+      "state": "completed",
+      "success": true,
+      "verdict": null,
+      "failures": [],
+      "resource_failure": null,
+      "guard_stop": null,
+      "last_saved_step": 496450,
+      "end_step": 496450,
+      "failed": false,
+      "summary": "treatment: training completed successfully at model step 496450"
+     }
+    ],
+    "scientific_verdict_meaning": "an execution failure: the pair did not complete (execution_why); judge.py was given the failed branches, so its verdict, if any, is forced by that failure and is not evidence for or against the lesson",
+    "scientific_verdict": null,
+    "scientific_failing": null,
+    "scientific_invalid": null,
+    "scientific_by": null,
+    "scientific_why": null,
+    "judge_file": "D:\\UEMA_Research\\external\\D\\UEMA_scratch\\h84\\d1_planner_recovery\\attempts\\arm_consistency_496350_r2_state_check_3_a1\\evidence\\check\\D\\D10a_failed_row_judge_no_file\\final_reading\\judge_verdict.json",
+    "judge_file_sha256": null,
+    "judge_exit_status": 2,
+    "judgement_is_judge_py_own": false,
+    "comparison_exit_status": 0,
+    "rows_and_judgement_ok": false
+   },
+   "owner_end_verdict": "FAIL",
+   "judge_blocks": [
+    "the judge: judge.py gave no judgement of its own (exit status 2, verdict None)"
+   ],
+   "blocks": [
+    "the final reading: not every branch of the pair was launched with its reading row passing",
+    "a required branch reading row did not pass, so the experiment did not complete: treatment: row did not pass, reader exit status 0, reader verdict 'PASS', reader reason 'every window healthy', the reading row did not pass: its start was not verified unchanged (start_unchanged False); the arm's end receipt: D:\\UEMA_Research\\external\\D\\UEMA_scratch\\h84\\d1_planner_recovery\\attempts\\arm_consistency_496350_r2_state_check_3_a1\\evidence\\check\\D\\D10a_failed_row_judge_no_file\\receipts\\treatment\\arm_end.json",
+    "the judge: judge.py gave no judgement of its own (exit status 2, verdict None)"
+   ],
+   "closes": [
+    [
+     "arm_consistency_496350_r2_control_reading",
+     true
+    ],
+    [
+     "arm_consistency_496350_r2_treatment_reading",
+     false
+    ],
+    [
+     "arm_consistency_496350_r2_reading",
+     false
+    ]
+   ],
+   "raised": null
+  },
+  "D10b_failed_row_judge_own_file": {
+   "registry": "FAIL",
+   "registry_why": "key 'verdict' of D:\\UEMA_Research\\external\\D\\UEMA_scratch\\h84\\d1_planner_recovery\\attempts\\arm_consistency_496350_r2_state_check_3_a1\\evidence\\check\\D\\D10b_failed_row_judge_own_file\\final_reading\\verdict.json",
+   "expected": "FAIL",
+   "match": true,
+   "note": [],
+   "adapter": {
+    "at": "Oct 23, 2026, 04:23:04 PM PDT",
+    "verdict": "FAIL",
+    "execution_why": "a required branch reading row did not pass, so the experiment did not complete: treatment: row did not pass, reader exit status 0, reader verdict 'PASS', reader reason 'every window healthy', the reading row did not pass: its start was not verified unchanged (start_unchanged False); the arm's end receipt: D:\\UEMA_Research\\external\\D\\UEMA_scratch\\h84\\d1_planner_recovery\\attempts\\arm_consistency_496350_r2_state_check_3_a1\\evidence\\check\\D\\D10b_failed_row_judge_own_file\\receipts\\treatment\\arm_end.json",
+    "execution_rule": "FAIL: a required training branch did not complete successfully (a recorded failure, a resource failure, an engineering-guard stop or a last saved step that is not the end step; no training-end record is a failure) or a required branch reading row did not pass (the reader's raw status kept), every failure named; for a completed pair INVALID: the phase raised, the comparison or the judgement is missing or invalid, or the judgement is not judge.py's own; else PASS, whatever the scientific verdict (a valid NOT ADOPTED only after both training branches and readings completed)",
+    "branch_readings": [
+     {
+      "arm": "control",
+      "read": true,
+      "row_passed": true,
+      "exit_status": 0,
+      "reader_verdict": "PASS",
+      "reader_verdict_reason": "every window healthy",
+      "invalid_reasons": [],
+      "why": null,
+      "exception": null
+     },
+     {
+      "arm": "treatment",
+      "read": true,
+      "row_passed": false,
+      "exit_status": 0,
+      "reader_verdict": "PASS",
+      "reader_verdict_reason": "every window healthy",
+      "invalid_reasons": [],
+      "why": "the reading row did not pass: its start was not verified unchanged (start_unchanged False); the arm's end receipt: D:\\UEMA_Research\\external\\D\\UEMA_scratch\\h84\\d1_planner_recovery\\attempts\\arm_consistency_496350_r2_state_check_3_a1\\evidence\\check\\D\\D10b_failed_row_judge_own_file\\receipts\\treatment\\arm_end.json",
+      "exception": null
+     }
+    ],
+    "training_ends": [
+     {
+      "arm": "control",
+      "recorded": true,
+      "launched": true,
+      "state": "completed",
+      "success": true,
+      "verdict": null,
+      "failures": [],
+      "resource_failure": null,
+      "guard_stop": null,
+      "last_saved_step": 496450,
+      "end_step": 496450,
+      "failed": false,
+      "summary": "control: training completed successfully at model step 496450"
+     },
+     {
+      "arm": "treatment",
+      "recorded": true,
+      "launched": true,
+      "state": "completed",
+      "success": true,
+      "verdict": null,
+      "failures": [],
+      "resource_failure": null,
+      "guard_stop": null,
+      "last_saved_step": 496450,
+      "end_step": 496450,
+      "failed": false,
+      "summary": "treatment: training completed successfully at model step 496450"
+     }
+    ],
+    "scientific_verdict_meaning": "an execution failure: the pair did not complete (execution_why); judge.py was given the failed branches, so its verdict, if any, is forced by that failure and is not evidence for or against the lesson",
+    "scientific_verdict": "NOT ADOPTED",
+    "scientific_failing": [
+     "(state check) a failing rule"
+    ],
+    "scientific_invalid": [],
+    "scientific_by": null,
+    "scientific_why": null,
+    "judge_file": "D:\\UEMA_Research\\external\\D\\UEMA_scratch\\h84\\d1_planner_recovery\\attempts\\arm_consistency_496350_r2_state_check_3_a1\\evidence\\check\\D\\D10b_failed_row_judge_own_file\\final_reading\\judge_verdict.json",
+    "judge_file_sha256": "98e8aba15b451647c72bb24a2de77cec51d9e319bb61ddd209b6cf1ed3cb7f18",
+    "judge_exit_status": 2,
+    "judgement_is_judge_py_own": true,
+    "comparison_exit_status": 0,
+    "rows_and_judgement_ok": false
+   },
+   "owner_end_verdict": "FAIL",
+   "judge_blocks": [],
+   "blocks": [
+    "the final reading: not every branch of the pair was launched with its reading row passing",
+    "a required branch reading row did not pass, so the experiment did not complete: treatment: row did not pass, reader exit status 0, reader verdict 'PASS', reader reason 'every window healthy', the reading row did not pass: its start was not verified unchanged (start_unchanged False); the arm's end receipt: D:\\UEMA_Research\\external\\D\\UEMA_scratch\\h84\\d1_planner_recovery\\attempts\\arm_consistency_496350_r2_state_check_3_a1\\evidence\\check\\D\\D10b_failed_row_judge_own_file\\receipts\\treatment\\arm_end.json"
+   ],
+   "closes": [
+    [
+     "arm_consistency_496350_r2_control_reading",
+     true
+    ],
+    [
+     "arm_consistency_496350_r2_treatment_reading",
+     false
+    ],
+    [
+     "arm_consistency_496350_r2_reading",
+     false
+    ]
+   ],
+   "raised": null
+  },
+  "D12a_treatment_recorded_failure": {
+   "registry": "FAIL",
+   "registry_why": "key 'verdict' of D:\\UEMA_Research\\external\\D\\UEMA_scratch\\h84\\d1_planner_recovery\\attempts\\arm_consistency_496350_r2_state_check_3_a1\\evidence\\check\\D\\D12a_treatment_recorded_failure\\final_reading\\verdict.json",
+   "expected": "FAIL",
+   "match": true,
+   "note": [],
+   "adapter": {
+    "at": "Oct 23, 2026, 04:23:04 PM PDT",
+    "verdict": "FAIL",
+    "execution_why": "a required training branch did not complete successfully, so the experiment did not complete: treatment: (state check) the final watcher check: STOP-LEVEL CROSSING",
+    "execution_rule": "FAIL: a required training branch did not complete successfully (a recorded failure, a resource failure, an engineering-guard stop or a last saved step that is not the end step; no training-end record is a failure) or a required branch reading row did not pass (the reader's raw status kept), every failure named; for a completed pair INVALID: the phase raised, the comparison or the judgement is missing or invalid, or the judgement is not judge.py's own; else PASS, whatever the scientific verdict (a valid NOT ADOPTED only after both training branches and readings completed)",
+    "branch_readings": [
+     {
+      "arm": "control",
+      "read": true,
+      "row_passed": true,
+      "exit_status": 0,
+      "reader_verdict": "PASS",
+      "reader_verdict_reason": "every window healthy",
+      "invalid_reasons": [],
+      "why": null,
+      "exception": null
+     },
+     {
+      "arm": "treatment",
+      "read": true,
+      "row_passed": true,
+      "exit_status": 0,
+      "reader_verdict": "PASS",
+      "reader_verdict_reason": "every window healthy",
+      "invalid_reasons": [],
+      "why": null,
+      "exception": null
+     }
+    ],
+    "training_ends": [
+     {
+      "arm": "control",
+      "recorded": true,
+      "launched": true,
+      "state": "completed",
+      "success": true,
+      "verdict": null,
+      "failures": [],
+      "resource_failure": null,
+      "guard_stop": null,
+      "last_saved_step": 496450,
+      "end_step": 496450,
+      "failed": false,
+      "summary": "control: training completed successfully at model step 496450"
+     },
+     {
+      "arm": "treatment",
+      "recorded": true,
+      "launched": true,
+      "state": "completed",
+      "success": false,
+      "verdict": null,
+      "failures": [
+       "(state check) the final watcher check: STOP-LEVEL CROSSING"
+      ],
+      "resource_failure": null,
+      "guard_stop": null,
+      "last_saved_step": 496450,
+      "end_step": 496450,
+      "failed": true,
+      "summary": "treatment: (state check) the final watcher check: STOP-LEVEL CROSSING"
+     }
+    ],
+    "scientific_verdict_meaning": "an execution failure: the pair did not complete (execution_why); judge.py was given the failed branches, so its verdict, if any, is forced by that failure and is not evidence for or against the lesson",
+    "scientific_verdict": "NOT ADOPTED",
+    "scientific_failing": [
+     "(state check) a failing rule"
+    ],
+    "scientific_invalid": [],
+    "scientific_by": null,
+    "scientific_why": null,
+    "judge_file": "D:\\UEMA_Research\\external\\D\\UEMA_scratch\\h84\\d1_planner_recovery\\attempts\\arm_consistency_496350_r2_state_check_3_a1\\evidence\\check\\D\\D12a_treatment_recorded_failure\\final_reading\\judge_verdict.json",
+    "judge_file_sha256": "98e8aba15b451647c72bb24a2de77cec51d9e319bb61ddd209b6cf1ed3cb7f18",
+    "judge_exit_status": 2,
+    "judgement_is_judge_py_own": true,
+    "comparison_exit_status": 0,
+    "rows_and_judgement_ok": true
+   },
+   "owner_end_verdict": "FAIL",
+   "judge_blocks": [],
+   "blocks": [
+    "(state check) the final watcher check: STOP-LEVEL CROSSING",
+    "a required training branch did not complete successfully, so the experiment did not complete: treatment: (state check) the final watcher check: STOP-LEVEL CROSSING"
+   ],
+   "closes": [
+    [
+     "arm_consistency_496350_r2_control_reading",
+     true
+    ],
+    [
+     "arm_consistency_496350_r2_treatment_reading",
+     true
+    ],
+    [
+     "arm_consistency_496350_r2_reading",
+     false
+    ]
+   ],
+   "raised": null
+  },
+  "D12b_treatment_resource_failure": {
+   "registry": "FAIL",
+   "registry_why": "key 'verdict' of D:\\UEMA_Research\\external\\D\\UEMA_scratch\\h84\\d1_planner_recovery\\attempts\\arm_consistency_496350_r2_state_check_3_a1\\evidence\\check\\D\\D12b_treatment_resource_failure\\final_reading\\verdict.json",
+   "expected": "FAIL",
+   "match": true,
+   "note": [],
+   "adapter": {
+    "at": "Oct 23, 2026, 04:23:04 PM PDT",
+    "verdict": "FAIL",
+    "execution_why": "a required training branch did not complete successfully, so the experiment did not complete: treatment: RESOURCE FAILURE: (state check) the closure deadline passed while a checkpoint write was in progress",
+    "execution_rule": "FAIL: a required training branch did not complete successfully (a recorded failure, a resource failure, an engineering-guard stop or a last saved step that is not the end step; no training-end record is a failure) or a required branch reading row did not pass (the reader's raw status kept), every failure named; for a completed pair INVALID: the phase raised, the comparison or the judgement is missing or invalid, or the judgement is not judge.py's own; else PASS, whatever the scientific verdict (a valid NOT ADOPTED only after both training branches and readings completed)",
+    "branch_readings": [
+     {
+      "arm": "control",
+      "read": true,
+      "row_passed": true,
+      "exit_status": 0,
+      "reader_verdict": "PASS",
+      "reader_verdict_reason": "every window healthy",
+      "invalid_reasons": [],
+      "why": null,
+      "exception": null
+     },
+     {
+      "arm": "treatment",
+      "read": true,
+      "row_passed": true,
+      "exit_status": 0,
+      "reader_verdict": "PASS",
+      "reader_verdict_reason": "every window healthy",
+      "invalid_reasons": [],
+      "why": null,
+      "exception": null
+     }
+    ],
+    "training_ends": [
+     {
+      "arm": "control",
+      "recorded": true,
+      "launched": true,
+      "state": "completed",
+      "success": true,
+      "verdict": null,
+      "failures": [],
+      "resource_failure": null,
+      "guard_stop": null,
+      "last_saved_step": 496450,
+      "end_step": 496450,
+      "failed": false,
+      "summary": "control: training completed successfully at model step 496450"
+     },
+     {
+      "arm": "treatment",
+      "recorded": true,
+      "launched": true,
+      "state": "completed",
+      "success": true,
+      "verdict": null,
+      "failures": [],
+      "resource_failure": "RESOURCE FAILURE: (state check) the closure deadline passed while a checkpoint write was in progress",
+      "guard_stop": null,
+      "last_saved_step": 496450,
+      "end_step": 496450,
+      "failed": true,
+      "summary": "treatment: RESOURCE FAILURE: (state check) the closure deadline passed while a checkpoint write was in progress"
+     }
+    ],
+    "scientific_verdict_meaning": "an execution failure: the pair did not complete (execution_why); judge.py was given the failed branches, so its verdict, if any, is forced by that failure and is not evidence for or against the lesson",
+    "scientific_verdict": "NOT ADOPTED",
+    "scientific_failing": [
+     "(state check) a failing rule"
+    ],
+    "scientific_invalid": [],
+    "scientific_by": null,
+    "scientific_why": null,
+    "judge_file": "D:\\UEMA_Research\\external\\D\\UEMA_scratch\\h84\\d1_planner_recovery\\attempts\\arm_consistency_496350_r2_state_check_3_a1\\evidence\\check\\D\\D12b_treatment_resource_failure\\final_reading\\judge_verdict.json",
+    "judge_file_sha256": "98e8aba15b451647c72bb24a2de77cec51d9e319bb61ddd209b6cf1ed3cb7f18",
+    "judge_exit_status": 2,
+    "judgement_is_judge_py_own": true,
+    "comparison_exit_status": 0,
+    "rows_and_judgement_ok": true
+   },
+   "owner_end_verdict": "FAIL",
+   "judge_blocks": [],
+   "blocks": [
+    "RESOURCE FAILURE: (state check) the closure deadline passed while a checkpoint write was in progress",
+    "a required training branch did not complete successfully, so the experiment did not complete: treatment: RESOURCE FAILURE: (state check) the closure deadline passed while a checkpoint write was in progress"
+   ],
+   "closes": [
+    [
+     "arm_consistency_496350_r2_control_reading",
+     true
+    ],
+    [
+     "arm_consistency_496350_r2_treatment_reading",
+     true
+    ],
+    [
+     "arm_consistency_496350_r2_reading",
+     false
+    ]
+   ],
+   "raised": null
+  },
+  "D12c_treatment_guard_stop": {
+   "registry": "FAIL",
+   "registry_why": "key 'verdict' of D:\\UEMA_Research\\external\\D\\UEMA_scratch\\h84\\d1_planner_recovery\\attempts\\arm_consistency_496350_r2_state_check_3_a1\\evidence\\check\\D\\D12c_treatment_guard_stop\\final_reading\\verdict.json",
+   "expected": "FAIL",
+   "match": true,
+   "note": [],
+   "adapter": {
+    "at": "Oct 23, 2026, 04:23:04 PM PDT",
+    "verdict": "FAIL",
+    "execution_why": "a required training branch did not complete successfully, so the experiment did not complete: treatment: the engineering guard stopped it ({'file': 'D:\\\\UEMA_scratch\\\\h84\\\\d1_planner_recovery\\\\attempts\\\\arm_consistency_496350_r2_state_check_3_a1\\\\evidence\\\\check\\\\D\\\\D12c_treatment_guard_stop\\\\receipts\\\\treatment\\\\guard\\\\stop.json'}); a required branch reading row did not pass, so the experiment did not complete: treatment: row did not pass, reader exit status 0, reader verdict 'PASS', reader reason 'every window healthy', the reading row did not pass: an engineering-guard stop is on record; the arm's end receipt: D:\\UEMA_Research\\external\\D\\UEMA_scratch\\h84\\d1_planner_recovery\\attempts\\arm_consistency_496350_r2_state_check_3_a1\\evidence\\check\\D\\D12c_treatment_guard_stop\\receipts\\treatment\\arm_end.json",
+    "execution_rule": "FAIL: a required training branch did not complete successfully (a recorded failure, a resource failure, an engineering-guard stop or a last saved step that is not the end step; no training-end record is a failure) or a required branch reading row did not pass (the reader's raw status kept), every failure named; for a completed pair INVALID: the phase raised, the comparison or the judgement is missing or invalid, or the judgement is not judge.py's own; else PASS, whatever the scientific verdict (a valid NOT ADOPTED only after both training branches and readings completed)",
+    "branch_readings": [
+     {
+      "arm": "control",
+      "read": true,
+      "row_passed": true,
+      "exit_status": 0,
+      "reader_verdict": "PASS",
+      "reader_verdict_reason": "every window healthy",
+      "invalid_reasons": [],
+      "why": null,
+      "exception": null
+     },
+     {
+      "arm": "treatment",
+      "read": true,
+      "row_passed": false,
+      "exit_status": 0,
+      "reader_verdict": "PASS",
+      "reader_verdict_reason": "every window healthy",
+      "invalid_reasons": [],
+      "why": "the reading row did not pass: an engineering-guard stop is on record; the arm's end receipt: D:\\UEMA_Research\\external\\D\\UEMA_scratch\\h84\\d1_planner_recovery\\attempts\\arm_consistency_496350_r2_state_check_3_a1\\evidence\\check\\D\\D12c_treatment_guard_stop\\receipts\\treatment\\arm_end.json",
+      "exception": null
+     }
+    ],
+    "training_ends": [
+     {
+      "arm": "control",
+      "recorded": true,
+      "launched": true,
+      "state": "completed",
+      "success": true,
+      "verdict": null,
+      "failures": [],
+      "resource_failure": null,
+      "guard_stop": null,
+      "last_saved_step": 496450,
+      "end_step": 496450,
+      "failed": false,
+      "summary": "control: training completed successfully at model step 496450"
+     },
+     {
+      "arm": "treatment",
+      "recorded": true,
+      "launched": true,
+      "state": "completed",
+      "success": true,
+      "verdict": null,
+      "failures": [],
+      "resource_failure": null,
+      "guard_stop": {
+       "file": "D:\\UEMA_Research\\external\\D\\UEMA_scratch\\h84\\d1_planner_recovery\\attempts\\arm_consistency_496350_r2_state_check_3_a1\\evidence\\check\\D\\D12c_treatment_guard_stop\\receipts\\treatment\\guard\\stop.json"
+      },
+      "last_saved_step": 496450,
+      "end_step": 496450,
+      "failed": true,
+      "summary": "treatment: the engineering guard stopped it ({'file': 'D:\\\\UEMA_scratch\\\\h84\\\\d1_planner_recovery\\\\attempts\\\\arm_consistency_496350_r2_state_check_3_a1\\\\evidence\\\\check\\\\D\\\\D12c_treatment_guard_stop\\\\receipts\\\\treatment\\\\guard\\\\stop.json'})"
+     }
+    ],
+    "scientific_verdict_meaning": "an execution failure: the pair did not complete (execution_why); judge.py was given the failed branches, so its verdict, if any, is forced by that failure and is not evidence for or against the lesson",
+    "scientific_verdict": "NOT ADOPTED",
+    "scientific_failing": [
+     "(state check) a failing rule"
+    ],
+    "scientific_invalid": [],
+    "scientific_by": null,
+    "scientific_why": null,
+    "judge_file": "D:\\UEMA_Research\\external\\D\\UEMA_scratch\\h84\\d1_planner_recovery\\attempts\\arm_consistency_496350_r2_state_check_3_a1\\evidence\\check\\D\\D12c_treatment_guard_stop\\final_reading\\judge_verdict.json",
+    "judge_file_sha256": "98e8aba15b451647c72bb24a2de77cec51d9e319bb61ddd209b6cf1ed3cb7f18",
+    "judge_exit_status": 2,
+    "judgement_is_judge_py_own": true,
+    "comparison_exit_status": 0,
+    "rows_and_judgement_ok": false
+   },
+   "owner_end_verdict": "FAIL",
+   "judge_blocks": [],
+   "blocks": [
+    "the final reading: not every branch of the pair was launched with its reading row passing",
+    "a required training branch did not complete successfully, so the experiment did not complete: treatment: the engineering guard stopped it ({'file': 'D:\\\\UEMA_scratch\\\\h84\\\\d1_planner_recovery\\\\attempts\\\\arm_consistency_496350_r2_state_check_3_a1\\\\evidence\\\\check\\\\D\\\\D12c_treatment_guard_stop\\\\receipts\\\\treatment\\\\guard\\\\stop.json'})",
+    "a required branch reading row did not pass, so the experiment did not complete: treatment: row did not pass, reader exit status 0, reader verdict 'PASS', reader reason 'every window healthy', the reading row did not pass: an engineering-guard stop is on record; the arm's end receipt: D:\\UEMA_Research\\external\\D\\UEMA_scratch\\h84\\d1_planner_recovery\\attempts\\arm_consistency_496350_r2_state_check_3_a1\\evidence\\check\\D\\D12c_treatment_guard_stop\\receipts\\treatment\\arm_end.json",
+    "the engineering guard stopped treatment: {'file': 'D:\\\\UEMA_scratch\\\\h84\\\\d1_planner_recovery\\\\attempts\\\\arm_consistency_496350_r2_state_check_3_a1\\\\evidence\\\\check\\\\D\\\\D12c_treatment_guard_stop\\\\receipts\\\\treatment\\\\guard\\\\stop.json'}"
+   ],
+   "closes": [
+    [
+     "arm_consistency_496350_r2_control_reading",
+     true
+    ],
+    [
+     "arm_consistency_496350_r2_treatment_reading",
+     false
+    ],
+    [
+     "arm_consistency_496350_r2_reading",
+     false
+    ]
+   ],
+   "raised": null
+  },
+  "D12d_treatment_short_endpoint": {
+   "registry": "FAIL",
+   "registry_why": "key 'verdict' of D:\\UEMA_Research\\external\\D\\UEMA_scratch\\h84\\d1_planner_recovery\\attempts\\arm_consistency_496350_r2_state_check_3_a1\\evidence\\check\\D\\D12d_treatment_short_endpoint\\final_reading\\verdict.json",
+   "expected": "FAIL",
+   "match": true,
+   "note": [],
+   "adapter": {
+    "at": "Oct 23, 2026, 04:23:04 PM PDT",
+    "verdict": "FAIL",
+    "execution_why": "a required training branch did not complete successfully, so the experiment did not complete: treatment: its last saved step is 496425, not the end step 496450",
+    "execution_rule": "FAIL: a required training branch did not complete successfully (a recorded failure, a resource failure, an engineering-guard stop or a last saved step that is not the end step; no training-end record is a failure) or a required branch reading row did not pass (the reader's raw status kept), every failure named; for a completed pair INVALID: the phase raised, the comparison or the judgement is missing or invalid, or the judgement is not judge.py's own; else PASS, whatever the scientific verdict (a valid NOT ADOPTED only after both training branches and readings completed)",
+    "branch_readings": [
+     {
+      "arm": "control",
+      "read": true,
+      "row_passed": true,
+      "exit_status": 0,
+      "reader_verdict": "PASS",
+      "reader_verdict_reason": "every window healthy",
+      "invalid_reasons": [],
+      "why": null,
+      "exception": null
+     },
+     {
+      "arm": "treatment",
+      "read": true,
+      "row_passed": true,
+      "exit_status": 0,
+      "reader_verdict": "PASS",
+      "reader_verdict_reason": "every window healthy",
+      "invalid_reasons": [],
+      "why": null,
+      "exception": null
+     }
+    ],
+    "training_ends": [
+     {
+      "arm": "control",
+      "recorded": true,
+      "launched": true,
+      "state": "completed",
+      "success": true,
+      "verdict": null,
+      "failures": [],
+      "resource_failure": null,
+      "guard_stop": null,
+      "last_saved_step": 496450,
+      "end_step": 496450,
+      "failed": false,
+      "summary": "control: training completed successfully at model step 496450"
+     },
+     {
+      "arm": "treatment",
+      "recorded": true,
+      "launched": true,
+      "state": "completed",
+      "success": true,
+      "verdict": null,
+      "failures": [],
+      "resource_failure": null,
+      "guard_stop": null,
+      "last_saved_step": 496425,
+      "end_step": 496450,
+      "failed": true,
+      "summary": "treatment: its last saved step is 496425, not the end step 496450"
+     }
+    ],
+    "scientific_verdict_meaning": "an execution failure: the pair did not complete (execution_why); judge.py was given the failed branches, so its verdict, if any, is forced by that failure and is not evidence for or against the lesson",
+    "scientific_verdict": "NOT ADOPTED",
+    "scientific_failing": [
+     "(state check) a failing rule"
+    ],
+    "scientific_invalid": [],
+    "scientific_by": null,
+    "scientific_why": null,
+    "judge_file": "D:\\UEMA_Research\\external\\D\\UEMA_scratch\\h84\\d1_planner_recovery\\attempts\\arm_consistency_496350_r2_state_check_3_a1\\evidence\\check\\D\\D12d_treatment_short_endpoint\\final_reading\\judge_verdict.json",
+    "judge_file_sha256": "98e8aba15b451647c72bb24a2de77cec51d9e319bb61ddd209b6cf1ed3cb7f18",
+    "judge_exit_status": 2,
+    "judgement_is_judge_py_own": true,
+    "comparison_exit_status": 0,
+    "rows_and_judgement_ok": true
+   },
+   "owner_end_verdict": "FAIL",
+   "judge_blocks": [],
+   "blocks": [
+    "UNEQUAL OR SHORT EXPOSURE: the branches' last saved steps {'control': 496450, 'treatment': 496425} (end step 496450): no matched-duration comparison is declared",
+    "a required training branch did not complete successfully, so the experiment did not complete: treatment: its last saved step is 496425, not the end step 496450"
+   ],
+   "closes": [
+    [
+     "arm_consistency_496350_r2_control_reading",
+     true
+    ],
+    [
+     "arm_consistency_496350_r2_treatment_reading",
+     true
+    ],
+    [
+     "arm_consistency_496350_r2_reading",
+     false
+    ]
+   ],
+   "raised": null
+  },
+  "D12e_treatment_success_missing": {
+   "registry": "FAIL",
+   "registry_why": "key 'verdict' of D:\\UEMA_Research\\external\\D\\UEMA_scratch\\h84\\d1_planner_recovery\\attempts\\arm_consistency_496350_r2_state_check_3_a1\\evidence\\check\\D\\D12e_treatment_success_missing\\final_reading\\verdict.json",
+   "expected": "FAIL",
+   "match": true,
+   "note": [],
+   "adapter": {
+    "at": "Oct 23, 2026, 04:23:04 PM PDT",
+    "verdict": "FAIL",
+    "execution_why": "a required training branch did not complete successfully, so the experiment did not complete: treatment: its end receipt does not read success true (no reason recorded)",
+    "execution_rule": "FAIL: a required training branch did not complete successfully (a recorded failure, a resource failure, an engineering-guard stop or a last saved step that is not the end step; no training-end record is a failure) or a required branch reading row did not pass (the reader's raw status kept), every failure named; for a completed pair INVALID: the phase raised, the comparison or the judgement is missing or invalid, or the judgement is not judge.py's own; else PASS, whatever the scientific verdict (a valid NOT ADOPTED only after both training branches and readings completed)",
+    "branch_readings": [
+     {
+      "arm": "control",
+      "read": true,
+      "row_passed": true,
+      "exit_status": 0,
+      "reader_verdict": "PASS",
+      "reader_verdict_reason": "every window healthy",
+      "invalid_reasons": [],
+      "why": null,
+      "exception": null
+     },
+     {
+      "arm": "treatment",
+      "read": true,
+      "row_passed": true,
+      "exit_status": 0,
+      "reader_verdict": "PASS",
+      "reader_verdict_reason": "every window healthy",
+      "invalid_reasons": [],
+      "why": null,
+      "exception": null
+     }
+    ],
+    "training_ends": [
+     {
+      "arm": "control",
+      "recorded": true,
+      "launched": true,
+      "state": "completed",
+      "success": true,
+      "verdict": null,
+      "failures": [],
+      "resource_failure": null,
+      "guard_stop": null,
+      "last_saved_step": 496450,
+      "end_step": 496450,
+      "failed": false,
+      "summary": "control: training completed successfully at model step 496450"
+     },
+     {
+      "arm": "treatment",
+      "recorded": true,
+      "launched": true,
+      "state": "completed",
+      "success": null,
+      "verdict": null,
+      "failures": [],
+      "resource_failure": null,
+      "guard_stop": null,
+      "last_saved_step": 496450,
+      "end_step": 496450,
+      "failed": true,
+      "summary": "treatment: its end receipt does not read success true (no reason recorded)"
+     }
+    ],
+    "scientific_verdict_meaning": "an execution failure: the pair did not complete (execution_why); judge.py was given the failed branches, so its verdict, if any, is forced by that failure and is not evidence for or against the lesson",
+    "scientific_verdict": "NOT ADOPTED",
+    "scientific_failing": [
+     "(state check) a failing rule"
+    ],
+    "scientific_invalid": [],
+    "scientific_by": null,
+    "scientific_why": null,
+    "judge_file": "D:\\UEMA_Research\\external\\D\\UEMA_scratch\\h84\\d1_planner_recovery\\attempts\\arm_consistency_496350_r2_state_check_3_a1\\evidence\\check\\D\\D12e_treatment_success_missing\\final_reading\\judge_verdict.json",
+    "judge_file_sha256": "98e8aba15b451647c72bb24a2de77cec51d9e319bb61ddd209b6cf1ed3cb7f18",
+    "judge_exit_status": 2,
+    "judgement_is_judge_py_own": true,
+    "comparison_exit_status": 0,
+    "rows_and_judgement_ok": true
+   },
+   "owner_end_verdict": "FAIL",
+   "judge_blocks": [],
+   "blocks": [
+    "the arm's training end records no success and no failures",
+    "a required training branch did not complete successfully, so the experiment did not complete: treatment: its end receipt does not read success true (no reason recorded)"
+   ],
+   "closes": [
+    [
+     "arm_consistency_496350_r2_control_reading",
+     true
+    ],
+    [
+     "arm_consistency_496350_r2_treatment_reading",
+     true
+    ],
+    [
+     "arm_consistency_496350_r2_reading",
+     false
+    ]
+   ],
+   "raised": null
+  },
+  "D12f_treatment_resource_failure_in_receipt": {
+   "registry": "FAIL",
+   "registry_why": "key 'verdict' of D:\\UEMA_Research\\external\\D\\UEMA_scratch\\h84\\d1_planner_recovery\\attempts\\arm_consistency_496350_r2_state_check_3_a1\\evidence\\check\\D\\D12f_treatment_resource_failure_in_receipt\\final_reading\\verdict.json",
+   "expected": "FAIL",
+   "match": true,
+   "note": [],
+   "adapter": {
+    "at": "Oct 23, 2026, 04:23:05 PM PDT",
+    "verdict": "FAIL",
+    "execution_why": "a required training branch did not complete successfully, so the experiment did not complete: treatment: RESOURCE FAILURE: (state check) only in the training-end receipt's schedule",
+    "execution_rule": "FAIL: a required training branch did not complete successfully (a recorded failure, a resource failure, an engineering-guard stop or a last saved step that is not the end step; no training-end record is a failure) or a required branch reading row did not pass (the reader's raw status kept), every failure named; for a completed pair INVALID: the phase raised, the comparison or the judgement is missing or invalid, or the judgement is not judge.py's own; else PASS, whatever the scientific verdict (a valid NOT ADOPTED only after both training branches and readings completed)",
+    "branch_readings": [
+     {
+      "arm": "control",
+      "read": true,
+      "row_passed": true,
+      "exit_status": 0,
+      "reader_verdict": "PASS",
+      "reader_verdict_reason": "every window healthy",
+      "invalid_reasons": [],
+      "why": null,
+      "exception": null
+     },
+     {
+      "arm": "treatment",
+      "read": true,
+      "row_passed": true,
+      "exit_status": 0,
+      "reader_verdict": "PASS",
+      "reader_verdict_reason": "every window healthy",
+      "invalid_reasons": [],
+      "why": null,
+      "exception": null
+     }
+    ],
+    "training_ends": [
+     {
+      "arm": "control",
+      "recorded": true,
+      "launched": true,
+      "state": "completed",
+      "success": true,
+      "verdict": null,
+      "failures": [],
+      "resource_failure": null,
+      "guard_stop": null,
+      "last_saved_step": 496450,
+      "end_step": 496450,
+      "failed": false,
+      "summary": "control: training completed successfully at model step 496450"
+     },
+     {
+      "arm": "treatment",
+      "recorded": true,
+      "launched": true,
+      "state": "completed",
+      "success": true,
+      "verdict": null,
+      "failures": [],
+      "resource_failure": "RESOURCE FAILURE: (state check) only in the training-end receipt's schedule",
+      "guard_stop": null,
+      "last_saved_step": 496450,
+      "end_step": 496450,
+      "failed": true,
+      "summary": "treatment: RESOURCE FAILURE: (state check) only in the training-end receipt's schedule"
+     }
+    ],
+    "scientific_verdict_meaning": "an execution failure: the pair did not complete (execution_why); judge.py was given the failed branches, so its verdict, if any, is forced by that failure and is not evidence for or against the lesson",
+    "scientific_verdict": "NOT ADOPTED",
+    "scientific_failing": [
+     "(state check) a failing rule"
+    ],
+    "scientific_invalid": [],
+    "scientific_by": null,
+    "scientific_why": null,
+    "judge_file": "D:\\UEMA_Research\\external\\D\\UEMA_scratch\\h84\\d1_planner_recovery\\attempts\\arm_consistency_496350_r2_state_check_3_a1\\evidence\\check\\D\\D12f_treatment_resource_failure_in_receipt\\final_reading\\judge_verdict.json",
+    "judge_file_sha256": "98e8aba15b451647c72bb24a2de77cec51d9e319bb61ddd209b6cf1ed3cb7f18",
+    "judge_exit_status": 2,
+    "judgement_is_judge_py_own": true,
+    "comparison_exit_status": 0,
+    "rows_and_judgement_ok": true
+   },
+   "owner_end_verdict": "FAIL",
+   "judge_blocks": [],
+   "blocks": [
+    "RESOURCE FAILURE: (state check) only in the training-end receipt's schedule",
+    "a required training branch did not complete successfully, so the experiment did not complete: treatment: RESOURCE FAILURE: (state check) only in the training-end receipt's schedule"
+   ],
+   "closes": [
+    [
+     "arm_consistency_496350_r2_control_reading",
+     true
+    ],
+    [
+     "arm_consistency_496350_r2_treatment_reading",
+     true
+    ],
+    [
+     "arm_consistency_496350_r2_reading",
+     false
+    ]
+   ],
+   "raised": null
+  },
+  "D12g_treatment_resource_failure_in_guard_schedule": {
+   "registry": "FAIL",
+   "registry_why": "key 'verdict' of D:\\UEMA_Research\\external\\D\\UEMA_scratch\\h84\\d1_planner_recovery\\attempts\\arm_consistency_496350_r2_state_check_3_a1\\evidence\\check\\D\\D12g_treatment_resource_failure_in_guard_schedule\\final_reading\\verdict.json",
+   "expected": "FAIL",
+   "match": true,
+   "note": [],
+   "adapter": {
+    "at": "Oct 23, 2026, 04:23:05 PM PDT",
+    "verdict": "FAIL",
+    "execution_why": "a required training branch did not complete successfully, so the experiment did not complete: treatment: RESOURCE FAILURE: (state check) only in the guard's saved schedule",
+    "execution_rule": "FAIL: a required training branch did not complete successfully (a recorded failure, a resource failure, an engineering-guard stop or a last saved step that is not the end step; no training-end record is a failure) or a required branch reading row did not pass (the reader's raw status kept), every failure named; for a completed pair INVALID: the phase raised, the comparison or the judgement is missing or invalid, or the judgement is not judge.py's own; else PASS, whatever the scientific verdict (a valid NOT ADOPTED only after both training branches and readings completed)",
+    "branch_readings": [
+     {
+      "arm": "control",
+      "read": true,
+      "row_passed": true,
+      "exit_status": 0,
+      "reader_verdict": "PASS",
+      "reader_verdict_reason": "every window healthy",
+      "invalid_reasons": [],
+      "why": null,
+      "exception": null
+     },
+     {
+      "arm": "treatment",
+      "read": true,
+      "row_passed": true,
+      "exit_status": 0,
+      "reader_verdict": "PASS",
+      "reader_verdict_reason": "every window healthy",
+      "invalid_reasons": [],
+      "why": null,
+      "exception": null
+     }
+    ],
+    "training_ends": [
+     {
+      "arm": "control",
+      "recorded": true,
+      "launched": true,
+      "state": "completed",
+      "success": true,
+      "verdict": null,
+      "failures": [],
+      "resource_failure": null,
+      "guard_stop": null,
+      "last_saved_step": 496450,
+      "end_step": 496450,
+      "failed": false,
+      "summary": "control: training completed successfully at model step 496450"
+     },
+     {
+      "arm": "treatment",
+      "recorded": true,
+      "launched": true,
+      "state": "completed",
+      "success": true,
+      "verdict": null,
+      "failures": [],
+      "resource_failure": "RESOURCE FAILURE: (state check) only in the guard's saved schedule",
+      "guard_stop": null,
+      "last_saved_step": 496450,
+      "end_step": 496450,
+      "failed": true,
+      "summary": "treatment: RESOURCE FAILURE: (state check) only in the guard's saved schedule"
+     }
+    ],
+    "scientific_verdict_meaning": "an execution failure: the pair did not complete (execution_why); judge.py was given the failed branches, so its verdict, if any, is forced by that failure and is not evidence for or against the lesson",
+    "scientific_verdict": "NOT ADOPTED",
+    "scientific_failing": [
+     "(state check) a failing rule"
+    ],
+    "scientific_invalid": [],
+    "scientific_by": null,
+    "scientific_why": null,
+    "judge_file": "D:\\UEMA_Research\\external\\D\\UEMA_scratch\\h84\\d1_planner_recovery\\attempts\\arm_consistency_496350_r2_state_check_3_a1\\evidence\\check\\D\\D12g_treatment_resource_failure_in_guard_schedule\\final_reading\\judge_verdict.json",
+    "judge_file_sha256": "98e8aba15b451647c72bb24a2de77cec51d9e319bb61ddd209b6cf1ed3cb7f18",
+    "judge_exit_status": 2,
+    "judgement_is_judge_py_own": true,
+    "comparison_exit_status": 0,
+    "rows_and_judgement_ok": true
+   },
+   "owner_end_verdict": "FAIL",
+   "judge_blocks": [],
+   "blocks": [
+    "RESOURCE FAILURE: (state check) only in the guard's saved schedule",
+    "a required training branch did not complete successfully, so the experiment did not complete: treatment: RESOURCE FAILURE: (state check) only in the guard's saved schedule"
+   ],
+   "closes": [
+    [
+     "arm_consistency_496350_r2_control_reading",
+     true
+    ],
+    [
+     "arm_consistency_496350_r2_treatment_reading",
+     true
+    ],
+    [
+     "arm_consistency_496350_r2_reading",
+     false
+    ]
+   ],
+   "raised": null
+  },
+  "D11_control_reader_invalid": {
+   "registry": null,
+   "registry_why": null,
+   "expected": null,
+   "match": true,
+   "note": [],
+   "adapter": null,
+   "owner_end_verdict": "FAIL",
+   "judge_blocks": [
+    "the judge: not run: the treatment branch was not launched (control's reading row did not pass (exit status 3))"
+   ],
+   "blocks": [
+    "INVALID: the final reading: not every branch of the pair was launched with its reading row passing",
+    "control's reading row did not pass (exit status 3)",
+    "the final watcher check: missing (not run)",
+    "a required training branch did not complete successfully, so the experiment did not complete: treatment: not launched (control's reading row did not pass (exit status 3))",
+    "a required branch reading row did not pass, so the experiment did not complete: control: row did not pass, reader exit status 3, reader verdict 'INVALID', reader reason 'measurement incomplete: (state check) required detail records missing'; treatment: no reading (the branch was not launched or not read)",
+    "the judge: not run: the treatment branch was not launched (control's reading row did not pass (exit status 3))",
+    "the identical-state comparison: not run: the treatment branch was not launched (control's reading row did not pass (exit status 3))"
+   ],
+   "closes": [
+    [
+     "arm_consistency_496350_r2_control_reading",
+     false
+    ]
+   ],
+   "raised": null
+  }
+ },
+ "part_e": {
+  "got": {
+   "slowest": 3.012,
+   "lag": 75.3,
+   "none": 3.012,
+   "faster": 3.012,
+   "slower": 3.5,
+   "nan": 3.012,
+   "request_at_1000": 744.7,
+   "limits": [
+    420.0,
+    180.0,
+    600.0,
+    1500.0
+   ],
+   "due_at_344": false,
+   "due_at_344_8": true
+  },
+  "want": {
+   "slowest": 3.012,
+   "none": 3.012,
+   "faster": 3.012,
+   "slower": 3.5,
+   "nan": 3.012,
+   "limits": [
+    420.0,
+    180.0,
+    600.0,
+    1500.0
+   ],
+   "due_at_344": false,
+   "due_at_344_8": true,
+   "lag": 75.3,
+   "request_at_1000": 744.7
+  },
+  "match": true
+ },
+ "seconds": {
+  "a": 0.0,
+  "b_and_c": 5.31
+ },
+ "owner_sha256": "75a825811a471396c7aacce60aa03f21947b9a8af4acc0ce3bf57e165fbfa22e",
+ "folder": "D:\\UEMA_Research\\external\\D\\UEMA_scratch\\h84\\d1_planner_recovery\\attempts\\arm_consistency_496350_r2_state_check_3_a1\\evidence\\check"
+}

@@ -1,0 +1,80 @@
+{
+  "objective": "Acquire useful hand and whole-body abilities faster, measured through physical outcomes, repeatability, retention and transfer.",
+  "owner": "the overseer gain-of-function investigation; next session must continue open actions before describing these skills as on course.",
+  "updated": "2026-10-26T01:03:35.353689-07:00",
+  "issues": [
+    {
+      "id": "hand_target_geometry",
+      "status": "in_production_since_segment_37_capacity_rechecked_every_3000_updates",
+      "evidence": "measurements/hand_capability_program_2026-09-23.json: target_conflicts; 30 incompatible pairs at each of controller, filtered and sent stages in three snapshots. Private joint/tendon-constrained projection: zero incompatible pairs. Production has run hand_target_mode wrist_relative_v1 since 4:03 AM PDT on 2026-09-24 (production_started.json changes; segment 39 args.json). Scheduled hand-following rechecks at steps 380,550, 383,650, 386,750, 389,850, 392,950 and 396,050 (Saved/mimo_bridge/ability_rechecks/hand_following_*/result.json): mean hand-joint error after 1 second 7.2 to 14.4 degrees with wrist-following targets against 24.1 to 35.9 degrees with fixed-world targets; lower for all three goals in 6 of 6 rounds, 24 comparisons per round, the wrist-following run of each replayed exactly.",
+      "training_impact": "Before step 380,200 the learner received physically contradictory hand requests and experienced the decoder's compromise; production has sent compatible wrist-relative requests since it resumed from step 380,200 (segment 37). Real achieved-state records remain useful; command-following claims and action expectations from before step 380,200 require re-evaluation. Keep learned state; no lost-training percentage is inferred.",
+      "current_action": "Qualification passed (qualification_hand_vision_v3, 3:48 AM PDT) and production resumed on the shared hand interface. The scheduler rechecks physical capacity every 3,000 training updates (task hand_following of docs/gain_of_function_v3/ability_rechecks.json); the planner's command choice toward reference hand poses is compared by task body_and_synergy (see finger_extension). Earlier detail: all 24 no-learner comparisons from the eight saved 380200 worlds improved and replayed exactly (measurements/hand_execution_2026-09-24.json).",
+      "next_test": "Physical capacity: continue the scheduled rechecks. Learned hand choice: the recurring remembered-hand-goal comparison is a scheduler task (see hand_action_prediction); it is held for the operator's decision on what a failed round does.",
+      "trigger": "Every scheduled checkpoint (every 3,000 updates); any decoder, motor hold, damping or finger armature change.",
+      "production_change": true
+    },
+    {
+      "id": "finger_extension",
+      "status": "planner_choice_compared_every_3000_updates_controller_still_closer",
+      "evidence": "Six-second normal-control stages: mean error 1.48 degrees from straight, maximum 4.79; mean 0.79 degrees from full extension limits. Removing finger contacts gives identical results. Raw runs extension_long and extension_no_contacts. Scheduled body_and_synergy comparisons at steps 380,550 to 396,050 (six rounds; goals are the endpoints of same-state reference closing and opening commands; Saved/mimo_bridge/ability_rechecks/body_and_synergy_*/result.json): hand-joint error after the chosen command 5.0 to 6.0 degrees for the direct planner and 5.1 to 5.9 degrees for the synergy planner, against 4.8 to 5.6 degrees for the starting controller; a planner came closer than the controller in 0 to 2 of 8 bodies per round.",
+      "training_impact": "No blocked extension motor was found in this fixture. A two-second endpoint underreported eventual opening, especially for little fingers; replace endpoint-only curl reporting with opening/closing trajectories and response times.",
+      "current_action": "The scheduler repeats the same-state comparison every 3,000 training updates; no control switch changes from it. Earlier: six-second stages and the contact-removal alternative explanation, with all joint trajectories saved.",
+      "next_test": "The planner's command toward a given opening or closing endpoint is now compared automatically. Still untested: the learner choosing to open or close itself from a detached production state, compared with the same-state controller and physical reference; the remembered-hand-goal route (hand_action_prediction) is the executable path; its scheduled comparison is held since 10:00 PM PDT for the operator's decision on what a failed round does (cb3f90161).",
+      "trigger": "Each scheduled comparison; the remembered-hand-goal comparison once the operator decides its failure rule; repeat whenever decoder, motor hold, damping or finger armature changes."
+    },
+    {
+      "id": "finger_individuation",
+      "status": "coupling_measured_selective_index_rechecked_small_isolated_curls_next",
+      "evidence": "Ten individual-finger command tests plus compiled knuckle-tendon limits: 29.8, 25.2 and 20.1 degrees neighbour separation. Large isolated curls recruit neighbours; the little-finger large-curl target has 30.94 degrees mean error after 2 seconds. Scheduled hand-following rechecks include a selective index-finger curl: 7.5 to 8.9 degrees mean hand-joint error after 1 second with wrist-following targets against 24.1 to 31.3 degrees with fixed-world targets (6 rounds, steps 380,550 to 396,050).",
+      "training_impact": "Independent extreme finger goals can conflict even after wrist-relative reach is satisfied. A feasible target generator must include inter-finger constraints, not merely each finger's joint limits.",
+      "current_action": "Measured each finger and other fingers in the same hand, and included coupling constraints in the private target projection.",
+      "next_test": "Compare small isolated curls within the tendon bands, then feasible two-finger combinations, opposition, pointing and controlled release under the same normal physics.",
+      "trigger": "Hand-target comparison; before interpreting isolated-finger failures as damaged motors. Checked 2026-09-24 7:50 PM PDT: the small isolated curls within the tendon bands have no launch mechanism or receipt yet.",
+      "owner": "Named 2026-09-24 9:55 PM PDT: the coordinating session assigns a track to declare the small isolated-curl test; the scheduler owner then adds its task to docs/gain_of_function_v3/ability_rechecks.json. No track is assigned yet; it was raised in the dashboard-staleness report (docs/gain_of_function_v4/agents/dashboard_staleness.md)."
+    },
+    {
+      "id": "hand_object_function",
+      "status": "object_reference_due_not_scheduled",
+      "evidence": "measurements/grasp_fixture_2026-09-23.json; left hand, free 3 cm cube, four paired branches including exact replay. The production cube is 6 cm.",
+      "training_impact": "Curl/extension measurements do not grade grasp, force control, slip, release, manipulation or bimanual roles. Dashboard must show those as separate test stages.",
+      "current_action": "Native command/result lessons and learned body prior are written; exact interval, private-memory and saved-state corrections source-reviewed, unrun. the builder now connects raw-outcome scoring, later-outcome value, persistent intention and actual sequence choice for the preserved496256 branch.",
+      "next_test": "After connected source review, prepare a bounded actual-command prediction comparison and obtain the required diagnostic-budget exception; no run is authorized now.",
+      "trigger": "Concrete source integration receipt due01:20:54PDT October26, then the overseer independent review and next implementation decision.",
+      "model_audit_checked_at": "2026-10-26T01:03:35.353689-07:00",
+      "review_link": "../../Saved/gof_coordination/replies/causal-loop-active-config-and-next-integration-20261026.txt"
+    },
+    {
+      "id": "supported_rolling",
+      "status": "search_and_timing_comparisons_completed_learning_comparison_next",
+      "evidence": "The earlier 26 trials reached 64.52 degrees; that maximum was at the final recorded frame. Exact replay was verified. June 2026 MIMo research demonstrates direct-control learned rolling in different configurations: https://arxiv.org/html/2606.17456v1 .",
+      "training_impact": "No change to production learning. The current physical reference has not yet reached the full supported-roll goal, so it cannot qualify a learned rolling test.",
+      "current_action": "Completed 96 candidates: best 116.75 degrees versus 64.52 previously. Extending the best sequence to twelve seconds adds no further turn. Shorter holds, no smoothing and both changes reach 50.30, 47.46 and 94.96 degrees respectively; no full supported roll. Original and extended trajectories replayed exactly within their declared checks.",
+      "next_test": "Run the bounded private rolling learning comparison specified in ROLLING_LEARNING_EXPERIMENT_2026-09-23.json: a task learner with an explicit supported-roll objective, comparing coherent joint references with existing world-target controls at equal experience. Evaluate both the back start and the measured supported-side state, so completing the turn is a separately scored stage.",
+      "trigger": "Planner recovery completes and the private learner implementation passes same-state and action-record checks; parent schedules the bounded run under the memory guard.",
+      "owner": "the overseer continuation; preserved UEMA command-interface work takes priority over the separate diagnostic learner.",
+      "checked": "2026-09-24 7:50 PM PDT: no bounded rolling learning run is scheduled (docs/gain_of_function_v3/ability_rechecks.json) and none has a receipt. The repaired-planner qualification passed (qualification_hand_vision_v3, 3:48 AM PDT), but the planner issue planner_choices_tied in PLANNER_ACTIONS_2026-09-23.json (every recorded choice tied) is open, and the private learner check and the parent scheduling have not happened."
+    },
+    {
+      "id": "exploration_coordination",
+      "status": "trigger_reached_comparison_not_scheduled",
+      "evidence": "The production path perturbs separate world targets, then smooths and holds them. The June 2026 primary study of infant-inspired noise found task-dependent benefits from moderate temporal correlation, not a universal winner: https://arxiv.org/html/2606.16590v1 .",
+      "training_impact": "Current smoothing and holds already correlate commands over time. The observed arm movement does not by itself identify exploration as the cause; compare actual resulting movement and acquisition before changing its noise.",
+      "current_action": "Traced the existing filtered exploration path and defined a matched comparison against feasible hand commands and the learned synergy. Checked 2026-09-24 7:50 PM PDT: the compatible-target and synergy comparisons this item waits for have completed repeatedly (hand following in 6 rounds; synergy in 6 rounds, never better than the controller beyond the sample uncertainty), so its trigger is reached; the matched exploration comparison has no launch mechanism or receipt.",
+      "next_test": "After hand geometry and synergy physical qualification, compare current exploration, learned synergy and moderately persistent feasible exploration at equal actual movement amplitude, contact-force budget and simulator experience. Score new controlled contacts and acquisition of selective opening/closing and supported turn, not command variance alone.",
+      "trigger": "Reached 2026-09-24; needs a declared comparison and a scheduler entry before the next exploration configuration is chosen.",
+      "owner": "Named 2026-09-24 9:55 PM PDT: the coordinating session assigns a track to declare the matched exploration comparison; the scheduler owner then adds its task to docs/gain_of_function_v3/ability_rechecks.json. No track is assigned yet; it was raised in the dashboard-staleness report (docs/gain_of_function_v4/agents/dashboard_staleness.md)."
+    },
+    {
+      "id": "hand_action_prediction",
+      "status": "in_production_since_segment_37_recurring_memory_goal_comparison_held_for_operator_failure_rule",
+      "evidence": "measurements/hand_response_diagnostics_2026-09-24.json and measurements/hand_memory_route_2026-09-24.json. Four-body fit, eight held-out research goals, then eight actual learner-selected remembered goals; all physical trials improved and replayed exactly. qualification_hand_vision_v3 passed at 3:48 AM PDT with hand_goals memory and the bound calibration (checks actual_hand_choice_qualified and hand_goal_selection); production has run hand_goals memory with hand_response_calibration_380200.json since 4:03 AM PDT (segments 37 to 39, args.json).",
+      "training_impact": "The old execution rule already has wrong absolute forecasts; reverting the hand repair would retain that defect. Existing weights and experience are preserved. A small frozen response model fitted from bodies 0 to 3 improves hand choices on bodies 4 to 7; it does not establish object grasp or general arm reaching.",
+      "current_action": "The actual learner route passed all eight held-out remembered-goal trials at step 380,200: combined finger position and rotation error decreased 14.15%, mean orientation error 34.31 to 31.32 degrees and finger-position error 18.32 to 17.35 mm, with body, wrist, force and gaze commands identical. The repeated hand-goal tests promised in HAND_CONTROL_QUALIFICATION_2026-09-24.md became a committed scheduler task only at 9:16 PM PDT: commit 0e242911d adds task hand_memory_route (every 3,000 updates; --calibration passed by path; a result validator in ability_rechecks.validate_result), held 9:14-9:25 PM PDT while the running scheduler lacked that validator; the scheduler restarted at 9:24 PM PDT (301867ec1) and the hold was lifted (2c060ec5e), so the first round was due at step 399,050. Held again at 10:00 PM PDT (cb3f90161): the handoff requires a failed round to keep training paused for review, which conflicts with the operator's order to keep training running, so the operator decides which rule applies. body_and_synergy disables the hand-memory stage (hand_memory_scope in its result). No receipt exists after that comparison (measured 3:35 AM PDT, admitted 3:39 AM PDT).",
+      "next_test": "The operator's decision on what a failed round does; then the first scheduled round, and retention and changed states evaluated separately from same-state replay.",
+      "trigger": "Due since step 380,550, the first checkpoint of the other scheduled comparisons; task added 9:16 PM PDT (commit 0e242911d); held since 10:00 PM PDT for the operator's decision (cb3f90161).",
+      "production_change": true,
+      "owner": "Scheduler owner (ability_rechecks.py and ability_rechecks.json)."
+    }
+  ],
+  "reconciled": "2026-09-24 7:50 PM PDT against production segment 39 (H84_fresh_drivers_20260918_seg39_resume_20260924_193821, lineage step 396,100; receipts read 7:47 PM PDT) and the scheduled comparison receipts in Saved/mimo_bridge/ability_rechecks/status.json. Production resumed from the step-380,200 repair stop at 4:03 AM PDT as segment 37 (the trainer's launch record; the deploy began at 4:02 AM PDT, Saved/gof_takeover_20260924/repair/production_started.json) after qualification_hand_vision_v3 passed at 3:48 AM PDT. Updated 9:55 PM PDT: the remembered hand-goal comparison is a scheduler task since commit 0e242911d (9:16 PM PDT); held 9:14-9:25 PM PDT, held again from 10:00 PM PDT for the operator's decision on what a failed round does (cb3f90161)."
+}

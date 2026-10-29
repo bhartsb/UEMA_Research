@@ -1,0 +1,27 @@
+sequenceDiagram
+    autonumber
+    participant B as Body and senses
+    participant S as Memory and self
+    participant M as Motor controller
+    participant F as Forward model
+    participant W as Wellness and future value
+    participant P as Intention planner
+    B->>S: Record view, tilt, motion, contact and body<br/>condition
+    S->>M: Supply recent readings and continuing goal
+    loop Imagine possible movements from the same starting condition
+        M->>F: Propose the next coordinated body, eye and<br/>finger command
+        F->>F: Predict the next body motion, contact and<br/>condition
+        F->>W: Rate predicted useful control, pain, lost<br/>function and effort
+        F->>M: Use the predicted condition to propose the<br/>following command
+        Note over M,W: Continue for three seconds,  include learned<br/>value of later effects
+        W->>P: Send the expected total for this proposed<br/>movement
+    end
+    P->>B: Send only the first short command of the<br/>chosen movement
+    B->>S: New real readings arrive,  update the next<br/>choice
+    Note over B,S: If contact occurs, record its load, pain and<br/>body effects
+    S->>F: Revisit earlier readings and actual commands,<br/>predict recorded later results
+    F->>F: Change learned numbers to reduce prediction<br/>errors
+    S->>W: Compare actual wellness with the earlier<br/>expected value
+    W->>M: Update learned command preference from the<br/>changed value
+    Note over S,P: Current readings can change a command before<br/>training finishes
+    Note over B,F: Later actual results teach earlier<br/>predictions,  they cannot be earlier inputs

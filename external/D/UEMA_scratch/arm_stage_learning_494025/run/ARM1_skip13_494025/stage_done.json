@@ -1,0 +1,11 @@
+{
+  "run": "ARM1_skip13_494025",
+  "ok": false,
+  "steps": 494030,
+  "resumed_from": "D:\\UEMA_Research\\weights\\b1_continue_B1K_skip13_492800\\run\\checkpoints\\ckpt_step_494025",
+  "final_checkpoint": null,
+  "finished_at": 1792085147.5182514,
+  "finished_at_human": "2026-10-15 10:25:47",
+  "elapsed_min": 2.1465959906578065,
+  "exception": "Traceback (most recent call last):\n  File \"C:\\Users\\bhart\\Documents\\UEMA_wt\\arm_stage_provenance\\Source\\Python\\mimo_bridge\\train_mimo.py\", line 2969, in main\n    res = model.step(frames, dev, train=not args.eval_only, step_index=step,\n                     random_actions=args.random_actions, executed_action=prev_executed,\n                     executed_ctrl_gaze=prev_ctrl_gaze,\n                     executed_order_id=prev_order_id)\n  File \"C:\\Users\\bhart\\Documents\\UEMA_wt\\arm_stage_provenance\\Source\\Python\\mimo_bridge\\lem_model.py\", line 4343, in step\n    plan, imeta = self._plan_chain(\n                  ~~~~~~~~~~~~~~~~^\n        current_state, goal_state, motor_out.detach().float(),\n        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n        max_steps=_max_steps, decision=self._last_plan_inputs['decision'])\n        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\bhart\\Documents\\UEMA_wt\\arm_stage_provenance\\Source\\Python\\mimo_bridge\\lem_model.py\", line 6447, in _plan_chain\n    limits_effect(meta['arm_stage'], _exec_form, self.handle_names)\n    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\bhart\\Documents\\UEMA_wt\\arm_stage_provenance\\Source\\Python\\mimo_bridge\\arm_stage.py\", line 300, in limits_effect\n    side[\"executed_wrist_target_to_memory_cm\"] = round(float(torch.linalg.norm(ex[b, r[\"wrist\"], 0:3] - mem_cm)), 3)\n                                                                               ~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~\nRuntimeError: Expected all tensors to be on the same device, but found at least two devices, cuda:0 and cpu!\n"
+}

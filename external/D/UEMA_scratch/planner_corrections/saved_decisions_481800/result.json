@@ -1,0 +1,301 @@
+{
+ "checks": {
+  "identity": {
+   "passed": true,
+   "model_steps": 360,
+   "bodies": 8,
+   "planning_decisions": 40,
+   "first_differences": [],
+   "recorder_failures": 0,
+   "plan_record_failures": 0,
+   "line": "every recorded output equals this code's at every model step; no recorder or plan-record failure"
+  },
+  "goal_construction": {
+   "passed": true,
+   "decisions": 40,
+   "line": "the ranking recomputed from the ring gives the recorded ring index, and the recorded goal tokens and the search's goal are that ring entry's tokens, at every decision"
+  },
+  "candidate_determinism": {
+   "passed": true,
+   "pred_wellness_max_abs": 0.0,
+   "goal_distance_max_abs": 1.8458668171739134e-07,
+   "line": "the four alternatives formed twice are equal bit for bit; scored again they give the record's predicted wellness sums and goal distances within 2e-06"
+  },
+  "score_decomposition": {
+   "passed": true,
+   "largest": {
+    "decomposition_plain_final_abs": 1.2004071092697188e-07,
+    "decomposition_weighted_final_abs": 1.2004071092697188e-07,
+    "decomposition_plain_start_abs": 1.2956628037130713e-07,
+    "decomposition_weighted_start_abs": 1.2956628037130713e-07,
+    "reported_chosen_minus_weighted_sum_abs": 1.2004071092697188e-07,
+    "reported_reflex_minus_weighted_sum_abs": 1.2956628037130713e-07,
+    "by_sense_final_max_abs": 5.610910983611106e-07,
+    "by_sense_start_max_abs": 5.014933443930891e-07
+   },
+   "start_check_max_abs": 1.1920928955078125e-07,
+   "line": "per-sense parts recomputed in float64 sum to the record's plain and weighted distances and to its reported distances of the planned and of the motor controller's command within 2e-06"
+  },
+  "replay": {
+   "passed": true,
+   "replan_max_abs": 0.0,
+   "line": "the search run again from the captured decision returns the recorded command bit for bit and the recorded per-body goal distances at its starting and selected command"
+  },
+  "realised_goal_progress": {
+   "passed": true,
+   "lines": 64,
+   "authors": {
+    "planner": 32,
+    "other": 32
+   },
+   "recomputation_max_abs": 5.916096117793319e-07,
+   "line": "every recorded goal_progress_realised equals its float64 recomputation within 2e-06; both authors read"
+  },
+  "switch_arms": {
+   "passed": true,
+   "arms": {
+    "weights": {
+     "bodies": 8,
+     "bodies_whose_commands_differ": 8,
+     "decisions": 23,
+     "decisions_on_measured_weights": 23,
+     "weights_reproduced": true,
+     "score_decomposition_largest": {
+      "decomposition_plain_final_abs": 1.676993777177671e-07,
+      "decomposition_weighted_final_abs": 7.17398837002392e-08,
+      "decomposition_plain_start_abs": 1.5653368135026824e-07,
+      "decomposition_weighted_start_abs": 9.386556043544658e-08,
+      "reported_chosen_minus_weighted_sum_abs": 7.17398837002392e-08,
+      "reported_reflex_minus_weighted_sum_abs": 9.386556043544658e-08,
+      "by_sense_final_max_abs": 4.942587064071802e-07,
+      "by_sense_start_max_abs": 5.00767198971519e-07
+     },
+     "passed": true
+    },
+    "locality_on": {
+     "bodies": 8,
+     "bodies_whose_commands_differ": 8,
+     "decisions": 23,
+     "decisions_replayed": 24,
+     "goals_not_reproduced": 0,
+     "seen": {
+      "new_pick": 15,
+      "kept": 9,
+      "arrived": 0,
+      "escaped": 7,
+      "aged": 0,
+      "fallback": 0,
+      "warming": 0
+     },
+     "passed": true
+    },
+    "locality_weighted": {
+     "bodies": 8,
+     "bodies_whose_commands_differ": 8,
+     "decisions": 23,
+     "decisions_replayed": 24,
+     "goals_not_reproduced": 0,
+     "seen": {
+      "new_pick": 15,
+      "kept": 9,
+      "arrived": 1,
+      "escaped": 6,
+      "aged": 0,
+      "fallback": 0,
+      "warming": 0
+     },
+     "passed": true
+    },
+    "prospective": {
+     "bodies": 8,
+     "bodies_whose_commands_differ": 8,
+     "decisions": 24,
+     "passed": true
+    }
+   },
+   "line": "every switch arm's commands differ from production's on every body; both locality arms' goals are reproduced by the second implementation; the weights arm's weights are reproduced from the recorded bounds and its score decomposition holds"
+  }
+ },
+ "readings": {
+  "predicted": {
+   "decisions": 40,
+   "plain_start": 0.9276728356257081,
+   "plain_final": 0.8822157396003604,
+   "plain_closed_pct": 4.900121495385523,
+   "search_closed_pct": 4.936131537764732,
+   "start_check_max_abs": 1.1920928955078125e-07,
+   "hand_stage_change_mean": 0.00033406317234039304,
+   "hand_stage_change_max_abs": 0.014398932456970215,
+   "selected_at_the_last_update": 33,
+   "by_sense": {
+    "vision": {
+     "start": 0.31010767499999997,
+     "final": 0.29436475
+    },
+    "tactile": {
+     "start": 0.1063993,
+     "final": 0.10634662499999999
+    },
+    "audio": {
+     "start": 0.2556016,
+     "final": 0.25164837500000004
+    },
+    "proprioception": {
+     "start": 0.117041125,
+     "final": 0.0940294
+    },
+    "vestibular": {
+     "start": 0.138523175,
+     "final": 0.13582655
+    }
+   }
+  },
+  "realised_planner": {
+   "body_commands": 32,
+   "plain_start_mean": 1.032202846860965,
+   "plain_change_mean": -0.012648868367395961,
+   "plain_change_sd": 0.20203015873325633,
+   "closed_pct": 1.2254246736348833,
+   "ended_nearer": 17,
+   "closed_pct_per_body_command_sd": 22.84426881634224,
+   "by_sense": {
+    "vision": 0.0396265514084138,
+    "tactile": -0.018965244838129686,
+    "audio": -0.016946987401649023,
+    "proprioception": -0.018888142490779573,
+    "vestibular": 0.002524954954748545
+   }
+  },
+  "realised_other": {
+   "body_commands": 32,
+   "plain_start_mean": 1.0195539784935692,
+   "plain_change_mean": -0.00474894434244158,
+   "plain_change_sd": 0.22901000733701662,
+   "closed_pct": 0.4657864559028379,
+   "ended_nearer": 18,
+   "closed_pct_per_body_command_sd": 29.98787018186197,
+   "by_sense": {
+    "vision": -0.026131842011722955,
+    "tactile": 0.005503861921762632,
+    "audio": -0.0021156164336821534,
+    "proprioception": 0.015147680160395628,
+    "vestibular": 0.0028469720208052704
+   }
+  }
+ },
+ "pass": true,
+ "version": "saved_decision_checks_v1",
+ "checkpoint": "D:\\UEMA_Research\\Saved\\mimo_bridge\\experiments\\H84_fresh_drivers_20260918_seg41o_1431\\checkpoints\\ckpt_step_481800",
+ "checkpoint_step": 481800,
+ "episode": "episode companion restored (8 bodies saved; 0 caregiver recording tape(s) replaced by a plain list)",
+ "device": "cpu",
+ "threads": 8,
+ "arm_steps": 25,
+ "weights_arm_bounds": {
+  "detail": {
+   "source": "stats records (one pair per report)",
+   "file": "D:\\UEMA_Research\\Saved\\mimo_bridge\\experiments\\H84_fresh_drivers_20260918_seg41o_1431\\replay_training_stats.jsonl",
+   "reports": 20,
+   "pooled_over": [
+    "without_body_2"
+   ],
+   "first_step": 479900,
+   "last_step": 481800,
+   "senses": {
+    "vision": {
+     "events": 20,
+     "reading": 0.14230471836181413,
+     "standard_error": 0.017344864003363648,
+     "lower_bound": 0.10761499035508684,
+     "lag": 0.0,
+     "reports": 20,
+     "audited_model_steps": 100
+    },
+    "tactile": {
+     "events": 20,
+     "reading": -0.00027079417971598296,
+     "standard_error": 0.0027105667888909063,
+     "lower_bound": 0.0,
+     "lag": 0.0,
+     "reports": 20,
+     "audited_model_steps": 100
+    },
+    "audio": {
+     "events": 20,
+     "reading": 0.0015257633784827584,
+     "standard_error": 0.0033591435614240784,
+     "lower_bound": 0.0,
+     "lag": 0.09401327119171367,
+     "reports": 20,
+     "audited_model_steps": 100
+    },
+    "proprioception": {
+     "events": 20,
+     "reading": 0.4687901493745217,
+     "standard_error": 0.022075732373686364,
+     "lower_bound": 0.42463868462714893,
+     "lag": 0.0,
+     "reports": 20,
+     "audited_model_steps": 100
+    },
+    "vestibular": {
+     "events": 20,
+     "reading": 0.09147832143359702,
+     "standard_error": 0.026190708600873473,
+     "lower_bound": 0.039096904231850076,
+     "lag": 0.22112371337577716,
+     "reports": 20,
+     "audited_model_steps": 100
+    }
+   }
+  },
+  "bounds": {
+   "vision": {
+    "events": 100,
+    "reading": 0.14230471836181413,
+    "standard_error": 0.017344864003363648,
+    "lower_bound": 0.10761499035508684
+   },
+   "tactile": {
+    "events": 100,
+    "reading": -0.00027079417971598296,
+    "standard_error": 0.0027105667888909063,
+    "lower_bound": 0.0
+   },
+   "audio": {
+    "events": 100,
+    "reading": 0.0015257633784827584,
+    "standard_error": 0.0033591435614240784,
+    "lower_bound": 0.0
+   },
+   "proprioception": {
+    "events": 100,
+    "reading": 0.4687901493745217,
+    "standard_error": 0.022075732373686364,
+    "lower_bound": 0.42463868462714893
+   },
+   "vestibular": {
+    "events": 100,
+    "reading": 0.09147832143359702,
+    "standard_error": 0.026190708600873473,
+    "lower_bound": 0.039096904231850076
+   }
+  },
+  "weights": {
+   "vision": 0.9417597029753194,
+   "tactile": 0.0,
+   "audio": 0.0,
+   "proprioception": 3.716095686918314,
+   "vestibular": 0.34214461010636704
+  }
+ },
+ "seconds": 2475.3,
+ "weights_unchanged": true,
+ "memory": {
+  "peak_private_commit_gib": 6.086238861083984,
+  "peak_working_set_gib": 3.1368637084960938
+ },
+ "production_commit": "18771f8a4",
+ "branch_commit": "8383ed26acc75e34ca418fb1da0c980c58c4cc17",
+ "branch_worktree_dirty": false
+}

@@ -1,0 +1,1090 @@
+{
+  "checkpoint": "D:\\UEMA_Research\\Saved\\mimo_bridge\\experiments\\H84_fresh_drivers_20260918_seg41_protected_effvis_20260929_063442\\checkpoints\\ckpt_step_418425",
+  "bodies": 8,
+  "goals": [
+    "curl_witness",
+    "extension_witness",
+    "wrist_reach_witness",
+    "supported_trunk_turn_witness",
+    "elbow_flex_witness"
+  ],
+  "goal_suite": "hand_and_body",
+  "contract": "wrist_relative_joint_v1",
+  "learning": false,
+  "production_changed": false,
+  "hold_seconds": 0.25,
+  "initializer": "controller",
+  "compare_execution_contracts": false,
+  "goal_source": "Observed endpoint of a same-state physical reference: compatible curl/extension, a left-wrist reach, a coordinated trunk turn or a left-elbow flex. Every reference retains ordinary force and gaze settings.",
+  "witness_rule": "A witness is informative for a body when its request moved the requested part beyond the controller's endpoint in the requested direction AND further along that direction than the mirrored request (the same change from the controller's request, reversed) did: the difference is the request's doing, not a push that happens whatever is asked. A mirror the body cannot follow (a joint at its limit, a wrist on the mat) stays near the controller's endpoint and does not count against the witness. Each is an endpoint minus the controller's endpoint, projected on the executed request (the witness's executed command minus the controller's, after the smoother). For the elbow the measured quantity is the elbow joint's own angle (flexion positive), so shoulder motion cannot count. requested_raw is the request before the smoother, requested_executed after it, mirror_requested_executed the mirror's executed request on the same direction (negative when it asks for the reverse; mirror_request_blocked when it does not), achieved_beyond_controller the witness's projection and mirror_beyond_controller the mirrored request's, achieved_share and mirror_share the two over requested_executed (1 = the whole executed request happened, 0 = the body ended where the controller took it), separation_from_controller the whole difference between the witness's and the controller's endpoints and moved_from_start the witness endpoint's distance from the saved start; sizes are root mean squares over the requested parts, in cm for a position, degrees for a turn or a joint.",
+  "ranking_rules": {
+    "statistic": "of all pairs of candidate commands tried from the same saved state, how many in 100 the forecast's order picks the pair's actual winner (lower = better for both); 50 = chance, 80 to 90 = a ranking a planner can optimize",
+    "ties": "a pair whose actual outcomes differ by no more than 1 in 100 of that start's actual standard deviation has no winner and is left out; a pair the forecast scores exactly equal counts half right",
+    "interval": "95%, whole bodies resampled with replacement, 5000 draws",
+    "spread_ratio": "median over starts of the standard deviation of the candidates' forecasts over that of their actual outcomes: 0 = the forecast gives every command the same outcome, 1 = it separates them as much as reality does",
+    "case": "better than chance when the interval's lower end is above 50: then case_3_planner_not_better when a planner's command does not beat the reference command its search started from in the actual outcome (paired body interval of planner minus reference not entirely below 0), else ranking_used (better_than_chance without a planner comparison). Below chance (the interval's upper end under 50): case_2_wrong_order. Otherwise case_1_under_separated when the spread ratio is below 1 and case_2_wrong_order when it is 1 or more; undetermined with fewer than two bodies or no pair with an actual winner"
+  },
+  "ranking_forecast": "each arm's forecast goal error (the planners' own held-order pose forecast against the goal pose) against its actual goal error 0.25 seconds after the command, over the arms of each trial",
+  "comparison": "Starting controller, direct feasible-hand planner, composed learned-synergy/feasible-hand planner. Strength and gaze are fixed to the controller inside both searches.",
+  "gaze_scope": "Body-stage mechanism comparison: visual gaze optimization is deliberately held fixed in every arm; this does not qualify the combined visual/body policy.",
+  "hand_memory_scope": "The separate calibrated hand-memory choice stage is disabled in this physical-body planner comparison; its learned calibration remains preserved.",
+  "adoption": "Compare common physical-goal error and hand-joint error across independent bodies; no switch is changed by this experiment.",
+  "script_sha256": "88d89a961613dd44da96df12a8d317fa8baf3766f19b5403af58072e375e1817",
+  "source_sha256": {
+    "Source\\Python\\mimo_bridge\\hand_target_control.py": "f40c645e81efc8fab58f2286e074dfb944e77aa71c6143e6d931a7ac22f89053",
+    "Source\\Python\\mimo_bridge\\lem_model.py": "03af1456d8e6a65126452b1d9f3916921df58abbacff0bce0bfb2d5ca3ada56b",
+    "Source\\Python\\lem\\model\\physical_goal.py": "654cf36e63f29fdda64d365a07a6d09dd1f66a8612074357f4dcd913770cd53a",
+    "Source\\Python\\mimo_bridge\\env.py": "06429bf6945a56ac47fa2bf0cc6a64d9c1366ccf30cd2043bda80660c95f2fb3",
+    "Source\\Python\\mimo_bridge\\tools\\gof_probe_harness.py": "8dc7a5ab53644c04cd602256c6a42600ffd010f4ab2005481b9ba732942e60f4"
+  },
+  "seed": 0,
+  "summary": {
+    "physical_goal_error": {
+      "means": {
+        "controller": 0.3190562221396249,
+        "direct": 0.40376622211188073,
+        "synergy": 0.4257691778242588
+      },
+      "synergy_minus_direct": 0.022002955712378022,
+      "paired_bootstrap95": [
+        -0.021736173029057688,
+        0.06574165541678667
+      ],
+      "bodies_synergy_better": 3,
+      "against_controller": {
+        "direct": {
+          "mean_difference": 0.0847099999722559,
+          "paired_bootstrap95": [
+            0.059062923089368266,
+            0.1187166592600988
+          ],
+          "bodies_better": 0
+        },
+        "synergy": {
+          "mean_difference": 0.1067129556846339,
+          "paired_bootstrap95": [
+            0.0731498435285175,
+            0.1386428993049776
+          ],
+          "bodies_better": 0
+        }
+      }
+    },
+    "hand_joint_error_deg": {
+      "means": {
+        "controller": 2.2869553249562156,
+        "direct": 3.396362292766571,
+        "synergy": 3.4938402473926544
+      },
+      "synergy_minus_direct": 0.09747795462608339,
+      "paired_bootstrap95": [
+        0.03234455086290836,
+        0.15689093783497776
+      ],
+      "bodies_synergy_better": 2,
+      "against_controller": {
+        "direct": {
+          "mean_difference": 1.1094069678103553,
+          "paired_bootstrap95": [
+            0.9351838592713466,
+            1.283584414282814
+          ],
+          "bodies_better": 0
+        },
+        "synergy": {
+          "mean_difference": 1.2068849224364386,
+          "paired_bootstrap95": [
+            1.0334495753282682,
+            1.3904375096783042
+          ],
+          "bodies_better": 0
+        }
+      }
+    },
+    "wrist_goal_error_cm": {
+      "means": {
+        "controller": 0.16886188240168848,
+        "direct": 0.9787920951843262,
+        "synergy": 0.9455527976155281
+      },
+      "synergy_minus_direct": -0.03323929756879805,
+      "paired_bootstrap95": [
+        -0.18403702601790425,
+        0.11391260974109162
+      ],
+      "bodies_synergy_better": 3,
+      "against_controller": {
+        "direct": {
+          "mean_difference": 0.8099302127826377,
+          "paired_bootstrap95": [
+            0.6763319520476216,
+            0.932599543427059
+          ],
+          "bodies_better": 0
+        },
+        "synergy": {
+          "mean_difference": 0.7766909152138396,
+          "paired_bootstrap95": [
+            0.6552999467794507,
+            0.8961097073121345
+          ],
+          "bodies_better": 0
+        }
+      }
+    }
+  },
+  "by_goal": {
+    "curl_witness": {
+      "fingers": {
+        "means": {
+          "controller": 3.182715058326721,
+          "direct": 3.074777901172638,
+          "synergy": 3.2169229090213776
+        },
+        "against_controller": {
+          "direct": {
+            "mean_difference": -0.10793715715408325,
+            "paired_bootstrap95": [
+              -0.28679252564907076,
+              0.03131945580244061
+            ],
+            "bodies_better": 6
+          },
+          "synergy": {
+            "mean_difference": 0.03420785069465637,
+            "paired_bootstrap95": [
+              -0.199856698513031,
+              0.2851277336478232
+            ],
+            "bodies_better": 5
+          }
+        }
+      },
+      "wrists": {
+        "means": {
+          "controller": 0.012403036537929069,
+          "direct": 0.16624736972153187,
+          "synergy": 0.1587945567443967
+        },
+        "against_controller": {
+          "direct": {
+            "mean_difference": 0.1538443331836028,
+            "paired_bootstrap95": [
+              0.08714482847075074,
+              0.23614346693775612
+            ],
+            "bodies_better": 0
+          },
+          "synergy": {
+            "mean_difference": 0.14639152020646762,
+            "paired_bootstrap95": [
+              0.0963533070591076,
+              0.20026628272242844
+            ],
+            "bodies_better": 0
+          }
+        }
+      },
+      "other_body": {
+        "means": {
+          "controller": 0.000861465213994439,
+          "direct": 0.032834911020472646,
+          "synergy": 0.03241280745714903
+        },
+        "against_controller": {
+          "direct": {
+            "mean_difference": 0.03197344580647821,
+            "paired_bootstrap95": [
+              0.02495415915340371,
+              0.04021546007436416
+            ],
+            "bodies_better": 0
+          },
+          "synergy": {
+            "mean_difference": 0.03155134224315459,
+            "paired_bootstrap95": [
+              0.024625989169903217,
+              0.03785482213473945
+            ],
+            "bodies_better": 0
+          }
+        }
+      },
+      "witness_supported_bodies": 8,
+      "witness_separation_from_controller": {
+        "fingers": [
+          2.908200740814209,
+          3.3661038875579834,
+          3.084493398666382,
+          3.0285418033599854,
+          4.228298187255859,
+          2.4420816898345947,
+          2.644423723220825,
+          3.7595770359039307
+        ],
+        "wrists": [
+          1.104784814742743e-06,
+          0.00027787627186626196,
+          4.464694029593375e-06,
+          1.5786080211910303e-06,
+          0.0989164337515831,
+          9.441729162062984e-06,
+          1.3062479411019012e-05,
+          3.299845445781102e-07
+        ],
+        "other_body": [
+          1.2954541439569311e-08,
+          7.418805034831166e-05,
+          3.0681411544719595e-07,
+          4.764230610021514e-08,
+          0.00681626982986927,
+          2.391392115441704e-07,
+          6.477307579189073e-07,
+          9.550805479818791e-09
+        ]
+      },
+      "witness_check": {
+        "bodies": 8,
+        "expected_bodies": 8,
+        "informative_bodies": 8,
+        "mirror_request_blocked_bodies": 0,
+        "unit": "degrees",
+        "parts": "finger joints",
+        "requested_raw": 61.44983700563782,
+        "requested_executed": 21.50744177289871,
+        "mirror_requested_executed": -5.043888482779879,
+        "achieved_beyond_controller": 11.72535024134412,
+        "mirror_beyond_controller": -1.758039696650382,
+        "achieved_share": 0.5451736834619269,
+        "mirror_share": -0.08282613556754652,
+        "separation_from_controller": 15.447616416792204,
+        "moved_from_start": 15.267685326277979
+      }
+    },
+    "extension_witness": {
+      "fingers": {
+        "means": {
+          "controller": 0.6813233997672796,
+          "direct": 0.721254076808691,
+          "synergy": 0.7885201722383499
+        },
+        "against_controller": {
+          "direct": {
+            "mean_difference": 0.0399306770414114,
+            "paired_bootstrap95": [
+              -0.09273508060723543,
+              0.1833113358821719
+            ],
+            "bodies_better": 3
+          },
+          "synergy": {
+            "mean_difference": 0.10719677247107029,
+            "paired_bootstrap95": [
+              -0.020805543847382063,
+              0.2454018211457877
+            ],
+            "bodies_better": 2
+          }
+        }
+      },
+      "wrists": {
+        "means": {
+          "controller": 8.114861667074535e-05,
+          "direct": 0.13934545684605837,
+          "synergy": 0.12490684306249022
+        },
+        "against_controller": {
+          "direct": {
+            "mean_difference": 0.13926430822938762,
+            "paired_bootstrap95": [
+              0.09790398437073478,
+              0.1827108070439786
+            ],
+            "bodies_better": 0
+          },
+          "synergy": {
+            "mean_difference": 0.12482569444581948,
+            "paired_bootstrap95": [
+              0.09607389724940348,
+              0.1550968454694506
+            ],
+            "bodies_better": 0
+          }
+        }
+      },
+      "other_body": {
+        "means": {
+          "controller": 3.0453792926210532e-05,
+          "direct": 0.036103433929383755,
+          "synergy": 0.03751261322759092
+        },
+        "against_controller": {
+          "direct": {
+            "mean_difference": 0.036072980136457544,
+            "paired_bootstrap95": [
+              0.02654036131163113,
+              0.04831313277977917
+            ],
+            "bodies_better": 0
+          },
+          "synergy": {
+            "mean_difference": 0.03748215943466471,
+            "paired_bootstrap95": [
+              0.027992419503862304,
+              0.04963929473905555
+            ],
+            "bodies_better": 0
+          }
+        }
+      },
+      "witness_supported_bodies": 8,
+      "witness_separation_from_controller": {
+        "fingers": [
+          0.5152958035469055,
+          0.36776503920555115,
+          0.26810789108276367,
+          0.7948017716407776,
+          0.42100000381469727,
+          1.6103408336639404,
+          1.236238718032837,
+          0.23703713715076447
+        ],
+        "wrists": [
+          2.704785231344431e-07,
+          0.00023100542603060603,
+          1.1288095436157164e-07,
+          2.6209238512819866e-07,
+          0.00016643956769257784,
+          1.7376410141878296e-06,
+          0.0002493410720489919,
+          1.9774716975007323e-08
+        ],
+        "other_body": [
+          3.2051885590078655e-09,
+          0.00019747069745790213,
+          8.515192106983704e-09,
+          4.108836648697434e-08,
+          1.9331891962792724e-05,
+          8.338368218119285e-08,
+          2.668832166818902e-05,
+          3.2398914662223888e-09
+        ]
+      },
+      "witness_check": {
+        "bodies": 8,
+        "expected_bodies": 8,
+        "informative_bodies": 8,
+        "mirror_request_blocked_bodies": 0,
+        "unit": "degrees",
+        "parts": "finger joints",
+        "requested_raw": 54.494325775977146,
+        "requested_executed": 19.073013193992537,
+        "mirror_requested_executed": -4.608223444817045,
+        "achieved_beyond_controller": 4.531726103499075,
+        "mirror_beyond_controller": -2.526552210435436,
+        "achieved_share": 0.24008754382997471,
+        "mirror_share": -0.13157452848780485,
+        "separation_from_controller": 7.387189637238151,
+        "moved_from_start": 11.880440211093603
+      }
+    },
+    "wrist_reach_witness": {
+      "fingers": {
+        "means": {
+          "controller": 0.004665981905418448,
+          "direct": 0.2866605594754219,
+          "synergy": 0.30911633372306824
+        },
+        "against_controller": {
+          "direct": {
+            "mean_difference": 0.28199457757000346,
+            "paired_bootstrap95": [
+              0.19789656173088588,
+              0.3753220089729439
+            ],
+            "bodies_better": 0
+          },
+          "synergy": {
+            "mean_difference": 0.3044503518176498,
+            "paired_bootstrap95": [
+              0.23277401542436565,
+              0.3798743726267274
+            ],
+            "bodies_better": 0
+          }
+        }
+      },
+      "wrists": {
+        "means": {
+          "controller": 0.003179268620442599,
+          "direct": 0.15468421624973416,
+          "synergy": 0.1535598784685135
+        },
+        "against_controller": {
+          "direct": {
+            "mean_difference": 0.15150494762929156,
+            "paired_bootstrap95": [
+              0.10869888262095628,
+              0.19398561972775497
+            ],
+            "bodies_better": 0
+          },
+          "synergy": {
+            "mean_difference": 0.1503806098480709,
+            "paired_bootstrap95": [
+              0.11681032503620373,
+              0.1860726826125756
+            ],
+            "bodies_better": 0
+          }
+        }
+      },
+      "other_body": {
+        "means": {
+          "controller": 0.000495259871968301,
+          "direct": 0.03634891449473798,
+          "synergy": 0.038057674653828144
+        },
+        "against_controller": {
+          "direct": {
+            "mean_difference": 0.03585365462276968,
+            "paired_bootstrap95": [
+              0.02814898468568572,
+              0.04500352029572241
+            ],
+            "bodies_better": 0
+          },
+          "synergy": {
+            "mean_difference": 0.03756241478185984,
+            "paired_bootstrap95": [
+              0.027968697493633954,
+              0.04906579490052536
+            ],
+            "bodies_better": 0
+          }
+        }
+      },
+      "witness_supported_bodies": 8,
+      "witness_separation_from_controller": {
+        "fingers": [
+          0.0009270227747038007,
+          0.011057465337216854,
+          0.0018938913708552718,
+          0.001613327651284635,
+          0.008146160282194614,
+          0.0032597831450402737,
+          0.003552807494997978,
+          0.006877397187054157
+        ],
+        "wrists": [
+          0.0009642346994951367,
+          0.005987620912492275,
+          0.0017353129805997014,
+          0.0012358827516436577,
+          0.00536985183134675,
+          0.002622495871037245,
+          0.002070665592327714,
+          0.005448084324598312
+        ],
+        "other_body": [
+          0.0004757219576276839,
+          0.000758675392717123,
+          0.00020964076975360513,
+          0.00035466052941046655,
+          0.0008964675362221897,
+          0.0002205338969361037,
+          0.0005785846733488142,
+          0.0004677942197304219
+        ]
+      },
+      "witness_check": {
+        "bodies": 8,
+        "expected_bodies": 8,
+        "informative_bodies": 6,
+        "mirror_request_blocked_bodies": 0,
+        "unit": "cm",
+        "parts": [
+          "wrist_L"
+        ],
+        "requested_raw": 1.7999999523162842,
+        "requested_executed": 0.6300000846385956,
+        "mirror_requested_executed": -0.629999965429306,
+        "achieved_beyond_controller": 0.1039065420627594,
+        "mirror_beyond_controller": -0.06812126375734806,
+        "achieved_share": 0.16493100072524475,
+        "mirror_share": -0.10812898464282725,
+        "separation_from_controller": 0.18412304498264043,
+        "moved_from_start": 3.014477326293016
+      }
+    },
+    "supported_trunk_turn_witness": {
+      "fingers": {
+        "means": {
+          "controller": 0.047206091083353385,
+          "direct": 0.2703739255666733,
+          "synergy": 0.29936583898961544
+        },
+        "against_controller": {
+          "direct": {
+            "mean_difference": 0.2231678344833199,
+            "paired_bootstrap95": [
+              0.1447949765715748,
+              0.31333349600245125
+            ],
+            "bodies_better": 0
+          },
+          "synergy": {
+            "mean_difference": 0.25215974790626206,
+            "paired_bootstrap95": [
+              0.18680014196434058,
+              0.320574312179815
+            ],
+            "bodies_better": 0
+          }
+        }
+      },
+      "wrists": {
+        "means": {
+          "controller": 0.03840913230123988,
+          "direct": 0.14593531284481287,
+          "synergy": 0.15284874383360147
+        },
+        "against_controller": {
+          "direct": {
+            "mean_difference": 0.10752618054357299,
+            "paired_bootstrap95": [
+              0.06470778451148362,
+              0.1516594329234067
+            ],
+            "bodies_better": 0
+          },
+          "synergy": {
+            "mean_difference": 0.1144396115323616,
+            "paired_bootstrap95": [
+              0.08658261522032262,
+              0.14091755330809974
+            ],
+            "bodies_better": 0
+          }
+        }
+      },
+      "other_body": {
+        "means": {
+          "controller": 0.006731049532390898,
+          "direct": 0.03716297447681427,
+          "synergy": 0.03890903852880001
+        },
+        "against_controller": {
+          "direct": {
+            "mean_difference": 0.030431924944423372,
+            "paired_bootstrap95": [
+              0.02387470147368731,
+              0.03589327464942471
+            ],
+            "bodies_better": 0
+          },
+          "synergy": {
+            "mean_difference": 0.03217798899640911,
+            "paired_bootstrap95": [
+              0.024470798853144515,
+              0.04015314721618779
+            ],
+            "bodies_better": 0
+          }
+        }
+      },
+      "witness_supported_bodies": 8,
+      "witness_separation_from_controller": {
+        "fingers": [
+          0.0012921716552227736,
+          0.002758356276899576,
+          0.006364752072840929,
+          0.3422977924346924,
+          0.01118928287178278,
+          0.007837575860321522,
+          0.0031308140605688095,
+          0.00277798343449831
+        ],
+        "wrists": [
+          0.0012154760770499706,
+          0.0002268114621983841,
+          0.006526979152113199,
+          0.28230640292167664,
+          0.005372901447117329,
+          0.0062055825255811214,
+          0.0027797617949545383,
+          0.002639143029227853
+        ],
+        "other_body": [
+          0.0007536526536568999,
+          0.00014848410501144826,
+          0.00394059345126152,
+          0.04062554985284805,
+          0.0012916014529764652,
+          0.0007846307707950473,
+          0.001034943270497024,
+          0.005268940702080727
+        ]
+      },
+      "witness_check": {
+        "bodies": 8,
+        "expected_bodies": 8,
+        "informative_bodies": 7,
+        "mirror_request_blocked_bodies": 0,
+        "unit": "degrees",
+        "parts": [
+          "lower_trunk",
+          "chest"
+        ],
+        "requested_raw": 10.999999834328332,
+        "requested_executed": 3.849275138499954,
+        "mirror_requested_executed": -3.8489423664444176,
+        "achieved_beyond_controller": 0.499314432105858,
+        "mirror_beyond_controller": -0.4863964667906704,
+        "achieved_share": 0.12969230904906043,
+        "mirror_share": -0.1263176079378475,
+        "separation_from_controller": 0.6841819882128946,
+        "moved_from_start": 4.277870769374108
+      }
+    },
+    "elbow_flex_witness": {
+      "fingers": {
+        "means": {
+          "controller": 0.04261909646447748,
+          "direct": 0.3040100149810314,
+          "synergy": 0.3160864906385541
+        },
+        "against_controller": {
+          "direct": {
+            "mean_difference": 0.26139091851655394,
+            "paired_bootstrap95": [
+              0.18711596649081913,
+              0.349736908916384
+            ],
+            "bodies_better": 0
+          },
+          "synergy": {
+            "mean_difference": 0.2734673941740766,
+            "paired_bootstrap95": [
+              0.17944100523891393,
+              0.3618423016741872
+            ],
+            "bodies_better": 0
+          }
+        }
+      },
+      "wrists": {
+        "means": {
+          "controller": 0.02790235006250441,
+          "direct": 0.16807691752910614,
+          "synergy": 0.1618361403234303
+        },
+        "against_controller": {
+          "direct": {
+            "mean_difference": 0.14017456746660173,
+            "paired_bootstrap95": [
+              0.0832748721470125,
+              0.20119470525532945
+            ],
+            "bodies_better": 0
+          },
+          "synergy": {
+            "mean_difference": 0.1339337902609259,
+            "paired_bootstrap95": [
+              0.07060242746956646,
+              0.1999617180728817
+            ],
+            "bodies_better": 1
+          }
+        }
+      },
+      "other_body": {
+        "means": {
+          "controller": 0.00209572994208429,
+          "direct": 0.03842924046330154,
+          "synergy": 0.039041547919623554
+        },
+        "against_controller": {
+          "direct": {
+            "mean_difference": 0.03633351052121725,
+            "paired_bootstrap95": [
+              0.02561380089900922,
+              0.05112409812863915
+            ],
+            "bodies_better": 0
+          },
+          "synergy": {
+            "mean_difference": 0.036945817977539264,
+            "paired_bootstrap95": [
+              0.025587646261556074,
+              0.049874727713176976
+            ],
+            "bodies_better": 0
+          }
+        }
+      },
+      "witness_supported_bodies": 8,
+      "witness_separation_from_controller": {
+        "fingers": [
+          0.03673693910241127,
+          0.08142786473035812,
+          0.04822349548339844,
+          0.04274153336882591,
+          0.008546999655663967,
+          0.03888299688696861,
+          0.02084135264158249,
+          0.06355158984661102
+        ],
+        "wrists": [
+          0.023437408730387688,
+          0.04243523254990578,
+          0.03798708692193031,
+          0.03110736981034279,
+          0.005683388561010361,
+          0.028526533395051956,
+          0.009130064398050308,
+          0.044911716133356094
+        ],
+        "other_body": [
+          0.003413155907765031,
+          0.0022765144240111113,
+          0.002372277667745948,
+          0.001731012831442058,
+          0.001068703830242157,
+          0.001636316766962409,
+          0.0016625223215669394,
+          0.0026053357869386673
+        ]
+      },
+      "witness_check": {
+        "bodies": 8,
+        "expected_bodies": 8,
+        "informative_bodies": 8,
+        "mirror_request_blocked_bodies": 0,
+        "unit": "degrees",
+        "parts": "left elbow joint",
+        "requested_raw": 11.000000303663882,
+        "requested_executed": 3.8475722983216714,
+        "mirror_requested_executed": -3.847686408450967,
+        "achieved_beyond_controller": 2.887452670774685,
+        "mirror_beyond_controller": -2.482567778627335,
+        "achieved_share": 0.7512435605848082,
+        "mirror_share": -0.6458816856167036,
+        "separation_from_controller": 2.8874526707746853,
+        "moved_from_start": 14.918688818923874
+      }
+    }
+  },
+  "ranking": {
+    "pooled": {
+      "what": "every goal of the suite",
+      "per_100": 29.166666666666668,
+      "interval": [
+        19.166666666666668,
+        39.166666666666664
+      ],
+      "chance_per_100": 50.0,
+      "pairs_judged": 120,
+      "pairs_right": 35.0,
+      "actual_ties_left_out": 0,
+      "forecast_ties_counted_half": 0,
+      "starts": 40,
+      "starts_left_out": 0,
+      "bodies": 8,
+      "spread_ratio": 2.6945100998337477,
+      "spread_ratio_interval": [
+        1.6938471319302497,
+        4.878682915667101
+      ],
+      "reference": "controller",
+      "planners": {
+        "direct": {
+          "mean": 0.0847099999722559,
+          "interval": [
+            0.05867109751306998,
+            0.11822258456522822
+          ],
+          "bodies": 8,
+          "bodies_better": 0,
+          "bodies_worse": 8
+        },
+        "synergy": {
+          "mean": 0.10671295568463393,
+          "interval": [
+            0.07261554643780983,
+            0.13820047861081547
+          ],
+          "bodies": 8,
+          "bodies_better": 0,
+          "bodies_worse": 8
+        }
+      },
+      "better_than_chance": false,
+      "below_chance": true,
+      "case": "case_2_wrong_order"
+    },
+    "by_goal": {
+      "curl_witness": {
+        "what": "curl_witness",
+        "per_100": 50.0,
+        "interval": [
+          37.5,
+          66.66666666666667
+        ],
+        "chance_per_100": 50.0,
+        "pairs_judged": 24,
+        "pairs_right": 12.0,
+        "actual_ties_left_out": 0,
+        "forecast_ties_counted_half": 0,
+        "starts": 8,
+        "starts_left_out": 0,
+        "bodies": 8,
+        "spread_ratio": 2.4131353277987415,
+        "spread_ratio_interval": [
+          1.6039328130475616,
+          4.841032588049143
+        ],
+        "reference": "controller",
+        "planners": {
+          "direct": {
+            "mean": -0.014241069555282593,
+            "interval": [
+              -0.08792285993695259,
+              0.044447749853134155
+            ],
+            "bodies": 8,
+            "bodies_better": 3,
+            "bodies_worse": 5
+          },
+          "synergy": {
+            "mean": 0.041801147162914276,
+            "interval": [
+              -0.053020305931568146,
+              0.1469590738415718
+            ],
+            "bodies": 8,
+            "bodies_better": 5,
+            "bodies_worse": 3
+          }
+        },
+        "better_than_chance": false,
+        "below_chance": false,
+        "case": "case_2_wrong_order"
+      },
+      "extension_witness": {
+        "what": "extension_witness",
+        "per_100": 37.5,
+        "interval": [
+          12.5,
+          62.5
+        ],
+        "chance_per_100": 50.0,
+        "pairs_judged": 24,
+        "pairs_right": 9.0,
+        "actual_ties_left_out": 0,
+        "forecast_ties_counted_half": 0,
+        "starts": 8,
+        "starts_left_out": 0,
+        "bodies": 8,
+        "spread_ratio": 5.2910271558214514,
+        "spread_ratio_interval": [
+          2.0820728567966786,
+          9.219859476830559
+        ],
+        "reference": "controller",
+        "planners": {
+          "direct": {
+            "mean": 0.045871347188949585,
+            "interval": [
+              -0.013440880924463272,
+              0.10454104649834324
+            ],
+            "bodies": 8,
+            "bodies_better": 3,
+            "bodies_worse": 5
+          },
+          "synergy": {
+            "mean": 0.0723554827272892,
+            "interval": [
+              0.017892918502911925,
+              0.1283040493261069
+            ],
+            "bodies": 8,
+            "bodies_better": 1,
+            "bodies_worse": 7
+          }
+        },
+        "better_than_chance": false,
+        "below_chance": false,
+        "case": "case_2_wrong_order"
+      },
+      "wrist_reach_witness": {
+        "what": "wrist_reach_witness",
+        "per_100": 20.833333333333332,
+        "interval": [
+          8.333333333333334,
+          29.166666666666668
+        ],
+        "chance_per_100": 50.0,
+        "pairs_judged": 24,
+        "pairs_right": 5.0,
+        "actual_ties_left_out": 0,
+        "forecast_ties_counted_half": 0,
+        "starts": 8,
+        "starts_left_out": 0,
+        "bodies": 8,
+        "spread_ratio": 2.532540668466054,
+        "spread_ratio_interval": [
+          1.247770376689638,
+          4.67507227799424
+        ],
+        "reference": "controller",
+        "planners": {
+          "direct": {
+            "mean": 0.14356213591236155,
+            "interval": [
+              0.10728457331424579,
+              0.18421827866877719
+            ],
+            "bodies": 8,
+            "bodies_better": 0,
+            "bodies_worse": 8
+          },
+          "synergy": {
+            "mean": 0.15334303460258525,
+            "interval": [
+              0.12251835399547417,
+              0.185532123723533
+            ],
+            "bodies": 8,
+            "bodies_better": 0,
+            "bodies_worse": 8
+          }
+        },
+        "better_than_chance": false,
+        "below_chance": true,
+        "case": "case_2_wrong_order"
+      },
+      "supported_trunk_turn_witness": {
+        "what": "supported_trunk_turn_witness",
+        "per_100": 16.666666666666668,
+        "interval": [
+          4.166666666666667,
+          29.166666666666668
+        ],
+        "chance_per_100": 50.0,
+        "pairs_judged": 24,
+        "pairs_right": 4.0,
+        "actual_ties_left_out": 0,
+        "forecast_ties_counted_half": 0,
+        "starts": 8,
+        "starts_left_out": 0,
+        "bodies": 8,
+        "spread_ratio": 3.746322250482078,
+        "spread_ratio_interval": [
+          1.420721176263437,
+          5.105310646550996
+        ],
+        "reference": "controller",
+        "planners": {
+          "direct": {
+            "mean": 0.11369382553675678,
+            "interval": [
+              0.07803488178578846,
+              0.15325736084378147
+            ],
+            "bodies": 8,
+            "bodies_better": 0,
+            "bodies_worse": 8
+          },
+          "synergy": {
+            "mean": 0.12675162647792604,
+            "interval": [
+              0.09790095935932186,
+              0.15643400782282696
+            ],
+            "bodies": 8,
+            "bodies_better": 0,
+            "bodies_worse": 8
+          }
+        },
+        "better_than_chance": false,
+        "below_chance": true,
+        "case": "case_2_wrong_order"
+      },
+      "elbow_flex_witness": {
+        "what": "elbow_flex_witness",
+        "per_100": 20.833333333333332,
+        "interval": [
+          8.333333333333334,
+          29.166666666666668
+        ],
+        "chance_per_100": 50.0,
+        "pairs_judged": 24,
+        "pairs_right": 5.0,
+        "actual_ties_left_out": 0,
+        "forecast_ties_counted_half": 0,
+        "starts": 8,
+        "starts_left_out": 0,
+        "bodies": 8,
+        "spread_ratio": 2.33427244268918,
+        "spread_ratio_interval": [
+          1.367639233026817,
+          4.994467919801144
+        ],
+        "reference": "controller",
+        "planners": {
+          "direct": {
+            "mean": 0.13466376077849418,
+            "interval": [
+              0.09658522701065522,
+              0.17777922270470292
+            ],
+            "bodies": 8,
+            "bodies_better": 0,
+            "bodies_worse": 8
+          },
+          "synergy": {
+            "mean": 0.13931348745245486,
+            "interval": [
+              0.09497703354572877,
+              0.18358393477101334
+            ],
+            "bodies": 8,
+            "bodies_better": 0,
+            "bodies_worse": 8
+          }
+        },
+        "better_than_chance": false,
+        "below_chance": true,
+        "case": "case_2_wrong_order"
+      }
+    },
+    "arms": [
+      "controller",
+      "direct",
+      "synergy"
+    ],
+    "reference": "controller",
+    "optimized_arms": [
+      "direct",
+      "synergy"
+    ],
+    "rules": {
+      "statistic": "of all pairs of candidate commands tried from the same saved state, how many in 100 the forecast's order picks the pair's actual winner (lower = better for both); 50 = chance, 80 to 90 = a ranking a planner can optimize",
+      "ties": "a pair whose actual outcomes differ by no more than 1 in 100 of that start's actual standard deviation has no winner and is left out; a pair the forecast scores exactly equal counts half right",
+      "interval": "95%, whole bodies resampled with replacement, 5000 draws",
+      "spread_ratio": "median over starts of the standard deviation of the candidates' forecasts over that of their actual outcomes: 0 = the forecast gives every command the same outcome, 1 = it separates them as much as reality does",
+      "case": "better than chance when the interval's lower end is above 50: then case_3_planner_not_better when a planner's command does not beat the reference command its search started from in the actual outcome (paired body interval of planner minus reference not entirely below 0), else ranking_used (better_than_chance without a planner comparison). Below chance (the interval's upper end under 50): case_2_wrong_order. Otherwise case_1_under_separated when the spread ratio is below 1 and case_2_wrong_order when it is 1 or more; undetermined with fewer than two bodies or no pair with an actual winner"
+    }
+  },
+  "weights_unchanged": true,
+  "exact_replay": true,
+  "inverse_projection": {
+    "calls": 88,
+    "elapsed_s": 3.6306111998856068,
+    "maximum_s": 0.05217349994927645,
+    "failed_calls": 0
+  },
+  "elapsed_s": 1215.393447637558
+}

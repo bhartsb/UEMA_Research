@@ -1,0 +1,133 @@
+{
+  "plan_page": "docs/H84_REACH_SOLUTION_2026-10-23.html",
+  "plan_reviews": [
+    {
+      "draft": 1,
+      "when": "October 23, 2026, 3:19 PM to 3:26 PM PDT",
+      "score": "3 of 10 for whether the operator could start step 1 tomorrow from the page alone",
+      "main_findings": "the replay tool is on another branch and hard-coded to one body; no rebuilt-start check; arrival ambiguous; the fail sweep without flags; cost arithmetic not done against the 900 s rule; step 2 on different starts than step 1; babble switched off silently; the keep-rule fallback contradicting the no-hand-coded-behaviour callout; the in-between command does not undo (its signed change is a median -0.01 cm)"
+    },
+    {
+      "draft": 2,
+      "when": "3:30 PM to 3:38 PM PDT",
+      "score": "4 of 10",
+      "main_findings": "the saved start state is in s4r_measure_S4R_measure_496000, not the folder named; whether rebuilt starts meet the October 21 lines is unmeasured; the held table's closest column counted command starts; the extrapolated command counts contradicted the held table; --planner-capture not on main; --goal-locality also restricts target choice; the load window unstated; step 4's line (b) could not be moved by its training; step 5's keep rule had no file or line"
+    },
+    {
+      "draft": 3,
+      "when": "3:40 PM to 3:48 PM PDT",
+      "score": "5 of 10 for starting stage 0",
+      "main_findings": "the companion is on a scratch drive (episode_state.json names it); a recording chunk holds 90 motor controls per model step, not the command; step 4 needs the body head's inputs, which a physics-only replay does not produce; the pair had already run and stopped at 496,425 (the callout was stale); the optimizer and learning rate unnamed; several terms with two names"
+    },
+    {
+      "draft": 4,
+      "when": "3:48 PM PDT",
+      "applied": "all findings of the three reviews applied: stage 0 names the tool's commit, the companion's path and size, the chunk's contents, two modes (physics only; with the learner for the body head's inputs), its outputs, a proposed branch and row id, and a pre-check without a pass line whose mismatch allowance the operator sets; stage 1 defines the direct command row by row, judges starts per variant and per class with a tie rule, and names the gain flag's documented values; stage 2 quotes the pair's limits and the stop that ended the pilot and adds the branch where the planner beats the ceiling; stage 3 names the correction's commit and the reopening path; stage 4 splits bodies into train, stop and test sets and names AdamW with its learning rate 0.0003 and weight decay 0.01; stage 5 cites pose_return_keep lines 54 to 59 and covers both hands; section 4 lists eight decisions with their bases; the callout reports the pilot's stop at 496,425 and the r2 replacement. Not re-reviewed after the fourth draft."
+    }
+  ],
+  "page": "docs/H84_BODY_REPAIR_EXPLAINED_v2_2026-10-23.html",
+  "review_2": {
+    "when": "October 23, 2026, 1:07 PM to 1:14 PM PDT",
+    "reviewer": "a second independent AI reader (a the builder subagent) given the first review's summary, the second draft (sha256 d88458e6...) and its screenshots; it edited nothing",
+    "cognitive_load_score": "6 of 10 (1 = effortless)",
+    "first_review_items_found_still_open": 8,
+    "new_findings": 18,
+    "most_serious": [
+      "The goal's age was counted from the planning step: 494,810 minus 494,806 is 4 model steps; it is 3 model steps (0.15 s) before the start record 494,809.",
+      "The score's scale sentence was wrong: the score adds two averages, so every axis one movement off reads 2, not 1.",
+      "The frame table's caption said 'the two joints that moved most', but the shoulder's twist (34.4 degrees) moved more than the elbow (14.5 degrees); the shoulder's horizontal turn moved 45.8 degrees.",
+      "The 0 ms row carries the previous command's motor controls and floor contacts, and the page did not say so; section 5's contact list mixed the 0 ms record with the command's records.",
+      "Two names for one thing remained (torque and motor control; block and run; lesson and loss term), and the diagram's dashed arrow ran through the goal ring box while the torque arrow ran through the observer box.",
+      "The page said the planner search used both heads; the old score used only the prediction heads and the new score only the body head.",
+      "Questions 5, 6, 9 and 10 were answered with facts beside the question rather than the question's own fact."
+    ],
+    "applied": "All 8 open items and 18 new findings were applied in the third draft (the version browser_checks.json records): the goal's age corrected; the scale sentence corrected; the caption corrected and the shoulder's twist added to the text and to question 10; the 0 ms row labelled as the record before the command with its controls and contacts attributed to the previous command; one name per thing (motor control, run, loss term, existing loss term); the diagram's columns widened, the dashed arrow routed outside the boxes, the motor-control arrow routed above the observer box, the label moved off the solid line, and the two arrowheads into the planner search separated; part 4 rewritten to say which head each score used; the rounding note on the score table; the 36.9 cm and 23.0 cm distances explained together; the seven gates' reasons listed; the data-set table added to section 9; questions 3, 5, 6, 9 and 10 rewritten to answer the question asked; the three superfluous phrases removed. Two items were answered rather than changed: the dashed arrow still crosses one solid line (the text says the two do not join), and which sign of the shoulder's angle is forward is not in the body model, so the angle table says so."
+  },
+  "review_1": {
+    "when": "October 23, 2026, 12:46 PM to 12:53 PM PDT",
+    "reviewer": "an independent AI reader (a the builder subagent given the operator's critique of the previous page and the project's writing rules), reading the first draft of this page (sha256 dd024b34...) and its screenshots; it edited nothing",
+    "question": "What would a reader who has never seen the project, and did not see the operator's screenshot, fail to follow?",
+    "cognitive_load_score": "7 of 10 (1 = effortless)",
+    "headline_findings": [
+      "A. The page never stated how a changed command changes the prediction the search scores; the diagram had no arrow from the command to the predicting parts.",
+      "B. The screenshots were of an earlier draft than the file (label edits after the check).",
+      "C. The launch state (9:23 AM) was stale against H84_RESUME_HERE.md (the resource guard's refusal at 12:46 PM).",
+      "D. The overseer was never defined.",
+      "E. 'The screenshot' was still the referent in five places although the page never calls anything a screenshot."
+    ],
+    "numbered_findings": 60,
+    "groups": {
+      "1_terms_used_before_definition": 14,
+      "2_forward_references": 9,
+      "3_sentences_a_newcomer_cannot_follow": 12,
+      "4_assertions_without_a_why": 10,
+      "5_superfluous_sentences": 6,
+      "6_internal_inconsistencies": 14,
+      "7_screenshot_problems": 6,
+      "8_writing_rule_violations": 8,
+      "9_ten_questions_incomplete": "Q1, Q3, Q4, Q5, Q7, Q8, Q9, Q10"
+    },
+    "three_changes_it_asked_for": [
+      "Fix the mechanism chain once, in section 2, and draw it (command -> body head / prediction heads -> score -> keep rule -> command execution path -> MuJoCo), with the 50 ms / 250 ms / 500 ms periods reconciled in one sentence; delete the forward references because the terms will then exist when used.",
+      "Use one name per part (controller = part 7 only; 'command execution path' for the torque solver; 'body head' never 'the predictor'; 'loss term' never 'lesson') and define the overseer, the preflight and the states in the first sentence that uses them; replace the 9:23 AM callout with the current state.",
+      "Put the angles on the page: the 156.8 degrees between the goal direction and the requested direction, the requested elbow angle against its -146 to 5 degree range, which sign of the shoulder angle is forward, and label pictures B and C with their angles instead of 'calculated shapes'."
+    ],
+    "applied_note": "see review_2 for what the second reader found still open in the second draft",
+    "applied": "All five headline findings and the 60 numbered findings were applied in the second draft (the version whose hash browser_checks.json records): the diagram gained the dashed two-way arrow between the planner search and the heads and the return path to the senses and the motor controller; the timing paragraph; one name per part; the preflight gates, the states and the hand point defined in running text; the status moved to 12:57 PM PDT with the resource guard's refusal; the 156.8 degree angle, the 30.0 cm distance, the elbow's range and the nearest elbow angle; the drawn arm poses labelled with their angles; the MuJoCo-drawn marks (joint axes colored by motor control, requested-direction rods, hand points, floor contact points) replacing the plain frames; the floor-contact finding (the left arm never touched the floor) added to section 5 and question 7; questions 1, 3, 4, 5, 7, 8, 9 and 10 rewritten with the missing facts. Two of its items were answered rather than changed: which sign of the shoulder's horizontal angle is forward is not stated in the body model, so the page names the joint and its limit instead; the 125 to 135 degree range of the elbow-term defect is quoted from the project's own record (H84_RESUME_HERE.md, 7:28 AM entry) as a range, not an estimate."
+  },
+  "plan_revised_page": "docs/H84_REACH_SOLUTION_REVISED_2026-10-23.html",
+  "plan_revised_review": {
+    "when": "October 23, 2026, 6:32 PM to 6:51 PM PDT",
+    "what_was_read": "the builder's in-place rewrite of the revised plan (file of 6:35:52 PM, sha256 e941fe6e...), by an independent hostile AI reader (a the builder subagent given the operator's critique of the earlier pages, the style guide, three_way_72.json, the two decision files, the builder's scoping message, independent_review.txt, H84_RESUME_HERE.md and the test registry); it edited nothing",
+    "cognitive_load_score": "6 of 10 (1 = effortless)",
+    "findings": 86,
+    "groups": {
+      "numbers_disagreeing_with_files_or_unsourced": 17,
+      "decisions_misstated_or_omitted": 12,
+      "terms_used_before_definition": 14,
+      "forward_references": 1,
+      "sentences_a_newcomer_cannot_follow": 8,
+      "assertions_without_why": 4,
+      "superfluous": 4,
+      "vague_words_or_statuses_without_facts": 6,
+      "mechanism_as_person_or_process_verb": 5,
+      "two_names_for_one_thing": 11,
+      "time_estimates": 0,
+      "other": 3
+    },
+    "most_serious": [
+      "The body 5 example was called the largest prediction-to-measurement gap, but by hand distance body 1 at 496,290 is larger; the diagnosis chose body 5 by the pose-error score (predicted 21.59, measured 38.51).",
+      "The one-times-mismatch winner rule survived although the overseer removed the twice-mismatch rule for a reason that applies equally.",
+      "The hold on the second attempt was worded as ending when the baseline has run; the words are \"held pending baseline decision\".",
+      "The 2.0 cm line and the 20-model-step stay window were attributed to the operator; they are the builder's proposal of 6:05 PM accepted by the overseer.",
+      "the overseer's requirements on target identity and age, local-frame transform, record alignment, raw differences for every start, both-no-contact as not applicable, and the within-body deadline were missing from step 1.",
+      "The companion file was placed under the preserved run; episode_state.json names a scratch-storage path.",
+      "The October 21 arm figures (20 and 28 of 100) pooled both arms and hid that the left arm's joint error rose while the right arm's fell.",
+      "Times: the state checks began 3:44 PM, not 3:43; the diagnosis report 5:22 AM; adoption 5:59 PM; the first attempt 2:10 to 2:17 PM; and the first attempt's second recorded stop cause (the end program's time-cap request) was missing.",
+      "The letter D named both the hand distance and the direct command; E, \"whole-body error\" and \"pose-error score\" were used for one quantity; babble had no name and no flag."
+    ],
+    "three_changes_asked_for": [
+      "one definitions pass (26 rows = 25 body parts + eye row; one name per quantity; the direct command not lettered D; babble and --intention-every named once; Tests row, watcher, admission change, target record, changed/first command defined at first use)",
+      "carry the two decisions as explicit requirements inside step 1, delete the surviving winner rule, split corrected from accepted, fix the hold wording and the attribution of the 2.0 cm / 20-model-step choices",
+      "make every number match its file (the example by score, the gap medians, the babble displacement 1.73 cm and 45 of 108, the 3-of-9 reached-but-not-stayed count, the two arms separately, the times, the second stop cause, the companion path, the comparison row as the 202.2 s source, the orphan 0.57, and rerun the browser check and record the read before claiming them)"
+    ],
+    "applied": "All 86 applied in the version written after 6:52 PM PDT: see the page's review record. Verified by the builder against the files before applying: the registry times (3:44 PM; 2:10 to 2:17 PM; 5:09 to 5:10 AM; 4:15 to 4:18 PM), the message times (5:22 AM, 5:59 PM, 6:05 PM, 6:06 PM), the diagnosis gaps (1.02/0.69 first, 1.13/0.71 selected), the largest-disagreement choice by score, episode_state.json's storage_path, the limb-control result's per-arm joint errors (L 23.7 to 26.8, R 14.4 to 3.8 degrees) and wall_s 187.8, the comparison a2 result's wall_s 218.3, args.json (babble_noise 0.05, intention_every 10, motor_hold 5, goal_locality off), train_mimo.py lines 2142 to 2143, efference.py line 99, the branch path of physical_comparison.py, commit 4ccd573fe at 6:08 PM, and the gap medians recomputed from three_way_72.json (0.19 / 0.75 cm signed, 1.26 / 1.67 cm unsigned; score miss 0.572 over 72, 0.634 over 66). Not confirmed from a file and therefore not written: the reviewer's description of the body head's size (a 256-number input, one layer); the page describes the body head by its inputs and outputs only."
+  },
+  "remaining_v2_page_defects_20261023": {
+    "recorded": "Oct 23, 2026 7:05 PM PDT",
+    "recorded_by": "the builder session 358a210a (the execution coordinator), at the request: reach-plan-rewrite-ack-20261023, \"Record the five remaining v2-document defects in its existing review record with its actual author as owner and the next report-edit pass as trigger\"",
+    "page": "docs/H84_BODY_REPAIR_EXPLAINED_v2_2026-10-23.html",
+    "owner": "the page's author: the builder session 39f9510d-b517-49f4-ab68-2cf712580486, the session that wrote the page, this review record and docs/GUIDE_WRITING_A_CLEAR_DOCUMENT_2026-10-23.html (its transcript holds those writes)",
+    "trigger": "the next report-edit pass of the v2 page",
+    "state": "open, not fixed",
+    "source": "docs/GUIDE_WRITING_A_CLEAR_DOCUMENT_2026-10-23.html, section 6 \"What the accepted page still gets wrong\"",
+    "defects": [
+      "Section 9's heading is the sentence the operator rejected at 3:05 PM PDT: \"With the new score in place, the body ended nearer its goal in 43 of 72 cases, and the body head was shown to place arm parts no arm can hold.\" It needs the three-way table of rule 15 and the elbow-gap measurement in its place.",
+      "Forward pointers remain: \"Both faults are named and tracked in section 7\" (section 1), \"section 5 shows what did\" (section 4), \"section 8 gives the repair\" (sections 3 and 4), \"that matters in section 7\" (section 5). Each sentence stands without its pointer, so they are tolerable; a stricter page removes them.",
+      "The sentence the operator called superfluous survives in section 1: \"Fixing the drawing alone cannot change where the motors put the hand.\"",
+      "The status is stale. Section 10 reads \"Launch state at 12:57 PM PDT, October 23: not launched.\" The pair's control run then ran and stopped at model step 496,425 at 2:17 PM PDT, its reading was ruled invalid, and a replacement is held as a candidate; the page does not say so.",
+      "One project word is given without its mechanism: \"on part of them a random variation is added (the project calls that babble)\". The size of the variation (the trainer's setting, 0.05) and which commands carry it are not stated there."
+    ],
+    "cost": "one edit pass over the accepted page, a browser check and a re-read; no run of any kind (the guide, section 6)"
+  }
+}

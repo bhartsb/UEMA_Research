@@ -1,0 +1,49 @@
+{
+  "schema": "raw_sensory_held_command_v1",
+  "source": "D:\\UEMA_Research\\external\\D\\UEMA_recordings\\checkpoint_runs\\H80_local_shadow_20260913\\checkpoints\\ckpt_step_4016875",
+  "train_worlds": [
+    93010,
+    93011,
+    93012,
+    93013,
+    93014,
+    93015
+  ],
+  "test_worlds": [
+    93020,
+    93021,
+    93022,
+    93023
+  ],
+  "states_per_world": 8,
+  "horizon_seconds": [
+    0.05,
+    0.1,
+    0.15,
+    0.2,
+    0.25
+  ],
+  "past_observations": 6,
+  "candidates": 4,
+  "duplicate_physical_hold": true,
+  "imposed_order_ages": [
+    0,
+    1,
+    2,
+    3,
+    4
+  ],
+  "reflex": false,
+  "saccades": false,
+  "updates_per_stage": 240,
+  "stages": 2,
+  "fit_seed": 619,
+  "max_packet_mib": 512,
+  "goal": "Resolve sensed movement and spatial-contact differences between known body orders.",
+  "encoder_input": "Own frozen global tokens plus existing retinal-grid/local-touch features, fixed raw sensory history and actual intervals. No cached other-snapshot embedding is fed to this new readout.",
+  "comparison": "Same context and gaze; separate equally trained action-blind readout, wrong-action forecasts, persistence, constant-motion extrapolation and identical held-command replay.",
+  "admission": "At 250 ms, action-contrast error RMS must be at most half measured contrast (at least 75% of action variation error removed), and absolute error must beat fitted blind, wrong-action, persistence and constant-motion controls in every informative world/group. Stage-2 error cannot exceed stage-1 error by more than 5% of that physical contrast plus decoded-channel numerical resolution. Quiet groups are uninformative. This is a declared instrument-resolution requirement, not a biological law or an acting license.",
+  "phase_scope": "Prior commands are explicitly re-issued then observed for 0..4 model intervals before the prospective remaining-order schedule. These are imposed copied conditions, not a measured distribution of native scheduler phases.",
+  "targets": "Fixed pre-ANN body-relative position cm, world rotation columns, experienced pressure kPa and its existing spatial first/second moments. No simulator-only object positions or future reflex commands.",
+  "production_modified": false
+}

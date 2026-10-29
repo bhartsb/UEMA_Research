@@ -1,0 +1,3166 @@
+{
+ "check": "the stop/save schedule (late acknowledgement, closing wait, guard, monitor wake and stale first look) and the detail-record flush verification on saved data",
+ "owner": "D:\\UEMA_Research\\external\\D\\UEMA_scratch\\h84\\d1_planner_recovery\\s4r_pose_learning_496250_repair_package\\s4r_pose_learning_owner.py",
+ "receipts": "D:\\UEMA_Research\\external\\D\\UEMA_scratch\\h84\\d1_planner_recovery\\s4r_pose_learning_496250_package\\receipts",
+ "run": "D:\\UEMA_Research\\external\\D\\UEMA_scratch\\h84\\d1_planner_recovery\\attempts\\s4r_pose_learning_496250_a1\\evidence\\run\\S4R_pose_learning_496250",
+ "control_run": "D:\\UEMA_Research\\external\\D\\UEMA_preserved\\s4r_measure_S4R_measure_496000\\run",
+ "owner_sha256": "b986ff6e44a6d65deb69d4a421e7607a7255e31344a2fc99148ba151e5cb31ec",
+ "inputs": {
+  "request": {
+   "s": 1792711507.118,
+   "at": "4:25:07.1 PM PDT"
+  },
+  "request_source": "recorded_stop_time: stop_reason.json timestamp field",
+  "owner_event_request": {
+   "s": 1792711507.124,
+   "at": "4:25:07.1 PM PDT"
+  },
+  "owner_stop_record": {
+   "s": 1792711507.114,
+   "at": "4:25:07.1 PM PDT"
+  },
+  "trainer_started": {
+   "s": 1792711309.13,
+   "at": "4:21:49.1 PM PDT"
+  },
+  "trainer_deadline": {
+   "s": 1792712029.13,
+   "at": "4:33:49.1 PM PDT"
+  },
+  "guard_created": {
+   "s": 1792711298.552,
+   "at": "4:21:38.5 PM PDT"
+  },
+  "wall_s": 720.0,
+  "stop_wait_s": 140.0,
+  "close_s": 180.0,
+  "poll_s": 5.0,
+  "stop_poll_s": 5.0,
+  "cap": {
+   "s": 1792712029.13,
+   "at": "4:33:49.1 PM PDT"
+  },
+  "acknowledgement": {
+   "s": 1792711577.573,
+   "at": "4:26:17.5 PM PDT"
+  },
+  "acknowledgement_line": "2026-10-22 16:26:17,573 [INFO] mimo_bridge.train: overseer command: snapshot_and_stop",
+  "launched_kill": {
+   "s": 1792711648.128,
+   "at": "4:27:28.1 PM PDT"
+  },
+  "trainer_ended": {
+   "s": 1792711653.132,
+   "at": "4:27:33.1 PM PDT"
+  },
+  "companion_folder": "D:\\UEMA_Research\\external\\D\\UEMA_scratch\\h84\\d1_planner_recovery\\attempts\\s4r_pose_learning_496250_a1\\evidence\\recording\\checkpoint_state\\S4R_pose_learning_496250",
+  "saved_reading": {
+   "acknowledged": true,
+   "acknowledged_by": "control_done_1792711577.json",
+   "acknowledged_s": 1792711577.0,
+   "tmp": {
+    "name": ".tmp_ckpt_step_496325_62cdd7435e194bc39ccf10f88ac68120",
+    "files": {
+     "meta.json": [
+      112,
+      1792711577.0
+     ],
+     "model.safetensors": [
+      73119988,
+      1792711577.0
+     ],
+     "model_receipt.json": [
+      247492,
+      1792711580.0
+     ],
+     "optimizer.pt": [
+      138060045,
+      1792711580.0
+     ],
+     "runtime_state.pt": [
+      489337200,
+      1792711630.0
+     ]
+    }
+   },
+   "complete": null,
+   "complete_s": null,
+   "companion_tmp": {
+    "name": "ckpt_step_496325_c970eb06f4294a8083411c45557c3921.pt.gz.tmp",
+    "bytes": 519323328,
+    "mtime": 1792711647.0
+   }
+  }
+ },
+ "owner_constants": {
+  "SAVE_MEASURED_S": 74.0,
+  "ACK_BOUND_S": 94.0,
+  "SAVE_RESERVE_S": 178.0,
+  "ACK_SAVE_FLOOR_S": 84.0,
+  "ACK_NAME_RESOLUTION_S": 1.0,
+  "STOP_WAIT_S": 140.0,
+  "SECOND_LOOK_S": 5.0,
+  "DETAIL_CHECK_S": 20.0,
+  "GUARD_SCHEDULE_FILE": "guard_schedule.json"
+ },
+ "a_actual": {
+  "request": {
+   "s": 1792711507.118,
+   "at": "4:25:07.1 PM PDT"
+  },
+  "acknowledgement": {
+   "s": 1792711577.573,
+   "at": "4:26:17.5 PM PDT"
+  },
+  "file_time_shift_s": 0.0,
+  "acknowledged_by": "control_done_1792711577.json",
+  "acknowledged_name": {
+   "s": 1792711577.0,
+   "at": "4:26:17.0 PM PDT"
+  },
+  "acknowledged_latest": {
+   "s": 1792711578.0,
+   "at": "4:26:18.0 PM PDT"
+  },
+  "base": {
+   "s": 1792711685.118,
+   "at": "4:28:05.1 PM PDT"
+  },
+  "floor": {
+   "s": 1792711662.0,
+   "at": "4:27:42.0 PM PDT"
+  },
+  "writing_seen": {
+   "s": 1792711582.118,
+   "at": "4:26:22.1 PM PDT"
+  },
+  "writing_growth": [
+   "the temporary snapshot folder .tmp_ckpt_step_496325_62cdd7435e194bc39ccf10f88ac68120 appeared"
+  ],
+  "kill": {
+   "s": 1792711685.118,
+   "at": "4:28:05.1 PM PDT"
+  },
+  "kill_rule": "the base reserve",
+  "cap": {
+   "s": 1792712029.13,
+   "at": "4:33:49.1 PM PDT"
+  },
+  "risk": null,
+  "looks": [
+   {
+    "t": {
+     "s": 1792711507.118,
+     "at": "4:25:07.1 PM PDT"
+    },
+    "acknowledged": false,
+    "tmp_files": 0,
+    "companion": false,
+    "growth": [],
+    "kill_at": {
+     "s": 1792711685.118,
+     "at": "4:28:05.1 PM PDT"
+    },
+    "floor": null,
+    "writing_seen": null,
+    "kill_rule": "the base reserve",
+    "risk": false
+   },
+   {
+    "t": {
+     "s": 1792711582.118,
+     "at": "4:26:22.1 PM PDT"
+    },
+    "acknowledged": true,
+    "tmp_files": 4,
+    "companion": false,
+    "growth": [
+     "the temporary snapshot folder .tmp_ckpt_step_496325_62cdd7435e194bc39ccf10f88ac68120 appeared"
+    ],
+    "kill_at": {
+     "s": 1792711685.118,
+     "at": "4:28:05.1 PM PDT"
+    },
+    "floor": {
+     "s": 1792711662.0,
+     "at": "4:27:42.0 PM PDT"
+    },
+    "writing_seen": {
+     "s": 1792711582.118,
+     "at": "4:26:22.1 PM PDT"
+    },
+    "kill_rule": "the base reserve",
+    "risk": false
+   },
+   {
+    "t": {
+     "s": 1792711632.118,
+     "at": "4:27:12.1 PM PDT"
+    },
+    "acknowledged": true,
+    "tmp_files": 5,
+    "companion": false,
+    "growth": [
+     "tmp_files 4 -> 5",
+     "tmp_bytes 211427637 -> 700764837",
+     "tmp_newest_s 1792711580.0 -> 1792711630.0"
+    ],
+    "kill_at": {
+     "s": 1792711685.118,
+     "at": "4:28:05.1 PM PDT"
+    },
+    "floor": {
+     "s": 1792711662.0,
+     "at": "4:27:42.0 PM PDT"
+    },
+    "writing_seen": {
+     "s": 1792711582.118,
+     "at": "4:26:22.1 PM PDT"
+    },
+    "kill_rule": "the base reserve",
+    "risk": false
+   },
+   {
+    "t": {
+     "s": 1792711647.118,
+     "at": "4:27:27.1 PM PDT"
+    },
+    "acknowledged": true,
+    "tmp_files": 5,
+    "companion": true,
+    "growth": [
+     "the companion's temporary file ckpt_step_496325_c970eb06f4294a8083411c45557c3921.pt.gz.tmp appeared"
+    ],
+    "kill_at": {
+     "s": 1792711685.118,
+     "at": "4:28:05.1 PM PDT"
+    },
+    "floor": {
+     "s": 1792711662.0,
+     "at": "4:27:42.0 PM PDT"
+    },
+    "writing_seen": {
+     "s": 1792711582.118,
+     "at": "4:26:22.1 PM PDT"
+    },
+    "kill_rule": "the base reserve",
+    "risk": false
+   },
+   {
+    "t": {
+     "s": 1792711685.118,
+     "at": "4:28:05.1 PM PDT"
+    },
+    "acknowledged": true,
+    "tmp_files": 5,
+    "companion": true,
+    "growth": [],
+    "kill_at": {
+     "s": 1792711685.118,
+     "at": "4:28:05.1 PM PDT"
+    },
+    "floor": {
+     "s": 1792711662.0,
+     "at": "4:27:42.0 PM PDT"
+    },
+    "writing_seen": {
+     "s": 1792711582.118,
+     "at": "4:26:22.1 PM PDT"
+    },
+    "kill_rule": "the base reserve",
+    "risk": false
+   }
+  ],
+  "kill_after_launched_kill_s": 36.99,
+  "kill_after_measured_save_end_s": 33.545,
+  "measured_save_end": {
+   "s": 1792711651.573,
+   "at": "4:27:31.5 PM PDT"
+  }
+ },
+ "b_late_ack": {
+  "request": {
+   "s": 1792711507.118,
+   "at": "4:25:07.1 PM PDT"
+  },
+  "acknowledgement": {
+   "s": 1792711627.118,
+   "at": "4:27:07.1 PM PDT"
+  },
+  "file_time_shift_s": 49.545,
+  "acknowledged_by": "control_done_1792711627.json",
+  "acknowledged_name": {
+   "s": 1792711627.0,
+   "at": "4:27:07.0 PM PDT"
+  },
+  "acknowledged_latest": {
+   "s": 1792711628.0,
+   "at": "4:27:08.0 PM PDT"
+  },
+  "base": {
+   "s": 1792711685.118,
+   "at": "4:28:05.1 PM PDT"
+  },
+  "floor": {
+   "s": 1792711712.0,
+   "at": "4:28:32.0 PM PDT"
+  },
+  "writing_seen": {
+   "s": 1792711627.118,
+   "at": "4:27:07.1 PM PDT"
+  },
+  "writing_growth": [
+   "the temporary snapshot folder .tmp_ckpt_step_496325_62cdd7435e194bc39ccf10f88ac68120 appeared"
+  ],
+  "kill": {
+   "s": 1792711712.0,
+   "at": "4:28:32.0 PM PDT"
+  },
+  "kill_rule": "the acknowledged-save floor",
+  "cap": {
+   "s": 1792712029.13,
+   "at": "4:33:49.1 PM PDT"
+  },
+  "risk": null,
+  "looks": [
+   {
+    "t": {
+     "s": 1792711507.118,
+     "at": "4:25:07.1 PM PDT"
+    },
+    "acknowledged": false,
+    "tmp_files": 0,
+    "companion": false,
+    "growth": [],
+    "kill_at": {
+     "s": 1792711685.118,
+     "at": "4:28:05.1 PM PDT"
+    },
+    "floor": null,
+    "writing_seen": null,
+    "kill_rule": "the base reserve",
+    "risk": false
+   },
+   {
+    "t": {
+     "s": 1792711627.118,
+     "at": "4:27:07.1 PM PDT"
+    },
+    "acknowledged": true,
+    "tmp_files": 2,
+    "companion": false,
+    "growth": [
+     "the temporary snapshot folder .tmp_ckpt_step_496325_62cdd7435e194bc39ccf10f88ac68120 appeared"
+    ],
+    "kill_at": {
+     "s": 1792711712.0,
+     "at": "4:28:32.0 PM PDT"
+    },
+    "floor": {
+     "s": 1792711712.0,
+     "at": "4:28:32.0 PM PDT"
+    },
+    "writing_seen": {
+     "s": 1792711627.118,
+     "at": "4:27:07.1 PM PDT"
+    },
+    "kill_rule": "the acknowledged-save floor",
+    "risk": false
+   },
+   {
+    "t": {
+     "s": 1792711632.118,
+     "at": "4:27:12.1 PM PDT"
+    },
+    "acknowledged": true,
+    "tmp_files": 4,
+    "companion": false,
+    "growth": [
+     "tmp_files 2 -> 4",
+     "tmp_bytes 73120100 -> 211427637",
+     "tmp_newest_s 1792711626.5451765 -> 1792711629.5451765"
+    ],
+    "kill_at": {
+     "s": 1792711712.0,
+     "at": "4:28:32.0 PM PDT"
+    },
+    "floor": {
+     "s": 1792711712.0,
+     "at": "4:28:32.0 PM PDT"
+    },
+    "writing_seen": {
+     "s": 1792711627.118,
+     "at": "4:27:07.1 PM PDT"
+    },
+    "kill_rule": "the acknowledged-save floor",
+    "risk": false
+   },
+   {
+    "t": {
+     "s": 1792711682.118,
+     "at": "4:28:02.1 PM PDT"
+    },
+    "acknowledged": true,
+    "tmp_files": 5,
+    "companion": false,
+    "growth": [
+     "tmp_files 4 -> 5",
+     "tmp_bytes 211427637 -> 700764837",
+     "tmp_newest_s 1792711629.5451765 -> 1792711679.5451765"
+    ],
+    "kill_at": {
+     "s": 1792711712.0,
+     "at": "4:28:32.0 PM PDT"
+    },
+    "floor": {
+     "s": 1792711712.0,
+     "at": "4:28:32.0 PM PDT"
+    },
+    "writing_seen": {
+     "s": 1792711627.118,
+     "at": "4:27:07.1 PM PDT"
+    },
+    "kill_rule": "the acknowledged-save floor",
+    "risk": false
+   },
+   {
+    "t": {
+     "s": 1792711697.118,
+     "at": "4:28:17.1 PM PDT"
+    },
+    "acknowledged": true,
+    "tmp_files": 5,
+    "companion": true,
+    "growth": [
+     "the companion's temporary file ckpt_step_496325_c970eb06f4294a8083411c45557c3921.pt.gz.tmp appeared"
+    ],
+    "kill_at": {
+     "s": 1792711712.0,
+     "at": "4:28:32.0 PM PDT"
+    },
+    "floor": {
+     "s": 1792711712.0,
+     "at": "4:28:32.0 PM PDT"
+    },
+    "writing_seen": {
+     "s": 1792711627.118,
+     "at": "4:27:07.1 PM PDT"
+    },
+    "kill_rule": "the acknowledged-save floor",
+    "risk": false
+   },
+   {
+    "t": {
+     "s": 1792711712.0,
+     "at": "4:28:32.0 PM PDT"
+    },
+    "acknowledged": true,
+    "tmp_files": 5,
+    "companion": true,
+    "growth": [],
+    "kill_at": {
+     "s": 1792711712.0,
+     "at": "4:28:32.0 PM PDT"
+    },
+    "floor": {
+     "s": 1792711712.0,
+     "at": "4:28:32.0 PM PDT"
+    },
+    "writing_seen": {
+     "s": 1792711627.118,
+     "at": "4:27:07.1 PM PDT"
+    },
+    "kill_rule": "the acknowledged-save floor",
+    "risk": false
+   }
+  ]
+ },
+ "c1_wall_cap_request": {
+  "request": {
+   "s": 1792711851.13,
+   "at": "4:30:51.1 PM PDT"
+  },
+  "acknowledgement": {
+   "s": 1792711971.13,
+   "at": "4:32:51.1 PM PDT"
+  },
+  "file_time_shift_s": 393.557,
+  "acknowledged_by": "control_done_1792711971.json",
+  "acknowledged_name": {
+   "s": 1792711971.0,
+   "at": "4:32:51.0 PM PDT"
+  },
+  "acknowledged_latest": {
+   "s": 1792711972.0,
+   "at": "4:32:52.0 PM PDT"
+  },
+  "base": {
+   "s": 1792712029.13,
+   "at": "4:33:49.1 PM PDT"
+  },
+  "floor": {
+   "s": 1792712056.0,
+   "at": "4:34:16.0 PM PDT"
+  },
+  "writing_seen": {
+   "s": 1792711971.13,
+   "at": "4:32:51.1 PM PDT"
+  },
+  "writing_growth": [
+   "the temporary snapshot folder .tmp_ckpt_step_496325_62cdd7435e194bc39ccf10f88ac68120 appeared"
+  ],
+  "kill": {
+   "s": 1792712029.13,
+   "at": "4:33:49.1 PM PDT"
+  },
+  "kill_rule": "the hard cap",
+  "cap": {
+   "s": 1792712029.13,
+   "at": "4:33:49.1 PM PDT"
+  },
+  "risk": {
+   "text": "preservation risk: the trainer acknowledged the stop request at Oct 22, 2026, 04:32:52 PM PDT at the latest (its consumed control file's whole-second name Oct 22, 2026, 04:32:51 PM PDT, plus 1 s), 662.9 s after the trainer's start; the measured complete save plus the 10 s (84 s) would end at Oct 22, 2026, 04:34:16 PM PDT, 26.9 s after the hard trainer cap Oct 22, 2026, 04:33:49 PM PDT (720 s after the trainer's start), which no file growth moves. The trainer's process tree is ended at that cap whatever the snapshot has written (the snapshot's files were seen growing at this reading), so this run's endpoint may not be saved: saving is not guaranteed. The complete starting endpoint, the preserved complete 496,250 of S4R_measure_496000 (D:/UEMA_Research/external/D/UEMA_preserved/s4r_measure_S4R_measure_496000), stays preserved unchanged: this owner never writes it, and its checkpoint files, episode companion and latent body file are re-hashed at the arm's end (start_unchanged).",
+   "acknowledged_s": 1792711971.0,
+   "ack_latest_s": 1792711972.0,
+   "floor_s": 1792712056.0,
+   "cap_s": 1792712029.1301365,
+   "shortfall_s": 26.869863510131836,
+   "writing_seen": true,
+   "start": "the preserved complete 496,250 of S4R_measure_496000",
+   "start_preserved": "D:/UEMA_Research/external/D/UEMA_preserved/s4r_measure_S4R_measure_496000",
+   "saving_guaranteed": false
+  },
+  "looks": [
+   {
+    "t": {
+     "s": 1792711851.13,
+     "at": "4:30:51.1 PM PDT"
+    },
+    "acknowledged": false,
+    "tmp_files": 0,
+    "companion": false,
+    "growth": [],
+    "kill_at": {
+     "s": 1792712029.13,
+     "at": "4:33:49.1 PM PDT"
+    },
+    "floor": null,
+    "writing_seen": null,
+    "kill_rule": "the hard cap",
+    "risk": false
+   },
+   {
+    "t": {
+     "s": 1792711971.13,
+     "at": "4:32:51.1 PM PDT"
+    },
+    "acknowledged": true,
+    "tmp_files": 2,
+    "companion": false,
+    "growth": [
+     "the temporary snapshot folder .tmp_ckpt_step_496325_62cdd7435e194bc39ccf10f88ac68120 appeared"
+    ],
+    "kill_at": {
+     "s": 1792712029.13,
+     "at": "4:33:49.1 PM PDT"
+    },
+    "floor": {
+     "s": 1792712056.0,
+     "at": "4:34:16.0 PM PDT"
+    },
+    "writing_seen": {
+     "s": 1792711971.13,
+     "at": "4:32:51.1 PM PDT"
+    },
+    "kill_rule": "the hard cap",
+    "risk": true
+   },
+   {
+    "t": {
+     "s": 1792711976.13,
+     "at": "4:32:56.1 PM PDT"
+    },
+    "acknowledged": true,
+    "tmp_files": 4,
+    "companion": false,
+    "growth": [
+     "tmp_files 2 -> 4",
+     "tmp_bytes 73120100 -> 211427637",
+     "tmp_newest_s 1792711970.5571365 -> 1792711973.5571365"
+    ],
+    "kill_at": {
+     "s": 1792712029.13,
+     "at": "4:33:49.1 PM PDT"
+    },
+    "floor": {
+     "s": 1792712056.0,
+     "at": "4:34:16.0 PM PDT"
+    },
+    "writing_seen": {
+     "s": 1792711971.13,
+     "at": "4:32:51.1 PM PDT"
+    },
+    "kill_rule": "the hard cap",
+    "risk": true
+   },
+   {
+    "t": {
+     "s": 1792712026.13,
+     "at": "4:33:46.1 PM PDT"
+    },
+    "acknowledged": true,
+    "tmp_files": 5,
+    "companion": false,
+    "growth": [
+     "tmp_files 4 -> 5",
+     "tmp_bytes 211427637 -> 700764837",
+     "tmp_newest_s 1792711973.5571365 -> 1792712023.5571365"
+    ],
+    "kill_at": {
+     "s": 1792712029.13,
+     "at": "4:33:49.1 PM PDT"
+    },
+    "floor": {
+     "s": 1792712056.0,
+     "at": "4:34:16.0 PM PDT"
+    },
+    "writing_seen": {
+     "s": 1792711971.13,
+     "at": "4:32:51.1 PM PDT"
+    },
+    "kill_rule": "the hard cap",
+    "risk": true
+   },
+   {
+    "t": {
+     "s": 1792712029.13,
+     "at": "4:33:49.1 PM PDT"
+    },
+    "acknowledged": true,
+    "tmp_files": 5,
+    "companion": false,
+    "growth": [],
+    "kill_at": {
+     "s": 1792712029.13,
+     "at": "4:33:49.1 PM PDT"
+    },
+    "floor": {
+     "s": 1792712056.0,
+     "at": "4:34:16.0 PM PDT"
+    },
+    "writing_seen": {
+     "s": 1792711971.13,
+     "at": "4:32:51.1 PM PDT"
+    },
+    "kill_rule": "the hard cap",
+    "risk": true
+   }
+  ]
+ },
+ "c2_late_request": {
+  "request": {
+   "s": 1792711829.13,
+   "at": "4:30:29.1 PM PDT"
+  },
+  "acknowledgement": {
+   "s": 1792711979.13,
+   "at": "4:32:59.1 PM PDT"
+  },
+  "file_time_shift_s": 401.557,
+  "acknowledged_by": "control_done_1792711979.json",
+  "acknowledged_name": {
+   "s": 1792711979.0,
+   "at": "4:32:59.0 PM PDT"
+  },
+  "acknowledged_latest": {
+   "s": 1792711980.0,
+   "at": "4:33:00.0 PM PDT"
+  },
+  "base": {
+   "s": 1792712007.13,
+   "at": "4:33:27.1 PM PDT"
+  },
+  "floor": {
+   "s": 1792712064.0,
+   "at": "4:34:24.0 PM PDT"
+  },
+  "writing_seen": {
+   "s": 1792711979.13,
+   "at": "4:32:59.1 PM PDT"
+  },
+  "writing_growth": [
+   "the temporary snapshot folder .tmp_ckpt_step_496325_62cdd7435e194bc39ccf10f88ac68120 appeared"
+  ],
+  "kill": {
+   "s": 1792712029.13,
+   "at": "4:33:49.1 PM PDT"
+  },
+  "kill_rule": "the hard cap",
+  "cap": {
+   "s": 1792712029.13,
+   "at": "4:33:49.1 PM PDT"
+  },
+  "risk": {
+   "text": "preservation risk: the trainer acknowledged the stop request at Oct 22, 2026, 04:33:00 PM PDT at the latest (its consumed control file's whole-second name Oct 22, 2026, 04:32:59 PM PDT, plus 1 s), 670.9 s after the trainer's start; the measured complete save plus the 10 s (84 s) would end at Oct 22, 2026, 04:34:24 PM PDT, 34.9 s after the hard trainer cap Oct 22, 2026, 04:33:49 PM PDT (720 s after the trainer's start), which no file growth moves. The trainer's process tree is ended at that cap whatever the snapshot has written (the snapshot's files were seen growing at this reading), so this run's endpoint may not be saved: saving is not guaranteed. The complete starting endpoint, the preserved complete 496,250 of S4R_measure_496000 (D:/UEMA_Research/external/D/UEMA_preserved/s4r_measure_S4R_measure_496000), stays preserved unchanged: this owner never writes it, and its checkpoint files, episode companion and latent body file are re-hashed at the arm's end (start_unchanged).",
+   "acknowledged_s": 1792711979.0,
+   "ack_latest_s": 1792711980.0,
+   "floor_s": 1792712064.0,
+   "cap_s": 1792712029.1301365,
+   "shortfall_s": 34.869863510131836,
+   "writing_seen": true,
+   "start": "the preserved complete 496,250 of S4R_measure_496000",
+   "start_preserved": "D:/UEMA_Research/external/D/UEMA_preserved/s4r_measure_S4R_measure_496000",
+   "saving_guaranteed": false
+  },
+  "looks": [
+   {
+    "t": {
+     "s": 1792711829.13,
+     "at": "4:30:29.1 PM PDT"
+    },
+    "acknowledged": false,
+    "tmp_files": 0,
+    "companion": false,
+    "growth": [],
+    "kill_at": {
+     "s": 1792712007.13,
+     "at": "4:33:27.1 PM PDT"
+    },
+    "floor": null,
+    "writing_seen": null,
+    "kill_rule": "the base reserve",
+    "risk": false
+   },
+   {
+    "t": {
+     "s": 1792711979.13,
+     "at": "4:32:59.1 PM PDT"
+    },
+    "acknowledged": true,
+    "tmp_files": 2,
+    "companion": false,
+    "growth": [
+     "the temporary snapshot folder .tmp_ckpt_step_496325_62cdd7435e194bc39ccf10f88ac68120 appeared"
+    ],
+    "kill_at": {
+     "s": 1792712029.13,
+     "at": "4:33:49.1 PM PDT"
+    },
+    "floor": {
+     "s": 1792712064.0,
+     "at": "4:34:24.0 PM PDT"
+    },
+    "writing_seen": {
+     "s": 1792711979.13,
+     "at": "4:32:59.1 PM PDT"
+    },
+    "kill_rule": "the hard cap",
+    "risk": true
+   },
+   {
+    "t": {
+     "s": 1792711984.13,
+     "at": "4:33:04.1 PM PDT"
+    },
+    "acknowledged": true,
+    "tmp_files": 4,
+    "companion": false,
+    "growth": [
+     "tmp_files 2 -> 4",
+     "tmp_bytes 73120100 -> 211427637",
+     "tmp_newest_s 1792711978.5571365 -> 1792711981.5571365"
+    ],
+    "kill_at": {
+     "s": 1792712029.13,
+     "at": "4:33:49.1 PM PDT"
+    },
+    "floor": {
+     "s": 1792712064.0,
+     "at": "4:34:24.0 PM PDT"
+    },
+    "writing_seen": {
+     "s": 1792711979.13,
+     "at": "4:32:59.1 PM PDT"
+    },
+    "kill_rule": "the hard cap",
+    "risk": true
+   },
+   {
+    "t": {
+     "s": 1792712029.13,
+     "at": "4:33:49.1 PM PDT"
+    },
+    "acknowledged": true,
+    "tmp_files": 4,
+    "companion": false,
+    "growth": [],
+    "kill_at": {
+     "s": 1792712029.13,
+     "at": "4:33:49.1 PM PDT"
+    },
+    "floor": {
+     "s": 1792712064.0,
+     "at": "4:34:24.0 PM PDT"
+    },
+    "writing_seen": {
+     "s": 1792711979.13,
+     "at": "4:32:59.1 PM PDT"
+    },
+    "kill_rule": "the hard cap",
+    "risk": true
+   }
+  ]
+ },
+ "d1_ack_without_writing": {
+  "request": {
+   "s": 1792711507.118,
+   "at": "4:25:07.1 PM PDT"
+  },
+  "acknowledgement": {
+   "s": 1792711627.118,
+   "at": "4:27:07.1 PM PDT"
+  },
+  "file_time_shift_s": 49.545,
+  "acknowledged_by": "control_done_1792711627.json",
+  "acknowledged_name": {
+   "s": 1792711627.0,
+   "at": "4:27:07.0 PM PDT"
+  },
+  "acknowledged_latest": {
+   "s": 1792711628.0,
+   "at": "4:27:08.0 PM PDT"
+  },
+  "base": {
+   "s": 1792711685.118,
+   "at": "4:28:05.1 PM PDT"
+  },
+  "floor": null,
+  "writing_seen": null,
+  "writing_growth": null,
+  "kill": {
+   "s": 1792711685.118,
+   "at": "4:28:05.1 PM PDT"
+  },
+  "kill_rule": "the base reserve",
+  "cap": {
+   "s": 1792712029.13,
+   "at": "4:33:49.1 PM PDT"
+  },
+  "risk": null,
+  "looks": [
+   {
+    "t": {
+     "s": 1792711507.118,
+     "at": "4:25:07.1 PM PDT"
+    },
+    "acknowledged": false,
+    "tmp_files": 0,
+    "companion": false,
+    "growth": [],
+    "kill_at": {
+     "s": 1792711685.118,
+     "at": "4:28:05.1 PM PDT"
+    },
+    "floor": null,
+    "writing_seen": null,
+    "kill_rule": "the base reserve",
+    "risk": false
+   },
+   {
+    "t": {
+     "s": 1792711627.118,
+     "at": "4:27:07.1 PM PDT"
+    },
+    "acknowledged": true,
+    "tmp_files": 0,
+    "companion": false,
+    "growth": [],
+    "kill_at": {
+     "s": 1792711685.118,
+     "at": "4:28:05.1 PM PDT"
+    },
+    "floor": null,
+    "writing_seen": null,
+    "kill_rule": "the base reserve",
+    "risk": false
+   },
+   {
+    "t": {
+     "s": 1792711685.118,
+     "at": "4:28:05.1 PM PDT"
+    },
+    "acknowledged": true,
+    "tmp_files": 0,
+    "companion": false,
+    "growth": [],
+    "kill_at": {
+     "s": 1792711685.118,
+     "at": "4:28:05.1 PM PDT"
+    },
+    "floor": null,
+    "writing_seen": null,
+    "kill_rule": "the base reserve",
+    "risk": false
+   }
+  ]
+ },
+ "d2_writing_without_ack": {
+  "request": {
+   "s": 1792711507.118,
+   "at": "4:25:07.1 PM PDT"
+  },
+  "acknowledgement": {
+   "s": 1792711627.118,
+   "at": "4:27:07.1 PM PDT"
+  },
+  "file_time_shift_s": 49.545,
+  "acknowledged_by": null,
+  "acknowledged_name": null,
+  "acknowledged_latest": null,
+  "base": {
+   "s": 1792711685.118,
+   "at": "4:28:05.1 PM PDT"
+  },
+  "floor": null,
+  "writing_seen": null,
+  "writing_growth": null,
+  "kill": {
+   "s": 1792711685.118,
+   "at": "4:28:05.1 PM PDT"
+  },
+  "kill_rule": "the base reserve",
+  "cap": {
+   "s": 1792712029.13,
+   "at": "4:33:49.1 PM PDT"
+  },
+  "risk": null,
+  "looks": [
+   {
+    "t": {
+     "s": 1792711507.118,
+     "at": "4:25:07.1 PM PDT"
+    },
+    "acknowledged": false,
+    "tmp_files": 0,
+    "companion": false,
+    "growth": [],
+    "kill_at": {
+     "s": 1792711685.118,
+     "at": "4:28:05.1 PM PDT"
+    },
+    "floor": null,
+    "writing_seen": null,
+    "kill_rule": "the base reserve",
+    "risk": false
+   },
+   {
+    "t": {
+     "s": 1792711627.118,
+     "at": "4:27:07.1 PM PDT"
+    },
+    "acknowledged": false,
+    "tmp_files": 2,
+    "companion": false,
+    "growth": [],
+    "kill_at": {
+     "s": 1792711685.118,
+     "at": "4:28:05.1 PM PDT"
+    },
+    "floor": null,
+    "writing_seen": null,
+    "kill_rule": "the base reserve",
+    "risk": false
+   },
+   {
+    "t": {
+     "s": 1792711632.118,
+     "at": "4:27:12.1 PM PDT"
+    },
+    "acknowledged": false,
+    "tmp_files": 4,
+    "companion": false,
+    "growth": [],
+    "kill_at": {
+     "s": 1792711685.118,
+     "at": "4:28:05.1 PM PDT"
+    },
+    "floor": null,
+    "writing_seen": null,
+    "kill_rule": "the base reserve",
+    "risk": false
+   },
+   {
+    "t": {
+     "s": 1792711682.118,
+     "at": "4:28:02.1 PM PDT"
+    },
+    "acknowledged": false,
+    "tmp_files": 5,
+    "companion": false,
+    "growth": [],
+    "kill_at": {
+     "s": 1792711685.118,
+     "at": "4:28:05.1 PM PDT"
+    },
+    "floor": null,
+    "writing_seen": null,
+    "kill_rule": "the base reserve",
+    "risk": false
+   },
+   {
+    "t": {
+     "s": 1792711685.118,
+     "at": "4:28:05.1 PM PDT"
+    },
+    "acknowledged": false,
+    "tmp_files": 5,
+    "companion": false,
+    "growth": [],
+    "kill_at": {
+     "s": 1792711685.118,
+     "at": "4:28:05.1 PM PDT"
+    },
+    "floor": null,
+    "writing_seen": null,
+    "kill_rule": "the base reserve",
+    "risk": false
+   }
+  ]
+ },
+ "d_writing_active_pairs": {
+  "before_and_after_the_acknowledgement": true,
+  "acknowledged_without_files": false,
+  "files_without_acknowledgement": false,
+  "the_same_reading_twice": false,
+  "no_earlier_reading": false
+ },
+ "e_fixed": {
+  "b_after_growth": {
+   "request": null,
+   "acknowledgement": null,
+   "file_time_shift_s": null,
+   "acknowledged_by": "control_done_1792711627.json",
+   "acknowledged_name": {
+    "s": 1792711627.0,
+    "at": "4:27:07.0 PM PDT"
+   },
+   "acknowledged_latest": {
+    "s": 1792711628.0,
+    "at": "4:27:08.0 PM PDT"
+   },
+   "base": {
+    "s": 1792711685.118,
+    "at": "4:28:05.1 PM PDT"
+   },
+   "floor": {
+    "s": 1792711712.0,
+    "at": "4:28:32.0 PM PDT"
+   },
+   "writing_seen": {
+    "s": 1792711627.118,
+    "at": "4:27:07.1 PM PDT"
+   },
+   "writing_growth": [
+    "the temporary snapshot folder .tmp_ckpt_step_496325_62cdd7435e194bc39ccf10f88ac68120 appeared"
+   ],
+   "kill": {
+    "s": 1792711712.0,
+    "at": "4:28:32.0 PM PDT"
+   },
+   "kill_rule": "the acknowledged-save floor",
+   "cap": {
+    "s": 1792712029.13,
+    "at": "4:33:49.1 PM PDT"
+   },
+   "risk": null
+  },
+  "c1_after_cap_growth": {
+   "request": null,
+   "acknowledgement": null,
+   "file_time_shift_s": null,
+   "acknowledged_by": "control_done_1792711971.json",
+   "acknowledged_name": {
+    "s": 1792711971.0,
+    "at": "4:32:51.0 PM PDT"
+   },
+   "acknowledged_latest": {
+    "s": 1792711972.0,
+    "at": "4:32:52.0 PM PDT"
+   },
+   "base": {
+    "s": 1792712029.13,
+    "at": "4:33:49.1 PM PDT"
+   },
+   "floor": {
+    "s": 1792712056.0,
+    "at": "4:34:16.0 PM PDT"
+   },
+   "writing_seen": {
+    "s": 1792711971.13,
+    "at": "4:32:51.1 PM PDT"
+   },
+   "writing_growth": [
+    "the temporary snapshot folder .tmp_ckpt_step_496325_62cdd7435e194bc39ccf10f88ac68120 appeared"
+   ],
+   "kill": {
+    "s": 1792712029.13,
+    "at": "4:33:49.1 PM PDT"
+   },
+   "kill_rule": "the hard cap",
+   "cap": {
+    "s": 1792712029.13,
+    "at": "4:33:49.1 PM PDT"
+   },
+   "risk": {
+    "text": "preservation risk: the trainer acknowledged the stop request at Oct 22, 2026, 04:32:52 PM PDT at the latest (its consumed control file's whole-second name Oct 22, 2026, 04:32:51 PM PDT, plus 1 s), 662.9 s after the trainer's start; the measured complete save plus the 10 s (84 s) would end at Oct 22, 2026, 04:34:16 PM PDT, 26.9 s after the hard trainer cap Oct 22, 2026, 04:33:49 PM PDT (720 s after the trainer's start), which no file growth moves. The trainer's process tree is ended at that cap whatever the snapshot has written (the snapshot's files were seen growing at this reading), so this run's endpoint may not be saved: saving is not guaranteed. The complete starting endpoint, the preserved complete 496,250 of S4R_measure_496000 (D:/UEMA_Research/external/D/UEMA_preserved/s4r_measure_S4R_measure_496000), stays preserved unchanged: this owner never writes it, and its checkpoint files, episode companion and latent body file are re-hashed at the arm's end (start_unchanged).",
+    "acknowledged_s": 1792711971.0,
+    "ack_latest_s": 1792711972.0,
+    "floor_s": 1792712056.0,
+    "cap_s": 1792712029.1301365,
+    "shortfall_s": 26.869863510131836,
+    "writing_seen": true,
+    "start": "the preserved complete 496,250 of S4R_measure_496000",
+    "start_preserved": "D:/UEMA_Research/external/D/UEMA_preserved/s4r_measure_S4R_measure_496000",
+    "saving_guaranteed": false
+   }
+  },
+  "a_first_stop_30_s_earlier": {
+   "request": null,
+   "acknowledgement": null,
+   "file_time_shift_s": null,
+   "acknowledged_by": "control_done_1792711577.json",
+   "acknowledged_name": {
+    "s": 1792711577.0,
+    "at": "4:26:17.0 PM PDT"
+   },
+   "acknowledged_latest": {
+    "s": 1792711578.0,
+    "at": "4:26:18.0 PM PDT"
+   },
+   "base": {
+    "s": 1792711655.118,
+    "at": "4:27:35.1 PM PDT"
+   },
+   "floor": {
+    "s": 1792711662.0,
+    "at": "4:27:42.0 PM PDT"
+   },
+   "writing_seen": {
+    "s": 1792711582.118,
+    "at": "4:26:22.1 PM PDT"
+   },
+   "writing_growth": [
+    "the temporary snapshot folder .tmp_ckpt_step_496325_62cdd7435e194bc39ccf10f88ac68120 appeared"
+   ],
+   "kill": {
+    "s": 1792711685.118,
+    "at": "4:28:05.1 PM PDT"
+   },
+   "kill_rule": "the previous look's kill time (never decreasing)",
+   "cap": {
+    "s": 1792712029.13,
+    "at": "4:33:49.1 PM PDT"
+   },
+   "risk": null
+  }
+ },
+ "h_closing_wait": {
+  "h1_with_saved_schedule": {
+   "entry": {
+    "s": 1792711692.118,
+    "at": "4:28:12.1 PM PDT"
+   },
+   "saved_schedule": {
+    "request": null,
+    "acknowledgement": null,
+    "file_time_shift_s": null,
+    "acknowledged_by": "control_done_1792711627.json",
+    "acknowledged_name": {
+     "s": 1792711627.0,
+     "at": "4:27:07.0 PM PDT"
+    },
+    "acknowledged_latest": {
+     "s": 1792711628.0,
+     "at": "4:27:08.0 PM PDT"
+    },
+    "base": {
+     "s": 1792711685.118,
+     "at": "4:28:05.1 PM PDT"
+    },
+    "floor": {
+     "s": 1792711712.0,
+     "at": "4:28:32.0 PM PDT"
+    },
+    "writing_seen": {
+     "s": 1792711627.118,
+     "at": "4:27:07.1 PM PDT"
+    },
+    "writing_growth": [
+     "the temporary snapshot folder .tmp_ckpt_step_496325_62cdd7435e194bc39ccf10f88ac68120 appeared"
+    ],
+    "kill": {
+     "s": 1792711712.0,
+     "at": "4:28:32.0 PM PDT"
+    },
+    "kill_rule": "the acknowledged-save floor",
+    "cap": {
+     "s": 1792712029.13,
+     "at": "4:33:49.1 PM PDT"
+    },
+    "risk": null
+   },
+   "kill": {
+    "s": 1792711712.0,
+    "at": "4:28:32.0 PM PDT"
+   },
+   "kill_after_ack_s": 84.882,
+   "steps": [
+    {
+     "t": {
+      "s": 1792711692.118,
+      "at": "4:28:12.1 PM PDT"
+     },
+     "action": "wait",
+     "kill_at": {
+      "s": 1792711712.0,
+      "at": "4:28:32.0 PM PDT"
+     },
+     "writing_seen": {
+      "s": 1792711627.118,
+      "at": "4:27:07.1 PM PDT"
+     },
+     "floor": {
+      "s": 1792711712.0,
+      "at": "4:28:32.0 PM PDT"
+     },
+     "sleep_s": 1.0
+    },
+    {
+     "t": {
+      "s": 1792711693.118,
+      "at": "4:28:13.1 PM PDT"
+     },
+     "action": "wait",
+     "kill_at": {
+      "s": 1792711712.0,
+      "at": "4:28:32.0 PM PDT"
+     },
+     "writing_seen": {
+      "s": 1792711627.118,
+      "at": "4:27:07.1 PM PDT"
+     },
+     "floor": {
+      "s": 1792711712.0,
+      "at": "4:28:32.0 PM PDT"
+     },
+     "sleep_s": 1.0
+    },
+    {
+     "t": {
+      "s": 1792711694.118,
+      "at": "4:28:14.1 PM PDT"
+     },
+     "action": "wait",
+     "kill_at": {
+      "s": 1792711712.0,
+      "at": "4:28:32.0 PM PDT"
+     },
+     "writing_seen": {
+      "s": 1792711627.118,
+      "at": "4:27:07.1 PM PDT"
+     },
+     "floor": {
+      "s": 1792711712.0,
+      "at": "4:28:32.0 PM PDT"
+     },
+     "sleep_s": 1.0
+    },
+    {
+     "t": {
+      "s": 1792711695.118,
+      "at": "4:28:15.1 PM PDT"
+     },
+     "action": "wait",
+     "kill_at": {
+      "s": 1792711712.0,
+      "at": "4:28:32.0 PM PDT"
+     },
+     "writing_seen": {
+      "s": 1792711627.118,
+      "at": "4:27:07.1 PM PDT"
+     },
+     "floor": {
+      "s": 1792711712.0,
+      "at": "4:28:32.0 PM PDT"
+     },
+     "sleep_s": 1.0
+    },
+    {
+     "t": {
+      "s": 1792711696.118,
+      "at": "4:28:16.1 PM PDT"
+     },
+     "action": "wait",
+     "kill_at": {
+      "s": 1792711712.0,
+      "at": "4:28:32.0 PM PDT"
+     },
+     "writing_seen": {
+      "s": 1792711627.118,
+      "at": "4:27:07.1 PM PDT"
+     },
+     "floor": {
+      "s": 1792711712.0,
+      "at": "4:28:32.0 PM PDT"
+     },
+     "sleep_s": 1.0
+    },
+    {
+     "t": {
+      "s": 1792711697.118,
+      "at": "4:28:17.1 PM PDT"
+     },
+     "action": "wait",
+     "kill_at": {
+      "s": 1792711712.0,
+      "at": "4:28:32.0 PM PDT"
+     },
+     "writing_seen": {
+      "s": 1792711627.118,
+      "at": "4:27:07.1 PM PDT"
+     },
+     "floor": {
+      "s": 1792711712.0,
+      "at": "4:28:32.0 PM PDT"
+     },
+     "sleep_s": 1.0
+    },
+    {
+     "t": {
+      "s": 1792711698.118,
+      "at": "4:28:18.1 PM PDT"
+     },
+     "action": "wait",
+     "kill_at": {
+      "s": 1792711712.0,
+      "at": "4:28:32.0 PM PDT"
+     },
+     "writing_seen": {
+      "s": 1792711627.118,
+      "at": "4:27:07.1 PM PDT"
+     },
+     "floor": {
+      "s": 1792711712.0,
+      "at": "4:28:32.0 PM PDT"
+     },
+     "sleep_s": 1.0
+    },
+    {
+     "t": {
+      "s": 1792711699.118,
+      "at": "4:28:19.1 PM PDT"
+     },
+     "action": "wait",
+     "kill_at": {
+      "s": 1792711712.0,
+      "at": "4:28:32.0 PM PDT"
+     },
+     "writing_seen": {
+      "s": 1792711627.118,
+      "at": "4:27:07.1 PM PDT"
+     },
+     "floor": {
+      "s": 1792711712.0,
+      "at": "4:28:32.0 PM PDT"
+     },
+     "sleep_s": 1.0
+    },
+    {
+     "t": {
+      "s": 1792711700.118,
+      "at": "4:28:20.1 PM PDT"
+     },
+     "action": "wait",
+     "kill_at": {
+      "s": 1792711712.0,
+      "at": "4:28:32.0 PM PDT"
+     },
+     "writing_seen": {
+      "s": 1792711627.118,
+      "at": "4:27:07.1 PM PDT"
+     },
+     "floor": {
+      "s": 1792711712.0,
+      "at": "4:28:32.0 PM PDT"
+     },
+     "sleep_s": 1.0
+    },
+    {
+     "t": {
+      "s": 1792711701.118,
+      "at": "4:28:21.1 PM PDT"
+     },
+     "action": "wait",
+     "kill_at": {
+      "s": 1792711712.0,
+      "at": "4:28:32.0 PM PDT"
+     },
+     "writing_seen": {
+      "s": 1792711627.118,
+      "at": "4:27:07.1 PM PDT"
+     },
+     "floor": {
+      "s": 1792711712.0,
+      "at": "4:28:32.0 PM PDT"
+     },
+     "sleep_s": 1.0
+    },
+    {
+     "t": {
+      "s": 1792711702.118,
+      "at": "4:28:22.1 PM PDT"
+     },
+     "action": "wait",
+     "kill_at": {
+      "s": 1792711712.0,
+      "at": "4:28:32.0 PM PDT"
+     },
+     "writing_seen": {
+      "s": 1792711627.118,
+      "at": "4:27:07.1 PM PDT"
+     },
+     "floor": {
+      "s": 1792711712.0,
+      "at": "4:28:32.0 PM PDT"
+     },
+     "sleep_s": 1.0
+    },
+    {
+     "t": {
+      "s": 1792711703.118,
+      "at": "4:28:23.1 PM PDT"
+     },
+     "action": "wait",
+     "kill_at": {
+      "s": 1792711712.0,
+      "at": "4:28:32.0 PM PDT"
+     },
+     "writing_seen": {
+      "s": 1792711627.118,
+      "at": "4:27:07.1 PM PDT"
+     },
+     "floor": {
+      "s": 1792711712.0,
+      "at": "4:28:32.0 PM PDT"
+     },
+     "sleep_s": 1.0
+    },
+    {
+     "t": {
+      "s": 1792711704.118,
+      "at": "4:28:24.1 PM PDT"
+     },
+     "action": "wait",
+     "kill_at": {
+      "s": 1792711712.0,
+      "at": "4:28:32.0 PM PDT"
+     },
+     "writing_seen": {
+      "s": 1792711627.118,
+      "at": "4:27:07.1 PM PDT"
+     },
+     "floor": {
+      "s": 1792711712.0,
+      "at": "4:28:32.0 PM PDT"
+     },
+     "sleep_s": 1.0
+    },
+    {
+     "t": {
+      "s": 1792711705.118,
+      "at": "4:28:25.1 PM PDT"
+     },
+     "action": "wait",
+     "kill_at": {
+      "s": 1792711712.0,
+      "at": "4:28:32.0 PM PDT"
+     },
+     "writing_seen": {
+      "s": 1792711627.118,
+      "at": "4:27:07.1 PM PDT"
+     },
+     "floor": {
+      "s": 1792711712.0,
+      "at": "4:28:32.0 PM PDT"
+     },
+     "sleep_s": 1.0
+    },
+    {
+     "t": {
+      "s": 1792711706.118,
+      "at": "4:28:26.1 PM PDT"
+     },
+     "action": "wait",
+     "kill_at": {
+      "s": 1792711712.0,
+      "at": "4:28:32.0 PM PDT"
+     },
+     "writing_seen": {
+      "s": 1792711627.118,
+      "at": "4:27:07.1 PM PDT"
+     },
+     "floor": {
+      "s": 1792711712.0,
+      "at": "4:28:32.0 PM PDT"
+     },
+     "sleep_s": 1.0
+    },
+    {
+     "t": {
+      "s": 1792711707.118,
+      "at": "4:28:27.1 PM PDT"
+     },
+     "action": "wait",
+     "kill_at": {
+      "s": 1792711712.0,
+      "at": "4:28:32.0 PM PDT"
+     },
+     "writing_seen": {
+      "s": 1792711627.118,
+      "at": "4:27:07.1 PM PDT"
+     },
+     "floor": {
+      "s": 1792711712.0,
+      "at": "4:28:32.0 PM PDT"
+     },
+     "sleep_s": 1.0
+    },
+    {
+     "t": {
+      "s": 1792711708.118,
+      "at": "4:28:28.1 PM PDT"
+     },
+     "action": "wait",
+     "kill_at": {
+      "s": 1792711712.0,
+      "at": "4:28:32.0 PM PDT"
+     },
+     "writing_seen": {
+      "s": 1792711627.118,
+      "at": "4:27:07.1 PM PDT"
+     },
+     "floor": {
+      "s": 1792711712.0,
+      "at": "4:28:32.0 PM PDT"
+     },
+     "sleep_s": 1.0
+    },
+    {
+     "t": {
+      "s": 1792711709.118,
+      "at": "4:28:29.1 PM PDT"
+     },
+     "action": "wait",
+     "kill_at": {
+      "s": 1792711712.0,
+      "at": "4:28:32.0 PM PDT"
+     },
+     "writing_seen": {
+      "s": 1792711627.118,
+      "at": "4:27:07.1 PM PDT"
+     },
+     "floor": {
+      "s": 1792711712.0,
+      "at": "4:28:32.0 PM PDT"
+     },
+     "sleep_s": 1.0
+    },
+    {
+     "t": {
+      "s": 1792711710.118,
+      "at": "4:28:30.1 PM PDT"
+     },
+     "action": "wait",
+     "kill_at": {
+      "s": 1792711712.0,
+      "at": "4:28:32.0 PM PDT"
+     },
+     "writing_seen": {
+      "s": 1792711627.118,
+      "at": "4:27:07.1 PM PDT"
+     },
+     "floor": {
+      "s": 1792711712.0,
+      "at": "4:28:32.0 PM PDT"
+     },
+     "sleep_s": 1.0
+    },
+    {
+     "t": {
+      "s": 1792711711.118,
+      "at": "4:28:31.1 PM PDT"
+     },
+     "action": "wait",
+     "kill_at": {
+      "s": 1792711712.0,
+      "at": "4:28:32.0 PM PDT"
+     },
+     "writing_seen": {
+      "s": 1792711627.118,
+      "at": "4:27:07.1 PM PDT"
+     },
+     "floor": {
+      "s": 1792711712.0,
+      "at": "4:28:32.0 PM PDT"
+     },
+     "sleep_s": 0.882
+    },
+    {
+     "t": {
+      "s": 1792711712.0,
+      "at": "4:28:32.0 PM PDT"
+     },
+     "action": "kill",
+     "kill_at": {
+      "s": 1792711712.0,
+      "at": "4:28:32.0 PM PDT"
+     },
+     "writing_seen": {
+      "s": 1792711627.118,
+      "at": "4:27:07.1 PM PDT"
+     },
+     "floor": {
+      "s": 1792711712.0,
+      "at": "4:28:32.0 PM PDT"
+     },
+     "sleep_s": 0.0
+    }
+   ]
+  },
+  "h2_second_look": {
+   "entry": {
+    "s": 1792711693.118,
+    "at": "4:28:13.1 PM PDT"
+   },
+   "kill": {
+    "s": 1792711712.0,
+    "at": "4:28:32.0 PM PDT"
+   },
+   "kill_after_ack_s": 84.882,
+   "c2489775_kill": {
+    "s": 1792711693.118,
+    "at": "4:28:13.1 PM PDT"
+   },
+   "c2489775_kill_after_ack_s": 66.0,
+   "steps": [
+    {
+     "t": {
+      "s": 1792711693.118,
+      "at": "4:28:13.1 PM PDT"
+     },
+     "action": "second look",
+     "kill_at": {
+      "s": 1792711685.118,
+      "at": "4:28:05.1 PM PDT"
+     },
+     "writing_seen": null,
+     "floor": null,
+     "sleep_s": 5.0
+    },
+    {
+     "t": {
+      "s": 1792711698.118,
+      "at": "4:28:18.1 PM PDT"
+     },
+     "action": "wait",
+     "kill_at": {
+      "s": 1792711712.0,
+      "at": "4:28:32.0 PM PDT"
+     },
+     "writing_seen": {
+      "s": 1792711698.118,
+      "at": "4:28:18.1 PM PDT"
+     },
+     "floor": {
+      "s": 1792711712.0,
+      "at": "4:28:32.0 PM PDT"
+     },
+     "sleep_s": 1.0
+    },
+    {
+     "t": {
+      "s": 1792711699.118,
+      "at": "4:28:19.1 PM PDT"
+     },
+     "action": "wait",
+     "kill_at": {
+      "s": 1792711712.0,
+      "at": "4:28:32.0 PM PDT"
+     },
+     "writing_seen": {
+      "s": 1792711698.118,
+      "at": "4:28:18.1 PM PDT"
+     },
+     "floor": {
+      "s": 1792711712.0,
+      "at": "4:28:32.0 PM PDT"
+     },
+     "sleep_s": 1.0
+    },
+    {
+     "t": {
+      "s": 1792711700.118,
+      "at": "4:28:20.1 PM PDT"
+     },
+     "action": "wait",
+     "kill_at": {
+      "s": 1792711712.0,
+      "at": "4:28:32.0 PM PDT"
+     },
+     "writing_seen": {
+      "s": 1792711698.118,
+      "at": "4:28:18.1 PM PDT"
+     },
+     "floor": {
+      "s": 1792711712.0,
+      "at": "4:28:32.0 PM PDT"
+     },
+     "sleep_s": 1.0
+    },
+    {
+     "t": {
+      "s": 1792711701.118,
+      "at": "4:28:21.1 PM PDT"
+     },
+     "action": "wait",
+     "kill_at": {
+      "s": 1792711712.0,
+      "at": "4:28:32.0 PM PDT"
+     },
+     "writing_seen": {
+      "s": 1792711698.118,
+      "at": "4:28:18.1 PM PDT"
+     },
+     "floor": {
+      "s": 1792711712.0,
+      "at": "4:28:32.0 PM PDT"
+     },
+     "sleep_s": 1.0
+    },
+    {
+     "t": {
+      "s": 1792711702.118,
+      "at": "4:28:22.1 PM PDT"
+     },
+     "action": "wait",
+     "kill_at": {
+      "s": 1792711712.0,
+      "at": "4:28:32.0 PM PDT"
+     },
+     "writing_seen": {
+      "s": 1792711698.118,
+      "at": "4:28:18.1 PM PDT"
+     },
+     "floor": {
+      "s": 1792711712.0,
+      "at": "4:28:32.0 PM PDT"
+     },
+     "sleep_s": 1.0
+    },
+    {
+     "t": {
+      "s": 1792711703.118,
+      "at": "4:28:23.1 PM PDT"
+     },
+     "action": "wait",
+     "kill_at": {
+      "s": 1792711712.0,
+      "at": "4:28:32.0 PM PDT"
+     },
+     "writing_seen": {
+      "s": 1792711698.118,
+      "at": "4:28:18.1 PM PDT"
+     },
+     "floor": {
+      "s": 1792711712.0,
+      "at": "4:28:32.0 PM PDT"
+     },
+     "sleep_s": 1.0
+    },
+    {
+     "t": {
+      "s": 1792711704.118,
+      "at": "4:28:24.1 PM PDT"
+     },
+     "action": "wait",
+     "kill_at": {
+      "s": 1792711712.0,
+      "at": "4:28:32.0 PM PDT"
+     },
+     "writing_seen": {
+      "s": 1792711698.118,
+      "at": "4:28:18.1 PM PDT"
+     },
+     "floor": {
+      "s": 1792711712.0,
+      "at": "4:28:32.0 PM PDT"
+     },
+     "sleep_s": 1.0
+    },
+    {
+     "t": {
+      "s": 1792711705.118,
+      "at": "4:28:25.1 PM PDT"
+     },
+     "action": "wait",
+     "kill_at": {
+      "s": 1792711712.0,
+      "at": "4:28:32.0 PM PDT"
+     },
+     "writing_seen": {
+      "s": 1792711698.118,
+      "at": "4:28:18.1 PM PDT"
+     },
+     "floor": {
+      "s": 1792711712.0,
+      "at": "4:28:32.0 PM PDT"
+     },
+     "sleep_s": 1.0
+    },
+    {
+     "t": {
+      "s": 1792711706.118,
+      "at": "4:28:26.1 PM PDT"
+     },
+     "action": "wait",
+     "kill_at": {
+      "s": 1792711712.0,
+      "at": "4:28:32.0 PM PDT"
+     },
+     "writing_seen": {
+      "s": 1792711698.118,
+      "at": "4:28:18.1 PM PDT"
+     },
+     "floor": {
+      "s": 1792711712.0,
+      "at": "4:28:32.0 PM PDT"
+     },
+     "sleep_s": 1.0
+    },
+    {
+     "t": {
+      "s": 1792711707.118,
+      "at": "4:28:27.1 PM PDT"
+     },
+     "action": "wait",
+     "kill_at": {
+      "s": 1792711712.0,
+      "at": "4:28:32.0 PM PDT"
+     },
+     "writing_seen": {
+      "s": 1792711698.118,
+      "at": "4:28:18.1 PM PDT"
+     },
+     "floor": {
+      "s": 1792711712.0,
+      "at": "4:28:32.0 PM PDT"
+     },
+     "sleep_s": 1.0
+    },
+    {
+     "t": {
+      "s": 1792711708.118,
+      "at": "4:28:28.1 PM PDT"
+     },
+     "action": "wait",
+     "kill_at": {
+      "s": 1792711712.0,
+      "at": "4:28:32.0 PM PDT"
+     },
+     "writing_seen": {
+      "s": 1792711698.118,
+      "at": "4:28:18.1 PM PDT"
+     },
+     "floor": {
+      "s": 1792711712.0,
+      "at": "4:28:32.0 PM PDT"
+     },
+     "sleep_s": 1.0
+    },
+    {
+     "t": {
+      "s": 1792711709.118,
+      "at": "4:28:29.1 PM PDT"
+     },
+     "action": "wait",
+     "kill_at": {
+      "s": 1792711712.0,
+      "at": "4:28:32.0 PM PDT"
+     },
+     "writing_seen": {
+      "s": 1792711698.118,
+      "at": "4:28:18.1 PM PDT"
+     },
+     "floor": {
+      "s": 1792711712.0,
+      "at": "4:28:32.0 PM PDT"
+     },
+     "sleep_s": 1.0
+    },
+    {
+     "t": {
+      "s": 1792711710.118,
+      "at": "4:28:30.1 PM PDT"
+     },
+     "action": "wait",
+     "kill_at": {
+      "s": 1792711712.0,
+      "at": "4:28:32.0 PM PDT"
+     },
+     "writing_seen": {
+      "s": 1792711698.118,
+      "at": "4:28:18.1 PM PDT"
+     },
+     "floor": {
+      "s": 1792711712.0,
+      "at": "4:28:32.0 PM PDT"
+     },
+     "sleep_s": 1.0
+    },
+    {
+     "t": {
+      "s": 1792711711.118,
+      "at": "4:28:31.1 PM PDT"
+     },
+     "action": "wait",
+     "kill_at": {
+      "s": 1792711712.0,
+      "at": "4:28:32.0 PM PDT"
+     },
+     "writing_seen": {
+      "s": 1792711698.118,
+      "at": "4:28:18.1 PM PDT"
+     },
+     "floor": {
+      "s": 1792711712.0,
+      "at": "4:28:32.0 PM PDT"
+     },
+     "sleep_s": 0.882
+    },
+    {
+     "t": {
+      "s": 1792711712.0,
+      "at": "4:28:32.0 PM PDT"
+     },
+     "action": "kill",
+     "kill_at": {
+      "s": 1792711712.0,
+      "at": "4:28:32.0 PM PDT"
+     },
+     "writing_seen": {
+      "s": 1792711698.118,
+      "at": "4:28:18.1 PM PDT"
+     },
+     "floor": {
+      "s": 1792711712.0,
+      "at": "4:28:32.0 PM PDT"
+     },
+     "sleep_s": 0.0
+    }
+   ]
+  },
+  "h4_recorded_not_judged": {
+   "entry": {
+    "s": 1792711687.118,
+    "at": "4:28:07.1 PM PDT"
+   },
+   "kill": {
+    "s": 1792711692.118,
+    "at": "4:28:12.1 PM PDT"
+   },
+   "kill_after_ack_s": 65.0,
+   "actions": [
+    "second look",
+    "kill"
+   ],
+   "note": "no saved schedule or reading, entered while the rebuilt readings show no file change between this look and the second look (the companion's temporary file appears in them only at its last write); the saved a1 data shows the companion growing from its folder's time to its last write, so a live closing wait reads growth there; the owner passes its saved schedules and reading in all three callers"
+  }
+ },
+ "i_guard": {
+  "request_due": {
+   "s": 1792711851.13,
+   "at": "4:30:51.1 PM PDT"
+  },
+  "request_pass": {
+   "s": 1792711851.13,
+   "at": "4:30:51.1 PM PDT"
+  },
+  "passes_before_request": 111,
+  "e5dff718_request_pass": {
+   "s": 1792711853.552,
+   "at": "4:30:53.5 PM PDT"
+  },
+  "e5dff718_request_late_s": 2.422,
+  "acknowledgement": {
+   "s": 1792711971.13,
+   "at": "4:32:51.1 PM PDT"
+  },
+  "kill": {
+   "s": 1792712029.13,
+   "at": "4:33:49.1 PM PDT"
+  },
+  "unaligned_kill_pass": {
+   "s": 1792712031.13,
+   "at": "4:33:51.1 PM PDT"
+  },
+  "unaligned_kill_late_s": 2.0,
+  "risk": "preservation risk: the trainer acknowledged the stop request at Oct 22, 2026, 04:32:52 PM PDT at the latest (its consumed control file's whole-second name Oct 22, 2026, 04:32:51 PM PDT, plus 1 s), 662.9 s after the trainer's start; the measured complete save plus the 10 s (84 s) would end at Oct 22, 2026, 04:34:16 PM PDT, 26.9 s after the hard trainer cap Oct 22, 2026, 04:33:49 PM PDT (720 s after the trainer's start), which no file growth moves. The trainer's process tree is ended at that cap whatever the snapshot has written (the snapshot's files were seen growing at this reading), so this run's endpoint may not be saved: saving is not guaranteed. The complete starting endpoint, the preserved complete 496,250 of S4R_measure_496000 (D:/UEMA_Research/external/D/UEMA_preserved/s4r_measure_S4R_measure_496000), stays preserved unchanged: this owner never writes it, and its checkpoint files, episode companion and latent body file are re-hashed at the arm's end (start_unchanged).",
+  "b_with_owner_kill": {
+   "kill": {
+    "s": 1792711712.0,
+    "at": "4:28:32.0 PM PDT"
+   }
+  }
+ },
+ "j_monitor_wake": {
+  "request_moment": {
+   "s": 1792711851.13,
+   "at": "4:30:51.1 PM PDT"
+  },
+  "request_look": {
+   "s": 1792711851.13,
+   "at": "4:30:51.1 PM PDT"
+  },
+  "looks": 109,
+  "c2489775_request_look": {
+   "s": 1792711854.13,
+   "at": "4:30:54.1 PM PDT"
+  },
+  "c2489775_late_s": 3.0
+ },
+ "k_no_ack": {
+  "text": "preservation risk: no acknowledgement before the kill at Oct 22, 2026, 04:28:05 PM PDT (178.0 s after the first stop request at Oct 22, 2026, 04:25:07 PM PDT; the kill time set by the base reserve; the tree ended by the owner); saving did not start for the stop request, which the trainer never consumed (the last reading held the temporary snapshot folder .tmp_ckpt_step_496325_62cdd7435e194bc39ccf10f88ac68120 with 5 files (700764837 bytes), written for a reason other than this stop request); the complete starting endpoint, the preserved complete 496,250 of S4R_measure_496000 (D:/UEMA_Research/external/D/UEMA_preserved/s4r_measure_S4R_measure_496000), stays preserved unchanged; saving is not guaranteed."
+ },
+ "l_stale_first_look": {
+  "guard_first_pass": {
+   "s": 1792711508.552,
+   "at": "4:25:08.5 PM PDT"
+  },
+  "guard_kill": {
+   "s": 1792711712.0,
+   "at": "4:28:32.0 PM PDT"
+  },
+  "l1_with_guard_schedule": {
+   "entry": {
+    "s": 1792711692.118,
+    "at": "4:28:12.1 PM PDT"
+   },
+   "kill": {
+    "s": 1792711712.0,
+    "at": "4:28:32.0 PM PDT"
+   },
+   "kill_after_ack_s": 84.882,
+   "steps": [
+    {
+     "t": {
+      "s": 1792711692.118,
+      "at": "4:28:12.1 PM PDT"
+     },
+     "action": "wait",
+     "held": {
+      "s": 1792711712.0,
+      "at": "4:28:32.0 PM PDT"
+     },
+     "kill_at": {
+      "s": 1792711712.0,
+      "at": "4:28:32.0 PM PDT"
+     },
+     "writing_seen": null,
+     "writing_growth": null,
+     "floor": null
+    },
+    {
+     "t": {
+      "s": 1792711697.118,
+      "at": "4:28:17.1 PM PDT"
+     },
+     "action": "wait",
+     "held": {
+      "s": 1792711712.0,
+      "at": "4:28:32.0 PM PDT"
+     },
+     "kill_at": {
+      "s": 1792711712.0,
+      "at": "4:28:32.0 PM PDT"
+     },
+     "writing_seen": {
+      "s": 1792711697.118,
+      "at": "4:28:17.1 PM PDT"
+     },
+     "writing_growth": [
+      "the companion's temporary file ckpt_step_496325_c970eb06f4294a8083411c45557c3921.pt.gz.tmp appeared"
+     ],
+     "floor": {
+      "s": 1792711712.0,
+      "at": "4:28:32.0 PM PDT"
+     }
+    },
+    {
+     "t": {
+      "s": 1792711702.118,
+      "at": "4:28:22.1 PM PDT"
+     },
+     "action": "wait",
+     "held": {
+      "s": 1792711712.0,
+      "at": "4:28:32.0 PM PDT"
+     },
+     "kill_at": {
+      "s": 1792711712.0,
+      "at": "4:28:32.0 PM PDT"
+     },
+     "writing_seen": {
+      "s": 1792711697.118,
+      "at": "4:28:17.1 PM PDT"
+     },
+     "writing_growth": [
+      "the companion's temporary file ckpt_step_496325_c970eb06f4294a8083411c45557c3921.pt.gz.tmp appeared"
+     ],
+     "floor": {
+      "s": 1792711712.0,
+      "at": "4:28:32.0 PM PDT"
+     }
+    },
+    {
+     "t": {
+      "s": 1792711707.118,
+      "at": "4:28:27.1 PM PDT"
+     },
+     "action": "wait",
+     "held": {
+      "s": 1792711712.0,
+      "at": "4:28:32.0 PM PDT"
+     },
+     "kill_at": {
+      "s": 1792711712.0,
+      "at": "4:28:32.0 PM PDT"
+     },
+     "writing_seen": {
+      "s": 1792711697.118,
+      "at": "4:28:17.1 PM PDT"
+     },
+     "writing_growth": [
+      "the companion's temporary file ckpt_step_496325_c970eb06f4294a8083411c45557c3921.pt.gz.tmp appeared"
+     ],
+     "floor": {
+      "s": 1792711712.0,
+      "at": "4:28:32.0 PM PDT"
+     }
+    },
+    {
+     "t": {
+      "s": 1792711712.0,
+      "at": "4:28:32.0 PM PDT"
+     },
+     "action": "kill",
+     "held": {
+      "s": 1792711712.0,
+      "at": "4:28:32.0 PM PDT"
+     },
+     "kill_at": {
+      "s": 1792711712.0,
+      "at": "4:28:32.0 PM PDT"
+     },
+     "writing_seen": {
+      "s": 1792711697.118,
+      "at": "4:28:17.1 PM PDT"
+     },
+     "writing_growth": [
+      "the companion's temporary file ckpt_step_496325_c970eb06f4294a8083411c45557c3921.pt.gz.tmp appeared"
+     ],
+     "floor": {
+      "s": 1792711712.0,
+      "at": "4:28:32.0 PM PDT"
+     }
+    }
+   ]
+  },
+  "l2_second_look": {
+   "entry": {
+    "s": 1792711693.118,
+    "at": "4:28:13.1 PM PDT"
+   },
+   "kill": {
+    "s": 1792711712.0,
+    "at": "4:28:32.0 PM PDT"
+   },
+   "kill_after_ack_s": 84.882,
+   "e5dff718_kill": {
+    "s": 1792711693.118,
+    "at": "4:28:13.1 PM PDT"
+   },
+   "steps": [
+    {
+     "t": {
+      "s": 1792711693.118,
+      "at": "4:28:13.1 PM PDT"
+     },
+     "action": "second look",
+     "held": null,
+     "kill_at": {
+      "s": 1792711685.118,
+      "at": "4:28:05.1 PM PDT"
+     },
+     "writing_seen": null,
+     "writing_growth": null,
+     "floor": null
+    },
+    {
+     "t": {
+      "s": 1792711698.118,
+      "at": "4:28:18.1 PM PDT"
+     },
+     "action": "wait",
+     "held": null,
+     "kill_at": {
+      "s": 1792711712.0,
+      "at": "4:28:32.0 PM PDT"
+     },
+     "writing_seen": {
+      "s": 1792711698.118,
+      "at": "4:28:18.1 PM PDT"
+     },
+     "writing_growth": [
+      "the companion's temporary file ckpt_step_496325_c970eb06f4294a8083411c45557c3921.pt.gz.tmp appeared"
+     ],
+     "floor": {
+      "s": 1792711712.0,
+      "at": "4:28:32.0 PM PDT"
+     }
+    },
+    {
+     "t": {
+      "s": 1792711703.118,
+      "at": "4:28:23.1 PM PDT"
+     },
+     "action": "wait",
+     "held": null,
+     "kill_at": {
+      "s": 1792711712.0,
+      "at": "4:28:32.0 PM PDT"
+     },
+     "writing_seen": {
+      "s": 1792711698.118,
+      "at": "4:28:18.1 PM PDT"
+     },
+     "writing_growth": [
+      "the companion's temporary file ckpt_step_496325_c970eb06f4294a8083411c45557c3921.pt.gz.tmp appeared"
+     ],
+     "floor": {
+      "s": 1792711712.0,
+      "at": "4:28:32.0 PM PDT"
+     }
+    },
+    {
+     "t": {
+      "s": 1792711708.118,
+      "at": "4:28:28.1 PM PDT"
+     },
+     "action": "wait",
+     "held": null,
+     "kill_at": {
+      "s": 1792711712.0,
+      "at": "4:28:32.0 PM PDT"
+     },
+     "writing_seen": {
+      "s": 1792711698.118,
+      "at": "4:28:18.1 PM PDT"
+     },
+     "writing_growth": [
+      "the companion's temporary file ckpt_step_496325_c970eb06f4294a8083411c45557c3921.pt.gz.tmp appeared"
+     ],
+     "floor": {
+      "s": 1792711712.0,
+      "at": "4:28:32.0 PM PDT"
+     }
+    },
+    {
+     "t": {
+      "s": 1792711712.0,
+      "at": "4:28:32.0 PM PDT"
+     },
+     "action": "kill",
+     "held": null,
+     "kill_at": {
+      "s": 1792711712.0,
+      "at": "4:28:32.0 PM PDT"
+     },
+     "writing_seen": {
+      "s": 1792711698.118,
+      "at": "4:28:18.1 PM PDT"
+     },
+     "writing_growth": [
+      "the companion's temporary file ckpt_step_496325_c970eb06f4294a8083411c45557c3921.pt.gz.tmp appeared"
+     ],
+     "floor": {
+      "s": 1792711712.0,
+      "at": "4:28:32.0 PM PDT"
+     }
+    }
+   ]
+  },
+  "l3_recorded_not_judged": {
+   "entry": {
+    "s": 1792711692.118,
+    "at": "4:28:12.1 PM PDT"
+   },
+   "kill": {
+    "s": 1792711712.0,
+    "at": "4:28:32.0 PM PDT"
+   },
+   "kill_after_ack_s": 84.882,
+   "actions": [
+    "second look",
+    "wait",
+    "wait",
+    "wait",
+    "kill"
+   ],
+   "note": "no guard schedule; the rebuilt readings' quiet window (see h4)"
+  }
+ },
+ "m_after_complete": {
+  "constructed_complete": "ckpt_step_496325",
+  "complete_at": {
+   "s": 1792711701.118,
+   "at": "4:28:21.1 PM PDT"
+  },
+  "entry": {
+   "s": 1792711703.118,
+   "at": "4:28:23.1 PM PDT"
+  },
+  "kill": {
+   "s": 1792711712.0,
+   "at": "4:28:32.0 PM PDT"
+  },
+  "kill_after_ack_s": 84.882,
+  "steps": [
+   {
+    "t": {
+     "s": 1792711703.118,
+     "at": "4:28:23.1 PM PDT"
+    },
+    "action": "wait",
+    "held": null,
+    "kill_at": {
+     "s": 1792711712.0,
+     "at": "4:28:32.0 PM PDT"
+    },
+    "writing_seen": {
+     "s": 1792711703.118,
+     "at": "4:28:23.1 PM PDT"
+    },
+    "writing_growth": [
+     "the complete snapshot ckpt_step_496325 appeared after the acknowledgement"
+    ],
+    "floor": {
+     "s": 1792711712.0,
+     "at": "4:28:32.0 PM PDT"
+    }
+   },
+   {
+    "t": {
+     "s": 1792711708.118,
+     "at": "4:28:28.1 PM PDT"
+    },
+    "action": "wait",
+    "held": null,
+    "kill_at": {
+     "s": 1792711712.0,
+     "at": "4:28:32.0 PM PDT"
+    },
+    "writing_seen": {
+     "s": 1792711703.118,
+     "at": "4:28:23.1 PM PDT"
+    },
+    "writing_growth": [
+     "the complete snapshot ckpt_step_496325 appeared after the acknowledgement"
+    ],
+    "floor": {
+     "s": 1792711712.0,
+     "at": "4:28:32.0 PM PDT"
+    }
+   },
+   {
+    "t": {
+     "s": 1792711712.0,
+     "at": "4:28:32.0 PM PDT"
+    },
+    "action": "kill",
+    "held": null,
+    "kill_at": {
+     "s": 1792711712.0,
+     "at": "4:28:32.0 PM PDT"
+    },
+    "writing_seen": {
+     "s": 1792711703.118,
+     "at": "4:28:23.1 PM PDT"
+    },
+    "writing_growth": [
+     "the complete snapshot ckpt_step_496325 appeared after the acknowledgement"
+    ],
+    "floor": {
+     "s": 1792711712.0,
+     "at": "4:28:32.0 PM PDT"
+    }
+   }
+  ],
+  "note": "the temporary-file marks show no growth here (renamed away), so only the complete snapshot holds the floor"
+ },
+ "f_detail_flush": {
+  "a1": {
+   "model_folder": [
+    "header_37360_1792711371828.json"
+   ],
+   "chunks_counted_here": {
+    "model": [],
+    "b0": [],
+    "b1": [],
+    "b2": [],
+    "b3": [],
+    "b4": [],
+    "b5": [],
+    "b6": [],
+    "b7": []
+   },
+   "plan_captures_counted_here": 7,
+   "verdict": "7 of 7 captures not durable or not verified",
+   "counts": {
+    "captures": 7,
+    "accepted": 7,
+    "durable": 0,
+    "not_durable": 7,
+    "not_verified": 0,
+    "accepted_not_durable": 7,
+    "model_files_read": 0,
+    "world_files_read": 0,
+    "files_with_problems": 0,
+    "partial_files": 0,
+    "unreadable_capture_lines": 0
+   },
+   "captures": [
+    {
+     "step": 496250,
+     "valid_capture": true,
+     "accepted": true,
+     "key": "cap000496250",
+     "state_file": null,
+     "state_missing": [
+      "cap000496250 in no readable lane file"
+     ],
+     "state_missing_count": 1,
+     "model_steps_needed": [
+      496250,
+      496251,
+      496255
+     ],
+     "model_steps_missing": [
+      496250,
+      496251,
+      496255
+     ],
+     "world_records_missing": {
+      "b0": [
+       496250,
+       496254
+      ],
+      "b1": [
+       496250,
+       496254
+      ],
+      "b2": [
+       496250,
+       496254
+      ],
+      "b3": [
+       496250,
+       496254
+      ],
+      "b4": [
+       496250,
+       496254
+      ],
+      "b5": [
+       496250,
+       496254
+      ],
+      "b6": [
+       496250,
+       496254
+      ],
+      "b7": [
+       496250,
+       496254
+      ]
+     },
+     "before_this_run": [
+      {
+       "lane": "world",
+       "body": 0,
+       "step": 496249
+      },
+      {
+       "lane": "world",
+       "body": 1,
+       "step": 496249
+      },
+      {
+       "lane": "world",
+       "body": 2,
+       "step": 496249
+      },
+      {
+       "lane": "world",
+       "body": 3,
+       "step": 496249
+      },
+      {
+       "lane": "world",
+       "body": 4,
+       "step": 496249
+      },
+      {
+       "lane": "world",
+       "body": 5,
+       "step": 496249
+      },
+      {
+       "lane": "world",
+       "body": 6,
+       "step": 496249
+      },
+      {
+       "lane": "world",
+       "body": 7,
+       "step": 496249
+      }
+     ],
+     "verdict": "not durable"
+    },
+    {
+     "step": 496260,
+     "valid_capture": true,
+     "accepted": true,
+     "key": "cap000496260",
+     "state_file": null,
+     "state_missing": [
+      "cap000496260 in no readable lane file"
+     ],
+     "state_missing_count": 1,
+     "model_steps_needed": [
+      496260,
+      496261,
+      496265
+     ],
+     "model_steps_missing": [
+      496260,
+      496261,
+      496265
+     ],
+     "world_records_missing": {
+      "b0": [
+       496259,
+       496260,
+       496264
+      ],
+      "b1": [
+       496259,
+       496260,
+       496264
+      ],
+      "b2": [
+       496259,
+       496260,
+       496264
+      ],
+      "b3": [
+       496259,
+       496260,
+       496264
+      ],
+      "b4": [
+       496259,
+       496260,
+       496264
+      ],
+      "b5": [
+       496259,
+       496260,
+       496264
+      ],
+      "b6": [
+       496259,
+       496260,
+       496264
+      ],
+      "b7": [
+       496259,
+       496260,
+       496264
+      ]
+     },
+     "before_this_run": [],
+     "verdict": "not durable"
+    },
+    {
+     "step": 496270,
+     "valid_capture": true,
+     "accepted": true,
+     "key": "cap000496270",
+     "state_file": null,
+     "state_missing": [
+      "cap000496270 in no readable lane file"
+     ],
+     "state_missing_count": 1,
+     "model_steps_needed": [
+      496270,
+      496271,
+      496275
+     ],
+     "model_steps_missing": [
+      496270,
+      496271,
+      496275
+     ],
+     "world_records_missing": {
+      "b0": [
+       496269,
+       496270,
+       496274
+      ],
+      "b1": [
+       496269,
+       496270,
+       496274
+      ],
+      "b2": [
+       496269,
+       496270,
+       496274
+      ],
+      "b3": [
+       496269,
+       496270,
+       496274
+      ],
+      "b4": [
+       496269,
+       496270,
+       496274
+      ],
+      "b5": [
+       496269,
+       496270,
+       496274
+      ],
+      "b6": [
+       496269,
+       496270,
+       496274
+      ],
+      "b7": [
+       496269,
+       496270,
+       496274
+      ]
+     },
+     "before_this_run": [],
+     "verdict": "not durable"
+    },
+    {
+     "step": 496280,
+     "valid_capture": true,
+     "accepted": true,
+     "key": "cap000496280",
+     "state_file": null,
+     "state_missing": [
+      "cap000496280 in no readable lane file"
+     ],
+     "state_missing_count": 1,
+     "model_steps_needed": [
+      496280,
+      496281,
+      496285
+     ],
+     "model_steps_missing": [
+      496280,
+      496281,
+      496285
+     ],
+     "world_records_missing": {
+      "b0": [
+       496279,
+       496280,
+       496284
+      ],
+      "b1": [
+       496279,
+       496280,
+       496284
+      ],
+      "b2": [
+       496279,
+       496280,
+       496284
+      ],
+      "b3": [
+       496279,
+       496280,
+       496284
+      ],
+      "b4": [
+       496279,
+       496280,
+       496284
+      ],
+      "b5": [
+       496279,
+       496280,
+       496284
+      ],
+      "b6": [
+       496279,
+       496280,
+       496284
+      ],
+      "b7": [
+       496279,
+       496280,
+       496284
+      ]
+     },
+     "before_this_run": [],
+     "verdict": "not durable"
+    },
+    {
+     "step": 496290,
+     "valid_capture": true,
+     "accepted": true,
+     "key": "cap000496290",
+     "state_file": null,
+     "state_missing": [
+      "cap000496290 in no readable lane file"
+     ],
+     "state_missing_count": 1,
+     "model_steps_needed": [
+      496290,
+      496291,
+      496295
+     ],
+     "model_steps_missing": [
+      496290,
+      496291,
+      496295
+     ],
+     "world_records_missing": {
+      "b0": [
+       496289,
+       496290,
+       496294
+      ],
+      "b1": [
+       496289,
+       496290,
+       496294
+      ],
+      "b2": [
+       496289,
+       496290,
+       496294
+      ],
+      "b3": [
+       496289,
+       496290,
+       496294
+      ],
+      "b4": [
+       496289,
+       496290,
+       496294
+      ],
+      "b5": [
+       496289,
+       496290,
+       496294
+      ],
+      "b6": [
+       496289,
+       496290,
+       496294
+      ],
+      "b7": [
+       496289,
+       496290,
+       496294
+      ]
+     },
+     "before_this_run": [],
+     "verdict": "not durable"
+    },
+    {
+     "step": 496300,
+     "valid_capture": true,
+     "accepted": true,
+     "key": "cap000496300",
+     "state_file": null,
+     "state_missing": [
+      "cap000496300 in no readable lane file"
+     ],
+     "state_missing_count": 1,
+     "model_steps_needed": [
+      496300,
+      496301,
+      496305
+     ],
+     "model_steps_missing": [
+      496300,
+      496301,
+      496305
+     ],
+     "world_records_missing": {
+      "b0": [
+       496299,
+       496300,
+       496304
+      ],
+      "b1": [
+       496299,
+       496300,
+       496304
+      ],
+      "b2": [
+       496299,
+       496300,
+       496304
+      ],
+      "b3": [
+       496299,
+       496300,
+       496304
+      ],
+      "b4": [
+       496299,
+       496300,
+       496304
+      ],
+      "b5": [
+       496299,
+       496300,
+       496304
+      ],
+      "b6": [
+       496299,
+       496300,
+       496304
+      ],
+      "b7": [
+       496299,
+       496300,
+       496304
+      ]
+     },
+     "before_this_run": [],
+     "verdict": "not durable"
+    },
+    {
+     "step": 496310,
+     "valid_capture": true,
+     "accepted": true,
+     "key": "cap000496310",
+     "state_file": null,
+     "state_missing": [
+      "cap000496310 in no readable lane file"
+     ],
+     "state_missing_count": 1,
+     "model_steps_needed": [
+      496310,
+      496311,
+      496315
+     ],
+     "model_steps_missing": [
+      496310,
+      496311,
+      496315
+     ],
+     "world_records_missing": {
+      "b0": [
+       496309,
+       496310,
+       496314
+      ],
+      "b1": [
+       496305,
+       496309,
+       496310,
+       496314
+      ],
+      "b2": [
+       496309,
+       496310,
+       496314
+      ],
+      "b3": [
+       496309,
+       496310,
+       496314
+      ],
+      "b4": [
+       496309,
+       496310,
+       496314
+      ],
+      "b5": [
+       496309,
+       496310,
+       496314
+      ],
+      "b6": [
+       496309,
+       496310,
+       496314
+      ],
+      "b7": [
+       496309,
+       496310,
+       496314
+      ]
+     },
+     "before_this_run": [],
+     "verdict": "not durable"
+    }
+   ],
+   "lane_marks": {},
+   "seconds": 0.005
+  },
+  "control": {
+   "run": "D:\\UEMA_Research\\external\\D\\UEMA_preserved\\s4r_measure_S4R_measure_496000\\run",
+   "bound_s": 20.0,
+   "chunks_counted_here": {
+    "model": 3,
+    "b0": 3,
+    "b1": 3,
+    "b2": 3,
+    "b3": 3,
+    "b4": 3,
+    "b5": 3,
+    "b6": 3,
+    "b7": 3
+   },
+   "plan_captures_counted_here": 9,
+   "verdict": "all captures durable",
+   "counts": {
+    "captures": 9,
+    "accepted": 9,
+    "durable": 9,
+    "not_durable": 0,
+    "not_verified": 0,
+    "accepted_not_durable": 0,
+    "model_files_read": 3,
+    "world_files_read": 24,
+    "files_with_problems": 0,
+    "partial_files": 0,
+    "unreadable_capture_lines": 0
+   },
+   "captures": [
+    {
+     "step": 496000,
+     "verdict": "durable",
+     "state_file": "chunk_000496000_40056_00000.npz",
+     "before_this_run": [
+      {
+       "lane": "world",
+       "body": 0,
+       "step": 495999
+      },
+      {
+       "lane": "world",
+       "body": 1,
+       "step": 495999
+      },
+      {
+       "lane": "world",
+       "body": 2,
+       "step": 495999
+      },
+      {
+       "lane": "world",
+       "body": 3,
+       "step": 495999
+      },
+      {
+       "lane": "world",
+       "body": 4,
+       "step": 495999
+      },
+      {
+       "lane": "world",
+       "body": 5,
+       "step": 495999
+      },
+      {
+       "lane": "world",
+       "body": 6,
+       "step": 495999
+      },
+      {
+       "lane": "world",
+       "body": 7,
+       "step": 495999
+      }
+     ]
+    },
+    {
+     "step": 496030,
+     "verdict": "durable",
+     "state_file": "chunk_000496000_40056_00000.npz",
+     "before_this_run": []
+    },
+    {
+     "step": 496060,
+     "verdict": "durable",
+     "state_file": "chunk_000496000_40056_00000.npz",
+     "before_this_run": []
+    },
+    {
+     "step": 496090,
+     "verdict": "durable",
+     "state_file": "chunk_000496000_40056_00000.npz",
+     "before_this_run": []
+    },
+    {
+     "step": 496120,
+     "verdict": "durable",
+     "state_file": "chunk_000496100_40056_00001.npz",
+     "before_this_run": []
+    },
+    {
+     "step": 496150,
+     "verdict": "durable",
+     "state_file": "chunk_000496100_40056_00001.npz",
+     "before_this_run": []
+    },
+    {
+     "step": 496180,
+     "verdict": "durable",
+     "state_file": "chunk_000496100_40056_00001.npz",
+     "before_this_run": []
+    },
+    {
+     "step": 496210,
+     "verdict": "durable",
+     "state_file": "chunk_000496200_40056_00002.npz",
+     "before_this_run": []
+    },
+    {
+     "step": 496240,
+     "verdict": "durable",
+     "state_file": "chunk_000496200_40056_00002.npz",
+     "before_this_run": []
+    }
+   ],
+   "seconds": 0.953
+  }
+ },
+ "g_guarantee_lines": [
+  {
+   "line": 166,
+   "text": "#     pace, not a guarantee of saving: a later acknowledgement raises the kill by the floor below, up to the cap, and"
+  },
+  {
+   "line": 175,
+   "text": "# as a preservation risk, the complete starting endpoint stays preserved, and saving is never claimed as guaranteed):"
+  },
+  {
+   "line": 324,
+   "text": "trainer's tree is ended at the cap whatever the snapshot has written, that saving is not guaranteed, and that the"
+  },
+  {
+   "line": 336,
+   "text": "\"saved: saving is not guaranteed. The complete starting endpoint, %s (%s), stays preserved unchanged: this \""
+  },
+  {
+   "line": 344,
+   "text": "start_preserved=start[\"preserved\"], saving_guaranteed=False)"
+  },
+  {
+   "line": 418,
+   "text": "request, that the complete starting endpoint stays preserved unchanged, and that saving is not guaranteed; with the"
+  },
+  {
+   "line": 435,
+   "text": "\"unchanged; saving is not guaranteed.\" % (clock(kill), kill - first, clock(first), sched.get(\"kill_rule\"),"
+  },
+  {
+   "line": 439,
+   "text": "start_preserved=start[\"preserved\"], saving_guaranteed=False)"
+  },
+  {
+   "line": 2770,
+   "text": "# length end before the cap; neither is guaranteed (the repair: stop_schedule reports a preservation"
+  },
+  {
+   "line": 2874,
+   "text": "# stop_schedule), with no guarantee that the snapshot completes; a trainer that survived its ending keeps the"
+  }
+ ],
+ "verdict": "pass",
+ "conditions": {
+  "the owner's constants: ACK_SAVE_FLOOR_S = SAVE_MEASURED_S + 10 = 84 s, SAVE_RESERVE_S = 178 s, ACK_NAME_RESOLUTION_S = 1 s, SECOND_LOOK_S = 5 s": true,
+  "the trainer deadline on record is the trainer's start + the cap": true,
+  "stop_kill_at without an acknowledgement is the earlier schedule's min(cap, request + max(stop wait, SAVE_RESERVE_S))": true,
+  "(a) stop_progress on the saved run names the acknowledgement control_done_<n>.json with n the whole second of the trainer.log time": true,
+  "(a) stop_progress lists the unfinished snapshot folder .tmp_ckpt_step_496325_* with its 5 files, the companion's temporary file of 519,323,328 bytes, and no complete snapshot": true,
+  "(a) writing is seen at the owner's first look after the acknowledgement": true,
+  "(a) the floor is the acknowledgement's whole second + 1 s + 84 s": true,
+  "(a) the kill is the request + 178 s, because the acknowledgement + 84 s is earlier": true,
+  "(a) the kill is not after the cap": true,
+  "(a) no preservation risk": true,
+  "(b) the late acknowledgement (request + 120 s): the kill is the acknowledgement's whole second + 1 s + 84 s, set by the floor": true,
+  "(b) the kill is no earlier than the acknowledgement + 84 s and less than 1 s after it": true,
+  "(b) the floor moves the kill past the request + 178 s, and not after the cap": true,
+  "(b) no preservation risk": true,
+  "(c1) the kill is the cap exactly": true,
+  "(c1) the floor (acknowledgement's whole second + 1 s + 84 s) is after the cap": true,
+  "(c1) the preservation-risk report is produced with its numbers, says saving is not guaranteed and that the complete starting endpoint stays preserved unchanged": true,
+  "(c2) the kill is the cap exactly": true,
+  "(c2) the floor (acknowledgement's whole second + 1 s + 84 s) is after the cap": true,
+  "(c2) the preservation-risk report is produced with its numbers, says saving is not guaranteed and that the complete starting endpoint stays preserved unchanged": true,
+  "(c2) without the cap the floor would have moved the kill past the request + 178 s, which is before the cap": true,
+  "(d1) an acknowledgement (request + 120 s) with no snapshot file written: no floor, the kill is the request + 178 s": true,
+  "(d2) snapshot files growing with no acknowledgement: no floor, the kill is the request + 178 s": true,
+  "(d) save_writing_active: true across the acknowledgement as the snapshot folder appears; false without files, without the acknowledgement, with no growth, and with no earlier reading": true,
+  "(e) after writing is seen in (b), later file growth happens and the floor, the time writing was seen and the kill stay unchanged": true,
+  "(e) one more growing reading after (b)'s kill time moves neither the floor nor the kill": true,
+  "(e) file growth after the cap does not move the cap: (c1)'s kill stays the cap": true,
+  "(e) the kill never decreases: (a)'s schedule with the first stop 30 s earlier keeps its kill": true,
+  "(h1) the closing wait entered at the request + 185 s in (b) with the owner's saved schedule and last reading holds the kill at the acknowledgement's whole second + 1 s + 84 s (between the acknowledgement + 84 s and + 85 s), at that time, with no second look": true,
+  "(h2) the closing wait entered at the request + 186 s in (b) with no saved schedule or reading: its first look has reached its kill time (the c2489775 wait ended the tree there) and takes a second look SECOND_LOOK_S later, which sees the companion's temporary file appear; the kill is held at the acknowledgement's whole second + 1 s + 84 s": true,
+  "(h3) neither closing-wait kill is cut by a closure counted from the stop: both come after the request + close_s": true,
+  "(i) the guard's request code path (passes after guard_wake_s from its saved phase until guard_request_due) makes its own stop request exactly at the trainer deadline - SAVE_RESERVE_S": true,
+  "(i) after its own request, with the acknowledgement too late for the cap, the guard's last pass lands on the cap and ends the tree there, with the preservation-risk report": true,
+  "(i) in (b), a guard that sees no writing still ends the tree no earlier than the owner's saved kill time (the floor), at that time": true,
+  "(j) the monitor's looks before any stop land on the wall-cap request moment, the cap - SAVE_RESERVE_S": true,
+  "(k) a kill with no acknowledgement on record gives the no-acknowledgement report: the kill time, saving did not start, the complete starting endpoint stays preserved unchanged, saving is not guaranteed": true,
+  "(k) with the acknowledgement on record there is no no-acknowledgement report": true,
+  "(l1) the monitor's stale first schedule look at the request + 185 s in (b) (a stop recorded by another writer, the base kill time passed) holds the guard's saved kill time and ends the tree at the acknowledgement's whole second + 1 s + 84 s, at that time, with no second look": true,
+  "(l2) with no guard schedule, the monitor's stale first look at the request + 186 s takes its second look SECOND_LOOK_S later, sees the companion's temporary file appear and ends the tree at the floor": true,
+  "(m) the monitor's stale first look after the save completed (the complete snapshot after the acknowledgement, the temporary files renamed away) counts the complete snapshot as writing at that look and holds the kill at the floor": true,
+  "(f) the a1 run's observer/model folder holds only one header json": true,
+  "(f) none of the a1 run's 8 world body folders holds a chunk": true,
+  "(f) detail_flush_state lists every plan capture of the a1 run (counted here), each accepted by the lane, and reports every one not durable": true,
+  "(f) every a1 capture's state is in no readable lane file and its model rows and world records are missing": true,
+  "(f, positive control) within the owner's own bound DETAIL_CHECK_S, on the measurement run whose lanes closed at its completion, every plan capture is durable, read from all of its chunks without a problem": true,
+  "(g) every line of the owner that names a guarantee negates it": true
+ },
+ "elapsed_s": 1.145
+}

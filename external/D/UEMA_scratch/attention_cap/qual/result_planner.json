@@ -1,0 +1,756 @@
+{
+ "version": "attention_cap_planner_qual_v8",
+ "written": "2026-10-07 04:44:19 AM",
+ "dev": false,
+ "compared_with": "C1",
+ "checkpoints": {
+  "L": "D:\\UEMA_Research\\Saved\\mimo_bridge\\experiments\\H84_fresh_drivers_20260918_seg41c_1629\\checkpoints\\ckpt_step_484675",
+  "C1": "D:\\UEMA_Research\\Saved\\mimo_bridge\\experiments\\H84_fresh_drivers_20260918_seg41c_0841\\checkpoints\\ckpt_step_484675",
+  "C2": "D:\\UEMA_Research\\Saved\\mimo_bridge\\experiments\\H84_fresh_drivers_20260918_seg41c_1433\\checkpoints\\ckpt_step_484675"
+ },
+ "handles_read": [
+  "wrist_L",
+  "wrist_R",
+  "head",
+  "upperarm_L",
+  "lowerarm_L",
+  "upperarm_R",
+  "lowerarm_R",
+  "thigh_L",
+  "calf_L",
+  "thigh_R",
+  "calf_R",
+  "foot_L",
+  "foot_R",
+  "lower_trunk",
+  "chest"
+ ],
+ "Q": {
+  "L": {
+   "arm": "chosen",
+   "noisy": "adam@1",
+   "Q": 0.008276593727112942,
+   "decisions": 256,
+   "largest_pair_difference": 0.14916705200621938
+  },
+  "C1": {
+   "arm": "chosen",
+   "noisy": "adam@1",
+   "Q": 0.03699195984897958,
+   "decisions": 256,
+   "largest_pair_difference": 0.2585593368473711
+  },
+  "C2": {
+   "arm": "chosen",
+   "noisy": "adam@1",
+   "Q": 0.030425489818950293,
+   "decisions": 256,
+   "largest_pair_difference": 0.22429635714484697
+  },
+  "L_interval": {
+   "Q": 0.008276593727112942,
+   "interval": [
+    0.0,
+    0.014363925016197567
+   ],
+   "multiplier": 3.0,
+   "kind": "the within-body standard errors combined, the 8 worlds fixed",
+   "scope": "on these 8 worlds; worlds outside them are not sampled",
+   "limit": "Bounds only decisions like the 256 read on these 8 worlds: jumps rarer than about 3 in 256 decisions (the 95% bound when none is seen) are not bounded; with half of a body's Q^2 in once-in-32 decisions this interval passes falsely 97.2 times in 1,000, once in 64, 149.4 (the re-check of Oct 6, 2026, 9fdcaa776).",
+   "heaviest_body_share": 0.6453733197119048,
+   "bodies_random_interval_beside": [
+    0.0,
+    0.020751101185730307
+   ],
+   "bodies": 8,
+   "decisions": 256,
+   "problem": null
+  },
+  "C1_interval": {
+   "Q": 0.03699195984897958,
+   "interval": [
+    0.02465769600718889,
+    0.04613900968328314
+   ],
+   "multiplier": 3.0,
+   "kind": "the within-body standard errors combined, the 8 worlds fixed",
+   "scope": "on these 8 worlds; worlds outside them are not sampled",
+   "limit": "Bounds only decisions like the 256 read on these 8 worlds: jumps rarer than about 3 in 256 decisions (the 95% bound when none is seen) are not bounded; with half of a body's Q^2 in once-in-32 decisions this interval passes falsely 97.2 times in 1,000, once in 64, 149.4 (the re-check of Oct 6, 2026, 9fdcaa776).",
+   "heaviest_body_share": 0.3001054001305816,
+   "bodies_random_interval_beside": [
+    0.0,
+    0.06504297879956052
+   ],
+   "bodies": 8,
+   "decisions": 256,
+   "problem": null
+  },
+  "C2_interval": {
+   "Q": 0.030425489818950293,
+   "interval": [
+    0.020610545806005954,
+    0.03777070641415946
+   ],
+   "multiplier": 3.0,
+   "kind": "the within-body standard errors combined, the 8 worlds fixed",
+   "scope": "on these 8 worlds; worlds outside them are not sampled",
+   "limit": "Bounds only decisions like the 256 read on these 8 worlds: jumps rarer than about 3 in 256 decisions (the 95% bound when none is seen) are not bounded; with half of a body's Q^2 in once-in-32 decisions this interval passes falsely 97.2 times in 1,000, once in 64, 149.4 (the re-check of Oct 6, 2026, 9fdcaa776).",
+   "heaviest_body_share": 0.2995545653752082,
+   "bodies_random_interval_beside": [
+    0.0,
+    0.05960270277332173
+   ],
+   "bodies": 8,
+   "decisions": 256,
+   "problem": null
+  },
+  "L_minus_C": {
+   "difference": -0.001299903089744832,
+   "interval": [
+    -0.0020733712707242985,
+    -0.0005264349087653657
+   ],
+   "word": "PASS",
+   "bodies": [
+    8,
+    8
+   ],
+   "unit": "P's unit squared / 2 (Q squared)"
+  },
+  "line": 0.00391
+ },
+ "beside_movement": {
+  "deciding": "nothing: written beside lines (1a) and (1b)",
+  "note": "magnitudes only: two movements of equal size in different directions read as no difference; the handles' end poses are not saved",
+  "definition": "per decision, from the rows' moved_cm and turned_deg (arms_probe.py at dbe705329, probe_planner_weaknesses.movement): the mean over the 25 body handles other than the eyes of each handle's displacement in cm and its turn in degrees, from the pose at the decision to the pose at the end of the 5-model-step hold; the level: the median and the largest over the decisions Q reads; the difference: per decision the absolute difference between the search's and its @1 draw's, its median, 90th percentile and largest, and the decisions above 1 cm and above 1 degree",
+  "L": {
+   "chosen against adam@1": {
+    "arms": [
+     "chosen",
+     "adam@1"
+    ],
+    "decisions": 256,
+    "decisions_without_movement": 0,
+    "note": "magnitudes only: two movements of equal size in different directions read as no difference; the handles' end poses are not saved",
+    "level": {
+     "chosen": {
+      "moved_cm": {
+       "median": 3.76804610653996,
+       "largest": 8.753693433437038
+      },
+      "turned_deg": {
+       "median": 21.91415292861342,
+       "largest": 38.77457086354848
+      }
+     },
+     "adam@1": {
+      "moved_cm": {
+       "median": 3.772814103104058,
+       "largest": 8.772455633337348
+      },
+      "turned_deg": {
+       "median": 21.898514497553915,
+       "largest": 38.48453355017161
+      }
+     }
+    },
+    "difference": {
+     "moved_cm": {
+      "median": 0.00015312737767658735,
+      "percentile_90": 0.022704642707333855,
+      "largest": 1.6118700516034372,
+      "decisions_above_1_cm": 1
+     },
+     "turned_deg": {
+      "median": 0.0008806663852816143,
+      "percentile_90": 0.2142223587406722,
+      "largest": 2.0768330252557554,
+      "decisions_above_1_degree": 4
+     }
+    }
+   },
+   "uncapped against uncapped@1": {
+    "arms": [
+     "uncapped",
+     "uncapped@1"
+    ],
+    "decisions": 256,
+    "decisions_without_movement": 0,
+    "note": "magnitudes only: two movements of equal size in different directions read as no difference; the handles' end poses are not saved",
+    "level": {
+     "uncapped": {
+      "moved_cm": {
+       "median": 3.529988867374186,
+       "largest": 8.261325451506629
+      },
+      "turned_deg": {
+       "median": 20.64296674875741,
+       "largest": 37.757310311767505
+      }
+     },
+     "uncapped@1": {
+      "moved_cm": {
+       "median": 3.56060265244765,
+       "largest": 8.277664235374777
+      },
+      "turned_deg": {
+       "median": 20.674913050127927,
+       "largest": 38.67680621349316
+      }
+     }
+    },
+    "difference": {
+     "moved_cm": {
+      "median": 0.13041218420590805,
+      "percentile_90": 0.7704459871015499,
+      "largest": 3.81561069150594,
+      "decisions_above_1_cm": 17
+     },
+     "turned_deg": {
+      "median": 0.4266905960818246,
+      "percentile_90": 2.758354240265284,
+      "largest": 11.399318330536264,
+      "decisions_above_1_degree": 83
+     }
+    }
+   }
+  },
+  "C1": {
+   "chosen against adam@1": {
+    "arms": [
+     "chosen",
+     "adam@1"
+    ],
+    "decisions": 256,
+    "decisions_without_movement": 0,
+    "note": "magnitudes only: two movements of equal size in different directions read as no difference; the handles' end poses are not saved",
+    "level": {
+     "chosen": {
+      "moved_cm": {
+       "median": 3.4487962277685007,
+       "largest": 9.332423600133176
+      },
+      "turned_deg": {
+       "median": 20.73536341148911,
+       "largest": 39.00169375246527
+      }
+     },
+     "adam@1": {
+      "moved_cm": {
+       "median": 3.4666971700304003,
+       "largest": 9.41023740811096
+      },
+      "turned_deg": {
+       "median": 20.578652718295505,
+       "largest": 42.37350039313951
+      }
+     }
+    },
+    "difference": {
+     "moved_cm": {
+      "median": 0.12169178484672522,
+      "percentile_90": 0.9387627980921478,
+      "largest": 2.581155796243311,
+      "decisions_above_1_cm": 24
+     },
+     "turned_deg": {
+      "median": 0.590899422353802,
+      "percentile_90": 3.238486345800319,
+      "largest": 15.245794745161689,
+      "decisions_above_1_degree": 94
+     }
+    }
+   },
+   "capped against capped@1": {
+    "arms": [
+     "capped",
+     "capped@1"
+    ],
+    "decisions": 256,
+    "decisions_without_movement": 0,
+    "note": "magnitudes only: two movements of equal size in different directions read as no difference; the handles' end poses are not saved",
+    "level": {
+     "capped": {
+      "moved_cm": {
+       "median": 3.4443243286971033,
+       "largest": 7.461533757291947
+      },
+      "turned_deg": {
+       "median": 21.942030951038852,
+       "largest": 37.826788888858935
+      }
+     },
+     "capped@1": {
+      "moved_cm": {
+       "median": 3.4542938765258535,
+       "largest": 7.461950778010171
+      },
+      "turned_deg": {
+       "median": 22.00406705552622,
+       "largest": 37.732428041653186
+      }
+     }
+    },
+    "difference": {
+     "moved_cm": {
+      "median": 0.0003135898796167158,
+      "percentile_90": 0.020101394139770967,
+      "largest": 0.5050176056380624,
+      "decisions_above_1_cm": 0
+     },
+     "turned_deg": {
+      "median": 0.0014719417464821305,
+      "percentile_90": 0.16822498408205,
+      "largest": 2.347539282356788,
+      "decisions_above_1_degree": 2
+     }
+    }
+   }
+  },
+  "C2": {
+   "chosen against adam@1": {
+    "arms": [
+     "chosen",
+     "adam@1"
+    ],
+    "decisions": 256,
+    "decisions_without_movement": 0,
+    "note": "magnitudes only: two movements of equal size in different directions read as no difference; the handles' end poses are not saved",
+    "level": {
+     "chosen": {
+      "moved_cm": {
+       "median": 3.622131737214474,
+       "largest": 8.157861009278042
+      },
+      "turned_deg": {
+       "median": 20.493858734351797,
+       "largest": 41.27670336437423
+      }
+     },
+     "adam@1": {
+      "moved_cm": {
+       "median": 3.497226752365239,
+       "largest": 7.920141874213803
+      },
+      "turned_deg": {
+       "median": 20.321433155823115,
+       "largest": 40.80468194220214
+      }
+     }
+    },
+    "difference": {
+     "moved_cm": {
+      "median": 0.16463836016949396,
+      "percentile_90": 0.8057091462462025,
+      "largest": 2.5660843886499167,
+      "decisions_above_1_cm": 21
+     },
+     "turned_deg": {
+      "median": 0.5911879679008667,
+      "percentile_90": 2.582532786134612,
+      "largest": 7.810027575517907,
+      "decisions_above_1_degree": 94
+     }
+    }
+   },
+   "capped against capped@1": {
+    "arms": [
+     "capped",
+     "capped@1"
+    ],
+    "decisions": 256,
+    "decisions_without_movement": 0,
+    "note": "magnitudes only: two movements of equal size in different directions read as no difference; the handles' end poses are not saved",
+    "level": {
+     "capped": {
+      "moved_cm": {
+       "median": 3.76467325614503,
+       "largest": 7.843897920476701
+      },
+      "turned_deg": {
+       "median": 22.039481724262437,
+       "largest": 37.961858720161665
+      }
+     },
+     "capped@1": {
+      "moved_cm": {
+       "median": 3.7699627220349825,
+       "largest": 7.833615062207507
+      },
+      "turned_deg": {
+       "median": 22.0119017728537,
+       "largest": 37.6908659851115
+      }
+     }
+    },
+    "difference": {
+     "moved_cm": {
+      "median": 0.0007271708605063321,
+      "percentile_90": 0.021834823844068207,
+      "largest": 0.4477274065101309,
+      "decisions_above_1_cm": 0
+     },
+     "turned_deg": {
+      "median": 0.005899499726474744,
+      "percentile_90": 0.21960465583936895,
+      "largest": 4.998821611715638,
+      "decisions_above_1_degree": 4
+     }
+    }
+   }
+  }
+ },
+ "goal_progress_over_hold": {
+  "G_L": 0.03821714831482563,
+  "G_C1": 0.051381802281113755,
+  "difference": -0.013164653966288124,
+  "interval": [
+   -0.05876388938747802,
+   0.03243458145490177
+  ],
+  "file": "D:\\UEMA_Research\\external\\D\\UEMA_scratch\\attention_cap\\qual\\result_goal_progress_hold.json",
+  "word": "NOT SHOWN"
+ },
+ "goal_progress": {
+  "G_L": 0.012351034523871004,
+  "G_C1": 0.04007205662076808,
+  "difference": -0.02772102209689707,
+  "interval": [
+   -0.07544675316385155,
+   0.020004708970057412
+  ],
+  "interval_kind": "t(14, 0.975), ACR-6",
+  "reach": {
+   "smallest_difference_shown_80_of_100": 0.06704254715200819,
+   "decisions_per_body": 32.0,
+   "clusters_per_checkpoint": 8,
+   "se_L": 0.017718414974370728,
+   "se_R": 0.013461123109293028,
+   "t975": 2.1448,
+   "t80": 0.8681
+  },
+  "file": "D:\\UEMA_Research\\external\\D\\UEMA_scratch\\attention_cap\\qual\\result_goal_progress.json",
+  "G_L_interval": [
+   -0.02954592952452601,
+   0.05424799857226802
+  ],
+  "beside_gate7_L_nearer_than_the_motor_controller": false
+ },
+ "beside_change_deg": {
+  "L": {
+   "arm": "chosen",
+   "noisy": "adam@1",
+   "change_deg": 0.7042850141696348,
+   "median_deg": 0.005185333712467556,
+   "decisions": 256,
+   "decisions_under_0p1_deg": 210
+  },
+  "C1": {
+   "arm": "chosen",
+   "noisy": "adam@1",
+   "change_deg": 18.729546656227903,
+   "median_deg": 14.110635343967395,
+   "decisions": 256,
+   "decisions_under_0p1_deg": 8
+  },
+  "C2": {
+   "arm": "chosen",
+   "noisy": "adam@1",
+   "change_deg": 19.69716051285237,
+   "median_deg": 16.936782263784195,
+   "decisions": 256,
+   "decisions_under_0p1_deg": 2
+  }
+ },
+ "beside_cap_in_place_on_C": {
+  "change": {
+   "arm": "capped",
+   "noisy": "capped@1",
+   "change_deg": 0.7401241723175643,
+   "median_deg": 0.006003228192770346,
+   "decisions": 256,
+   "decisions_under_0p1_deg": 204
+  },
+  "Q": {
+   "arm": "capped",
+   "noisy": "capped@1",
+   "Q": 0.005765770101837778,
+   "decisions": 256,
+   "largest_pair_difference": 0.11182014938522564
+  },
+  "G": {
+   "arm": "capped",
+   "other": "reflex",
+   "mean": 0.0351615895835201,
+   "interval": [
+    -0.0016883922383220396,
+    0.07201157140536224
+   ],
+   "bodies": 8,
+   "decisions": 256
+  },
+  "minus_chosen": {
+   "arm": "capped",
+   "other": "chosen",
+   "mean": -0.004910467037247981,
+   "interval": [
+    -0.032423936895999345,
+    0.022603002821503383
+   ],
+   "bodies": 8,
+   "decisions": 256
+  }
+ },
+ "beside_cap_in_place_on_C2": {
+  "change": {
+   "arm": "capped",
+   "noisy": "capped@1",
+   "change_deg": 0.8221020142647447,
+   "median_deg": 0.011371770365262258,
+   "decisions": 256,
+   "decisions_under_0p1_deg": 196
+  },
+  "Q": {
+   "arm": "capped",
+   "noisy": "capped@1",
+   "Q": 0.006700723210808963,
+   "decisions": 256,
+   "largest_pair_difference": 0.11590846005465788
+  },
+  "G": {
+   "arm": "capped",
+   "other": "reflex",
+   "mean": 0.04060102067937619,
+   "interval": [
+    0.014793160279655448,
+    0.06640888107909693
+   ],
+   "bodies": 8,
+   "decisions": 256
+  },
+  "minus_chosen": {
+   "arm": "capped",
+   "other": "chosen",
+   "mean": 0.0035872976663321758,
+   "interval": [
+    -0.0104180623224048,
+    0.017592657655069153
+   ],
+   "bodies": 8,
+   "decisions": 256
+  }
+ },
+ "beside_L_without_its_cap": {
+  "change": {
+   "arm": "uncapped",
+   "noisy": "uncapped@1",
+   "change_deg": 17.500907769158527,
+   "median_deg": 11.871620825523557,
+   "decisions": 256,
+   "decisions_under_0p1_deg": 9
+  },
+  "Q": {
+   "arm": "uncapped",
+   "noisy": "uncapped@1",
+   "Q": 0.04492111540124677,
+   "decisions": 256,
+   "largest_pair_difference": 0.41539731341681535
+  },
+  "G": {
+   "arm": "uncapped",
+   "other": "reflex",
+   "mean": 0.019238797260684018,
+   "interval": [
+    -0.012814978869088223,
+    0.05129257339045626
+   ],
+   "bodies": 8,
+   "decisions": 256
+  },
+  "minus_chosen": {
+   "arm": "uncapped",
+   "other": "chosen",
+   "mean": 0.006887762736813018,
+   "interval": [
+    -0.016011040165673653,
+    0.02978656563929969
+   ],
+   "bodies": 8,
+   "decisions": 256
+  }
+ },
+ "beside_R": {
+  "file": "D:\\UEMA_Research\\external\\D\\UEMA_scratch\\attention_cap\\reach_481800\\reach_planner.json",
+  "note": "checkpoint 481,800 (R), row attention_cap_reachability_481800's 64 decisions (8 per body), read in another process; deciding nothing",
+  "change_deg": {
+   "arm": "chosen",
+   "noisy": "adam@1",
+   "change_deg": 15.55373130813706,
+   "median_deg": 10.05552001068079,
+   "decisions": 64,
+   "decisions_under_0p1_deg": 5
+  },
+  "Q": {
+   "arm": "chosen",
+   "noisy": "adam@1",
+   "Q": 0.03533529039192202,
+   "decisions": 64,
+   "largest_pair_difference": 0.2836109554825677
+  },
+  "G": {
+   "arm": "chosen",
+   "other": "reflex",
+   "mean": 0.04447531992013197,
+   "interval": [
+    -0.010915620129718792,
+    0.09986625996998273
+   ],
+   "bodies": 8,
+   "decisions": 64
+  }
+ },
+ "seconds_per_decision": {
+  "C1": {
+   "decisions": 256,
+   "mean_s": 72.955859375,
+   "search_s": {
+    "adam@1": 13.830039062500003,
+    "capped": 13.019296875,
+    "capped@1": 12.9585546875,
+    "chosen": 0.0,
+    "hold": 0.0,
+    "reflex": 0.0,
+    "start_hand": 1.168984375
+   },
+   "exec_s": {
+    "adam@1": 4.0610546875,
+    "capped": 4.141953125000001,
+    "capped@1": 4.06734375,
+    "chosen": 5.066328125,
+    "hold": 4.0385546875,
+    "reflex": 5.4129296875,
+    "start_hand": 4.10609375
+   }
+  },
+  "C2": {
+   "decisions": 256,
+   "mean_s": 47.631640625,
+   "search_s": {
+    "adam@1": 7.1759375,
+    "capped": 7.3175390625,
+    "capped@1": 7.2531640625,
+    "chosen": 0.0,
+    "hold": 0.0,
+    "reflex": 0.0,
+    "start_hand": 1.1354296874999998
+   },
+   "exec_s": {
+    "adam@1": 3.07734375,
+    "capped": 3.0850390625,
+    "capped@1": 3.091484375,
+    "chosen": 4.058515625,
+    "hold": 3.1052734374999997,
+    "reflex": 4.1318359375,
+    "start_hand": 3.2066406250000004
+   }
+  },
+  "L": {
+   "decisions": 256,
+   "mean_s": 49.76953125,
+   "search_s": {
+    "adam@1": 7.6178515625,
+    "chosen": 0.0,
+    "hold": 0.0,
+    "reflex": 0.0,
+    "start_hand": 1.1491015625,
+    "uncapped": 7.7026171875,
+    "uncapped@1": 7.6570703125
+   },
+   "exec_s": {
+    "adam@1": 3.2027734375,
+    "chosen": 4.19125,
+    "hold": 3.2333984375,
+    "reflex": 4.245078125,
+    "start_hand": 3.3392968749999996,
+    "uncapped": 3.2221875,
+    "uncapped@1": 3.207890625
+   }
+  }
+ },
+ "lines": {
+  "requirement_4_outcome_line": "NOT SHOWN",
+  "requirement_4_against_C": "PASS",
+  "requirement_4": "NOT SHOWN",
+  "requirement_5_goal_progress": "NOT SHOWN",
+  "requirement_5_guard_over_hold": "NOT SHOWN",
+  "requirement_5": "NOT SHOWN"
+ },
+ "repeatability": {
+  "note": "C2 against C1 with the same lines (the repeatability check, the operator's decisions received between 6:35 AM PDT (the coordinator's status before them) and 6:47 AM PDT (the clock after), Oct 6, 2026); line (a) read on each control alone",
+  "lines": {
+   "requirement_4_against_C": "NOT SHOWN",
+   "requirement_5_goal_progress": "NOT SHOWN",
+   "requirement_5_guard_over_hold": "NOT SHOWN",
+   "requirement_4_outcome_line_on_C1": "FAIL",
+   "requirement_4_outcome_line_on_C2": "FAIL"
+  },
+  "C2_minus_C1": {
+   "difference": -0.0004426946627454693,
+   "interval": [
+    -0.0014842218271885407,
+    0.0005988325016976021
+   ],
+   "word": "NOT SHOWN",
+   "bodies": [
+    8,
+    8
+   ],
+   "unit": "P's unit squared / 2 (Q squared)"
+  },
+  "goal_progress": {
+   "G_C2": 0.03701372301304401,
+   "G_C1": 0.04007205662076808,
+   "difference": -0.003058333607724069,
+   "interval": [
+    -0.03747090659321786,
+    0.031354239377769724
+   ],
+   "file": "D:\\UEMA_Research\\external\\D\\UEMA_scratch\\attention_cap\\qual\\result_goal_progress_C2_against_C1.json"
+  },
+  "goal_progress_over_hold": {
+   "G_C2": 0.05652151684731626,
+   "G_C1": 0.051381802281113755,
+   "difference": 0.005139714566202505,
+   "interval": [
+    -0.028747136977761267,
+    0.03902656611016628
+   ],
+   "file": "D:\\UEMA_Research\\external\\D\\UEMA_scratch\\attention_cap\\qual\\result_goal_progress_hold_C2_against_C1.json"
+  }
+ },
+ "attribution": {
+  "requirement_4_against_C": {
+   "L_against_C1": "PASS",
+   "C2_against_C1": "NOT SHOWN",
+   "attributable_to_the_cap": true
+  },
+  "requirement_5_goal_progress": {
+   "L_against_C1": "NOT SHOWN",
+   "C2_against_C1": "NOT SHOWN",
+   "attributable_to_the_cap": false
+  },
+  "requirement_5_guard_over_hold": {
+   "L_against_C1": "NOT SHOWN",
+   "C2_against_C1": "NOT SHOWN",
+   "attributable_to_the_cap": false
+  },
+  "requirement_4_outcome_line": {
+   "L": "NOT SHOWN",
+   "C1": "FAIL",
+   "C2": "FAIL",
+   "attributable_to_the_cap": true
+  }
+ },
+ "verdict_word": "NOT SHOWN",
+ "verdict": "invalid"
+}

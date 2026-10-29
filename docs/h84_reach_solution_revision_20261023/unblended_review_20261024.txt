@@ -1,0 +1,288 @@
+INDEPENDENT REVIEW: the unblended target candidate (commit 46e0c8363 against a48cac796) and its run package
+(D:/UEMA_Research/external/D/UEMA_scratch/h84/d1_planner_recovery/target_unblended_496250_package, MANIFEST.json sha256 d72d2eab..., 103 pins)
+
+Reviewer: the builder subagent of session 358a210a, the one focused independent review required by
+reach-target-unblended-build-decision-20261024 (acting).
+Written Oct 24, 2026, 8:27 PM PDT. Read only: nothing in the package, the branch checkout or the main checkout was
+edited; no trainer, model load, world, replay, owner step, execute_u.sh, seal_authorization.py, pin_control_headers.py
+or make_manifest.py was run, and no program was run on saved run evidence. Probes, copies and saved outputs are in this
+folder (probes/, evidence/, route/, tree_old/, tree_new/, package_tests_out/).
+
+======================================================================================================================
+VERDICT: READY WITH CHANGES
+======================================================================================================================
+The code change meets the five review requirements: default-off identity, candidate scoring before the selection,
+unchanged ordinary/finger/gaze/strength behaviour, exact sent-equals-scored, and both selection outcomes. The owner,
+the admission route, the rows, the timing basis and the stop plan hold. One change to the pairing reader is required
+before its verdict can serve as the ordinary-winner check that the item 4 makes the condition for reusing the
+saved s2 ON control.
+
+======================================================================================================================
+REQUIRED (1)
+======================================================================================================================
+R1. reader/read_policy_pair.py, gate_ordinary_search (lines 496-569); see also G3_NOT_REQUIRED (lines 235-242) and
+    DEFINITIONS["final_outputs"] (lines 1519-1529).
+    What fails: G3 checks the ordinary winner only by its values (target_candidate.ordinary_goal and ordinary_source,
+    objective.selected_iteration for bodies chosen in neither run, the search's final_attempt values and its first
+    evaluation's per-sense terms). It gates no command of the ordinary winner for any body. For a body chosen in
+    neither run, the command planned and sent IS the ordinary-search result that the overseer requires equal (item 3), and
+    the reader's own definitions say it: "By the code: for a neither body both runs sent the ordinary winner through
+    the same blended transform, so its planner_output and chosen_set entries are expected equal". Those entries are
+    only reported (final_outputs), so a treated run whose ordinary bodies were sent different commands would still
+    read verdict "pass". The predecessor reader's gate_ordinary_winner gated every DECISION_FIELDS path and every
+    DECISION_ARRAYS array (planned, sent, executed, hand_joint_goal_raw, forecast_pose__selected_*, forecast__*,
+    plan0) for every body not sent the candidate ("for b in unselected:" in read_policy_pair.diff), and on the s2 data
+    it read "P3_ordinary_winner": "PASS" with the candidate sent to bodies 0, 1, 5 and 6 only (s2 reread folder:
+    corrected_reading_stdout.txt and corrected_reading_result.json), so the check is attainable on real runs. Within
+    the reading, this comparison is the direct check of the review requirement "unchanged ordinary ... behavior": the
+    other gates compare values, and the dispatch check and G5 cover only the bodies sent the candidate.
+    Fix: in gate_ordinary_search, for each body whose target_candidate.selected reads false in both runs (group
+    "neither"), require same_value on every DECISION_FIELDS path and body_rows_equal on every DECISION_ARRAYS array
+    for that body (the corrected P3 loop, restricted to that group); keep every other group reported; add one test in
+    which a "neither" body's sent array differs and G3 reads FAIL; update the module text, README.txt's G3 paragraph
+    and G3_NOT_REQUIRED; regenerate MANIFEST.json and give the new reader sha256 to the coordinator.
+
+======================================================================================================================
+RECOMMENDED (9)
+======================================================================================================================
+M1. The blend the treatment removes is described as "0.35 x those values + 0.65 x the decision's previous executed
+    command" (physical_goal.py line 377, TARGET_CANDIDATE_UNBLENDED, which is written into every plan record of the
+    run as pose_blend; train_mimo.py's --planner-target-candidate-unblended help; README.md; CONDITIONS.json; the
+    reader's DEFINITIONS and README.txt). Under --smooth-source proposal the 0.65 term is the smoother's memory
+    _prev_mfa (_capture_plan_state: "prev = self._smooth_exec_prev if executed else self._prev_mfa"), which step()
+    overwrites on every model step with that step's blended proposal, latched or not (lem_model.py lines 4661-4680;
+    the code's own comment: "not with a running average of this model's proposals - four of every five" under the
+    executed option). START was saved after model step 496,249, which the trainer did not latch (it latches at
+    multiples of 5). If the run that saved START used the same smoother (0.35, proposal; its args.json was not read
+    here), the memory at 496,250 is 0.65^4 = 0.179 parts the command last sent (latched at 496,245) and 0.821 parts the
+    unlatched proposals of 496,246 to 496,249, so a blended candidate position field = 0.35 x the candidate + 0.116 x
+    the command last sent + 0.534 x proposals that were never sent (quaternions follow these weights only up to the
+    normalization smooth_blend applies at every model step).
+    Fix: say "0.65 x the smoother's memory (the running blend of every proposal since the last latch)" in the package
+    text and the reader's definitions; amend the record string at the next code change. The interpretation of the
+    control's blend offsets (5.30 to 14.98 cm in the selected hands) depends on it.
+M2. CONDITIONS.json finding 1 ends "It does not reach the 250 ms reading". The hands' positions at 250 ms are driven
+    by the command latched at 496,250, held for the bursts of 496,250 to 496,254. The eyes are not held: on a model
+    step without a plan the eye command is the motor controller's (lem_model.py line 3215, "gaze_out =
+    self._gaze_from_handle(motor_out)"; --goal-gaze-hold off). For a body sent the unblended candidate the
+    controller's inputs differ from the control's from 496,251; for every body the shared weights differ after the
+    update of 496,251 (the batch's executed commands differ), so eye commands from 496,252 can differ in every body
+    inside the window. The s2 analogue is the 0.000030 cm unchanged-command discrepancy. Fix: state it in finding 1.
+M3. The authorization does not have to postdate the build decision. policy_exec.authorization_problems (line 705)
+    refuses only the build decision's id (line 721); seal_authorization.decision_values checks the id, "from" the overseer,
+    a text and that created_at is a string (line 112). An earlier message from the overseer that names its own id and holds
+    a text and a created_at passes both. Fix: refuse a
+    message whose created_at is not later than the build decision's (2026-10-25T01:11:05.929096+00:00) in both
+    functions; the seal already records text_first_800 for the coordinator to read before sealing.
+M4. lem_model.py line 1639 creates self._tc_unblended_last = None on every learner, switch off included.
+    continuation_state.capture_learner saves every model attribute whose name starts with "_" (line 169) except
+    HANDOFF_NAMES (line 36) and REPORT_WINDOW_NAMES, so every episode companion written by 46e0c8363 carries one key
+    that a48cac796's companions lack (its value is None at every save of a trainer run: _plan_chain sets it and step()
+    takes it back to None in the same model step; only the offline tools that call _plan_chain directly can leave it
+    set). Behaviour is unchanged (default-off probe below); restoring in either direction sets or skips an
+    unused attribute. Fix: add it to an excluded name set, or record it as a known difference of the saves.
+M5. The causal-chain record (_causal_plan_record) takes the chosen command's prediction from _plan_chain's depth-one
+    executed command (unblended for a body sent the candidate), while its hold and perturb_1/2 alternatives go through
+    planned_execution without unblend_fields (line 7848), that is blended; chosen_rank then compares two forms for
+    those bodies. The reader does not use it. Fix: say so beside any use of chosen_rank, or form those alternatives
+    with the same fields.
+M6. Record text written by intention_generator.py: the target_candidate "fields" text says offset_from_iteration0_
+    executed is read "after the smoother, which blends both with the same previous executed command"
+    (lines 774-775), and TARGET_CANDIDATE_SCORING says the candidate is scored through "the smoother with the decision's
+    previous executed command". With the switch on the candidate's own fields are not blended (pose_blend states it).
+    Fix: amend at the next code change, or note it in the reading.
+M7. Tests: U6 and U7 run copies of step()'s lines, pinned to step()'s text by test_u6_the_lines_are_step_s_own, not
+    step() itself; U7's last assertion, "assert torch.equal(nxt, LemLite.smooth_blend(proposal, memory_after.clone(),
+    SMOOTH))", compares a function with itself and cannot fail. The run's own guards are the dispatch check (it raises
+    on any decoder-active difference) and G5's planned_vs_sent body_rows_identical. Fix: drop or replace that assertion.
+M8. Reader contacts: records_with_non_floor_contact and non_floor_peak_force_n include the infant touching itself
+    (line "nf = [c["peak_force_n"] for c in listed if c["partner_kind"] != "floor"]"; partner kind "self" is not
+    "floor"); by_partner_kind lists "self" apart. Fix: add a count and a peak force without self-contacts beside them.
+M9. Reader falls: the reference is the world record of 496,250 (after the first burst) while the hands' start
+    distance is the pose at the decision (before it); a drop or tilt inside the first burst is not counted. README.txt
+    states it; keep that sentence beside the result.
+
+Note on the brief: it names eleven builder findings; the pinned README.md and CONDITIONS.json (sha256 6860d9eb...)
+list eight.
+
+======================================================================================================================
+PART A: the code change (checkout D:/UEMA_wt/target_candidate_20261023 at 46e0c83630250f7a3e260c654955b727922bf8b9,
+git status empty)
+======================================================================================================================
+A1 Default off reproduces a48cac796. Every new path is gated by planner_target_candidate_unblended == "on" or by the
+   hand-off only that switch sets:
+   - LemLite.__init__ refuses "on" unless --planner-target-candidate on, --planner-search adam, --smooth-source
+     proposal and --smooth-actions above 0 (lem_model.py 1625-1637); the target candidate itself needs
+     --physical-goals memory (line 1247).
+   - _plan_chain builds _tc_fields and _tc_execution only when on (6973-6986) and passes target_candidate_execution
+     only when not None (7007); the post-selection unblend runs only when _tc_fields is set (7132-7144).
+   - planned_execution's unblend_fields defaults to None (6516-6517); candidate_execution passes None unless asked.
+   - step() arms the unblend and the dispatch check only from that hand-off (4458, 4492, 4672, 4701).
+   - generate_action's swap reassigns the same transform object when none is given (662, 682) and writes pose_blend
+     only when given (803-809).
+   - _plan_settings appends the version only when on (6053-6056); train_mimo's flag defaults to "off" and
+     acting_configuration drops it when off (used only with --self-choice on or shadow).
+   Probe (evidence/off_identity_compare.txt): test_target_candidate's own small CPU learner; _plan_chain run in a copy
+   of the source with the five changed files at a48cac796 (tree_old) and in 46e0c8363 with the switch at its default
+   (tree_new), with the target candidate on and off. Equal bit for bit in both cases: plan0, the depth-one executed
+   command, its forecast tokens and predicted wellness, the hand joint goal, the descent record (11,309 characters of
+   JSON with the target candidate on), the plan settings, generate_action's keyword arguments and the random state.
+   The one difference is the new attribute (M4). U1 passes.
+
+A2 Scoring before the selection. After the search and its keep rule, the candidate is evaluated once for all bodies
+   with target_candidate_execution swapped into the objective and the original put back in a finally block
+   (intention_generator.py 662-682); the selection reads that evaluation (690-691). SearchObjective reads
+   self.execution_transform at each call (228-229), so the swap takes effect, and every evaluation of the ordinary
+   search (the loop at 535-619) used the original masked blended transform (_execution). The field mask comes from the
+   region's layout alone (target_candidate_unblended_fields), never from a selection, so no selected-mask circularity.
+   The two masked closures share executed0, which the ordinary search's first evaluation sets through the blended
+   transform (physical_goal.py 247-250); the unblend fields hold no decoder-inert number, so the inert values the
+   candidate is scored with are the same either way. U2 checks every evaluation before the candidate's equal number
+   for number between blended and unblended runs.
+
+A3 Fields. Taken unblended: x y z of the free body rows that are decoder position rows, and the quaternion of every
+   free body row (physical_goal.py 386-408); free_body excludes the eyes' row and the finger rows (196-202). Unchanged:
+   strength (column 8, still 0.35/0.65 blended), radius (column 7; smooth_blend keeps the new command's radius), the
+   eyes' row, decoder-inert numbers (held at executed0 in the scoring, not compared at the dispatch), the finger joint
+   goal and its smoothing (_smooth_hand_joints), handle masks (applied inside the execution transforms before the
+   blend), the reach clamp (before the blend on both paths: lem_model.py 4596-4599 live, 5873-5881 planned), and every
+   body not sent the candidate. The finger rows' world numbers follow the unblended wrist rows through assemble_world
+   in both scoring and sending (the fingers sit on the wrist; with --finger-joint-servo on the decoder reads the joint
+   goal). Quaternions: q / max(|q|, 1e-6) with the command's own sign (5305-5307), which is smooth_blend's
+   normalization with a factor of 1; U4 checks it bit for bit.
+
+A4 Exact sent equals scored. Raw: the capture's target_candidate_raw (tc_cmd). Scored: target_candidate_order, the
+   masked unblended executed form / 200. Checked: _plan_chain's depth-one executed command with the selected bodies'
+   rows from candidate_execution(..., unblend_fields) (7139-7141), compared with the scored order on every
+   decoder-active number, exactly 0 or the run raises (7151-7160). Dispatched: step() applies the same unblended_fields
+   to the same pre-blend command (4670-4679), then the hand assembly; _tc_unblended_dispatch_check compares the command
+   formed with the checked command on every decoder-active number of the 25 body rows of the bodies sent the
+   candidate, exactly 0 or the run raises (6590-6619). The capture's planned_vs_sent body_rows_identical compares all 9
+   columns of the 25 body rows (causal_chain.py 1979-1986); the reader's G5 requires it true for those bodies. The live
+   numbers equal the planned ones: the live pre-blend command (execution_transform plus the reach clamp) equals the
+   differentiable transform's forward value (S1's form, 5865-5881); the quaternion passes both transforms unchanged
+   under an all-true handle mask; U6 checks the live and planned unblended chains equal bit for bit on the 25 body
+   rows for four limit settings with a mixed set of bodies.
+
+A5 The smoother's memory _prev_mfa at each model step of u (latches at step % 5 == 0, train_mimo.py 3237-3239:
+   496,250 and 496,255; one plan, at 496,250, --intention-every 10):
+   - entering 496,250: START's saved memory (the blend after model step 496,249, an unlatched step).
+   - 496,250 (plan and latch): the command sent, S250: 0.35 x the planned command + 0.65 x START's memory on every
+     number, except that for a body sent the candidate its position-row x y z and turn-row quaternions are its own
+     executed values; the finger rows assembled on that; then the trainer latches exactly this array
+     (held_motor = res.motor_for_action). The memory equals what was sent.
+   - 496,251, 496,252, 496,253, 496,254 (no plan, no latch): 0.35 x that step's motor-controller proposal (after the
+     execution transform, the reach clamp and any babble noise; finger rows from its projected joints) + 0.65 x the
+     previous memory. Not sent: S250 stays in force. The capture's 250 ms reading follows the burst of 496,254.
+   - 496,255 (latch, no plan): 0.35 x the proposal + 0.65 x the memory of 496,254; latched and sent for the burst of
+     496,255; it is the memory the save at 496,256 holds.
+   The hand-off is taken once, right after this step's own _plan_chain (line 4458), armed only for the plan's own
+   command (4492) and disarmed when the self-choice actor replaces it (4570); no unlatched step applies it. Unlatched
+   proposals overwrite the memory under the existing --smooth-source proposal design, in u and in the control alike;
+   the change adds no overwrite. For a body sent the candidate, the 496,250 difference between u's and the control's
+   sent commands stays in the memory with weight 0.65^k after k unlatched steps (positions), and with 0.65^5 = 0.116
+   in the command latched at 496,255 and in the saved memory.
+
+A6 Both selection outcomes. A body newly chosen: tc_take true from the unblended score, so best_action is the
+   candidate, selected_iteration reads -1 (intention_generator.py 698), its rows are unblended in the depth-one
+   command, it is in the hand-off's bodies and the dispatch check covers it, and the record carries pose_blend and
+   unblended_version. A body no longer chosen: tc_take false, so best, best_action and best_step keep the ordinary
+   result, its depth-one command is blended, it is not in the hand-off and the dispatch check skips it (U9). No body
+   chosen: _tc_unblended_last stays None, step() is not armed and no dispatch record is written (U5). U3 runs both
+   directions through generate_action (blended rejected and unblended taken; blended taken and unblended rejected as
+   non-finite).
+
+A7 Confirmed. With --planner-search adam, _execution is candidate_execution (lem_model.py 6897); the _execution
+   defined at 6914 exists only inside the branch for the other searches (6898); on the pose-return route either is
+   wrapped by _space.masked_execution (6953). The candidate's own transform is _space.masked_execution of a wrapper of
+   candidate_execution with unblend_fields (6984-6986).
+
+======================================================================================================================
+PART B: the package
+======================================================================================================================
+B1 Command. command_u.json has 371 arguments, command_on.json 369; 4 positions differ (204 --out, 212
+   --caregiver-record-dir, 228 --checkpoint-storage, 336 --latent-body-output) and "--planner-target-candidate-
+   unblended on" is appended; nothing else differs (evidence/b1_commands.txt). The MANIFEST's 103 pins all hold and no
+   package file is unpinned (evidence/manifest_pins.txt).
+
+B2 Owner policy_exec.py (sha256 3f69e0d0...). One branch: BRANCHES holds "u" only and step_supervise runs
+   run_branch("u") then closure (line 2523). The authorization is read before T0 (step_start raises at line 1661,
+   before RUNTIME.mkdir at 1665), again in start's checks, in launch, in the branch admission and in resume. A fresh
+   900 s clock (elapsed() has no carried seconds). branch_admissible (line 506) applies E + 300 + 30 + 100 <= 900 before
+   the claim. verify_complete_save is the s2 owner's (END_STEP 496,256). PROTECTED pins START's 11 files and the
+   control's 25 at the sha256 control_inputs.json records; the 8 control headers are required at their bytes and whole
+   second (header_time_matches, line 314; the HFS Plus reading in the module text), hashed whole at start and compared
+   by sha256 in the closure, with control_header_pins.json's sha256 also required when it exists; the reader's input
+   set must equal the pinned files at start and resume. The closure runs the reading row, whose argv after "--" equals
+   reader_argv() (COMMANDS.json). The package test compares 82 carried functions with the s2 owner's text. Gap: M3.
+
+B3 Route. The installed training_preflight.py reads sha256 51e4729b... (commit 223d301cf, blob d895137b...). The draft
+   diff applies to a copy in route/ with no offset or fuzz and gives the draft byte for byte, sha256 1ac1cf59...
+   (evidence/route_apply.txt). The applied copy (evidence/route_probe.txt): 12 routes, routes 1 to 11 equal to the
+   installed file's; command_u.json at the branch code reads 66a6cdbcc2f65852 and maps to route 12 (row
+   target_unblended_496250_u_run, owner policy_exec.py at 3f69e0d0..., template sha256 equal to command_u.json's); the
+   s2 ON and OFF commands at the branch code read 635847a274b62d02 and 175dba14fb119603 and map to no route; command_u
+   with --smooth-actions 0.5 reads 633dec75444f1e2d and maps to no route. The draft's decision fields are placeholders,
+   so it admits nothing until sealed. The package test rehearses set_adoption and launch_refusal on a synthetic
+   preservation (ALLOWED for command_u; BLOCKED for the s2 ON command, a changed command and a longer bound).
+
+B4 Reader. Gates: G1 pre-decision arrays, G2 pre-decision record, G3 selected memory targets, ordinary results by
+   value, iteration-0 values and the candidate's construction, G4 metadata, G5 the treated run's sent-equals-scored,
+   G6 restore, G7 restored worlds, G8 configuration. None gates the final output or the chosen set. The outcome is
+   reported only, with no success line: groups common_selected, newly_selected, no_longer_selected and neither; per hand
+   the centimetres at the start, predicted and measured in both runs, treated minus control and treated minus start;
+   median and maximum (positive = a regression); the pose-error score; contacts and falls; all 8 bodies and 16 hands.
+   The builder's ten noted choices:
+   (1) G2 leaves out identity.launch.trainer_code_hash and git_commit: right (two commits by design; recorded in G4).
+   (2) G3's added checks, the selected target's ring index, age and token hash, and the candidate's construction
+       (built, raw offsets, raw command and built arrays): right (the overseer names the selected memory targets; the
+       construction precedes the changed transform).
+   (3) The iteration reading, equal for bodies chosen in neither run and -1 for a body a run sent the candidate:
+       right (intention_generator.py 698).
+   (4) Same-choice outputs reported, not gated: wrong for the "neither" group (R1); right for common_selected, whose
+       sent command differs by design.
+   (5) Root tilt in place of the chest roll: acceptable; documented; reported only.
+   (6) The 496,250 fall reference: acceptable; documented (M9).
+   (7) Self-contacts listed apart: apart in by_partner_kind, but inside the non-floor counts (M8).
+   (8) The headers: right (qpos_quantum, entities, joints and weight come from the header each chunk names; the owner
+       pins them).
+   (9) Field paths read only: right (record fields read as written; G5 alone recomputes from the arrays).
+   (10) G5 with no candidate: right (no body to check; pose_blend and unblended_version must still be present).
+
+B5 Rows. row_package_tests.json, row_u_run.json and row_reading.json each carry the question, why, inputs, steps,
+   measures with the two ends of each scale, pass_line and pass_line_basis, cost (training_stopped false, memory, time
+   limit), result_source, on_pass and on_fail; the reading row states no success line; the package test
+   test_rows_complete_and_generators passes the registry's own row_problems. material_gof_line reads "not yet defined"
+   on the two integrity rows.
+
+B6 Timing. Every part of TIMING_LEDGER.json equals the difference of the s2 clock's since_t0_s values it cites (s2
+   runtime/budget_clock.json): 3.319, 0.225, 9.506, 8.573, 30.146, 3.516, 3.088, 0.128, 8.005, 154.996, 5.781, 0.028
+   and 14.674 s, sum 241.985 s of the 900 s budget. E at the branch admission in that basis is 58.501 s against the
+   rule's 470 s line (margin 411.499 s). u's own trainer time and its start are not measured; the owner's limits
+   bound them.
+
+B7 Stop plan and resources. Stop request at the claim + 200 s when no end save has begun; process tree ended at + 300
+   s; branch closed by + 330 s; closure 100 s; the s2 ON trainer took 155.73 s including its complete save. Resources as
+   written: the launch-capacity guard at 32 GB (6 GB memory reserve; 12 GiB disk reserve on the page-file drive C:),
+   41 GB declared, the end save 1,329,664,389 bytes on D:. C: read 16,871,825,408 bytes free (15.71 GiB) at 8:30 PM PDT
+   with the installer staging folder absent (evidence/disk_reading.txt); with that folder back (7,736,427,412 bytes)
+   C: would read 9,135,397,996 bytes (8.51 GiB), under the 12 GiB reserve, and the guard would refuse. The owner runs
+   the main checkout's commit_guard.py without a pin; the file now reads the sha256 CONDITIONS.json records
+   (f26ebf33...).
+
+B8 Findings. The pinned list has 8 entries; each is correct as stated except finding 1's last sentence (M2). Missing:
+   R1 (the ordinary winner's commands are not gated), M1 (the 0.65 term's mechanism), M3 (the authorization's date is
+   not enforced), M4 (the added key in every save).
+
+======================================================================================================================
+TESTS RUN (CPU, synthetic data)
+======================================================================================================================
+- Part A: test_target_candidate_unblended.py, test_target_candidate.py, test_s1_planned_live_identity.py:
+  42 passed (17.45 s; run again with its output saved, 16.03 s: evidence/tests_part_a.txt).
+- Package tests through run_package_tests.py (--out package_tests_out): verdict pass, 31 passed in 5.56 s.
+- Reader: test_read_policy_pair.py: 26 passed (6.05 s; run again with its output saved, 5.88 s:
+  evidence/tests_reader.txt).
+- Probes (probes/): the command comparison; the MANIFEST pins; the route diff applied to a copy and its fingerprints;
+  the default-off planner identity (two cases, bit for bit).
+
+CLAIM LEDGER: ledger.json (92 entries: claim, file, literal quote), checked with .agent/hooks/claim_check.py: "CLAIM LEDGER: 92 of 92 verified" (evidence/claim_check_output.txt).
