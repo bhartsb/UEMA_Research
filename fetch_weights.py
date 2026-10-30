@@ -1,6 +1,6 @@
 # Copyright (c) 2026 Mind Machine Learning, Inc. All rights reserved.
 # Licensed under the Mind Machine Learning Noncommercial License 1.0; see the LICENSE file.
-"""Download the saved training state (model step 494,025) from the private Hugging Face repository into weights/.
+"""Download the saved training state (model step 494,025) from the Hugging Face repository into weights/.
 
     python fetch_weights.py --accept-license
 
@@ -9,10 +9,8 @@ License 1.0 (the file LICENSE beside this script), whose terms also cover every 
 trained or generated with it (its section Trained Models and Other Outputs). Running this script with the flag
 states your agreement to those terms, for yourself or for the organization you act for; without the flag it
 prints this notice and downloads nothing (exit code 2).
-Needs the huggingface_hub package (`pip install huggingface_hub`, pinned in requirements.txt). Access: the token in
-hf_reviewer_token.txt beside this script, which can only read this one repository (Mind Machine Learning revokes it
-on huggingface.co to end access); without that file, a login of your own (`hf auth login`) as a member of the
-mml-user organization. Downloads the six large files of weights/b1_continue_B1K_skip13_492800 (the model's weights, the
+Needs the huggingface_hub package (`pip install huggingface_hub`, pinned in requirements.txt). The repository is
+public: no account and no token is needed (a saved `hf auth login` or HF_TOKEN is used when present). Downloads the six large files of weights/b1_continue_B1K_skip13_492800 (the model's weights, the
 optimizer state, the trainer's runtime state, the eight worlds' episode companion, the latent-body state and its
 trajectory) into this repository at the same paths, then checks each against the SHA-256 that
 weights/b1_continue_B1K_skip13_492800/MANIFEST.json lists. A file already here with the right SHA-256 is kept.
@@ -25,7 +23,6 @@ from pathlib import Path
 
 REPO_ID = "mml-user/uema-research-weights"
 REPO = Path(__file__).resolve().parent
-TOKEN_FILE = REPO / "hf_reviewer_token.txt"     # read-only, this repository only
 BUNDLE = "weights/b1_continue_B1K_skip13_492800"
 FILES = ["latent_body/latest.pt", "latent_body/trajectory.jsonl",
          "run/checkpoints/ckpt_step_494025/episode_state.pt.gz", "run/checkpoints/ckpt_step_494025/model.safetensors",
@@ -63,10 +60,7 @@ def main() -> int:
         return 1
     manifest = {f["path"].replace("\\", "/"): f for f in
                 json.loads((REPO / BUNDLE / "MANIFEST.json").read_text(encoding="utf-8"))["files"]}
-    token = None                                  # None: the login of `hf auth login` (or HF_TOKEN)
-    if TOKEN_FILE.is_file():
-        lines = [line.strip() for line in TOKEN_FILE.read_text(encoding="utf-8-sig").splitlines() if line.strip()]
-        token = lines[0] if lines else None
+    token = None                                  # the repository is public; a saved login or HF_TOKEN is used when present
     bad = []
     for rel in FILES:
         want = manifest[rel]["sha256"]
@@ -80,8 +74,7 @@ def main() -> int:
         except Exception as exc:  # noqa: BLE001 - name the cause the reviewer can act on
             print("could not download it: %s: %s\n(%s)" % (
                 type(exc).__name__, str(exc)[:300],
-                "the token in hf_reviewer_token.txt was refused: it may have been revoked; ask Mind Machine Learning"
-                if token else "are you a member of mml-user, and logged in with `hf auth login`?"))
+                "the repository is public and needs no login: check the network, then retry"))
             return 1
         if sha256(local) != want:
             bad.append(rel)

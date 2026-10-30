@@ -8,8 +8,8 @@ Git does not keep modification times: a fresh clone stamps every file with the t
 the dashboard read those times, for example whether a test's result file was written during its own run (the
 investigation boxes on the Tests page decide only on a result written during the run) and which run folder holds the
 newest records. checkout_times.json holds each tracked file's modification time in the release (nanoseconds since
-1970); this script writes them back. It also reports whether the saved weights are here: they come from the private
-Hugging Face repository through `python fetch_weights.py`, not with the clone.
+1970); this script writes them back. It also reports whether the saved weights are here: they come from the
+Hugging Face repository through `python fetch_weights.py --accept-license`, not with the clone.
 """
 import json
 import os
