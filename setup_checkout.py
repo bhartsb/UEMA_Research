@@ -36,7 +36,7 @@ def main() -> int:
     from fetch_weights import BUNDLE, FILES
     absent = [f for f in FILES if not (REPO / BUNDLE / f).is_file() or (REPO / BUNDLE / f).stat().st_size < 1024]
     if absent:
-        print("the saved weights are not here yet (%d of %d files): run `python fetch_weights.py`"
+        print("the saved weights are not here yet (%d of %d files): run `python fetch_weights.py --accept-license`"
               % (len(absent), len(FILES)))
         return 1
     print("saved weights: %d files present (fetch_weights.py checks their SHA-256)" % len(FILES))

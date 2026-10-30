@@ -14,7 +14,9 @@ the third-party parts (MIMo keeps its MIT License).
 2. In the clone: `python setup_checkout.py`. Git does not keep file modification times and some checks
    read them; this restores them. Run it once, before anything else.
 3. Build the Python environment as in **Install** below.
-4. `python fetch_weights.py`. The saved weights (1.68 GiB) are in a private Hugging Face repository,
+4. `python fetch_weights.py --accept-license`. The flag states your agreement to the license, which covers the
+   weights and whatever is trained with them (`LICENSE`, Trained Models and Other Outputs); without it the script
+   downloads nothing. The saved weights (1.68 GiB) are in a private Hugging Face repository,
    `mml-user/uema-research-weights`; the script reads them with the token in `hf_reviewer_token.txt`, which can
    only read that repository, and checks every file's SHA-256. No Hugging Face account is needed. Do not reuse
    or share the token: Mind Machine Learning revokes it to end access.
@@ -91,13 +93,13 @@ produced this state (`weights/.../run/command.json`) with only the machine's par
 repository's saved state and input files, the new folder for everything the run writes, and the stop step
 (494,025 + N). `--print` shows the command without running it; `weights/b1_continue_B1K_skip13_492800/RESUME.md`
 explains the values. Its six largest files (weights, optimizer, runtime state, episode companion, latent-body
-state and trajectory; 6 to 621 MB) are not in this Git repository: `python fetch_weights.py` downloads them from
+state and trajectory; 6 to 621 MB) are not in this Git repository: `python fetch_weights.py --accept-license` downloads them from
 the private Hugging Face repository `mml-user/uema-research-weights` (step 4 of the quick start).
 
 ## Starting the dashboard and the explainer
 
 Before the first start, do steps 1 to 4 of the quick start (clone, `python setup_checkout.py`, the Python
-environment, `python fetch_weights.py`).
+environment, `python fetch_weights.py --accept-license`).
 
 **Start the dashboard.** In a terminal, with the Python environment activated:
 
@@ -150,6 +152,11 @@ ability evidence receipts. Removing vendor names and pointing paths into this re
 fingerprints cover, so each one was recomputed for this copy, only where it matched in the development repository
 and the copy is exactly that record with the same text rewrite. Every recomputed fingerprint, with its old and new
 value, is listed in `docs/release_reseal_receipt.json`.
+
+## Contributing
+
+Pull requests are not merged yet: `CONTRIBUTING.md` states the contributor agreement that must come first and
+what is welcome now.
 
 ## Work in progress on other branches
 

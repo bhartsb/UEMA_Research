@@ -2,8 +2,13 @@
 # Licensed under the Mind Machine Learning Noncommercial License 1.0; see the LICENSE file.
 """Download the saved training state (model step 494,025) from the private Hugging Face repository into weights/.
 
-    python fetch_weights.py
+    python fetch_weights.py --accept-license
 
+The flag is required: the saved training state is licensed under the Mind Machine Learning Noncommercial
+License 1.0 (the file LICENSE beside this script), whose terms also cover every model, set of weights or dataset
+trained or generated with it (its section Trained Models and Other Outputs). Running this script with the flag
+states your agreement to those terms, for yourself or for the organization you act for; without the flag it
+prints this notice and downloads nothing (exit code 2).
 Needs the huggingface_hub package (`pip install huggingface_hub`, pinned in requirements.txt). Access: the token in
 hf_reviewer_token.txt beside this script, which can only read this one repository (Mind Machine Learning revokes it
 on huggingface.co to end access); without that file, a login of your own (`hf auth login`) as a member of the
@@ -35,7 +40,22 @@ def sha256(path: Path) -> str:
     return h.hexdigest()
 
 
+LICENSE_NOTICE = """The saved training state is licensed under the Mind Machine Learning Noncommercial License 1.0:
+the file LICENSE beside this script. Its terms cover these weights and every model, set of weights or dataset
+trained or generated, in whole or in part, with them (the section Trained Models and Other Outputs):
+noncommercial purposes only, and no sale or commercial use of what is made with them.
+Read LICENSE, then run:
+
+    python fetch_weights.py --accept-license
+
+Running it with that flag states your agreement to those terms, for yourself or for the organization you act for.
+Nothing was downloaded."""
+
+
 def main() -> int:
+    if "--accept-license" not in sys.argv[1:]:
+        print(LICENSE_NOTICE)
+        return 2
     try:
         from huggingface_hub import hf_hub_download
     except ImportError:
