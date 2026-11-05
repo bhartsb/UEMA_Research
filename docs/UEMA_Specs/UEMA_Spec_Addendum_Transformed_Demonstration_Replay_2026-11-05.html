@@ -1,0 +1,194 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>UEMA Addendum: Transformed-Demonstration Replay</title>
+<meta name="description" content="Addendum to UEMA specification v3.5 and v3.6: what the DreMa paper (ICLR 2025) offers UEMA, and four proposed additions built on its transform, replay and verify method.">
+<style>
+:root{--ink:#18343d;--teal:#086b62;--line:#cbdcd5;--soft:#e8f2ec;--warm:#fbf6ea;--warmline:#d9b25a;--red:#9c3328;--redsoft:#fbefec;--muted:#3b595e;--bg:#eff3ee;--card:#ffffff}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--ink:#dbe8e4;--teal:#5cc7b8;--line:#2f4a48;--soft:#1b302d;--warm:#2e2a1d;--warmline:#a8873e;--red:#e88b7e;--redsoft:#33211e;--muted:#a9c0bb;--bg:#101a19;--card:#162321}}
+:root[data-theme="dark"]{--ink:#dbe8e4;--teal:#5cc7b8;--line:#2f4a48;--soft:#1b302d;--warm:#2e2a1d;--warmline:#a8873e;--red:#e88b7e;--redsoft:#33211e;--muted:#a9c0bb;--bg:#101a19;--card:#162321}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:18px/1.6 system-ui,-apple-system,"Segoe UI",sans-serif}
+main{max-width:980px;margin:28px auto;background:var(--card);padding:38px 44px;border:1px solid var(--line);border-radius:16px}
+.eyebrow{font-size:13px;font-weight:750;text-transform:uppercase;letter-spacing:.1em;color:var(--teal)}
+h1{font-size:clamp(28px,4.2vw,40px);line-height:1.15;letter-spacing:-.02em;margin:12px 0 10px}
+.meta{font-size:15px;color:var(--muted);margin:0 0 22px}
+h2{font-size:24px;line-height:1.25;margin:0 0 10px}
+h3{font-size:19px;margin:24px 0 6px}
+section{border-top:2px solid var(--line);padding:26px 0 8px;scroll-margin-top:12px}
+p{margin:10px 0 14px}li{margin:7px 0}
+p,li,td,th{overflow-wrap:anywhere}
+nav{display:flex;flex-wrap:wrap;gap:6px 18px;margin:8px 0 24px;font-size:15px}
+a{color:var(--teal);text-underline-offset:3px}a:focus-visible{outline:3px solid var(--warmline);outline-offset:4px}
+.simple{background:var(--warm);border:1px solid var(--warmline);border-radius:12px;padding:20px 24px;margin:6px 0 26px}
+.simple h2{font-size:22px}
+.simple p{font-size:19px}
+.callout{border-left:5px solid var(--teal);background:var(--soft);padding:14px 18px;margin:16px 0;border-radius:0 8px 8px 0}
+.warn{border-left:5px solid var(--red);background:var(--redsoft);padding:14px 18px;margin:16px 0;border-radius:0 8px 8px 0}
+.prop{border:1px solid var(--line);border-radius:12px;padding:6px 22px 14px;margin:20px 0}
+.prop h3{margin-top:16px}
+.tag{display:inline-block;font-size:12px;font-weight:750;letter-spacing:.08em;text-transform:uppercase;color:var(--teal);border:1px solid var(--teal);border-radius:999px;padding:1px 10px;margin-left:6px;vertical-align:middle}
+.table-scroll{overflow-x:auto;margin:12px 0 18px}
+table{border-collapse:collapse;width:100%;font-size:16px}
+th,td{padding:9px 11px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+th{background:var(--soft)}
+td.num{white-space:nowrap}
+.flow{list-style:none;padding:0;margin:14px 0;display:flex;flex-wrap:wrap;gap:8px 12px;font-weight:700;font-size:16px}
+.flow li{margin:0}.flow li:not(:last-child):after{content:'\2192';color:var(--teal);margin-left:12px}
+.sources{font-size:15px;color:var(--muted)}
+code{font-size:.86em}
+@media(max-width:700px){main{margin:0;border:0;border-radius:0;padding:24px 16px}body{font-size:17px}h2{font-size:21px}.flow{display:block}.flow li{margin:6px 0}.flow li:not(:last-child):after{content:'\2193';display:block;margin:4px 0 0}}
+@media print{body{background:#fff}main{margin:0;border:0;max-width:none;padding:12px}.prop,.simple,table{break-inside:avoid}}
+</style>
+</head>
+<body><main>
+
+<div class="eyebrow">Mind Machine Learning · UEMA specification · Addendum</div>
+<h1>Transformed-Demonstration Replay: an addendum to UEMA v3.5 and v3.6</h1>
+<p class="meta">Written November 5, 2026. Status: <strong>proposed</strong>; nothing on this page is implemented. It applies to UEMA specification v3.5 (<a href="UEMA_Spec_v3_5.txt">UEMA_Spec_v3_5.txt</a>) and v3.6. Section numbers below are v3.5's. Version 3.6 is not in this repository, so its section numbers have not been checked against these. Source paper: Barcellona, Zadaianchuk, Allegro, Papa, Ghidoni and Gavves, <em>Dream to Manipulate: Compositional World Models Empowering Robot Imitation Learning with Imagination</em> (DreMa), ICLR 2025.</p>
+
+<nav aria-label="Sections">
+<a href="#simple">The short version</a><a href="#setting">1 The setting</a><a href="#paper">2 What the paper did</a><a href="#fit">3 How it fits UEMA</a><a href="#proposals">4 The proposals</a><a href="#notadopted">5 What is not adopted</a><a href="#open">6 Open questions</a><a href="#sources">7 Sources</a>
+</nav>
+
+<div class="simple" id="simple">
+<h2>The short version, for anyone</h2>
+<p>Imagine your coach shows you <strong>one time</strong> how to pick up a cup with your right hand. You learned one thing. Now imagine a magic copy machine that makes new versions of that lesson: the cup a little to the left, the cup turned around, the whole lesson done with your left hand instead. Now you have many lessons from just one.</p>
+<p>But some copies might be nonsense. Maybe the cup ends up too far away to reach. So the machine <strong>tries every copy for real</strong> first and throws away the ones that don't work. Only the good copies are kept for practice.</p>
+<p>Some scientists built this machine for a robot arm. They had to build a pretend copy of the robot's real table out of video first. Our learning program already lives inside a pretend world, a video-game body, so we can skip the hard part and just use the copy-and-check trick.</p>
+<p>One warning: their robot was trained to <em>copy moves</em>. Ours is supposed to learn <em>what will happen</em> when it moves and then choose for itself. So we use the extra lessons to teach it what happens, not to tell it what to do.</p>
+</div>
+
+<section id="setting">
+<h2>1 · The setting</h2>
+<p><strong>UEMA</strong>, the Unified Embodied Mind Architecture, is the learning program this specification describes. It controls a simulated body: the 23-handle avatar in Unreal Engine (UE), and the simulated infant body MIMo in the physics program MuJoCo, which is the small test bed. UEMA does not learn a direct mapping from what it senses to what it does (v3.5 §1). It learns a <strong>forward model</strong>, a network that predicts what its senses will report next after a motor command (§6). It chooses actions by asking which command would make its predicted future better for its own body (§7.4, §10).</p>
+<p>A <strong>demonstration</strong> is one recorded example of a movement done well: a person's motion capture and eye-gaze track, played on the avatar's body. <strong>Stream 3, imitation grounding</strong> (§20.4), is the training stream that plays these recordings so the forward model can learn what coordinated movement feels like. Demonstrations are scarce, because each one needs a capture session.</p>
+<p>A <strong>simulator</strong> is a program that computes how bodies and objects move under forces. A <strong>digital twin</strong> is a simulator set up to match one particular real place. An <strong>equivariant transformation</strong> of a demonstration is a change applied to the scene and to the movement together, so the movement still does the same job. Moving the cup 10 cm left and moving the hand's whole path 10 cm left is one.</p>
+</section>
+
+<section id="paper">
+<h2>2 · What the paper did</h2>
+<p>DreMa makes many training demonstrations out of a few, for a robot arm (a Franka Emika Panda) on a table. It works in four steps:</p>
+<ol class="flow">
+<li>Film the table</li><li>Build a digital twin</li><li>Transform each demonstration</li><li>Replay it and keep it only if it still works</li>
+</ol>
+<ol>
+<li><strong>Film the table.</strong> A depth camera records a video of the scene from many angles.</li>
+<li><strong>Build a digital twin.</strong> An off-the-shelf tracker (DEVA) cuts the video into separate objects, given only the words "object" and "table". Each object is rebuilt in 3D with Gaussian Splatting, a method that draws a scene as many small coloured blobs and renders it photographically. Each object is then turned into a mesh and placed in the physics program PyBullet. The robot's own body comes from its maker's description file, and the paper assumes the robot knows its own dynamics exactly.</li>
+<li><strong>Transform each demonstration.</strong> Two transformations are applied to the objects and to the gripper's path together: rotate-and-move the whole scene, or rotate the objects around the path's end point.</li>
+<li><strong>Replay and verify.</strong> Each transformed demonstration is run in the twin. It is kept only if every object ends within 1.5 cm of where the transformed goal says it should.</li>
+</ol>
+<p>The kept demonstrations were added to the training data of PerAct, an existing imitation-learning network that maps camera images and a task sentence to the next gripper pose.</p>
+
+<div class="table-scroll"><table>
+<caption style="text-align:left;font-size:15px;color:var(--muted);padding-bottom:6px">Results reported in the paper. Success rate is the share of test trials in which the task was completed.</caption>
+<thead><tr><th>Test</th><th>Trained on the recorded demonstrations only</th><th>Recorded plus DreMa's generated demonstrations</th></tr></thead>
+<tbody>
+<tr><td>Real robot, five tasks, 3 to 5 recorded demonstrations each, average success</td><td class="num">31.7%</td><td class="num">62.9%</td></tr>
+<tr><td>Real robot, object positions outside the recorded range, average success</td><td class="num">25.0%</td><td class="num">58.3%</td></tr>
+<tr><td>Simulated, nine tasks one at a time, average success</td><td class="num">16.0%</td><td class="num">25.1%</td></tr>
+<tr><td>Simulated, three tasks learned together, average success</td><td class="num">22.4%</td><td class="num">35.5%</td></tr>
+</tbody></table></div>
+<p>Two further findings matter here. First, generated demonstrations kept helping when there were more recorded ones: with 20 recorded demonstrations per task, adding about 400 generated ones still raised success by 6 to 10 percentage points. Second, in the ablation, rotate-and-move of the whole scene gave more than rotation of the objects alone, and both gave far more than replaying the recordings unchanged.</p>
+<p>The paper names its own limits: the scene must be fully visible, only rigid objects are handled (nothing soft, nothing hinged), the twin is built once with no correction from later experience, and its object end positions differed from the real ones by 3.8 cm on average.</p>
+</section>
+
+<section id="fit">
+<h2>3 · How it fits UEMA</h2>
+<div class="warn"><strong>The difference that governs everything below.</strong> DreMa's "imagination" is an external simulator. It is not a learned model and it is not part of the agent. In UEMA's terms (§4) its output is <em>grounded-register data</em>: real sensor readings from a simulated world, not predictions in the predictive register. It therefore adds nothing to, and replaces nothing in, UEMA's own imagination: the forward model (§6), multi-step intention (§10.3) and the visual imagination module (§10.5).</div>
+<p>DreMa's generated data trained a policy network. That is the mapping §1 rejects. UEMA may use transformed demonstrations only as experience for the forward model to predict, through Stream 3, the same way it uses recorded demonstrations. They never become targets that tell the motor controller which command to give.</p>
+<p>Most of DreMa's work goes into building the twin from video. UEMA does not need that part: the UE avatar world and the MIMo world already are simulators. What carries over is the method of step 3 and step 4: transform, replay in the physics, keep only what passes a check.</p>
+<div class="table-scroll"><table>
+<thead><tr><th>DreMa part</th><th>UEMA counterpart</th><th>Verdict</th></tr></thead>
+<tbody>
+<tr><td>Gaussian Splatting reconstruction of a real scene</td><td>None needed: UE and MuJoCo scenes are authored</td><td>Not adopted while UEMA runs only in simulation</td></tr>
+<tr><td>Object segmentation into separate assets</td><td>Entity slots of the hierarchical self (§11.4); single pooled vision token (§28)</td><td>Open question; see proposal A3</td></tr>
+<tr><td>Physics replay of a demonstration</td><td>UE or MuJoCo run from a saved start state</td><td>Adopted; proposal A1</td></tr>
+<tr><td>Equivariant transformation of scene and actions</td><td>Transformation of the scene, the handle commands and the gaze command</td><td>Adopted with UEMA-specific limits; proposal A1</td></tr>
+<tr><td>1.5 cm end-position check</td><td>Identical-action replay noise floor (§10.6) and the transfer contracts (§20.6)</td><td>Adopted in a stricter form; proposal A1</td></tr>
+<tr><td>PerAct policy trained on the result</td><td>Forbidden by §1</td><td>Not adopted</td></tr>
+</tbody></table></div>
+</section>
+
+<section id="proposals">
+<h2>4 · The proposals</h2>
+<p>Each proposal names the specification section it extends, what it requires, and the test that would show it works. The words <em>must</em> and <em>must not</em> are requirements; <em>should</em> is a recommendation.</p>
+
+<div class="prop" id="a1">
+<h3>A1 · Transformed-demonstration replay for Stream 3 <span class="tag">extends §20.4</span></h3>
+<p><strong>What.</strong> Each recorded Stream 3 demonstration is turned into several new ones. A transformation is applied to the start scene, to the played motion and to the gaze track. The transformed demonstration is then run in the simulator from that transformed start, and the simulator produces every sensor reading.</p>
+<p><strong>Allowed transformations.</strong> A humanoid body stands under gravity and is not round, so only these keep a demonstration physically meaningful:</p>
+<ol>
+<li><strong>Left–right mirror.</strong> Swap each left handle with its right partner (Wrist_L with Wrist_R, Thumb_L with Thumb_R, and so on through Foot_L and Foot_R). Reflect every target position and rotation across the body's midline plane, and negate the gaze azimuth. Valid only if the avatar's body and its skin patches are left–right symmetric; that must be checked on the asset before use.</li>
+<li><strong>Turn about the vertical axis</strong>, applied to the body and every object together.</li>
+<li><strong>Slide along the floor</strong>, applied to the body and every object together.</li>
+<li><strong>Move or turn an object relative to the body.</strong> The motion must then be adjusted to reach the new place (for a reach, the hand path is moved with the object, as in DreMa). This is the transformation most likely to fail, because the body's reach and balance change.</li>
+</ol>
+<p>Tilts away from upright are not allowed: gravity would act differently on the body.</p>
+<p><strong>Requirements.</strong></p>
+<ul>
+<li>Every sensor channel (touch, body sense, vision, hearing) <strong>must</strong> come from the simulator's run of the transformed demonstration. A recorded channel <strong>must not</strong> be edited to imitate a transformation: a mirrored camera picture, for example, does not match a mirrored world with lighting from one side.</li>
+<li>No transformed demonstration on the UE avatar may be used before the three UE transfer contracts of §20.6 pass for the same build. Replay is only as good as the touch, action and vision paths it records through.</li>
+<li><strong>Verification gate.</strong> A transformed demonstration is kept only if its outcome matches the transformed outcome of the original. Compared quantities are the hand-point paths, the end pose of each moved object, and the order of contacts (which finger touched what first). DreMa's fixed 1.5 cm threshold is not copied. The tolerance <strong>must</strong> be set from the noise floor measured by replaying identical actions from identical restored states, as §10.6 requires for first-action comparisons.</li>
+<li>Each kept demonstration <strong>must</strong> carry its origin: the source demonstration, the transformation and its parameters, the build, and the gate's measured distances. Rejected ones are logged with the reason, because the rejection rate measures how often the transformations break physics.</li>
+<li><strong>Loss weight.</strong> The current master configuration gives data labelled <code>synthetic</code> a loss weight of zero (<code>source_scales</code> in <code>Source/Python/lem/master_config.yaml</code>). Transformed demonstrations are physics-simulated, not placeholders. They <strong>must not</strong> be filed under <code>synthetic</code>, or they will silently teach nothing. They should get their own label (for example <code>transformed</code>) with a weight equal to the weight of recorded demonstrations once the gate has passed.</li>
+</ul>
+<p><strong>Acceptance test.</strong> A forward model trained on recorded plus transformed demonstrations must predict held-out <em>recorded</em> demonstrations better than one trained on recorded demonstrations alone, at the same number of training steps. Held-out recordings must include positions outside the recorded range, as DreMa's out-of-range test did.</p>
+</div>
+
+<div class="prop" id="a2">
+<h3>A2 · A generated composition set for the reusable-skill test <span class="tag">extends §10.6</span></h3>
+<p><strong>What.</strong> §10.6 names the reusable-skill gap and sets its acceptance test: in a composed task such as reaching around a barrier before contact, the final goal must change the <em>first</em> action, held-out trials must succeed, and the simple reach must still work afterwards. That test needs many barrier layouts and a clean split between layouts used in training and layouts held back. A1's transformations make that set from a few authored scenes.</p>
+<p><strong>Requirements.</strong></p>
+<ul>
+<li>The held-out trials <strong>must</strong> differ from the training trials by transformation parameters not seen in training (for example, barrier angles in a range never used for training). A random split of transformed copies of the same layout is not held out: those copies differ only by the transformation.</li>
+<li>The set <strong>must</strong> include matched layouts with and without the barrier, so that "the goal changed the first action" can be measured: the same start state, two different goals, two first actions.</li>
+<li>Every layout used for testing must have passed A1's verification gate with a demonstration, which proves the composed task is physically possible from that start.</li>
+</ul>
+<p>This proposal supplies test material only. It does not choose among the three candidate mechanisms of §10.6 (learned subgoals, short joint sequences, a temporally extended controller).</p>
+</div>
+
+<div class="prop" id="a3">
+<h3>A3 · Where entities come from <span class="tag">open question for §11.4 and §28</span></h3>
+<p>The hierarchical self (§11.4) proposes 64 entity slots for its level 2 and level 3 self, but the specification does not say how the system finds the entities to put in them. §28 also asks whether one pooled vision token throws away too much. DreMa's reason for working with separate objects (the world is made of objects of varying number and kind, and handling them separately makes changes easy to model) supports both concerns.</p>
+<p>DreMa gets its objects from a pre-trained segmentation tool. Using such a tool in UEMA would give the vision encoder object boundaries it did not discover. Whether that conflicts with §1's rule that capabilities are learned, not authored, is a decision for the specification owner. It is not settled here. The narrower step that does not conflict: use simulator object identities <em>only for measurement</em>, to check whether learned vision features separate objects, never as input to the learner.</p>
+</div>
+
+<div class="prop" id="a4">
+<h3>A4 · Replay as a reference for imagined rollouts <span class="tag">extends §6.3 and the §4.2 TODO</span></h3>
+<p>The forward model's multi-step imagination drifts as each prediction feeds the next (§6.3). The §4.2 TODO asks for a test of how much is kept beyond 10 frames of rollout. A1's replay machinery gives a direct reference: from one restored start state, run the same command sequence both in the forward model's imagination and in the simulator, encode the simulator's readings, and measure the gap step by step. This is a measurement only. It adds no loss term and no training signal.</p>
+</div>
+</section>
+
+<section id="notadopted">
+<h2>5 · What is not adopted, and why</h2>
+<ul>
+<li><strong>The Gaussian Splatting reconstruction pipeline.</strong> It solves building a simulator from a real scene. UEMA has no real scene while it runs in simulation. If UEMA moves to a physical body, this pipeline becomes the leading way to build the matching simulator, and the paper's engineering notes then apply: it switched to 2DGS, a variant that keeps blobs on surfaces, because ordinary splats gave wrong depth, and it needed a calibrated camera to line the twin up with the robot.</li>
+<li><strong>The assumption of a perfect self-model.</strong> DreMa gives the robot its exact dynamics from a description file. UEMA learns its body (§11, §19). A twin may simulate the body for replay, but the learner must never be handed its body's description.</li>
+<li><strong>Training a policy network on the generated data.</strong> Excluded by §1.</li>
+</ul>
+</section>
+
+<section id="open">
+<h2>6 · Open questions</h2>
+<ol>
+<li><strong>Handedness.</strong> If every demonstration is mirrored as often as it is kept, the data contain no preference for one hand. Should mirrored copies be kept rarer than originals, so that a preferred hand can still develop?</li>
+<li><strong>Soft contact.</strong> DreMa handles only rigid objects. UEMA's touch comes from deformable fingertip contact (§3.1). Does the verification gate need a touch measure, such as matching pressure peaks per finger, beyond positions and contact order?</li>
+<li><strong>Ratio.</strong> DreMa used about 800 generated demonstrations per task from 3 to 5 recordings. How many transformed copies per recording before the forward model over-learns the transformations instead of the movement?</li>
+<li><strong>Section numbers in v3.6.</strong> This page cites v3.5. They must be checked against v3.6 when v3.6 is added to the repository.</li>
+</ol>
+</section>
+
+<section id="sources" class="sources">
+<h2>7 · Sources</h2>
+<ul>
+<li>Barcellona L., Zadaianchuk A., Allegro D., Papa S., Ghidoni S., Gavves E. <em>Dream to Manipulate: Compositional World Models Empowering Robot Imitation Learning with Imagination.</em> ICLR 2025. Project page: <a href="https://dreamtomanipulate.github.io/">dreamtomanipulate.github.io</a>. Numbers in section 2 are from its Tables 1, 3 and 4, the multi-task result in its text, and its section 5.2.</li>
+<li>UEMA specification v3.5, <a href="UEMA_Spec_v3_5.txt">UEMA_Spec_v3_5.txt</a>: §1, §4, §6, §6.3, §10.3, §10.5, §10.6, §11.4, §19, §20.4, §20.6, §28.</li>
+<li><code>Source/Python/lem/master_config.yaml</code>, <code>source_scales</code>, read November 5, 2026.</li>
+</ul>
+</section>
+
+</main></body>
+</html>
