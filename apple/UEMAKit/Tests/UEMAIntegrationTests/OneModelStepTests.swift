@@ -888,6 +888,15 @@ extension MotorFunctionApplier: BodyFunctionModulating {}
 ///   `CommandDecoder(engine:physics:fingerJointIDs:)`).
 /// - `CandidateExecution(physics:)`: the execution transform (planner_loss.md section 3 step 2),
 ///   owned by no plan row; it needs `extension CandidateExecution: CommandExecuting {}` here.
+// State on November 4, 2026 (consistency pass, apple/FIRST_BUILD_CHECKLIST.md section 3): the
+// body-function lines below use the adapters that ReleasedSceneCommandTests runs on the released
+// scene, and the forward model is built by ForwardModel.released(from:). Still not on disk, so
+// this block does not compile yet: ForwardModel's conformances to UEMACore.ForwardModeling (its
+// step returns UEMAModel.ForwardPass, not ModelOutput, and runs neither the motor controller nor
+// wellness) and to UEMAPlanner.PlanTransitionProviding; ReleasedSenseReaders.make (which would
+// build the six readers, now including UEMASenses' VisionReader and AudioReader, and the shared
+// BodyStateTracker); ReleasedVestibularNormaliser.make; ReleasedHandDescent.make;
+// CandidateExecution (the execution transform, lem_model.py:5664-5727).
 struct ReleasedStackComposer: ModelStepStackComposing {
     func makeStack(weightsURL: URL) throws -> ModelStepStack {
         let scene = try ResourceSceneBundle()
@@ -895,7 +904,9 @@ struct ReleasedStackComposer: ModelStepStackComposing {
         let physics = MuJoCoPhysics()
         try physics.load(sceneXML: scene.sceneXMLURL)
         let loaded = try SafetensorsLoader.bundled().load(from: weightsURL)
-        let forwardModel = try ForwardModel(weights: loaded.weights)
+        // The tables before any body-function write (ActuatedBodyTables(modelTables:) doc).
+        let actuated = try ActuatedBodyTables(modelTables: physics.modelTables())
+        let forwardModel = try ForwardModel.released(from: loaded.weights)
         let executedRecord = ExecutedCommandRecord()
         let senses = try ReleasedSenseReaders.make(physics: physics, scene: scene, executed: executedRecord)
         let tokenizers = TokenizerBank.released(
@@ -907,10 +918,10 @@ struct ReleasedStackComposer: ModelStepStackComposing {
             search: AdamCommandSearch(),
             handDescent: try ReleasedHandDescent.make(physics: physics))
         let bodyFunction = MotorFunctionApplier(
-            modulator: try MotorFunctionModulator.released(physics: physics),
+            modulator: try MotorFunctionModulator(tables: actuated),
             mode: .modulate,
-            capacities: senses.tracker,
-            writer: physics)
+            capacities: FatigueCapacities(source: senses.tracker),
+            writer: ActuatorParameterStrengthWriter(physics))
         return ModelStepStack(
             physics: physics,
             readers: senses.readers,

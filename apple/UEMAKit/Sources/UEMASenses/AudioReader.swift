@@ -3,7 +3,7 @@
 //
 // AudioReader.swift: the audio sense's SenseReader and the crib's hearing it renders, a port of
 // `CribAudio.render` (Source/Python/mimo_bridge/audio_adapter.py:146-291; contract in
-// apple/UEMAKit/Specs/audio_render.md). Written November 5, 2026 for the cross-module consistency
+// apple/UEMAKit/Specs/audio_render.md). Written November 4, 2026 for the cross-module consistency
 // pass (item 1 of docs/apple_port/HANDOFF_2026-11-04.md): before it, UEMASenses held no audio
 // reader and UEMATokenizer's AudioTokenizer accepted three auxiliary layouts.
 //

@@ -36,7 +36,7 @@
 //   THE MOTOR COUNT. UEMACore's MotorControls holds exactly 90 numbers, the nu of the exported
 //   crib scene (Sources/UEMAScene/Resources/crib_age24_trunk_v1/bundle.json "nu": 90; env.py:2918
 //   "18 of 90 actuators"; MuJoCoPhysics.swift header "THE MOTOR COUNT"); it read 92 before
-//   November 5, 2026. CommandDecoder below refuses an engine of any other count with
+//   November 4, 2026. CommandDecoder below refuses an engine of any other count with
 //   CommandDecoderError.inconsistentTables. HandleCommandDecoder itself works for any nu.
 //
 // SOURCES READ ENTIRE BEFORE WRITING (November 4, 2026): action_decoder.py (527 lines);

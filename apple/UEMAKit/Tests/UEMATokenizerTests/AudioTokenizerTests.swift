@@ -50,7 +50,7 @@ final class AudioTokenizerTests: XCTestCase {
     }
 
     /// One auxiliary layout: the reader's 6 raw metadata numbers. The [5] and [2] layouts this
-    /// tokenizer took before November 5, 2026 are refused, as is any other width.
+    /// tokenizer took before November 4, 2026 are refused, as is any other width.
     func testOnlyTheSixNumberMetadataIsAccepted() throws {
         for width in [2, 3, 5, 7] {
             let reading = SenseReading(

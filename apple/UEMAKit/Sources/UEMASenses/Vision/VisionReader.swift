@@ -4,7 +4,7 @@
 // VisionReader.swift: the vision sense's SenseReader. It renders the four patched eye cameras
 // through an EyeRendering (SceneKitEyeRenderer on Apple platforms, a fake in tests), samples the
 // eye joints' yaw and pitch, and packs both into UEMACore's VisionReadingLayout, the layout
-// UEMATokenizer's VisionPatcher reads. Written November 5, 2026 for the cross-module consistency
+// UEMATokenizer's VisionPatcher reads. Written November 4, 2026 for the cross-module consistency
 // pass (item 1 of docs/apple_port/HANDOFF_2026-11-04.md): before it, UEMASenses rendered images
 // (EyeRenderPass) but no SenseReader produced a vision reading.
 //
@@ -24,7 +24,7 @@
 // robot:left_eye_horizontal, qpos of robot:left_eye_vertical), right (minus qpos of
 // robot:right_eye_horizontal, qpos of robot:right_eye_vertical); a joint the scene lacks reads 0.
 // On the released scene these joints are ids 70, 71, 73, 74 at qpos addresses 76, 77, 79, 80
-// (Python mujoco 3.3.0, November 5, 2026).
+// (Python mujoco 3.3.0, November 4, 2026).
 
 import Foundation
 import UEMACore

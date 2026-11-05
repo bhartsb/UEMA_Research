@@ -43,7 +43,7 @@
 // THE MOTOR COUNT. The released scene compiles to nu = 90: bundle.json model_counts.nu 90, its
 // observer_header.nu 90 (the trainer's own run), Python mujoco 3.3.0 on scene.xml 90 (November 4,
 // 2026), env.py:2918 "18 of 90 actuators". UEMACore's MotorControls.count is 90 (it read 92
-// before November 5, 2026, a figure from another body file), so `write(controls: MotorControls)`
+// before November 4, 2026, a figure from another body file), so `write(controls: MotorControls)`
 // writes on the released scene and throws PhysicsError.wrongCount only for a scene of another nu;
 // `write(controls: [Double])` takes nu numbers for any scene.
 //

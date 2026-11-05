@@ -3,7 +3,7 @@
 //
 // VisionReading.swift: the one layout of the vision sense's `SenseReading`, shared by the reader
 // that renders it (UEMASenses VisionReader) and the tokenizer that patches it (UEMATokenizer
-// VisionPatcher). Written November 5, 2026 for the cross-module consistency pass (item 1 of
+// VisionPatcher). Written November 4, 2026 for the cross-module consistency pass (item 1 of
 // docs/apple_port/HANDOFF_2026-11-04.md): before it, the `SenseReading` comment named vision as
 // [5, height, width, 3], an array shape that cannot hold images of 256 and 288 px, while
 // VisionPatcher read the layout below, and no vision reader existed.

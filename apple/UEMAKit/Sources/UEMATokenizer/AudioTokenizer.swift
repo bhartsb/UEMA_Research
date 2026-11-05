@@ -10,7 +10,7 @@
 // audio_adapter.py:222-269), bins log-spaced from 40 Hz to 8,000 Hz. The render's metadata as
 // `auxiliary`, [6] = [left_rms, right_rms, ild_db (dB), itd_ms (ms), azimuth (rad), front_back]
 // (audio_adapter.py:285-290; audio_render.md section 3 step 6), or none. This is the one layout
-// UEMASenses' AudioReader produces (settled November 5, 2026; the [5] and [2] layouts this
+// UEMASenses' AudioReader produces (settled November 4, 2026; the [5] and [2] layouts this
 // tokenizer also took before are refused).
 //
 // OPERATION.

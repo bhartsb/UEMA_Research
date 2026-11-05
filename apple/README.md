@@ -1,6 +1,6 @@
 # UEMAKit and UEMA Mind: the Apple Swift port
 
-**Continuing this work:** start with [docs/apple_port/HANDOFF_2026-11-04.md](../docs/apple_port/HANDOFF_2026-11-04.md), the state of every work item and the open issues as of November 4, 2026.
+**Continuing this work:** start with [docs/apple_port/HANDOFF_2026-11-04.md](../docs/apple_port/HANDOFF_2026-11-04.md), the state of every work item and the open issues as of November 4, 2026. Then [FIRST_BUILD_CHECKLIST.md](FIRST_BUILD_CHECKLIST.md) for the Mac build, and [linux_check/](linux_check/README.md) for the tests that run without a Mac.
 
 This folder holds target B of the Apple port, a Swift package and a SwiftUI app that run one MIMo body
 with the released UEMA weights on macOS and iOS without Python, and under `apple/scripts/` the Python
@@ -29,12 +29,12 @@ section 2):
 
 | Module | Stage | Input | Output |
 | --- | --- | --- | --- |
-| `UEMAPhysics` | 1 | 92 motor controls, each -1 to 1 | joint positions and velocities, 56 sensor values, body poses, contacts after 10 physics steps of 5 ms |
+| `UEMAPhysics` | 1 | 90 motor controls, each -1 to 1 | joint positions and velocities, 168 sensor values (56 sensors), body poses, contacts after 10 physics steps of 5 ms |
 | `UEMASenses` | 2 | the physics arrays | raw arrays per sense (vision, tactile, audio, proprioception, motor, vestibular) |
 | `UEMATokenizer` | 3 | raw arrays per sense | encoder inputs (fixed divisors; vision cut into 16 x 16 x 3 patches) |
 | `UEMAModel` | 4, 5, 6, 7 | encoder inputs | one 192-number token per sense; the forward model's state over 6 tokens x 128 model steps = 768 tokens; the predicted next token per sense; the motor controller's command |
 | `UEMAPlanner` | 8 | the goal (the highest-wellness entry of the goal ring, the memory of the last 200 model steps) and the predicted tokens | one command refined by Adam (learning rate 0.1) for 20 updates through the frozen forward model, every 10th model step once the goal ring holds 20 entries |
-| `UEMACommand` | 9 | the command (26 body handles x 9 numbers) | 92 motor controls, to stage 1 |
+| `UEMACommand` | 9 | the command (26 body handles x 9 numbers) | 90 motor controls, to stage 1 |
 
 Three more modules carry no stage of their own: `CMuJoCo`, the C module over the MuJoCo XCFramework
 (WI-19); `UEMACore`, the value types (Command, Token, SenseName, ModelStep) and the protocols every

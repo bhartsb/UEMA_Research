@@ -15,14 +15,21 @@
 //    40-degree turn about x as the orientation target and strength 1 on one of upperarm_R,
 //    upperarm_L, head, thigh_R moves some qpos entry by more than 1e-3; the same command at
 //    strength 0 moves less than at strength 1; every control lies within -1 to 1.
+//  - Step 3's body-function side on the same scene: MotorCommandWriter with
+//    MotorFunctionApplier(modulate) over FatigueCapacities(BodyStateTracker) and
+//    ActuatorParameterStrengthWriter(MuJoCoPhysics), the tracker sampled once per env step as the
+//    session does (MotorFunction.swift TIMING): 50 env steps of a held arm command leave every
+//    qpos finite, the arm set's capacity below 1, and the written gains and force ranges equal
+//    to the modulator's output for the capacities read.
 //
 // First run: the Linux harness of apple/FIRST_BUILD_CHECKLIST.md (Swift 6.2, MuJoCo 3.3.0 for
-// Linux), November 5, 2026.
+// Linux), November 4, 2026.
 
 import Foundation
 import UEMACommand
 import UEMACore
 import UEMAPhysics
+import UEMASenses
 import XCTest
 
 final class ReleasedSceneCommandTests: XCTestCase {
@@ -102,5 +109,39 @@ final class ReleasedSceneCommandTests: XCTestCase {
         let weak = try hold(turnCommand(.upperarmR, strength: 0), physics: physics, decoder: decoder).max() ?? 0
         print("WI-37 released scene: upperarm_R strength 1 moved \(strong), strength 0 moved \(weak)")
         XCTAssertGreaterThan(strong, weak)
+    }
+
+    /// Step 3, body function: decode, modulate from the fatigue capacities, write, step.
+    func testBodyFunctionStageRunsOnTheReleasedScene() throws {
+        let (physics, decoder) = try loaded()
+        let tables = try physics.modelTables()
+        let layout = try ProprioceptionLayout.make(
+            from: ModelTablesDescription(tables: tables, sizes: physics.sizes, geomBodyIds: tables.geomBodyID))
+        let tracker = BodyStateTracker(layout: layout)
+        let modulator = try MotorFunctionModulator(tables: ActuatedBodyTables(modelTables: tables))
+        let applier = MotorFunctionApplier(modulator: modulator, mode: .modulate,
+                                           capacities: FatigueCapacities(source: tracker),
+                                           writer: ActuatorParameterStrengthWriter(physics))
+        let writer = MotorCommandWriter(decoder: decoder, physics: physics, motorFunction: applier)
+        let command = turnCommand(.upperarmR, strength: 1)
+        _ = try tracker.sample(physics)
+        for _ in 0 ..< 50 {
+            let capacities = tracker.fatigue.capacities
+            let controls = try writer.stepEnvStep(command, mask: .allTrue, gaze: nil, fingerGoals: nil,
+                                                  afterEachPhysicsStep: { _ in })
+            XCTAssertTrue(controls.isWithinRange)
+            XCTAssertEqual(applier.lastWritten, try modulator.modulated(capacities: capacities))
+            _ = try tracker.sample(physics)
+        }
+        XCTAssertTrue(physics.qpos.allSatisfy(\.isFinite))
+        let capacities = tracker.fatigue.capacities
+        print("WI-37 released scene: body-set capacities after 50 env steps \(capacities)")
+        XCTAssertEqual(capacities.count, 10)
+        XCTAssertLessThan(capacities.min() ?? 1, 1)
+        let written = try XCTUnwrap(applier.lastWritten)
+        let now = try physics.modelTables()
+        XCTAssertEqual(now.actuatorGainParameter0, written.gain)
+        XCTAssertEqual(now.actuatorForceRangeLow, written.forceLow)
+        XCTAssertEqual(now.actuatorForceRangeHigh, written.forceHigh)
     }
 }

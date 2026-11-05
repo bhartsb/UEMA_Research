@@ -270,7 +270,7 @@ public struct EncoderInput: Equatable, Codable, Sendable {
 // MARK: - Physics
 
 /// The sizes of the loaded MuJoCo model. On the released crib scene (`released`, measured with
-/// Python mujoco 3.3.0 on Sources/UEMAScene/Resources/crib_age24_trunk_v1/scene.xml, November 5,
+/// Python mujoco 3.3.0 on Sources/UEMAScene/Resources/crib_age24_trunk_v1/scene.xml, November 4,
 /// 2026, and by MuJoCoPhysicsTests on the same file): nq 146, nv 136, nu 90, nbody 76, njnt 104,
 /// nsensordata 168 (from nsensor 56 sensors), ngeom 188, ncam 6.
 public struct PhysicsSizes: Equatable, Hashable, Codable, Sendable {

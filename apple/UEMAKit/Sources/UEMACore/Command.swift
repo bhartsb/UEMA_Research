@@ -56,7 +56,7 @@
 //   clipped to -1..1". The row's evidence "92 motors ctrlrange -1 1 (inventory2 mimo-body)"
 //   counts a different body file: the released scene
 //   (Sources/UEMAScene/Resources/crib_age24_trunk_v1/scene.xml) compiles to nu = 90 in Python
-//   mujoco 3.3.0 (measured November 5, 2026: 90 actuators, every one a joint transmission on a
+//   mujoco 3.3.0 (measured November 4, 2026: 90 actuators, every one a joint transmission on a
 //   hinge joint) and in the Linux build of MuJoCoPhysics (MuJoCoPhysicsTests
 //   testLoadsReleasedSceneWithMeasuredSizes); bundle.json model_counts.nu is 90.
 // - apple/UEMAKit/Specs/proprio_rows.md section 5 step 1: "`echo[:, 9] = handle_mask` as

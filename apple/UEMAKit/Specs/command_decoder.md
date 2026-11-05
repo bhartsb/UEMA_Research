@@ -1,4 +1,4 @@
-# Command decoder: the command (26 handles x 9 numbers) to the 92 motor controls
+# Command decoder: the command (26 handles x 9 numbers) to the 90 motor controls
 
 Work item WI-16, target A. Written 2026-11-04 05:21 PM PST on branch feature/apple-port-2026-11-04 from a complete read of `Source/Python/mimo_bridge/action_decoder.py` (527 lines) and the lines of `env.py`, `hand_target_control.py`, `lem_model.py`, `body_layout.py`, `body_sets.py`, `gaze_reflex.py` and the released run's `args.json` cited below. Every path is relative to `D:/UEMA_Research/Source/Python` unless it starts with `weights/`. This is the contract the Swift type `HandleCommandDecoder` (specification section 5, REQ-B-13) implements against.
 
@@ -51,7 +51,7 @@ The decoder runs once per call of `BridgeEnv.step` (env.py:2847-2891), which the
 
 ## 4. Output and what the world does with it
 
-- `ctrl`: [nu] float64, nu = `model.nu` (92 motors on the released body, specification section "The setting"); stored on `env.ctrl` (env.py:2891).
+- `ctrl`: [nu] float64, nu = `model.nu` (90 on the released crib scene, which uses MIMo_metav2_lite.xml; MIMo_metav2.xml has 92 motors; measured with mujoco 3.3.0 on November 4, 2026); stored on `env.ctrl` (env.py:2891).
 - `body_function modulate` (args.json:51): after the decode, `_apply_motor_function` (env.py:2832-2845) sets `actuator_gainprm[:, 0] = native_gain * factor` and `actuator_forcerange = native_range * factor` where `factor[a] = fatigue.cap[body set of actuator a]` (proprio_rows.md section 3) and 1 for an actuator of no body set. It requires `actuator_gaintype == 0` and `actuator_biastype == 0` for every actuator (:2835-2836).
 - The MIMo actuation model clips `ctrl` to the env action space and writes `data.ctrl[actuators]` (third_party/MIMo/mimo/mimo_infant/actuation/actuation.py:153-154, a path from the repository root `D:/UEMA_Research`), then the physics runs 2 x (`mj_step`, `mj_rnePostConstraint`) per env step (specification REQ-B-3, [I2 third_party/MIMo/mimo/mimo_infant/simulation/envs/mimo_env.py:573-619]; not re-read here).
 

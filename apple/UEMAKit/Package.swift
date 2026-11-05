@@ -10,20 +10,24 @@
 // target (work item WI-40). Nothing in this package was compiled on the machine that
 // wrote it (Windows 11, no Swift toolchain, no Xcode: plan section 3, fact 1).
 //
-// MODULE SEQUENCE. Each module depends on every module before it, in this order
-// (plan row WI-17: "UEMACore <- UEMAPhysics <- UEMAScene <- UEMASenses <- UEMATokenizer
-// <- UEMAModel <- UEMAPlanner <- UEMACommand"); CMuJoCo, the C module over the binary
-// target, sits before UEMAPhysics:
-//   mujoco (binary) <- CMuJoCo (C) <- UEMACore <- UEMAPhysics <- UEMAScene <- UEMASenses
-//   <- UEMATokenizer <- UEMAModel <- UEMAPlanner <- UEMACommand
-// Every dependency is declared directly (not left to transitivity) so that an `import`
-// of any earlier module compiles in any later one.
+// MODULE DEPENDENCIES. Each target depends on exactly the modules its files import (the
+// consistency pass of November 4, 2026, item 1 of docs/apple_port/HANDOFF_2026-11-04.md,
+// read every `import` line; before it, each module depended on every module earlier in the
+// plan's sequence "UEMACore <- UEMAPhysics <- UEMAScene <- UEMASenses <- UEMATokenizer <-
+// UEMAModel <- UEMAPlanner <- UEMACommand"). The graph:
+//   mujoco (binary) <- CMuJoCo (C) <- UEMAPhysics
+//   UEMACore <- UEMAPhysics, UEMAScene, UEMATokenizer, UEMAModel, UEMAPlanner
+//   UEMAPhysics, UEMAScene <- UEMASenses
+//   UEMAPhysics, UEMASenses <- UEMACommand
+// UEMATokenizer, UEMAModel and UEMAPlanner talk to the senses and to each other only
+// through UEMACore's protocols and value types, so none of them imports another; the
+// session (apple/UEMAMind) and UEMAIntegrationTests join them. Adding an `import` of another
+// package module to a file needs the matching dependency here.
 //
-// WHICH MODULE GETS MLX. UEMATokenizer (MLX: its outputs are the encoders' inputs),
-// UEMAModel (MLX, MLXNN, MLXRandom: encoders, transformer, heads, motor controller,
-// wellness) and UEMAPlanner (MLX, MLXNN, MLXOptimizers, MLXRandom: Adam on the command
-// through the frozen forward model, plan row WI-39). The other modules hold plain Swift
-// value types.
+// WHICH MODULE GETS MLX. UEMAModel (MLX, MLXNN: encoders, transformer, heads, motor
+// controller, safetensors reader) and UEMAPlanner (MLX: the Adam search on the command,
+// plan row WI-39). No file imports MLXRandom or MLXOptimizers; UEMATokenizer's outputs are
+// UEMACore ShapedArrays, so it does not import MLX. The other modules hold plain Swift.
 //
 // CMuJoCo IS A C-FAMILY TARGET. publicHeadersPath "." makes Sources/CMuJoCo itself the
 // public headers folder, so work item WI-19's module.modulemap and shim.h sit flat in
@@ -151,11 +155,10 @@
 //     symbols from the MuJoCo static library's renderer objects, add
 //     `linkerSettings: [.linkedFramework("OpenGL", .when(platforms: [.macOS]))]` to
 //     CMuJoCo and record the symbol names in apple/FIRST_BUILD_RECORD.md.
-//  5. `xcodebuild -scheme UEMAKit-Package test -destination 'platform=macOS'` : every
-//     placeholder test passes (one per test target: each Swift module's test checks its
-//     module's name constant; CMuJoCoTests only runs until WI-19's mj_versionString()
-//     test replaces it; UEMASceneTests, UEMASensesTests and UEMAModelTests also check
-//     that one bundled file is found).
+//  5. `xcodebuild -scheme UEMAKit-Package test -destination 'platform=macOS'` : every test
+//     target passes. apple/FIRST_BUILD_CHECKLIST.md lists the per-target counts and the
+//     tests that already passed on the Linux harness (Swift 6.2, MuJoCo 3.3.0), so a
+//     failure on the Mac in one of those points at a platform difference, not a logic error.
 //  6. Write each step's command, exit code and clock time (AM/PM Pacific) into
 //     apple/FIRST_BUILD_RECORD.md (the plan's WI-41; the specification's REQ-B-18 names
 //     the same record apple/records/first_build.md).
@@ -229,54 +232,40 @@ let package = Package(
         // The exported scene bundle and skin layout, found in the module bundle (WI-26).
         .target(
             name: "UEMAScene",
-            dependencies: ["CMuJoCo", "UEMACore", "UEMAPhysics"],
+            dependencies: ["UEMACore"],
             resources: [.copy("Resources")]
         ),
 
-        // The six sense readers (WI-27, WI-28, WI-29).
+        // The sense readers (WI-27, WI-28, WI-29; the vision and audio readers of November 4, 2026).
         .target(
             name: "UEMASenses",
-            dependencies: ["CMuJoCo", "UEMACore", "UEMAPhysics", "UEMAScene"]
+            dependencies: ["UEMACore", "UEMAPhysics", "UEMAScene"]
         ),
 
         // Raw sense arrays into encoder inputs (WI-30).
         .target(
             name: "UEMATokenizer",
-            dependencies: [
-                "CMuJoCo", "UEMACore", "UEMAPhysics", "UEMAScene", "UEMASenses",
-                mlx("MLX"),
-            ]
+            dependencies: ["UEMACore"]
         ),
 
         // Weights loader, encoders, forward model, heads, motor controller, wellness
         // (WI-31, WI-35, WI-36).
         .target(
             name: "UEMAModel",
-            dependencies: [
-                "CMuJoCo", "UEMACore", "UEMAPhysics", "UEMAScene", "UEMASenses",
-                "UEMATokenizer",
-                mlx("MLX"), mlx("MLXNN"), mlx("MLXRandom"),
-            ],
+            dependencies: ["UEMACore", mlx("MLX"), mlx("MLXNN")],
             resources: [.copy("Resources")]
         ),
 
         // Goal ring, planner, hand descent (WI-39).
         .target(
             name: "UEMAPlanner",
-            dependencies: [
-                "CMuJoCo", "UEMACore", "UEMAPhysics", "UEMAScene", "UEMASenses",
-                "UEMATokenizer", "UEMAModel",
-                mlx("MLX"), mlx("MLXNN"), mlx("MLXOptimizers"), mlx("MLXRandom"),
-            ]
+            dependencies: ["UEMACore", mlx("MLX")]
         ),
 
         // Command decoder and motor function (WI-37).
         .target(
             name: "UEMACommand",
-            dependencies: [
-                "CMuJoCo", "UEMACore", "UEMAPhysics", "UEMAScene", "UEMASenses",
-                "UEMATokenizer", "UEMAModel", "UEMAPlanner",
-            ]
+            dependencies: ["UEMACore", "UEMAPhysics", "UEMASenses"]
         ),
 
         // One XCTest target per module.
@@ -290,57 +279,41 @@ let package = Package(
         ),
         .testTarget(
             name: "UEMAPhysicsTests",
-            dependencies: ["CMuJoCo", "UEMACore", "UEMAPhysics"]
+            dependencies: ["UEMACore", "UEMAPhysics"]
         ),
         .testTarget(
             name: "UEMASceneTests",
-            dependencies: ["CMuJoCo", "UEMACore", "UEMAPhysics", "UEMAScene"]
+            dependencies: ["UEMACore", "UEMAScene"]
         ),
         .testTarget(
             name: "UEMASensesTests",
-            dependencies: ["CMuJoCo", "UEMACore", "UEMAPhysics", "UEMAScene", "UEMASenses"],
+            dependencies: ["UEMACore", "UEMAPhysics", "UEMAScene", "UEMASenses"],
             resources: [.copy("Fixtures")]
         ),
         .testTarget(
             name: "UEMATokenizerTests",
-            dependencies: [
-                "CMuJoCo", "UEMACore", "UEMAPhysics", "UEMAScene", "UEMASenses",
-                "UEMATokenizer",
-                mlx("MLX"),
-            ]
+            dependencies: ["UEMACore", "UEMASenses", "UEMATokenizer"]
         ),
         .testTarget(
             name: "UEMAModelTests",
-            dependencies: [
-                "CMuJoCo", "UEMACore", "UEMAPhysics", "UEMAScene", "UEMASenses",
-                "UEMATokenizer", "UEMAModel",
-                mlx("MLX"), mlx("MLXNN"), mlx("MLXRandom"),
-            ],
+            dependencies: ["UEMACore", "UEMAModel", mlx("MLX"), mlx("MLXNN")],
             resources: [.copy("Fixtures")]
         ),
         .testTarget(
             name: "UEMAPlannerTests",
-            dependencies: [
-                "CMuJoCo", "UEMACore", "UEMAPhysics", "UEMAScene", "UEMASenses",
-                "UEMATokenizer", "UEMAModel", "UEMAPlanner",
-                mlx("MLX"), mlx("MLXNN"), mlx("MLXOptimizers"), mlx("MLXRandom"),
-            ]
+            dependencies: ["UEMACore", "UEMAPlanner", mlx("MLX")]
         ),
         .testTarget(
             name: "UEMACommandTests",
-            dependencies: [
-                "CMuJoCo", "UEMACore", "UEMAPhysics", "UEMAScene", "UEMASenses",
-                "UEMATokenizer", "UEMAModel", "UEMAPlanner", "UEMACommand",
-            ]
+            dependencies: ["UEMACore", "UEMAPhysics", "UEMASenses", "UEMACommand"]
         ),
 
-        // The real stack for 20 model steps (WI-40, wave 5) lands here.
+        // The real stack for 20 model steps (WI-40).
         .testTarget(
             name: "UEMAIntegrationTests",
             dependencies: [
-                "CMuJoCo", "UEMACore", "UEMAPhysics", "UEMAScene", "UEMASenses",
-                "UEMATokenizer", "UEMAModel", "UEMAPlanner", "UEMACommand",
-                mlx("MLX"), mlx("MLXNN"), mlx("MLXOptimizers"), mlx("MLXRandom"),
+                "UEMACore", "UEMAPhysics", "UEMAScene", "UEMASenses", "UEMATokenizer",
+                "UEMAModel", "UEMAPlanner", "UEMACommand",
             ]
         ),
     ]
