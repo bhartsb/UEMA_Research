@@ -1,5 +1,7 @@
 # UEMAKit and UEMA Mind: the Apple Swift port
 
+**Continuing this work:** start with [docs/apple_port/HANDOFF_2026-11-04.md](../docs/apple_port/HANDOFF_2026-11-04.md), the state of every work item and the open issues as of November 4, 2026.
+
 This folder holds target B of the Apple port, a Swift package and a SwiftUI app that run one MIMo body
 with the released UEMA weights on macOS and iOS without Python, and under `apple/scripts/` the Python
 export scripts of target A that write the package's resources (plan page, section 4). The requirements
