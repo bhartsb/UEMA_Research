@@ -79,3 +79,19 @@ First errors (if any): none
 - Fix the 2 ModelPassTests failures (tolerance vs MLX numerics, or a real mismatch) and the 4 SceneKitEyeRenderer
   tests (black frames on macOS: offscreen render setup).
 - Change the scheme name `UEMAKit-Package` to `UEMAKit` in the guide, the checklist and the Package.swift header.
+
+# Second Mac build (after the fixes in "Apple port: fixes after the first Mac build")
+
+Same Mac and toolchain. Branch and commit: feature/apple-port-2026-11-04 at 6130a55 (the session branch's four
+commits rebased onto 789d22d; trees otherwise identical). Logs: apple/records/uema_build2_step5_*.log and
+apple/records/uema_build2_step6_app.log. Steps 3 and 4 not repeated (no change to the script or Package.resolved).
+
+## Step 5, package build and test
+Build result: passed      Test result: Executed 372 tests, with 0 failures (1 skipped)      Time:  Pacific, 2026-11-05
+Per target: CMuJoCoTests 12, UEMACoreTests 31, UEMAPhysicsTests 24, UEMASceneTests 27, UEMASensesTests 103,
+UEMATokenizerTests 30, UEMACommandTests 35, UEMAModelTests 54, UEMAPlannerTests 36, UEMAIntegrationTests 10
+(skipped: testReleasedStackRunsTwentyModelSteps, compiled without UEMA_REAL_STACK, by design). All match the
+expected counts. The ModelPassTests (MLX_ENABLE_TF32=0) and SceneKitEyeRenderer (reported pixel formats) fixes hold.
+
+## Step 6, app build
+Result: passed (xcodegen generate, then xcodebuild -scheme UEMAMind-macOS, BUILD SUCCEEDED)      Time:  Pacific, 2026-11-05
