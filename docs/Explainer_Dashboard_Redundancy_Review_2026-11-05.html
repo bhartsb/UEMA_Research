@@ -1,0 +1,478 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Explainer and dashboard: what is shown more than once</title>
+<meta name="description" content="A review of the explainer's four tabs and the development dashboard's eight tabs, listing every part that repeats another part, with its locations, evidence and a suggested single home.">
+<style>
+  :root {
+    --bg: #fbfaf7; --ink: #1f2328; --muted: #5b6168; --line: #d9d6cf; --head: #efece4;
+    --accent: #1f5f8b; --chip: #e8eef4; --chip-ink: #1f3d57;
+    --k1: #d9ead3; --k2: #fde9c9; --k3: #e2dcf5; --k4: #f6d9d9;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #15181c; --ink: #e8e6e1; --muted: #a2a8b0; --line: #3a3f46; --head: #22262c;
+      --accent: #8fbfe6; --chip: #263340; --chip-ink: #cfe3f5;
+      --k1: #2d4a2d; --k2: #4f3c1f; --k3: #3a3352; --k4: #4f2a2a;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #15181c; --ink: #e8e6e1; --muted: #a2a8b0; --line: #3a3f46; --head: #22262c;
+    --accent: #8fbfe6; --chip: #263340; --chip-ink: #cfe3f5;
+    --k1: #2d4a2d; --k2: #4f3c1f; --k3: #3a3352; --k4: #4f2a2a;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font: 15px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+  main { max-width: 1400px; margin: 0 auto; padding: 24px 16px 64px; }
+  h1 { font-size: 26px; line-height: 1.25; margin: 0 0 8px; }
+  h2 { font-size: 19px; margin: 32px 0 8px; }
+  p { margin: 8px 0; max-width: 90ch; }
+  .lede { color: var(--muted); }
+  .counts { display: flex; flex-wrap: wrap; gap: 10px; margin: 16px 0; }
+  .count { border: 1px solid var(--line); border-radius: 8px; padding: 8px 12px; min-width: 150px; background: var(--head); }
+  .count b { display: block; font-size: 22px; line-height: 1.1; }
+  .count span { color: var(--muted); font-size: 13px; }
+  .controls { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin: 16px 0 8px; position: sticky; top: 0; background: var(--bg); padding: 8px 0; z-index: 2; border-bottom: 1px solid var(--line); }
+  .controls input { flex: 1 1 240px; padding: 8px 10px; border: 1px solid var(--line); border-radius: 6px; background: var(--bg); color: var(--ink); font: inherit; }
+  .controls button { padding: 6px 10px; border: 1px solid var(--line); border-radius: 999px; background: var(--head); color: var(--ink); font: inherit; cursor: pointer; }
+  .controls button[aria-pressed="true"] { outline: 2px solid var(--accent); outline-offset: 1px; }
+  .controls .n { color: var(--muted); font-size: 13px; }
+  table { border-collapse: collapse; width: 100%; margin-top: 8px; table-layout: fixed; }
+  col.c-num { width: 3%; } col.c-kind { width: 9%; } col.c-what { width: 14%; } col.c-ex { width: 18%; } col.c-dash { width: 18%; } col.c-ev { width: 22%; } col.c-home { width: 16%; }
+  th, td { border: 1px solid var(--line); padding: 8px 10px; vertical-align: top; text-align: left; overflow-wrap: anywhere; }
+  th { background: var(--head); position: sticky; top: 58px; z-index: 1; font-size: 13px; }
+  td { font-size: 14px; }
+  td.num { color: var(--muted); }
+  .k { display: inline-block; padding: 1px 8px; border-radius: 999px; font-size: 12px; }
+  .k1 { background: var(--k1); } .k2 { background: var(--k2); } .k3 { background: var(--k3); } .k4 { background: var(--k4); }
+  td ul { margin: 0; padding-left: 18px; }
+  td li { margin: 2px 0; }
+  code { font: 12px/1.4 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; background: var(--chip); color: var(--chip-ink); padding: 1px 4px; border-radius: 4px; }
+  .where b { font-weight: 600; }
+  .legend { display: flex; flex-wrap: wrap; gap: 8px 16px; font-size: 13px; color: var(--muted); margin: 8px 0; }
+  details { margin: 12px 0; }
+  summary { cursor: pointer; }
+  tr[hidden] { display: none; }
+  @media (max-width: 900px) {
+    table, thead, tbody, tr, th, td { display: block; }
+    thead { display: none; }
+    tr { border: 1px solid var(--line); border-radius: 8px; margin: 12px 0; padding: 4px 0; }
+    td { border: 0; border-top: 1px solid var(--line); }
+    td::before { content: attr(data-col); display: block; font-size: 11px; text-transform: uppercase; letter-spacing: .04em; color: var(--muted); margin-bottom: 2px; }
+    td.num::before, td.kind::before { display: none; }
+    th { position: static; }
+    .controls { position: static; }
+  }
+  @media print { .controls { display: none; } th { position: static; } }
+</style>
+</head>
+<body>
+<main>
+  <h1>Explainer and dashboard: what is shown more than once</h1>
+  <p class="lede">A review of the two pages as they stand on November 5, 2026: the explainer (<code>Saved/mimo_bridge/explainer.html</code>, built October 29, 2026, four tabs) and the development dashboard (<code>Source/Python/mimo_bridge/tools/development_dashboard.html</code> with its JavaScript and server, eight tabs). Each row names one thing that is presented in two or more places, where those places are, the evidence, and the one place it could live.</p>
+
+  <div class="counts" id="counts"></div>
+
+  <details>
+    <summary>What each page contains (the map the rows refer to)</summary>
+    <p><b>Explainer tabs.</b> 1 Architecture (the model diagram with the 28-step tour, node cards, the self guide, the learning loop and weight loop diagrams, the component manifest index of 82 components, the root-cause investigations index, the repair switch cards and the "parts being worked on" list); 2 Instance inspector (one snapshot: eyes, tactile, attention maps, predicted against arrived, the command, measured wellness and curiosity, the plan, memory, self perception, the body map, named things, hierarchical self, voice head, caregiver, the gain-of-function build, and the five verdict tiles); 3 Run replay (the five verdict tiles and about 70 charts from the training stats log); 4 Probes and liveness (the gain-of-function probes for items 7 to 10 per checkpoint, and dead and locked parts of the network). Above the tabs: the run header with the training-state banner and the table of recorded repair settings. Every "what is this?" button opens one of the 89 glossary entries embedded in the page.</p>
+    <p><b>Dashboard tabs.</b> Now (gain-of-function scoreboard, defects, hours per machine mode, the capability programme: ability map, hand atlas, upgrade atlas, work programme, repair history; the movement viewer; progress toward useful movement; what happens next; model health; what the bodies are doing; gain-of-function measurements); Tests (the test registry, errors, the names used on the page, root-cause investigations); Development (the developmental observer: body map, finger and hand movements, capabilities by group, first seen, discoveries, regression watch); Over time (12 gauge cards, every other gauge, segments, reviewed ability tests, the 2026-09-13 ability path, earlier lineages, experiment jobs); Video evidence; Live view; 3D viewer; Terms and definitions (85 glossary terms plus each component under its id). Above the tabs: the machine-mode strip, the "How the model works" link to the explainer, a second "Terms and definitions" button, and the Project records menu.</p>
+  </details>
+
+  <div class="legend">
+    <span><span class="k k1">Explainer and dashboard</span> the same content on both pages</span>
+    <span><span class="k k2">Within the dashboard</span> repeated across the dashboard's own tabs</span>
+    <span><span class="k k3">Within the explainer</span> repeated across the explainer's own tabs or entries</span>
+    <span><span class="k k4">Same name, different thing</span> not a duplicate, but reads as one</span>
+  </div>
+
+  <div class="controls">
+    <input id="q" type="search" placeholder="Filter rows by any word (tab name, term, file)…" aria-label="Filter rows">
+    <button type="button" data-kind="all" aria-pressed="true">All</button>
+    <button type="button" data-kind="k1" aria-pressed="false">Explainer and dashboard</button>
+    <button type="button" data-kind="k2" aria-pressed="false">Within the dashboard</button>
+    <button type="button" data-kind="k3" aria-pressed="false">Within the explainer</button>
+    <button type="button" data-kind="k4" aria-pressed="false">Same name, different thing</button>
+    <span class="n" id="shown"></span>
+  </div>
+
+  <table id="t">
+    <colgroup><col class="c-num"><col class="c-kind"><col class="c-what"><col class="c-ex"><col class="c-dash"><col class="c-ev"><col class="c-home"></colgroup>
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Kind</th>
+        <th>What is repeated</th>
+        <th>In the explainer</th>
+        <th>In the dashboard</th>
+        <th>Evidence</th>
+        <th>One place it could live</th>
+      </tr>
+    </thead>
+    <tbody>
+
+      <tr data-kind="k1">
+        <td class="num" data-col="#">1</td>
+        <td class="kind" data-col="Kind"><span class="k k1">Explainer and dashboard</span></td>
+        <td data-col="What is repeated"><b>Glossary definitions</b> of the same concepts, written twice in different words.</td>
+        <td class="where" data-col="In the explainer">Every "what is this?" button: the 89 <code>term.*</code> entries embedded in <code>data-doc</code>.</td>
+        <td class="where" data-col="In the dashboard">Terms and definitions tab, the glossary dialog, and the inline term buttons: the 85 entries of <code>DASHBOARD_TERMS</code> in <code>development_dashboard_terms.js</code>.</td>
+        <td data-col="Evidence">About 20 concepts are defined on both pages: token, model step, attention, encoder, forward model, wellness, wellness predictor, tactile comfort, coherence, controllability, learning progress, integrity, efficiency, causal chain, efference heads, persistence, vestibular, prediction error, planner, motor controller, command. The wording differs (the dashboard's Coherence entry gives the formula and the handle count; the explainer's <code>term.eval-coherence</code> gives a different account). The explainer's JavaScript notes the split: "the dashboard's glossary adds no term buttons here".</td>
+        <td data-col="One place it could live">One glossary file that both pages render; each page's term button reads the same entry.</td>
+      </tr>
+
+      <tr data-kind="k1">
+        <td class="num" data-col="#">2</td>
+        <td class="kind" data-col="Kind"><span class="k k1">Explainer and dashboard</span></td>
+        <td data-col="What is repeated"><b>Root-cause investigation diagrams</b>: the same process-of-elimination diagrams, from the same data, by the same renderer.</td>
+        <td class="where" data-col="In the explainer">Architecture tab, "Root-cause investigations (2): each a live process-of-elimination diagram" (<code>buildInvestigationsIndex</code>, <code>data-investigations</code>).</td>
+        <td class="where" data-col="In the dashboard">Tests tab, "Root-cause investigations: each a live process-of-elimination diagram" (<code>renderInvestigations</code>).</td>
+        <td data-col="Evidence">Both use <code>elimination_diagram.js</code> and <code>GET /api/investigations</code> for the two investigations (<code>motor_handle_reach</code>, <code>probe_path_first_burst_481800</code>). The explainer's own comment: "the renderer of the dashboard's Tests page: the same boxes from the same data."</td>
+        <td data-col="One place it could live">The Tests tab. The explainer links a component to its investigation (<code>#investigation=ID</code>) instead of embedding a second copy.</td>
+      </tr>
+
+      <tr data-kind="k1">
+        <td class="num" data-col="#">3</td>
+        <td class="kind" data-col="Kind"><span class="k k1">Explainer and dashboard</span></td>
+        <td data-col="What is repeated"><b>"The names used on this page"</b>: the 19 investigation terms (PASS, FAIL, UNKNOWN, Typed into the row, Next unresolved branch, Located by elimination, Input, Test, Commit, Evidence, Architecture, Missing, Defects, and so on).</td>
+        <td class="where" data-col="In the explainer">Architecture tab, under the investigations index (<code>data-investigations.names</code>, 19 entries).</td>
+        <td class="where" data-col="In the dashboard">Tests tab, "The names used on this page" (<code>tests-names-body</code>).</td>
+        <td data-col="Evidence">The same 19 name and definition pairs are served to both pages and printed in full on both.</td>
+        <td data-col="One place it could live">Shown once on the Tests tab; the explainer's diagram links to it.</td>
+      </tr>
+
+      <tr data-kind="k1">
+        <td class="num" data-col="#">4</td>
+        <td class="kind" data-col="Kind"><span class="k k1">Explainer and dashboard</span></td>
+        <td data-col="What is repeated"><b>The component manifest</b>: what each of the 82 components does.</td>
+        <td class="where" data-col="In the explainer">Architecture tab: "Every component of the component manifest (82)" cards (does, flags, switch, open defects, linked tests, QA state), and the same components behind each diagram box.</td>
+        <td class="where" data-col="In the dashboard">Terms and definitions tab: "A component is listed under its id" (<code>loadAliases</code>, <code>aliasOwners</code>); Tests tab links each test's component to the explainer (<code>explainerHref</code>).</td>
+        <td data-col="Evidence">The component's description appears as a card in the explainer and as a definition on the Terms tab; the Tests tab already treats the explainer as the home by linking there.</td>
+        <td data-col="One place it could live">The explainer's component index. The Terms tab lists the id and a link only.</td>
+      </tr>
+
+      <tr data-kind="k1">
+        <td class="num" data-col="#">5</td>
+        <td class="kind" data-col="Kind"><span class="k k1">Explainer and dashboard</span></td>
+        <td data-col="What is repeated"><b>Open defects and repair states.</b></td>
+        <td class="where" data-col="In the explainer">Header table "Which repair settings were actually recorded for this run?" (7 flags); Architecture tab "Orange: the parts being worked on" (computed "from the defect register's repair states and closing tests"); the 12 repair-switch cards; each component card's open defects.</td>
+        <td class="where" data-col="In the dashboard">Now tab: "GOF-BLOCKER defects first in line: every open defect as NAME: STATE", "What changed, and what training keeps" (repair history), "Changes at this restart", "Run changes and detailed assessment".</td>
+        <td data-col="Evidence">Both read the defect register and the run's <code>args.json</code>. The explainer header itself defers: "Current repair states, open defects and next tests: the development dashboard's Now page", and then renders the work list anyway.</td>
+        <td data-col="One place it could live">The Now tab owns defect and repair state. The explainer keeps only the recorded switch values of its own run (run-specific) and links.</td>
+      </tr>
+
+      <tr data-kind="k1">
+        <td class="num" data-col="#">6</td>
+        <td class="kind" data-col="Kind"><span class="k k1">Explainer and dashboard</span></td>
+        <td data-col="What is repeated"><b>Model health (liveness)</b>: which layers have units that stopped responding.</td>
+        <td class="where" data-col="In the explainer">Probes and liveness tab, "Dead and locked parts of the network" (the 2026-09-22 sweep at 7 checkpoints, the newest sweep, attention locked on one input); Run replay charts "Responding units in selected hidden layers" and "Liveness: how evenly each attention pool spreads".</td>
+        <td class="where" data-col="In the dashboard">Now tab "Model health" (liveness lines, with the history link "Liveness sweep of ckpt_step_344400 (2026-09-22)"); Over time card "Model health" (layers below the warning line, least-responsive layer, the efference, contact and synergy heads' least-responsive layers); glossary terms Unit, Layer, Responding, Warning line, Automatic repair.</td>
+        <td data-col="Evidence">The same sweep file and the same liveness block of the training record are rendered in four places (<code>development_dashboard.py</code> liveness summary, <code>lineage_series.py</code> card "liveness", explainer <code>renderProbes</code> and <code>chart.liveness</code>).</td>
+        <td data-col="One place it could live">The Over time card for history; Now keeps a one-line status with a link; the explainer tab links from the diagram's affected boxes.</td>
+      </tr>
+
+      <tr data-kind="k1">
+        <td class="num" data-col="#">7</td>
+        <td class="kind" data-col="Kind"><span class="k k1">Explainer and dashboard</span></td>
+        <td data-col="What is repeated"><b>Gain-of-function probe results, items 7 to 10</b> (gaze, body control, arm into view, posture).</td>
+        <td class="where" data-col="In the explainer">Probes and liveness tab, "The gain-of-function probes (items 7 to 10)", one block per checkpoint.</td>
+        <td class="where" data-col="In the dashboard">Over time cards 7 to 10 ("their panels come from the probe index, not from these series"); Now tab "What supports each gain of function?" items 7 to 10 with their measured lines; the highlight tile "Eye-angle prediction".</td>
+        <td data-col="Evidence">All read <code>Saved/mimo_bridge/gof_probes/index.jsonl</code> (explainer <code>META.probes.index</code>; dashboard <code>probePanels</code>, <code>link_scheduled</code>, <code>link_highlights</code>).</td>
+        <td data-col="One place it could live">One probe panel component rendered in the Over time card; the Now items and the explainer tab link to it.</td>
+      </tr>
+
+      <tr data-kind="k1">
+        <td class="num" data-col="#">8</td>
+        <td class="kind" data-col="Kind"><span class="k k1">Explainer and dashboard</span></td>
+        <td data-col="What is repeated"><b>Headline verdicts</b> on the same series, with two different trend rules.</td>
+        <td class="where" data-col="In the explainer">The five verdict tiles: 1 Does the command explain the outcome? 2 Next-model-step error. 3 Is the action pathway alive? 4 Are the encoders alive? 5 Is the body doing anything?</td>
+        <td class="where" data-col="In the dashboard">Now tab "Progress toward useful movement" headline (evidence, comparison, controller, synergy lines); Over time item 1 "Knowing its own executed command improves the next-model-step prediction", item 2 "The body turns the way it was commanded (every command)", item 3 "Recent change in prediction error".</td>
+        <td data-col="Evidence">Tile 1 and item 1 both read the tenure rank; tile 3 and item 2 both read the command-following cosine; tile 2 and item 3 both read next-step prediction error. The explainer comments that first-against-last quarter-window trends are "the dashboard's own convention", so two implementations of one rule exist.</td>
+        <td data-col="One place it could live">One trend function and one headline reading set, served by the dashboard; the explainer's tiles read it.</td>
+      </tr>
+
+      <tr data-kind="k1">
+        <td class="num" data-col="#">9</td>
+        <td class="kind" data-col="Kind"><span class="k k1">Explainer and dashboard</span></td>
+        <td data-col="What is repeated"><b>Training time series</b>: two chart pages over the same records, with two chart engines and two sets of chart notes.</td>
+        <td class="where" data-col="In the explainer">Run replay tab: about 70 charts from <code>replay_training_stats.jsonl</code> (<code>lineChart</code>, notes in <code>chart.*</code> doc entries).</td>
+        <td class="where" data-col="In the dashboard">Over time tab: 12 gauge cards from <code>lineage_series.py</code> (<code>chart()</code>, notes in each card's "what" text), plus "Every other gauge the records carry", which draws every remaining series.</td>
+        <td data-col="Evidence">Matching pairs, explainer chart to dashboard panel: causal chain chosen best, gap, spread and tie band to item 1; controllability measured and agreement to item 2 "What the body did matches what it expected" and "Commands scored"; "Do the limbs obey?" to item 2 "The body turns the way it was commanded"; efference body head to item 2 "Where each body part goes"; learning progress to item 3; the paired prediction audit to item 3 "Next model step predicted better than nothing changes"; which channels made the goal win, each channel's weight and goal age to item 4; motor synergy following and explained to item 5; contact head onsets and foreseen touches to item 6; efference gaze head to item 7; vestibular ratio and posture roll to item 10; throughput, machine memory and time per step to "Training machine".</td>
+        <td data-col="One place it could live">The Over time tab as the one time-series page; the explainer links each architecture box to its gauge instead of carrying its own chart set.</td>
+      </tr>
+
+      <tr data-kind="k1">
+        <td class="num" data-col="#">10</td>
+        <td class="kind" data-col="Kind"><span class="k k1">Explainer and dashboard</span></td>
+        <td data-col="What is repeated"><b>The training-state banner</b> (segment end, latest recorded update, supervisor paused, production run name).</td>
+        <td class="where" data-col="In the explainer">Header: "Completed run segment: it ended at model step 494,025", latest recorded training update, 8 bodies, <code>stage_done.json</code>, the supervisor's control file and production record.</td>
+        <td class="where" data-col="In the dashboard">The machine-mode strip (<code>renderModeStrip</code>); Now tab "Each training pause and its reason", "Reason and saved state", "Hours this week in each machine mode"; footer "Training status is being read".</td>
+        <td data-col="Evidence">Both read <code>supervisor_control.json</code> and the run's stage record. The explainer copy is frozen at build time (October 29) and already names "another run this page does not show", so it drifts from the live strip.</td>
+        <td data-col="One place it could live">The machine-mode strip. The explainer header shows its run id and build time and links to the strip.</td>
+      </tr>
+
+      <tr data-kind="k1">
+        <td class="num" data-col="#">11</td>
+        <td class="kind" data-col="Kind"><span class="k k1">Explainer and dashboard</span></td>
+        <td data-col="What is repeated"><b>Self-contact, posture and caregiver readings</b> from the same training record.</td>
+        <td class="where" data-col="In the explainer">Inspector panels "Tactile (raw contacts)", "Caregiver (part of the world)", the contact panel; Run replay charts "Self-contact per body", "Self-touches beginning", "What share of touch is the body's own", "Posture: how far the bodies have rolled".</td>
+        <td class="where" data-col="In the dashboard">Now tab "What the bodies are doing" (How the bodies lie, Deaf senses, Touching itself, The adult in body 1's world); Live view "Touch and posture readings" (Own body parts touching, Predicting that touch, Posture by body, Touch sensor readings by body); Over time items 6 and 10.</td>
+        <td data-col="Evidence">Self-contact pair counts and the roll angle appear in five places; the Now cards (<code>now_summary</code>) and the Live view regions read the same newest record.</td>
+        <td data-col="One place it could live">Live view for "now", Over time for history. The Now cards become one line with a link.</td>
+      </tr>
+
+      <tr data-kind="k1">
+        <td class="num" data-col="#">12</td>
+        <td class="kind" data-col="Kind"><span class="k k1">Explainer and dashboard</span></td>
+        <td data-col="What is repeated"><b>The causal chain</b> (intention, prediction, predicted wellness, command, outcome) explained many times.</td>
+        <td class="where" data-col="In the explainer">Tour step "The causal chain, recorded"; <code>term.causal-chain</code>; inspector panel "the causal chain, this planning event"; six Run replay charts titled "Causal chain: ..."; component PLANNER_RECORD "planner record (the causal chain)"; the <code>node.intention</code> doc.</td>
+        <td class="where" data-col="In the dashboard">Glossary "Causal chain"; Over time item 1 panels; upgrade item 1 "Record the selected goal, forecast, action and actual outcome".</td>
+        <td data-col="Evidence">Nine separate texts describe the one five-link record.</td>
+        <td data-col="One place it could live">One definition (the shared glossary), one per-event view (the explainer inspector), one trend (Over time item 1); the rest link.</td>
+      </tr>
+
+      <tr data-kind="k1">
+        <td class="num" data-col="#">13</td>
+        <td class="kind" data-col="Kind"><span class="k k1">Explainer and dashboard</span></td>
+        <td data-col="What is repeated"><b>Command following and the synergy question</b>, measured three ways in eight places.</td>
+        <td class="where" data-col="In the explainer">Run replay "5 · Do the limbs obey? (command following)", "5b · How big were the commands?", "Motor synergy: does the body follow its commands? (item 5, drawn, not counted)"; inspector panels "The command" and "the motor synergy, this model step"; verdict tile 3.</td>
+        <td class="where" data-col="In the dashboard">Now tab movement viewer "Did the body do what each command asked?" (share of the way, per body part, by author); "Test movements tried at each checkpoint"; "What controls movement now?" with the synergy-state note; Over time item 2 "The body turns the way it was commanded" and item 5 ("Executed commands ending closer, above their random-axis control" and "Legacy direction-match readings (a different measure)"); upgrade item 5.</td>
+        <td data-col="Evidence">Three measures of one question: the cosine direction match, the share of the way reached in 250 ms, and the count above the random-axis control. The dashboard already labels the cosine reading "Legacy ... (a different measure)".</td>
+        <td data-col="One place it could live">Declare one canonical measure (the movement viewer's share of the way, which the registry tests use); keep the others as labelled history in one Over time panel.</td>
+      </tr>
+
+      <tr data-kind="k2">
+        <td class="num" data-col="#">14</td>
+        <td class="kind" data-col="Kind"><span class="k k2">Within the dashboard</span></td>
+        <td data-col="What is repeated"><b>The ten addendum items</b> rendered four times.</td>
+        <td class="where" data-col="In the explainer">(Also the explainer's probes tab for items 7 to 10 and the inspector's "The gain-of-function build" panel.)</td>
+        <td class="where" data-col="In the dashboard">Now tab "What supports each gain of function?" (the upgrade atlas, 10 cards); Now "All 10 planned upgrades, linked to abilities" (<code>upgrade-goal-map</code>); Now "Gain-of-function measurements" (<code>gof-items</code> grid); Over time cards 1 to 10.</td>
+        <td data-col="Evidence">All four read <code>dashboard_goal_catalog.json</code> <code>upgrade_progress</code> and the same scheduled-comparison rows (<code>SCHEDULED_ITEMS</code>).</td>
+        <td data-col="One place it could live">One upgrade card component on Now; Over time holds only the charts.</td>
+      </tr>
+
+      <tr data-kind="k2">
+        <td class="num" data-col="#">15</td>
+        <td class="kind" data-col="Kind"><span class="k k2">Within the dashboard</span></td>
+        <td data-col="What is repeated"><b>Three generations of ability catalogue</b>, each with its own stages.</td>
+        <td class="where" data-col="In the explainer">(none)</td>
+        <td class="where" data-col="In the dashboard">Now: "From predicting to doing" ability map (6 capabilities by 4 stages: Predict, Choose and do, Repeat and keep, Changed conditions) with "Compare the six abilities in a table", and "The hand, movement by movement" (18 hand actions in four stages). Over time: "The 2026-09-13 path to gaining function" (25 abilities in 4 stages, "kept as history") with "Reviewed evidence of the 2026-09-13 registry", "Separate experiments", "Changes to the system", "Behavior tests on other model branches". Development: "Capabilities by group", "Finger and hand movements".</td>
+        <td data-col="Evidence">The glossary's own "Stage" entry says the word has two meanings on the page. The Over time section says none of its 25 abilities was tested on the running model.</td>
+        <td data-col="One place it could live">One capability map on Now; the 2026-09-13 registry moves to a linked archive page.</td>
+      </tr>
+
+      <tr data-kind="k2">
+        <td class="num" data-col="#">16</td>
+        <td class="kind" data-col="Kind"><span class="k k2">Within the dashboard</span></td>
+        <td data-col="What is repeated"><b>Scheduled comparison results</b> shown in four places.</td>
+        <td class="where" data-col="In the explainer">(none)</td>
+        <td class="where" data-col="In the dashboard">Now "Scheduled physical comparisons" (<code>automatic-checks</code>); Now "Test movements tried at each checkpoint" (the same scheduled checks drawn per checkpoint); the upgrade cards' "Newest scheduled comparison: checkpoint ..." lines and the highlight tiles (<code>link_scheduled</code>, <code>link_highlights</code>); the Project records entry "Scheduled comparisons: status and receipts".</td>
+        <td data-col="Evidence">All four read the scheduled-comparison rows; the card code says a tile's hand-written value stays "only until the first scheduled result exists".</td>
+        <td data-col="One place it could live">One scheduled-comparison strip on Now; other places link to it.</td>
+      </tr>
+
+      <tr data-kind="k2">
+        <td class="num" data-col="#">17</td>
+        <td class="kind" data-col="Kind"><span class="k k2">Within the dashboard</span></td>
+        <td data-col="What is repeated"><b>"Model health"</b> as a heading on two tabs.</td>
+        <td class="where" data-col="In the explainer">(see row 6)</td>
+        <td class="where" data-col="In the dashboard">Now tab <code>#liveness-head</code> "Model health"; Over time card "Model health".</td>
+        <td data-col="Evidence">Same name, same source block, two renderers (<code>renderLiveness</code> and the lineage card).</td>
+        <td data-col="One place it could live">Now keeps the one-line summary with a link to the Over time card.</td>
+      </tr>
+
+      <tr data-kind="k2">
+        <td class="num" data-col="#">18</td>
+        <td class="kind" data-col="Kind"><span class="k k2">Within the dashboard</span></td>
+        <td data-col="What is repeated"><b>Repeated links</b> to the takeover review and the old dashboard.</td>
+        <td class="where" data-col="In the explainer">(none)</td>
+        <td class="where" data-col="In the dashboard">Now tab: "Read the control comparison (takeover review, 2026-09-23)" and, lower, "Read the takeover review (2026-09-23)"; the Project records menu "Takeover review". "Old dashboard" in the Project records menu and again in the footer ("Old dashboard · Training history (old page) · Evidence registry").</td>
+        <td data-col="Evidence">The static HTML carries each link twice or three times.</td>
+        <td data-col="One place it could live">The Project records menu.</td>
+      </tr>
+
+      <tr data-kind="k2">
+        <td class="num" data-col="#">19</td>
+        <td class="kind" data-col="Kind"><span class="k k2">Within the dashboard</span></td>
+        <td data-col="What is repeated"><b>Two "Terms and definitions" controls</b> in the header.</td>
+        <td class="where" data-col="In the explainer">(none)</td>
+        <td class="where" data-col="In the dashboard">The tab button "Terms and definitions" (<code>tab-terms</code>) and the text button "Terms and definitions" beside "How the model works" (<code>open-glossary</code>), which opens the dialog.</td>
+        <td data-col="Evidence">Two controls with one label, two destinations, one data set.</td>
+        <td data-col="One place it could live">The tab; the dialog stays for inline term buttons only.</td>
+      </tr>
+
+      <tr data-kind="k2">
+        <td class="num" data-col="#">20</td>
+        <td class="kind" data-col="Kind"><span class="k k2">Within the dashboard</span></td>
+        <td data-col="What is repeated"><b>Two camera tabs</b> and a repeated readings block.</td>
+        <td class="where" data-col="In the explainer">(none)</td>
+        <td class="where" data-col="In the dashboard">Video evidence (outside view and eye view of a recorded pair) and Live view (outside view of body 1 with Record); Live view's "Touch and posture readings" repeats Now's "What the bodies are doing".</td>
+        <td data-col="Evidence">Both tabs lay out the same two-view grid (<code>video-grid</code>); the readings read the same record as the Now cards.</td>
+        <td data-col="One place it could live">One Views tab with a live or recorded switch; the readings once.</td>
+      </tr>
+
+      <tr data-kind="k2">
+        <td class="num" data-col="#">21</td>
+        <td class="kind" data-col="Kind"><span class="k k2">Within the dashboard</span></td>
+        <td data-col="What is repeated"><b>The legacy dashboard</b> still rebuilt every 30 s.</td>
+        <td class="where" data-col="In the explainer">(the Run replay tab covers the same series)</td>
+        <td class="where" data-col="In the dashboard">"Old dashboard" (<code>Saved/mimo_bridge/dashboard_legacy.html</code>, written by <code>tools/dashboard.py</code>, the <code>legacy-dashboard-updater</code> thread): a chip strip of provenance, ledger coverage, causal next-state error, command following, the causal test and the gate count, for every run folder.</td>
+        <td data-col="Evidence">Every chip has a newer home: causal error and command following in Over time and the explainer Run replay; ledger coverage in explainer chart 6; gates and settings in the explainer's switch cards.</td>
+        <td data-col="One place it could live">Stop the updater and keep one archived copy.</td>
+      </tr>
+
+      <tr data-kind="k3">
+        <td class="num" data-col="#">22</td>
+        <td class="kind" data-col="Kind"><span class="k k3">Within the explainer</span></td>
+        <td data-col="What is repeated"><b>The five verdict tiles</b> on two tabs.</td>
+        <td class="where" data-col="In the explainer">Run replay tab, and again on the Instance inspector tab under the snapshot picker.</td>
+        <td class="where" data-col="In the dashboard">(none)</td>
+        <td data-col="Evidence"><code>renderTiles</code> is called from both <code>renderRun</code> and <code>renderInspector</code>; the code says "this strip renders on the inspector tab too". Only the last sentence of tile 5 differs.</td>
+        <td data-col="One place it could live">The Run replay tab; the inspector shows tile 5's snapshot sentence only.</td>
+      </tr>
+
+      <tr data-kind="k3">
+        <td class="num" data-col="#">23</td>
+        <td class="kind" data-col="Kind"><span class="k k3">Within the explainer</span></td>
+        <td data-col="What is repeated"><b>Three descriptions of each component</b> on the Architecture tab.</td>
+        <td class="where" data-col="In the explainer">The tour step body (28 steps), the node card (<code>node.*</code> doc entries), and the component manifest card ("does"). Examples: prediction heads = tour "Prediction heads and the delayed lesson" + <code>node.heads</code> + PREDICTION_HEADS; wellness = tour "Wellness: measured scores..." + <code>node.wellness</code> + <code>term.wellness</code> + WELLNESS_EVALUATORS, WELLNESS_PREDICTOR, WELLNESS_CHANNELS; self perception = tour "Self perception (learn)" + <code>node.self_state</code> + SELF_PERCEPTION + the self guide's "The learned self-perception component".</td>
+        <td class="where" data-col="In the dashboard">(none)</td>
+        <td data-col="Evidence">The three texts for one part are maintained separately and open from different clicks (tour button, box click, index card).</td>
+        <td data-col="One place it could live">The node card. Tour steps point at it instead of restating it; the manifest card keeps only the code reference, switch and tests.</td>
+      </tr>
+
+      <tr data-kind="k3">
+        <td class="num" data-col="#">24</td>
+        <td class="kind" data-col="Kind"><span class="k k3">Within the explainer</span></td>
+        <td data-col="What is repeated"><b>Duplicate entries for the three attention stages.</b></td>
+        <td class="where" data-col="In the explainer"><code>attention.stage1</code>, <code>attention.stage2</code>, <code>attention.stage3</code> and <code>node.block_s1</code>, <code>node.block_s2</code>, <code>node.block_s3</code> carry identical titles ("stage 1 - senses read each other", "stage 2 - each sense reads its past", "stage 3 - everything reads everything"); the tour has steps stage1, stage2, stage3 as well.</td>
+        <td class="where" data-col="In the dashboard">(none)</td>
+        <td data-col="Evidence">Six doc entries and three tour steps for three stages.</td>
+        <td data-col="One place it could live">One entry per stage, opened from the box, the attention map and the tour.</td>
+      </tr>
+
+      <tr data-kind="k3">
+        <td class="num" data-col="#">25</td>
+        <td class="kind" data-col="Kind"><span class="k k3">Within the explainer</span></td>
+        <td data-col="What is repeated"><b>Wellness</b> explained in more than a dozen entries.</td>
+        <td class="where" data-col="In the explainer"><code>term.wellness</code>, <code>node.wellness</code>, <code>drives.wellness</code>, <code>term.approximate-evaluator</code>, <code>term.planner-blind</code>, <code>term.wellness-spec</code>, <code>term.wellness-gradient</code>, <code>term.wellness-ranking</code>, the <code>wellness_channels</code> panel doc, tour steps "Wellness" and "Wellness channels", seven <code>edge.wellness.*</code> and <code>edge.*.wellness</code> entries, charts <code>chart.wellness</code>, <code>chart.wellness_rank</code>, <code>chart.wellness_align</code>.</td>
+        <td class="where" data-col="In the dashboard">(glossary Wellness, Wellness predictor, and the six channel terms)</td>
+        <td data-col="Evidence">The same facts (six fixed scores, five learned estimates, the ranking of remembered states) are restated across these entries.</td>
+        <td data-col="One place it could live">One wellness section with anchors for scores, predictor, channels and ranking.</td>
+      </tr>
+
+      <tr data-kind="k3">
+        <td class="num" data-col="#">26</td>
+        <td class="kind" data-col="Kind"><span class="k k3">Within the explainer</span></td>
+        <td data-col="What is repeated"><b>Templated per-sense edge entries.</b></td>
+        <td class="where" data-col="In the explainer">"edge.world.sense_X: what flows here" for seven senses and "edge.sense_X.enc: the data" for seven senses, among about 90 <code>edge.*</code> entries.</td>
+        <td class="where" data-col="In the dashboard">(none)</td>
+        <td data-col="Evidence">The entries differ only in the sense named and the array size.</td>
+        <td data-col="One place it could live">One per-sense table (sense, raw shape, encoder, token) opened from any of those edges.</td>
+      </tr>
+
+      <tr data-kind="k3">
+        <td class="num" data-col="#">27</td>
+        <td class="kind" data-col="Kind"><span class="k k3">Within the explainer</span></td>
+        <td data-col="What is repeated"><b>The self guide, the tour and the node docs</b> on the self parts.</td>
+        <td class="where" data-col="In the explainer">The self guide ("How UEMA connects perception, self and movement", four topics and 13 headings: body schema, named things, legacy whole-moment tracker, latent-body, self-choice...) restates tour steps "Self perception (learn)" and "Named things the self-model watches", the docs <code>node.self_state</code>, <code>node.hself</code>, <code>node.entity_self</code>, <code>node.latent_body</code>, <code>node.self_choice</code>, and the component cards BODY_SCHEMA, SELF_PERCEPTION, HIERARCHICAL_SELF, ENTITY_SELF, LATENT_BODY_SHADOW.</td>
+        <td class="where" data-col="In the dashboard">(none)</td>
+        <td data-col="Evidence">Four layers of text on the same five parts.</td>
+        <td data-col="One place it could live">The guide as the narrative; node cards hold the numbers and switches only.</td>
+      </tr>
+
+      <tr data-kind="k3">
+        <td class="num" data-col="#">28</td>
+        <td class="kind" data-col="Kind"><span class="k k3">Within the explainer</span></td>
+        <td data-col="What is repeated"><b>Repair switch values</b> shown three ways.</td>
+        <td class="where" data-col="In the explainer">The header table (7 flags from <code>args.json</code>); the 12 repair-switch cards (<code>data-meta.repair_switches</code>); the component cards' "switch" field with the "Orange: the parts being worked on" rings.</td>
+        <td class="where" data-col="In the dashboard">(see row 5)</td>
+        <td data-col="Evidence">The same launch flag is read three times and printed under three headings.</td>
+        <td data-col="One place it could live">One switch table; the diagram rings and the cards read from it.</td>
+      </tr>
+
+      <tr data-kind="k3">
+        <td class="num" data-col="#">29</td>
+        <td class="kind" data-col="Kind"><span class="k k3">Within the explainer</span></td>
+        <td data-col="What is repeated"><b>The depth licence</b> stated in four places.</td>
+        <td class="where" data-col="In the explainer">Two Run replay charts both documented by <code>chart.license</code> ("out of every 100 comparisons with doing nothing, how many each depth wins" and "how far ahead the planner is allowed to aim"); the inspector panel "The plan"; the tour step "Imagination - training multi-step accuracy"; the edge <code>edge.imagination.intention</code> "the horizon licence".</td>
+        <td class="where" data-col="In the dashboard">(none)</td>
+        <td data-col="Evidence">Minor: the two charts belong together, and the rule is re-explained in each prose entry.</td>
+        <td data-col="One place it could live">One two-panel chart block with one note.</td>
+      </tr>
+
+      <tr data-kind="k4">
+        <td class="num" data-col="#">30</td>
+        <td class="kind" data-col="Kind"><span class="k k4">Same name, different thing</span></td>
+        <td data-col="What is repeated"><b>"Body map"</b></td>
+        <td class="where" data-col="In the explainer">Inspector panel "The body map's co-movement numbers" (incorporation, UEMA section 11.2) and the tour's "Body schema".</td>
+        <td class="where" data-col="In the dashboard">Development tab "Body map": the observer's map of which body parts showed a capability.</td>
+        <td data-col="Evidence">Two unrelated measures under one name.</td>
+        <td data-col="One place it could live">Rename one (for example "Co-movement map" in the explainer).</td>
+      </tr>
+
+      <tr data-kind="k4">
+        <td class="num" data-col="#">31</td>
+        <td class="kind" data-col="Kind"><span class="k k4">Same name, different thing</span></td>
+        <td data-col="What is repeated"><b>"Stage"</b></td>
+        <td class="where" data-col="In the explainer">The three attention stages of a transformer block; the stages (boxes) of an investigation diagram; the curriculum's six phases.</td>
+        <td class="where" data-col="In the dashboard">Model health: a numbered position in a module. Ability map and hand atlas: Predict, Choose and do, Repeat and keep, Changed conditions. The 2026-09-13 registry: four other stages. Investigations: a box.</td>
+        <td data-col="Evidence">The dashboard glossary already says "The heading identifies which use applies".</td>
+        <td data-col="One place it could live">Reserve "stage" for the investigation boxes; use "level" or "step" for the others.</td>
+      </tr>
+
+      <tr data-kind="k4">
+        <td class="num" data-col="#">32</td>
+        <td class="kind" data-col="Kind"><span class="k k4">Same name, different thing</span></td>
+        <td data-col="What is repeated"><b>"Probe" and "test movement"</b></td>
+        <td class="where" data-col="In the explainer">"The gain-of-function probes (items 7 to 10)": the probe harness runs on saved checkpoints.</td>
+        <td class="where" data-col="In the dashboard">"Test movements tried at each checkpoint" (the scheduled check's four commands); the glossary term "Probe"; the Tests tab's registry rows.</td>
+        <td data-col="Evidence">Three different programs read as one, and the probe index and the scheduled checks are separate record sets.</td>
+        <td data-col="One place it could live">One glossary entry that names all three and links each to its tab.</td>
+      </tr>
+
+    </tbody>
+  </table>
+
+  <h2>How this review was done</h2>
+  <p>The explainer was read from its built page: the static header, the four tab sections and the JSON it embeds (<code>data-meta</code>, <code>data-tour</code>, <code>data-doc</code>, <code>data-series</code>, <code>data-components</code>, <code>data-investigations</code>) and the JavaScript that renders each tab. The dashboard was read from <code>development_dashboard.html</code>, <code>development_dashboard.js</code>, <code>development_dashboard_terms.js</code>, <code>development_dashboard.py</code>, <code>lineage_series.py</code> and <code>docs/gain_of_function_v3/dashboard_goal_catalog.json</code>. A row is listed only where the same record or the same concept is rendered in more than one place; conditional alternates (a panel that changes wording when a feature is off) are not listed.</p>
+  <p>Cross-links already in place, which the suggested homes build on: the dashboard header's "How the model works" link, the Tests tab's component links into the explainer's Architecture tab, and the explainer header's link to the dashboard's Now page.</p>
+</main>
+<script>
+(function () {
+  var rows = Array.prototype.slice.call(document.querySelectorAll('#t tbody tr'));
+  var q = document.getElementById('q');
+  var buttons = Array.prototype.slice.call(document.querySelectorAll('.controls button'));
+  var kind = 'all';
+  var names = { k1: 'Explainer and dashboard', k2: 'Within the dashboard', k3: 'Within the explainer', k4: 'Same name, different thing' };
+  function apply() {
+    var needle = (q.value || '').trim().toLowerCase();
+    var shown = 0;
+    rows.forEach(function (r) {
+      var ok = (kind === 'all' || r.dataset.kind === kind) && (!needle || r.textContent.toLowerCase().indexOf(needle) >= 0);
+      r.hidden = !ok; if (ok) shown++;
+    });
+    document.getElementById('shown').textContent = shown + ' of ' + rows.length + ' rows';
+  }
+  buttons.forEach(function (b) {
+    b.addEventListener('click', function () {
+      kind = b.dataset.kind;
+      buttons.forEach(function (x) { x.setAttribute('aria-pressed', x === b ? 'true' : 'false'); });
+      apply();
+    });
+  });
+  q.addEventListener('input', apply);
+  var counts = document.getElementById('counts');
+  var total = rows.length;
+  var byKind = {};
+  rows.forEach(function (r) { byKind[r.dataset.kind] = (byKind[r.dataset.kind] || 0) + 1; });
+  function count(n, label) { var d = document.createElement('div'); d.className = 'count'; d.innerHTML = '<b>' + n + '</b><span>' + label + '</span>'; counts.appendChild(d); }
+  count(total, 'rows in all');
+  Object.keys(names).forEach(function (k) { count(byKind[k] || 0, names[k]); });
+  apply();
+})();
+</script>
+</body>
+</html>
