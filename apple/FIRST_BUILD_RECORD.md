@@ -87,11 +87,11 @@ commits rebased onto 789d22d; trees otherwise identical). Logs: apple/records/ue
 apple/records/uema_build2_step6_app.log. Steps 3 and 4 not repeated (no change to the script or Package.resolved).
 
 ## Step 5, package build and test
-Build result: passed      Test result: Executed 372 tests, with 0 failures (1 skipped)      Time:  Pacific, 2026-11-05
+Build result: passed      Test result: Executed 372 tests, with 0 failures (1 skipped)      Time: 1:06 AM Pacific, 2026-11-05
 Per target: CMuJoCoTests 12, UEMACoreTests 31, UEMAPhysicsTests 24, UEMASceneTests 27, UEMASensesTests 103,
 UEMATokenizerTests 30, UEMACommandTests 35, UEMAModelTests 54, UEMAPlannerTests 36, UEMAIntegrationTests 10
 (skipped: testReleasedStackRunsTwentyModelSteps, compiled without UEMA_REAL_STACK, by design). All match the
 expected counts. The ModelPassTests (MLX_ENABLE_TF32=0) and SceneKitEyeRenderer (reported pixel formats) fixes hold.
 
 ## Step 6, app build
-Result: passed (xcodegen generate, then xcodebuild -scheme UEMAMind-macOS, BUILD SUCCEEDED)      Time:  Pacific, 2026-11-05
+Result: passed (xcodegen generate, then xcodebuild -scheme UEMAMind-macOS, BUILD SUCCEEDED)      Time: 1:06 AM Pacific, 2026-11-05
