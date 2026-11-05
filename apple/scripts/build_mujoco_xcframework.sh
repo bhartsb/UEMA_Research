@@ -236,6 +236,7 @@ COMMON_CMAKE_FLAGS=(
   -DMUJOCO_USE_FILAMENT=OFF
   -DMUJOCO_BUILD_MACOS_FRAMEWORKS=OFF
   -DCMAKE_INTERPROCEDURAL_OPTIMIZATION_RELEASE=OFF
+  -DCMAKE_POLICY_VERSION_MINIMUM=3.5  # CMake 4 rejects qhull's cmake_minimum_required < 3.5
 )
 
 # ----------------------------------------------------------------------------- output
@@ -488,6 +489,7 @@ patch_sources() {
   if [[ "$DRY_RUN" -eq 1 ]]; then
     log "would patch $MUJOCO_SRC/CMakeLists.txt: 'add_library(mujoco SHARED' -> 'add_library(mujoco STATIC' (1 line)"
     log "would patch $MUJOCO_SRC/cmake/MujocoMacOS.cmake: 'if(APPLE)' -> 'if(APPLE AND NOT IOS)' (2 lines)"
+    log "would patch $MUJOCO_SRC/CMakeLists.txt: install block 'if(NOT (APPLE AND MUJOCO_BUILD_MACOS_FRAMEWORKS))' -> 'if(FALSE)' (1 line)"
     log "would write $RECORDS_DIR/mujoco_source_patch.diff"
     return 0
   fi
@@ -495,6 +497,12 @@ patch_sources() {
     'add_library(mujoco SHARED ${MUJOCO_RESOURCE_FILES})' \
     'add_library(mujoco STATIC ${MUJOCO_RESOURCE_FILES})' 1
   patch_line "$MUJOCO_SRC/cmake/MujocoMacOS.cmake" 'if(APPLE)' 'if(APPLE AND NOT IOS)' 2
+  # A STATIC mujoco makes install(EXPORT) demand its PRIVATE deps (lodepng, ...) in the
+  # export set, and CMake 4 fails the generate step; the slices are merged with libtool
+  # (merge_slice), never installed, so the install block is switched off.
+  patch_line "$MUJOCO_SRC/CMakeLists.txt" \
+    'if(NOT (APPLE AND MUJOCO_BUILD_MACOS_FRAMEWORKS))' \
+    'if(FALSE) # UEMA: static slices are merged with libtool, never installed' 1
   git -C "$MUJOCO_SRC" diff > "$RECORDS_DIR/mujoco_source_patch.diff"
   log "patch diff: $RECORDS_DIR/mujoco_source_patch.diff ($(wc -l < "$RECORDS_DIR/mujoco_source_patch.diff" | tr -d ' ') lines)"
 }

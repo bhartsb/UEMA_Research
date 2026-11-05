@@ -901,7 +901,7 @@ public final class SafetensorsLoader {
     /// every module key set, every shape equal). An UpdateError is rethrown as
     /// SafetensorsLoaderError.moduleUpdate naming the component.
     public func apply(_ weights: LoadedWeights, to module: Module, component: WeightComponent,
-                      includeBuffers: Bool = false, verify: VerifyUpdate = .all) throws {
+                      includeBuffers: Bool = false, verify: Module.VerifyUpdate = .all) throws {
         do {
             _ = try module.update(parameters: weights.parameters(for: component, includeBuffers: includeBuffers),
                                   verify: verify)

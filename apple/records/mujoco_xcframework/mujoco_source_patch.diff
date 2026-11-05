@@ -1,0 +1,44 @@
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 5409c0c..b1d431b 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -76,7 +76,7 @@ else()
+   set(MUJOCO_RESOURCE_FILES "")
+ endif()
+ 
+-add_library(mujoco SHARED ${MUJOCO_RESOURCE_FILES})
++add_library(mujoco STATIC ${MUJOCO_RESOURCE_FILES})
+ target_include_directories(
+   mujoco
+   PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+@@ -189,7 +189,7 @@ if(BUILD_TESTING AND MUJOCO_BUILD_TESTS)
+   endif()
+ endif()
+ 
+-if(NOT (APPLE AND MUJOCO_BUILD_MACOS_FRAMEWORKS))
++if(FALSE) # UEMA: static slices are merged with libtool, never installed
+   # Install the libraries.
+   install(
+     TARGETS mujoco
+diff --git a/cmake/MujocoMacOS.cmake b/cmake/MujocoMacOS.cmake
+index 8ff7cd3..0decb58 100644
+--- a/cmake/MujocoMacOS.cmake
++++ b/cmake/MujocoMacOS.cmake
+@@ -12,7 +12,7 @@
+ # See the License for the specific language governing permissions and
+ # limitations under the License.
+ 
+-if(APPLE)
++if(APPLE AND NOT IOS)
+   # Target the oldest version of macOS that is still supported by Apple.
+   # We follow https://endoflife.date/macos, which considers a version to become
+   # unsupported the first time it is excluded from a macOS security update
+@@ -34,7 +34,7 @@ else()
+ endif()
+ 
+ function(enforce_mujoco_macosx_min_version)
+-  if(APPLE)
++  if(APPLE AND NOT IOS)
+     add_compile_options(${MUJOCO_MACOS_COMPILE_OPTIONS})
+     add_link_options(${MUJOCO_MACOS_LINK_OPTIONS})
+   endif()

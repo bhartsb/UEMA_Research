@@ -215,7 +215,10 @@ let package = Package(
         .target(
             name: "CMuJoCo",
             dependencies: ["mujoco"],
-            publicHeadersPath: "."
+            publicHeadersPath: ".",
+            // libmujoco.a is C++: test bundles that link CMuJoCo without MLX (UEMAPhysicsTests,
+            // UEMASensesTests, UEMATokenizerTests) failed with undefined std::__1 symbols.
+            linkerSettings: [.linkedLibrary("c++")]
         ),
 
         // Value types and protocols shared by every module (WI-20).
