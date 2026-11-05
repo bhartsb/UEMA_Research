@@ -143,7 +143,9 @@ def state_dirs():
     if not os.path.isdir(eef.DEFAULT_OUT):
         pytest.skip("no %s: run python ../../apple/scripts/export_eye_fixtures.py from Source/Python first"
                     % eef.DEFAULT_OUT)
-    dirs = sorted(d for d in os.listdir(eef.DEFAULT_OUT) if os.path.isdir(os.path.join(eef.DEFAULT_OUT, d)))
+    # pose folders only: the vision tests keep a sibling "textures" folder here (the SceneKit renderer's inputs)
+    dirs = sorted(d for d in os.listdir(eef.DEFAULT_OUT)
+                  if d.startswith("step_") and os.path.isdir(os.path.join(eef.DEFAULT_OUT, d)))
     if not dirs:
         pytest.skip("no state folders under %s" % eef.DEFAULT_OUT)
     return [os.path.join(eef.DEFAULT_OUT, d) for d in dirs]
