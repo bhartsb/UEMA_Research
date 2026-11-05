@@ -24,6 +24,8 @@ from typing import Optional, Sequence
 import torch
 import torch.nn as nn
 
+from lem.model.float64_host import float64_device, same_device
+
 logger = logging.getLogger(__name__)
 
 
@@ -248,6 +250,35 @@ def _migrate_optimizer_state(optimizer, saved_opt: dict, id2name: dict,
         g["params"] = list(cg["params"])   # current membership
         groups.append(g)
     return {"state": new_state, "param_groups": groups}, fresh
+
+
+def _placed_tensors(obj, device: torch.device):
+    """obj (a tensor, or dicts, lists and tuples of tensors and plain values, loaded on cpu) with every tensor
+    moved to `device` except float64 ones, which stay on cpu = float64_device(device). Other values pass through."""
+    if torch.is_tensor(obj):
+        return obj if obj.dtype == torch.float64 else obj.to(device)
+    if isinstance(obj, dict):
+        return {k: _placed_tensors(v, device) for k, v in obj.items()}
+    if isinstance(obj, (list, tuple)):
+        return type(obj)(_placed_tensors(v, device) for v in obj)
+    return obj
+
+
+def _placed_load(load, map_location):
+    """Run `load(device)` (safetensors load_file or torch.load with that device as its map_location) so that
+    every float64 tensor lands on float64_device(map_location) (REQ-A-4).
+
+    Input: `load`, a callable taking the device argument the loader accepts (a string, a torch.device or None);
+    `map_location`, the requested device (None = cpu).
+    Operation: when float64_device(map_location) is map_location itself (cpu, cuda), one call load(map_location),
+    as before. Otherwise (mps, which has no float64) load("cpu"), then move every tensor that is not float64 to
+    map_location (_placed_tensors); the float64 tensors stay on cpu.
+    Output: what the loader returned, with its tensors placed as described.
+    """
+    target = torch.device(str(map_location)) if map_location else torch.device("cpu")
+    if same_device(float64_device(target), target):
+        return load(map_location)
+    return _placed_tensors(load("cpu"), target)
 
 
 class CheckpointManager:
@@ -720,7 +751,11 @@ class CheckpointManager:
 
         Args:
             map_location: Device to map tensors to (e.g. 'cuda:1' for multi-GPU).
-                          Passed to torch.load() and safetensors load_file().
+                          Passed to torch.load() and safetensors load_file(). A float64
+                          tensor lands on float64_device(map_location) instead (cpu for
+                          mps, which has no float64; map_location itself on cpu and cuda,
+                          where one load_file call places everything as before), and
+                          load_state_dict then copies it into a buffer registered there.
         """
         # Try safetensors first
         sf_path = ckpt_dir / "model.safetensors"
@@ -728,7 +763,7 @@ class CheckpointManager:
             try:
                 from safetensors.torch import load_file
                 device_str = str(map_location) if map_location else "cpu"
-                flat = load_file(str(sf_path), device=device_str)
+                flat = _placed_load(lambda dev: load_file(str(sf_path), device=dev), device_str)
                 # Unflatten
                 state = {}
                 for key, tensor in flat.items():
@@ -760,8 +795,8 @@ class CheckpointManager:
                 # passes optimizer=None - tens of MB it would discard)
                 opt_path = ckpt_dir / "optimizer.pt"
                 if want_optimizer and opt_path.exists():
-                    opt_state = torch.load(opt_path, weights_only=False,
-                                           map_location=map_location)
+                    opt_state = _placed_load(lambda dev: torch.load(opt_path, weights_only=False, map_location=dev),
+                                             map_location)
                     state["optimizer"] = opt_state.get("optimizer", {})
                     if "scaler" in opt_state:
                         state["scaler"] = opt_state["scaler"]
@@ -773,8 +808,7 @@ class CheckpointManager:
         # Fall back to pytorch
         pt_path = ckpt_dir / "checkpoint.pt"
         if pt_path.exists():
-            return torch.load(pt_path, weights_only=False,
-                              map_location=map_location)
+            return _placed_load(lambda dev: torch.load(pt_path, weights_only=False, map_location=dev), map_location)
 
         raise FileNotFoundError(f"No checkpoint found in {ckpt_dir}")
 

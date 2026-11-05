@@ -30,6 +30,51 @@ ASSETS = Path(__file__).parent
 SAVED = REPO / 'Saved/mimo_bridge'
 REGISTRY = REPO / 'docs/development_dashboard/evidence.json'
 
+# THE LIVE VIEWER WINDOW, PER PLATFORM (tools/live_viewer.py, mujoco.viewer.launch_passive). One table keyed by
+# sys.platform: `shell` is the copy-and-paste line the Live tab shows (typed at the checkout root; {run} is the run
+# folder), `interpreters` the checkout-relative programs open_viewer tries in order before sys.executable. On macOS
+# launch_passive refuses under plain python with RuntimeError("`launch_passive` requires that the Python script be run
+# under `mjpython` on macOS"; mujoco 3.3.0, mujoco/viewer.py lines 510-513): mjpython is the launcher the mujoco wheel
+# installs beside the venv's python (README.md, the macOS install). The Windows line names the development machine's venv
+# (.venv_mimo); the other lines name the README's install (.venv).
+VIEWER_LAUNCH = {
+    'win32': dict(shell='$env:PYTHONPATH="Source\\Python"; .venv_mimo\\Scripts\\python.exe '
+                        '-m mimo_bridge.tools.live_viewer --run "{run}"',
+                  interpreters=('.venv_mimo/Scripts/python.exe',)),
+    'darwin': dict(shell='PYTHONPATH=Source/Python .venv/bin/mjpython -m mimo_bridge.tools.live_viewer --run "{run}"',
+                   interpreters=('.venv/bin/mjpython', '.venv_mimo/bin/mjpython')),
+    'linux': dict(shell='PYTHONPATH=Source/Python .venv/bin/python -m mimo_bridge.tools.live_viewer --run "{run}"',
+                  interpreters=('.venv/bin/python', '.venv_mimo/bin/python')),
+}
+
+
+def viewer_launch(platform=None):
+    """The VIEWER_LAUNCH row (shell, interpreters) for `platform`, sys.platform when None; a platform the table does not
+    name reads as linux."""
+    return VIEWER_LAUNCH.get(platform or sys.platform, VIEWER_LAUNCH['linux'])
+
+
+def viewer_interpreter(repo, platform=None):
+    """The program open_viewer starts (a Path): the first of the platform's checkout-relative interpreters that is a
+    file under `repo`; else, on macOS, an mjpython beside sys.executable; else sys.executable. On macOS with no mjpython
+    in any of those places it raises ValueError naming them (the page shows the message): starting plain python there
+    would only write launch_passive's refusal into viewer.log while the page said the window had opened."""
+    platform = platform or sys.platform
+    tried = []
+    for rel in viewer_launch(platform)['interpreters']:
+        exe = Path(repo).joinpath(*rel.split('/'))
+        if exe.is_file():
+            return exe
+        tried.append(exe)
+    if platform == 'darwin':
+        beside = Path(sys.executable).with_name('mjpython')
+        if beside.is_file():
+            return beside
+        raise ValueError('no mjpython to start the 3D viewer with: looked for %s and %s. On macOS mujoco.viewer.'
+                         'launch_passive runs only under mjpython, which the mujoco wheel installs beside the venv\'s '
+                         'python (README.md, the macOS install).' % (' and '.join(str(p) for p in tried), beside))
+    return Path(sys.executable)
+
 
 def read_json(path):
     def reject(value):
@@ -42,7 +87,7 @@ def read_json(path):
 
 
 def confined(root, path):
-    from ..repo_paths import localize   # a path recorded inside D:\UEMA_Research names this checkout's copy
+    from ..repo_paths import localize   # a path recorded inside the development machine's checkout names this checkout's copy
     resolved = (root / localize(path)).resolve()
     if not resolved.is_relative_to(root.resolve()):
         raise ValueError('Path outside the project')
@@ -1496,11 +1541,9 @@ def live_state(root, training, row=None, args=None):
            "frame_age_seconds": (now - frame.stat().st_mtime) if frame.exists() else None,
            "state_age_seconds": (now - state.stat().st_mtime) if state.exists() else None,
            "sensors_published": (live / "sensors.npz").exists(),
-           # copy-and-paste for a PowerShell prompt at the repo root: the package lives
-           # under Source/Python and the venv has mujoco
-           "viewer_command": ('$env:PYTHONPATH="Source\\Python"; '
-                              '.venv_mimo\\Scripts\\python.exe -m mimo_bridge.tools.live_viewer '
-                              f'--run "{run}"')}
+           # copy-and-paste for a prompt at the repo root (VIEWER_LAUNCH: PowerShell on Windows, sh on macOS and
+           # Linux): the package lives under Source/Python and the venv has mujoco
+           "viewer_command": viewer_launch()['shell'].format(run=run)}
     if row is None:
         row = last_training_record(Path(root) / run / "replay_training_stats.jsonl") or {}
     audit = row.get("self_touch_controlled") or row.get("self_touch_audit") or {}
@@ -1566,9 +1609,7 @@ def live_command(root, training, body):
         # standing and a crash inside it cannot reach the dashboard.
         import subprocess
         repo = Path(root)
-        exe = repo / ".venv_mimo" / "Scripts" / "python.exe"
-        if not exe.is_file():
-            exe = Path(sys.executable)
+        exe = viewer_interpreter(repo)              # VIEWER_LAUNCH: mjpython on macOS, the venv's python elsewhere
         env = dict(os.environ, PYTHONPATH=str(repo / "Source" / "Python"), PYTHONIOENCODING="utf-8")
         flags = getattr(subprocess, "CREATE_NEW_PROCESS_GROUP", 0) | getattr(subprocess, "DETACHED_PROCESS", 0)
         log = open(repo / run / "live" / "viewer.log", "ab", buffering=0)

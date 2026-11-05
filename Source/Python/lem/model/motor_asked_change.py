@@ -465,10 +465,13 @@ def switch_check(model, rows: int = 64, seed: int = 0) -> dict:
     out = {"rows": int(rows), "output_weight_max_abs": float(path.up.weight.abs().max()),
            "output_bias_max_abs": float(path.up.bias.abs().max())}
 
+    from mimo_bridge.precision_policy import policy_of
+    precision = policy_of(model, dev)       # the model's own device type, not a "cuda" literal
+
     def token(bypass, amp):
         path.bypass = bypass
         try:
-            with torch.amp.autocast("cuda", enabled=amp, dtype=getattr(model, "dtype", torch.float32)):
+            with precision.autocast(enabled=amp):
                 return reg.encode({"motor": x}, {"motor": "real"})["motor"].float()
         finally:
             path.bypass = False

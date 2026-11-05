@@ -97,6 +97,8 @@ import torch
 from torch import nn
 import torch.nn.functional as F
 
+from .float64_host import KeepsFloat64OnHost, float64_device
+
 MEMORY_REPAIR_CHOICES = ("off", "centred")
 # v2 (2026-09-25, after the independent review of v1): the fold takes production's own (bf16) number and the
 # bias is computed in fp32; the candidate's sizes are set inside the graph (no outward gradient) instead of by
@@ -283,7 +285,7 @@ def _second_moment(x: torch.Tensor) -> torch.Tensor:
     return (z.T @ z) / float(z.shape[0])
 
 
-class PersistentMemory(nn.Module):
+class PersistentMemory(KeepsFloat64OnHost):
     def __init__(self, input_size, n_modalities, d_model, action_size, hidden_size=96, repair="off"):
         super().__init__()
         self.input_size=int(input_size);self.hidden_size=int(hidden_size)
@@ -338,16 +340,20 @@ class PersistentMemory(nn.Module):
         S = 2 * self.hidden_size
         H = self.hidden_size
         dev = self.readout.weight.device
+        # the six float64 running weights live on float64_device(dev): dev itself on cpu and cuda, cpu for mps (no
+        # float64 there); KeepsFloat64OnHost keeps them there through LemLite's .to(device), and the checkpoint loader
+        # (lem/training/checkpoint.py _load_state) copies their saved values in without moving them
+        host = float64_device(dev)
         self.register_buffer(SWITCHED_KEY, torch.zeros((), dtype=torch.bool, device=dev))
         self.register_buffer("state_ref", torch.zeros(S, device=dev))
         self.register_buffer("event_centre", torch.zeros(self.input_size, device=dev))
-        self.register_buffer("event_centre_weight", torch.zeros((), dtype=torch.float64, device=dev))
+        self.register_buffer("event_centre_weight", torch.zeros((), dtype=torch.float64, device=host))
         self.register_buffer("state_centre", torch.zeros(S, device=dev))
-        self.register_buffer("state_centre_weight", torch.zeros((), dtype=torch.float64, device=dev))
+        self.register_buffer("state_centre_weight", torch.zeros((), dtype=torch.float64, device=host))
         # the second moments of what the candidate's two parts read ([x; 1] and [h; 1]) and their weight
         self.register_buffer("codes_moment", torch.eye(H + 1, device=dev))
         self.register_buffer("hidden_moment", torch.eye(H + 1, device=dev))
-        self.register_buffer("moment_weight", torch.zeros((), dtype=torch.float64, device=dev))
+        self.register_buffer("moment_weight", torch.zeros((), dtype=torch.float64, device=host))
         # the readout's bias and the candidate's two scales at the switch (the gauges' references)
         self.register_buffer("bias_at_switch", torch.zeros(self.n_modalities * self.d_model, device=dev))
         self.register_buffer("scales_at_switch", torch.zeros(2, device=dev))
@@ -357,15 +363,15 @@ class PersistentMemory(nn.Module):
         self.register_buffer("request_centre", torch.zeros(len(REQUEST_SITES), 2, self.n_modalities * self.d_model,
                                                            device=dev))
         self.register_buffer("request_centre_weight", torch.zeros(len(REQUEST_SITES), dtype=torch.float64,
-                                                                  device=dev))
+                                                                  device=host))
         self.register_buffer("needs_request_centre", torch.zeros(2, S, device=dev))
-        self.register_buffer("needs_request_centre_weight", torch.zeros((), dtype=torch.float64, device=dev))
+        self.register_buffer("needs_request_centre_weight", torch.zeros((), dtype=torch.float64, device=host))
         # the constant's return (THE CONSTANT'S RETURN above): per slot its size at the switch and its target, the
         # schedule's length (0 = no return: the constant stays as folded) and the model updates since the switch
         self.register_buffer("constant_start", torch.zeros(self.n_modalities, device=dev))
         self.register_buffer("constant_target", torch.zeros(self.n_modalities, device=dev))
         self.register_buffer("constant_return_updates", torch.zeros((), device=dev))
-        self.register_buffer("updates_since_switch", torch.zeros((), dtype=torch.float64, device=dev))
+        self.register_buffer("updates_since_switch", torch.zeros((), dtype=torch.float64, device=host))
         # what the next switch writes into them (LemLite.set_constant_return names the targets by sense slot)
         self._return_targets = torch.zeros(self.n_modalities)
         self._return_updates = 0

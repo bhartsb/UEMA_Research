@@ -1,0 +1,623 @@
+{
+ "work_items": [
+  {
+   "id": "WI-1",
+   "target": "A",
+   "wave": 1,
+   "title": "The guard reads psutil.virtual_memory().available (bytes) and exits 1 under --need-gb. Baseline run: python -m mimo_brid",
+   "files": [
+    "creates mimo_bridge/tools/free_memory_guard.py, tests/test_free_memory_guard.py",
+    "writes docs/apple_port/baseline_tests_2026-11-04.xml"
+   ],
+   "depends_on": [],
+   "instructions": "The guard reads psutil.virtual_memory().available (bytes) and exits 1 under --need-gb. Baseline run: python -m mimo_bridge.tools.free_memory_guard --need-gb 12 && python -m pytest lem/tests tokenizer/tests mimo_bridge/tests -m \"not slow\" --junitxml=<file>; its counts are the floor for every later A item.\nSOLID: S",
+   "acceptance": "The junit file exists; passed, failed and skipped counts recorded in section 9.",
+   "evidence": "README.md:152; conftest.py:167; 5,431 test functions (inventory2 tests)"
+  },
+  {
+   "id": "WI-2",
+   "target": "A",
+   "wave": 1,
+   "title": "resolve_device(name) returns a torch.device: \"auto\" picks cuda:0, else \"mps\" (torch.backends.mps.is_available()), else \"",
+   "files": [
+    "creates mimo_bridge/device_resolve.py, tests/test_device_resolve.py",
+    "edits lem_model.py:785, train_mimo.py:233, resume.py (new --device, default \"auto\")"
+   ],
+   "depends_on": [],
+   "instructions": "resolve_device(name) returns a torch.device: \"auto\" picks cuda:0, else \"mps\" (torch.backends.mps.is_available()), else \"cpu\"; a named device that is unavailable raises ValueError naming it (today line 785 turns any name into cpu). LemLite takes the resolved device and no longer calls torch.cuda.is_available.\nSOLID: S, D",
+   "acceptance": "pytest: 6 of 6 pass (auto to cpu with no GPU; each unavailable name raises; \"cpu\" works; patched \"mps\" returns type \"mps\"; LemLite on cpu).",
+   "evidence": "lem_model.py:785; train_mimo.py:233 (inventory1 cuda); no \"mps\" string in Source (research1 torch-apple)"
+  },
+  {
+   "id": "WI-3",
+   "target": "A",
+   "wave": 1,
+   "title": "PrecisionPolicy(device) gives dtype, use_amp and an autocast context with device_type = device.type. cuda: bf16, on (tod",
+   "files": [
+    "creates mimo_bridge/precision_policy.py, tests/test_precision_policy.py",
+    "edits lem_model.py:798-800, 2665, 3547, 4001, 4763, 6810, 6877, 6929, 8303, 8310",
+    "lem/model/heads_all_slot_path.py:514, motor_asked_change.py:471, vestibular_input_path.py:398",
+    "mimo_bridge/proprio_token.py:535, 567, 579, 601, 635, 710"
+   ],
+   "depends_on": [],
+   "instructions": "PrecisionPolicy(device) gives dtype, use_amp and an autocast context with device_type = device.type. cuda: bf16, on (today; the receipt records precision bf16). cpu: float32, off. mps: float32, off unless --mps-autocast bf16 (its rounding against the CUDA bf16 receipts is unmeasured). scaler() returns None on every device: no GradScaler exists on the MIMo path (lem_model.py:9494; live_test.py:927 is the Unreal path).\nSOLID: S, O",
+   "acceptance": "pytest passes; grep -c 'autocast(\"cuda\"' returns 0 on each of the six files; WI-1 floor held.",
+   "evidence": "lem_model.py:798-800, 2665, 9494; autocast_mode.py:261-269 (inventory1 cuda); v2.9.0 autocast dtypes, v2.6.0 release note, grad_scaler.py v2.6.0 and v2.8.0 (research1 torch-apple)"
+  },
+  {
+   "id": "WI-4",
+   "target": "A",
+   "wave": 1,
+   "title": "make_adamw(params, device, lr, betas) sets fused = (device.type == \"cuda\"), the rule line 1876 holds today, in one place",
+   "files": [
+    "creates mimo_bridge/optimizer_factory.py, tests/test_optimizer_factory.py",
+    "edits lem_model.py:1876"
+   ],
+   "depends_on": [],
+   "instructions": "make_adamw(params, device, lr, betas) sets fused = (device.type == \"cuda\"), the rule line 1876 holds today, in one place with a test; no numerical change. Fused-versus-loop bit equality is not measured in the release.\nSOLID: S, D",
+   "acceptance": "pytest: fused False for cpu and mps devices, True for cuda; one cpu step equals a stored reference, 0 difference.",
+   "evidence": "lem_model.py:1876 (inventory1 cuda)"
+  },
+  {
+   "id": "WI-5",
+   "target": "A",
+   "wave": 1,
+   "title": "float64_device(device) returns cpu for \"mps\", else the device. Each site allocates its float64 tensor there and hands th",
+   "files": [
+    "creates lem/model/float64_host.py, lem/tests/test_float64_host.py",
+    "edits lem_model.py:1120, 2533-2534",
+    "hand_response.py:67-68, 107, 117, 138",
+    "persistent_memory.py:344-368 (six buffers)",
+    "self_state_integration.py:41",
+    "prediction_audit.py:388",
+    "attention_cap.py:134-136",
+    "lem/training/checkpoint.py:730"
+   ],
+   "depends_on": [],
+   "instructions": "float64_device(device) returns cpu for \"mps\", else the device. Each site allocates its float64 tensor there and hands the result to the model as float32. persistent_memory's six float64 buffers load on cpu (checkpoint.py:730) and stay there. Attention fallback: with q and k on mps, cosine_scores computes on cpu in float64 as today and returns the scores to mps (attention_cap is off in the released command). On cpu and cuda nothing changes.\nSOLID: S, L",
+   "acceptance": "pytest: the three mappings; an AST scan finds no float64 allocation on a model device without float64_device; WI-1 floor held.",
+   "evidence": "the listed sites; 37 non-test float64 lines (inventory1 cuda, python-deps); \"The MPS backend does not support torch.float64\" (research1 torch-apple)"
+  },
+  {
+   "id": "WI-6",
+   "target": "A",
+   "wave": 1,
+   "title": "A platform gate before any subprocess: off win32 or without CUDA, load_native_ops() and load_vision_kernels() return Non",
+   "files": [
+    "edits lem/native_ops.py:25-31, 3145",
+    "tokenizer/modalities/vision_kernels.py:28, 199-213",
+    "creates lem/tests/test_native_ops_fallback.py"
+   ],
+   "depends_on": [],
+   "instructions": "A platform gate before any subprocess: off win32 or without CUDA, load_native_ops() and load_vision_kernels() return None at once (today subprocess.run(['where','cl']) runs first). The Python fallbacks stay. native_ops is imported by replay_buffer.py:282 and training_step.py:23, not by the MIMo loop.\nSOLID: S",
+   "acceptance": "pytest with sys.platform patched to \"darwin\" and subprocess.run recorded: both loaders return None, 0 subprocess calls; clip_grad_norm_gil_free equals torch.nn.utils.clip_grad_norm_ on 3 fixed tensors, 0 difference.",
+   "evidence": "native_ops.py:6, 11, 25, 85, 3145, 3225-3227, 3336-3338 (inventory1); vision_kernels.py:28, 268 (inventory2 tokenizer)"
+  },
+  {
+   "id": "WI-7",
+   "target": "A",
+   "wave": 1,
+   "title": "PoolSource starts its world processes with multiprocessing \"spawn\" (datasource.py:495), macOS's default: no change. Chec",
+   "files": [
+    "creates tests/test_payload_types.py, tests/test_shm_platform_guard.py",
+    "edits mimo_bridge/shm_writer.py:39, lem/action/shm.py:40-44"
+   ],
+   "depends_on": [],
+   "instructions": "PoolSource starts its world processes with multiprocessing \"spawn\" (datasource.py:495), macOS's default: no change. Check 1: the world-to-trainer pipe payload holds numpy arrays and plain Python values only, so PyTorch issue 153050 (torch tensors through multiprocessing queues hang at exit on macOS under spawn) does not reach the training path. Check 2: the Windows named-shared-memory transport (Mode B, off the training path, datasource.py:3-8) raises RuntimeError naming the platform at open() off Windows.\nSOLID: S, L",
+   "acceptance": "pytest: _raw_to_payload on a synthetic RawStep holds no torch.Tensor; ShmWriter.open under sys.platform \"darwin\" raises RuntimeError containing \"Windows named shared memory\".",
+   "evidence": "datasource.py:3-8, 77, 154-160, 495, 510-511 (inventory1 os-process); shm_writer.py:39; cpu_reader.py:62-64 (inventory2 tokenizer); issue 153050 (research1 torch-apple)"
+  },
+  {
+   "id": "WI-8",
+   "target": "A",
+   "wave": 1,
+   "title": "resume.py joins os.sep (\"/\" on macOS) onto the backslash DEV_ROOT, so no saved C:\\ input matches and lines 61-62 refuse ",
+   "files": [
+    "edits resume.py:34, 57, 61",
+    "mimo_bridge/pen_art.py:33",
+    "tests/conftest.py:48-49",
+    "creates tests/test_resume_paths.py, tests/test_pen_art_fonts.py"
+   ],
+   "depends_on": [],
+   "instructions": "resume.py joins os.sep (\"/\" on macOS) onto the backslash DEV_ROOT, so no saved C:\\ input matches and lines 61-62 refuse each as unmapped; the fix compares both sides with backslashes replaced by \"/\", as repo_paths._norm (line 47) does. pen_art tries arialbd.ttf, arial.ttf, segoeuib.ttf, DejaVuSans-Bold.ttf, then Pillow's bitmap font, which changes the wall art the vision sense sees by an unmeasured amount; \"Arial Bold.ttf\" and \"Arial.ttf\" under /System/Library/Fonts/Supplemental go before the fallback. conftest's two C: paths become checkout-relative.\nSOLID: S",
+   "acceptance": "pytest: with os.sep patched to \"/\", resume.py maps every C:\\Users\\bhart\\Documents\\UEMA_devA_private input of command.json to the checkout (count above 0) and refuses none; pen_art's list holds the two macOS names before load_default.",
+   "evidence": "resume.py:34, 57, 61-62; repo_paths.py:11, 47; env.py:1099-1104; pen_art.py:33-38 (inventory1); conftest.py:48-49 (inventory2 tests)"
+  },
+  {
+   "id": "WI-9",
+   "target": "A",
+   "wave": 1,
+   "title": "The dashboard runs unchanged; three macOS defects go: the PowerShell copy-paste text, the plain-python launch of live_vi",
+   "files": [
+    "edits tools/development_dashboard.py:1501-1502, 1569-1577",
+    "tools/movement_viewer/__init__.py:38-48",
+    "tools/movement_viewer/sources.py:40-41",
+    "tools/commit_guard.py:44",
+    "creates tests/test_dashboard_macos_lines.py"
+   ],
+   "depends_on": [],
+   "instructions": "The dashboard runs unchanged; three macOS defects go: the PowerShell copy-paste text, the plain-python launch of live_viewer (launch_passive on macOS needs the mjpython launcher) and the drive-letter pictures folder. One table keyed by sys.platform supplies shell text and interpreter; pictures_dir() honours UEMA_MOVEMENT_PICTURES, then external/D/UEMA_movement_viewer/pictures under the checkout; HEAVY_LOCK becomes checkout-relative.\nSOLID: S, O",
+   "acceptance": "pytest under sys.platform \"darwin\": viewer text starts \"PYTHONPATH=Source/Python\" and names mjpython; pictures_dir() returns the checkout folder when it exists; under \"win32\" all read as today.",
+   "evidence": "development_dashboard.py:1501-1502, 1569-1577, 3841; movement_viewer/__init__.py:38; sources.py:40; commit_guard.py:44 (inventory2 dashboard-viewer); mjpython rule (research1 mujoco-macos)"
+  },
+  {
+   "id": "WI-10",
+   "target": "A",
+   "wave": 1,
+   "title": "The 22 pins of requirements.txt with torch from the default index (torch-2.6.0-cp313-none-macosx_11_0_arm64.whl) instead",
+   "files": [
+    "creates requirements-macos.txt, tests/test_requirements_macos.py"
+   ],
+   "depends_on": [],
+   "instructions": "The 22 pins of requirements.txt with torch from the default index (torch-2.6.0-cp313-none-macosx_11_0_arm64.whl) instead of the CUDA 12.4 index; header: native arm64 Python 3.13, mujoco-3.3.0-cp313-cp313-macosx_11_0_arm64.whl, pip install -e third_party/MIMo/mimo --no-deps, mjpython, the MPS floor the PyTorch sample prints (\"not 15.0+\"; the floor for torch 2.6.0 itself unverified).\nSOLID: S",
+   "acceptance": "pytest: package-name set equals requirements.txt's; pip download --platform macosx_11_0_arm64 --python-version 3.13 --only-binary=:all: --no-deps -r requirements-macos.txt -d <scratch> exits 0 here with 22 wheels (network needed).",
+   "evidence": "requirements.txt:3, 9; README.md:122-123, 143; PyPI wheel names (inventory1 python-deps); Rosetta refusal (research1 mujoco-macos)"
+  },
+  {
+   "id": "WI-11",
+   "target": "A",
+   "wave": 1,
+   "title": "The released episode companion (621,243,950 bytes) came from a cuda:0 run and holds a CUDA random-number state; restore_",
+   "files": [
+    "edits mimo_bridge/continuation_state.py:216-218, acting_snapshot.py:54, train_mimo.py (new --rng-continuation exact|reseed, default exact)",
+    "creates tests/test_rng_continuation.py"
+   ],
+   "depends_on": [],
+   "instructions": "The released episode companion (621,243,950 bytes) came from a cuda:0 run and holds a CUDA random-number state; restore_learner raises \"exact continuation requires the saved execution device\" elsewhere, so a Mac resume of the released checkpoint stops. reseed drops the CUDA state, logs it, and seeds the CPU generator from a hash of its bytes; the log states that later random draws differ from the saved run's. acting_snapshot.py:54 gets the same guard.\nSOLID: S, O",
+   "acceptance": "pytest on cpu: non-None cuda_rng under exact raises ValueError with that text; under reseed restores and logs \"cuda_rng dropped\"; cuda_rng None restores under both.",
+   "evidence": "continuation_state.py:185, 216-218; train_mimo.py:2768; acting_snapshot.py:48, 54 (inventory1 cuda); MANIFEST.json:100"
+  },
+  {
+   "id": "WI-12",
+   "target": "A",
+   "wave": 1,
+   "title": "Opens the released model.safetensors with safe_open(framework=\"np\") and writes every tensor's key, shape and dtype: the ",
+   "files": [
+    "creates apple/scripts/dump_weight_manifest.py",
+    "writes apple/UEMAKit/Sources/UEMAModel/Resources/weight_manifest.json"
+   ],
+   "depends_on": [],
+   "instructions": "Opens the released model.safetensors with safe_open(framework=\"np\") and writes every tensor's key, shape and dtype: the only source of the names the Swift loader and module tree must match.\nSOLID: S",
+   "acceptance": "python -I apple/scripts/dump_weight_manifest.py exits 0; elements sum to 18,131,745; per-component sums equal the receipt's component_params.",
+   "evidence": "model_receipt.json:86 (inventory1 compute); lem_model.py:9433 (inventory2 tokenizer)"
+  },
+  {
+   "id": "WI-13",
+   "target": "A",
+   "wave": 1,
+   "title": "Builds the crib world once (TrimeshTouch add_body with the bridge's fixed ray directions) and writes each skin point's b",
+   "files": [
+    "creates apple/scripts/export_skin_layout.py",
+    "writes apple/UEMAKit/Sources/UEMAScene/Resources/skin_layout_age24_trunk_v1.json"
+   ],
+   "depends_on": [],
+   "instructions": "Builds the crib world once (TrimeshTouch add_body with the bridge's fixed ray directions) and writes each skin point's body id, body-frame position and adjacency list (the breadth-first-search graph), each body's scale, and the layout digest.\nSOLID: S",
+   "acceptance": "The guard-and-script line exits 0; 4,683 points; digest 0581069917fae467.",
+   "evidence": "touch.py:868-939, 1276-1293, 1941-1969; touch_inside_rays.py:24-25, 38-53 (inventory2 mimo-body)"
+  },
+  {
+   "id": "WI-14",
+   "target": "A",
+   "wave": 1,
+   "title": "Loads the crib world, sets qpos from three rows of the released run's observer chunk b0 (delta-coded, quantum 1e-6), ren",
+   "files": [
+    "creates apple/scripts/export_eye_fixtures.py",
+    "writes Tests/UEMASensesTests/Fixtures/eyes/<state>/ (five camera PNGs, cameras.json, patches.json, tactile_patches.json)"
+   ],
+   "depends_on": [],
+   "instructions": "Loads the crib world, sets qpos from three rows of the released run's observer chunk b0 (delta-coded, quantum 1e-6), renders the five cameras through EyeRenderer (mjr_render: 256 px at 60\u00b0, 288 px at 24\u00b0, 256 px at 150\u00b0), runs BinocularPatcher to record the patch count N and the first 4 angle rows, and saves the [256, 10] tactile patch fields of the same step.\nSOLID: S",
+   "acceptance": "5 PNGs of the stated sizes for 3 states; N equals 1,160 (computed 2 \u00d7 (256 + 324), never printed by a release log; a different value replaces 1,160 in WI-30).",
+   "evidence": "env.py:168-186, 603-638, 989; args.json fovea and ring; vision_adapter.py:26, 112, 177; observer_record.py:423 (inventory1, inventory2)"
+  },
+  {
+   "id": "WI-15",
+   "target": "A",
+   "wave": 1,
+   "title": "Runs the bridge's scene writer for \"crib\" (mobile, critters, responsive caregiver, age fixed 24, trunk_v1, lite textures",
+   "files": [
+    "creates apple/scripts/export_scene_bundle.py",
+    "writes Sources/UEMAScene/Resources/crib_age24_trunk_v1/ (scene.xml, MIMo_metav2_lite.xml, MIMo_modelv2_grown24_fovea.xml, play_mat.png, wall and ceiling PNGs, bundle.json)"
+   ],
+   "depends_on": [],
+   "instructions": "Runs the bridge's scene writer for \"crib\" (mobile, critters, responsive caregiver, age fixed 24, trunk_v1, lite textures) and copies the generated files with every absolute include and asset path made relative. No mesh and no MIMo PNG ships (0 meshes referenced; lite textures drop all 25 PNGs); the floor is the generated 1024 \u00d7 1024 play_mat.png.\nSOLID: S",
+   "acceptance": "From a fresh folder, mujoco.MjModel.from_xml_path(bundle/scene.xml) loads and reports nq equal to 146, the shipped observer header's count.",
+   "evidence": "env.py:47, 129-139, 335-451, 512-522, 550-578, 1118; pen_art.py:149-150; header nq 146 (inventory2)"
+  },
+  {
+   "id": "WI-16",
+   "target": "A",
+   "wave": 1,
+   "title": "Reads entire and writes as input, computation, output with every constant and its file:line: action_decoder.py (527 line",
+   "files": [
+    "creates apple/UEMAKit/Specs/ (command_decoder.md, touch_pooler.md, audio_render.md, vestibular_fields.md, proprio_rows.md, motor_controller_input.md, planner_loss.md, wellness_sum.md)"
+   ],
+   "depends_on": [],
+   "instructions": "Reads entire and writes as input, computation, output with every constant and its file:line: action_decoder.py (527 lines); TouchPooler (388 lines) with virtual_skin.py and contact_footprint.py; audio_adapter.py render() and the crib's sound sources; the 29 vestibular fields and where the running mean and variance are checkpointed; the 26-row proprioception and motor rows; the motor controller's 1,646-number input; the planner's loss; the wellness sum. All eight are unverified today (the inventories give entry points and line counts only).\nSOLID: the contract B implements against",
+   "acceptance": "Each file names every constant with file:line; a reader who did not write it checks 3 constants per file and signs its footer.",
+   "evidence": "touch_adapter.py:166, 220, 330, 345; vestibular_adapter.py:40-52; vestibular_sense.py:424; datasource.py:127, 150 (inventory2 tokenizer); receipt input_dim 1646; intention_generator.py:395-399 (inventory1 compute)"
+  },
+  {
+   "id": "WI-17",
+   "target": "B",
+   "wave": 1,
+   "title": "swift-tools-version 5.9; platforms .macOS(.v14), .iOS(.v17) (MLX needs macOS 14; mlx-swift declares iOS 17); dependency ",
+   "files": [
+    "creates apple/UEMAKit/Package.swift",
+    "Sources/ with CMuJoCo, UEMACore, UEMAPhysics, UEMAScene, UEMASenses, UEMATokenizer, UEMAModel, UEMAPlanner, UEMACommand",
+    "Tests/<Module>Tests/",
+    "one placeholder file each",
+    "apple/.gitignore"
+   ],
+   "depends_on": [],
+   "instructions": "swift-tools-version 5.9; platforms .macOS(.v14), .iOS(.v17) (MLX needs macOS 14; mlx-swift declares iOS 17); dependency mlx-swift (tag pinned at first build); binaryTarget \"mujoco\" at Binaries/mujoco.xcframework (WI-18); targets in dependency sequence UEMACore \u2190 UEMAPhysics \u2190 UEMAScene \u2190 UEMASenses \u2190 UEMATokenizer \u2190 UEMAModel \u2190 UEMAPlanner \u2190 UEMACommand; one XCTest target per module.\nSOLID: D, I",
+   "acceptance": "First build: swift package resolve exits 0 listing mlx-swift; xcodebuild -scheme UEMAKit-Package build exits 0 (Xcode, since SwiftPM's command line cannot build MLX's Metal shaders).",
+   "evidence": "mlx-swift Package.swift and README; MLX install page (research1 torch-apple)"
+  },
+  {
+   "id": "WI-18",
+   "target": "B",
+   "wave": 1,
+   "title": "Clones google-deepmind/mujoco at tag 3.3.0 (the Python pin). CMake (minimum 3.16, C++17, FetchContent over the network) ",
+   "files": [
+    "creates apple/scripts/build_mujoco_xcframework.sh, apple/scripts/README.md"
+   ],
+   "depends_on": [],
+   "instructions": "Clones google-deepmind/mujoco at tag 3.3.0 (the Python pin). CMake (minimum 3.16, C++17, FetchContent over the network) builds three static slices: macOS arm64; iOS device and simulator with leetal/ios-cmake (-DPLATFORM=OS64, SIMULATORARM64). Flags on every slice: -DMUJOCO_ENABLE_AVX_INTRINSICS=OFF (AVX is a build option, as the radcli14 fork shows), -DMUJOCO_BUILD_SIMULATE=OFF, -DMUJOCO_BUILD_TESTS=OFF, -DMUJOCO_USE_FILAMENT=OFF, -DMUJOCO_BUILD_MACOS_FRAMEWORKS=OFF; then xcodebuild -create-xcframework into apple/UEMAKit/Binaries/mujoco.xcframework. No official iOS build exists; the iOS slices rest on two reported precedents (iMuJoCo; radcli14) and are unverified until the script runs.\nSOLID: S",
+   "acceptance": "First build: the script exits 0; xcrun lipo -info names arm64 per slice; the XCFramework's Info.plist lists 3 libraries.",
+   "evidence": "MuJoCo build docs, CMakeLists options, radcli14 Package.swift, ios-cmake OS64, 3.3.1 changelog (research1 mujoco-ios, mujoco-macos); requirements.txt:9"
+  },
+  {
+   "id": "WI-19",
+   "target": "B",
+   "wave": 2,
+   "title": "One module exposing mj_loadXML, mj_makeData, mj_step, mj_rnePostConstraint, mj_contactForce, mjv_makeScene, mjv_updateSc",
+   "files": [
+    "creates Sources/CMuJoCo/ (module.modulemap, shim.h, CMuJoCo.swift)"
+   ],
+   "depends_on": [
+    "WI-18"
+   ],
+   "instructions": "One module exposing mj_loadXML, mj_makeData, mj_step, mj_rnePostConstraint, mj_contactForce, mjv_makeScene, mjv_updateScene and the data fields qpos, qvel, sensordata, ctrl, xpos, xquat, actuator_force, ncon, contact; no mjr_ (OpenGL) symbol anywhere in the package.\nSOLID: I",
+   "acceptance": "First build: a test's mj_versionString() equals \"3.3.0\".",
+   "evidence": "\"visualization layer ... independent of any graphics library\" (research1 mujoco-ios); mimo_env.py:574-575; touch.py:1434 (inventory2)"
+  },
+  {
+   "id": "WI-20",
+   "target": "B",
+   "wave": 1,
+   "title": "Value types Command (26 \u00d7 9), Token (192 Float), SenseName (six active; intermind marked inactive), ModelStep (count, 50",
+   "files": [
+    "creates Sources/UEMACore/ (SenseName.swift, Command.swift, ModelStep.swift, Protocols.swift)",
+    "Tests/UEMACoreTests/CommandTests.swift"
+   ],
+   "depends_on": [],
+   "instructions": "Value types Command (26 \u00d7 9), Token (192 Float), SenseName (six active; intermind marked inactive), ModelStep (count, 50 ms each); protocols Physics, SceneLoading, SenseReader, Tokenizer, WeightsLoading, ForwardModeling, Planning, CommandDecoding, EyeRendering. Every later module takes these as init parameters.\nSOLID: I, D",
+   "acceptance": "First build: UEMACoreTests pass (234 numbers per Command; six active senses; 192 per Token).",
+   "evidence": "README.md:19; encoder_registry.py:33; trainer.log active list (inventory1)"
+  },
+  {
+   "id": "WI-21",
+   "target": "D",
+   "wave": 1,
+   "title": "What the package and app are; the prerequisites of section 8, step 1; the sequence of section 8; the statement that noth",
+   "files": [
+    "creates apple/README.md, docs/apple_port/banned_words.txt (the writing rules' seven banned phrases, one per line)"
+   ],
+   "depends_on": [],
+   "instructions": "What the package and app are; the prerequisites of section 8, step 1; the sequence of section 8; the statement that nothing under apple/ was compiled on Windows.\nSOLID: n/a",
+   "acceptance": "grep -c -i -f docs/apple_port/banned_words.txt apple/README.md returns 0; every command in it appears in section 8.",
+   "evidence": "fact 1; research1"
+  },
+  {
+   "id": "WI-22",
+   "target": "D",
+   "wave": 1,
+   "title": "requirements-macos.txt, --device auto, mjpython for the live viewer, --rng-continuation reseed for a resume of the relea",
+   "files": [
+    "edits README.md: \"## Running on macOS (Apple silicon)\" after line 170",
+    "\"## Apple Swift port (apple/)\" after line 235",
+    "both link the feasibility page and this plan"
+   ],
+   "depends_on": [],
+   "instructions": "requirements-macos.txt, --device auto, mjpython for the live viewer, --rng-continuation reseed for a resume of the released checkpoint, the memory line (about 30 GB committed on Windows; the Mac figure unmeasured), the Known limits additions; the flags of WI-2 and WI-11 named as pending until they land.\nSOLID: n/a",
+   "acceptance": "grep -n '^## ' README.md shows the two headings at the stated positions; the WI-21 grep returns 0 on the new text.",
+   "evidence": "README headings printed here today; README.md:123-128, 140-143, 152, 207-208 (inventory1, inventory2)"
+  },
+  {
+   "id": "WI-25",
+   "target": "B",
+   "wave": 3,
+   "title": "MuJoCoPhysics implements Physics: load(bundle) by mj_loadXML; stepModelStep(controls:) runs 5 env steps of 2 \u00d7 (mj_step ",
+   "files": [
+    "Sources/UEMAPhysics/ (MuJoCoPhysics.swift, PhysicsState.swift)",
+    "Tests/UEMAPhysicsTests"
+   ],
+   "depends_on": [
+    "WI-19",
+    "WI-20"
+   ],
+   "instructions": "MuJoCoPhysics implements Physics: load(bundle) by mj_loadXML; stepModelStep(controls:) runs 5 env steps of 2 \u00d7 (mj_step + mj_rnePostConstraint) at the scene's 0.005 s timestep (10 physics steps, 50 ms); readers for qpos, qvel, sensordata, xpos, xquat, actuator_force, contacts (ncon, mj_contactForce); writes ctrl clipped to \u22121..1.\nSOLID: S, L",
+   "acceptance": "First build: loads the WI-15 bundle, steps 20 model steps (1.0 s); nq equals 146; simulated time advanced 1.0 s; no NaN in qpos.",
+   "evidence": "mimo_env.py:573-575, 616-619; env.py:1157; actuation.py:153-154; 92 motors ctrlrange \u22121 1 (inventory2 mimo-body)"
+  },
+  {
+   "id": "WI-26",
+   "target": "B",
+   "wave": 2,
+   "title": "Finds the WI-15 and WI-13 resources in the module bundle, hands their URLs to Physics and the tactile reader, parses the",
+   "files": [
+    "Sources/UEMAScene/ (SceneBundle.swift, SkinLayout.swift)",
+    "Tests/UEMASceneTests"
+   ],
+   "depends_on": [
+    "WI-13",
+    "WI-15",
+    "WI-17"
+   ],
+   "instructions": "Finds the WI-15 and WI-13 resources in the module bundle, hands their URLs to Physics and the tactile reader, parses the skin layout into arrays.\nSOLID: S, D",
+   "acceptance": "First build: scene.xml and the skin JSON found; 4,683 points parsed.",
+   "evidence": "WI-13 and WI-15 pass lines"
+  },
+  {
+   "id": "WI-27",
+   "target": "B",
+   "wave": 2,
+   "title": "Array reads of Physics plus WI-16's arithmetic: proprioception rows from xquat, xpos, actuator_force (26 rows under trun",
+   "files": [
+    "Sources/UEMASenses/ (ProprioceptionReader.swift, VestibularReader.swift, MotorReader.swift)",
+    "tests"
+   ],
+   "depends_on": [
+    "WI-16",
+    "WI-20"
+   ],
+   "instructions": "Array reads of Physics plus WI-16's arithmetic: proprioception rows from xquat, xpos, actuator_force (26 rows under trunk_v1); vestibular 29 numbers from sensordata, qpos, qvel, actuator_force, each scaled by its constant; motor achieved rows 26 \u00d7 10 (position 3, quaternion 4, radius, strength, is_active) plus energy 3 and capability 21.\nSOLID: S, L",
+   "acceptance": "First build: on a fake Physics with known arrays the rows equal hand-computed rows; counts 26, 29, 26 \u00d7 10.",
+   "evidence": "proprio_adapter.py:207-209, 238; vestibular_adapter.py:232, 268-293; MIMo_metav2.xml:166-167; motor.py:37, 52 (inventory2)"
+  },
+  {
+   "id": "WI-28",
+   "target": "B",
+   "wave": 2,
+   "title": "Per physics substep (mechanical_v4 calls it every substep): for each of data.ncon contacts, mj_contactForce rotated into",
+   "files": [
+    "Sources/UEMASenses/Tactile/ (ContactReader.swift, SkinSpread.swift, TouchPooler.swift)",
+    "tests"
+   ],
+   "depends_on": [
+    "WI-13",
+    "WI-16",
+    "WI-20"
+   ],
+   "instructions": "Per physics substep (mechanical_v4 calls it every substep): for each of data.ncon contacts, mj_contactForce rotated into the body frame; skin points within 3 \u00d7 scale by distance over the WI-13 points plus the breadth-first search over the adjacency; the bridge's conservative_spread_linear: weight max(1 \u2212 distance / (2 \u00d7 scale), 0) per point, normalised to sum 1, else the single nearest point; TouchPooler's 10 fields per patch (Goertzel vibration bands) per WI-16; output the [32, 19] token per body sorted by pressure from 256 patch slots, fields divided by _FIELD_NORMS [100000, 50000, 200, 20000, 10, 10, 10, 10, 0.5, 0.5].\nSOLID: S, O",
+   "acceptance": "First build: one synthetic contact spreads to hand-computed weights; 0 contacts give 32 zero rows; WI-14's tactile_patches.json matched to a tolerance measured at first build and written into section 9.",
+   "evidence": "touch.py:1434, 1540, 1598-1621, 1276-1293; contact_mechanics.py:60-76; env.py:1173, 2358-2360; touch.py:117 _FIELD_NORMS; lem_model.py:92-93, 220-264; touch_adapter.py:166, 330 (inventory2)"
+  },
+  {
+   "id": "WI-29",
+   "target": "B",
+   "wave": 2,
+   "title": "Every 2nd model step mjv_updateScene (C, independent of any graphics library) fills the geom list; GeomMirror maps each ",
+   "files": [
+    "Sources/UEMASenses/Vision/ (SceneKitEyeRenderer.swift, GeomMirror.swift, CameraSpec.swift)",
+    "tests"
+   ],
+   "depends_on": [
+    "WI-14",
+    "WI-15",
+    "WI-20"
+   ],
+   "instructions": "Every 2nd model step mjv_updateScene (C, independent of any graphics library) fills the geom list; GeomMirror maps each geom (sphere, capsule, cylinder, box; size, position, rotation, rgba) to an SCNNode with the matching SCNGeometry; an SCNRenderer on the default Metal device renders offscreen for the five cameras (eye_left and eye_right 60\u00b0, 256 px; fovea_left and fovea_right 24\u00b0, 288 px; ring_left 150\u00b0, 256 px) into RGB uint8 images. The classic renderer (mjr_, OpenGL 1.5) is never called: iOS has no desktop OpenGL and MuJoCo's Filament renderer declares no Metal value.\nSOLID: S, D",
+   "acceptance": "First build: renders the WI-14 states; the mean absolute difference per channel against the Python PNG (0 = identical, 255 = every pixel opposite) is recorded, and the pass line is set from it in section 9 before any planner result is judged. Unmeasured today.",
+   "evidence": "env.py:603-638 (inventory2); \"independent of any graphics library\"; mjrfilament.h enum; OpenGL ES \"iOS: 2.0.0 - 12.0.0\"; iMuJoCo \"Metal rendering\" (research1)"
+  },
+  {
+   "id": "WI-30",
+   "target": "B",
+   "wave": 2,
+   "title": "Vision: crop to a multiple of 16, divide by 255, cut 16 \u00d7 16 \u00d7 3 patches into rows of 768 with 4 angle numbers [azimuth,",
+   "files": [
+    "Sources/UEMATokenizer/ (VisionPatcher, TactileTokenizer, AudioTokenizer, ProprioceptionTokenizer, MotorTokenizer, VestibularNormaliser, each .swift)",
+    "tests"
+   ],
+   "depends_on": [
+    "WI-16",
+    "WI-20"
+   ],
+   "instructions": "Vision: crop to a multiple of 16, divide by 255, cut 16 \u00d7 16 \u00d7 3 patches into rows of 768 with 4 angle numbers [azimuth, elevation, eye \u22121/+1, span] from the patch-grid rays and the gaze, eyes interleaved. Proprioception: position minus bone 0 over 200 cm, velocity over 500 cm/s, row index over 25. Motor: position over 200, energy over 1000, 10 achieved numbers widened by 9 command numbers (positions over 200). Tactile: fields over _FIELD_NORMS. Audio: 256 bins per channel, \u221280..0 dB to 0..1, ild / 20, azimuth / 90. Vestibular: centre and clip 28 fields by the running mean and variance.\nSOLID: S, O",
+   "acceptance": "First build: VisionPatcher on the WI-14 PNGs gives N equal to the recorded count and the first 4 angle rows within 1e-5; each other tokenizer reproduces one hand-computed row.",
+   "evidence": "vision_adapter.py:112, 158, 190; proprioception.py:72, 82; motor.py:66; lem_model.py:67, 135-145; touch.py:117; audio.py:64; audio_adapter.py:277; vestibular_sense.py:454; config.py constants (inventory2 tokenizer)"
+  },
+  {
+   "id": "WI-31",
+   "target": "B",
+   "wave": 2,
+   "title": "Implements WeightsLoading: MLX.loadArrays(url:) reads the file; every key and shape is checked against weight_manifest.j",
+   "files": [
+    "Sources/UEMAModel/SafetensorsLoader.swift",
+    "tests with weight_manifest.json"
+   ],
+   "depends_on": [
+    "WI-12",
+    "WI-20"
+   ],
+   "instructions": "Implements WeightsLoading: MLX.loadArrays(url:) reads the file; every key and shape is checked against weight_manifest.json; the dictionary feeds the module tree through ModuleParameters.unflattened; a missing or extra key is an error naming it.\nSOLID: S, D",
+   "acceptance": "First build: with the manifest alone (the 73 MB file is not in git) the expected-key set equals the manifest's; with the file, 18,131,745 elements.",
+   "evidence": "MLX load formats; loadArrays and unflattened (reported by users) (research1 torch-apple); RESUME.md:8"
+  },
+  {
+   "id": "WI-32",
+   "target": "B",
+   "wave": 2,
+   "title": "RunViewModel owns the loop, injected with Physics, six SenseReaders, Tokenizers, ForwardModeling, Planning, CommandDecod",
+   "files": [
+    "apple/UEMAMind/ViewModels/ (RunViewModel, SensesViewModel, CommandViewModel, PlannerViewModel, MemoryViewModel, each .swift)",
+    "tests"
+   ],
+   "depends_on": [
+    "WI-20"
+   ],
+   "instructions": "RunViewModel owns the loop, injected with Physics, six SenseReaders, Tokenizers, ForwardModeling, Planning, CommandDecoding, EyeRendering (protocols only): per model step physics 10 steps, read, tokenize, model, command (planner every 10th), decode, write; it publishes the model-step count, tokens, command, planner scores, eye images. MemoryViewModel reads os_proc_available_memory and ProcessInfo.thermalState; at serious or critical the planner's event is skipped; on scenePhase background the loop stops and state is saved (five seconds before suspension).\nSOLID: S, D",
+   "acceptance": "First build: with fakes, 10 model steps call the planner once; a fake critical thermal state skips it; a background notice stops the loop.",
+   "evidence": "thermalState, background five seconds, os_proc_available_memory pages (research1 python-ios)"
+  },
+  {
+   "id": "WI-33",
+   "target": "B",
+   "wave": 2,
+   "title": "One XcodeGen project UEMAMind with targets UEMAMind-macOS and UEMAMind-iOS (SwiftUI), depending on the local package app",
+   "files": [
+    "apple/project.yml"
+   ],
+   "depends_on": [
+    "WI-17"
+   ],
+   "instructions": "One XcodeGen project UEMAMind with targets UEMAMind-macOS and UEMAMind-iOS (SwiftUI), depending on the local package apple/UEMAKit; deployment targets macOS 14, iOS 17; mujoco.xcframework embedded and signed; MLX built through Xcode.\nSOLID: n/a",
+   "acceptance": "First build: xcodegen generate writes UEMAMind.xcodeproj; xcodebuild -scheme UEMAMind-macOS build exits 0.",
+   "evidence": "\"the ultimate build has to be done via Xcode\" (research1 torch-apple); fact 4"
+  },
+  {
+   "id": "WI-34",
+   "target": "A",
+   "wave": 2,
+   "title": "Loads the released checkpoint into LemLite on cpu, feeds the WI-14 states' tokens, saves each encoder's token, the forwa",
+   "files": [
+    "creates apple/scripts/export_model_pass_fixtures.py",
+    "writes Tests/UEMAModelTests/Fixtures/model_pass/<state>.safetensors"
+   ],
+   "depends_on": [
+    "WI-2",
+    "WI-14"
+   ],
+   "instructions": "Loads the released checkpoint into LemLite on cpu, feeds the WI-14 states' tokens, saves each encoder's token, the forward model's output, the predicted next tokens, the motor controller's command and the wellness score: the references for WI-35, WI-36 and WI-39.\nSOLID: S",
+   "acceptance": "The guard-and-script line exits 0; each file holds six 192-number tokens and six predicted tokens, no NaN.",
+   "evidence": "lem_model.py:9494; encoder_registry.py:33 (inventory1); no test loads ckpt_step_494025 (inventory2 tests)"
+  },
+  {
+   "id": "WI-35",
+   "target": "B",
+   "wave": 3,
+   "title": "Six encoders (vision 2,106,048 parameters with 4 Swin layers at width 192; tactile 1,074,816; audio 450,432; propriocept",
+   "files": [
+    "Sources/UEMAModel/ (Encoders/ six files, TransformerCore.swift, PredictionHeads.swift, ForwardModel.swift)",
+    "tests"
+   ],
+   "depends_on": [
+    "WI-30",
+    "WI-31",
+    "WI-34"
+   ],
+   "instructions": "Six encoders (vision 2,106,048 parameters with 4 Swin layers at width 192; tactile 1,074,816; audio 450,432; proprioception 171,648; motor 1,079,808; vestibular 117,888), each pooling to one 192-number token; the transformer (4 blocks, 8 heads, width 192, feed-forward expansion 4, 768 tokens); prediction heads (1,114,560). Attention is built from Linear layers and a softmax so PyTorch's MultiheadAttention weight layout, read from the manifest, maps one to one. Layer sequence, norms and activations are read from lem/model/*.py and cited in each file's header (unverified here).\nSOLID: S, O, D",
+   "acceptance": "First build: a forward pass on a WI-34 state on the Metal device, no NaN, matching the fixture's predicted tokens within a tolerance recorded in section 9.",
+   "evidence": "model_receipt.json component_params and forward_model fields; resolver.py:245; args.json (inventory1 compute)"
+  },
+  {
+   "id": "WI-36",
+   "target": "B",
+   "wave": 3,
+   "title": "The motor controller (520,812 parameters; 2 layers, hidden 128, adaptive depth up to 4; 1,646 inputs per WI-16) gives th",
+   "files": [
+    "Sources/UEMAModel/ (MotorController.swift, Wellness.swift)",
+    "tests"
+   ],
+   "depends_on": [
+    "WI-16",
+    "WI-31",
+    "WI-34"
+   ],
+   "instructions": "The motor controller (520,812 parameters; 2 layers, hidden 128, adaptive depth up to 4; 1,646 inputs per WI-16) gives the command each model step; wellness (295,914; the channel sum per WI-16) scores a model step for the goal ring.\nSOLID: S, D",
+   "acceptance": "First build: shapes match the manifest; the fixture's command and wellness score matched within the recorded tolerance.",
+   "evidence": "model_receipt.json motor_controller fields; lem_model.py:780 (inventory1 compute)"
+  },
+  {
+   "id": "WI-37",
+   "target": "B",
+   "wave": 4,
+   "title": "The command into one control per motor (92, \u22121..1) per WI-16's command_decoder spec; the body-function modulation of act",
+   "files": [
+    "Sources/UEMACommand/ (CommandDecoder.swift, MotorFunction.swift)",
+    "tests"
+   ],
+   "depends_on": [
+    "WI-16",
+    "WI-25"
+   ],
+   "instructions": "The command into one control per motor (92, \u22121..1) per WI-16's command_decoder spec; the body-function modulation of actuator gain and force range (env.py:2840-2845) used by the released run's \"modulate\" mode; writes through Physics.\nSOLID: S, D",
+   "acceptance": "First build: a held command moves the named body part in the asked direction (test_command_moves_body.py's pattern); every control within \u22121..1.",
+   "evidence": "action_decoder.py 527 lines; env.py:2840-2845; MIMo_metav2.xml:233-342; test_command_moves_body.py:3 (inventory2)"
+  },
+  {
+   "id": "WI-38",
+   "target": "B",
+   "wave": 3,
+   "title": "RunControlView: start, pause, one model step, counter. EyesView: five camera images. SensesView: six tokens as 192-cell ",
+   "files": [
+    "apple/UEMAMind/UEMAMindApp.swift",
+    "Views/ (RunControlView, EyesView, SensesView, CommandView, PlannerView, MemoryView, WeightsPickerView, each .swift)"
+   ],
+   "depends_on": [
+    "WI-32"
+   ],
+   "instructions": "RunControlView: start, pause, one model step, counter. EyesView: five camera images. SensesView: six tokens as 192-cell strips. CommandView: the 26 \u00d7 9 table. PlannerView: the 21 scores of the last planning event. MemoryView: available memory in MB, thermal state. WeightsPickerView: a file importer for model.safetensors (not in git). SwiftUI only.\nSOLID: S, D",
+   "acceptance": "First build: the macOS app launches; one model step runs on fake physics in a preview; after WI-40, 10 on the real stack.",
+   "evidence": "fact 4"
+  },
+  {
+   "id": "WI-39",
+   "target": "B",
+   "wave": 4,
+   "title": "GoalRing keeps the last 200 model steps' tokens with their wellness; every 10 model steps once it holds 20, the highest-",
+   "files": [
+    "Sources/UEMAPlanner/ (GoalRing.swift, Planner.swift, HandDescent.swift)",
+    "tests"
+   ],
+   "depends_on": [
+    "WI-30",
+    "WI-35",
+    "WI-36"
+   ],
+   "instructions": "GoalRing keeps the last 200 model steps' tokens with their wellness; every 10 model steps once it holds 20, the highest-wellness entry is the goal. Planner holds one command (234 numbers: position, rotation, radius, strength) and runs Adam at learning rate 0.1 for 20 updates with MLX's gradient, scoring the start and every update (21 evaluations, 20 gradient passes through the frozen forward model); loss = the sum over senses of the mean squared difference between predicted next tokens and the goal's tokens + 0.01 \u00d7 the sum of squared strengths; best-scored evaluation selected per body; one depth. HandDescent: 20 steps over 250 ms for the finger joints per WI-16.\nSOLID: S, D",
+   "acceptance": "First build: on an exact scalar forward model (test_planner_selection.py's pattern) the planner returns the command it scored best; with the real model, 21 evaluations counted and the chosen score at or below the start.",
+   "evidence": "intention_generator.py:271, 298, 395-399; lem_model.py:1184, 4252, 6195; hand_descent fields (inventory1 compute); test_planner_selection.py:3 (inventory2); guide rule 5"
+  },
+  {
+   "id": "WI-40",
+   "target": "B",
+   "wave": 5,
+   "title": "The real stack for 20 model steps on macOS, recording peak resident memory. Arithmetic bound today: 73.1 MB of weights p",
+   "files": [
+    "Tests/UEMAIntegrationTests/OneModelStepTests.swift"
+   ],
+   "depends_on": [
+    "WI-25",
+    "WI-31",
+    "WI-35",
+    "WI-37",
+    "WI-39"
+   ],
+   "instructions": "The real stack for 20 model steps on macOS, recording peak resident memory. Arithmetic bound today: 73.1 MB of weights plus one MjData arena of about 400 MB (Python measured 380 MB) against user-reported iPhone ceilings (about 6 GB; about 3 GB after iPadOS 26.4); Apple documents no number.\nSOLID: n/a",
+   "acceptance": "First build: 20 model steps complete; peak memory in MB into section 9; the iOS-device run unverified until done.",
+   "evidence": "commands.py:94; datasource.py:459; MANIFEST.json:120; forum threads 834805, 826325 (research1 python-ios; inventory1; inventory2)"
+  },
+  {
+   "id": "WI-41",
+   "target": "B",
+   "wave": 6,
+   "title": "The founder runs section 8 in sequence and records each step's command, exit code, time (AM/PM Pacific) and measured num",
+   "files": [
+    "apple/FIRST_BUILD_RECORD.md"
+   ],
+   "depends_on": [
+    "WI-17",
+    "WI-20",
+    "WI-25",
+    "WI-33",
+    "WI-35",
+    "WI-40"
+   ],
+   "instructions": "The founder runs section 8 in sequence and records each step's command, exit code, time (AM/PM Pacific) and measured numbers.\nSOLID: n/a",
+   "acceptance": "Every step of section 8 has a result line; B rows of section 9 move to VERIFIED or FAILED.",
+   "evidence": "fact 1"
+  }
+ ]
+}

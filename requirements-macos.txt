@@ -1,0 +1,51 @@
+# macOS (Apple silicon) versions of requirements.txt: the same 21 pins plus torch pinned here, 22 in all
+# (Python 3.13.3; mujoco-3.3.0-cp313-cp313-macosx_11_0_arm64.whl and torch-2.6.0-cp313-none-macosx_11_0_arm64.whl are
+# the PyPI wheel names this file resolves to; the torch wheel was uploaded 2025-01-29, the mujoco wheel 2025-02-27).
+# Install floor of the whole set: macOS 13.0, set by opencv_python_headless-5.0.0.93-cp37-abi3-macosx_13_0_arm64.whl
+# (scipy-1.18.0 and scikit_learn-1.9.0 ship macosx_12_0_arm64 wheels, the other 19 macosx_11_0_arm64 or none-any;
+# measured Nov 4, 2026 with pip download --platform macosx_13_0_arm64 --python-version 3.13 --only-binary=:all:
+# --no-deps: 22 wheels; the same command with macosx_11_0_arm64 stops at scipy with "No matching distribution").
+#
+# 1. Use a native arm64 Python 3.13 (python3 -c "import platform; print(platform.machine())" prints arm64).
+#    An x86_64 Python under Rosetta is refused by mujoco at import:
+#    "You are running an x86_64 build of Python on an Apple Silicon machine. This is not supported by MuJoCo."
+#    (mujoco/__init__.py).
+# 2. torch comes from the default index, not the CUDA 12.4 index requirements.txt names: the macOS wheel has no CUDA.
+#    One command installs everything in this file:
+#      pip install -r requirements-macos.txt
+# 3. Then MIMo, the infant body, without its own older numpy and torch pins:
+#      pip install -e third_party/MIMo/mimo --no-deps
+# 4. Device: pass the device at launch (cpu or mps). The MPS floor for torch 2.6.0 itself is unverified; the two
+#    published floors are: the PyTorch 2.15 sample text in the MPS note prints "the current macOS version is not
+#    15.0+ and/or you do not have an MPS-enabled device on this machine" (docs.pytorch.org/docs/2.15/notes/mps.html),
+#    and the torch 2.9.0 release note states "PyTorch MPS is only supported on MacOS-14 or later". The MPS backend has
+#    no torch.float64 (same note), so a float64 site runs on cpu.
+# 5. The live movement viewer (mujoco's launch_passive) runs under the mjpython launcher on macOS, since the viewer
+#    renders on the main thread (mujoco.readthedocs.io/en/stable/python.html: "On MacOS, launch_passive requires that
+#    the user script is executed via a special mjpython launcher"). The page names launch_passive only, and the one
+#    caller in this checkout is Source/Python/mimo_bridge/tools/live_viewer.py (grep launch_passive --include=*.py);
+#    mimo_bridge/train_mimo.py has no call, so training runs under plain python3.
+torch==2.6.0
+numpy==2.2.6
+scipy==1.18.0
+mujoco==3.3.0
+gymnasium==1.2.3
+safetensors==0.8.0
+PyYAML==6.0.3
+psutil==7.2.2
+pillow==12.3.0
+imageio==2.37.4
+imageio-ffmpeg==0.6.0
+matplotlib==3.11.1
+trimesh==4.6.2
+scikit-learn==1.9.0
+pytest==9.1.1
+# MIMo's own runtime dependencies (installed because MIMo is installed with --no-deps)
+opencv-python-headless==5.0.0.93
+stable_baselines3==2.7.1
+scikit-image==0.26.0
+cachetools==7.1.7
+networkx==3.6.1
+rtree==1.4.1
+# fetch_weights.py: the saved weights from the Hugging Face repository (version tested Oct 22, 2026)
+huggingface_hub==2.2.0

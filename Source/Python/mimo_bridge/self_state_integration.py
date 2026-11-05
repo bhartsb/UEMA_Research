@@ -6,6 +6,7 @@ import torch
 import torch.nn.functional as F
 from lem.body_function import CONTRACT,FUNCTION_FIELDS
 from lem.model import self_state as self_state_module
+from lem.model.float64_host import float64_device,to_model_device
 from lem.model.self_state import SITE_INPUT, MOTOR_GROUPS, map_state
 from .skin_contract import frame_skin_features
 
@@ -38,7 +39,9 @@ def batch_observation(frames,device):
         sites[i,:len(q)]=torch.cat([torch.as_tensor(pos,device=device),touch[:len(q),:8],q],-1)
         valid[i,:len(q)]=True
     if not torch.isfinite(sites).all():raise ValueError('nonfinite local self state')
-    now=torch.tensor([f.sim_time for f in frames],device=device,dtype=torch.float64)
+    # the clock is float64 on float64_device(device) (device itself on cpu and cuda, cpu for mps, which has no
+    # float64); history.time keeps it there, and the step length handed to the model is float32 on the model's device
+    now=torch.tensor([f.sim_time for f in frames],device=float64_device(device),dtype=torch.float64)
     return sites,valid,now
 
 
@@ -164,7 +167,7 @@ def observe(model,tokens,frames,executed,spatial=None,spatial_valid=None):
     if history.time is not None:
         if now.shape!=history.time.shape or (now<=history.time).any() or sites.shape!=history.sites.shape:
             raise ValueError('self-state history crossed a body/time boundary without reset')
-    delta=None if history.time is None else (now-history.time).float()
+    delta=None if history.time is None else to_model_device((now-history.time).float(),model.device)
     relations=None if not history.relations else torch.stack(list(history.relations),1)
     with torch.autocast(device_type=model.device.type,enabled=False):
         inputs=dict(sites=sites,valid=valid,context=context,previous=history.state,

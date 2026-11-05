@@ -25,6 +25,8 @@ import math
 
 import torch
 
+from lem.model.float64_host import float64_device
+
 # THE BODIES LEFT OUT OF LEARNING-PERFORMANCE CONCLUSIONS (the operator's decision of 2026-09-25 7:47 PM PDT,
 # docs/gain_of_function_v3/WORKLOG.md): body 2 has lain face down since Sept 19 and could not roll back at full
 # torque in 185 attempts; until its mechanics are understood its state is excluded. The per-body block below
@@ -384,8 +386,10 @@ def accumulate(sums, readings):
 # ------------------------------------------------------------------ the shifted-own arm's noise
 def _aligned(cmd: torch.Tensor) -> torch.Tensor:
     """[B, H, 9] commands in float64 with each quaternion (columns 3-6, x y z w) taken with w >= 0: q and -q are one
-    orientation, so a sign flip in the stream must not count as spread."""
-    x = cmd.detach().to(torch.float64).clone()
+    orientation, so a sign flip in the stream must not count as spread. The float64 copy lives on
+    float64_device(cmd.device): the command's own device on cpu and cuda, cpu for mps (no float64 there); the spread's
+    reader (shifted_own_order) moves the standard deviation back to the command's device as float32."""
+    x = cmd.detach().to(device=float64_device(cmd.device), dtype=torch.float64).clone()
     s = torch.where(x[..., 6:7] < 0, -1.0, 1.0).to(x.dtype)
     x[..., 3:7] = x[..., 3:7] * s
     return x

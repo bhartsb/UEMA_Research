@@ -508,10 +508,13 @@ def switch_check(model, rows: int = 64, seed: int = 0) -> dict:
            "output_bias_max_abs": max(float(p.net[2].bias.abs().max()) for p in path.paths.values())}
     from lem.model import liveness as LV
 
+    from mimo_bridge.precision_policy import policy_of
+    precision = policy_of(model, dev)       # the model's own device type, not a "cuda" literal
+
     def preds(bypass, amp):
         path.bypass = bypass
         try:
-            with LV.unwatched(model), torch.amp.autocast("cuda", enabled=amp, dtype=getattr(model, "dtype", torch.float32)):
+            with LV.unwatched(model), precision.autocast(enabled=amp):
                 got = heads(x, current=cur, who="heads_all_slot_path.switch_check")
                 return {m: v.float() for m, v in got.items()}
         finally:

@@ -40,6 +40,7 @@ if ROOT not in sys.path:
     sys.path.insert(0, ROOT)
 
 from mimo_bridge.datasource import SingleEnvSource, PoolSource
+from mimo_bridge.device_resolve import resolved_device_name
 from mimo_bridge.lem_model import COMMAND_POSITION_RANGE_CM, LemLite
 from mimo_bridge.prediction_audit import accumulate as accumulate_prediction_audit, summarize as summarize_prediction_audit
 from mimo_bridge.prediction_audit import accumulate_rows as accumulate_prediction_audit_rows, summarize_rows as summarize_prediction_audit_rows
@@ -230,7 +231,11 @@ def parse_args(argv=None):
                     help="launch even when tools/preflight.py fails - for experiments "
                          "that deliberately violate a measured band; the violation "
                          "stays loud in the log and preflight.json")
-    ap.add_argument("--device", default="cuda:0")
+    ap.add_argument("--device", default="auto", type=resolved_device_name,
+                    help="the torch device the model runs on: auto (default) takes cuda:0 when CUDA is "
+                         "available, else mps (the Metal device), else cpu; or cpu, cuda, cuda:N, mps. A "
+                         "named device that is not available stops the launch with a message naming it, and "
+                         "the resolved name (auto on a CUDA machine gives cuda:0) is what args.json records.")
     ap.add_argument("--seed", type=int, default=0)
     ap.add_argument("--render-every", type=int, default=2)
     ap.add_argument("--no-vision", action="store_true")
@@ -323,6 +328,14 @@ def parse_args(argv=None):
                     help="fresh: skip the saved physical-episode companion and start new worlds "
                          "(eval-only probes only - a training resume must migrate, never restart "
                          "the episode); the saved companion is never read or written")
+    ap.add_argument("--rng-continuation", choices=["exact", "reseed"], default="exact",
+                    help="what a saved CUDA random-number state becomes on a resume whose device is not "
+                         "CUDA (cpu, mps). exact: the resume stops with 'exact continuation requires the "
+                         "saved execution device', as before. reseed: the CUDA state is dropped, a warning "
+                         "'cuda_rng dropped' is logged, and torch.manual_seed is called with the first 8 "
+                         "bytes of the sha256 of the dropped bytes, so the resume repeats from the same "
+                         "companion while every later random draw differs from the saved run's. On a CUDA "
+                         "device both restore the saved state exactly (continuation_state.rng_continuation)")
     ap.add_argument("--no-babble", action="store_true", help="force exploration noise to zero: every motion is the model's own")
     ap.add_argument("--babble-noise", type=float, default=None,
                     help="ABSOLUTE exploration noise, overriding the developmental phase. "
@@ -1707,6 +1720,8 @@ def acting_configuration(args):
         'replay','replay_every','replay_batch','replay_size','eval_only','self_choice','self_choice_receipt',
         'caregiver_record_dir','checkpoint_storage','isolated_native_proof','episode_continuation',
         'retire_acting_snapshot','refresh_action_calibration',
+        # how a saved CUDA random-number state continues off CUDA: a resume mechanic, like episode_continuation
+        'rng_continuation',
         # instrumentation only: no-grad predictions and a record, no change to any order
         'causal_chain', 'latent_body_hierarchy', 'latent_body_levels', 'latent_planner',
         'latent_body_config', 'latent_body_output', 'latent_body_resume', 'latent_body_goal',
@@ -2347,8 +2362,10 @@ def main(argv=None):
                         if model.hand_target_mode != 'world' else None),
                      "physical_goal_mode": model.physical_goals,
                      "hand_goal_mode": model.hand_goals,
-                     "peak_vram_mb": ((torch.cuda.max_memory_allocated() / 2 ** 20)
-                                      if torch.cuda.is_available() and "cuda" in str(args.device) else None),
+                     # read from the device the model resolved (mimo_bridge/device_resolve.py), not from
+                     # torch.cuda.is_available(): None on cpu and mps, where torch keeps no CUDA peak
+                     "peak_vram_mb": ((torch.cuda.max_memory_allocated(model.device) / 2 ** 20)
+                                      if model.device.type == "cuda" else None),
                      "env_dt_s": frames[0].dt,
                      # share of recent steps with babble ON (EMA, ~100-step horizon);
                      # 1.0 = the old continuous regime, ~0.64 = the bout schedule
@@ -2765,8 +2782,10 @@ def main(argv=None):
             if getattr(model, "vestibular_sense", False):
                 from .vestibular_sense import migrate_learner_state
                 _vest_episode = migrate_learner_state(episode_resume['learner'], model)
-            continuation_state.restore_learner(model,episode_resume['learner'])
-            log.info('restored physical episode, executed orders, memory, replay and RNG at step %d',step)
+            continuation_state.restore_learner(model,episode_resume['learner'],
+                rng=continuation_state.rng_continuation(args.rng_continuation,log=log))
+            log.info('restored physical episode, executed orders, memory, replay and RNG at step %d '
+                     '(--rng-continuation %s)',step,args.rng_continuation)
             if _vest_episode is not None:
                 log.warning("vestibular sense: the episode companion was saved by the intermind "
                             "build; moved before restoring: %s", _vest_episode)

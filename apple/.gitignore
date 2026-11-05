@@ -1,0 +1,27 @@
+# apple/.gitignore (work item WI-17): what under apple/ is built, fetched or
+# per-user, and therefore never committed.
+
+# SwiftPM and Xcode build output
+.build/
+build/
+DerivedData/
+# Xcode per-user state (schemes shared on purpose stay in xcshareddata)
+xcuserdata/
+*.xcuserstate
+# The Xcode project that `xcodegen generate` writes from apple/project.yml (WI-33)
+UEMAMind.xcodeproj/
+
+# The MuJoCo 3.3.0 XCFramework that scripts/build_mujoco_xcframework.sh writes (WI-18);
+# Package.swift names it as the binary target "mujoco"
+UEMAKit/Binaries/
+
+# The released weights (73,119,988 bytes; fetched by fetch_weights.py, never committed).
+# Test fixtures named <state>.safetensors under Tests/ are committed, so only this name.
+model.safetensors
+
+# Python exporter leftovers (apple/scripts)
+__pycache__/
+*.pyc
+
+# Finder
+.DS_Store

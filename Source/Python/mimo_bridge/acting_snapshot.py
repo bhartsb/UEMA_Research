@@ -48,10 +48,34 @@ def rng_state(device):
                 python=random.getstate(),cuda=(torch.cuda.get_rng_state_all() if device.type=='cuda' else None))
 
 
-def restore_rng(state):
+def restore_rng(state,device=None,rng=None):
+    """Put a saved random stream back (the dict rng_state wrote: torch, numpy, python, cuda).
+
+    device: where the actor runs; None means cuda when torch.cuda.is_available() else cpu. rng: the policy for
+    the cuda entry (continuation_state.rng_continuation: None or 'exact' raises
+    ValueError('exact continuation requires the saved execution device') when a CUDA state is saved and the
+    device is not CUDA, the guard restore_learner has had since the companion existed; 'reseed' drops it, logs
+    "cuda_rng dropped" and seeds torch's generators from the dropped bytes). The torch, numpy and python
+    streams are set first, so a reseed lands on top of the saved CPU state."""
+    if device is None:device=torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     torch.set_rng_state(state['torch'].cpu())
     np.random.set_state(state['numpy']);random.setstate(state['python'])
-    if state['cuda'] is not None:torch.cuda.set_rng_state_all([v.cpu() for v in state['cuda']])
+    cuda=continuation.rng_continuation(rng).adopt(state['cuda'],torch.device(device),source='acting snapshot random')
+    if cuda is not None:torch.cuda.set_rng_state_all(cuda)
+
+
+def adopt_rng(state,device,rng=None):
+    """The saved random stream as this device continues it, for a restored actor's own stream (self.random).
+
+    Operation: inside preserve_rng(device) the saved stream is restored under the policy (restore_rng) and the
+    stream is captured again on this device (rng_state). Outputs: a new dict; under reseed on a non-CUDA
+    device its torch entry is the reseeded generator's state and its cuda entry is None, so every later
+    restore_rng of it continues from the reseed without logging or reseeding again; under exact it equals
+    the saved stream on the same device type, or raises as restore_rng does."""
+    device=torch.device(device)
+    with preserve_rng(device):
+        restore_rng(state,device,rng)
+        return rng_state(device)
 
 
 @contextmanager
@@ -267,7 +291,9 @@ class FrozenActingSnapshot:
             chooser_last=copy.deepcopy(self.model.self_intention.last))
 
     @classmethod
-    def restore(cls,state,factory,device,*,allow_qualification=False):
+    def restore(cls,state,factory,device,*,allow_qualification=False,rng=None):
+        """rng: the random-number continuation policy (continuation_state.rng_continuation) for the actor's
+        saved CUDA states, in its causal learner state and in its own stream; None is exact."""
         if state.get('contract')!=CONTRACT:raise ValueError('incompatible acting snapshot')
         if state['qualification'] and not allow_qualification:
             raise ValueError('an unqualified trial cannot resume as a production actor')
@@ -277,18 +303,18 @@ class FrozenActingSnapshot:
             if set(perception_modules(model))!=set(state['modules']):
                 raise ValueError('acting snapshot module layout differs')
             for name,module in perception_modules(model).items():module.load_state_dict(state['modules'][name],strict=True)
-            continuation.restore_learner(model,state['causal'])
+            continuation.restore_learner(model,state['causal'],rng=rng)
             restore_runtime(model,state['runtime'])
             model.step_count=state['step_count']
             actor=cls(model,state['receipt'],state['configuration'],qualification=state['qualification'])
             actor.born_step=state['born_step'];actor.steps=state['steps'];actor.last=copy.deepcopy(state['last'])
-            actor.random=continuation.tree(state['random'])
+            actor.random=adopt_rng(continuation.tree(state['random']),device,rng)
             actor.model.self_intention.last=copy.deepcopy(state['chooser_last'])
             if state.get('opportunity') is not None:
                 if actor.opportunity is None:raise ValueError('saved learning-opportunity perception cannot be discarded')
                 actor.opportunity.load_state_dict(state['opportunity'])
             if state.get('pending') is not None:
-                actor.pending=cls.restore(state['pending'],factory,device,allow_qualification=True)
+                actor.pending=cls.restore(state['pending'],factory,device,allow_qualification=True,rng=rng)
             return actor
 
 

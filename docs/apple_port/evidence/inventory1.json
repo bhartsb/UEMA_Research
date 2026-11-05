@@ -1,0 +1,1941 @@
+[
+ {
+  "summary": "Measured from files only (D:/UEMA_Research). The saved model is 18,131,745 parameters (fp32 storage, 73.1 MB), d_model 192, 4 transformer blocks with 8 heads, context 128 model steps; six senses are active (vision, tactile, audio, proprioception, motor, vestibular; intermind is not in the active list), each pooled to ONE 192-number token per model step, so the transformer reads 6 tokens per model step and a sequence of 768 = 6 senses x 128 model steps. Vision per body: 2 eye cameras at 256 px / 60 degrees (default eye_size 256) plus 2 fovea cameras at 288 px / 24 degrees plus 1 left-eye ring camera at 150 degrees; with 16-px patches that is 256 + 324 = 580 patches per eye, 1,160 patches (each 16x16x3 numbers) per body per render, rendered every 2 model steps (render_every 2). The planner is not a candidate enumeration: it refines ONE command per body by Adam (lr 0.1) for n_steps 20, evaluating the starting command and every update (21 forward-model evaluations, 20 backward passes through the frozen forward model), batched over the 8 bodies, once every 10 model steps (intention_every 10) once the goal ring holds 20 moments; the horizon is 1 depth under hand_target_mode wrist_relative_v1 (plan_length 1 in the last record) even though the earned licence reads 3; a separate hand descent of 20 steps runs beside it. The motor controller runs up to 4 adaptive blocks of hidden 128 (think_harder on). Worlds: 8 (--n-envs 8, each a separate process in PoolSource); one world is a supported path (--n-envs 1 -> SingleEnvSource). Batches: live training batch = 8 bodies every model step (one forward + backward + AdamW step); replay every 2 model steps on 24 windows of 129 moments (context 128 + target); imagination chain 3 forward passes every model step; synergy lesson batch 64. Replay ring: 6,000 moments per body x 8 = 48,000 moments on CPU, computed about 195 MB (tokens 110.6 MB fp16, achieved 25.0 MB, executed 22.5 MB, memory states 36.9 MB). Checkpoint: model.safetensors 73,119,988 B; optimizer.pt 138,060,045 B; runtime_state.pt 489,337,136 B (self_rehearsal 267.0 MB and self_history 195.4 MB of it); episode_state.pt.gz 621,243,950 B; latent_body/latest.pt 6,046,784 B; trajectory.jsonl 477,730,033 B; checkpoint folder 1,322,009,657 B; whole bundle 1,848,426,182 B over 289 files. Measured on the RTX 4070 laptop (README, Oct 22 2026): GPU memory peak 4,287 MB; committed memory rose 44.0 -> 73.8 GB (about 30 GB for trainer + 8 world processes); 0.41 to 0.46 model steps per second; 376 s for the 100-model-step run. The run's own last record: 0.444 model steps/s, 17.78 physics env steps/s, per-model-step time model 1,984.3 ms + env 250.4 ms (training included), peak CUDA allocation 4,213.5 MB, nvidia-smi 6,961 of 8,188 MiB. Inference-only cost is NOT measured in these files: --eval-only (\"act but do not learn\") exists but no throughput record for it is in the release; what can be stated from code is that inference still needs autograd, because the planner's 20 Adam updates backpropagate through the forward model every 10 model steps. Training-only costs: the per-model-step backward on 8 bodies, AdamW state (optimizer.pt 138 MB = two fp32 moments of 18.1M), the replay pass (24 x 129-moment windows every 2 model steps), the imagination chain, and the 489 MB runtime state. Port-relevant code facts: the model falls back to CPU fp32 without AMP when CUDA is absent (lem_model.py 785-800); the only CUDA-source extensions are tokenizer/modalities/vision_kernels.py (used by the Unreal path tokenizer/modalities/vision.py, not by the MIMo bridge, whose vision goes through numpy in mimo_bridge/vision_adapter.py) and lem/native_ops.py (\"Pure C++ (no CUDA kernels)\" but includes CUDA headers; \"Falls back to pure-Python implementations if compilation fails\"); pins are torch==2.6.0+cu124, mujoco==3.3.0, Python 3.13. No file in the release states MuJoCo, PyTorch or the trainer's Python running on iOS or an Apple GPU; those are open questions needing external sources.",
+  "findings": [
+   {
+    "topic": "Parameter count and model size",
+    "file": "D:/UEMA_Research/README.md",
+    "line": 27,
+    "quote": "The saved model is small (18,131,745 parameters: 192-number tokens, 4\ntransformer blocks; the specification's full configuration is about 271M at d_model 768) and early.",
+    "meaning_for_port": "18.1M parameters at fp32 is 73.1 MB on disk (MANIFEST model.safetensors 73,119,988 bytes = 4.03 bytes per parameter); this is a size a phone or Mac can hold. The 271M specification configuration is not what the release ships.",
+    "severity": "no-change"
+   },
+   {
+    "topic": "Parameter count per component (receipt)",
+    "file": "D:/UEMA_Research/weights/b1_continue_B1K_skip13_492800/run/checkpoints/ckpt_step_494025/model_receipt.json",
+    "line": 86,
+    "quote": "\"total_params\": 18131745,",
+    "meaning_for_port": "Component split (component_params in the same file): enc_vision 2,106,048; enc_tactile 1,074,816; enc_audio 450,432; enc_proprioception 171,648; enc_motor 1,079,808; enc_vestibular 117,888; forward_model 2,994,432; prediction_heads 1,114,560; motor_controller 520,812; wellness 295,914; recon_decoders 740,160; tenure_heads 523,406; persistent_memory 634,373; self_state 1,994,895; efference_heads 754,558; contact_head 420,387; motor_synergy 230,899; liveness_repair 2,014,180; heads_all_slot_path 403,200; motor_asked_change 131,728; gaze_head 173,762; voice_head 183,824; td_gates 15. The forward model (the transformer) is 3.0M of the 18.1M; the rest is encoders and lesson heads, several of which exist only for training.",
+    "severity": "no-change"
+   },
+   {
+    "topic": "d_model, blocks, heads, context length",
+    "file": "D:/UEMA_Research/weights/b1_continue_B1K_skip13_492800/run/args.json",
+    "line": 142,
+    "quote": "\"context_length\": 128,\n  \"core_blocks\": 4,\n  \"d_model\": 192,\n  \"vision_swin_layers\": 4,\n  \"vision_width\": 192,\n  \"encoder_layers\": 2,\n  \"encoder_width\": 192,",
+    "meaning_for_port": "The transformer is 4 blocks of width 192 (receipt line 45-48: \"forward_model\": {\"_seq_length\": 768, \"_n_modalities\": 6, \"n_layers\": 4, \"n_heads\": 8, \"ffn_expansion\": 4). Context is 128 model steps.",
+    "severity": "no-change"
+   },
+   {
+    "topic": "Tokens per sense and total tokens per model step",
+    "file": "D:/UEMA_Research/Source/Python/lem/model/encoder_registry.py",
+    "line": 33,
+    "quote": "returns a dict of {modality_name: [B, 1, d_model]} tensors.",
+    "meaning_for_port": "Each active sense is pooled to exactly one token of 192 numbers per model step. Six senses are active (receipt line 5 active_modalities: vision, tactile, audio, proprioception, motor, vestibular; intermind is not listed), so the forward model receives 6 tokens per model step and a sequence of 768 tokens = 6 x 128 (lem/config/resolver.py line 245: fwd[\"_seq_length\"] = n_active * context_length). The transformer's attention is over 768 x 192, a small sequence.",
+    "severity": "no-change"
+   },
+   {
+    "topic": "Sequence length formula",
+    "file": "D:/UEMA_Research/Source/Python/lem/config/resolver.py",
+    "line": 245,
+    "quote": "fwd[\"_seq_length\"] = n_active * context_length",
+    "meaning_for_port": "Sequence length per transformer pass = 6 x 128 = 768 tokens, matching the receipt's \"_seq_length\": 768.",
+    "severity": "no-change"
+   },
+   {
+    "topic": "Vision cameras per body",
+    "file": "D:/UEMA_Research/Source/Python/mimo_bridge/env.py",
+    "line": 145,
+    "quote": "\"\"\"Write a copy of MIMo's body XML with a narrow-field camera added inside each eye.",
+    "meaning_for_port": "Per body the code adds fovea_left and fovea_right (when fovea_fov > 0) and ring_left (when ring_fov > 0) to MIMo's eye_left and eye_right (lines 168-186: want = [\"fovea_left\", \"fovea_right\"] + [\"ring_left\"]). With args fovea_fov 24, ring_fov 150 that is 5 cameras per body rendered by MuJoCo, plus watch_cam for videos. A port must render 5 offscreen cameras per body per render.",
+    "severity": "must-change"
+   },
+   {
+    "topic": "Vision resolution: eye size default 256 px at 60 degrees",
+    "file": "D:/UEMA_Research/Source/Python/mimo_bridge/env.py",
+    "line": 989,
+    "quote": "sensory_delay: int = 0, motor_delay: int = 0, vision: bool = True, eye_size: int = 256,",
+    "meaning_for_port": "args.json carries no eye-size flag, so the wide eye render is 256 x 256 px; MIMo's eye cameras are fovy 60 (third_party/MIMo/mimo/mimo_infant/simulation/assets/mimo/MIMo_modelv2.xml line 338: <camera name=\"eye_left\" mode=\"fixed\" fovy=\"60\" ...>). The ring render shares the eye size (env.py line 1109: self.ring_size = int(eye_size) if ring_fov > 0 else 0).",
+    "severity": "no-change"
+   },
+   {
+    "topic": "Vision resolution: fovea 288 px at 24 degrees, ring 150 degrees",
+    "file": "D:/UEMA_Research/weights/b1_continue_B1K_skip13_492800/run/args.json",
+    "line": 109,
+    "quote": "\"ring_fov\": 150.0,\n  \"ring_size\": 128,\n  \"fovea_size\": 288,\n  \"fovea_fov\": 24.0,",
+    "meaning_for_port": "Fovea renders are 288 x 288 px over 24 degrees per eye. Patch size is 16 (mimo_bridge/vision_adapter.py line 26: PATCH = 16), so per eye: wide 256/16 = 16 x 16 = 256 patches, fovea 288/16 = 18 x 18 = 324 patches, 580 per eye, 1,160 per body (BinocularPatcher: self.n_total = 2 * self.n_per_eye, line 177). Each patch is 16 x 16 x 3 = 768 numbers. This arithmetic is mine from those constants; no log line in the release prints the patch count.",
+    "severity": "no-change"
+   },
+   {
+    "topic": "Render cadence",
+    "file": "D:/UEMA_Research/weights/b1_continue_B1K_skip13_492800/run/args.json",
+    "line": 12,
+    "quote": "\"render_every\": 2,",
+    "meaning_for_port": "Eyes are rendered every 2nd model step (env.py line 3148: do_render = (force_render or self.frame % self.render_every == 0)), so the vision encoder's Swin layers on 1,160 patches run every other model step per body.",
+    "severity": "no-change"
+   },
+   {
+    "topic": "Planner search: one command refined by 20 Adam updates, 21 forward evaluations, 20 backward passes",
+    "file": "D:/UEMA_Research/Source/Python/lem/model/intention_generator.py",
+    "line": 298,
+    "quote": "# Evaluate the starting command AND every updated command. Selection\n            # is per body: a batch average must not conceal another body's loss.\n            for _step in range(max(0, self._n_steps) + 1):",
+    "meaning_for_port": "The planner does not enumerate candidate commands; it holds one command per body (26 handles x 9 numbers as pos, rot, radius, strength parameters) and runs torch.optim.Adam(action_params, lr=self._lr) (line 271) with loss.backward() and optimizer.step() each iteration (lines 395-399). With n_steps 20 (lem_model.py line 1184: it.update({\"enabled\": True, \"n_steps\": 20, \"lr\": 0.1, \"strength_reg\": 0.01, \"max_plan_steps\": 1})) that is 21 forward-model evaluations and 20 backward passes through the frozen forward model per planning event, batched over all 8 bodies. Inference on a device therefore needs autograd through the transformer, not a forward-only runtime.",
+    "severity": "blocker"
+   },
+   {
+    "topic": "Planner cadence: every 10 model steps once the goal ring holds 20 moments",
+    "file": "D:/UEMA_Research/Source/Python/mimo_bridge/lem_model.py",
+    "line": 4252,
+    "quote": "if len(self.goal_ring) >= 20 and step % self.intention_every == 0:",
+    "meaning_for_port": "With args intention_every 10 (args.json line 62: \"intention_every\": 10), the 21-forward + 20-backward search runs once per 10 model steps; the other 9 model steps execute the motor controller's command (plus babble noise 0.05).",
+    "severity": "no-change"
+   },
+   {
+    "topic": "Planner horizon: 1 depth in this configuration",
+    "file": "D:/UEMA_Research/Source/Python/mimo_bridge/lem_model.py",
+    "line": 6195,
+    "quote": "if self.hand_target_mode != 'world':\n            max_steps = 1",
+    "meaning_for_port": "args hand_target_mode is wrist_relative_v1 (args.json line 187), so each planning event runs one depth of the chain even though the earned licence reads 3 (stats record: plan_license.licensed = 3, intention.plan_length = 1, intention.horizon = 3). Cost per planning event = one depth x 21 evaluations.",
+    "severity": "no-change"
+   },
+   {
+    "topic": "Hand descent beside the planner: 20 steps",
+    "file": "D:/UEMA_Research/weights/b1_continue_B1K_skip13_492800/run/replay_training_stats.jsonl",
+    "line": 1,
+    "quote": "\"hand_descent\": {\"version\": \"hand_joint_response_v1\" ... \"horizon_ms\": 250, \"steps\": 20",
+    "meaning_for_port": "The last mimo record (step 494025) shows a second search of 20 steps for the finger joints per planning event (intention.hand_descent.steps = 20, selected_iteration per body [20, 4, 3, 14, 6, 3, 19, 16]). The quote is the flattened field path from my read of the JSONL; the file is one JSON object per line.",
+    "severity": "no-change"
+   },
+   {
+    "topic": "Motor controller adaptive depth (think_harder)",
+    "file": "D:/UEMA_Research/Source/Python/mimo_bridge/lem_model.py",
+    "line": 780,
+    "quote": "if think_harder:\n            overrides = _deep_merge(dict(overrides or {}),\n                                    {\"model\": {\"motor_controller\": {\"adaptive\": True, \"max_depth\": 4}}})",
+    "meaning_for_port": "Each model step the motor controller runs 1 to 4 blocks of hidden 128 (receipt lines 58-64: n_layers 2, hidden_dim 128, adaptive true, max_depth 4; input_dim 1646). Small cost.",
+    "severity": "no-change"
+   },
+   {
+    "topic": "Number of worlds and the one-world flag",
+    "file": "D:/UEMA_Research/Source/Python/mimo_bridge/train_mimo.py",
+    "line": 1933,
+    "quote": "elif args.n_envs == 1:\n            src = SingleEnvSource(**kw)\n        else:\n            src = PoolSource(args.n_envs, kw)",
+    "meaning_for_port": "The run used 8 worlds (args.json line 2: \"n_envs\": 8), each a separate process (datasource.py line 491: \"N BridgeEnvs in N processes\"). --n-envs 1 is a supported code path with no worker processes (SingleEnvSource, datasource.py line 230); the flag is \"--n-envs\" (train_mimo.py line 208, default \"4\"). Resuming the saved episode companion with n_envs 1 restores only saved_worlds[0] (line 1930).",
+    "severity": "must-change"
+   },
+   {
+    "topic": "Physics per model step",
+    "file": "D:/UEMA_Research/Source/Python/mimo_bridge/train_mimo.py",
+    "line": 1282,
+    "quote": "ENV_DT_ASSUMED_S: float = 0.005 * 2",
+    "meaning_for_port": "One physics env step is 10 ms; action_repeat 5 (args.json line 154: \"action_repeat\": 5) gives 50 ms per model step, matching the README's \"one model step is 50 ms of simulated time\". MuJoCo work per model step per body: 5 physics steps plus the camera renders every 2nd model step.",
+    "severity": "no-change"
+   },
+   {
+    "topic": "Live training batch: 8 bodies, backward every model step",
+    "file": "D:/UEMA_Research/Source/Python/mimo_bridge/lem_model.py",
+    "line": 4025,
+    "quote": "loss.backward()\n                grad_norm = self._clip_training_gradients()",
+    "meaning_for_port": "Inside step() (defined at line 2473) with train=True, every model step runs one backward pass and self.optimizer.step() (line 4045) over the batch of 8 bodies (train_mimo.py line 2300: batch_size=args.n_envs). This is training-only cost; --eval-only (train_mimo.py line 315: \"act but do not learn (weights frozen): for probes\") removes it.",
+    "severity": "no-change"
+   },
+   {
+    "topic": "Imagination chain: 3 forward passes every model step during training",
+    "file": "D:/UEMA_Research/Source/Python/mimo_bridge/lem_model.py",
+    "line": 3121,
+    "quote": "if (self.imagination_enabled and step % self.imagination_every == 0\n                    and len(self.enc_history) >= self.imagination_steps + 1",
+    "meaning_for_port": "imagination_steps 3 (args.json line 90) and every_n_steps 1 (lem/master_config.yaml line 389: every_n_steps: 1) add three chained transformer passes with graph every model step; the code comment says the chain was \"building three transformer passes' worth of graph every step\". Training-only; under eval the graph is not built (set_grad_enabled(train ...)).",
+    "severity": "no-change"
+   },
+   {
+    "topic": "Replay pass: 24 windows of 129 moments every 2 model steps",
+    "file": "D:/UEMA_Research/weights/b1_continue_B1K_skip13_492800/run/args.json",
+    "line": 57,
+    "quote": "\"replay_every\": 2,\n  \"replay_batch\": 24,\n  \"replay_size\": 6000,",
+    "meaning_for_port": "Every 2nd model step replay_update samples 24 windows of ctx_len + 1 = 129 moments (lem_model.py line 4757: self.replay.sample_windows(batch, self.ctx_len, ...); train_mimo.py line 1234: window_moments=int(model.ctx_len) + 1) and runs forward + backward (lem_model.py lines 4992, 5000). Last record: replay_contract.replay_batch = 24.0, replay_fill_frac = 1.0. Training-only cost, and the largest single transformer workload per model step (24 x 768-token sequences).",
+    "severity": "no-change"
+   },
+   {
+    "topic": "Replay ring size in moments and bytes",
+    "file": "D:/UEMA_Research/Source/Python/mimo_bridge/replay.py",
+    "line": 64,
+    "quote": "self.tokens = torch.zeros(n_envs, self.size, len(self.mods), d_model, dtype=torch.float16)\n        self.achieved = torch.zeros(n_envs, self.size, n_handles, 10, dtype=torch.float16)",
+    "meaning_for_port": "The ring holds 6,000 moments per body x 8 bodies = 48,000 moments on CPU (no device argument). Computed bytes: tokens 8 x 6000 x 6 x 192 x 2 = 110,592,000; achieved 8 x 6000 x 26 x 10 x 2 = 24,960,000; executed 8 x 6000 x 26 x 9 x 2 = 22,464,000 (line 81); memory_states 8 x 6000 x 192 x 4 = 36,864,000 (memory_size = 2 x hidden_size 96, lem_model.py line 4684 and persistent_memory.py line 287); self_states 0 (self_state mode is learn, not perceive); about 195 MB total. With one world it is one eighth of that. The trainer log confirms \"ring holds 6000 per body\" (trainer.log line 36).",
+    "severity": "optional"
+   },
+   {
+    "topic": "Checkpoint file sizes",
+    "file": "D:/UEMA_Research/weights/b1_continue_B1K_skip13_492800/MANIFEST.json",
+    "line": 120,
+    "quote": "\"path\": \"run/checkpoints/ckpt_step_494025/model.safetensors\",\n   \"bytes\": 73119988,",
+    "meaning_for_port": "Weights 73,119,988 B; optimizer.pt 138,060,045 B (line 135; two fp32 AdamW moments of 18.1M parameters); runtime_state.pt 489,337,136 B (line 142); episode_state.pt.gz 621,243,950 B (line 100, the eight worlds' physical state); latent_body/latest.pt 6,046,784 B (line 44); latent_body/trajectory.jsonl 477,730,033 B (line 51). The checkpoint folder is 1,322,009,657 B and the whole bundle 1,848,426,182 B over 289 files (summed from the manifest). Inference needs only the 73.1 MB weights plus whatever runtime statistics the model's acting path reads; a port can leave the optimizer and the episode companion behind.",
+    "severity": "optional"
+   },
+   {
+    "topic": "What fills runtime_state.pt",
+    "file": "D:/UEMA_Research/Source/Python/mimo_bridge/lem_model.py",
+    "line": 9881,
+    "quote": "# feature is re-enabled. All of it rides runtime_state.pt beside the",
+    "meaning_for_port": "Loaded on CPU, the file's 25 top-level entries hold 482,034,405 bytes of tensors: self_rehearsal 267,010,528 B, self_history 195,412,912 B, proprio_token_repair 12,667,392 B, persistent_memory_history 6,613,408 B, body_schemas 280,736 B, everything else under 32 KB. The two big entries are training memories (self rehearsal and self history), not weights.",
+    "severity": "optional"
+   },
+   {
+    "topic": "Measured throughput and memory on the RTX 4070 laptop",
+    "file": "D:/UEMA_Research/README.md",
+    "line": 125,
+    "quote": "Measured on Oct 22, 2026 by resuming a clone for 100 model steps on a laptop RTX 4070 (8 GB): the graphics\n  card's memory peaked at 4,287 MB; Windows' committed memory (RAM plus page file) rose from 44.0 GB to 73.8 GB\n  while it ran, about 30 GB for the trainer and its eight world processes; it trained 0.41 to 0.46 model steps\n  per second (one model step = 50 ms of each of the eight bodies' simulated time); the whole run, loading\n  included, took 376 s.",
+    "meaning_for_port": "Full training with 8 worlds: 4,287 MB GPU, about 30 GB committed memory, 0.41 to 0.46 model steps per second (each model step covers 8 bodies). This is the training cost, not the inference cost.",
+    "severity": "no-change"
+   },
+   {
+    "topic": "Per-model-step time split from the run's own record",
+    "file": "D:/UEMA_Research/weights/b1_continue_B1K_skip13_492800/run/replay_training_stats.jsonl",
+    "line": 1,
+    "quote": "\"inference_timings\": {\"model\": 1984.3, \"env\": 250.4}",
+    "meaning_for_port": "Last inference record (inference_step 494025, fps 0.4): the model side (encode, plan, train, replay, imagination) takes 1,984.3 ms per model step and the 8 MuJoCo worlds 250.4 ms (train_mimo.py line 2297: timings={\"model\": 1000 * acc[\"t_model\"] / n, \"env\": 1000 * acc[\"t_env\"] / n}). The last mimo record reads model_steps_per_s 0.444, env_steps_per_s 17.78, peak_vram_mb 4213.48, machine.gpu_used_mib 6961 of 8188. The model side is 89% of the time and it includes training; its inference-only share is not separated in any file.",
+    "severity": "no-change"
+   },
+   {
+    "topic": "Inference-only path exists but is unmeasured",
+    "file": "D:/UEMA_Research/Source/Python/mimo_bridge/train_mimo.py",
+    "line": 315,
+    "quote": "ap.add_argument(\"--eval-only\", action=\"store_true\", help=\"act but do not learn (weights frozen): for probes\")",
+    "meaning_for_port": "A forward-only acting mode is in the code (no backward, no optimizer step, no replay: line 1975 enables replay only if not args.eval_only), but no file in the release records its throughput or memory. The planner's Adam loop still runs under it, so autograd is still required.",
+    "severity": "must-change"
+   },
+   {
+    "topic": "CPU fallback and precision rule",
+    "file": "D:/UEMA_Research/Source/Python/mimo_bridge/lem_model.py",
+    "line": 785,
+    "quote": "self.device = torch.device(device if torch.cuda.is_available() else \"cpu\")",
+    "meaning_for_port": "Without CUDA the model runs on CPU in fp32 with autocast off (lines 798-800: if self.device.type != \"cuda\": self.dtype = torch.float32; self.use_amp = ... and self.device.type == \"cuda\"). The device string comes from --device (train_mimo.py line 233, default \"cuda:0\"); no file mentions an Apple GPU device, and the CUDA random-state handling is guarded by device.type == 'cuda' (lines 5815, 6047). A Mac port on the GPU would need the device rule changed; a CPU run needs nothing changed in this file.",
+    "severity": "must-change"
+   },
+   {
+    "topic": "CUDA-source extensions in the code",
+    "file": "D:/UEMA_Research/Source/Python/lem/native_ops.py",
+    "line": 6,
+    "quote": "JIT-compiled via torch.utils.cpp_extension.load_inline().  Pure C++ (no CUDA\nkernels) -- all tensor ops go through ATen.  The key win is releasing the GIL\nduring blocking operations (cudaStreamSynchronize in clip_grad_norm) and\neliminating Python loop overhead in gather/context/imagination helpers.\n\nFalls back to pure-Python implementations if compilation fails.",
+    "meaning_for_port": "The native helper includes CUDA headers (lines 85-89) and an MSVC auto-detect, but the module states a pure-Python fallback. The other extension, tokenizer/modalities/vision_kernels.py (\"TORCH_CHECK(input.is_cuda(), ...)\", line 160), is used by tokenizer/modalities/vision.py (the Unreal frame path), not by the MIMo bridge: env.py line 45 imports BinocularPatcher from mimo_bridge.vision_adapter, a numpy patcher. So the bridge's vision path has no CUDA kernel of its own.",
+    "severity": "optional"
+   },
+   {
+    "topic": "Pinned dependencies",
+    "file": "D:/UEMA_Research/requirements.txt",
+    "line": 3,
+    "quote": "#   pip install torch==2.6.0 --index-url https://download.pytorch.org/whl/cu124\n# Then:\n#   pip install -r requirements.txt\n#   pip install -e <MIMo checkout with third_party/MIMo/MIMo_bridge_work.patch applied> --no-deps\nnumpy==2.2.6\nscipy==1.18.0\nmujoco==3.3.0",
+    "meaning_for_port": "The release pins torch 2.6.0 built for CUDA 12.4, mujoco 3.3.0, Python 3.13 (README line 122), plus opencv-python-headless, stable_baselines3, scikit-image for MIMo. A port replaces the torch build and must supply mujoco 3.3.0 (or a compatible build) on the target.",
+    "severity": "must-change"
+   },
+   {
+    "topic": "Weights precision",
+    "file": "D:/UEMA_Research/weights/b1_continue_B1K_skip13_492800/run/checkpoints/ckpt_step_494025/model_receipt.json",
+    "line": 4,
+    "quote": "\"precision\": \"bf16\",",
+    "meaning_for_port": "Training ran under bf16 autocast on CUDA, but the stored weights are fp32 (73,119,988 bytes / 18,131,745 parameters = 4.03 bytes each). A port that quantizes must requalify, since the planner's gradients run through these weights.",
+    "severity": "optional"
+   },
+   {
+    "topic": "Command size",
+    "file": "D:/UEMA_Research/README.md",
+    "line": 19,
+    "quote": "A command is 9\nnumbers for each of 26 body handles (target position, rotation, radius, strength); handle 23 is the eyes:",
+    "meaning_for_port": "The planner's optimized variable is 26 x 9 = 234 numbers per body (receipt handle_names lists 26 names under body_layout trunk_v1).",
+    "severity": "no-change"
+   }
+  ],
+  "numbers": [
+   {
+    "name": "parameter count",
+    "value": "18131745",
+    "unit": "parameters",
+    "file": "D:/UEMA_Research/README.md",
+    "quote": "The saved model is small (18,131,745 parameters: 192-number tokens, 4\ntransformer blocks"
+   },
+   {
+    "name": "d_model",
+    "value": "192",
+    "unit": "numbers per token",
+    "file": "D:/UEMA_Research/weights/b1_continue_B1K_skip13_492800/run/args.json",
+    "quote": "\"d_model\": 192,"
+   },
+   {
+    "name": "transformer blocks",
+    "value": "4",
+    "unit": "blocks",
+    "file": "D:/UEMA_Research/weights/b1_continue_B1K_skip13_492800/run/args.json",
+    "quote": "\"core_blocks\": 4,"
+   },
+   {
+    "name": "transformer heads",
+    "value": "8",
+    "unit": "heads",
+    "file": "D:/UEMA_Research/weights/b1_continue_B1K_skip13_492800/run/checkpoints/ckpt_step_494025/model_receipt.json",
+    "quote": "\"n_layers\": 4,\n    \"n_heads\": 8,"
+   },
+   {
+    "name": "context length",
+    "value": "128",
+    "unit": "model steps",
+    "file": "D:/UEMA_Research/weights/b1_continue_B1K_skip13_492800/run/args.json",
+    "quote": "\"context_length\": 128,"
+   },
+   {
+    "name": "active senses",
+    "value": "6",
+    "unit": "senses (vision, tactile, audio, proprioception, motor, vestibular)",
+    "file": "D:/UEMA_Research/weights/b1_continue_B1K_skip13_492800/run/trainer.log",
+    "quote": "LemLite: 18131745 params, active=['vision', 'tactile', 'audio', 'proprioception', 'motor', 'vestibular'], d_model=192, ctx=128, amp=True, imagination=True, wellness=baseline"
+   },
+   {
+    "name": "tokens per sense per model step",
+    "value": "1",
+    "unit": "token of 192 numbers",
+    "file": "D:/UEMA_Research/Source/Python/lem/model/encoder_registry.py",
+    "quote": "returns a dict of {modality_name: [B, 1, d_model]} tensors."
+   },
+   {
+    "name": "tokens per model step (all senses)",
+    "value": "6",
+    "unit": "tokens",
+    "file": "D:/UEMA_Research/weights/b1_continue_B1K_skip13_492800/run/checkpoints/ckpt_step_494025/model_receipt.json",
+    "quote": "\"_seq_length\": 768,"
+   },
+   {
+    "name": "transformer sequence length",
+    "value": "768",
+    "unit": "tokens (6 senses x 128 model steps)",
+    "file": "D:/UEMA_Research/Source/Python/lem/config/resolver.py",
+    "quote": "fwd[\"_seq_length\"] = n_active * context_length"
+   },
+   {
+    "name": "wide eye render",
+    "value": "256",
+    "unit": "px per side, 60 degree field",
+    "file": "D:/UEMA_Research/Source/Python/mimo_bridge/env.py",
+    "quote": "vision: bool = True, eye_size: int = 256,"
+   },
+   {
+    "name": "fovea render",
+    "value": "288",
+    "unit": "px per side, 24 degree field",
+    "file": "D:/UEMA_Research/weights/b1_continue_B1K_skip13_492800/run/args.json",
+    "quote": "\"fovea_size\": 288,\n  \"fovea_fov\": 24.0,"
+   },
+   {
+    "name": "ring camera field",
+    "value": "150",
+    "unit": "degrees (left eye only, rendered at eye size)",
+    "file": "D:/UEMA_Research/weights/b1_continue_B1K_skip13_492800/run/args.json",
+    "quote": "\"ring_fov\": 150.0,"
+   },
+   {
+    "name": "cameras per body",
+    "value": "5",
+    "unit": "cameras (eye_left, eye_right, fovea_left, fovea_right, ring_left)",
+    "file": "D:/UEMA_Research/Source/Python/mimo_bridge/env.py",
+    "quote": "want = ([\"fovea_left\", \"fovea_right\"] if fovea_fov_deg > 0 else []) \\\n        + ([\"ring_left\"] if ring_fov_deg > 0 else [])"
+   },
+   {
+    "name": "patch size",
+    "value": "16",
+    "unit": "px",
+    "file": "D:/UEMA_Research/Source/Python/mimo_bridge/vision_adapter.py",
+    "quote": "PATCH = 16   # tokenizer/config.py TokenizerConfig.patch_size"
+   },
+   {
+    "name": "vision patches per body per render (computed: 2 x (256 + 324))",
+    "value": "1160",
+    "unit": "patches of 16x16x3",
+    "file": "D:/UEMA_Research/Source/Python/mimo_bridge/vision_adapter.py",
+    "quote": "self.n_per_eye = sum(s[3].shape[0] for s in self.sources)\n        self.n_total = 2 * self.n_per_eye"
+   },
+   {
+    "name": "render cadence",
+    "value": "2",
+    "unit": "model steps per render",
+    "file": "D:/UEMA_Research/weights/b1_continue_B1K_skip13_492800/run/args.json",
+    "quote": "\"render_every\": 2,"
+   },
+   {
+    "name": "planner candidates",
+    "value": "1",
+    "unit": "command per body, refined by gradient",
+    "file": "D:/UEMA_Research/Source/Python/lem/model/intention_generator.py",
+    "quote": "optimizer = torch.optim.Adam(action_params, lr=self._lr)"
+   },
+   {
+    "name": "planner gradient steps",
+    "value": "20",
+    "unit": "Adam updates per planning event",
+    "file": "D:/UEMA_Research/Source/Python/mimo_bridge/lem_model.py",
+    "quote": "it.update({\"enabled\": True, \"n_steps\": 20, \"lr\": 0.1, \"strength_reg\": 0.01,\n                       \"max_plan_steps\": 1})"
+   },
+   {
+    "name": "planner forward-model evaluations per planning event",
+    "value": "21",
+    "unit": "forward passes (n_steps + 1), plus 20 backward passes",
+    "file": "D:/UEMA_Research/Source/Python/lem/model/intention_generator.py",
+    "quote": "for _step in range(max(0, self._n_steps) + 1):"
+   },
+   {
+    "name": "planner cadence",
+    "value": "10",
+    "unit": "model steps between planning events",
+    "file": "D:/UEMA_Research/weights/b1_continue_B1K_skip13_492800/run/args.json",
+    "quote": "\"intention_every\": 10,"
+   },
+   {
+    "name": "planner horizon used",
+    "value": "1",
+    "unit": "depth (plan_length)",
+    "file": "D:/UEMA_Research/weights/b1_continue_B1K_skip13_492800/run/replay_training_stats.jsonl",
+    "quote": "\"plan_length\": 1"
+   },
+   {
+    "name": "hand descent steps per planning event",
+    "value": "20",
+    "unit": "steps",
+    "file": "D:/UEMA_Research/weights/b1_continue_B1K_skip13_492800/run/replay_training_stats.jsonl",
+    "quote": "\"horizon_ms\": 250, \"steps\": 20"
+   },
+   {
+    "name": "motor controller max depth",
+    "value": "4",
+    "unit": "blocks of hidden 128",
+    "file": "D:/UEMA_Research/weights/b1_continue_B1K_skip13_492800/run/checkpoints/ckpt_step_494025/model_receipt.json",
+    "quote": "\"max_depth\": 4"
+   },
+   {
+    "name": "worlds",
+    "value": "8",
+    "unit": "bodies, one process each",
+    "file": "D:/UEMA_Research/weights/b1_continue_B1K_skip13_492800/run/args.json",
+    "quote": "\"n_envs\": 8,"
+   },
+   {
+    "name": "one-world flag",
+    "value": "--n-envs 1",
+    "unit": "flag (SingleEnvSource)",
+    "file": "D:/UEMA_Research/Source/Python/mimo_bridge/train_mimo.py",
+    "quote": "elif args.n_envs == 1:\n            src = SingleEnvSource(**kw)"
+   },
+   {
+    "name": "live training batch",
+    "value": "8",
+    "unit": "bodies per backward pass",
+    "file": "D:/UEMA_Research/weights/b1_continue_B1K_skip13_492800/run/replay_training_stats.jsonl",
+    "quote": "\"batch_size\": 8"
+   },
+   {
+    "name": "replay batch",
+    "value": "24",
+    "unit": "windows of 129 moments",
+    "file": "D:/UEMA_Research/weights/b1_continue_B1K_skip13_492800/run/args.json",
+    "quote": "\"replay_batch\": 24,"
+   },
+   {
+    "name": "replay cadence",
+    "value": "2",
+    "unit": "model steps per replay pass",
+    "file": "D:/UEMA_Research/weights/b1_continue_B1K_skip13_492800/run/args.json",
+    "quote": "\"replay_every\": 2,"
+   },
+   {
+    "name": "replay window",
+    "value": "129",
+    "unit": "moments (context 128 + 1)",
+    "file": "D:/UEMA_Research/Source/Python/mimo_bridge/train_mimo.py",
+    "quote": "window_moments=int(model.ctx_len) + 1,"
+   },
+   {
+    "name": "replay ring size",
+    "value": "6000",
+    "unit": "moments per body (48,000 over 8 bodies)",
+    "file": "D:/UEMA_Research/weights/b1_continue_B1K_skip13_492800/run/trainer.log",
+    "quote": "ring holds 6000 per body; live training is NOT gated"
+   },
+   {
+    "name": "replay ring bytes (computed from the tensor shapes: tokens 110,592,000 + achieved 24,960,000 + executed 22,464,000 + memory_states 36,864,000)",
+    "value": "194880000",
+    "unit": "bytes on CPU",
+    "file": "D:/UEMA_Research/Source/Python/mimo_bridge/replay.py",
+    "quote": "self.tokens = torch.zeros(n_envs, self.size, len(self.mods), d_model, dtype=torch.float16)"
+   },
+   {
+    "name": "imagination chain",
+    "value": "3",
+    "unit": "chained forward passes per model step (training)",
+    "file": "D:/UEMA_Research/weights/b1_continue_B1K_skip13_492800/run/args.json",
+    "quote": "\"imagination_steps\": 3,"
+   },
+   {
+    "name": "synergy lesson batch",
+    "value": "64",
+    "unit": "samples",
+    "file": "D:/UEMA_Research/weights/b1_continue_B1K_skip13_492800/run/replay_training_stats.jsonl",
+    "quote": "\"lesson_batch\": 64.0"
+   },
+   {
+    "name": "physics steps per model step",
+    "value": "5",
+    "unit": "env steps of 10 ms",
+    "file": "D:/UEMA_Research/weights/b1_continue_B1K_skip13_492800/run/args.json",
+    "quote": "\"action_repeat\": 5,"
+   },
+   {
+    "name": "physics step",
+    "value": "0.01",
+    "unit": "s",
+    "file": "D:/UEMA_Research/Source/Python/mimo_bridge/train_mimo.py",
+    "quote": "ENV_DT_ASSUMED_S: float = 0.005 * 2"
+   },
+   {
+    "name": "weights file",
+    "value": "73119988",
+    "unit": "bytes (model.safetensors)",
+    "file": "D:/UEMA_Research/weights/b1_continue_B1K_skip13_492800/MANIFEST.json",
+    "quote": "\"path\": \"run/checkpoints/ckpt_step_494025/model.safetensors\",\n   \"bytes\": 73119988,"
+   },
+   {
+    "name": "optimizer file",
+    "value": "138060045",
+    "unit": "bytes (optimizer.pt)",
+    "file": "D:/UEMA_Research/weights/b1_continue_B1K_skip13_492800/MANIFEST.json",
+    "quote": "\"path\": \"run/checkpoints/ckpt_step_494025/optimizer.pt\",\n   \"bytes\": 138060045,"
+   },
+   {
+    "name": "runtime state file",
+    "value": "489337136",
+    "unit": "bytes (runtime_state.pt)",
+    "file": "D:/UEMA_Research/weights/b1_continue_B1K_skip13_492800/MANIFEST.json",
+    "quote": "\"path\": \"run/checkpoints/ckpt_step_494025/runtime_state.pt\",\n   \"bytes\": 489337136,"
+   },
+   {
+    "name": "runtime state: self_rehearsal tensors",
+    "value": "267010528",
+    "unit": "bytes (loaded with torch.load, summed)",
+    "file": "D:/UEMA_Research/weights/b1_continue_B1K_skip13_492800/run/checkpoints/ckpt_step_494025/runtime_state.pt",
+    "quote": "267010528 self_rehearsal"
+   },
+   {
+    "name": "runtime state: self_history tensors",
+    "value": "195412912",
+    "unit": "bytes (loaded with torch.load, summed)",
+    "file": "D:/UEMA_Research/weights/b1_continue_B1K_skip13_492800/run/checkpoints/ckpt_step_494025/runtime_state.pt",
+    "quote": "195412912 self_history"
+   },
+   {
+    "name": "episode companion file",
+    "value": "621243950",
+    "unit": "bytes (episode_state.pt.gz, eight worlds' physical state)",
+    "file": "D:/UEMA_Research/weights/b1_continue_B1K_skip13_492800/MANIFEST.json",
+    "quote": "\"path\": \"run/checkpoints/ckpt_step_494025/episode_state.pt.gz\",\n   \"bytes\": 621243950,"
+   },
+   {
+    "name": "latent body state file",
+    "value": "6046784",
+    "unit": "bytes (latent_body/latest.pt)",
+    "file": "D:/UEMA_Research/weights/b1_continue_B1K_skip13_492800/MANIFEST.json",
+    "quote": "\"path\": \"latent_body/latest.pt\",\n   \"bytes\": 6046784,"
+   },
+   {
+    "name": "latent body trajectory file",
+    "value": "477730033",
+    "unit": "bytes (latent_body/trajectory.jsonl)",
+    "file": "D:/UEMA_Research/weights/b1_continue_B1K_skip13_492800/MANIFEST.json",
+    "quote": "\"path\": \"latent_body/trajectory.jsonl\",\n   \"bytes\": 477730033,"
+   },
+   {
+    "name": "checkpoint folder total (summed over ckpt_step_494025 entries)",
+    "value": "1322009657",
+    "unit": "bytes",
+    "file": "D:/UEMA_Research/weights/b1_continue_B1K_skip13_492800/MANIFEST.json",
+    "quote": "\"path\": \"run/checkpoints/ckpt_step_494025/model.safetensors\","
+   },
+   {
+    "name": "whole bundle (289 files, summed)",
+    "value": "1848426182",
+    "unit": "bytes",
+    "file": "D:/UEMA_Research/weights/b1_continue_B1K_skip13_492800/MANIFEST.json",
+    "quote": "\"what\": \"Copy of the preserved end state of run B1K_skip13_492800 at model step 494025, for resuming training from the release copy.\","
+   },
+   {
+    "name": "GPU memory peak, laptop RTX 4070 (README)",
+    "value": "4287",
+    "unit": "MB",
+    "file": "D:/UEMA_Research/README.md",
+    "quote": "the graphics\n  card's memory peaked at 4,287 MB;"
+   },
+   {
+    "name": "committed memory rise, laptop (README)",
+    "value": "44.0 to 73.8",
+    "unit": "GB (about 30 GB for trainer + 8 world processes)",
+    "file": "D:/UEMA_Research/README.md",
+    "quote": "Windows' committed memory (RAM plus page file) rose from 44.0 GB to 73.8 GB\n  while it ran, about 30 GB for the trainer and its eight world processes;"
+   },
+   {
+    "name": "training throughput, laptop (README)",
+    "value": "0.41 to 0.46",
+    "unit": "model steps per second (8 bodies each)",
+    "file": "D:/UEMA_Research/README.md",
+    "quote": "it trained 0.41 to 0.46 model steps\n  per second (one model step = 50 ms of each of the eight bodies' simulated time);"
+   },
+   {
+    "name": "100-model-step resume run time, laptop (README)",
+    "value": "376",
+    "unit": "s including loading",
+    "file": "D:/UEMA_Research/README.md",
+    "quote": "the whole run, loading\n  included, took 376 s."
+   },
+   {
+    "name": "training throughput, run's last record",
+    "value": "0.44444383684398864",
+    "unit": "model steps per second",
+    "file": "D:/UEMA_Research/weights/b1_continue_B1K_skip13_492800/run/replay_training_stats.jsonl",
+    "quote": "\"model_steps_per_s\": 0.44444383684398864"
+   },
+   {
+    "name": "physics throughput, run's last record",
+    "value": "17.777753473759546",
+    "unit": "env steps per second (8 bodies x 5 per model step)",
+    "file": "D:/UEMA_Research/weights/b1_continue_B1K_skip13_492800/run/replay_training_stats.jsonl",
+    "quote": "\"env_steps_per_s\": 17.777753473759546"
+   },
+   {
+    "name": "model-side time per model step (training included)",
+    "value": "1984.3",
+    "unit": "ms",
+    "file": "D:/UEMA_Research/weights/b1_continue_B1K_skip13_492800/run/replay_training_stats.jsonl",
+    "quote": "\"inference_timings\": {\"model\": 1984.3, \"env\": 250.4}"
+   },
+   {
+    "name": "world-side time per model step (8 MuJoCo processes)",
+    "value": "250.4",
+    "unit": "ms",
+    "file": "D:/UEMA_Research/weights/b1_continue_B1K_skip13_492800/run/replay_training_stats.jsonl",
+    "quote": "\"inference_timings\": {\"model\": 1984.3, \"env\": 250.4}"
+   },
+   {
+    "name": "peak CUDA allocation, run's last record",
+    "value": "4213.48046875",
+    "unit": "MB",
+    "file": "D:/UEMA_Research/weights/b1_continue_B1K_skip13_492800/run/replay_training_stats.jsonl",
+    "quote": "\"peak_vram_mb\": 4213.48046875"
+   },
+   {
+    "name": "GPU used per nvidia-smi, run's last record",
+    "value": "6961 of 8188",
+    "unit": "MiB",
+    "file": "D:/UEMA_Research/weights/b1_continue_B1K_skip13_492800/run/replay_training_stats.jsonl",
+    "quote": "\"gpu_used_mib\": 6961.0, \"gpu_total_mib\": 8188.0"
+   },
+   {
+    "name": "wellness ranking time per plan",
+    "value": "4.64",
+    "unit": "ms",
+    "file": "D:/UEMA_Research/weights/b1_continue_B1K_skip13_492800/run/replay_training_stats.jsonl",
+    "quote": "\"wellness_rank_ms_per_plan\": 4.64"
+   },
+   {
+    "name": "command size",
+    "value": "234",
+    "unit": "numbers (26 handles x 9)",
+    "file": "D:/UEMA_Research/README.md",
+    "quote": "A command is 9\nnumbers for each of 26 body handles (target position, rotation, radius, strength)"
+   },
+   {
+    "name": "torch pin",
+    "value": "2.6.0+cu124",
+    "unit": "version",
+    "file": "D:/UEMA_Research/requirements.txt",
+    "quote": "#   pip install torch==2.6.0 --index-url https://download.pytorch.org/whl/cu124"
+   },
+   {
+    "name": "mujoco pin",
+    "value": "3.3.0",
+    "unit": "version",
+    "file": "D:/UEMA_Research/requirements.txt",
+    "quote": "mujoco==3.3.0"
+   },
+   {
+    "name": "Python version",
+    "value": "3.13",
+    "unit": "version",
+    "file": "D:/UEMA_Research/README.md",
+    "quote": "Python 3.13 (developed with 3.13.3 on Windows 11)."
+   }
+  ],
+  "open_questions": [
+   "Inference-only throughput and memory are not measured in any release file: --eval-only exists (train_mimo.py line 315) but no record of a run under it is included. The model-side 1,984.3 ms per model step mixes acting, planning, the live backward, replay and imagination. A measurement under --eval-only --n-envs 1 on the development machine would give the number a phone or Mac reader needs.",
+   "Does a one-world (--n-envs 1) run reproduce the README's memory and throughput at one eighth? Not measured in the files; the 30 GB committed figure is for 8 world processes.",
+   "The planner needs autograd through the forward model (20 backward passes per planning event). Whether an Apple-GPU or CPU PyTorch build on macOS or iOS runs this code's autograd, and whether MuJoCo 3.3.0 builds for iOS, are external facts not stated in any release file; they need a cited source (MuJoCo and PyTorch documentation) before a feasibility verdict.",
+   "The runtime_state.pt load shows 267.0 MB self_rehearsal and 195.4 MB self_history; which of these the acting path reads (versus training only) is not determined here, so the minimum state an inference-only port must ship is unknown beyond the 73.1 MB weights.",
+   "Vision patch counts (256 wide + 324 fovea per eye, 1,160 per body) are computed from PATCH = 16, eye_size default 256 and fovea_size 288; no release log prints BinocularPatcher.describe() to confirm them.",
+   "Whether the MIMo bridge ever compiles lem/native_ops.py (CUDA headers, MSVC detection) on the laptop, and what the pure-Python fallback costs, is not recorded in the release files."
+  ]
+ },
+ {
+  "summary": "Inventory of CUDA/NVIDIA dependencies in D:/UEMA_Research/Source/Python against the path resume.py -> mimo_bridge.train_mimo actually runs with the released command (weights/b1_continue_B1K_skip13_492800/run/command.json, --device cuda:0, 8 worlds, resume from ckpt_step_494025). RESULT: lem/native_ops.py (nvrtc-compiled CUDA kernel, nvcuda.dll D3D12 interop, at::cuda::CUDAGraph replay, raw cudaMemcpyAsync) is NOT on the released path: its only importers are lem/replay_buffer.py and lem/training_step.py, and neither is imported by mimo_bridge/train_mimo.py or mimo_bridge/lem_model.py (the only tool importing them is mimo_bridge/tools/contract_overseer.py). Its C++ source includes <cuda.h> and ATen CUDA headers unconditionally and is built with with_cuda=True, so it has no Metal build; load_native_ops() returns None without MSVC and every Python wrapper then falls back to plain torch (tensor.item(), tensor.cpu().tolist(), torch.nn.utils.clip_grad_norm_(foreach=True), loss.backward(), dst.copy_), except run_native_inference_loop, which raises. No test in the release shows the clip_grad_norm fallback bit-equal to the C++ (the C++ forms per-tensor norms, stacks them, takes the norm of the stack and clips by max_norm/(total_norm+1e-6) clamped to 1.0; the fallback calls torch's own function); treated as approximate until measured. torch.compile is only called in lem/live_test.py (Unreal path) and LITE_OVERRIDES sets torch_compile enabled False; CUDA graphs exist only in native_ops.py; GradScaler is constructed only in live_test.py. ON the released path the CUDA-specific pieces are: (1) lem_model.py:785 picks the device with `torch.cuda.is_available()` and otherwise silently falls to CPU, so \"mps\" is never selected; (2) lem_model.py:798-800 forces float32 and use_amp False off CUDA, while the saved receipt records precision \"bf16\"; (3) 8 autocast sites in lem_model.py plus heads_all_slot_path.py:514, motor_asked_change.py:471, vestibular_input_path.py:398, proprio_token.py:535 hard-code device_type \"cuda\" (torch 2.6.0 autocast_mode.py:261-269 warns and disables when CUDA is absent, so they become no-ops rather than MPS autocast); (4) mimo_bridge/continuation_state.py:216-218 refuses to restore a companion that carries a CUDA RNG state on a non-CUDA device (\"exact continuation requires the saved execution device\"), and train_mimo.py:2768 calls that restore on every resume: the released episode_state.pt.gz was written by a cuda:0 run, so a Mac resume stops there unless the port changes that rule (and then the exact random continuation of the saved run is lost); (5) acting_snapshot.py:54 calls torch.cuda.set_rng_state_all whenever the snapshot holds a CUDA state, with no device check; (6) float64 tensors created ON the model's device by features the command switches on: hand_response.py:117,138 (finger-joint servo and hand-response calibration), persistent_memory.py:344-368 buffers (persistent-memory on), self_state_integration.py:41 (self-state learn), prediction_audit.py:388 - the PyTorch MPS notes state \"The MPS backend does not support torch.float64\" and that such tensors \"cannot be allocated or copied to MPS in the first place\", so each of these must move to CPU or to float32 (float32 changes the arithmetic the receipts record, e.g. the vestibular check lists float64 among its check precisions). lem/model/attention_cap.py forces no float64 (it promotes to float32 and only computes float64 \"for float64 inputs\"), and the released command runs --attention-cap off, so its CappedMultiheadAttention is nn.MultiheadAttention's own forward. Guarded and harmless off CUDA: AdamW fused=(d.type==\"cuda\"), encoder_registry CUDA event, efference timing synchronize, train_mimo peak_vram, machine_stats, lem_model plan RNG fork. Platform facts: mujoco 3.3.0 ships macosx_11_0_arm64 and macosx_10_16_x86_64 cp313 wheels (PyPI 2025-02-27) and env.py's mujoco.GLContext picks the CGL backend on Darwin, so the 8 spawned MuJoCo worlds with offscreen eye rendering have a macOS path (untested here); torch 2.6.0 has a cp313 macosx_11_0_arm64 wheel (PyPI 2025-01-29) but README/requirements pin the cu124 index, and MPS needs macOS 15.0+ per the PyTorch sample. resume.py itself refuses to build the command on macOS: line 57 compares the saved backslash paths against DEV_ROOT + os.sep (\"/\" on macOS), the test fails, and line 61-62 then reports \"a path of the development machine this script does not map\" (reasoned from the file, not run). iOS: MuJoCo's README names prebuilt binaries for Linux, Windows and macOS only and the 3.3.0 release assets are linux/macos-universal2/windows; ExecuTorch is \"PyTorch's solution for efficient AI inference on edge devices\" and its training extension is \"experimental and under heavy active development\" with \"no way yet to serialize the newly trained weights\" - the released trainer (Python, 8 spawned worker processes, MuJoCo CGL rendering) has no iOS runtime; an iOS target would be an inference-only re-export, which no file in the release prepares.",
+  "findings": [
+   {
+    "topic": "native_ops.py is not imported by the released MIMo path",
+    "file": "Source/Python/lem/replay_buffer.py",
+    "line": 282,
+    "quote": "            from lem.native_ops import load_native_ops",
+    "meaning_for_port": "The only two importers of lem/native_ops.py are lem/replay_buffer.py:282 and lem/training_step.py:23-28. mimo_bridge/train_mimo.py's imports (lines 42-64) and mimo_bridge/lem_model.py's imports (lines 39-56, 120) name neither replay_buffer nor training_step; the only importer of those two is mimo_bridge/tools/contract_overseer.py:485 and :520, a tool. So nothing in native_ops.py runs under resume.py -> train_mimo; a Metal port leaves this file alone.",
+    "severity": "no-change"
+   },
+   {
+    "topic": "native_ops.py C++ source hard-includes CUDA headers; no Metal build exists",
+    "file": "Source/Python/lem/native_ops.py",
+    "line": 85,
+    "quote": "#include <cuda.h>\n#include <c10/cuda/CUDAStream.h>\n#include <c10/cuda/CUDAGuard.h>\n#include <ATen/cuda/CUDAContext.h>\n#include <ATen/cuda/CUDAGraph.h>",
+    "meaning_for_port": "CPP_SOURCE cannot compile without the CUDA toolkit, and load_inline is called with `with_cuda=True, extra_ldflags=['cuda.lib']` (line 3225-3226). There is no Metal counterpart of at::cuda::CUDAGraph, cudaMemcpyAsync, cudaEvent or the CUDA driver API (cuModuleLoadData/cuLaunchKernel at lines 796, 821). Unreal-path only.",
+    "severity": "no-change"
+   },
+   {
+    "topic": "native_ops.py compiles its patchify kernel through NVRTC (nvrtc64_130_0.dll)",
+    "file": "Source/Python/lem/native_ops.py",
+    "line": 3040,
+    "quote": "        os.path.join(_cuda_home, 'bin', 'x64', 'nvrtc64_130_0.dll'),",
+    "meaning_for_port": "_compile_patchify_ptx needs the NVIDIA NVRTC DLL and `torch.cuda.get_device_capability()` (line 3078) to emit a CUBIN for the card. No Metal equivalent; the kernel (CUDA_SOURCE_NATIVE, lines 2970-3020: crop + BGRA->RGB + /255 + 16x16 patch reshape) would have to be rewritten as a Metal compute shader or plain torch ops if the Unreal vision path were ever ported. Not on the released path.",
+    "severity": "no-change"
+   },
+   {
+    "topic": "native_ops.py loads nvcuda.dll for Direct3D 12 interop (Windows + NVIDIA only)",
+    "file": "Source/Python/lem/native_ops.py",
+    "line": 1262,
+    "quote": "    HMODULE nvcuda = LoadLibraryW(L\"nvcuda.dll\");",
+    "meaning_for_port": "The native inference loop reads Unreal's D3D12 textures through cuCtxSetCurrent / cuWaitExternalSemaphoresAsync / cuMemcpy2DAsync_v2 (lines 1268-1273) and Windows named shared memory (OpenFileMappingW, line 940; <Windows.h>, line 548). None of this has a macOS or iOS equivalent. Not on the released path.",
+    "severity": "no-change"
+   },
+   {
+    "topic": "native_ops.py pure-PyTorch fallbacks exist for every wrapper except the inference loop",
+    "file": "Source/Python/lem/native_ops.py",
+    "line": 3145,
+    "quote": "        if not _setup_msvc_env():\n            log.warning(\"MSVC environment not available -- lem_native disabled\")\n            return None",
+    "meaning_for_port": "On a Mac load_native_ops() returns None (no MSVC, and load_inline would fail anyway), so scalar_item_gil_free returns `tensor.item()` (line 3304), tensor_to_list_gil_free returns `tensor.cpu().tolist()` (3324), clip_grad_norm_gil_free calls `torch.nn.utils.clip_grad_norm_(parameters, max_norm, norm_type=norm_type, error_if_nonfinite=error_if_nonfinite, foreach=True)` (3336-3338), backward_gil_free calls `loss.backward(...)` (3347), copy_pairs_gil_free loops `dst.copy_(src, non_blocking=non_blocking)` (3363-3364). run_native_inference_loop has no fallback: `raise RuntimeError(\"lem_native C++ extension not available -- cannot run native inference loop\")` (3418-3419). gather_batch_native's fallback lives in replay_buffer.py (its line 764 tests `self._native_ops is not None`).",
+    "severity": "no-change"
+   },
+   {
+    "topic": "The clip_grad_norm fallback is not shown bit-equivalent to the C++",
+    "file": "Source/Python/lem/native_ops.py",
+    "line": 230,
+    "quote": "    auto clip_coef = torch::clamp(\n        torch::tensor(max_norm, total_norm.options()) / (total_norm + 1e-6),\n        /*min=*/{}, /*max=*/1.0);",
+    "meaning_for_port": "The C++ takes per-tensor norms (`torch::norm(g, norm_type)`, line 204), stacks them and takes `torch::norm(stacked, norm_type)` (207-208), then scales by max_norm/(total_norm+1e-6) clamped at 1.0. The fallback delegates to torch.nn.utils.clip_grad_norm_ with foreach=True. The release carries no test comparing the two outputs, so bit-equivalence is unmeasured; treat as approximate. The GIL-release difference (py::gil_scoped_release, lines 123, 215, 506, 528) changes timing only, not values. Irrelevant to the released MIMo path, which never imports the file.",
+    "severity": "optional"
+   },
+   {
+    "topic": "Device selection falls back to CPU unless CUDA exists; 'mps' is never chosen",
+    "file": "Source/Python/mimo_bridge/lem_model.py",
+    "line": 785,
+    "quote": "        self.device = torch.device(device if torch.cuda.is_available() else \"cpu\")",
+    "meaning_for_port": "resume.py keeps the saved `--device cuda:0` (command.json line \"--device\", \"cuda:0\"; resume.py docstring: \"Every other setting stays as it was\"), and train_mimo.py:1584 passes `device=args.device` into LemLite. On a Mac this line turns any device string into CPU. A Metal port must change this line to honour \"mps\" (torch.backends.mps.is_available()) and resume.py must pass --device mps.",
+    "severity": "must-change"
+   },
+   {
+    "topic": "Mixed precision is disabled off CUDA while the saved state was trained in bf16",
+    "file": "Source/Python/mimo_bridge/lem_model.py",
+    "line": 798,
+    "quote": "        if self.device.type != \"cuda\":\n            self.dtype = torch.float32\n        self.use_amp = self.dtype != torch.float32 and self.device.type == \"cuda\"",
+    "meaning_for_port": "The checkpoint's model_receipt.json records `\"precision\": \"bf16\"` and lem/master_config.yaml:281 sets `precision: bf16`. On MPS these lines force float32 and use_amp False, so every lesson computes in float32, a different arithmetic from the one the saved state was trained under (the receipts record bf16-specific numbers, e.g. persistent_memory_repair \"production_bias_dtype\": \"bfloat16\"). The port must decide: run float32 on MPS (accept the precision change and re-verify the switch checks), or enable autocast on MPS, which needs the open question on MPS bf16 autocast answered first.",
+    "severity": "must-change"
+   },
+   {
+    "topic": "Eight autocast sites hard-code device_type \"cuda\" in lem_model.py",
+    "file": "Source/Python/mimo_bridge/lem_model.py",
+    "line": 2665,
+    "quote": "        with torch.amp.autocast(\"cuda\", enabled=self.use_amp, dtype=self.dtype):",
+    "meaning_for_port": "Same literal at lem_model.py:4763, 6810, 6877, 6929, 8303 (enabled=self.use_amp) and at 3547, 4001 (enabled=False). torch 2.6.0's torch/amp/autocast_mode.py:261-269 does `if (enabled and torch.cuda.amp.common.amp_definitely_not_available() and self.device == \"cuda\"): warnings.warn(\"User provided device_type of 'cuda', but CUDA is not available. Disabling\"); enabled = False`, so on a Mac these contexts become no-ops. Any port that wants MPS autocast must replace \"cuda\" with self.device.type at every site; with float32-only they can stay (they do nothing).",
+    "severity": "must-change"
+   },
+   {
+    "topic": "Load-time switch checks also hard-code autocast \"cuda\"",
+    "file": "Source/Python/lem/model/heads_all_slot_path.py",
+    "line": 514,
+    "quote": "            with LV.unwatched(model), torch.amp.autocast(\"cuda\", enabled=amp, dtype=getattr(model, \"dtype\", torch.float32)):",
+    "meaning_for_port": "Same pattern at lem/model/motor_asked_change.py:471 and lem/model/vestibular_input_path.py:398, and `modes = [(\"float32\", False)] + ([(\"autocast\", True)] if getattr(model, \"use_amp\", False) else [])` (heads_all_slot_path.py:519). lem_model.py:9768-9774 calls `_MAC.switch_check(self)` only when the checkpoint carries no stamp (`if _mac_saved: ... else: _mac_check = _MAC.switch_check(self)`); the released receipt holds motor_asked_change and heads_all_slot_path stamps, so on this resume the checks are skipped. Change the literal for consistency; no blocker.",
+    "severity": "optional"
+   },
+   {
+    "topic": "proprio_token.py disables autocast for \"cuda\" and \"cpu\" only",
+    "file": "Source/Python/mimo_bridge/proprio_token.py",
+    "line": 535,
+    "quote": "            with torch.amp.autocast(\"cuda\", enabled=False), torch.amp.autocast(\"cpu\", enabled=False):",
+    "meaning_for_port": "Repeated at lines 567, 579, 601, 635, 710. --proprio-token-repair within_body is on in the command. On MPS neither context covers the mps device, so if MPS autocast were ever enabled these float32 computations would not be protected; add an \"mps\" context or use the tensor's device type.",
+    "severity": "optional"
+   },
+   {
+    "topic": "Exact continuation refuses to restore a CUDA RNG state on a non-CUDA device",
+    "file": "Source/Python/mimo_bridge/continuation_state.py",
+    "line": 216,
+    "quote": "    if state['cuda_rng'] is not None:\n        if model.device.type!='cuda':raise ValueError('exact continuation requires the saved execution device')\n        torch.cuda.set_rng_state_all([v.cpu() for v in state['cuda_rng']])",
+    "meaning_for_port": "The saved companion writes `cuda_rng=torch.cuda.get_rng_state_all() if model.device.type=='cuda' else None` (line 185); the released state came from a cuda:0 run (args.json \"device\": \"cuda:0\"), so its episode_state.pt.gz carries a CUDA RNG state. train_mimo.py:2768 calls `continuation_state.restore_learner(model,episode_resume['learner'])` on every non-eval resume (line 1868 `episode_resume = continuation_state.load(args.resume)`). On MPS or CPU this raises and the resume stops. A port must either reseed a Metal generator from the saved bytes (no API maps a CUDA Philox state to MPS) or drop the check and accept that the random draws after step 494,025 differ from the saved run's.",
+    "severity": "blocker"
+   },
+   {
+    "topic": "acting_snapshot restore calls torch.cuda without a device check",
+    "file": "Source/Python/mimo_bridge/acting_snapshot.py",
+    "line": 54,
+    "quote": "    if state['cuda'] is not None:torch.cuda.set_rng_state_all([v.cpu() for v in state['cuda']])",
+    "meaning_for_port": "rng_state() stores a CUDA RNG when the device is CUDA (line 48). train_mimo.py:2806 reads `saved_actor=... episode_resume['trainer'].get('acting_snapshot')`; whether the released companion holds one was not read here (open question). If it does, this line raises on a machine without CUDA; guard it the way continuation_state does, or map the state.",
+    "severity": "must-change"
+   },
+   {
+    "topic": "float64 tensors created on the model device by the hand-response calibration (switched on)",
+    "file": "Source/Python/lem/model/hand_response.py",
+    "line": 138,
+    "quote": "        initial=current_angles.detach().to(device=command.device,dtype=torch.float64)",
+    "meaning_for_port": "Also line 117 `target=kin.local_encoding(target_pose.to(device=goal.device,dtype=torch.float64))`, and buffers registered in float64 at lines 67-68. The command runs --finger-joint-servo on with --hand-response-calibration, and the receipt lists 'hand_response'. Per the PyTorch MPS notes (https://docs.pytorch.org/docs/2.15/notes/mps.html): \"The MPS backend does not support `torch.float64` (`torch.double`)\" and such tensors \"cannot be allocated or copied to MPS in the first place.\" These computations must run on CPU (explicit device='cpu') or be rewritten in float32, which changes the hand servo arithmetic.",
+    "severity": "blocker"
+   },
+   {
+    "topic": "persistent memory registers float64 buffers on the model device (switched on)",
+    "file": "Source/Python/lem/model/persistent_memory.py",
+    "line": 344,
+    "quote": "        self.register_buffer(\"event_centre_weight\", torch.zeros((), dtype=torch.float64, device=dev))",
+    "meaning_for_port": "Same at lines 346, 350, 359, 362, 368 (state_centre_weight, moment_weight, request_centre_weight, needs_request_centre_weight, updates_since_switch). --persistent-memory on with --persistent-memory-repair centred is in the command and the checkpoint's model.safetensors holds these buffers in float64. `.to('mps')` on the module would raise per the MPS note quoted above. The port must keep these counters on CPU or store them as float32/int64, and the checkpoint loader (lem/training/checkpoint.py:730 `load_file(str(sf_path), device=device_str)`) must not place them on MPS.",
+    "severity": "blocker"
+   },
+   {
+    "topic": "self-state integration builds a float64 tensor on the device (switched on)",
+    "file": "Source/Python/mimo_bridge/self_state_integration.py",
+    "line": 41,
+    "quote": "    now=torch.tensor([f.sim_time for f in frames],device=device,dtype=torch.float64)",
+    "meaning_for_port": "--self-state learn is in the command. Same MPS float64 limitation; move to CPU or float32 (sim_time in seconds at 50 ms model steps fits float32 only while the run is short: float32 has 24 bits of mantissa, so at 494,025 steps x 0.05 s = 24,701 s the step of 0.05 s is 1 part in 494,025 and representable, but the port should measure this rather than assume). Also mimo_bridge/prediction_audit.py:388 `x = cmd.detach().to(torch.float64).clone()` keeps the command's device.",
+    "severity": "blocker"
+   },
+   {
+    "topic": "attention_cap.py does not force float64 and is off in the released command",
+    "file": "Source/Python/lem/model/attention_cap.py",
+    "line": 136,
+    "quote": "    dtype = torch.promote_types(q.dtype, torch.float32)",
+    "meaning_for_port": "cosine_scores computes in float32 and only in float64 \"for float64 inputs\" (docstring lines 134-135). args.json records `\"attention_cap\": \"off\"` and `\"attention_cap_bound\": null`, so CappedMultiheadAttention.forward takes the `if bound is None: return super().forward(...)` branch (lines 223-226): plain nn.MultiheadAttention. The question whether MPS supports float64 is answered by the PyTorch MPS note (it does not), but this module never requires it on the released path.",
+    "severity": "no-change"
+   },
+   {
+    "topic": "torch.compile is used only on the Unreal live_test path and is off in LITE_OVERRIDES",
+    "file": "Source/Python/lem/live_test.py",
+    "line": 1000,
+    "quote": "        encoder_registry = torch.compile(encoder_registry, mode=compile_mode, fullgraph=False)",
+    "meaning_for_port": "The only torch.compile( calls are live_test.py:1000-1008. lem_model.py:275-276 sets `\"torch_compile\": {\"enabled\": False}` in LITE_OVERRIDES. lem_model imports only `apply_developmental_constraints, _run_imagination_compiled` from live_test (lem_model.py:53); _run_imagination_compiled's docstring says it calls the compiled modules, but with compile off they are the plain modules. Nothing to port; if compile is wanted on MPS later, Inductor's Metal support is a separate open question.",
+    "severity": "no-change"
+   },
+   {
+    "topic": "CUDA graphs exist only inside native_ops.py",
+    "file": "Source/Python/lem/native_ops.py",
+    "line": 997,
+    "quote": "at::cuda::CUDAGraph* extract_cuda_graph(py::handle obj) {",
+    "meaning_for_port": "The release has no `torch.cuda.graph(` or `CUDAGraph(` call in Python (grep over lem, mimo_bridge, tokenizer excluding tests); training_step.py:842-878 only mentions cloning out of CUDAGraph buffers in comments. Metal has no PyTorch graph-capture API; not needed for the released path.",
+    "severity": "no-change"
+   },
+   {
+    "topic": "GradScaler is built only in live_test.py; the MIMo path uses bf16 without a scaler",
+    "file": "Source/Python/lem/live_test.py",
+    "line": 927,
+    "quote": "    scaler = torch.amp.GradScaler(\"cuda\", enabled=use_scaler, init_scale=1024)",
+    "meaning_for_port": "lem/training/checkpoint.py:282 only takes an optional `scaler: Optional[torch.amp.GradScaler] = None`; lem_model.py:9494's load call passes `map_location=self.device` and names no scaler. master_config.yaml:281 says \"bf16 for Ada+/Blackwell \u2014 no GradScaler needed\". No scaler to port.",
+    "severity": "no-change"
+   },
+   {
+    "topic": "AdamW fused kernel is selected only on CUDA",
+    "file": "Source/Python/mimo_bridge/lem_model.py",
+    "line": 1876,
+    "quote": "            lr=lr or tr[\"lr\"], betas=tuple(tr[\"betas\"]), fused=(d.type == \"cuda\"))",
+    "meaning_for_port": "On MPS fused=False and torch's for-loop AdamW runs; the optimizer.pt state (676 tensors, 18,131,745 parameters per checkpoint_inventory) loads through torch.load with map_location (checkpoint.py:763-764). Whether fused and non-fused AdamW give the same update bits is not measured in the release.",
+    "severity": "no-change"
+   },
+   {
+    "topic": "Guarded CUDA-only calls on the released path (no change needed)",
+    "file": "Source/Python/lem/model/encoder_registry.py",
+    "line": 116,
+    "quote": "        if self._vision_device.type == \"cuda\":\n            self._vision_event = torch.cuda.Event()",
+    "meaning_for_port": "Each of these tests the device type first: encoder_registry.py:116-117 (CUDA event), lem/model/efference.py:755-760 (`self.cuda = ... == \"cuda\"` then torch.cuda.synchronize), lem_model.py:5815-5819 and 6047-6048 (plan RNG fork), train_mimo.py:2350-2351 (`if torch.cuda.is_available() and \"cuda\" in str(args.device)`) and 2628-2629 (reset_peak_memory_stats under that same condition), mimo_bridge/machine_stats.py:159. They skip cleanly off CUDA.",
+    "severity": "no-change"
+   },
+   {
+    "topic": "The execution contract records the CUDA version but nothing on the path compares it",
+    "file": "Source/Python/mimo_bridge/execution_contract.py",
+    "line": 132,
+    "quote": "                       mujoco=str(mujoco.__version__),cuda=str(torch.version.cuda),python=sys.version))",
+    "meaning_for_port": "On a Mac torch.version.cuda is None and the record reads \"None\". grep found no reader of this field in train_mimo.py or lem_model.py; it is a provenance record only.",
+    "severity": "optional"
+   },
+   {
+    "topic": "resume.py refuses the saved command on macOS because of its os.sep test",
+    "file": "resume.py",
+    "line": 57,
+    "quote": "        elif os.path.normcase(args[i]).startswith(os.path.normcase(DEV_ROOT) + os.sep):",
+    "meaning_for_port": "DEV_ROOT is `r\"C:\\Users\\bhart\\Documents\\UEMA_devA_private\"` (line 34) and the saved paths use backslashes (command.json e.g. \"C:\\\\Users\\\\bhart\\\\Documents\\\\UEMA_devA_private\\\\docs\\\\gain_of_function_v3\\\\measurements\\\\visual_input_conditioning_2026-09-24.json\"). On macOS os.sep is \"/\" and os.path.normcase returns its input unchanged, so DEV_ROOT + os.sep ends in \"/\" while the path continues with \"\\\\\": the startswith test is false, the next branch `elif re.match(r\"^[A-Za-z]:[\\\\/]\", args[i]):` (line 61) matches, and line 62 appends \"a path of the development machine this script does not map\", which raises SystemExit. Reasoned from the file text, not executed on a Mac. Fix: compare with os.sep replaced by \"\\\\\" (or normalise both sides with .replace(\"\\\\\", \"/\")). mimo_bridge/repo_paths.py already re-roots such paths inside the trainer (\"on Linux and macOS, <checkout>/docs/x.json\", line 11; _norm replaces backslashes, line 47).",
+    "severity": "must-change"
+   },
+   {
+    "topic": "The README and requirements pin the CUDA 12.4 torch index",
+    "file": "requirements.txt",
+    "line": 3,
+    "quote": "#   pip install torch==2.6.0 --index-url https://download.pytorch.org/whl/cu124",
+    "meaning_for_port": "README.md:123 states \"An NVIDIA graphics card with a CUDA 12.4 capable driver for the pinned `torch==2.6.0+cu124` build.\" PyPI (https://pypi.org/pypi/torch/2.6.0/json, uploads dated 2025-01-29) lists torch-2.6.0-cp313-none-macosx_11_0_arm64.whl, so the same version installs on Apple silicon from the default index (`pip install torch==2.6.0`). The PyTorch MPS sample prints \"MPS not available because the current macOS version is not 15.0+\", so the Mac must run macOS 15 or later. Install text must change for macOS.",
+    "severity": "must-change"
+   },
+   {
+    "topic": "MuJoCo 3.3.0 has macOS wheels and env.py's GL context has a Darwin backend",
+    "file": "Source/Python/mimo_bridge/env.py",
+    "line": 599,
+    "quote": "        _GL_CONTEXT = mujoco.GLContext(max(width, 64), max(height, 64))",
+    "meaning_for_port": "requirements.txt pins mujoco==3.3.0; PyPI (https://pypi.org/pypi/mujoco/3.3.0/json, uploads 2025-02-27) lists mujoco-3.3.0-cp313-cp313-macosx_11_0_arm64.whl and mujoco-3.3.0-cp313-cp313-macosx_10_16_x86_64.whl. MuJoCo's python/mujoco/rendering/classic/gl_context.py (https://raw.githubusercontent.com/google-deepmind/mujoco/main/python/mujoco/rendering/classic/gl_context.py) does `elif _SYSTEM == 'Darwin': ... from mujoco.cgl import GLContext as _GLContext` with a fallback to `mujoco.glfw`. env.py builds one context per worker process and the worlds start with `mp.get_context(\"spawn\")` (datasource.py:495), which is macOS's default. The eye and fovea renders (EyeRenderer, env.py:1483-1491, mjr_readPixels) therefore have a macOS code path; whether CGL offscreen rendering in 8 spawned processes works at the 288-pixel fovea and 128-pixel ring sizes is untested here.",
+    "severity": "no-change"
+   },
+   {
+    "topic": "MuJoCo ships no iOS build",
+    "file": "requirements.txt",
+    "line": 10,
+    "quote": "mujoco==3.3.0",
+    "meaning_for_port": "MuJoCo's README (https://raw.githubusercontent.com/google-deepmind/mujoco/main/README.md) says prebuilt binaries are \"built for Linux (x86-64 and AArch64), Windows (x86-64 only), and macOS (universal).\" and names no iOS; the 3.3.0 GitHub release (https://api.github.com/repos/google-deepmind/mujoco/releases/tags/3.3.0, published 2025-02-27) carries only mujoco-3.3.0-linux-aarch64.tar.gz, mujoco-3.3.0-linux-x86_64.tar.gz, mujoco-3.3.0-macos-universal2.dmg and mujoco-3.3.0-windows-x86_64.zip. An iPhone target would need MuJoCo's C library cross-compiled for iOS from source plus a non-Python host for the 8 worlds and the MIMo model files (third_party/MIMo), since the released trainer is Python.",
+    "severity": "blocker"
+   },
+   {
+    "topic": "PyTorch on iOS is inference-only through ExecuTorch; training there is experimental",
+    "file": "Source/Python/mimo_bridge/train_mimo.py",
+    "line": 233,
+    "quote": "    ap.add_argument(\"--device\", default=\"cuda:0\")",
+    "meaning_for_port": "The released trainer is a Python program (resume.py runs `subprocess.call(args, cwd=REPO / \"Source\" / \"Python\")` with `-m mimo_bridge.train_mimo`). ExecuTorch's index (https://docs.pytorch.org/executorch/stable/index.html) says \"ExecuTorch is PyTorch's solution for efficient AI inference on edge devices \u2014 from mobile phones to embedded systems.\" and lists \"Android & iOS\"; its training extension README (https://raw.githubusercontent.com/pytorch/executorch/main/extension/training/README.md) says the feature is \"experimental and under heavy active development\", \"C++ implementations of various optimizers, currently SGD and AdamW. Adam is planned.\" and \"We don't have a way yet to serialize the newly trained weights natively in ExecuTorch\". So on iOS only a re-exported inference model (torch.export of LemLite's step, with the planner's 20-update Adam search at lem_model.py and the per-step learning removed) could run; nothing in the release prepares such an export, and whether LemLite's step graph exports is an open question.",
+    "severity": "blocker"
+   },
+   {
+    "topic": "tokenizer package imports are safe without CUDA; its CUDA pieces are guarded at use time",
+    "file": "Source/Python/tokenizer/transport/gpu_reader.py",
+    "line": 38,
+    "quote": "            import cuda_d3d12_interop as interop",
+    "meaning_for_port": "lem_model.py:53 imports from lem.live_test, whose line 36 `from tokenizer import LEMTokenizer` pulls in tokenizer/tokenizer.py and its transport/modality modules. gpu_reader imports cuda_d3d12_interop only inside GPUReader.__init__ within try/except (lines 37-42), and tokenizer/modalities/vision_kernels.py's load_vision_kernels catches every failure (`log.warning(\"CUDA vision kernels unavailable (nvcc not found?): %s\", e)`; `_KERNEL_MODULE = None`) and runs only when a VisionTokenizer is built (vision.py:82). The released path only reads constants from tokenizer.config (lem_model.py:120). No change for import; the whole tokenizer transport is Unreal-only.",
+    "severity": "no-change"
+   },
+   {
+    "topic": "hierarchical_self float64 reductions are off in the released command",
+    "file": "Source/Python/mimo_bridge/hierarchical_self.py",
+    "line": 562,
+    "quote": "        _cu = (_cen * _tgt).sum(-1, dtype=torch.float64)",
+    "meaning_for_port": "args.json records `\"hierarchical_self\": \"off\"`; whether the `\"entity_self\": \"dark\"` setting (mimo_bridge/entity_self.py) instantiates this class was not traced here (open question). If it does on MPS, the dtype=torch.float64 reductions at lines 562-563, 731, 767 hit the MPS float64 limitation.",
+    "severity": "optional"
+   },
+   {
+    "topic": "Default config names cuda:0 for both devices",
+    "file": "Source/Python/lem/config/defaults.py",
+    "line": 32,
+    "quote": "            \"capture_device\": \"cuda:0\",    # D3D12 interop, vision texture capture\n            \"training_device\": \"cuda:0\",   # Model params, optimizer, gradients",
+    "meaning_for_port": "lem_model.py:275 overrides these in LITE_OVERRIDES with the same strings but LemLite takes its device from the --device argument (lem_model.py:553, 785), not from this dict; tokenizer/config.py:285 `device: str = \"cuda:0\"` is Unreal-only. Change the defaults for tidiness; not load-bearing on the released path.",
+    "severity": "optional"
+   }
+  ],
+  "numbers": [
+   {
+    "name": "Released checkpoint step",
+    "value": "494025",
+    "unit": "model steps",
+    "file": "resume.py",
+    "quote": "START_STEP = 494025"
+   },
+   {
+    "name": "Worlds per run",
+    "value": "8",
+    "unit": "MuJoCo processes",
+    "file": "weights/b1_continue_B1K_skip13_492800/run/args.json",
+    "quote": "\"n_envs\": 8,"
+   },
+   {
+    "name": "Saved precision",
+    "value": "bf16",
+    "unit": "dtype",
+    "file": "weights/b1_continue_B1K_skip13_492800/run/checkpoints/ckpt_step_494025/model_receipt.json",
+    "quote": "\"precision\": \"bf16\""
+   },
+   {
+    "name": "Optimizer parameters",
+    "value": "18131745",
+    "unit": "parameters (676 tensors)",
+    "file": "weights/b1_continue_B1K_skip13_492800/run/checkpoints/ckpt_step_494025/model_receipt.json",
+    "quote": "\"optimizer_parameters\": 18131745, \"optimizer_parameter_tensors\": 676"
+   },
+   {
+    "name": "Measured graphics memory peak on the development laptop (RTX 4070, 100 model steps)",
+    "value": "4287",
+    "unit": "MB",
+    "file": "README.md",
+    "quote": "the graphics card's memory peaked at 4,287 MB"
+   },
+   {
+    "name": "Measured committed memory rise during that run",
+    "value": "44.0 to 73.8",
+    "unit": "GB (RAM plus page file)",
+    "file": "README.md",
+    "quote": "Windows' committed memory (RAM plus page file) rose from 44.0 GB to 73.8 GB"
+   },
+   {
+    "name": "Measured training rate on the development laptop",
+    "value": "0.41 to 0.46",
+    "unit": "model steps per second",
+    "file": "README.md",
+    "quote": "it trained 0.41 to 0.46 model steps per second (one model step = 50 ms of each of the eight bodies' simulated time)"
+   },
+   {
+    "name": "torch version pinned",
+    "value": "2.6.0",
+    "unit": "version (cu124 index)",
+    "file": "requirements.txt",
+    "quote": "pip install torch==2.6.0 --index-url https://download.pytorch.org/whl/cu124"
+   },
+   {
+    "name": "mujoco version pinned",
+    "value": "3.3.0",
+    "unit": "version",
+    "file": "requirements.txt",
+    "quote": "mujoco==3.3.0"
+   },
+   {
+    "name": "Python version",
+    "value": "3.13.3",
+    "unit": "version",
+    "file": "requirements.txt",
+    "quote": "# Versions this code was developed and tested with (Python 3.13.3)."
+   },
+   {
+    "name": "macOS floor for MPS (PyTorch sample text)",
+    "value": "15.0",
+    "unit": "macOS version",
+    "file": "https://docs.pytorch.org/docs/2.15/notes/mps.html",
+    "quote": "MPS not available because the current macOS version is not 15.0+"
+   },
+   {
+    "name": "mujoco 3.3.0 PyPI upload date (macosx_11_0_arm64 cp313 wheel present)",
+    "value": "2025-02-27",
+    "unit": "date",
+    "file": "https://pypi.org/pypi/mujoco/3.3.0/json",
+    "quote": "mujoco-3.3.0-cp313-cp313-macosx_11_0_arm64.whl"
+   },
+   {
+    "name": "torch 2.6.0 PyPI upload date (macosx_11_0_arm64 cp313 wheel present)",
+    "value": "2025-01-29",
+    "unit": "date",
+    "file": "https://pypi.org/pypi/torch/2.6.0/json",
+    "quote": "torch-2.6.0-cp313-none-macosx_11_0_arm64.whl"
+   },
+   {
+    "name": "native_ops.py size",
+    "value": "3604",
+    "unit": "lines",
+    "file": "Source/Python/lem/native_ops.py",
+    "quote": "ACTION_FRAME_LIMB_ROWS = 23"
+   },
+   {
+    "name": "Release Python files mentioning a CUDA-related term (incl. tests, tools, numpy float64)",
+    "value": "236",
+    "unit": "files",
+    "file": "Source/Python/lem/native_ops.py",
+    "quote": "lem_native -- C++ extension for GIL contention reduction in async training."
+   }
+  ],
+  "open_questions": [
+   "Does torch 2.6.0 support torch.autocast(device_type=\"mps\", dtype=torch.bfloat16) for the modules LemLite uses (nn.MultiheadAttention, LayerNorm, Linear), and does MPS bf16 arithmetic round the same way as the CUDA bf16 the receipts record (e.g. persistent_memory_repair \"production_bias_dtype\": \"bfloat16\")? Not answered from any page read in this task; the PyTorch MPS notes page read says nothing about autocast.",
+   "Does the released episode_state.pt.gz carry a non-null trainer['acting_snapshot'] with a CUDA RNG state (acting_snapshot.py:54 would then call torch.cuda.set_rng_state_all unguarded)? Reading the companion (continuation_state.load, torch.load map_location='cpu') answers it.",
+   "Does the entity-self setting (\"entity_self\": \"dark\") instantiate mimo_bridge/hierarchical_self.py, whose float64 reductions (lines 562-563, 731, 767) would hit the MPS float64 limitation? Trace entity_self.py's construction in lem_model.py.",
+   "Is the pure-PyTorch clip_grad_norm fallback (native_ops.py:3336-3338, torch.nn.utils.clip_grad_norm_ foreach=True) bit-equal to the C++ (lines 162-239)? No test in the release compares them; irrelevant to the released path, which never imports native_ops.",
+   "Does CGL offscreen rendering in 8 spawned MuJoCo worker processes (env.py EyeRenderer, mjr_readPixels at 288x288 fovea and 128x128 ring) produce the same pixels as the Windows GLFW/WGL path the calibrations (visual_input_conditioning_2026-09-24.json) were measured on? Needs a Mac run and a pixel comparison.",
+   "Which float32 replacement, if any, keeps the hand-response servo (hand_response.py float64 at 67-68, 117, 138) and persistent-memory counters (persistent_memory.py float64 buffers) within the receipts' recorded tolerances (e.g. bias_change_limit 0.0007971656036376953) when they can no longer live on the device in float64? Must be measured, not assumed.",
+   "Can LemLite.step (lem_model.py) be exported with torch.export for an ExecuTorch iOS inference build, given the planner's in-step Adam search and the per-step learning? Nothing in the release attempts an export; ExecuTorch's MPS backend page could not be fetched (404 on the two URLs tried), so its device/OS requirements remain unquoted.",
+   "How much unified memory does the 8-world run take on a Mac? The Windows measurement (committed memory 44.0 to 73.8 GB with eight world processes, README.md) was under a page file; a Mac's limit is its unified memory and is unmeasured."
+  ]
+ },
+ {
+  "summary": "Dependency map of D:/UEMA_Research/requirements.txt for the released training path (python -m mimo_bridge.train_mimo, resumed by resume.py) and an inference-only path (the same trainer with --eval-only, which is the only no-learning entry point in the release: \"act but do not learn (weights frozen)\"). Needed for BOTH training and inference: torch, numpy, mujoco, gymnasium (MIMoEnv subclasses gymnasium's MujocoEnv), safetensors (model.safetensors is loaded on resume), PyYAML (lem_model.py reads master_config.yaml at import), scipy (Delaunay in MIMo's touch mesh build for the tactile sense, and scipy.optimize.minimize in the planner's hand kinematics that lem_model.py calls), trimesh + cachetools + rtree (MIMo's TrimeshTouch: ProximityQuery -> triangles_tree -> rtree), pillow (env.py imports pen_art at module top, which imports PIL at module top), and matplotlib + opencv-python-headless only as IMPORT-TIME requirements of MIMo modules (utils.py, touch.py, vision.py import them at module top; the bridge passes vision_params=None so cv2.remap and the plots never run). Training-only or optional: psutil (only --n-envs auto, and machine_stats guards ImportError), imageio and imageio-ffmpeg (scene videos, --video-every-min 0 turns them off; jpg snapshot in try/except). Tools/tests/dashboard only: scikit-learn (experiments/analyze.py via tools/build_report.py), pytest, huggingface_hub (fetch_weights.py). MIMo unused parts only: stable_baselines3 (lazy import inside illustrations.py, never imported), scikit-image and networkx (zero imports anywhere). iOS: PyPI shows no iOS wheel for torch (2.6.0 or 2.15.0), numpy, scipy, mujoco, safetensors, opencv-python-headless, scikit-learn, matplotlib, rtree, psutil, PyYAML, imageio-ffmpeg; only pillow 12.3.0 ships ios_13_0_arm64_iphoneos wheels; gymnasium, trimesh, cachetools, networkx, stable_baselines3, imageio, pytest, huggingface_hub are py3-none-any. Python's own iOS docs: \"An iOS app cannot use any form of subprocessing, multiprocessing\", and the trainer's 8-body PoolSource uses mp.get_context(\"spawn\"); SingleEnvSource (in-process, --n-envs 1) exists. MuJoCo's docs name Windows, Linux and macOS only; the installed mujoco gl_context.py picks a cgl backend on Darwin, so the bridge's EyeRenderer (mujoco.GLContext) has a macOS path and no iOS path. macOS: every pinned compiled package has a macosx_11_0_arm64 (or newer) wheel; the torch macOS wheel has no CUDA, and lem_model.py:785 chooses cuda-or-cpu with no mps branch, disables autocast off cuda, and uses torch.float64 in 37 non-test lines while the MPS backend \"does not support torch.float64\"; the native C++ extension falls back to Python when MSVC/vswhere is absent, and the CUDA vision kernels are only on the Unreal (UE) tokenizer path, not the MIMo path. resume.py refuses on macOS as written: line 57 joins os.sep (\"/\" on macOS) onto the Windows DEV_ROOT, so no saved path matches and the drive-letter regex at line 61 reports every calibration path as unmapped; repo_paths.py itself handles both slash styles. setup_checkout.py has no OS-specific call (os.utime with nanoseconds, json, pathlib).",
+  "findings": [
+   {
+    "topic": "torch: used everywhere, both paths; CUDA-or-CPU only, no MPS branch",
+    "file": "Source/Python/mimo_bridge/lem_model.py",
+    "line": 785,
+    "quote": "self.device = torch.device(device if torch.cuda.is_available() else \"cpu\")",
+    "meaning_for_port": "On a Mac the torch wheel has no CUDA, so any --device value becomes cpu; an Apple-GPU (mps) path needs a code change here and wherever the device type is tested.",
+    "severity": "must-change"
+   },
+   {
+    "topic": "torch: mixed precision is switched off away from CUDA",
+    "file": "Source/Python/mimo_bridge/lem_model.py",
+    "line": 800,
+    "quote": "self.use_amp = self.dtype != torch.float32 and self.device.type == \"cuda\"",
+    "meaning_for_port": "On macOS or iOS the model computes in float32 with autocast disabled; the bf16 numerics the checkpoint was trained under do not apply off CUDA.",
+    "severity": "optional"
+   },
+   {
+    "topic": "torch: float64 tensors on the model path (MPS has no float64)",
+    "file": "Source/Python/mimo_bridge/lem_model.py",
+    "line": 2533,
+    "quote": "self._hand_current_angles = torch.as_tensor(angles, device=self.device, dtype=torch.float64)",
+    "meaning_for_port": "37 non-test lines under Source/Python/lem and Source/Python/mimo_bridge use torch.float64 or torch.double; the PyTorch MPS note says the backend does not support torch.float64, so an MPS port must move those to float32 or keep them on CPU.",
+    "severity": "must-change"
+   },
+   {
+    "topic": "torch: Adam fused only on CUDA",
+    "file": "Source/Python/mimo_bridge/lem_model.py",
+    "line": 1876,
+    "quote": "lr=lr or tr[\"lr\"], betas=tuple(tr[\"betas\"]), fused=(d.type == \"cuda\"))",
+    "meaning_for_port": "Training on CPU or MPS uses the unfused optimizer path; no change needed.",
+    "severity": "no-change"
+   },
+   {
+    "topic": "torch: peak VRAM record is guarded",
+    "file": "Source/Python/mimo_bridge/train_mimo.py",
+    "line": 2351,
+    "quote": "if torch.cuda.is_available() and \"cuda\" in str(args.device) else None),",
+    "meaning_for_port": "The trainer's CUDA memory statistics are skipped off CUDA (reset_peak_memory_stats at line 2629 runs only when peak_vram_mb is not None), so no change for macOS.",
+    "severity": "no-change"
+   },
+   {
+    "topic": "torch: --device default",
+    "file": "Source/Python/mimo_bridge/train_mimo.py",
+    "line": 233,
+    "quote": "ap.add_argument(\"--device\", default=\"cuda:0\")",
+    "meaning_for_port": "The saved command passes --device cuda:0; on a Mac this silently becomes cpu through lem_model.py:785.",
+    "severity": "optional"
+   },
+   {
+    "topic": "torch: no iOS wheel for the pinned version",
+    "file": "https://pypi.org/pypi/torch/2.6.0/json",
+    "line": 0,
+    "quote": "torch-2.6.0-cp310-none-macosx_11_0_arm64.whl",
+    "meaning_for_port": "torch 2.6.0 (uploaded 2025-01-29) ships macosx_11_0_arm64, manylinux and win_amd64 wheels and no ios_ wheel; the macOS wheel is CPU/MPS, not CUDA.",
+    "severity": "blocker"
+   },
+   {
+    "topic": "torch: newest release also has no iOS wheel",
+    "file": "https://pypi.org/pypi/torch/json",
+    "line": 0,
+    "quote": "torch latest 2.15.0 (https://pypi.org/pypi/torch/json) upload=2026-10-28 files=28 ios_wheels=[]",
+    "meaning_for_port": "No torch release on PyPI as of 2026-10-28 carries an iOS wheel; Python torch cannot be pip-installed for iPhone.",
+    "severity": "blocker"
+   },
+   {
+    "topic": "torch on iOS: ExecuTorch is the supported route, C++/Swift, not Python",
+    "file": "https://docs.pytorch.org/executorch/stable/using-executorch-ios.html",
+    "line": 0,
+    "quote": "ExecuTorch supports both iOS and macOS via Objective-C, Swift, and C++.",
+    "meaning_for_port": "An iPhone build would export the forward model to a .pte file and run it from Swift/C++; the Python trainer, planner loop and bridge would have to be rewritten, not ported. Same page: \"The ExecuTorch package requires a minimum of iOS 17 and macOS 14.\"",
+    "severity": "blocker"
+   },
+   {
+    "topic": "torch MPS backend on macOS",
+    "file": "https://docs.pytorch.org/docs/2.15/notes/mps.html",
+    "line": 0,
+    "quote": "`mps` device enables high-performance training on GPU for macOS devices with Metal programming framework.",
+    "meaning_for_port": "macOS GPU training is possible through MPS, with the float64 restriction on the same page: \"The MPS backend does not support `torch.float64` (`torch.double`)\".",
+    "severity": "must-change"
+   },
+   {
+    "topic": "README states the CUDA and Windows assumptions of the release",
+    "file": "README.md",
+    "line": 123,
+    "quote": "- An NVIDIA graphics card with a CUDA 12.4 capable driver for the pinned `torch==2.6.0+cu124`",
+    "meaning_for_port": "The release's documented requirement is a CUDA card; line 122 reads \"Python 3.13 (developed with 3.13.3 on Windows 11).\" A Mac/iOS port changes the documented platform contract.",
+    "severity": "must-change"
+   },
+   {
+    "topic": "requirements.txt install order assumes the CUDA index",
+    "file": "requirements.txt",
+    "line": 3,
+    "quote": "#   pip install torch==2.6.0 --index-url https://download.pytorch.org/whl/cu124",
+    "meaning_for_port": "On macOS the cu124 index has no wheel; torch comes from the default index as the CPU/MPS build.",
+    "severity": "must-change"
+   },
+   {
+    "topic": "native C++ extension (lem_native): CUDA link flags, MSVC detection, Python fallback",
+    "file": "Source/Python/lem/native_ops.py",
+    "line": 11,
+    "quote": "Falls back to pure-Python implementations if compilation fails.",
+    "meaning_for_port": "Lines 3225-3226 pass with_cuda=True and extra_ldflags=['cuda.lib'], and _setup_msvc_env (line 25) runs 'where cl' and vswhere.exe; on macOS it returns False and training_step.py:21-26 catches the exception, so the trainer runs on the Python versions. No change needed to run; a speed loss is expected but unmeasured.",
+    "severity": "no-change"
+   },
+   {
+    "topic": "native extension is loaded by the training step and the replay buffer",
+    "file": "Source/Python/lem/training_step.py",
+    "line": 23,
+    "quote": "    from lem.native_ops import load_native_ops",
+    "meaning_for_port": "The try/except at lines 22-26 (\"except Exception:\" / \"pass\") makes the load optional on every platform.",
+    "severity": "no-change"
+   },
+   {
+    "topic": "CUDA vision kernels are only on the Unreal tokenizer path, not the MIMo path",
+    "file": "Source/Python/tokenizer/modalities/vision_kernels.py",
+    "line": 206,
+    "quote": "cuda_default = r'C:\\Program Files\\NVIDIA GPU Computing Toolkit\\CUDA'",
+    "meaning_for_port": "load_vision_kernels is called only by VisionTokenizer (tokenizer/modalities/vision.py:82), which is built only by LEMTokenizer(...) in lem/live_test.py:715 and mimo_bridge/run_mode_b.py:138; train_mimo.py never constructs it, so the MIMo training and inference paths do not compile CUDA.",
+    "severity": "no-change"
+   },
+   {
+    "topic": "numpy: both paths",
+    "file": "Source/Python/mimo_bridge/env.py",
+    "line": 38,
+    "quote": "import numpy as np",
+    "meaning_for_port": "Needed for training and inference. PyPI numpy 2.2.6 has macosx_11_0_arm64 wheels and no ios_ wheel; the newest numpy 2.5.4 (uploaded 2026-10-10) also lists no ios_ wheel.",
+    "severity": "blocker"
+   },
+   {
+    "topic": "mujoco: both paths; the bridge builds its own offscreen GL context",
+    "file": "Source/Python/mimo_bridge/env.py",
+    "line": 600,
+    "quote": "_GL_CONTEXT = mujoco.GLContext(max(width, 64), max(height, 64))",
+    "meaning_for_port": "The vision sense is rendered by EyeRenderer on a mujoco.GLContext; the installed mujoco/gl_context.py (line 43-45) selects \"from mujoco.cgl import GLContext\" when platform.system() == 'Darwin', so macOS has an offscreen render path; iOS has none.",
+    "severity": "must-change"
+   },
+   {
+    "topic": "mujoco: MIMo's environment imports it at module top",
+    "file": "third_party/MIMo/mimo/mimo_infant/simulation/envs/mimo_env.py",
+    "line": 8,
+    "quote": "import mujoco",
+    "meaning_for_port": "The body cannot be built without the mujoco Python bindings.",
+    "severity": "blocker"
+   },
+   {
+    "topic": "mujoco wheels: macOS yes, iOS none",
+    "file": "https://pypi.org/pypi/mujoco/3.3.0/json",
+    "line": 0,
+    "quote": "mujoco-3.3.0-cp310-cp310-macosx_11_0_arm64.whl",
+    "meaning_for_port": "mujoco 3.3.0 (uploaded 2025-02-27) ships macosx_10_16_x86_64, macosx_11_0_arm64, manylinux and win_amd64 wheels, no ios_ wheel; the newest 3.17.0 (2026-10-22) also lists none.",
+    "severity": "blocker"
+   },
+   {
+    "topic": "MuJoCo's documented platforms",
+    "file": "https://mujoco.readthedocs.io/en/stable/programming/index.html",
+    "line": 0,
+    "quote": "MuJoCo is a dynamic library compatible with Windows, Linux and macOS, which requires a processor with AVX instructions.",
+    "meaning_for_port": "iOS is not a documented MuJoCo platform; an iPhone body would need MuJoCo compiled from source for arm64-apple-ios, which the docs do not describe. Rendering: \"The classic rendering library is written in C and uses OpenGL 1.5.\"",
+    "severity": "blocker"
+   },
+   {
+    "topic": "gymnasium: both paths (MIMoEnv subclasses gymnasium's MujocoEnv)",
+    "file": "third_party/MIMo/mimo/mimo_infant/simulation/envs/mimo_env.py",
+    "line": 14,
+    "quote": "from gymnasium.envs.mujoco import MujocoEnv",
+    "meaning_for_port": "Pure Python: PyPI lists gymnasium-1.2.3-py3-none-any.whl. Its MujocoRenderer (line 15) is also imported at module top.",
+    "severity": "no-change"
+   },
+   {
+    "topic": "safetensors: both paths (the checkpoint loader reads model.safetensors)",
+    "file": "Source/Python/lem/training/checkpoint.py",
+    "line": 729,
+    "quote": "from safetensors.torch import load_file",
+    "meaning_for_port": "Needed to load the 73,119,988-byte model.safetensors on resume (training) and for --eval-only (inference). PyPI safetensors 0.8.0 has macosx_11_0_arm64 and no ios_ wheel (Rust extension).",
+    "severity": "blocker"
+   },
+   {
+    "topic": "PyYAML: both paths (master_config.yaml is read when lem_model builds its config)",
+    "file": "Source/Python/mimo_bridge/lem_model.py",
+    "line": 386,
+    "quote": "config = load_and_resolve(CONFIG_PATH, skip_validation=True)",
+    "meaning_for_port": "lem/config/loader.py:22 \"import yaml\". PyPI PyYAML 6.0.3 has macosx_11_0_arm64 wheels and no ios_ wheel.",
+    "severity": "must-change"
+   },
+   {
+    "topic": "scipy: both paths through MIMo's touch mesh build (tactile sense)",
+    "file": "third_party/MIMo/mimo/mimo_infant/touch/sensormeshes.py",
+    "line": 238,
+    "quote": "tri = Delaunay(cap_points, qhull_options=\"Qbb Qc Q12 Qt\")",
+    "meaning_for_port": "TrimeshTouch builds capsule sensor meshes with scipy's Delaunay when the world is built; the bridge passes touch_params (env.py:1159) so this runs for training and inference.",
+    "severity": "blocker"
+   },
+   {
+    "topic": "scipy: both paths through the planner's hand kinematics",
+    "file": "Source/Python/mimo_bridge/hand_target_control.py",
+    "line": 325,
+    "quote": "from scipy.optimize import minimize, LinearConstraint",
+    "meaning_for_port": "lem_model.py:6234 calls self.hand_kinematics.project_world_orders(...) on the acting path (--hand-target-mode wrist_relative_v1 in the saved command), so scipy is an inference dependency, not only training.",
+    "severity": "blocker"
+   },
+   {
+    "topic": "scipy: no iOS wheel",
+    "file": "https://pypi.org/pypi/scipy/1.18.0/json",
+    "line": 0,
+    "quote": "scipy-1.18.0-cp312-cp312-macosx_12_0_arm64.whl",
+    "meaning_for_port": "scipy 1.18.0 (uploaded 2026-06-19) ships macOS wheels and no ios_ wheel; newest 1.18.1 (2026-08-21) also none.",
+    "severity": "blocker"
+   },
+   {
+    "topic": "trimesh: both paths (MIMo's TrimeshTouch)",
+    "file": "third_party/MIMo/mimo/mimo_infant/touch/touch.py",
+    "line": 1062,
+    "quote": "proximity_query = trimesh.proximity.ProximityQuery(mesh)",
+    "meaning_for_port": "Pure Python (trimesh-4.6.2-py3-none-any.whl) but its ProximityQuery calls mesh.triangles_tree, which the installed trimesh builds with rtree (c:/Users/bhart/Documents/UEMA_devA_private/.venv_mimo/Lib/site-packages/trimesh/util.py:1741 \"import rtree\").",
+    "severity": "no-change"
+   },
+   {
+    "topic": "rtree: no direct import; required through trimesh's proximity query",
+    "file": "https://pypi.org/pypi/rtree/1.4.1/json",
+    "line": 0,
+    "quote": "rtree-1.4.1-py3-none-macosx_11_0_arm64.whl",
+    "meaning_for_port": "rtree wraps the libspatialindex binary: macOS wheels exist, no ios_ wheel. Zero 'import rtree' lines under Source/Python or mimo_infant; it is reached only through trimesh at touch.py:1062.",
+    "severity": "blocker"
+   },
+   {
+    "topic": "cachetools: both paths (touch nearest-sensor cache)",
+    "file": "third_party/MIMo/mimo/mimo_infant/touch/touch.py",
+    "line": 21,
+    "quote": "from cachetools import cachedmethod, LRUCache",
+    "meaning_for_port": "Pure Python (cachetools-7.1.7-py3-none-any.whl); no change.",
+    "severity": "no-change"
+   },
+   {
+    "topic": "matplotlib: import-time requirement of MIMo modules on the body path, never executed",
+    "file": "third_party/MIMo/mimo/mimo_infant/simulation/utils.py",
+    "line": 2,
+    "quote": "from matplotlib import pyplot as plt",
+    "meaning_for_port": "mimo_env.py imports utils.py, touch.py (line 22) and vision.py (lines 9, 12), each importing matplotlib at module top; no plot runs on the training or inference path (vision.py:169 imsave is only in save_obs_to_file). In the bridge itself matplotlib appears only in experiments/analyze.py, explainer/capture.py:75 and tools/dashboard.py:1575. No ios_ wheel for matplotlib 3.11.1 or 3.11.2; macOS wheels exist. For iOS the three MIMo imports would need to become lazy (a patch to third_party/MIMo).",
+    "severity": "must-change"
+   },
+   {
+    "topic": "opencv-python-headless: import-time requirement of MIMo's vision.py, never executed by the bridge",
+    "file": "third_party/MIMo/mimo/mimo_infant/vision/vision.py",
+    "line": 15,
+    "quote": "import cv2",
+    "meaning_for_port": "cv2 is used only at vision.py:286 (\"out = cv2.remap(img, map_x, map_y, ...)\", the foveation path). The bridge builds the body with vision_params=None (env.py:1160 \"vision_params=None, vestibular_params=vest_params,\") and renders eyes with its own EyeRenderer, so cv2 is a MIMo unused part that must still import. opencv-python-headless 5.0.0.93 has macosx_13_0_arm64 wheels and no ios_ wheel; for iOS the import would need to become lazy.",
+    "severity": "must-change"
+   },
+   {
+    "topic": "stable_baselines3: MIMo unused part only",
+    "file": "third_party/MIMo/mimo/mimo_infant/simulation/illustrations.py",
+    "line": 166,
+    "quote": "        from stable_baselines3 import PPO as RL",
+    "meaning_for_port": "Lazy import inside a function of illustrations.py, which nothing under Source/Python or mimo_infant/__init__.py imports. Pure Python wheel (stable_baselines3-2.7.1-py3-none-any.whl). Can be dropped from a port's requirements.",
+    "severity": "optional"
+   },
+   {
+    "topic": "scikit-image: no import anywhere; listed only because MIMo's requirements list it",
+    "file": "third_party/MIMo/mimo/requirements.txt",
+    "line": 15,
+    "quote": "scikit-image==0.24.0",
+    "meaning_for_port": "grep finds zero 'import skimage' lines in Source/Python and mimo_infant. Droppable for a port.",
+    "severity": "optional"
+   },
+   {
+    "topic": "networkx: no import anywhere; trimesh optional dependency",
+    "file": "third_party/MIMo/mimo/requirements.txt",
+    "line": 8,
+    "quote": "networkx==3.2.1",
+    "meaning_for_port": "Zero 'import networkx' lines in Source/Python and mimo_infant; pure Python wheel anyway.",
+    "severity": "optional"
+   },
+   {
+    "topic": "scikit-learn: tools only",
+    "file": "Source/Python/mimo_bridge/experiments/analyze.py",
+    "line": 171,
+    "quote": "    from sklearn.metrics import silhouette_score",
+    "meaning_for_port": "experiments/analyze.py is imported only by tools/build_report.py; not on training or inference. No ios_ wheel for scikit-learn 1.9.0 or 1.9.1; droppable for a port.",
+    "severity": "optional"
+   },
+   {
+    "topic": "pytest: tests only",
+    "file": "requirements.txt",
+    "line": 20,
+    "quote": "pytest==9.1.1",
+    "meaning_for_port": "No non-test file under Source/Python imports pytest; pure Python wheel.",
+    "severity": "no-change"
+   },
+   {
+    "topic": "huggingface_hub: fetch_weights.py only",
+    "file": "fetch_weights.py",
+    "line": 57,
+    "quote": "        from huggingface_hub import hf_hub_download",
+    "meaning_for_port": "Used once to download the six weight files; pure Python wheel; not needed at run time.",
+    "severity": "no-change"
+   },
+   {
+    "topic": "pillow: both paths (scene wall-art textures built at world construction)",
+    "file": "Source/Python/mimo_bridge/env.py",
+    "line": 43,
+    "quote": "from mimo_bridge.pen_art import make_pen_textures, make_floor_texture, make_ceiling_texture",
+    "meaning_for_port": "pen_art.py:23 imports \"from PIL import Image, ImageDraw, ImageFont\" at module top, so PIL must import for any BridgeEnv. pillow is the one compiled pin with iOS wheels: PyPI lists pillow-12.3.0-cp313-cp313-ios_13_0_arm64_iphoneos.whl.",
+    "severity": "no-change"
+   },
+   {
+    "topic": "imageio: training-path scene videos, switchable off",
+    "file": "Source/Python/mimo_bridge/train_mimo.py",
+    "line": 776,
+    "quote": "ap.add_argument(\"--video-every-min\", type=float, default=20.0, help=\"record a scene video this often (0 = off)\")",
+    "meaning_for_port": "env.py:2052 imports imageio.v2 only when a video is due, and env.py:2195 wraps the jpg snapshot in try/except; with --video-every-min 0 imageio is unused. Pure Python (imageio-2.37.4-py3-none-any.whl).",
+    "severity": "optional"
+   },
+   {
+    "topic": "imageio-ffmpeg: never imported directly; used by imageio to write mp4",
+    "file": "Source/Python/mimo_bridge/env.py",
+    "line": 2059,
+    "quote": "imageio.mimwrite(v[\"path\"].replace(\".mp4\", \"_eye.mp4\"), v[\"eye_frames\"], fps=fps, quality=6)",
+    "meaning_for_port": "Zero 'import imageio_ffmpeg' lines; it is the mp4 writer imageio picks. PyPI has macosx_11_0_arm64 and no ios_ wheel (it bundles an ffmpeg binary). Off when videos are off.",
+    "severity": "optional"
+   },
+   {
+    "topic": "psutil: training only, and only with --n-envs auto; elsewhere guarded",
+    "file": "Source/Python/mimo_bridge/train_mimo.py",
+    "line": 1761,
+    "quote": "args.n_envs = auto_n_envs() if str(args.n_envs).lower() == \"auto\" else int(args.n_envs)",
+    "meaning_for_port": "The saved command passes --n-envs 8, so auto_n_envs (line 1511, \"import psutil\" at 1515) does not run; machine_stats.py:98-102 catches ImportError (\"except ImportError:                # the venv carries psutil; this keeps tests portable\"). 57 tools/tests files import it. No ios_ wheel for psutil 7.2.2.",
+    "severity": "optional"
+   },
+   {
+    "topic": "Worker processes: the 8-body source spawns subprocesses",
+    "file": "Source/Python/mimo_bridge/datasource.py",
+    "line": 495,
+    "quote": "ctx = mp.get_context(\"spawn\")",
+    "meaning_for_port": "PoolSource runs each body in a spawned process; Python's library docs for mobile platforms say \"An iOS app cannot use any form of subprocessing, multiprocessing, or inter-process communication.\" The in-process SingleEnvSource is chosen at train_mimo.py:1930 \"if args.n_envs==1:src=SingleEnvSource(**saved_worlds[0]['env_kwargs'])\", so an iOS build would be limited to one body; macOS is unaffected.",
+    "severity": "blocker"
+   },
+   {
+    "topic": "iOS forbids subprocesses and multiprocessing",
+    "file": "https://docs.python.org/3/library/intro.html",
+    "line": 0,
+    "quote": "An iOS app cannot use any form of subprocessing, multiprocessing, or inter-process communication. If an iOS app attempts to create a subprocess, the process creating the subprocess will either lock up, or crash.",
+    "meaning_for_port": "resume.py:89 subprocess.call(...) and datasource.py:495 PoolSource cannot run on iOS; the same page: \"Mobile platforms can only use Python in \u201cembedded\u201d mode. There is no Python REPL, and no ability to use separate executables such as python or pip.\"",
+    "severity": "blocker"
+   },
+   {
+    "topic": "iOS binary modules must be repackaged as frameworks",
+    "file": "https://docs.python.org/3/using/ios.html",
+    "line": 0,
+    "quote": "The iOS App Store requires that all binary modules in an iOS app must be dynamic libraries, contained in a framework with appropriate metadata, stored in the Frameworks folder of the packaged app.",
+    "meaning_for_port": "Every compiled dependency (numpy, scipy, mujoco, torch, safetensors, rtree, matplotlib, opencv, PyYAML, psutil) would need an arm64-apple-ios build converted to a framework; only pillow publishes such a wheel today. Same page: \"the only way you can use Python on iOS is in embedded mode - that is, by writing a native iOS application, and embedding a Python interpreter using libPython\".",
+    "severity": "blocker"
+   },
+   {
+    "topic": "iOS is a tier-3 CPython platform since 3.13",
+    "file": "https://docs.python.org/3/whatsnew/3.13.html",
+    "line": 0,
+    "quote": "PEP 730: iOS is now a PEP 11 supported platform, with the arm64-apple-ios and arm64-apple-ios-simulator targets at tier 3",
+    "meaning_for_port": "The interpreter itself (the release pins Python 3.13) can be embedded on iPhone; the blockers are the compiled dependencies and the process model, not CPython.",
+    "severity": "no-change"
+   },
+   {
+    "topic": "resume.py: Windows development root is hard-coded",
+    "file": "resume.py",
+    "line": 34,
+    "quote": "DEV_ROOT = r\"C:\\Users\\bhart\\Documents\\UEMA_devA_private\"   # the development repository the command names",
+    "meaning_for_port": "The script expects the saved command's input paths to start with this Windows path and checks that the same relative files exist in the checkout (lines 57-60).",
+    "severity": "must-change"
+   },
+   {
+    "topic": "resume.py: path check breaks on a non-Windows os.sep",
+    "file": "resume.py",
+    "line": 57,
+    "quote": "elif os.path.normcase(args[i]).startswith(os.path.normcase(DEV_ROOT) + os.sep):",
+    "meaning_for_port": "On macOS os.sep is '/', so 'C:\\\\Users\\\\...private/' never prefixes the backslash paths in command.json; each then falls to line 61 \"elif re.match(r\\\"^[A-Za-z]:[\\\\\\\\/]\\\", args[i]):\" and is reported as \"a path of the development machine this script does not map\", and line 66 raises SystemExit. The prefix test must use a backslash (or normalise slashes as repo_paths.py:_norm does) before resume.py runs on macOS.",
+    "severity": "must-change"
+   },
+   {
+    "topic": "resume.py: runs the trainer as a child process with the current interpreter",
+    "file": "resume.py",
+    "line": 89,
+    "quote": "    return subprocess.call(args, cwd=REPO / \"Source\" / \"Python\")",
+    "meaning_for_port": "Fine on macOS (sys.executable at line 49 replaces the Windows venv python of command.json line 1); impossible on iOS, where subprocesses crash or lock up.",
+    "severity": "blocker"
+   },
+   {
+    "topic": "resume.py: --print uses Windows command-line quoting",
+    "file": "resume.py",
+    "line": 83,
+    "quote": "        print(subprocess.list2cmdline(args))",
+    "meaning_for_port": "Only affects the printed form of the command; execution passes the list, so no behaviour change on macOS.",
+    "severity": "no-change"
+   },
+   {
+    "topic": "The saved command names Windows paths that repo_paths.py re-roots on any OS",
+    "file": "Source/Python/mimo_bridge/repo_paths.py",
+    "line": 11,
+    "quote": "D:\\\\UEMA_Research\\\\docs\\\\x.json -> <checkout>\\\\docs\\\\x.json (on Linux and macOS, <checkout>/docs/x.json),",
+    "meaning_for_port": "The trainer's own file access is already OS-neutral: _norm (line 47) replaces backslashes and RECORDED_ROOTS (line 32-42) maps C:/Users/bhart/Documents/UEMA_devA_private and D:/UEMA_* to the checkout. Line 18 notes the limit: \"A path that leaves Python (a C library opening a file itself, a subprocess's working folder) is not re-rooted\".",
+    "severity": "no-change"
+   },
+   {
+    "topic": "setup_checkout.py: no OS-specific call",
+    "file": "setup_checkout.py",
+    "line": 32,
+    "quote": "        os.utime(p, ns=(st.st_atime_ns, int(ns)))",
+    "meaning_for_port": "Restores modification times from checkout_times.json with os.utime and reports weight presence via fetch_weights.FILES; nothing Windows-specific. The dashboard checks it serves (docstring lines 7-10) are tools-only.",
+    "severity": "no-change"
+   },
+   {
+    "topic": "Inference-only entry point in the release",
+    "file": "Source/Python/mimo_bridge/train_mimo.py",
+    "line": 315,
+    "quote": "ap.add_argument(\"--eval-only\", action=\"store_true\", help=\"act but do not learn (weights frozen): for probes\")",
+    "meaning_for_port": "There is no separate inference program; the inference path is the same trainer with --eval-only (line 2904 \"train=not args.eval_only\"), so it carries the same import set as training minus replay (line 1974 \"if args.replay == \\\"on\\\" and not args.eval_only:\").",
+    "severity": "no-change"
+   },
+   {
+    "topic": "MIMo package import pulls in mujoco.viewer (GLFW window code)",
+    "file": "third_party/MIMo/mimo/mimo_infant/__init__.py",
+    "line": 19,
+    "quote": "import mimo_infant.simulation.simulate as simulate",
+    "meaning_for_port": "simulate.py:6 \"import mujoco.viewer\" runs whenever mimo_infant is imported (env.py:52 \"import mimo_infant\"); on macOS this is the shipped viewer; on iOS there is no such module to load.",
+    "severity": "optional"
+   },
+   {
+    "topic": "Memory of the saved state the resume loads",
+    "file": "weights/b1_continue_B1K_skip13_492800/MANIFEST.json",
+    "line": 121,
+    "quote": "   \"bytes\": 73119988,",
+    "meaning_for_port": "model.safetensors is 73 MB; runtime_state.pt is 489,337,136 bytes (line 142), optimizer.pt 138,060,045 (line 135), episode_state.pt.gz 621,243,950 (line 100). README line 125-127 measured on Windows: GPU memory peak 4,287 MB and about 30 GB committed for the trainer and eight world processes.",
+    "severity": "optional"
+   }
+  ],
+  "numbers": [
+   {
+    "name": "Packages pinned in requirements.txt",
+    "value": "22",
+    "unit": "packages",
+    "file": "requirements.txt",
+    "quote": "huggingface_hub==2.2.0"
+   },
+   {
+    "name": "Pinned packages with an iOS wheel on PyPI",
+    "value": "1",
+    "unit": "packages (pillow)",
+    "file": "https://pypi.org/pypi/pillow/12.3.0/json",
+    "quote": "pillow-12.3.0-cp313-cp313-ios_13_0_arm64_iphoneos.whl"
+   },
+   {
+    "name": "Pinned packages that are pure Python (py3-none-any)",
+    "value": "9",
+    "unit": "packages (gymnasium, imageio, trimesh, pytest, stable_baselines3, cachetools, networkx, huggingface_hub; PyYAML excluded, it ships compiled wheels)",
+    "file": "https://pypi.org/pypi/trimesh/4.6.2/json",
+    "quote": "trimesh-4.6.2-py3-none-any.whl"
+   },
+   {
+    "name": "Non-test lines using torch.float64 or torch.double",
+    "value": "37",
+    "unit": "lines under Source/Python/lem and Source/Python/mimo_bridge",
+    "file": "Source/Python/mimo_bridge/lem_model.py",
+    "quote": "dtype=torch.float64)"
+   },
+   {
+    "name": "Python files in the release source tree",
+    "value": "835",
+    "unit": "files under Source/Python (399 of them in mimo_bridge/tests, 180 in mimo_bridge/tools)",
+    "file": "Source/Python/mimo_bridge/train_mimo.py",
+    "quote": "from mimo_bridge.datasource import SingleEnvSource, PoolSource"
+   },
+   {
+    "name": "Bodies the saved command runs in worker processes",
+    "value": "8",
+    "unit": "spawned processes",
+    "file": "weights/b1_continue_B1K_skip13_492800/run/command.json",
+    "quote": "\"--n-envs\",\n \"8\","
+   },
+   {
+    "name": "GPU memory peak of a 100-model-step resume on Windows",
+    "value": "4287",
+    "unit": "MB",
+    "file": "README.md",
+    "quote": "card's memory peaked at 4,287 MB"
+   },
+   {
+    "name": "Model weights file size",
+    "value": "73119988",
+    "unit": "bytes",
+    "file": "weights/b1_continue_B1K_skip13_492800/MANIFEST.json",
+    "quote": "\"path\": \"run/checkpoints/ckpt_step_494025/model.safetensors\",\n   \"bytes\": 73119988,"
+   },
+   {
+    "name": "Minimum iOS and macOS for ExecuTorch",
+    "value": "iOS 17 / macOS 14",
+    "unit": "OS version",
+    "file": "https://docs.pytorch.org/executorch/stable/using-executorch-ios.html",
+    "quote": "The ExecuTorch package requires a minimum of iOS 17 and macOS 14."
+   },
+   {
+    "name": "Tools/tests files importing psutil",
+    "value": "57",
+    "unit": "files",
+    "file": "Source/Python/mimo_bridge/tools/ability_rechecks.py",
+    "quote": "import psutil"
+   }
+  ],
+  "open_questions": [
+   "Whether MuJoCo can be compiled from source for arm64-apple-ios at all: the MuJoCo programming docs name only Windows, Linux and macOS, and no fetched page states an iOS build; this was not tested here.",
+   "Whether the model's acting path runs correctly on torch's mps device once lem_model.py:785 gains an mps branch and the 37 float64 sites are changed: nothing here measures MPS numerics against the CUDA bf16 checkpoint.",
+   "What the trainer's speed is on an Apple-silicon Mac on CPU or MPS with the native C++ extension falling back to Python: unmeasured; README's 0.41 to 0.46 model steps per second is a Windows RTX 4070 number.",
+   "Whether a PyYAML pure-Python import works without its compiled extension on iOS: not checked against a source.",
+   "Whether MIMo's TrimeshTouch can run without rtree (a trimesh fallback for triangles_tree) on iOS: the installed trimesh/util.py:1741 imports rtree; no fallback was read.",
+   "How the iOS App Store's framework rule (every binary module as its own signed framework) would apply to numpy/scipy/torch's many .so files: no iOS wheels exist for them, so the packaging work is untested.",
+   "Whether setup_checkout.py's os.utime succeeds inside an iOS app bundle (bundle contents are signed): not checked against a source."
+  ]
+ },
+ {
+  "summary": "Inventory of the released model's OS, process and I/O dependencies (D:/UEMA_Research), read from env.py and train_mimo.py entire, datasource.py entire, MIMo's README and patch, repo_paths.py, shm_writer.py, lem/action/shm.py, resume.py, the saved command (weights/.../run/command.json) and the pinned packages in the development venv, with external facts from the Python, PyTorch, MuJoCo and PyPI pages. The training path is: train_mimo.main builds PoolSource (datasource.py:1936 call at train_mimo.py:1936) which spawns 8 Python worker processes with multiprocessing context \"spawn\" and one Pipe each (datasource.py:495-511); each worker owns one BridgeEnv and renders its two eyes (256x256), two foveae (288x288) and the ring (256 px over 150 deg) offscreen through one mujoco.GLContext per process (env.py:587-638), plus a 480 px watch-camera JPEG every model step (--live-view-every 1); the parent process runs the LemLite model on torch.device(\"cuda:0\" if available else \"cpu\") (lem_model.py:785). Named shared memory (shm_writer.py, lem/action/shm.py) is Mode B (the Unreal transport) and is NOT on the training path (datasource.py:3-8, __init__.py:16-17). Windows-only code on the training path is limited to guarded branches (machine_stats.py:69-70 nvidia-smi flag, psutil in try/except, native_ops MSVC-only JIT that returns None elsewhere, CUDA vision kernels that return None without nvcc); drive-letter paths in records and the saved command are re-rooted by repo_paths.py and resume.py. MIMo's own imports on the training path are gymnasium (MujocoEnv, spaces, MujocoRenderer which imports glfw at module top), trimesh, cachetools, matplotlib.pyplot (touch.py, vision.py) and cv2 (vision.py module level); stable_baselines3 is imported only lazily inside illustrations.py and is not on the training path. macOS port: MuJoCo 3.3.0, torch 2.6.0, gymnasium and imageio-ffmpeg 0.6.0 all ship macOS arm64 wheels; mujoco picks the CGL context on Darwin; multiprocessing spawn is already macOS's default; the model falls to CPU float32 unless line 785 is changed to select \"mps\", and MPS cannot run the float64 tensors lem_model allocates (lines 2533-2534); the live viewer tool needs mjpython. The measured RAM (committed memory rose 44.0 to 73.8 GB for trainer + 8 worlds) and 4,287 MB of graphics memory are the resource line. iOS port: Python's docs state an iOS app cannot use subprocessing, multiprocessing or inter-process communication (so PoolSource, the git/sysctl/nvidia-smi/ffmpeg subprocess calls and mujoco's own import-time sysctl call are blockers unless removed), no torch wheel exists for iOS (ExecuTorch is inference-only), MuJoCo's renderer needs OpenGL 1.5 compatibility profile with a canonical OpenGL library that MuJoCo names only for Windows, macOS and Linux, the gymnasium render module imports glfw, and every binary module must be repackaged as a framework; continuing the saved 8-body episode in one process is refused by the trainer's continuation check (train_mimo.py:1889-1890) because n_envs is part of it.",
+  "findings": [
+   {
+    "topic": "Eight world processes: how they are spawned (training path)",
+    "file": "Source/Python/mimo_bridge/datasource.py",
+    "line": 495,
+    "quote": "ctx = mp.get_context(\"spawn\")",
+    "meaning_for_port": "Lines 510-511 continue: `parent, child = ctx.Pipe()` and `p = ctx.Process(target=_worker_main, args=(child, kw, i), daemon=True)`. train_mimo.py:1936 builds it on the training path: `src = PoolSource(args.n_envs, kw)` (the saved command carries `--n-envs 8`), and train_mimo.py:1931 on a resumed episode: `else:src=PoolSource(args.n_envs,{},per_env_kwargs=[w['env_kwargs'] for w in saved_worlds])`. macOS: the Python multiprocessing docs state the spawn method is \"Available on POSIX and Windows platforms. The default on Windows and macOS.\" (https://docs.python.org/3/library/multiprocessing.html, Python 3.15.2 header), so the start method already matches; no change to this mechanism. iOS: the Python docs state \"An iOS app cannot use any form of subprocessing, multiprocessing, or inter-process communication. If an iOS app attempts to create a subprocess, the process creating the subprocess will either lock up, or crash.\" (https://docs.python.org/3/library/intro.html, Python 3.15.2 header) and the multiprocessing page carries \"Availability: not Android, not iOS, not WASI.\" PoolSource cannot exist on iOS; the in-process SingleEnvSource (datasource.py:230-347) steps one BridgeEnv, so an iOS port needs a new in-process source that owns N BridgeEnv objects in one process (N GL renderers already share one context, env.py:635 `mj.mjr_setBuffer(mj.mjtFramebuffer.mjFB_OFFSCREEN.value, self.ctx)   # re-bind: other renderers share this GL context`).",
+    "severity": "blocker"
+   },
+   {
+    "topic": "Pipe payload: eye images travel raw through the worker pipes",
+    "file": "Source/Python/mimo_bridge/datasource.py",
+    "line": 77,
+    "quote": "Vision travels as the raw uint8 eye images\n    (393 KB) instead of float32 patches (1.6 MB): 20 workers at 6 steps/s through Windows\n    pipes exhausted the system pipe pool (WinError 1450, 8-hour run take 4).",
+    "meaning_for_port": "The parent patchifies in _payload_to_frame (datasource.py:154-160). macOS: multiprocessing Pipe is a POSIX socketpair there; the Windows pipe-pool limit does not apply, no code change. iOS: no pipes at all (see the spawn finding); an in-process source hands the RawStep straight to _raw_to_payload/_payload_to_frame without the pipe, which SingleEnvSource already does (datasource.py:295-296).",
+    "severity": "no-change"
+   },
+   {
+    "topic": "Continuing the saved 8-body episode requires 8 worlds",
+    "file": "Source/Python/mimo_bridge/train_mimo.py",
+    "line": 1889,
+    "quote": "if episode_resume is not None and episode_resume['config'] != continuation_config:\n            raise ValueError('physical continuation configuration changed; explicit migration is required')",
+    "meaning_for_port": "continuation_flags at train_mimo.py:1869 begins `continuation_flags = ('n_envs','body_layout','action_repeat','motor_hold','body_function',` so the saved episode companion (episode_state.pt.gz, 621,243,950 bytes) resumes only with n_envs 8. macOS: unchanged (8 spawned workers). iOS: a one-process trainer must either host 8 BridgeEnv objects in one process (new source class, same n_envs 8) or start with `--episode-continuation fresh`, which train_mimo.py:1862-1864 allows only with --eval-only: `raise ValueError('--episode-continuation fresh is probe-only: a training resume '\n                                 'must migrate the saved physical episode, never restart it')`.",
+    "severity": "must-change"
+   },
+   {
+    "topic": "Named shared memory (Mode B) is not on the training path",
+    "file": "Source/Python/mimo_bridge/shm_writer.py",
+    "line": 6,
+    "quote": "action writer (lem/action/writer.py, lem/action/shm.py). Windows named shared memory via mmap\ntagnames, the same call the model's CPUReader uses.",
+    "meaning_for_port": "shm_writer.py:39 `self.shm = mmap.mmap(-1, self.total, name, access=mmap.ACCESS_WRITE)` and lem/action/shm.py:4 `Action SHM \u2014 Windows named shared memory for the action buffer.` are the tagname form of mmap. They are imported only by run_mode_b.py, tests, tools/build_report.py and lem/action/writer.py (grep of Source/Python); train_mimo.py imports datasource, whose module docstring (datasource.py:3-8) reads `Mode A data source: MIMo frames straight into the model, in-process.` and `Mode A keeps that path but skips shared memory`. __init__.py:17 lists `shm_writer.py      Mode B: writes LEM_Pipeline / LEM_Vision, reads LEM_Action_Buffer`. macOS and iOS: leave these files alone; they are the Unreal transport and nothing in resume.py's command reaches them. The tagname call itself is Windows-only by its own docstring; whether it raises on Darwin is an open question (not tested here).",
+    "severity": "no-change"
+   },
+   {
+    "topic": "Windows-only process flag on the training path (nvidia-smi sampler)",
+    "file": "Source/Python/mimo_bridge/machine_stats.py",
+    "line": 69,
+    "quote": "if sys.platform == \"win32\":\n            kw[\"creationflags\"] = 0x08000000      # CREATE_NO_WINDOW: no console flash",
+    "meaning_for_port": "Called every stats window from train_mimo.py:2273 `machine = MachineSampler()` and 2562 `\"machine\": machine.sample(`. Lines 71-75 run `subprocess.run([\"nvidia-smi\", ...` inside `except (OSError, subprocess.SubprocessError): return None`. macOS: no nvidia-smi binary, OSError, returns None; the stats block's gpu fields read None; no change needed. iOS: subprocess.run itself is the problem (Python docs: the process \"will either lock up, or crash\"), and the subprocess page carries \"Availability: not Android, not iOS, not WASI.\" (https://docs.python.org/3/library/subprocess.html, 3.15.2); remove the call for an iOS build.",
+    "severity": "must-change"
+   },
+   {
+    "topic": "psutil usage on the training path",
+    "file": "Source/Python/mimo_bridge/machine_stats.py",
+    "line": 97,
+    "quote": "try:\n            import psutil\n            self._proc = psutil.Process(os.getpid())\n            self._psutil = psutil\n        except ImportError:                # the venv carries psutil; this keeps tests portable",
+    "meaning_for_port": "The other training-path use is train_mimo.py:1515 `import psutil` inside auto_n_envs, reached only when `--n-envs auto` (train_mimo.py:1761); the saved command passes 8. Every other psutil import is under tools/ (ability_rechecks, commit_guard, test_runner...). requirements.txt pins `psutil==7.2.2`. macOS: psutil installs normally (wheel availability for macOS not fetched here: open question). iOS: no psutil build; the ImportError branch keeps MachineSampler alive, so only the tools lose it.",
+    "severity": "optional"
+   },
+   {
+    "topic": "Windows memory-commit reading via ctypes (tool, guarded)",
+    "file": "Source/Python/mimo_bridge/tools/commit_guard.py",
+    "line": 112,
+    "quote": "if sys.platform != \"win32\":\n        return None",
+    "meaning_for_port": "machine_stats.py:55-62 imports commit_reading from this tool inside `except ImportError: return None` and calls it inside `except OSError: return None`; off Windows _performance() returns None, so the stats record's commit_gb fields read None. The dashboard's commit guard (the launch gate reading Windows' commit limit) therefore has no reading on macOS or iOS; the launch checks that depend on it (test_runner, commit_guard) need a macOS equivalent if the dashboard's job launching is ported. Not on the training loop itself.",
+    "severity": "optional"
+   },
+   {
+    "topic": "Drive-letter paths in records and the saved command",
+    "file": "Source/Python/mimo_bridge/repo_paths.py",
+    "line": 33,
+    "quote": "\"D:/UEMA_Research\": \"\",                             # the folder the release was built in (its records)\n    \"C:/Users/bhart/Documents/UEMA_devA_private\": \"\",   # the development repository (the saved state, its command)",
+    "meaning_for_port": "repo_paths.py:11-12 states the mapping for other OSes: `D:\\\\UEMA_Research\\\\docs\\\\x.json -> <checkout>\\\\docs\\\\x.json (on Linux and macOS, <checkout>/docs/x.json),`; install() (line 134-153) wraps builtins.open, os.open/stat/listdir/... and is called by mimo_bridge/__init__.py:38 `_repo_paths.install()`. env.py:1103-1104 localizes the scene run_dir because `the scene files written here are\n        # also opened by MuJoCo's own C code, which repo_paths' Python-level re-rooting does not reach` (env.py:1101-1102). resume.py:34 `DEV_ROOT = r\"C:\\Users\\bhart\\Documents\\UEMA_devA_private\"` and :57 `elif os.path.normcase(args[i]).startswith(os.path.normcase(DEV_ROOT) + os.sep):` rewrite the command's C:\\ inputs; :61 refuses any other drive-letter path. The saved command names `--out D:\\UEMA_scratch\\...`, `--checkpoint-storage D:\\UEMA_scratch\\...`, `--caregiver-record-dir D:\\UEMA_recordings\\...`, `--latent-body-output D:\\UEMA_scratch\\...`, `--resume D:\\UEMA_preserved\\...`, `--latent-body-resume D:\\UEMA_preserved\\...` (all replaced by resume.py:41-48) and C:\\ inputs for calibrations, speech dir and latent-body config (checked present by :57-60). macOS: os.sep is '/', so resume.py:57's `DEV_ROOT + os.sep` becomes `C:\\Users\\bhart\\Documents\\UEMA_devA_private/`, which never matches a backslash path, and :61's regex then refuses every C:\\ input as unmapped: resume.py must be changed to compare with a normalised separator before it can build the command on macOS. The Python-level re-rooting in repo_paths.py handles the records. iOS: the same, plus the checkout root (`REPO = Path(__file__).resolve().parents[3]`, repo_paths.py:30) sits inside the read-only app bundle, so every writable location (the run folder, scenes, lite XML, growth temp files, checkpoints) must be redirected to the app's writable container.",
+    "severity": "must-change"
+   },
+   {
+    "topic": "Hard-coded D: roots in a storage tool",
+    "file": "Source/Python/mimo_bridge/storage_locations.py",
+    "line": 39,
+    "quote": "ARCHIVE_ROOT = Path(\"D:/UEMA_Research/external/D/UEMA_recordings/H84_checkpoint_archive\")\nOFFLOAD_ROOT = Path(\"D:/UEMA_Research/external/D/UEMA_recordings/C_offload\")",
+    "meaning_for_port": "Both strings start with the recorded root D:/UEMA_Research, which repo_paths localizes at open time; :58 `if os.name == 'nt' and len(p) >= 240 and not p.startswith('\\\\\\\\?\\\\'):` is Windows-only long-path handling, skipped elsewhere. Not on the training loop (checkpoint archiving tool).",
+    "severity": "optional"
+   },
+   {
+    "topic": "Scene run directory default and per-process generated XML",
+    "file": "Source/Python/mimo_bridge/env.py",
+    "line": 1099,
+    "quote": "run_dir = run_dir or os.path.join(os.path.dirname(os.path.abspath(__file__)), \"..\", \"..\", \"..\",\n                                          \"Saved\", \"mimo_bridge\", \"scenes\")",
+    "meaning_for_port": "write_scene (env.py:512-522) writes `mimo_bridge_{kind}{tag}.xml`, lite_meta_xml writes `MIMo_metav2_lite_p{os.getpid()}.xml` (env.py:126) and fovea_model_xml `..._p{os.getpid()}.xml` (env.py:162-164); grow_scene (env.py:550-583) copies the include tree into a tempfile.TemporaryDirectory beside the destination and runs MIMo's adjust_mimo_to_age (the saved command has `--age-binding fixed:24`, so this runs at every world build). The scene XML points at MIMo's assets by absolute path (env.py:421 `meshdir=\"{A}/meshes\" texturedir=\"{A}\"`). macOS: all of this is plain file I/O; the trainer passes `run_dir=os.path.join(out_dir, \"scenes\")` (train_mimo.py:1391). iOS: the pid-suffixed names collapse to one pid, and the files must live in the writable container; a saved world's env_kwargs carry the development machine's run_dir (env.py:1101), re-rooted by localize.",
+    "severity": "must-change"
+   },
+   {
+    "topic": "Vision rendering: renderer kind and GL context",
+    "file": "Source/Python/mimo_bridge/env.py",
+    "line": 599,
+    "quote": "_GL_CONTEXT = mujoco.GLContext(max(width, 64), max(height, 64))",
+    "meaning_for_port": "EyeRenderer (env.py:603-638) builds `mujoco.MjvScene`, `mujoco.MjrContext(model, mujoco.mjtFontScale.mjFONTSCALE_150.value)`, binds `mujoco.mjr_setBuffer(mujoco.mjtFramebuffer.mjFB_OFFSCREEN.value, self.ctx)` and reads pixels with `mj.mjr_readPixels(self._buf, None, self.rect, self.ctx)`: MuJoCo's own classic offscreen renderer, not mujoco.Renderer and not MIMo's SimpleVision (env.py:1160 passes `vision_params=None`). The context backend is chosen by the installed mujoco package (C:/Users/bhart/Documents/UEMA_devA_private/.venv_mimo/Lib/site-packages/mujoco/gl_context.py:43-47): `elif _SYSTEM == 'Darwin':\\n    from mujoco.cgl import GLContext as _GLContext` and otherwise `from mujoco.glfw import GLContext as _GLContext` (Windows today, hence env.py:591 `mujoco.Renderer makes a brand-new GLFW window + context`). macOS: the CGL context is windowless; MuJoCo's docs state \"On Windows and macOS, there is a canonical OpenGL library provided by the operating system.\" (https://mujoco.readthedocs.io/en/stable/programming/rendering.html); no code change in env.py, but mujoco/__init__.py:46-50 refuses an x86_64 Python under Rosetta: `'You are running an x86_64 build of Python on an Apple Silicon '\\n        'machine. This is not supported by MuJoCo. Please install and run a '\\n        'native, arm64 build of Python.'`. iOS: the same docs state \"MuJoCo uses OpenGL 1.5 in the compatibility profile with the ARB_framebuffer_object and ARB_vertex_buffer_object extensions.\" and name context libraries only for Windows, macOS and Linux (GLX, OSMesa, EGL); gl_context.py has no iOS branch (the platform.system() test covers Linux, Windows, Darwin). The vision sense on iOS therefore needs a renderer MuJoCo does not ship (the MuJoCo README lists \"Swift: swift-mujoco\" only as a third-party binding; no official iOS or Metal entry appears in the README or in the first 100,000 characters of the changelog). Note the docs also say the library \"can be used on systems without OpenGL support, as long as mjr_ functions are not called\": physics, tactile, proprioception, vestibular, motor and audio senses do not need GL; only vision does.",
+    "severity": "blocker"
+   },
+   {
+    "topic": "Vision rendering: resolutions and renders per model step",
+    "file": "Source/Python/mimo_bridge/env.py",
+    "line": 344,
+    "quote": "off = max(480, eye_size)   # watch_cam videos render at 480",
+    "meaning_for_port": "Sizes: eyes `eye_size: int = 256` (env.py:989) over the wide camera's fovy (MIMo's eye cameras are 60 deg, MIMo mimo_env.py:152-154 `\"eye_left\": {\"width\": 256, \"height\": 256, \"fovy\":60,`); fovea `--fovea-size 288` over `--fovea-fov 24.0` (saved command; train_mimo.py:576-583); the ring renders through the wide renderer at eye size (env.py:1107-1109 `self.ring_size = int(eye_size) if ring_fov > 0 else 0`) over `--ring-fov 150.0`; the watch camera at 480 (env.py:2035, 2090). Offscreen buffer `<global offwidth=\"{off}\" offheight=\"{off}\"/>` (env.py:428). Per model step on the saved command: each of 8 worlds renders left eye, right eye (render_eyes, env.py:2200-2204), ring (env.py:1494-1502, inside reflex.observe at 3156-3157), left and right fovea (env.py:2206-2210), all on the last of the 5 env frames (train_mimo.py:3225-3226 `render=(rep == reps - 1)`), plus body 0's 480 px watch frame written as a JPEG every model step (`--live-view-every 1`, env.py:2077-2112) and a state.npz every model step (`--live-state-every 1`). macOS: the same calls through CGL; the README's measured 0.41 to 0.46 model steps per second on an RTX 4070 laptop is the only speed anchor (Apple GPU speed unmeasured). iOS: 5 renders x 8 bodies per model step at these sizes under one process, once a renderer exists.",
+    "severity": "must-change"
+   },
+   {
+    "topic": "gymnasium's render module is imported by MIMo and imports glfw at module level",
+    "file": "third_party/MIMo/mimo/mimo_infant/simulation/envs/mimo_env.py",
+    "line": 15,
+    "quote": "from gymnasium.envs.mujoco.mujoco_rendering import MujocoRenderer",
+    "meaning_for_port": "The installed gymnasium 1.2.3 (C:/Users/bhart/Documents/UEMA_devA_private/.venv_mimo/Lib/site-packages/gymnasium/envs/mujoco/mujoco_rendering.py:4) begins `import glfw`, and gymnasium's MujocoEnv constructs `self.mujoco_renderer = MujocoRenderer(` at construction (mujoco_env.py:98); MIMo re-creates it at every reset (mimo_env.py:696-699 `self.mujoco_renderer.close()\\n        self.mujoco_renderer = MujocoRenderer(`). BridgeEnv never calls env.render() (its eyes come from EyeRenderer), so whether MujocoRenderer opens a GL context at construction or only on first render decides whether a GLFW window is ever touched; the OffScreenViewer opens its context in `self._get_opengl_backend(width, height)` (mujoco_rendering.py:187) and the WindowViewer calls `glfw.init()` (line 345), both inside viewer classes, not in MujocoRenderer.__init__ as far as read (open question below). macOS: the glfw pip package imports on macOS; no change expected. iOS: there is no GLFW library, so `import glfw` fails at MIMo import time; the port must either stub mujoco_rendering or build MIMoEnv's sensing (touch, proprioception, vestibular, actuation) without gymnasium's MujocoEnv base class.",
+    "severity": "must-change"
+   },
+   {
+    "topic": "MIMo's own imports on the training path",
+    "file": "third_party/MIMo/mimo/mimo_infant/vision/vision.py",
+    "line": 15,
+    "quote": "import cv2",
+    "meaning_for_port": "mimo_env.py:20 `from mimo_infant.vision.vision import SimpleVision, Vision` imports vision.py at module level, whose lines 9-15 import matplotlib, matplotlib.pyplot, gymnasium's MujocoEnv, mujoco's MjrRect and cv2, so opencv-python-headless and matplotlib are imported on the training path even though BridgeEnv passes vision_params=None (env.py:1160) and mimo_env.py:505-506 then skips `self.vision_setup(self.vision_params)`. touch.py:19-22 imports trimesh, PointCloud, cachetools and `from matplotlib import pyplot as plt` (used only in plotting methods, e.g. touch.py:1896 `fig,ax = plt.subplots(figsize=(5, 5), dpi=100)`). stable_baselines3 appears only in illustrations.py:166-174 (`from stable_baselines3 import PPO as RL` inside a function) and is not imported by mimo_env.py; requirements.txt installs it because MIMo's own requirements.txt lists `stable-baselines3==2.7.1` and the README installs MIMo with `--no-deps`. macOS: all four (gymnasium, trimesh, matplotlib, opencv-python-headless) are ordinary pip installs; no code change. iOS: each is a binary module (cv2, matplotlib, trimesh's rtree, scipy) that the Python-on-iOS rules require as a framework: \"all binary modules in an iOS app must be dynamic libraries, contained in a framework with appropriate metadata\" (https://docs.python.org/3/using/ios.html, 3.15.2); the port can drop cv2 and matplotlib by patching MIMo's two module-level imports, since the bridge calls neither.",
+    "severity": "must-change"
+   },
+   {
+    "topic": "MIMo patch: what the release changes in MIMo",
+    "file": "third_party/MIMo/README.md",
+    "line": 15,
+    "quote": "- `mimo_infant/vision/vision.py`: SimpleVision renders each eye's own camera under\n  gymnasium 1.0 and later (both eyes rendered the free camera).",
+    "meaning_for_port": "The patch (MIMo_bridge_work.patch, 198 lines) touches actuation.py (PositionalModel locks joints through XML equality constraints), MIMo_metav2.xml (finger coupling tendons), benchmark.py (`dt = env.unwrapped.dt`), mimo_env.py (delay histories, exact k-step delays, `custom=custom_measurements`) and vision.py (`self.env.mujoco_renderer.camera_id = self.env.model.camera(camera).id`). None of these five changes is OS-specific; the vision.py change is to MIMo's SimpleVision, which the bridge does not use. README line 4-5: install `from the repository root with `pip install -e third_party/MIMo/mimo --no-deps``. macOS: identical. iOS: pip install -e has no meaning in embedded mode; the package must be vendored into the app.",
+    "severity": "no-change"
+   },
+   {
+    "topic": "mujoco Python package import on Darwin runs a subprocess",
+    "file": "C:/Users/bhart/Documents/UEMA_devA_private/.venv_mimo/Lib/site-packages/mujoco/__init__.py",
+    "line": 39,
+    "quote": "elif _SYSTEM == 'Darwin':\n  proc_translated = subprocess.run(\n      ['sysctl', '-n', 'sysctl.proc_translated'], capture_output=True).stdout",
+    "meaning_for_port": "This is the pinned package (mujoco==3.3.0, requirements.txt) as installed in the development venv, not release code. macOS: it is how the package refuses Rosetta; harmless on a native arm64 Python. iOS: platform.system() on iOS reports the Darwin kernel family (open question whether it returns 'Darwin' or 'iOS'); if 'Darwin', the import itself calls subprocess.run, which the Python iOS docs say will lock up or crash; the mujoco package would have to be rebuilt from source with this branch removed, and MuJoCo publishes no iOS wheel (PyPI simple index: mujoco-3.3.0 wheels are macosx_10_16_x86_64, macosx_11_0_arm64, manylinux_2_17 x86_64/aarch64 and win_amd64 only).",
+    "severity": "blocker"
+   },
+   {
+    "topic": "git subprocess calls on the training path",
+    "file": "Source/Python/mimo_bridge/train_mimo.py",
+    "line": 1776,
+    "quote": "git_commit = subprocess.check_output([\"git\", \"rev-parse\", \"--short\", \"HEAD\"], cwd=_repo,\n                                             text=True, stderr=subprocess.DEVNULL).strip()",
+    "meaning_for_port": "Inside `try: ... except Exception: git_commit = \"unknown\"` (1773-1779); env.py:58-63 mimo_commit() does the same with `subprocess.check_output([\"git\", \"-C\", root, \"rev-parse\", \"--short\", \"HEAD\"], text=True)`. macOS: git present or the except branch; no change. iOS: a subprocess attempt may lock up rather than raise, which no except clause catches; remove both calls.",
+    "severity": "must-change"
+   },
+   {
+    "topic": "ffmpeg and imageio use",
+    "file": "Source/Python/mimo_bridge/audio_adapter.py",
+    "line": 462,
+    "quote": "import imageio_ffmpeg\n        ffmpeg = imageio_ffmpeg.get_ffmpeg_exe()",
+    "meaning_for_port": "Line 465 runs `r = subprocess.run([ffmpeg, \"-y\", \"-loglevel\", \"error\", \"-i\", mp4_path,`; env.py:2066-2072 calls mux_wav_into_mp4 when a scheduled video (`--video-every-min 20.0`, `--video-seconds 30.0`) finishes, after `imageio.mimwrite(v[\"path\"], v[\"frames\"], fps=fps, quality=6)` (env.py:2057), all inside `except Exception:\\n                pass` (env.py:2073-2074). The per-model-step live frame uses `imageio.imwrite(part, frame, quality=7)` (env.py:2101) and save_views `imageio.imwrite(path, grid)` (env.py:2196). macOS: imageio_ffmpeg 0.6.0 ships `imageio_ffmpeg-0.6.0-py3-none-macosx_11_0_arm64.whl` (https://pypi.org/simple/imageio-ffmpeg/), so videos and the mux work unchanged. iOS: no ffmpeg wheel and no subprocess; the mp4 writer and the mux fail inside the except and the run continues without videos; the JPEG live frame needs only imageio's image plugin (binary pillow framework).",
+    "severity": "optional"
+   },
+   {
+    "topic": "Dashboard web server",
+    "file": "Source/Python/mimo_bridge/tools/development_dashboard.py",
+    "line": 3841,
+    "quote": "server=ThreadingHTTPServer(('127.0.0.1',args.port),Handler)",
+    "meaning_for_port": "Line 25 `from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer`: a standard-library server bound to the loopback address, started by `python -m mimo_bridge.tools.development_dashboard --port 8766` (README quick start step 5). Its viewer action spawns a process (line 1569-1577): `exe = repo / \".venv_mimo\" / \"Scripts\" / \"python.exe\"` with fallback `exe = Path(sys.executable)` and `flags = getattr(subprocess, \"CREATE_NEW_PROCESS_GROUP\", 0) | getattr(subprocess, \"DETACHED_PROCESS\", 0)`, running `mimo_bridge.tools.live_viewer`, which at live_viewer.py:173 calls `with mujoco.viewer.launch_passive(model, data, key_callback=on_key) as viewer:`. macOS: the server runs unchanged; the live viewer needs MuJoCo's launcher: \"On MacOS, `launch_passive` requires that the user script is executed via a special `mjpython` launcher\" (https://mujoco.readthedocs.io/en/stable/python.html), so the Popen line must run mjpython on macOS. iOS: ThreadingHTTPServer is threads, not processes, so a dashboard thread inside the app serving a WKWebView is possible; every subprocess action (viewer, test_runner launches, ability_rechecks) must go.",
+    "severity": "must-change"
+   },
+   {
+    "topic": "Model device selection and precision",
+    "file": "Source/Python/mimo_bridge/lem_model.py",
+    "line": 785,
+    "quote": "self.device = torch.device(device if torch.cuda.is_available() else \"cpu\")",
+    "meaning_for_port": "The saved command passes `--device cuda:0`; lines 798-800: `if self.device.type != \"cuda\":\\n            self.dtype = torch.float32\\n        self.use_amp = self.dtype != torch.float32 and self.device.type == \"cuda\"`; line 1876 `lr=lr or tr[\"lr\"], betas=tuple(tr[\"betas\"]), fused=(d.type == \"cuda\"))`. macOS: with no CUDA the model silently runs on CPU in float32; to use the Apple GPU this line must select \"mps\" (PyTorch docs: \"mps device enables high-performance training on GPU for macOS devices with Metal programming framework.\" and \"To get started, simply move your Tensor and Module to the mps device:\", https://docs.pytorch.org/docs/2.15/notes/mps.html), and every `.type == \"cuda\"` test (autocast at 2665 `with torch.amp.autocast(\"cuda\", enabled=self.use_amp, dtype=self.dtype):`, efference.py:755-760 `torch.cuda.synchronize(device)` guarded by `self.cuda`) stays off. The MPS limit \"The MPS backend does not support torch.float64 (torch.double) or torch.complex128 (torch.cdouble)\" conflicts with lem_model.py:2533-2534 `self._hand_current_angles = torch.as_tensor(angles, device=self.device, dtype=torch.float64)` and the hand kinematics' float64 use (lem/model/hand_response.py:117 `target_pose.to(device=goal.device,dtype=torch.float64)`), so an MPS build must keep those on CPU or in float32 (a numerical change to the hand goal path). iOS: PyPI lists torch 2.6.0 wheels for macOS arm64, Linux and Windows only (https://pypi.org/project/torch/2.6.0/#files: `torch-2.6.0-cp313-none-macosx_11_0_arm64.whl`, \"Released: Jan 29, 2025\"); no iOS wheel. ExecuTorch describes itself as \"PyTorch's solution for efficient AI inference on edge devices \u2014 from mobile phones to embedded systems.\" with platforms \"Android & iOS\" (https://docs.pytorch.org/executorch/stable/index.html); it is inference, so the training losses, the AdamW optimizer and the planner's gradient search (lem_model.py:1876 optimizer) have no supported runtime on iPhone.",
+    "severity": "blocker"
+   },
+   {
+    "topic": "CUDA JIT vision kernels fall back without nvcc",
+    "file": "Source/Python/tokenizer/modalities/vision_kernels.py",
+    "line": 268,
+    "quote": "except Exception as e:\n        log.warning(\"CUDA vision kernels unavailable (nvcc not found?): %s\", e)\n        _KERNEL_MODULE = None",
+    "meaning_for_port": "vision.py:82 `self._cuda_kernels = load_vision_kernels()` at tokenizer construction (frame_encoder.decode_with_model_tokenizer builds `TokenizerConfig(device=device)` with device \"cpu\", frame_encoder.py:208-224); the module docstring line 10: `Falls back to None if nvcc is unavailable, letting vision.py use the original path.` Lines 200-213 look for `r'C:\\Program Files\\NVIDIA GPU Computing Toolkit\\CUDA'` and MSVC. macOS and iOS: the compile attempt fails and the PyTorch path runs; no change, but on iOS the attempt itself calls `subprocess.run(['where', 'cl'], ...)` (vision_kernels.py:28) and must be short-circuited.",
+    "severity": "optional"
+   },
+   {
+    "topic": "lem_native C++ extension is MSVC-only and optional",
+    "file": "Source/Python/lem/native_ops.py",
+    "line": 3145,
+    "quote": "if not _setup_msvc_env():\n            log.warning(\"MSVC environment not available -- lem_native disabled\")\n            return None",
+    "meaning_for_port": "training_step.py:22-26 `try:\\n    from lem.native_ops import load_native_ops\\n    _native = load_native_ops()\\nexcept Exception:\\n    pass` and the Python fallback wrappers at native_ops.py:3288-3341 (scalar_item_gil_free, clip_grad_norm_gil_free, backward_gil_free). _setup_msvc_env (native_ops.py:25-31) runs `subprocess.run(['where', 'cl'], capture_output=True, check=True)` first. macOS: no cl.exe, returns None, Python fallbacks run; no change (the GIL-free sync it provides is lost, cost unmeasured). iOS: the subprocess call must be removed before the function is reached.",
+    "severity": "optional"
+   },
+   {
+    "topic": "Checkpoint loading maps tensors to the model device",
+    "file": "Source/Python/lem/training/checkpoint.py",
+    "line": 730,
+    "quote": "device_str = str(map_location) if map_location else \"cpu\"\n                flat = load_file(str(sf_path), device=device_str)",
+    "meaning_for_port": "lem_model.py:9494 passes `map_location=self.device` to the manager's load, and :9534 loads runtime_state.pt with `map_location=\"cpu\"`; optimizer.pt (138,060,045 bytes) is loaded at checkpoint.py:763-764 `torch.load(opt_path, weights_only=False,\\n                                           map_location=map_location)`. macOS: with self.device = cpu (or mps) the CUDA-saved tensors are remapped by map_location; no change expected. iOS: moot without torch.",
+    "severity": "no-change"
+   },
+   {
+    "topic": "Cross-process growth lock and OS file primitives",
+    "file": "Source/Python/mimo_bridge/env.py",
+    "line": 526,
+    "quote": "class _DirLock:\n    \"\"\"Cross-process lock made of an atomically created directory (works on Windows).\"\"\"",
+    "meaning_for_port": "Uses os.mkdir/os.rmdir only (env.py:536, 545): portable. explainer/refresh.py:27-32 already branches `if os.name == \"nt\": import msvcrt ... else: import fcntl`. macOS: no change. iOS: fcntl exists on the Unix core (Python docs: functions marked Availability: Unix \"are supported on macOS, iOS and Android, all of which build on a Unix core\"); no change.",
+    "severity": "no-change"
+   },
+   {
+    "topic": "Pen-art fonts named by Windows file names",
+    "file": "Source/Python/mimo_bridge/pen_art.py",
+    "line": 33,
+    "quote": "for name in (\"arialbd.ttf\", \"arial.ttf\", \"segoeuib.ttf\", \"DejaVuSans-Bold.ttf\"):",
+    "meaning_for_port": "Lines 34-38 try each with ImageFont.truetype inside `except OSError: continue` and end with `return ImageFont.load_default()`. The crib scene's wall and floor art (env.py:452-508) is drawn with these fonts at every world build; the saved command runs `--scene crib`. macOS and iOS: if none of the four files resolves, Pillow's default bitmap font draws the letters and numbers at a different size and shape than the training machine's Arial, so the rendered wall art the vision sense sees differs from the one the saved model was trained on (not a crash; a visual-input change whose size is unmeasured).",
+    "severity": "optional"
+   },
+   {
+    "topic": "Memory and card memory of the eight-world configuration",
+    "file": "README.md",
+    "line": 121,
+    "quote": "Measured on Oct 22, 2026 by resuming a clone for 100 model steps on a laptop RTX 4070 (8 GB): the graphics\n  card's memory peaked at 4,287 MB; Windows' committed memory (RAM plus page file) rose from 44.0 GB to 73.8 GB\n  while it ran, about 30 GB for the trainer and its eight world processes; it trained 0.41 to 0.46 model steps\n  per second (one model step = 50 ms of each of the eight bodies' simulated time); the whole run, loading\n  included, took 376 s.",
+    "meaning_for_port": "env.py:118-119 gives the per-world cost before the lite textures: `so one MIMo env costs about 3 GB of RAM and 16 workers do not fit\\n    in 32 GB (found in E5)`, and datasource.py:459 `del env                       # free the old MuJoCo model/data (400 MB arena each) BEFORE`. The checkpoint files total 1,321,000,000 bytes (model.safetensors 73,119,988; optimizer.pt 138,060,045; runtime_state.pt 489,337,136; episode_state.pt.gz 621,243,950). macOS: a Mac with at least this committed memory is the line (unified memory on Apple silicon also holds what the 4,287 MB of card memory held). iOS: the iPhone's RAM is below the measured 30 GB for trainer plus eight worlds; a single-world configuration (n_envs 1) does not continue the saved episode (see the continuation finding), and the in-process worlds' ~400 MB MuJoCo arenas each still apply.",
+    "severity": "blocker"
+   },
+   {
+    "topic": "Python embedding rules on iOS for every binary module",
+    "file": "docs.python.org (external)",
+    "line": 0,
+    "quote": "The iOS App Store requires that _all_ binary modules in an iOS app must be dynamic libraries, contained in a framework with appropriate metadata, stored in the `Frameworks` folder of the packaged app. There can be only a single binary per framework, and there can be no executable binary material outside the `Frameworks` folder.",
+    "meaning_for_port": "Source: https://docs.python.org/3/using/ios.html (header Python 3.15.2), which also states \"the only way you can use Python on iOS is in embedded mode\" and \"By default, when compiled for iOS, Python will be compiled with a minimum supported iOS version of 13.0.\" The release's training path imports numpy, scipy (hand_target_control.py:325 `from scipy.optimize import minimize, LinearConstraint`), torch, mujoco, trimesh/rtree, Pillow, imageio, PyYAML, safetensors, gymnasium's glfw binding and cv2/matplotlib through MIMo: each binary module needs its own framework, and torch and mujoco have no iOS builds at all (see those findings). resume.py:49 `args = [sys.executable] + saved[1:]` and :89 `return subprocess.call(args, cwd=REPO / \"Source\" / \"Python\")` launch the trainer as a second process, which the iOS docs forbid: the iOS entry point must call train_mimo.main(argv) in-process.",
+    "severity": "blocker"
+   },
+   {
+    "topic": "Live view and live state every model step (I/O on the training path)",
+    "file": "Source/Python/mimo_bridge/train_mimo.py",
+    "line": 3190,
+    "quote": "if args.live_view_every > 0 and step % args.live_view_every == 0:\n                _live[\"frame\"] = os.path.join(out, \"live\", \"frame.jpg\")",
+    "meaning_for_port": "The saved command sets `--live-view-every 1 --live-state-every 1 --live-view-body 0 --live-view-size 480`, so body 0's worker writes frame.jpg (env.py:2098-2102, write to a .part then os.replace) and state.npz (env.py:2145-2155) every model step, and reads `live/record.json` at most once a second (train_mimo.py:3196-3203). Worker-side failures are swallowed (datasource.py:411-418). macOS: ordinary files; no change. iOS: the files must go to the writable container; the dashboard reads them over HTTP from the same app.",
+    "severity": "optional"
+   },
+   {
+    "topic": "Checkpoint and companion writes, lineage registry path",
+    "file": "Source/Python/mimo_bridge/train_mimo.py",
+    "line": 2708,
+    "quote": "reg = os.path.join(out, \"..\", \"..\", \"weights_registry.jsonl\")",
+    "meaning_for_port": "save_ckpt writes lineage.json into the checkpoint folder and appends to a registry two levels above `out`, inside `try ... except OSError: log.warning(\"could not write lineage for %s\", p)` (2706-2712); the episode companion is written by continuation_state.save with each worker's pickled world streamed one at a time (datasource.py:573-590 iter_world_blobs). macOS: no change. iOS: `out` must be inside the app container so that `out/../..` is writable, or the OSError branch logs a warning each save.",
+    "severity": "optional"
+   }
+  ],
+  "numbers": [
+   {
+    "name": "world processes on the saved command",
+    "value": "8",
+    "unit": "processes (one BridgeEnv each, spawned with multiprocessing 'spawn')",
+    "file": "weights/b1_continue_B1K_skip13_492800/run/command.json",
+    "quote": "--n-envs 8"
+   },
+   {
+    "name": "eye render size",
+    "value": "256",
+    "unit": "pixels per side, per eye, two eyes",
+    "file": "Source/Python/mimo_bridge/env.py",
+    "quote": "sensory_delay: int = 0, motor_delay: int = 0, vision: bool = True, eye_size: int = 256,"
+   },
+   {
+    "name": "fovea render size",
+    "value": "288",
+    "unit": "pixels per side over 24 degrees, two foveae",
+    "file": "weights/b1_continue_B1K_skip13_492800/run/command.json",
+    "quote": "--fovea-fov 24.0 --fovea-size 288"
+   },
+   {
+    "name": "ring render field",
+    "value": "150",
+    "unit": "degrees, rendered at the eye size (256 px) through the wide renderer",
+    "file": "weights/b1_continue_B1K_skip13_492800/run/command.json",
+    "quote": "--ring-fov 150.0 --ring-size 128"
+   },
+   {
+    "name": "watch camera / offscreen buffer size",
+    "value": "480",
+    "unit": "pixels per side (offwidth/offheight = max(480, eye_size))",
+    "file": "Source/Python/mimo_bridge/env.py",
+    "quote": "off = max(480, eye_size)   # watch_cam videos render at 480"
+   },
+   {
+    "name": "env frames per model step",
+    "value": "5",
+    "unit": "env frames of 10 ms (frame_skip 2 x 5 ms timestep); eyes rendered on the last one",
+    "file": "Source/Python/mimo_bridge/train_mimo.py",
+    "quote": "2, so one env step is 0.005 x 2 = 0.010000 s and one model step at --action-repeat 5 is\n0.050000 s - exact, not approximate."
+   },
+   {
+    "name": "live frame and live state cadence",
+    "value": "1",
+    "unit": "model step (a 480 px JPEG and a state.npz from body 0 every model step)",
+    "file": "weights/b1_continue_B1K_skip13_492800/run/command.json",
+    "quote": "--live-view-every 1 --live-state-every 1 --live-view-body 0 --live-view-size 480"
+   },
+   {
+    "name": "committed memory during the measured 100-step resume",
+    "value": "44.0 to 73.8",
+    "unit": "GB (RAM plus page file), about 30 GB for the trainer and its eight world processes",
+    "file": "README.md",
+    "quote": "Windows' committed memory (RAM plus page file) rose from 44.0 GB to 73.8 GB\n  while it ran, about 30 GB for the trainer and its eight world processes"
+   },
+   {
+    "name": "graphics card memory peak",
+    "value": "4,287",
+    "unit": "MB on a laptop RTX 4070 (8 GB)",
+    "file": "README.md",
+    "quote": "the graphics\n  card's memory peaked at 4,287 MB"
+   },
+   {
+    "name": "measured training speed",
+    "value": "0.41 to 0.46",
+    "unit": "model steps per second, 8 bodies, RTX 4070 laptop",
+    "file": "README.md",
+    "quote": "it trained 0.41 to 0.46 model steps\n  per second"
+   },
+   {
+    "name": "MuJoCo model/data arena per world",
+    "value": "400",
+    "unit": "MB each",
+    "file": "Source/Python/mimo_bridge/datasource.py",
+    "quote": "del env                       # free the old MuJoCo model/data (400 MB arena each) BEFORE"
+   },
+   {
+    "name": "saved checkpoint files",
+    "value": "73,119,988 / 138,060,045 / 489,337,136 / 621,243,950",
+    "unit": "bytes: model.safetensors / optimizer.pt / runtime_state.pt / episode_state.pt.gz (ls of weights/.../ckpt_step_494025)",
+    "file": "README.md",
+    "quote": "the complete saved state of a model at model step\n494,025 (one model step is 50 ms of simulated time: 6.9 hours of each of eight bodies' lives), 1.68 GiB"
+   },
+   {
+    "name": "model parameters",
+    "value": "18,131,745",
+    "unit": "parameters (192-number tokens, 4 transformer blocks)",
+    "file": "README.md",
+    "quote": "The saved model is small (18,131,745 parameters: 192-number tokens, 4\ntransformer blocks"
+   },
+   {
+    "name": "pinned torch build",
+    "value": "2.6.0+cu124",
+    "unit": "PyPI wheel; macOS wheel is torch-2.6.0-cp313-none-macosx_11_0_arm64.whl (https://pypi.org/project/torch/2.6.0/#files, Released: Jan 29, 2025); no iOS wheel",
+    "file": "requirements.txt",
+    "quote": "pip install torch==2.6.0 --index-url https://download.pytorch.org/whl/cu124"
+   },
+   {
+    "name": "pinned mujoco",
+    "value": "3.3.0",
+    "unit": "PyPI wheels: macosx_10_16_x86_64, macosx_11_0_arm64, manylinux_2_17 x86_64/aarch64, win_amd64 (https://pypi.org/simple/mujoco/); no iOS wheel",
+    "file": "requirements.txt",
+    "quote": "mujoco==3.3.0"
+   },
+   {
+    "name": "pinned gymnasium",
+    "value": "1.2.3",
+    "unit": "its mujoco_rendering.py imports glfw at module level",
+    "file": "requirements.txt",
+    "quote": "gymnasium==1.2.3"
+   },
+   {
+    "name": "Python version of the release",
+    "value": "3.13",
+    "unit": "README requirement; iOS Python minimum deployment target 13.0 per docs.python.org/3/using/ios.html",
+    "file": "README.md",
+    "quote": "- Python 3.13 (developed with 3.13.3 on Windows 11)."
+   },
+   {
+    "name": "MuJoCo renderer OpenGL requirement",
+    "value": "OpenGL 1.5 compatibility profile",
+    "unit": "https://mujoco.readthedocs.io/en/stable/programming/rendering.html",
+    "file": "external",
+    "quote": "MuJoCo uses OpenGL 1.5 in the compatibility profile with the ARB_framebuffer_object and ARB_vertex_buffer_object extensions."
+   }
+  ],
+  "open_questions": [
+   "Does gymnasium 1.2.3's MujocoRenderer.__init__ (mujoco_env.py:98, re-created at every MIMo reset, mimo_env.py:697-699) open a GL context at construction, or only when a viewer is first requested? The OffScreenViewer and WindowViewer classes open theirs in their own constructors (mujoco_rendering.py:187 and :345); MujocoRenderer.__init__ itself was not read. If it is lazy, no GLFW window is ever opened on the training path on any OS.",
+   "Does platform.system() on an iOS build of Python return 'Darwin' (which would route mujoco/__init__.py:39-41 into the sysctl subprocess call at import) or another string? The mujoco package has branches only for 'Linux', 'Windows' and 'Darwin' (gl_context.py:27-32).",
+   "Apple's own statement that iOS provides no desktop OpenGL (only OpenGL ES, deprecated in favour of Metal) could not be quoted: https://developer.apple.com/documentation/opengles returned only a title. The claim that MuJoCo's OpenGL 1.5 compatibility-profile renderer cannot run on iOS rests on MuJoCo's docs naming context libraries only for Windows, macOS and Linux.",
+   "Whether mmap.mmap(-1, size, name, access=...) (shm_writer.py:39, lem/action/shm.py:40-44) raises on Darwin: not tested; it is off the training path either way.",
+   "Whether psutil 7.2.2 has a macOS arm64 wheel was not fetched (machine_stats.py guards the import; auto_n_envs does not).",
+   "Which torch operations in the model, planner and losses are unsupported on MPS beyond float64 (lem_model.py:2533-2534, hand_response.py:117): untested; the MPS notes give PYTORCH_ENABLE_MPS_FALLBACK=1 as the per-op CPU fallback but state it does not help float64.",
+   "What training on iPhone would even mean given the measured resource line (about 30 GB committed for trainer plus eight worlds; 4,287 MB of card memory): a one-body eval-only run (SingleEnvSource, --eval-only --episode-continuation fresh) is the configuration the current code permits in one process; whether the planner's gradient search alone (no weight updates) can be expressed for ExecuTorch (inference-only) was not examined.",
+   "The MuJoCo changelog was read only to character 100,000 of 358,352; no iOS, Swift or Metal entry appeared in that part. The third-party App Store app 'iMuJoCo' (search result) shows MuJoCo physics can run on iOS through a Swift/Metal wrapper, but it is not an official MuJoCo target and does not carry the Python bindings.",
+   "Font availability on macOS for pen_art.py:33 (arialbd.ttf, arial.ttf, segoeuib.ttf, DejaVuSans-Bold.ttf): unknown; if none resolves, the crib's wall art the vision sense sees changes from the training machine's rendering by an unmeasured amount."
+  ]
+ }
+]

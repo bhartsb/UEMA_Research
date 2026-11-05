@@ -121,7 +121,8 @@ Items 5 and 6 need environment work before the measurement; building that scene 
 
 - Python 3.13 (developed with 3.13.3 on Windows 11).
 - An NVIDIA graphics card with a CUDA 12.4 capable driver for the pinned `torch==2.6.0+cu124`
-  build. Training was developed on an 8 GB card.
+  build. Training was developed on an 8 GB card. A Mac with Apple silicon: **Running on macOS (Apple
+  silicon)** below (its own requirements file and device).
 - Measured on Oct 22, 2026 by resuming a clone for 100 model steps on a laptop RTX 4070 (8 GB): the graphics
   card's memory peaked at 4,287 MB; Windows' committed memory (RAM plus page file) rose from 44.0 GB to 73.8 GB
   while it ran, about 30 GB for the trainer and its eight world processes; it trained 0.41 to 0.46 model steps
@@ -167,6 +168,54 @@ repository's saved state and input files, the new folder for everything the run 
 explains the values. Its six largest files (weights, optimizer, runtime state, episode companion, latent-body
 state and trajectory; 6 to 621 MB) are not in this Git repository: `python fetch_weights.py --accept-license` downloads them from
 the Hugging Face repository `mml-user/uema-research-weights` (step 4 of the quick start).
+
+## Running on macOS (Apple silicon)
+
+The macOS port is work in progress on the branch `feature/apple-port-2026-11-04`. What it must do is stated, as
+requirements with pass lines, in [UEMA on Apple platforms: specification](docs/UEMA_APPLE_PORT_SPECIFICATION_2026-11-04.html) (target A, section 3); each
+change is one work item of [UEMA on Apple platforms: implementation plan](docs/UEMA_APPLE_PORT_IMPLEMENTATION_PLAN_2026-11-04.html), whose section 9 (Status) states
+which items have landed on the branch. Nothing in this section was run on a Mac: every Python change is verified
+on Windows with the CPU device standing in for the Apple GPU, with one world, never eight (the plan's section 3).
+
+**Install.** Use a native arm64 Python 3.13 (`python3 -c "import platform; print(platform.machine())"` prints
+`arm64`; MuJoCo refuses an x86_64 Python under Rosetta at import). From the repository root:
+
+```
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -r requirements-macos.txt
+pip install -e third_party/MIMo/mimo --no-deps
+```
+
+`requirements-macos.txt` holds the 21 pins of `requirements.txt` plus torch 2.6.0 (22 in all), torch from the
+default index since the macOS wheel has no CUDA; its header names the macOS wheels of torch, mujoco, opencv, scipy and
+scikit-learn and the install floor, macOS 13.0 (set by the opencv wheel), measured on Nov 4, 2026 with `pip download`
+(one wheel per pin, 22 wheels).
+
+**Device.** The trainer runs on the Apple GPU through torch's `mps` device or on the CPU. `--device auto` (cuda,
+then mps, then cpu; a named device that is unavailable stops with a message naming it) is the plan's work item WI-2
+and is pending until that item lands: the plan's section 9 records it. On `mps`, torch has no float64, so the
+float64 sites compute on the CPU and hand the model float32 (the plan's WI-5), and the model runs in float32 without
+autocast (WI-3); both are pending until they land (section 9). The macOS floor for `mps` on torch 2.6.0 is unverified
+(the header of `requirements-macos.txt` gives the two published floors).
+
+**Resuming the released checkpoint.** The saved episode companion (`episode_state.pt.gz`, 621,243,950 bytes) was
+written by a run on `cuda:0` and carries that device's random-number state. A resume on `cpu` or `mps` cannot
+restore it and stops with `exact continuation requires the saved execution device`. `--rng-continuation reseed`
+(the plan's work item WI-11, pending until it lands; section 9) drops that state, logs `cuda_rng dropped`, and calls
+`torch.manual_seed` with the first 8 bytes of the SHA-256 of the dropped bytes: the resume is repeatable from the same
+companion, and every later random draw differs from the saved run's. The port's verification runs use one world
+(`--n-envs 1`, the plan's WI-24); eight worlds on a Mac are unmeasured.
+
+**The live viewer.** The dashboard's Live tab opens a window on a training body through MuJoCo's passive viewer
+(`mimo_bridge.tools.live_viewer`). On macOS that program must be started with `mjpython`, the launcher the mujoco
+wheel installs beside the venv's python (`.venv/bin/mjpython`), because the viewer draws on the main thread; the
+Live tab's copy-and-paste line names it on macOS. Training, the dashboard and the explainer need no `mjpython`.
+
+**Memory and speed.** On Windows the trainer and its eight world processes added about 30 GB of committed memory
+(44.0 GB to 73.8 GB; Requirements above) at 0.41 to 0.46 model steps per second. The Mac figures are unmeasured:
+no release file holds a Mac run; the plan's section 10 states that the Mac's speed is unmeasured and that no work item
+measures it, and no work item measures the trainer's memory on a Mac.
 
 ## Starting the dashboard and the explainer
 
@@ -237,6 +286,17 @@ run, the result, and the commit of the code that produced it.
 `branches/` holds one patch per development branch that changed this code after the release's
 source commit and is not part of it, with a table in `branches/README.md`. They are not applied.
 
+## Apple Swift port (apple/)
+
+`apple/` holds UEMAKit, a Swift package, and UEMA Mind, a SwiftUI app for macOS 14 and iOS 17 or later. Together
+they run one MIMo body in MuJoCo with the released forward model and planner, without Python and without learning:
+the weights stay frozen and the only gradient is the planner's with respect to the command. The requirements are
+target B of [UEMA on Apple platforms: specification](docs/UEMA_APPLE_PORT_SPECIFICATION_2026-11-04.html) (section 4); the work items, their states and the
+sequence to build it on a Mac are in [UEMA on Apple platforms: implementation plan](docs/UEMA_APPLE_PORT_IMPLEMENTATION_PLAN_2026-11-04.html) (sections 5 to 9).
+Nothing under `apple/` was compiled: this repository was built on Windows 11 with no Swift toolchain and no Xcode,
+so the highest state a Swift item reaches here is BUILT (uncompiled) until its first build on a Mac. `apple/README.md`
+is the package's own page.
+
 ## Known limits of this release
 
 - Many tools under `mimo_bridge/tools` and many tests under `mimo_bridge/tests` carry paths
@@ -248,3 +308,12 @@ source commit and is not part of it, with a table in `branches/README.md`. They 
   (checked on Oct 22, 2026 by recording every file they open from a clone in another folder).
 - The included checkpoint's run records (`weights/.../run/args.json`, `command.json`, logs) carry
   the development machine's absolute paths.
+- The macOS port (**Running on macOS** above) is verified on Windows with the CPU device standing in for
+  `mps`, one world; no release file holds a measurement from a Mac (speed, memory, which operators `mps` lacks,
+  whether bf16 autocast on the Apple GPU rounds as CUDA bf16 does). `mps` runs float32 without autocast (the plan's
+  WI-3, pending until it lands).
+- The released episode companion holds a CUDA random-number state: a resume on `cpu` or `mps` needs
+  `--rng-continuation reseed` once it lands, after which later random draws differ from the saved run's; exact
+  continuation off CUDA is out of scope (the specification's section 6).
+- Nothing under `apple/` was compiled (no Swift toolchain on the build machine). MuJoCo 3.3.0 has no official iOS
+  build; whether it compiles with the plan's flags is unverified until the first build on a Mac (the plan's WI-18).

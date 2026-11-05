@@ -12,6 +12,7 @@ from dataclasses import is_dataclass, fields
 import gzip
 import hashlib
 import json
+import logging
 import os
 from pathlib import Path
 import random
@@ -37,6 +38,95 @@ CPU_DATA_NAMES = frozenset({'token_ring', '_token_ring_bodies'})
 # held, the tracker was built empty, and the run's 2 lived windows read 0 with no warning.
 HANDOFF_NAMES = frozenset({'_entity_self_saved', '_entity_self_saved_names'})
 REPORT_WINDOW_NAMES = frozenset({'_syn_window', '_syn_z_window', '_syn_live', '_syn_live_regimes', '_syn_following'})
+
+# HOW A SAVED CUDA RANDOM-NUMBER STATE CONTINUES ON ANOTHER DEVICE (Apple port work item WI-11, 2026-11-04).
+# capture_learner stores torch.cuda.get_rng_state_all() (one uint8 tensor per CUDA device, 16 bytes each on
+# torch 2.6) when the model ran on CUDA, else None. A resume on a device without CUDA (cpu, mps) cannot
+# put that state anywhere, so restore_learner used to stop with "exact continuation requires the saved
+# execution device": the released checkpoint's companion (episode_state.pt.gz, 621,243,950 bytes, written by
+# a cuda:0 run) could not resume on a Mac. The trainer flag --rng-continuation picks one of two policies:
+#   exact  (default) - a saved CUDA state on a non-CUDA device is an error, as before;
+#   reseed           - the CUDA state is dropped, a warning says so, and torch.manual_seed is called with a
+#                      seed computed from the dropped bytes (cuda_rng_seed), so the resume is repeatable from
+#                      the same companion while every later random draw differs from the saved run's.
+# On a CUDA device both policies restore the saved state exactly. The policy object is passed in by the
+# caller (rng_continuation turns the flag's word into one); nothing here holds a module-wide default state.
+RNG_CONTINUATION_MODES = ('exact', 'reseed')
+CUDA_RNG_DROPPED = 'cuda_rng dropped'
+
+
+def cuda_rng_seed(cuda_state):
+    """The seed a dropped CUDA random-number state becomes.
+
+    Inputs: cuda_state, the list torch.cuda.get_rng_state_all() wrote (one uint8 tensor per CUDA device).
+    Operation: the tensors' bytes are concatenated in list order and hashed with sha256; the seed is the
+    first 8 bytes of the digest read as an unsigned big-endian integer (0 to 2**64 - 1, inside the range
+    torch.manual_seed accepts).
+    Outputs: (seed, hexdigest, nbytes) - the integer seed, the 64-character digest and the byte count hashed."""
+    digest=hashlib.sha256()
+    nbytes=0
+    for v in cuda_state:
+        block=v.detach().cpu().contiguous().numpy().tobytes()
+        digest.update(block);nbytes+=len(block)
+    hexdigest=digest.hexdigest()
+    return int.from_bytes(bytes.fromhex(hexdigest)[:8],'big'),hexdigest,nbytes
+
+
+class ExactRngContinuation:
+    """The saved CUDA random-number state is restored as saved, or the resume stops.
+
+    adopt(cuda_state, device, source) -> the list to hand torch.cuda.set_rng_state_all (every tensor moved
+    to cpu, as that function wants), or None when nothing was saved. A saved state with a device whose type
+    is not 'cuda' raises ValueError('exact continuation requires the saved execution device')."""
+    name='exact'
+
+    def adopt(self,cuda_state,device,source='cuda_rng'):
+        if cuda_state is None:return None
+        if torch.device(device).type!='cuda':
+            raise ValueError('exact continuation requires the saved execution device')
+        return [v.cpu() for v in cuda_state]
+
+
+class ReseedRngContinuation:
+    """The saved CUDA random-number state is restored where it can be and otherwise replaced by a seed.
+
+    adopt(cuda_state, device, source): with no saved state -> None; on a CUDA device -> the list for
+    torch.cuda.set_rng_state_all, exactly as ExactRngContinuation; on any other device -> torch.manual_seed
+    (the CPU generator and every accelerator generator torch finds) is called with cuda_rng_seed's seed, one
+    warning line is logged that starts with "<source>: cuda_rng dropped" and names the generator count,
+    the bytes hashed, the digest, the seed, and that later random draws differ from the saved run's, and
+    None is returned so the caller restores nothing on CUDA. The logger is injected (default: this module's)."""
+    name='reseed'
+
+    def __init__(self,log=None):
+        self.log=logging.getLogger('mimo_bridge.continuation_state') if log is None else log
+
+    def adopt(self,cuda_state,device,source='cuda_rng'):
+        if cuda_state is None:return None
+        if torch.device(device).type=='cuda':return [v.cpu() for v in cuda_state]
+        seed,hexdigest,nbytes=cuda_rng_seed(cuda_state)
+        torch.manual_seed(seed)
+        # torch 2.6.0's torch.random.manual_seed seeds, in this order: every CUDA generator, the MPS generator,
+        # every XPU generator, then the CPU default generator; the seed is the first 8 bytes of the sha256.
+        self.log.warning('%s: %s: the saved CUDA random-number state (%d generator state tensor(s), %d bytes, '
+                         'sha256 %s) cannot be restored on %s; torch.manual_seed(%d) seeded the CPU default '
+                         'generator and the CUDA, MPS and XPU generators this process has from the first 8 bytes '
+                         'of that sha256; every later random draw differs from the saved run\'s',
+                         source,CUDA_RNG_DROPPED,len(cuda_state),nbytes,hexdigest,torch.device(device),seed)
+        return None
+
+
+def rng_continuation(choice=None,log=None):
+    """The policy object for a --rng-continuation choice.
+
+    Inputs: choice - None (exact), 'exact', 'reseed', or an object that already has adopt(); log - the
+    logger a reseed warning goes to (None: this module's), read only when 'reseed' builds a new policy here;
+    an object passed as choice keeps the logger it was built with.
+    Outputs: ExactRngContinuation, ReseedRngContinuation, or the given object. Any other word raises ValueError."""
+    if choice is None or choice=='exact':return ExactRngContinuation()
+    if choice=='reseed':return ReseedRngContinuation(log)
+    if hasattr(choice,'adopt'):return choice
+    raise ValueError(f'--rng-continuation takes one of {RNG_CONTINUATION_MODES}, not {choice!r}')
 
 # long_path lives beside the move resolver, which needs it without importing torch; the name
 # stays importable from here for every existing caller.
@@ -186,7 +276,9 @@ def capture_learner(model, *, include_replay=True, copy_state=True):
         numpy_rng=np.random.get_state(),python_rng=random.getstate())
 
 
-def restore_learner(model,state):
+def restore_learner(model,state,rng=None):
+    """Put a captured learner state back on model. rng: the random-number continuation policy for a saved
+    CUDA state (rng_continuation: None or 'exact' refuses it off CUDA; 'reseed' drops it and reseeds)."""
     for k,v in state['data'].items():
         # companions written before 2026-09-20 carry the hand-off names; skipping them on
         # the way in as well as on the way out keeps an older companion from clearing them
@@ -213,9 +305,8 @@ def restore_learner(model,state):
         model.placeholders._generators[k]._buf=tree(v,model.device)
     model.noise_rng.set_state(state['noise_rng'].cpu())
     torch.set_rng_state(state['torch_rng'].cpu())
-    if state['cuda_rng'] is not None:
-        if model.device.type!='cuda':raise ValueError('exact continuation requires the saved execution device')
-        torch.cuda.set_rng_state_all([v.cpu() for v in state['cuda_rng']])
+    cuda=rng_continuation(rng).adopt(state['cuda_rng'],model.device,source='restore_learner')
+    if cuda is not None:torch.cuda.set_rng_state_all(cuda)
     np.random.set_state(state['numpy_rng']);random.setstate(state['python_rng'])
 
 

@@ -8,22 +8,60 @@ kernels) -- all tensor ops go through ATen.  The key win is releasing the GIL
 during blocking operations (cudaStreamSynchronize in clip_grad_norm) and
 eliminating Python loop overhead in gather/context/imagination helpers.
 
-Falls back to pure-Python implementations if compilation fails.
+Falls back to pure-Python implementations if compilation fails, and at once,
+with no subprocess started, when ``native_build_platform_block()`` names a
+missing part (sys.platform not 'win32', or torch.cuda.is_available() False).
 """
 
 import logging
 import os
+import sys
 import time
 
 log = logging.getLogger(__name__)
 
 # ---------------------------------------------------------------------------
-# MSVC setup -- reuse the same auto-detect from vision_kernels.py
+# Platform gate -- decided before any subprocess runs
+# ---------------------------------------------------------------------------
+
+
+def native_build_platform_block():
+    """Name the reason the lem_native extension cannot be built on this host.
+
+    Inputs: ``sys.platform`` (the interpreter's platform tag, ``'win32'`` on
+    Windows, ``'darwin'`` on macOS) and ``torch.cuda.is_available()`` (True when
+    the CUDA runtime finds a device).
+    Operation: the build needs cl.exe (MSVC; the probe in ``_setup_msvc_env``
+    runs the Windows command ``where cl``) and the CUDA driver library
+    (CPP_SOURCE includes ``<cuda.h>`` and ``load_inline`` links ``cuda.lib``).
+    Each check is a plain comparison; no subprocess runs here.
+    Output: ``''`` when the platform is win32 and CUDA is available, otherwise
+    one sentence naming the missing part, which the loader logs before it
+    returns None and the Python fallbacks take over.
+    """
+    if sys.platform != 'win32':
+        return (f"sys.platform is {sys.platform!r}, not 'win32' "
+                "(the MSVC probe and the build run on Windows only)")
+    import torch
+    if not torch.cuda.is_available():
+        return ("torch.cuda.is_available() is False "
+                "(the extension includes <cuda.h> and links cuda.lib)")
+    return ''
+
+
+# ---------------------------------------------------------------------------
+# MSVC setup -- the same auto-detect as vision_kernels.py
 # ---------------------------------------------------------------------------
 
 
 def _setup_msvc_env():
-    """Auto-detect MSVC via vswhere.exe and configure PATH/INCLUDE/LIB."""
+    """Auto-detect MSVC via vswhere.exe and configure PATH/INCLUDE/LIB.
+
+    Returns False at once off win32: ``where``, vswhere.exe and vcvarsall.bat
+    are Windows programs, so no subprocess is started elsewhere.
+    """
+    if sys.platform != 'win32':
+        return False
     import subprocess
     try:
         subprocess.run(['where', 'cl'], capture_output=True, check=True)
@@ -3142,11 +3180,17 @@ def load_native_ops():
     _LOAD_ATTEMPTED = True
 
     try:
+        block = native_build_platform_block()
+        if block:
+            log.info("lem_native disabled, Python fallbacks in use: %s", block)
+            return None
+
         if not _setup_msvc_env():
             log.warning("MSVC environment not available -- lem_native disabled")
             return None
 
-        log.info("Compiling lem_native C++ extension (first run only, ~30-60s)...")
+        log.info("Compiling lem_native C++ extension (first run only; "
+                 "later runs load the cached build)...")
 
         from torch.utils.cpp_extension import load_inline
 
@@ -3326,7 +3370,24 @@ def tensor_to_list_gil_free(tensor):
 
 def clip_grad_norm_gil_free(parameters, max_norm, norm_type=2.0,
                             error_if_nonfinite=False):
-    """clip_grad_norm_ with GIL release.  Falls back to PyTorch if C++ unavailable."""
+    """clip_grad_norm_ with GIL release.  Falls back to PyTorch if C++ unavailable.
+
+    Inputs: ``parameters`` (tensors whose ``.grad`` is read and scaled in place),
+    ``max_norm`` (the largest total norm allowed), ``norm_type`` (the p of the
+    p-norm, 2.0 by default) and ``error_if_nonfinite``.
+    Operation: the total p-norm over every gradient, then every gradient times
+    min(1, max_norm / (total + 1e-6)), in place; the same rule as
+    ``torch.nn.utils.clip_grad_norm_``.
+    Output: the total norm before clipping, a 0-dim tensor on the gradients'
+    device.
+
+    The fallback passes ``foreach=None``: torch then takes its foreach kernels on
+    cuda and cpu tensors and its per-tensor path elsewhere. ``foreach=True`` raises
+    RuntimeError on a device without foreach kernels (torch 2.6.0
+    ``torch/nn/utils/clip_grad.py``, ``_get_total_norm``: mps is not in
+    ``_get_foreach_kernels_supported_devices()``), which is the Apple port's model
+    device.
+    """
     mod = load_native_ops()
     if mod is not None:
         return mod.clip_grad_norm_gil_free(
@@ -3335,7 +3396,7 @@ def clip_grad_norm_gil_free(parameters, max_norm, norm_type=2.0,
         import torch
         return torch.nn.utils.clip_grad_norm_(
             parameters, max_norm, norm_type=norm_type,
-            error_if_nonfinite=error_if_nonfinite, foreach=True)
+            error_if_nonfinite=error_if_nonfinite, foreach=None)
 
 
 def backward_gil_free(loss, retain_graph=False, create_graph=False):

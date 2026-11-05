@@ -1,0 +1,2349 @@
+[
+ {
+  "summary": "Precedents found for an iOS/macOS port of a MuJoCo-plus-learning project. (1) MuJoCo itself: the official C library and Python wheels run on macOS Apple Silicon (PyPI 3.17.0 ships macosx_11_0_arm64 wheels; no iOS wheel exists); the official docs list only Windows, Linux and macOS. iOS has two precedents: the shipping App Store app iMuJoCo (MuJoCo physics on iPhone/iPad with Swift UI and Metal rendering, UDP state streaming, iOS 26.0+, promised Apache 2.0 source not yet published) and liuliu/swift-mujoco (Swift Package, \"should work on macOS, Linux and iOS\", GL context only on macOS/Linux, pinned at MuJoCo 2.3.0). (2) GPU physics on Apple: MJX-JAX officially lists Apple Silicon, but Apple's jax-metal is \"experimental\", its last release was over a year old as of Jan 2026, and forum users report it broken for MJX as of Sep 2025 and Apr 2026; MJX-Warp targets NVIDIA only; a third-party MJX-MLX port exists with 26.7 steps/sec on simple scenes and only cartpole/pendulum validation. (3) On-device training on iPhone: Apple Core ML MLUpdateTask (iOS 13+, updates a compiled updatable model from labeled batches, classifier sample); MLX Swift MNISTTrainer (trains a LeNet on iOS and macOS, Xcode-only Metal shader build); ExecuTorch training is \"experimental\", backward graph captured ahead of time, loss embedded in the model, backend integration \"work in progress\", validated only on Android in its paper. (4) macOS Apple-Silicon training throughput: MuJoCo docs measure CPU MuJoCo at 650K single-humanoid steps/sec on an M3 Max versus 950K for MJX-JAX on an A100 (batch 8192) and 1.8M on a 64-core AMD CPU; the arXiv paper 2501.14925 finds \"a significant performance gap between Apple Silicon and NVIDIA GPUs\" for LLM training; Stable-Baselines3's MPS issue reports CPU faster than MPS for RL and SB3 \"not compatible with MPS\" (2022, maintainers later pointed to SBX/JAX); PyTorch MPS backend is \"in the beta phase\" and supports custom Metal kernels, but no tutorial exists for porting custom CUDA kernels. (5) Rendering: iMuJoCo uses Metal; Apple's RealityRenderer bridges RealityKit scenes into a Metal workflow; no open-source RealityKit/SceneKit MuJoCo visualizer was found. (6) Other engines: PhysX 5.1 got an ios64 build preset via a community PR (closed unmerged, maintained in the O3DE fork; CUDA-only systems unsupported on iOS); Bullet re-hosts to iOS as plain C++. Code-side facts: UEMA_Research pins torch 2.6.0+cu124 and mujoco 3.3.0, hard-codes cuda:0 as capture and training device, calls torch.cuda.current_stream().synchronize() in the training step, builds a pure-C++ (no CUDA kernels) load_inline extension that auto-detects MSVC, and documents that the D3D12/CUDA vision transport is Windows/Unreal-only and excluded; no \"mps\" device string appears anywhere in Source.",
+  "findings": [
+   {
+    "claim": "A shipping App Store app already runs MuJoCo physics on iPhone and iPad with Swift UI and Metal rendering.",
+    "url": "https://apps.apple.com/app/id6759394574",
+    "quote": "iMuJoCo brings the MuJoCo physics engine to iPhone and iPad with native Swift UI and Metal rendering.",
+    "page_date": "Version 0.1.3 dated Apr 7 (year not shown on page)",
+    "confidence": "documented"
+   },
+   {
+    "claim": "iMuJoCo streams simulation state over UDP so an external program can drive the robot model, a pattern a phone client for the trainer could reuse.",
+    "url": "https://apps.apple.com/app/id6759394574",
+    "quote": "Stream simulation state over UDP and control robot models in real-time from external applications.",
+    "page_date": "Version 0.1.3 dated Apr 7 (year not shown on page)",
+    "confidence": "documented"
+   },
+   {
+    "claim": "iMuJoCo requires iOS 26.0 or later on iPhone and macOS 26.0 with an M1 or later on Mac.",
+    "url": "https://apps.apple.com/app/id6759394574",
+    "quote": "Requires iOS 26.0 or later.",
+    "page_date": "Version 0.1.3 dated Apr 7 (year not shown on page)",
+    "confidence": "documented"
+   },
+   {
+    "claim": "iMuJoCo's source is promised under Apache 2.0 but no public repository was found.",
+    "url": "https://apps.apple.com/app/id6759394574",
+    "quote": "iMuJoCo will be open-sourced under the Apache 2.0 license.",
+    "page_date": "Version 0.1.3 dated Apr 7 (year not shown on page)",
+    "confidence": "documented"
+   },
+   {
+    "claim": "liuliu/swift-mujoco is a Swift Package binding of MuJoCo that its README says should work on iOS, but its OpenGL context is macOS/Linux only, so iOS rendering must be written separately.",
+    "url": "https://github.com/liuliu/swift-mujoco",
+    "quote": "MuJoCo for Swift should work on macOS, Linux and iOS. The `GLContext` is only available on macOS and Linux.",
+    "page_date": "not shown (175 commits, no release date on page)",
+    "confidence": "documented"
+   },
+   {
+    "claim": "swift-mujoco's Swift Package Manager version is 2.3.0, far behind the mujoco==3.3.0 the project pins.",
+    "url": "https://github.com/liuliu/swift-mujoco",
+    "quote": ".package(name: \"MuJoCo\", url: \"https://github.com/liuliu/swift-mujoco.git\", from: \"2.3.0\")",
+    "page_date": "not shown",
+    "confidence": "documented"
+   },
+   {
+    "claim": "The official MuJoCo library lists Windows, Linux and macOS as its platforms; iOS is not listed.",
+    "url": "https://mujoco.readthedocs.io/en/stable/programming/index.html",
+    "quote": "MuJoCo is a dynamic library compatible with Windows, Linux and macOS, which requires a processor with AVX instructions.",
+    "page_date": "stable docs, no version number shown",
+    "confidence": "documented"
+   },
+   {
+    "claim": "Building MuJoCo from source needs only CMake and a C++17 compiler, which is the path an iOS cross-compile would take.",
+    "url": "https://mujoco.readthedocs.io/en/stable/programming/index.html",
+    "quote": "To build MuJoCo from source, you will need CMake and a working C++17 compiler installed.",
+    "page_date": "stable docs, no version number shown",
+    "confidence": "documented"
+   },
+   {
+    "claim": "Official MuJoCo Python wheels for macOS Apple Silicon exist for the current release 3.17.0 (Python 3.10 through 3.15); no iOS wheel exists.",
+    "url": "https://pypi.org/simple/mujoco/",
+    "quote": "mujoco-3.17.0-cp313-cp313-macosx_11_0_arm64.whl",
+    "page_date": "not shown",
+    "confidence": "documented"
+   },
+   {
+    "claim": "MJX-JAX officially lists Apple Silicon as a supported target.",
+    "url": "https://mujoco.readthedocs.io/en/stable/mjx.html",
+    "quote": "MJX-JAX runs on: Nvidia and AMD GPUs, Apple Silicon, and Google Cloud TPUs.",
+    "page_date": "stable docs, no version number shown",
+    "confidence": "documented"
+   },
+   {
+    "claim": "The faster MJX-Warp backend is built for NVIDIA GPUs only.",
+    "url": "https://mujoco.readthedocs.io/en/stable/mjx.html",
+    "quote": "A Warp implementation of MuJoCo (MJX-Warp) optimizes performance specifically for NVIDIA GPUs",
+    "page_date": "stable docs, no version number shown",
+    "confidence": "documented"
+   },
+   {
+    "claim": "MuJoCo's own benchmark puts CPU MuJoCo on an Apple M3 Max at 650K single-humanoid steps per second versus 950K for MJX-JAX on an NVIDIA A100 at batch 8192, 1.8M on a 64-core AMD 3995WX CPU and 2.7M on an 8-chip TPU v5.",
+    "url": "https://mujoco.readthedocs.io/en/stable/mjx.html",
+    "quote": "We simulate this scene using CPU MuJoCo on an Apple M3 Max and a 64-core AMD 3995WX",
+    "page_date": "stable docs, no version number shown",
+    "confidence": "documented"
+   },
+   {
+    "claim": "MuJoCo's docs say MJX-JAX throughput falls faster than CPU MuJoCo as the number of humanoids (contacts) grows.",
+    "url": "https://mujoco.readthedocs.io/en/stable/mjx.html",
+    "quote": "MJX-JAX throughput decreases more rapidly than MuJoCo",
+    "page_date": "stable docs, no version number shown",
+    "confidence": "documented"
+   },
+   {
+    "claim": "Apple's jax-metal plug-in, the only route for MJX-JAX onto the Apple GPU, is labelled experimental and does not pass the JAX test suite.",
+    "url": "https://developer.apple.com/metal/jax/",
+    "quote": "The Metal plug-in is experimental and not all JAX functionality may be supported.",
+    "page_date": "not shown; compatibility table tops out at jax-metal 0.1.0 / macOS Sonoma 14.4+ / jaxlib >=v0.4.26",
+    "confidence": "documented"
+   },
+   {
+    "claim": "jax-metal does not support float64, which MuJoCo's C engine uses natively.",
+    "url": "https://developer.apple.com/metal/jax/",
+    "quote": "Unsupported data types: np.float64, np.complex64, np.complex128",
+    "page_date": "not shown",
+    "confidence": "documented"
+   },
+   {
+    "claim": "A user reports jax-metal still broken for running MuJoCo MJX on macOS.",
+    "url": "https://developer.apple.com/forums/thread/743350",
+    "quote": "Currently for robotics simulation MuJoCo MJX uses JAX. Unfortunately jax-metal is still broken for that to be run MacOS.",
+    "page_date": "post dated Sep '25 in thread created Dec '23",
+    "confidence": "reported-by-users"
+   },
+   {
+    "claim": "A user reports jax-metal still broken in early 2026 and that MLX is the working Metal path.",
+    "url": "https://developer.apple.com/forums/thread/743350",
+    "quote": "Still broken as of early 2026 in my testing. For JAX workloads on Apple Silicon I've moved to MLX entirely",
+    "page_date": "post dated Apr '26",
+    "confidence": "reported-by-users"
+   },
+   {
+    "claim": "A JAX maintainer stated jax-metal's last release was over a year old, and jax-metal needs jax pinned at 0.5.0.",
+    "url": "https://github.com/jax-ml/jax/issues/26968",
+    "quote": "The last release of jax-metal was over a year ago now.",
+    "page_date": "issue opened Mar 6, 2025; closing comment Jan 20, 2026",
+    "confidence": "documented"
+   },
+   {
+    "claim": "A third-party port of the MJX physics layer to Apple MLX exists and runs GPU physics on M-series Macs via Metal.",
+    "url": "https://github.com/RobotFlow-Labs/Mujoco-mlx",
+    "quote": "MJX-MLX replaces JAX with Apple MLX, enabling GPU-accelerated physics simulation on M1/M2/M3/M4/M5 Macs via Metal.",
+    "page_date": "README validation section dated 2026-03-14",
+    "confidence": "documented"
+   },
+   {
+    "claim": "The MJX-MLX port's only published speed figure is 26.7 steps/sec and its validation covers only a cartpole and a pendulum.",
+    "url": "https://github.com/RobotFlow-Labs/Mujoco-mlx",
+    "quote": "500 steps in 18.75s (26.7 steps/sec)",
+    "page_date": "README validation section dated 2026-03-14",
+    "confidence": "documented"
+   },
+   {
+    "claim": "Apple's Core ML supports on-device model updates (MLUpdateTask) on iOS 13 and later, updating a compiled updatable model from labeled batches; Apple's sample is a drawing classifier.",
+    "url": "https://developer.apple.com/documentation/coreml/personalizing-a-model-with-on-device-updates",
+    "quote": "With the Core ML framework, you can customize an updatable model at runtime on the user\u2019s device.",
+    "page_date": "availability iOS 13.0+, Xcode 15.2+; page copyright 2026",
+    "confidence": "documented"
+   },
+   {
+    "claim": "Core ML's update API only works on compiled .mlmodelc files and runs the update on a separate thread with a completion handler.",
+    "url": "https://developer.apple.com/documentation/coreml/personalizing-a-model-with-on-device-updates",
+    "quote": "An update task can only update a *compiled* model file\u2014one whose name ends with `.mlmodelc`.",
+    "page_date": "availability iOS 13.0+",
+    "confidence": "documented"
+   },
+   {
+    "claim": "Apple frames Core ML on-device updates as personalization of an existing model, not training from scratch.",
+    "url": "https://developer.apple.com/documentation/coreml/model-personalization",
+    "quote": "With the Core ML framework, you can adapt to incoming data with an updatable model at runtime on the user\u2019s device.",
+    "page_date": "page copyright 2026",
+    "confidence": "documented"
+   },
+   {
+    "claim": "Apple's MLX Swift examples include a training app that trains a LeNet on MNIST on both iOS and macOS.",
+    "url": "https://github.com/ml-explore/mlx-swift-examples",
+    "quote": "An example that runs on both iOS and macOS that downloads MNIST training data and trains a LeNet.",
+    "page_date": "not shown (264 commits)",
+    "confidence": "documented"
+   },
+   {
+    "claim": "The MNISTTrainer README states it is model training that works on iOS and reports epoch time and test accuracy; building for iOS needs a signing Team.",
+    "url": "https://github.com/ml-explore/mlx-swift-examples/blob/main/Applications/MNISTTrainer/README.md",
+    "quote": "This is an example of model training that works on both macOS and iOS.",
+    "page_date": "not shown",
+    "confidence": "documented"
+   },
+   {
+    "claim": "MLX Swift's Metal shaders cannot be built by command-line SwiftPM; the final build must go through Xcode.",
+    "url": "https://github.com/ml-explore/mlx-swift",
+    "quote": "SwiftPM (command line) cannot build the Metal shaders so the ultimate build has to be done via Xcode.",
+    "page_date": "not shown",
+    "confidence": "documented"
+   },
+   {
+    "claim": "MLX Swift positions itself for research and experimentation on Apple silicon.",
+    "url": "https://github.com/ml-explore/mlx-swift",
+    "quote": "MLX Swift expands MLX to the Swift language, making research and experimentation easier on Apple silicon.",
+    "page_date": "not shown",
+    "confidence": "documented"
+   },
+   {
+    "claim": "ExecuTorch on-device training is experimental; the backward graph is captured ahead of time and the loss must be part of the model.",
+    "url": "https://github.com/pytorch/executorch/blob/main/extension/training/README.md",
+    "quote": "Loss functions must be embedded inside the model definition (and be the first output).",
+    "page_date": "not shown",
+    "confidence": "documented"
+   },
+   {
+    "claim": "ExecuTorch training's integration with hardware backends (which would include Apple's CoreML/MPS delegates) is unfinished.",
+    "url": "https://github.com/pytorch/executorch/blob/main/extension/training/README.md",
+    "quote": "Integration with backends/delegates is still a work in progress.",
+    "page_date": "not shown",
+    "confidence": "documented"
+   },
+   {
+    "claim": "ExecuTorch's training walkthrough is an XOR network and the export step is unstable on complex models.",
+    "url": "https://github.com/pytorch/executorch/blob/main/extension/training/README.md",
+    "quote": "The _export_forward_backward is not very stable yet and may fail on more complicated model architectures.",
+    "page_date": "not shown",
+    "confidence": "documented"
+   },
+   {
+    "claim": "The ExecuTorch paper validated on-device fine-tuning only on Android (CIFAR-10, XNNPACK), not iOS.",
+    "url": "https://arxiv.org/pdf/2605.08195",
+    "quote": "We validated finetuning a classification model (lowered to the XNNPACK backend) using the CIFAR-10 dataset on an Android device.",
+    "page_date": "Submitted on 5 May 2026",
+    "confidence": "documented"
+   },
+   {
+    "claim": "PyTorch's MPS backend supports GPU training on Apple Silicon Macs since PyTorch 1.12 (macOS 12.3+).",
+    "url": "https://pytorch.org/blog/introducing-accelerated-pytorch-training-on-mac/",
+    "quote": "with the upcoming PyTorch v1.12 release, developers and researchers can take advantage of Apple silicon GPUs for significantly faster model training.",
+    "page_date": "Last updated: 2024-11-15; testing April 2022",
+    "confidence": "documented"
+   },
+   {
+    "claim": "Apple states the PyTorch MPS backend is still in beta and that custom Metal kernels are supported; requirements for PyTorch 2.11.0 are Apple silicon, macOS 14.0 or later, Python 3.10 or later.",
+    "url": "https://developer.apple.com/metal/pytorch/",
+    "quote": "The MPS backend is in the beta phase, and we're actively addressing issues and fixing bugs.",
+    "page_date": "not shown; names PyTorch 2.11.0 as latest stable",
+    "confidence": "documented"
+   },
+   {
+    "claim": "There is no PyTorch tutorial for porting a custom CUDA kernel to the Apple GPU; the recommended path is writing a custom Metal kernel.",
+    "url": "https://discuss.pytorch.org/t/how-to-support-customized-extensions-on-mps/153536",
+    "quote": "I don\u2019t think we have a tutorial for that yet no. You should be able to write custom Metal kernels though within PyTorch.",
+    "page_date": "June 7, 2022",
+    "confidence": "documented"
+   },
+   {
+    "claim": "A peer-reviewed profiling study found Apple Silicon trails NVIDIA GPUs for ML training and attributes it to page faults, power and kernel launch time.",
+    "url": "https://arxiv.org/abs/2501.14925",
+    "quote": "The results show a significant performance gap between Apple Silicon and NVIDIA GPUs.",
+    "page_date": "Submitted 24 January 2025, revised 28 January 2025",
+    "confidence": "documented"
+   },
+   {
+    "claim": "Stable-Baselines3 maintainers declared SB3 not compatible with MPS; a user reported CPU faster than MPS for RL on Apple silicon.",
+    "url": "https://github.com/DLR-RM/stable-baselines3/issues/914",
+    "quote": "For the moment, consider that SB3 is not compatible with MPS. But we are working on it",
+    "page_date": "issue opened May 20, 2022; quote dated Aug 19, 2022",
+    "confidence": "documented"
+   },
+   {
+    "claim": "A Stable-Baselines3 user on Apple silicon reports CPU beating the MPS GPU for reinforcement learning.",
+    "url": "https://github.com/DLR-RM/stable-baselines3/issues/914",
+    "quote": "Although it works normally, the CPU continues to be more performant than the MPS.",
+    "page_date": "Apr 9, 2023",
+    "confidence": "reported-by-users"
+   },
+   {
+    "claim": "A hobbyist MuJoCo RL benchmark (PPO, SAC, DQN on HalfCheetah/Hopper/Ant) ran on an M1 MacBook Pro with Gymnasium 0.29.1 and MuJoCo 2.3.7, with no NVIDIA comparison.",
+    "url": "https://dev.to/tildalice/dqn-vs-ppo-vs-sac-mujoco-training-speed-benchmarks-33bk",
+    "quote": "Same hardware (M1 MacBook Pro, 16GB RAM), same total timesteps (1M), same network architecture where applicable.",
+    "page_date": "Posted Feb 20 (year not shown; image paths reference 2026/02)",
+    "confidence": "reported-by-users"
+   },
+   {
+    "claim": "PhysX 5.1 received an iOS build preset through a community pull request that NVIDIA never reviewed; it lives on in the O3DE fork, and CUDA-dependent PhysX systems do not run on iOS.",
+    "url": "https://github.com/NVIDIA-Omniverse/PhysX/pull/49",
+    "quote": "PhysX Systems that require a CUDA capable GPU are not supported in iOS, for example particle system or cloth simulation.",
+    "page_date": "Opened November 29, 2022, closed December 21, 2022",
+    "confidence": "documented"
+   },
+   {
+    "claim": "Bullet physics (C++, zlib license) re-hosts to iOS as a plain C++ library.",
+    "url": "https://informit.com/articles/article.aspx?p=1914612",
+    "quote": "It was not specifically created for use with iOS, but it's straightforward to re-host it to iOS.",
+    "page_date": "2015-era tutorial (date not shown in excerpt)",
+    "confidence": "documented"
+   },
+   {
+    "claim": "Apple's RealityRenderer lets a RealityKit scene be drawn inside an existing Metal workflow, a bridge for a Metal MuJoCo renderer.",
+    "url": "https://developer.apple.com/documentation/realitykit/realityrenderer.md",
+    "quote": "RealityRenderer class displays a RealityKit scene inside an existing Metal workflow",
+    "page_date": "not shown",
+    "confidence": "inferred"
+   },
+   {
+    "claim": "Apple's guidance for visionOS: use Metal when a custom pipeline is needed or porting to RealityKit is impractical.",
+    "url": "https://developer.apple.com/videos/play/wwdc2024/10093/?time=102",
+    "quote": "Metal rendering suits a custom rendering pipeline or if it would not be practical for you to port your game to RealityKit.",
+    "page_date": "WWDC 2024",
+    "confidence": "inferred"
+   },
+   {
+    "claim": "The release pins a CUDA-only PyTorch build and mujoco 3.3.0 (D:/UEMA_Research/requirements.txt lines 2-3 and 9).",
+    "url": "D:/UEMA_Research/requirements.txt",
+    "quote": "#   pip install torch==2.6.0 --index-url https://download.pytorch.org/whl/cu124",
+    "page_date": "file in release checkout",
+    "confidence": "documented"
+   },
+   {
+    "claim": "The README requires an NVIDIA card with a CUDA 12.4 driver and states development on Windows 11 (D:/UEMA_Research/README.md lines 122-123).",
+    "url": "D:/UEMA_Research/README.md",
+    "quote": "An NVIDIA graphics card with a CUDA 12.4 capable driver for the pinned `torch==2.6.0+cu124`",
+    "page_date": "file in release checkout",
+    "confidence": "documented"
+   },
+   {
+    "claim": "The README states the Direct3D 12 / CUDA interop vision transport belongs to the excluded Unreal avatar pipeline (D:/UEMA_Research/README.md line 72), so that Windows-only path is not part of what a port must carry.",
+    "url": "D:/UEMA_Research/README.md",
+    "quote": "frame transport, Direct3D 12 / CUDA interop, process-separated replay training). One module of",
+    "page_date": "file in release checkout",
+    "confidence": "documented"
+   },
+   {
+    "claim": "The default hardware configuration hard-codes cuda:0 for both the vision capture device and the training device (D:/UEMA_Research/Source/Python/lem/config/defaults.py lines 32-33).",
+    "url": "D:/UEMA_Research/Source/Python/lem/config/defaults.py",
+    "quote": "\"capture_device\": \"cuda:0\",    # D3D12 interop, vision texture capture",
+    "page_date": "file in release checkout",
+    "confidence": "documented"
+   },
+   {
+    "claim": "The MIMo bridge's LITE_OVERRIDES also hard-codes cuda:0 for capture and training (D:/UEMA_Research/Source/Python/mimo_bridge/lem_model.py line 275).",
+    "url": "D:/UEMA_Research/Source/Python/mimo_bridge/lem_model.py",
+    "quote": "\"hardware\": {\"multi_gpu\": False, \"capture_device\": \"cuda:0\", \"training_device\": \"cuda:0\",",
+    "page_date": "file in release checkout",
+    "confidence": "documented"
+   },
+   {
+    "claim": "The training step calls a CUDA-stream synchronize directly, which has no equivalent on the MPS device (D:/UEMA_Research/Source/Python/lem/training_step.py line 1179).",
+    "url": "D:/UEMA_Research/Source/Python/lem/training_step.py",
+    "quote": "torch.cuda.current_stream().synchronize()",
+    "page_date": "file in release checkout",
+    "confidence": "documented"
+   },
+   {
+    "claim": "The native extension is pure C++ with no CUDA kernels, JIT-built with load_inline and auto-detecting MSVC, so it needs a clang/Xcode build path rather than a kernel port (D:/UEMA_Research/Source/Python/lem/native_ops.py lines 4-8 and 26).",
+    "url": "D:/UEMA_Research/Source/Python/lem/native_ops.py",
+    "quote": "JIT-compiled via torch.utils.cpp_extension.load_inline().  Pure C++ (no CUDA",
+    "page_date": "file in release checkout",
+    "confidence": "documented"
+   },
+   {
+    "claim": "The native extension falls back to pure Python when compilation fails (D:/UEMA_Research/Source/Python/lem/native_ops.py line 11).",
+    "url": "D:/UEMA_Research/Source/Python/lem/native_ops.py",
+    "quote": "Falls back to pure-Python implementations if compilation fails.",
+    "page_date": "file in release checkout",
+    "confidence": "documented"
+   },
+   {
+    "claim": "Random-state snapshots take a CUDA RNG only when the device is cuda, so the code already carries a non-CUDA branch at this point (D:/UEMA_Research/Source/Python/mimo_bridge/continuation_state.py line 185).",
+    "url": "D:/UEMA_Research/Source/Python/mimo_bridge/continuation_state.py",
+    "quote": "cuda_rng=torch.cuda.get_rng_state_all() if model.device.type=='cuda' else None,",
+    "page_date": "file in release checkout",
+    "confidence": "documented"
+   },
+   {
+    "claim": "The encoder registry uses torch.cuda.Event for cross-device vision encoding (D:/UEMA_Research/Source/Python/lem/model/encoder_registry.py line 87).",
+    "url": "D:/UEMA_Research/Source/Python/lem/model/encoder_registry.py",
+    "quote": "self._vision_event: Optional[torch.cuda.Event] = None",
+    "page_date": "file in release checkout",
+    "confidence": "documented"
+   },
+   {
+    "claim": "The MuJoCo renderer in the bridge depends on a GLFW window/GL context (D:/UEMA_Research/Source/Python/mimo_bridge/env.py line 591), which has no iOS equivalent.",
+    "url": "D:/UEMA_Research/Source/Python/mimo_bridge/env.py",
+    "quote": "The process-wide GL context. mujoco.Renderer makes a brand-new GLFW window + context",
+    "page_date": "file in release checkout",
+    "confidence": "documented"
+   },
+   {
+    "claim": "No 'mps' device string appears anywhere under D:/UEMA_Research/Source (grep for 'mps' or \"mps\" returned no lines).",
+    "url": "D:/UEMA_Research/Source",
+    "quote": "(grep -rIn --include=*.py -E \"'mps'|\\\"mps\\\"\" Source returned no output)",
+    "page_date": "checked 2026-11-04",
+    "confidence": "documented"
+   }
+  ],
+  "open_questions": [
+   "iMuJoCo's promised Apache 2.0 source has no public repository found; whether it exposes a reusable Metal renderer for MuJoCo scenes is unknown until it is published.",
+   "Whether the full MuJoCo 3.x C library cross-compiles for iOS (arm64, no AVX) with its contact solver intact is undocumented; swift-mujoco claims iOS at MuJoCo 2.3.0 only, and the official docs say the library 'requires a processor with AVX instructions'.",
+   "No measured report was found of a MuJoCo RL agent training on an M-series Mac with the same job timed on an NVIDIA card; the only like-for-like numbers are MuJoCo's own CPU-physics figures (M3 Max 650K steps/s vs A100 MJX-JAX 950K steps/s) and the LLM-training gap paper.",
+   "Whether the project's eight-world process-separated replay training (README line 72 names it as excluded from the release) and the GLFW-based mujoco.Renderer can run under macOS without the Windows shared-memory frame transport was not tested.",
+   "ExecuTorch training on an Apple delegate (CoreML or MPS) has no published example; its README says backend integration is a work in progress, so an iPhone training path for a PyTorch-defined model is unproven.",
+   "Core ML's MLUpdateTask documentation seen here covers only classifier personalization; which layer types are updatable (needed to judge whether a transformer forward model could be updated on-phone) was not readable from the fetched pages.",
+   "The MJX-MLX port's 26.7 steps/sec figure has no scene description or hardware named beside it, so it cannot be placed against the 650K steps/sec CPU figure.",
+   "The Towards AI article cited by search for an M3 Max throughput number returned HTTP 403 and was not read."
+  ]
+ },
+ {
+  "summary": "iOS: Python 3.13+ runs on iOS only as an embedded interpreter (CPython tier 3, PEP 730; Python-Apple-support supplies the Python.xcframework; Pyto is a shipped App Store app built this way, and App Store guideline 2.5.2 allows self-contained bundles). The release's training path cannot run on an iPhone as written: PoolSource spawns one process per body (multiprocessing \"spawn\", datasource.py line 495) and the Python docs state an iOS app cannot use any form of subprocessing or multiprocessing; the pinned torch==2.6.0 has no iOS wheel (macOS arm64 wheels only), and the BeeWare iOS wheel index holds numpy, pillow and matplotlib but not scipy, torch, opencv, mujoco, scikit-learn, pyyaml, psutil, imageio, trimesh, safetensors, gymnasium or networkx; MIMo's vision.py imports cv2 at module level; MuJoCo's classic renderer needs OpenGL 1.5 and Apple lists OpenGL ES on iOS as available only through iOS 12.0, so eye rendering (env.py EyeRenderer, mujoco.GLContext) needs a Metal path (the iMuJoCo App Store app shows MuJoCo physics plus Metal rendering is buildable on iOS 26). Per-app memory on an 8 GB iPhone is not documented by Apple; one developer measured a ~6144 MB process budget on an iPhone 16 Pro Max with the increased-memory-limit entitlement, and Apple's os_proc_available_memory doc says limits change during the app life cycle. Background execution: five seconds after entering background, extendable by beginBackgroundTask, then termination; BGProcessingTask runs minutes only while the device is idle. Thermal: Apple says reduce system resource use at higher thermal states. iOS file access is limited to the app sandbox. macOS by contrast: aarch64-apple-darwin is CPython tier 1; mujoco 3.3.0 and torch 2.6.0 both publish macosx_11_0_arm64 wheels for cp313; the code already selects CPU when CUDA is absent (lem_model.py line 785) and disables autocast off CUDA (line 800); torch's MPS backend exists but has no float64 (the code holds 86 float64 references, 5 in torch tensors) and the autocast call is hard-coded to \"cuda\" (line 2665); the native C++ helper compiles with an MSVC-only setup and falls back to pure Python; the NVRTC patchify kernel loads only when CUDA is available. Measured Windows resume used 4,287 MB of GPU memory and ~30 GB committed memory for trainer plus eight world processes, which exceeds any reported iPhone per-app budget. Feasible on macOS (CPU, or MPS with float64 and autocast changes); feasible on iOS only as a single-process inference/viewer app with rebuilt binary dependencies, not as the training run.",
+  "findings": [
+   {
+    "claim": "PEP 730 (final, Python 3.13) set iOS at CPython support tier 3.",
+    "url": "https://peps.python.org/pep-0730/",
+    "quote": "The initial goal is to achieve Tier 3 support for Python 3.13.",
+    "page_date": "Created 09-Oct-2023; last modified 2025-02-01",
+    "confidence": "documented"
+   },
+   {
+    "claim": "PEP 730 states that iOS has no multiprocess support and that subprocesses are disabled the way WASI/Emscripten disable them.",
+    "url": "https://peps.python.org/pep-0730/",
+    "quote": "Most notable of these is the fact that iOS does not provide any form of multiprocess support.",
+    "page_date": "last modified 2025-02-01",
+    "confidence": "documented"
+   },
+   {
+    "claim": "PEP 730 records that Python-embedding apps have passed App Store review.",
+    "url": "https://peps.python.org/pep-0730/",
+    "quote": "This support has been able to generate applications that have been accepted for publication in the iOS App Store.",
+    "page_date": "last modified 2025-02-01",
+    "confidence": "documented"
+   },
+   {
+    "claim": "PEP 11 lists macOS arm64 (aarch64-apple-darwin) at tier 1 and iOS device and simulator at tier 3.",
+    "url": "https://peps.python.org/pep-0011/",
+    "quote": "arm64-apple-ios / iOS on device / Russell Keith-Magee, Ned Deily",
+    "page_date": "2026-10-31 13:27:58 UTC",
+    "confidence": "documented"
+   },
+   {
+    "claim": "The Python 3.13 library docs state an iOS app cannot use subprocessing, multiprocessing or inter-process communication, and that an attempt locks up or crashes the process.",
+    "url": "https://docs.python.org/3.13/library/intro.html",
+    "quote": "An iOS app cannot use any form of subprocessing, multiprocessing, or inter-process communication. If an iOS app attempts to create a subprocess, the process creating the subprocess will either lock up, or crash.",
+    "page_date": "Python 3.13.18 documentation",
+    "confidence": "documented"
+   },
+   {
+    "claim": "On mobile platforms Python runs only in embedded mode; there is no python or pip executable.",
+    "url": "https://docs.python.org/3.13/library/intro.html",
+    "quote": "Mobile platforms can only use Python in \u201cembedded\u201d mode. There is no Python REPL, and no ability to use separate executables such as python or pip.",
+    "page_date": "Python 3.13.18 documentation",
+    "confidence": "documented"
+   },
+   {
+    "claim": "The Python iOS guide states the only way to use Python on iOS is embedding libPython in a native app, with a default minimum iOS of 13.0.",
+    "url": "https://docs.python.org/3.13/using/ios.html",
+    "quote": "By default, when compiled for iOS, Python will be compiled with a minimum supported iOS version of 13.0.",
+    "page_date": "Python 3.13.18 documentation",
+    "confidence": "documented"
+   },
+   {
+    "claim": "The Python iOS guide states that every binary module in an iOS app must be a dynamic library inside a framework in the Frameworks folder.",
+    "url": "https://docs.python.org/3.13/using/ios.html",
+    "quote": "The iOS App Store requires that all binary modules in an iOS app must be dynamic libraries, contained in a framework with appropriate metadata, stored in the Frameworks folder of the packaged app.",
+    "page_date": "Python 3.13.18 documentation",
+    "confidence": "documented"
+   },
+   {
+    "claim": "The Python iOS guide states that App Store distribution is the only route to third-party devices and that the standard library is modified to pass review.",
+    "url": "https://docs.python.org/3.13/using/ios.html",
+    "quote": "The only mechanism for distributing apps to third-party iOS devices is to submit the app to the iOS App Store; apps submitted for distribution must pass Apple's app review process.",
+    "page_date": "Python 3.13.18 documentation",
+    "confidence": "documented"
+   },
+   {
+    "claim": "The Python iOS guide embeds Python as Python.xcframework with Embed & Sign in Xcode.",
+    "url": "https://docs.python.org/3.13/using/ios.html",
+    "quote": "In the 'General' settings, under 'Frameworks, Libraries and Embedded Content', add Python.xcframework, with 'Embed & Sign' selected.",
+    "page_date": "Python 3.13.18 documentation",
+    "confidence": "documented"
+   },
+   {
+    "claim": "BeeWare's Python-Apple-support supplies the prebuilt Python.xcframework for iOS (minimum iOS 13.0) across Python 3.11 to 3.16 branches; python.org itself hosts no iOS binary download that the search found.",
+    "url": "https://github.com/beeware/Python-Apple-support",
+    "quote": "a meta-package for building a version of Python that can be embedded into a macOS, iOS, tvOS, watchOS, or visionOS project",
+    "page_date": "page footer \u00a9 2026",
+    "confidence": "documented"
+   },
+   {
+    "claim": "Briefcase requires iOS wheels for any package with a binary component and uses a secondary BeeWare repository of prebuilt iOS wheels; source tarballs cannot be installed into an iOS app; the default minimum iOS is 15.0.",
+    "url": "https://briefcase.beeware.org/en/stable/reference/platforms/iOS/xcode.html",
+    "quote": "If the package contains a binary component, that wheel needs to be compiled for iOS.",
+    "page_date": "no date shown",
+    "confidence": "documented"
+   },
+   {
+    "claim": "Briefcase produces an Xcode project for iOS and warns that App Store validation rejects bundles with disallowed content.",
+    "url": "https://briefcase.beeware.org/en/stable/reference/platforms/iOS/xcode.html",
+    "quote": "When generating an iOS project, Briefcase produces an Xcode project.",
+    "page_date": "no date shown",
+    "confidence": "documented"
+   },
+   {
+    "claim": "The BeeWare iOS wheel index holds numpy, pillow and matplotlib; it holds no scipy, torch, opencv, opencv-python, mujoco, scikit-learn, pyyaml, psutil, imageio, trimesh, safetensors, gymnasium or networkx.",
+    "url": "https://pypi.anaconda.org/beeware/simple/",
+    "quote": "coverage, typed-ast, numpy, pillow, cryptography, cffi, pandas, lru-dict, regex, bitarray, aiohttp, kiwisolver, contourpy, yarl, matplotlib, brotli, multidict, bcrypt, frozenlist, ephem, srsly, argon2-cffi, typed-ast, zstandard, greenlet, cytoolz, ruamel-yaml-clib, cymem, editdistance, ninja, libffi, wordcloud, gensim, preshed, netifaces, openssl, freetype, pyzbar, pynacl, backports-zoneinfo, pywavelets, pysha3, pycurl, libjpeg, scandir, bzip2, twisted, pycrypto, spectrum, murmurhash, libpng, statsmodels, xz",
+    "page_date": "no date shown (index listing fetched 2026-11-04)",
+    "confidence": "documented"
+   },
+   {
+    "claim": "NumPy merged iOS build support in July 2026, but official iOS wheels are not produced in NumPy's release process.",
+    "url": "https://github.com/numpy/numpy/pull/28759",
+    "quote": "official wheels are not produced as part of the release process.",
+    "page_date": "merged July 17, 2026; comment Sep 10, 2026",
+    "confidence": "documented"
+   },
+   {
+    "claim": "cibuildwheel added iOS wheel building in v3.0.0 and CPython 3.15 iOS support in v4.0.0, so a project can build its own iOS wheels on a Mac with the iOS toolchain.",
+    "url": "https://cibuildwheel.pypa.io/en/stable/changelog/",
+    "quote": "Adds the ability to build wheels for iOS! Set the platform option to ios on a Mac with the iOS toolchain to try it out!",
+    "page_date": "v3.0.0 11 June 2025; v4.0.0 7 June 2026",
+    "confidence": "documented"
+   },
+   {
+    "claim": "torch 2.6.0 on PyPI has macOS wheels only for arm64 (macosx_11_0_arm64, cp39 to cp313) and no iOS wheel.",
+    "url": "https://pypi.org/project/torch/2.6.0/#files",
+    "quote": "torch-2.6.0-cp313-none-macosx_11_0_arm64.whl",
+    "page_date": "Jan 29, 2025",
+    "confidence": "documented"
+   },
+   {
+    "claim": "mujoco 3.3.0 on PyPI has macOS wheels for arm64 and x86_64 (cp39 to cp313) and no iOS wheel.",
+    "url": "https://pypi.org/pypi/mujoco/3.3.0/json",
+    "quote": "mujoco-3.3.0-cp313-cp313-macosx_11_0_arm64.whl",
+    "page_date": "upload_time 2025-02-27T19:14:36",
+    "confidence": "documented"
+   },
+   {
+    "claim": "MuJoCo's prebuilt libraries cover Windows, Linux and macOS (x86_64 and arm64); the classic renderer uses OpenGL 1.5.",
+    "url": "https://mujoco.readthedocs.io/en/stable/programming/index.html",
+    "quote": "Pre-built dynamic libraries are available for x86_64 and arm64 machines running Windows, Linux, and macOS.",
+    "page_date": "stable docs, no date shown",
+    "confidence": "documented"
+   },
+   {
+    "claim": "Apple's OpenGL ES framework on iOS is listed as available only from iOS 2.0 through iOS 12.0, so MuJoCo's OpenGL 1.5 classic renderer has no supported path on current iOS.",
+    "url": "https://developer.apple.com/documentation/opengles.md",
+    "quote": "\"iOS: 2.0.0 - 12.0.0\"",
+    "page_date": "Copyright \u00a9 2026 Apple Inc.",
+    "confidence": "documented"
+   },
+   {
+    "claim": "A third-party App Store app, iMuJoCo, runs MuJoCo physics on iPhone with Metal rendering, showing the C library builds for iOS.",
+    "url": "https://apps.apple.com/app/id6759394574",
+    "quote": "iMuJoCo brings the MuJoCo physics engine to iPhone and iPad with native Swift UI and Metal rendering.",
+    "page_date": "Version 0.1.3 Apr 7; Requires iOS 26.0 or later",
+    "confidence": "documented"
+   },
+   {
+    "claim": "PyTorch's MPS backend trains on Apple GPUs through Metal, but double-precision tensors cannot be allocated on MPS and the CPU fallback does not cover them.",
+    "url": "https://docs.pytorch.org/docs/2.15/notes/mps.html",
+    "quote": "tensors with double-precision types cannot be allocated or copied to MPS in the first place.",
+    "page_date": "docs 2.15",
+    "confidence": "documented"
+   },
+   {
+    "claim": "The MPS backend is described as GPU training on macOS through Metal.",
+    "url": "https://docs.pytorch.org/docs/2.6/notes/mps.html",
+    "quote": "mps device enables high-performance training on GPU for MacOS devices with Metal programming framework.",
+    "page_date": "docs 2.6",
+    "confidence": "documented"
+   },
+   {
+    "claim": "ExecuTorch is PyTorch's on-device runtime for iOS (C++/Swift APIs); its on-device training is a technical preview with SGD and AdamW only and no native way yet to save trained weights.",
+    "url": "https://github.com/pytorch/executorch/blob/main/extension/training/README.md",
+    "quote": "This feature is experimental and under heavy active development, all the APIs are subject to change.",
+    "page_date": "page footer \u00a9 2026 GitHub",
+    "confidence": "documented"
+   },
+   {
+    "claim": "ExecuTorch lists iOS/iPadOS among its targets with XNNPACK, Core ML and MLX backends.",
+    "url": "https://github.com/pytorch/executorch",
+    "quote": "ExecuTorch is PyTorch's open source stack for running AI locally on phones, wearables, laptops, browsers",
+    "page_date": "page footer \u00a9 2026 GitHub",
+    "confidence": "documented"
+   },
+   {
+    "claim": "App Store guideline 2.5.2 requires apps to be self-contained in their bundles and forbids downloading or executing code that changes app features; an embedded interpreter running bundled code is within it.",
+    "url": "https://developer.apple.com/app-store/review/guidelines/",
+    "quote": "Apps should be self-contained in their bundles, and may not read or write data outside the designated container area, nor may they download, install, or execute code which introduces or changes features or functionality of the app, including other apps.",
+    "page_date": "no date shown",
+    "confidence": "documented"
+   },
+   {
+    "claim": "Pyto is a shipped App Store app that embeds CPython through the C API in the app's own process, using BeeWare's Python build.",
+    "url": "https://pyto.readthedocs.io/",
+    "quote": "The app uses the Python C API to run Python code in the same process of the app, due to iOS restrictions.",
+    "page_date": "Pyto version 19.0 (424), no date shown",
+    "confidence": "documented"
+   },
+   {
+    "claim": "iOS file access is limited to the app's sandbox directories (Documents, Library, tmp).",
+    "url": "https://developer.apple.com/library/archive/documentation/FileManagement/Conceptual/FileSystemProgrammingGuide/FileSystemOverview/FileSystemOverview.html",
+    "quote": "For security purposes, an iOS app\u2019s interactions with the file system are limited to the directories inside the app\u2019s sandbox directory.",
+    "page_date": "Updated: 2018-04-09",
+    "confidence": "documented"
+   },
+   {
+    "claim": "Apple documents no fixed per-app memory number; os_proc_available_memory returns bytes left before the limit, and the limit changes during the app life cycle.",
+    "url": "https://developer.apple.com/documentation/os/os_proc_available_memory.md",
+    "quote": "Memory limits can change during the app life cycle and don\u2019t necessarily correspond to the amount of physical memory available on the device.",
+    "page_date": "Copyright \u00a9 2026 Apple Inc.; availability iOS 13.0+",
+    "confidence": "documented"
+   },
+   {
+    "claim": "The increased-memory-limit entitlement (iOS 15+) raises the default app memory limit only on some device models and gives no number.",
+    "url": "https://developer.apple.com/documentation/bundleresources/entitlements/com.apple.developer.kernel.increased-memory-limit.md",
+    "quote": "An increased memory limit is only available on some device models.",
+    "page_date": "Copyright \u00a9 2026 Apple Inc.; availability iOS 15.0+",
+    "confidence": "documented"
+   },
+   {
+    "claim": "A developer measured a ~6144 MB per-process budget on an iPhone 16 Pro Max (8 GB) and on an iPhone 17 Pro Max (12 GB) with the increased-memory-limit entitlement; no Apple reply.",
+    "url": "https://developer.apple.com/forums/thread/834805",
+    "quote": "I'm seeing a flat per-app memory ceiling of about 6 GB on iPhone, even on devices with more physical RAM and with com.apple.developer.kernel.increased-memory-limit.",
+    "page_date": "Created Jun \u201926",
+    "confidence": "reported-by-users"
+   },
+   {
+    "claim": "Per-app memory limits can change with an OS update: a developer reported the limit on an 8 GB iPad falling from about 6 GB to 3 GB at iPadOS 26.4; Apple's later reply attributed the crashes to virtual address space exhaustion.",
+    "url": "https://developer.apple.com/forums/thread/826325",
+    "quote": "Starting from iPadOS 26.4, the maximum memory available to a single app has been reduced from approximately 6GB to 3GB on an 8GB iPad.",
+    "page_date": "May \u201926",
+    "confidence": "reported-by-users"
+   },
+   {
+    "claim": "At higher thermal states Apple expects the app to reduce system resource use; ThermalState has nominal, fair, serious and critical cases.",
+    "url": "https://developer.apple.com/documentation/foundation/processinfo/thermalstate-swift.property.md",
+    "quote": "At higher thermal states your app should reduce usage of system resources.",
+    "page_date": "Copyright \u00a9 2026 Apple Inc.",
+    "confidence": "documented"
+   },
+   {
+    "claim": "An iOS app gets five seconds after entering the background, can ask for more with beginBackgroundTask, and is terminated if it does not finish.",
+    "url": "https://developer.apple.com/documentation/uikit/extending-your-app-s-background-execution-time.md",
+    "quote": "That method has five seconds to perform any tasks and return. Shortly after that method returns, the system puts your app into the suspended state.",
+    "page_date": "Copyright \u00a9 2026 Apple Inc.",
+    "confidence": "documented"
+   },
+   {
+    "claim": "Background processing tasks run for minutes only while the device is idle and are terminated when the user starts using the device.",
+    "url": "https://developer.apple.com/documentation/backgroundtasks/bgprocessingtask.md",
+    "quote": "Processing tasks run only when the device is idle. The system terminates any background processing tasks running when the user starts using the device.",
+    "page_date": "Copyright \u00a9 2026 Apple Inc.",
+    "confidence": "documented"
+   },
+   {
+    "claim": "The python.org macOS installer is a universal2 build running natively on Apple Silicon and Intel Macs, with no app sandbox or process limits named in the macOS guide.",
+    "url": "https://docs.python.org/3.13/using/mac.html",
+    "quote": "Current installers provide a universal2 binary build of Python which runs natively on all Macs (Apple Silicon and Intel)",
+    "page_date": "Python 3.13.18 documentation",
+    "confidence": "documented"
+   },
+   {
+    "claim": "The release pins torch 2.6.0 from the CUDA 12.4 index and mujoco 3.3.0, opencv-python-headless 5.0.0.93, scipy 1.18.0 and others, with Python 3.13.3.",
+    "url": "D:/UEMA_Research/requirements.txt line 3 and lines 7-9",
+    "quote": "#   pip install torch==2.6.0 --index-url https://download.pytorch.org/whl/cu124",
+    "page_date": "file in release",
+    "confidence": "documented"
+   },
+   {
+    "claim": "The README requires an NVIDIA CUDA 12.4 card and reports the measured Windows resume: 4,287 MB GPU memory and about 30 GB committed memory for the trainer and eight world processes.",
+    "url": "D:/UEMA_Research/README.md lines 123-128",
+    "quote": "card's memory peaked at 4,287 MB; Windows' committed memory (RAM plus page file) rose from 44.0 GB to 73.8 GB\n  while it ran, about 30 GB for the trainer and its eight world processes",
+    "page_date": "Measured on Oct 22, 2026",
+    "confidence": "documented"
+   },
+   {
+    "claim": "The trainer runs each body in its own process through multiprocessing with the spawn context (PoolSource), which iOS forbids.",
+    "url": "D:/UEMA_Research/Source/Python/mimo_bridge/datasource.py lines 495 and 511",
+    "quote": "        ctx = mp.get_context(\"spawn\")",
+    "page_date": "file in release",
+    "confidence": "documented"
+   },
+   {
+    "claim": "With --n-envs 1 the trainer uses SingleEnvSource, an in-process body, so a single-process port path exists in the code.",
+    "url": "D:/UEMA_Research/Source/Python/mimo_bridge/train_mimo.py lines 1933-1936",
+    "quote": "        elif args.n_envs == 1:\n            src = SingleEnvSource(**kw)",
+    "page_date": "file in release",
+    "confidence": "documented"
+   },
+   {
+    "claim": "The trainer's default device is cuda:0.",
+    "url": "D:/UEMA_Research/Source/Python/mimo_bridge/train_mimo.py line 233",
+    "quote": "    ap.add_argument(\"--device\", default=\"cuda:0\")",
+    "page_date": "file in release",
+    "confidence": "documented"
+   },
+   {
+    "claim": "The model falls back to CPU when CUDA is absent and forces float32 with autocast disabled off CUDA, so a CPU run on macOS needs no device change; an MPS run would need the device choice and the autocast device type changed.",
+    "url": "D:/UEMA_Research/Source/Python/mimo_bridge/lem_model.py lines 785, 798-800 and 2665",
+    "quote": "        self.device = torch.device(device if torch.cuda.is_available() else \"cpu\")",
+    "page_date": "file in release",
+    "confidence": "documented"
+   },
+   {
+    "claim": "The autocast call names the \"cuda\" device type explicitly.",
+    "url": "D:/UEMA_Research/Source/Python/mimo_bridge/lem_model.py line 2665",
+    "quote": "        with torch.amp.autocast(\"cuda\", enabled=self.use_amp, dtype=self.dtype):",
+    "page_date": "file in release",
+    "confidence": "documented"
+   },
+   {
+    "claim": "The code holds 86 float64 references (lem, lem_model.py, env.py, train_mimo.py, tokenizer), 5 of them torch.float64 tensors, which MPS cannot hold.",
+    "url": "D:/UEMA_Research/Source/Python/lem/model/hand_response.py line 67",
+    "quote": "        self.register_buffer('coefficients',torch.tensor(receipt['coefficients'],dtype=torch.float64))",
+    "page_date": "file in release",
+    "confidence": "documented"
+   },
+   {
+    "claim": "The native C++ helper is JIT-compiled with an MSVC auto-detect and falls back to pure Python if compilation fails; its CUDA patchify kernel loads only when torch.cuda.is_available().",
+    "url": "D:/UEMA_Research/Source/Python/lem/native_ops.py lines 5-11 and 3265",
+    "quote": "Falls back to pure-Python implementations if compilation fails.",
+    "page_date": "file in release",
+    "confidence": "documented"
+   },
+   {
+    "claim": "The NVRTC patchify kernel is gated on CUDA availability.",
+    "url": "D:/UEMA_Research/Source/Python/lem/native_ops.py line 3265",
+    "quote": "        if torch.cuda.is_available():",
+    "page_date": "file in release",
+    "confidence": "documented"
+   },
+   {
+    "claim": "Eye rendering creates one process-wide mujoco.GLContext and an MjrContext (OpenGL classic renderer) per model.",
+    "url": "D:/UEMA_Research/Source/Python/mimo_bridge/env.py lines 599 and 618",
+    "quote": "        _GL_CONTEXT = mujoco.GLContext(max(width, 64), max(height, 64))",
+    "page_date": "file in release",
+    "confidence": "documented"
+   },
+   {
+    "claim": "MIMo's vision module imports cv2 at module level, so opencv (absent from the iOS wheel index) is a hard import on the body side.",
+    "url": "D:/UEMA_Research/third_party/MIMo/mimo/mimo_infant/vision/vision.py line 15",
+    "quote": "import cv2",
+    "page_date": "file in release",
+    "confidence": "documented"
+   },
+   {
+    "claim": "The trainer's git-commit stamp uses subprocess, which fails on iOS.",
+    "url": "D:/UEMA_Research/Source/Python/mimo_bridge/train_mimo.py lines 1774-1776",
+    "quote": "        git_commit = subprocess.check_output([\"git\", \"rev-parse\", \"--short\", \"HEAD\"], cwd=_repo,",
+    "page_date": "file in release",
+    "confidence": "documented"
+   },
+   {
+    "claim": "The README's stop instructions already give a Linux-or-macOS form (pkill), showing the dashboard was written with macOS in view.",
+    "url": "D:/UEMA_Research/README.md lines 207-208",
+    "quote": "# Linux or macOS\npkill -f \"mimo_bridge.tools.movement_viewer service\"",
+    "page_date": "file in release",
+    "confidence": "documented"
+   },
+   {
+    "claim": "Inferred: a macOS port is a configuration change (CPU today; MPS after replacing torch.float64 tensors and the \"cuda\" autocast type), while an iOS port is a new single-process app (n_envs 1, no subprocess, Metal rendering for the eyes, iOS wheels built with cibuildwheel for mujoco, scipy and the rest, and no torch wheel exists, so either torch is compiled for iOS from source or inference moves to ExecuTorch).",
+    "url": "D:/UEMA_Research/Source/Python/mimo_bridge/train_mimo.py line 1934",
+    "quote": "            src = SingleEnvSource(**kw)",
+    "page_date": "file in release",
+    "confidence": "inferred"
+   }
+  ],
+  "open_questions": [
+   "Does PyTorch 2.6+ build from source for arm64-apple-ios at all (no wheel exists; the search found no documented iOS build of libtorch's Python bindings), or must the model run through ExecuTorch (inference only; training is a technical preview without weight serialization)?",
+   "Does MuJoCo's own CMake build target iOS (iMuJoCo shows a working app but the search found no MuJoCo issue or doc on an iOS target), and what replaces the OpenGL 1.5 classic renderer for the eye cameras: MuJoCo's filament renderer on Metal, or a custom Metal path?",
+   "What is the actual per-app memory budget on an iPhone 15/16 Pro under iOS 26 for an app with the increased-memory-limit entitlement (one June 2026 developer measurement says ~6144 MB; Apple publishes no number), and does a single-body run of the 18,131,745-parameter model fit under it (the measured Windows figure of ~30 GB committed memory covers eight world processes and is not a single-body measurement)?",
+   "Which of the 86 float64 references are on the training path (the 5 torch.float64 tensors found are in latent_body code_range/metrics, efference and hand_response) and need float32 for MPS?",
+   "Does torch.utils.cpp_extension.load_inline compile the native_ops helper on macOS with clang (the setup code is MSVC-only), or does every macOS run take the pure-Python fallback, and at what model-steps-per-second cost?",
+   "Are scipy, scikit-learn, opencv-python-headless, trimesh, rtree, networkx and the other binary dependencies buildable as iOS wheels with cibuildwheel, or can the MIMo body side be trimmed so that module-level imports such as cv2 in vision.py are not reached?",
+   "Does sustained compute on an iPhone trigger the serious/critical thermal states and how far does throughput fall (Apple documents the states, not the throttle amounts)?"
+  ]
+ },
+ {
+  "summary": "What is documented: MuJoCo's maintainers state support for Windows, Linux and macOS only (prebuilt libraries for x86_64 and arm64; macOS universal), and no official statement, build target, release asset or issue names iOS or iPadOS. The core engine is plain C with a CMake 3.16 / C++17 build that has an Emscripten (WebAssembly) branch, so the physics library is already compiled for a non-desktop target without OpenGL; nothing in the CMake files references iOS. The classic renderer (mjr_ functions, mjrContext) is written against desktop OpenGL 1.5 fixed-function calls through a bundled glad loader (glMatrixMode, glColor4f, glEnable in render_gl2.c), and the Python bindings' GL context has exactly three platform branches (Linux glx/egl/osmesa, Windows wgl, Darwin cgl) with no iOS branch; iOS provides only OpenGL ES, which Apple deprecated in iOS 12 (secondhand quote of Apple's notes). MuJoCo's newer Filament renderer declares a graphics-API enum with OPENGL (\"desktop, mobile (GLES), web (WebGL)\") and VULKAN, and no Metal value, even though the Filament engine itself supports Metal on iOS and macOS. What is reported by individual users: (1) liuliu/swift-mujoco (third-party, listed in MuJoCo's README) says it \"should work on macOS, Linux and iOS\" with GLContext only on macOS and Linux, pinned to a 2022-era MuJoCo 2.3 fork, last release \"3 years ago\"; (2) the radcli14/swift-mujoco fork says it vendors MuJoCo 3.9.0 and builds headless (physics, compiler and editing API only, no renderer, UI or simulate) for macOS, iOS device + simulator and visionOS, with mjUSEPLATFORMSIMD deliberately undefined because it pulls x86 AVX; (3) iMuJoCo, a free App Store app by XIAOCHEN WANG first released Mar 2, 2026, claims MuJoCo on iPhone/iPad \"with native Swift UI and Metal rendering\", requires iOS 26.0, has under 1k downloads and a stated but not yet delivered Apache 2.0 open-source plan; (4) mujoco-mac-metal is an experimental Metal stepping package for macOS Apple Silicon only, with rendering still through MuJoCo's OpenGL; (5) MuJoCo AR and mujoco-ar-viewer only stream poses or scenes to a phone or Vision Pro, they do not run MuJoCo on the device. So an iPhone app would use the headless C library plus its own Metal (or SceneKit/RealityKit) renderer fed from mjvScene geometry, which is what iMuJoCo reports doing; no Swift or Objective-C bindings are first-party. App Store rules: Guideline 2.5.2 forbids downloading or executing code that changes the app's features and requires apps to stay inside their container; DPLA 3.3.1(B) allows downloaded interpreted code only under three conditions. A MuJoCo model XML is a data file parsed by the bundled engine, not executable code, and neither Apple text names simulators or model files, so permissibility of run-time XML loading is an inference, not a documented ruling. On the UEMA_Research side: requirements.txt pins mujoco==3.3.0 and torch 2.6.0 from the CUDA 12.4 index, the README requires an NVIDIA card, the vision path renders through mujoco.GLContext plus mjr_ offscreen buffers (env.py), the model falls back to CPU when CUDA is absent (lem_model.py line 785), and the two JIT C++ extensions (native_ops.py includes cuda.h; vision_kernels.py is CUDA) both document pure-Python fallbacks. PyTorch's MPS device documents GPU training on macOS 15+ with no float64; ExecuTorch's on-device training is described by its own README as an experimental technical preview, so an iPhone training path is not documented.",
+  "findings": [
+   {
+    "claim": "MuJoCo's official documentation names Windows, Linux and macOS as the supported platforms and does not name iOS or iPadOS.",
+    "url": "https://mujoco.readthedocs.io/en/stable/programming/index.html",
+    "quote": "MuJoCo is a dynamic library compatible with Windows, Linux and macOS, which requires a processor with AVX instructions.",
+    "page_date": "not shown",
+    "confidence": "documented"
+   },
+   {
+    "claim": "Official prebuilt libraries exist for arm64, but only for Windows, Linux and macOS.",
+    "url": "https://mujoco.readthedocs.io/en/stable/programming/index.html",
+    "quote": "Pre-built dynamic libraries are available for x86_64 and arm64 machines running Windows, Linux, and macOS.",
+    "page_date": "not shown",
+    "confidence": "documented"
+   },
+   {
+    "claim": "The GitHub README's release-binary statement lists three operating systems and no iOS build; the Swift binding it lists is third-party.",
+    "url": "https://github.com/google-deepmind/mujoco",
+    "quote": "built for Linux (x86-64 and AArch64), Windows (x86-64 only), and macOS (universal)",
+    "page_date": "not shown",
+    "confidence": "documented"
+   },
+   {
+    "claim": "MuJoCo's README lists swift-mujoco under third-party bindings; the first-party bindings are Python, C#/Unity and JavaScript/WebAssembly.",
+    "url": "https://github.com/google-deepmind/mujoco",
+    "quote": "Swift: swift-mujoco",
+    "page_date": "not shown",
+    "confidence": "documented"
+   },
+   {
+    "claim": "The latest MuJoCo release at the time of this research is 3.17.0.",
+    "url": "https://github.com/google-deepmind/mujoco/releases",
+    "quote": "Version 3.17.0 (October 22, 2026)",
+    "page_date": "2026-10-22",
+    "confidence": "documented"
+   },
+   {
+    "claim": "Building MuJoCo from source needs CMake and a C++17 compiler; no CMake version beyond the file's minimum is documented.",
+    "url": "https://mujoco.readthedocs.io/en/stable/programming/index.html",
+    "quote": "To build MuJoCo from source, you will need CMake and a working C++17 compiler installed.",
+    "page_date": "not shown",
+    "confidence": "documented"
+   },
+   {
+    "claim": "The top-level CMakeLists.txt sets the minimum CMake to 3.16, has an Emscripten branch (a non-desktop target already handled), and contains no reference to iOS or CMAKE_SYSTEM_NAME.",
+    "url": "https://github.com/google-deepmind/mujoco/blob/main/CMakeLists.txt",
+    "quote": "option(MUJOCO_BUILD_SIMULATE \"Build simulate library for MuJoCo\" ON)",
+    "page_date": "not shown",
+    "confidence": "documented"
+   },
+   {
+    "claim": "The build fetches its dependencies over the network with FetchContent, which an iOS cross-compile must repeat for each dependency target.",
+    "url": "https://mujoco.readthedocs.io/en/stable/programming/index.html",
+    "quote": "MuJoCo's build system automatically fetches dependencies from upstream repositories over the Internet using CMake's FetchContent module.",
+    "page_date": "not shown",
+    "confidence": "documented"
+   },
+   {
+    "claim": "The classic renderer (the mjr_ functions) is written against desktop OpenGL 1.5, which iOS does not provide.",
+    "url": "https://mujoco.readthedocs.io/en/stable/programming/index.html",
+    "quote": "The classic rendering library is written in C and uses OpenGL 1.5.",
+    "page_date": "not shown",
+    "confidence": "documented"
+   },
+   {
+    "claim": "The mjr prefix is defined by the documentation as OpenGL rendering.",
+    "url": "https://mujoco.readthedocs.io/en/stable/programming/index.html",
+    "quote": "Data structure related to OpenGL rendering, for example mjrContext.",
+    "page_date": "not shown",
+    "confidence": "documented"
+   },
+   {
+    "claim": "The classic renderer source uses fixed-function OpenGL calls (matrix stack, immediate-mode color) loaded through a bundled glad header; OpenGL ES 2/3 has no glMatrixMode, so the file cannot compile against iOS's GL ES.",
+    "url": "https://raw.githubusercontent.com/google-deepmind/mujoco/main/src/render/classic/render_gl2.c",
+    "quote": "#include \"render/classic/glad/glad.h\"",
+    "page_date": "not shown",
+    "confidence": "documented"
+   },
+   {
+    "claim": "The classic renderer calls glMatrixMode(GL_PROJECTION), a fixed-function entry point absent from OpenGL ES 2.0 and later.",
+    "url": "https://raw.githubusercontent.com/google-deepmind/mujoco/main/src/render/classic/render_gl2.c",
+    "quote": "glMatrixMode(GL_PROJECTION);",
+    "page_date": "not shown",
+    "confidence": "documented"
+   },
+   {
+    "claim": "The renderer directory now holds three implementations: classic (OpenGL), filament, and noop.",
+    "url": "https://github.com/google-deepmind/mujoco/tree/main/src/render",
+    "quote": "classic",
+    "page_date": "not shown",
+    "confidence": "documented"
+   },
+   {
+    "claim": "The Python bindings' GL context has exactly three platform branches (Linux, Windows, Darwin=cgl) and no iOS branch; macOS offscreen rendering uses CGL.",
+    "url": "https://raw.githubusercontent.com/google-deepmind/mujoco/main/python/mujoco/rendering/classic/gl_context.py",
+    "quote": "from mujoco.cgl import GLContext as _GLContext",
+    "page_date": "not shown",
+    "confidence": "documented"
+   },
+   {
+    "claim": "The classic renderer requires the caller to set up a working OpenGL context first; the Python bindings provide mujoco.GLContext for that.",
+    "url": "https://mujoco.readthedocs.io/en/stable/python.html",
+    "quote": "The MuJoCo classic renderer expects users to set up a working OpenGL context before calling any of its",
+    "page_date": "not shown",
+    "confidence": "documented"
+   },
+   {
+    "claim": "On macOS the passive viewer needs the mjpython launcher because rendering must happen on the main thread.",
+    "url": "https://mujoco.readthedocs.io/en/stable/python.html",
+    "quote": "On MacOS, `launch_passive` requires that the user script is executed via a special `mjpython` launcher",
+    "page_date": "not shown",
+    "confidence": "documented"
+   },
+   {
+    "claim": "MuJoCo's Filament renderer declares only OpenGL (including mobile GLES) and Vulkan as graphics APIs; Metal is not an enum value.",
+    "url": "https://raw.githubusercontent.com/google-deepmind/mujoco/main/include/mujoco/mjrfilament.h",
+    "quote": "mjGRAPHICS_API_OPENGL,        // desktop, mobile (GLES), web (WebGL)",
+    "page_date": "not shown",
+    "confidence": "documented"
+   },
+   {
+    "claim": "The Filament renderer is a CMake option that is off by default.",
+    "url": "https://github.com/google-deepmind/mujoco/blob/main/CMakeLists.txt",
+    "quote": "option(MUJOCO_USE_FILAMENT \"Use filament rendering\" OFF)",
+    "page_date": "not shown",
+    "confidence": "documented"
+   },
+   {
+    "claim": "The Filament engine itself supports Metal on iOS and macOS, so a Metal path for MuJoCo's Filament renderer would be an addition on MuJoCo's side, not on Filament's.",
+    "url": "https://github.com/google/filament",
+    "quote": "Metal for macOS and iOS",
+    "page_date": "not shown",
+    "confidence": "documented"
+   },
+   {
+    "claim": "Filament runs on iOS 11 and later and prefers Metal there.",
+    "url": "https://github.com/google/filament",
+    "quote": "Filament for iOS supports both Metal (preferred) and OpenGL ES.",
+    "page_date": "not shown",
+    "confidence": "documented"
+   },
+   {
+    "claim": "MuJoCo's own Filament rendering changelog entries cover bug fixes and documentation in 3.12 to 3.17 and do not mention Metal, iOS or Apple.",
+    "url": "https://mujoco.readthedocs.io/en/stable/changelog.html",
+    "quote": "Added documentation for Filament rendering",
+    "page_date": "2026-10-14",
+    "confidence": "documented"
+   },
+   {
+    "claim": "Apple deprecated OpenGL ES in iOS 12 and directs graphics apps to Metal (quote taken from a 2018 article reproducing Apple's release notes; Apple's own page is script-rendered and did not return text to the fetch).",
+    "url": "https://gamefromscratch.com/apple-deprecate-opengl-in-ios-and-macos/",
+    "quote": "Apps built using OpenGL ES will continue to run in iOS 12, but Open GL ES is deprecated in iOS 12.",
+    "page_date": "2018-06-04",
+    "confidence": "reported-by-users"
+   },
+   {
+    "claim": "MuJoCo's core already compiles for a non-desktop target (WebAssembly via Emscripten), with rendering done outside MuJoCo (Three.js), which is the same split an iOS port would use.",
+    "url": "https://raw.githubusercontent.com/google-deepmind/mujoco/main/wasm/README.md",
+    "quote": "These bindings are still a WIP.",
+    "page_date": "not shown",
+    "confidence": "documented"
+   },
+   {
+    "claim": "The WebAssembly build pins a specific Emscripten SDK version.",
+    "url": "https://raw.githubusercontent.com/google-deepmind/mujoco/main/wasm/README.md",
+    "quote": "you will need Emscripten SDK version `4.0.10`",
+    "page_date": "not shown",
+    "confidence": "documented"
+   },
+   {
+    "claim": "liuliu/swift-mujoco (third-party) claims iOS support for the physics binding only; its GL context is not available on iOS.",
+    "url": "https://github.com/liuliu/swift-mujoco",
+    "quote": "MuJoCo for Swift should work on macOS, Linux and iOS.",
+    "page_date": "not shown",
+    "confidence": "reported-by-users"
+   },
+   {
+    "claim": "liuliu/swift-mujoco's rendering context excludes iOS.",
+    "url": "https://github.com/liuliu/swift-mujoco",
+    "quote": "The `GLContext` is only available on macOS and Linux.",
+    "page_date": "not shown",
+    "confidence": "reported-by-users"
+   },
+   {
+    "claim": "liuliu/swift-mujoco declares iOS 11 as a platform and pins a liuliu/mujoco fork at a fixed commit rather than an upstream MuJoCo release.",
+    "url": "https://raw.githubusercontent.com/liuliu/swift-mujoco/main/Package.swift",
+    "quote": "platforms: [.macOS(.v10_14), .iOS(.v11), .watchOS(.v3), .tvOS(.v10)],",
+    "page_date": "not shown",
+    "confidence": "documented"
+   },
+   {
+    "claim": "liuliu/swift-mujoco's last release is v2.3.1 from three years before the index page's date, and its main branch was last modified over a year before it; it tracks MuJoCo 2.3, not 3.x.",
+    "url": "https://swiftpackageindex.com/liuliu/swift-mujoco",
+    "quote": "Released 3 years ago",
+    "page_date": "2025-07-24",
+    "confidence": "documented"
+   },
+   {
+    "claim": "The author of swift-mujoco described rendering as a macOS/Linux GLFW feature when announcing the project.",
+    "url": "https://forums.swift.org/t/just-started-to-work-on-swift-mujoco/57306",
+    "quote": "render 3D physics (on macOS or Linux, with GLFW installed)",
+    "page_date": "2022-08-07",
+    "confidence": "reported-by-users"
+   },
+   {
+    "claim": "A fork, radcli14/swift-mujoco, reports a headless build of MuJoCo 3.9.0 for macOS, iOS device and simulator, and visionOS, with no renderer, UI or simulate app compiled.",
+    "url": "https://github.com/radcli14/swift-mujoco",
+    "quote": "The build is headless \u2014 the physics engine, model compiler and model-editing API only",
+    "page_date": "not shown",
+    "confidence": "reported-by-users"
+   },
+   {
+    "claim": "The radcli14 fork states which MuJoCo version it vendors.",
+    "url": "https://github.com/radcli14/swift-mujoco",
+    "quote": "upgrades the bundled MuJoCo C library from 2.3.0 to 3.9.0",
+    "page_date": "not shown",
+    "confidence": "reported-by-users"
+   },
+   {
+    "claim": "The radcli14 fork states its target platforms.",
+    "url": "https://github.com/radcli14/swift-mujoco",
+    "quote": "builds for macOS, iOS (device + simulator) and visionOS",
+    "page_date": "not shown",
+    "confidence": "reported-by-users"
+   },
+   {
+    "claim": "The radcli14 fork's manifest declares iOS 13 and visionOS 1 as platforms and vendors MuJoCo and its C dependencies as SwiftPM targets (no xcframework).",
+    "url": "https://raw.githubusercontent.com/radcli14/swift-mujoco/main/Package.swift",
+    "quote": "platforms: [.macOS(.v10_15), .iOS(.v13), .visionOS(.v1)],",
+    "page_date": "not shown",
+    "confidence": "documented"
+   },
+   {
+    "claim": "The radcli14 fork leaves MuJoCo's platform SIMD define off because it pulls in x86 AVX code, which is how the AVX requirement in the docs is avoided on arm64.",
+    "url": "https://raw.githubusercontent.com/radcli14/swift-mujoco/main/Package.swift",
+    "quote": "NOTE: mjUSEPLATFORMSIMD is deliberately NOT defined: it pulls in x86 AVX",
+    "page_date": "not shown",
+    "confidence": "documented"
+   },
+   {
+    "claim": "MuJoCo's top-level CMake only adds the platform SIMD define when MUJOCO_ENABLE_AVX_INTRINSICS is set, so the AVX dependence is a build option, not a hard requirement of the C sources.",
+    "url": "https://github.com/google-deepmind/mujoco/blob/main/CMakeLists.txt",
+    "quote": "if(MUJOCO_ENABLE_AVX_INTRINSICS)",
+    "page_date": "not shown",
+    "confidence": "documented"
+   },
+   {
+    "claim": "An App Store app, iMuJoCo, claims to run MuJoCo natively on iPhone and iPad with a Metal renderer; the claim is the developer's listing text.",
+    "url": "https://apps.apple.com/hr/app/imujoco/id6759394574",
+    "quote": "iMuJoCo brings the MuJoCo physics engine to iPhone and iPad with native Swift UI and Metal rendering.",
+    "page_date": "version 0.1.3 dated 7 Apr; copyright 2026",
+    "confidence": "reported-by-users"
+   },
+   {
+    "claim": "iMuJoCo requires iOS 26 and also lists iPadOS, macOS (Apple silicon) and visionOS 26.",
+    "url": "https://apps.apple.com/hr/app/imujoco/id6759394574",
+    "quote": "Requires iOS 26.0 or later.",
+    "page_date": "version 0.1.3 dated 7 Apr; copyright 2026",
+    "confidence": "documented"
+   },
+   {
+    "claim": "iMuJoCo's developer states an intention to open-source it; no repository was found, so the Metal renderer code is not available to read.",
+    "url": "https://apps.apple.com/hr/app/imujoco/id6759394574",
+    "quote": "iMuJoCo will be open-sourced under the Apache 2.0 license.",
+    "page_date": "version 0.1.3 dated 7 Apr; copyright 2026",
+    "confidence": "reported-by-users"
+   },
+   {
+    "claim": "iMuJoCo was first released on March 2, 2026, by XIAOCHEN WANG, in Developer Tools, with under 1,000 downloads and no ratings (third-party store-data site).",
+    "url": "https://mwm.ai/apps/imujoco/6759394574",
+    "quote": "XIAOCHEN WANG",
+    "page_date": "not shown",
+    "confidence": "reported-by-users"
+   },
+   {
+    "claim": "iMuJoCo passed App Store review with built-in models and UDP control, which shows a MuJoCo-based simulator is accepted on the store; whether it loads user XML at run time is not stated on its page.",
+    "url": "https://apps.apple.com/hr/app/imujoco/id6759394574",
+    "quote": "Built-in models including Unitree G1, H1, and more.",
+    "page_date": "version 0.1.3 dated 7 Apr; copyright 2026",
+    "confidence": "reported-by-users"
+   },
+   {
+    "claim": "mujoco-mac-metal is an experimental Metal physics-stepping package for macOS Apple silicon, pinned to MuJoCo 3.10.0 and Torch 2.9.1; it is a community project, not an official release.",
+    "url": "https://pypi.org/project/mujoco-mac-metal/",
+    "quote": "Experimental native Apple GPU physics profiles for MuJoCo 3.10.0, exposed as `mujoco_metal`",
+    "page_date": "2026-09-26",
+    "confidence": "reported-by-users"
+   },
+   {
+    "claim": "mujoco-mac-metal does not replace MuJoCo's renderer; its rendering is still OpenGL.",
+    "url": "https://pypi.org/project/mujoco-mac-metal/",
+    "quote": "Rendering still uses MuJoCo OpenGL.",
+    "page_date": "2026-09-26",
+    "confidence": "reported-by-users"
+   },
+   {
+    "claim": "mujoco-mac-metal covers validated model subsets only and is not a drop-in mj_step.",
+    "url": "https://pypi.org/project/mujoco-mac-metal/",
+    "quote": "These are explicitly validated model subsets, not full MuJoCo compatibility.",
+    "page_date": "2026-09-26",
+    "confidence": "reported-by-users"
+   },
+   {
+    "claim": "mujoco-mac-metal was validated on one machine; wider Mac hardware and iOS are outside its qualification.",
+    "url": "https://github.com/keeeeenw/mujoco-mac-metal",
+    "quote": "broader Mac hardware/OS validation remain outside this qualification",
+    "page_date": "not shown",
+    "confidence": "reported-by-users"
+   },
+   {
+    "claim": "MuJoCo AR is an iOS app that streams ARKit pose data into a MuJoCo running elsewhere; it does not run MuJoCo on the phone.",
+    "url": "https://pypi.org/project/mujoco-ar",
+    "quote": "MuJoCo AR",
+    "page_date": "not shown",
+    "confidence": "reported-by-users"
+   },
+   {
+    "claim": "mujoco-ar-viewer shows MuJoCo scenes on Apple Vision Pro by connecting a Python-side MuJoCo to a visionOS app over the network; the physics does not run on the headset.",
+    "url": "https://pypi.org/project/mujoco-ar-viewer/0.3.3/",
+    "quote": "Open App Store on VisionOS, and search for [mujocoARViewer].",
+    "page_date": "not shown",
+    "confidence": "reported-by-users"
+   },
+   {
+    "claim": "A Swift Package Index automated iOS build of a MuJoCo Swift package (version 2.3.1, Swift 5.7, Xcode 14.2) exists in the index, but the log page now returns 404 and the search summary reports it ended in an AccessDenied error, so it is not evidence of a successful iOS build.",
+    "url": "https://swiftpackageindex.com/builds/AF4594C1-54E9-487F-B0A3-ABF680465A15",
+    "quote": "HTTP 404 Not Found",
+    "page_date": "not shown",
+    "confidence": "reported-by-users"
+   },
+   {
+    "claim": "App Store Guideline 2.5.2 forbids downloading, installing or executing code that changes the app's functionality and requires apps to stay inside their container; it does not mention simulators, physics engines or model files.",
+    "url": "https://developer.apple.com/app-store/review/guidelines/",
+    "quote": "Apps should be self-contained in their bundles, and may not read or write data outside the designated container area, nor may they download, install, or execute code which introduces or changes features or functionality of the app, including other apps.",
+    "page_date": "2026-10-16",
+    "confidence": "documented"
+   },
+   {
+    "claim": "The App Store Review Guidelines page in force during this research is dated October 16, 2026.",
+    "url": "https://developer.apple.com/app-store/review/guidelines/",
+    "quote": "Last Updated: [October 16, 2026]",
+    "page_date": "2026-10-16",
+    "confidence": "documented"
+   },
+   {
+    "claim": "Guideline 4.7 permits certain non-embedded software (HTML5/JavaScript mini apps, streaming games, plug-ins, emulator game downloads) under extra rules; a physics model file is not one of its named categories.",
+    "url": "https://developer.apple.com/app-store/review/guidelines/",
+    "quote": "Apps may offer certain software that is not embedded in the binary, specifically HTML5 and JavaScript mini apps and mini games, streaming games, chatbots, and plug-ins.",
+    "page_date": "2026-10-16",
+    "confidence": "documented"
+   },
+   {
+    "claim": "The Apple Developer Program License Agreement section 3.3.1(B) allows downloaded interpreted code only under three conditions (primary purpose unchanged, no bypass of signing/sandbox, no storefront); a MuJoCo XML model is data parsed by the bundled engine and is not interpreted code in this sense, which is an inference about the text.",
+    "url": "https://developer.apple.com/support/terms/apple-developer-program-license-agreement/",
+    "quote": "Interpreted code may be downloaded to an Application but only so long as such code: (a) does not change the primary purpose of the Application by providing features or functionality that are inconsistent with the intended and advertised purpose of the Application (b) does not bypass signing, sandbox, or other security features of the OS; and (c) for Applications distributed on the App Store, does not create a store or storefront for other Applications.",
+    "page_date": "not shown",
+    "confidence": "documented"
+   },
+   {
+    "claim": "Apple has enforced 2.5.2 against apps that download and run executable code (the iSH terminal case), which is the kind of behavior the rule targets rather than data-file loading.",
+    "url": "https://ptkd.com/journal/guideline-2-5-2-downloading-scripts-without-review",
+    "quote": "Apple believes iSH is not compliant with section 2.5.2 of the App Store Review Guidelines, which governs applications which download and run executable code.",
+    "page_date": "not shown",
+    "confidence": "reported-by-users"
+   },
+   {
+    "claim": "PyTorch documents GPU training on macOS through the MPS device (Metal), which gives a macOS training path for the UEMA model without CUDA.",
+    "url": "https://docs.pytorch.org/docs/2.15/notes/mps.html",
+    "quote": "mps device enables high-performance training on GPU for macOS devices with Metal programming framework.",
+    "page_date": "not shown",
+    "confidence": "documented"
+   },
+   {
+    "claim": "The MPS device has no float64; any double-precision computation in the model must run on the CPU.",
+    "url": "https://docs.pytorch.org/docs/2.15/notes/mps.html",
+    "quote": "The MPS backend does not support torch.float64 (torch.double) or torch.complex128 (torch.cdouble)",
+    "page_date": "not shown",
+    "confidence": "documented"
+   },
+   {
+    "claim": "PyTorch's MPS sample code checks for macOS 15.0 or later.",
+    "url": "https://docs.pytorch.org/docs/2.15/notes/mps.html",
+    "quote": "the current macOS version is not 15.0+ and/or you do not have an MPS-enabled device on this machine.",
+    "page_date": "not shown",
+    "confidence": "documented"
+   },
+   {
+    "claim": "ExecuTorch's on-device training (the iPhone-side training path) is described by its own README as experimental, so training the UEMA model on an iPhone is not a documented capability.",
+    "url": "https://github.com/pytorch/executorch/tree/main/extension/training",
+    "quote": "This feature is experimental and under heavy active development, all the APIs are subject to change",
+    "page_date": "not shown",
+    "confidence": "documented"
+   },
+   {
+    "claim": "ExecuTorch training cannot yet save trained weights natively.",
+    "url": "https://github.com/pytorch/executorch/tree/main/extension/training",
+    "quote": "We don't have a way yet to serialize the newly trained weights natively in ExecuTorch.",
+    "page_date": "not shown",
+    "confidence": "documented"
+   },
+   {
+    "claim": "ExecuTorch's MPS inference delegate is deprecated and users are pointed to CoreML (iOS/macOS) or Metal (macOS desktop) backends.",
+    "url": "https://docs.pytorch.org/executorch/stable/ios-mps.html",
+    "quote": "MPS backend is deprecated as of ExecuTorch 1.2 and will be removed in ExecuTorch 1.4",
+    "page_date": "not shown",
+    "confidence": "documented"
+   },
+   {
+    "claim": "UEMA_Research pins MuJoCo 3.3.0.",
+    "url": "D:/UEMA_Research/requirements.txt line 9",
+    "quote": "mujoco==3.3.0",
+    "page_date": "not shown",
+    "confidence": "documented"
+   },
+   {
+    "claim": "UEMA_Research installs torch from the CUDA 12.4 wheel index; a macOS or iOS build needs a different torch build (macOS arm64 wheels with MPS, or ExecuTorch on iOS).",
+    "url": "D:/UEMA_Research/requirements.txt line 3",
+    "quote": "#   pip install torch==2.6.0 --index-url https://download.pytorch.org/whl/cu124",
+    "page_date": "not shown",
+    "confidence": "documented"
+   },
+   {
+    "claim": "The release README requires an NVIDIA graphics card.",
+    "url": "D:/UEMA_Research/README.md line 123",
+    "quote": "- An NVIDIA graphics card with a CUDA 12.4 capable driver for the pinned `torch==2.6.0+cu124`",
+    "page_date": "not shown",
+    "confidence": "documented"
+   },
+   {
+    "claim": "The release README's measured laptop resume used an RTX 4070 and 30 GB of committed memory for the trainer plus eight world processes, a footprint an iPhone does not have.",
+    "url": "D:/UEMA_Research/README.md line 125",
+    "quote": "- Measured on Oct 22, 2026 by resuming a clone for 100 model steps on a laptop RTX 4070 (8 GB): the graphics",
+    "page_date": "2026-10-22",
+    "confidence": "documented"
+   },
+   {
+    "claim": "The vision sense in UEMA_Research is rendered through MuJoCo's classic OpenGL path: one mujoco.GLContext per worker process.",
+    "url": "D:/UEMA_Research/Source/Python/mimo_bridge/env.py line 599",
+    "quote": "        _GL_CONTEXT = mujoco.GLContext(max(width, 64), max(height, 64))",
+    "page_date": "not shown",
+    "confidence": "documented"
+   },
+   {
+    "claim": "The eye renderer builds an mjrContext and renders offscreen with mjr_ calls, which are the OpenGL 1.5 functions an iOS build does not have.",
+    "url": "D:/UEMA_Research/Source/Python/mimo_bridge/env.py line 619",
+    "quote": "        mujoco.mjr_setBuffer(mujoco.mjtFramebuffer.mjFB_OFFSCREEN.value, self.ctx)",
+    "page_date": "not shown",
+    "confidence": "documented"
+   },
+   {
+    "claim": "The eye renderer's docstring records that the shared context exists because mujoco.Renderer creates a GLFW window per build; on macOS this is the CGL/GLFW path, on iOS neither exists.",
+    "url": "D:/UEMA_Research/Source/Python/mimo_bridge/env.py line 591",
+    "quote": "    \"\"\"The process-wide GL context. mujoco.Renderer makes a brand-new GLFW window + context",
+    "page_date": "not shown",
+    "confidence": "documented"
+   },
+   {
+    "claim": "The model's device choice falls back to CPU when CUDA is absent; it does not select MPS, so a macOS port that wants the GPU must change this line.",
+    "url": "D:/UEMA_Research/Source/Python/mimo_bridge/lem_model.py line 785",
+    "quote": "        self.device = torch.device(device if torch.cuda.is_available() else \"cpu\")",
+    "page_date": "not shown",
+    "confidence": "documented"
+   },
+   {
+    "claim": "The trainer's graphics-card memory statistic is guarded by a CUDA check and reads None otherwise.",
+    "url": "D:/UEMA_Research/Source/Python/mimo_bridge/train_mimo.py line 2351",
+    "quote": "                                      if torch.cuda.is_available() and \"cuda\" in str(args.device) else None),",
+    "page_date": "not shown",
+    "confidence": "documented"
+   },
+   {
+    "claim": "The native C++ extension includes CUDA headers directly, so it cannot compile on Apple platforms as written.",
+    "url": "D:/UEMA_Research/Source/Python/lem/native_ops.py line 85",
+    "quote": "#include <cuda.h>",
+    "page_date": "not shown",
+    "confidence": "documented"
+   },
+   {
+    "claim": "The native C++ extension documents a pure-Python fallback when compilation fails, which is the path a non-CUDA build takes.",
+    "url": "D:/UEMA_Research/Source/Python/lem/native_ops.py line 11",
+    "quote": "Falls back to pure-Python implementations if compilation fails.",
+    "page_date": "not shown",
+    "confidence": "documented"
+   },
+   {
+    "claim": "The native extension's own header states it holds no CUDA kernels; its CUDA use is stream synchronization and ATen calls.",
+    "url": "D:/UEMA_Research/Source/Python/lem/native_ops.py line 6",
+    "quote": "JIT-compiled via torch.utils.cpp_extension.load_inline().  Pure C++ (no CUDA",
+    "page_date": "not shown",
+    "confidence": "documented"
+   },
+   {
+    "claim": "The vision tokenizer has a CUDA kernel for crop, color conversion and patch reshape.",
+    "url": "D:/UEMA_Research/Source/Python/tokenizer/modalities/vision_kernels.py line 4",
+    "quote": "Vision CUDA kernels \u2014 fused crop + BGRA->RGB + uint8->float32 + patch reshape.",
+    "page_date": "not shown",
+    "confidence": "documented"
+   },
+   {
+    "claim": "The vision CUDA kernel documents a fallback to the PyTorch-op path when nvcc is absent, so no CUDA port is required for correctness, only for speed.",
+    "url": "D:/UEMA_Research/Source/Python/tokenizer/modalities/vision_kernels.py line 10",
+    "quote": "Falls back to None if nvcc is unavailable, letting vision.py use the original path.",
+    "page_date": "not shown",
+    "confidence": "documented"
+   },
+   {
+    "claim": "Across the release, 71 Python files mention cuda (grep count on D:/UEMA_Research/Source at research time); the two JIT extensions are the only CUDA-specific C/C++ source.",
+    "url": "D:/UEMA_Research/Source/Python/lem/native_ops.py line 3151",
+    "quote": "        from torch.utils.cpp_extension import load_inline",
+    "page_date": "not shown",
+    "confidence": "documented"
+   },
+   {
+    "claim": "MIMo's own environment renders through gymnasium's MujocoRenderer, a second OpenGL dependency an iOS port must replace or disable.",
+    "url": "D:/UEMA_Research/third_party/MIMo/mimo/mimo_infant/simulation/envs/mimo_env.py line 698",
+    "quote": "        self.mujoco_renderer = MujocoRenderer(",
+    "page_date": "not shown",
+    "confidence": "documented"
+   },
+   {
+    "claim": "The release pins MIMo at a fixed commit with a five-file patch; MIMo's README in the release states no platform restriction.",
+    "url": "D:/UEMA_Research/third_party/MIMo/README.md line 4",
+    "quote": "https://github.com/trieschlab/MIMo at commit `f2be26b` (\"Renamed to Mimo3\") of its `v3` branch, with",
+    "page_date": "2026-10-22",
+    "confidence": "documented"
+   },
+   {
+    "claim": "The common CMake toolchain for iPhone targets is leetal/ios-cmake with -DPLATFORM=OS64 for arm64 devices; no MuJoCo-specific iOS toolchain instructions exist.",
+    "url": "https://github.com/leetal/ios-cmake",
+    "quote": "OS64 - to build for iOS (arm64 only)",
+    "page_date": "not shown",
+    "confidence": "documented"
+   },
+   {
+    "claim": "The MuJoCo simulate app links Cocoa and GLFW on Apple platforms, so the desktop UI is macOS-only and not part of any iOS build.",
+    "url": "https://raw.githubusercontent.com/google-deepmind/mujoco/main/simulate/CMakeLists.txt",
+    "quote": "target_link_libraries(libmujoco_simulate PUBLIC \"-framework Cocoa\")",
+    "page_date": "not shown",
+    "confidence": "documented"
+   },
+   {
+    "claim": "MuJoCo's visualization layer (mjvScene) is independent of the graphics library, which is the hook a Metal renderer on iOS would consume.",
+    "url": "https://mujoco.readthedocs.io/en/stable/programming/visualization.html",
+    "quote": "MuJoCo has a native 3D visualization layer that is independent of any graphics library.",
+    "page_date": "not shown",
+    "confidence": "documented"
+   },
+   {
+    "claim": "A MuJoCo app on iPhone would draw from mjvScene with its own Metal code (as iMuJoCo reports) or add a Metal backend to MuJoCo's Filament renderer; neither is first-party today.",
+    "url": "https://mujoco.readthedocs.io/en/stable/programming/visualization.html",
+    "quote": "The classic OpenGL renderer consumes the entire mjvScene on every frame",
+    "page_date": "not shown",
+    "confidence": "inferred"
+   }
+  ],
+  "open_questions": [
+   "Apple's own OpenGL ES deprecation text was obtained only secondhand (gamefromscratch, 2018); Apple's developer pages returned no body text to the fetch. A direct quote from developer.apple.com remains to be captured.",
+   "iMuJoCo's source is not published; whether it loads user-supplied MuJoCo XML at run time, which MuJoCo version it embeds, and how its Metal renderer consumes mjvScene are unverified.",
+   "The radcli14/swift-mujoco fork's claim of building MuJoCo 3.9.0 for iOS device, simulator and visionOS is a README statement; no CI build log or release binary was found to confirm it.",
+   "No Apple ruling, forum answer or guideline text was found that addresses a physics simulator loading model XML files at run time; the conclusion that XML is data rather than executable code under 2.5.2 and DPLA 3.3.1(B) is an inference.",
+   "MuJoCo's Filament renderer documentation page (added in 3.16.0 per the changelog) was not found at a guessed URL; its platform statements, if any, are unread.",
+   "Whether any part of the UEMA_Research model uses float64 tensors (which the PyTorch MPS device rejects) was not measured; a grep for float64/double across Source/Python would answer it.",
+   "Whether MuJoCo 3.3.0 (the release's pin) or a 3.x headless build runs the MIMo body at the trainer's rate on an A-series or M-series chip is unmeasured; the only measured figure is the README's RTX 4070 laptop resume (0.41 to 0.46 model steps per second with eight bodies).",
+   "The MuJoCo 3.17.0 release asset list was collapsed on the releases page; the exact macOS archive name (universal2) was not read.",
+   "ExecuTorch on-device training on iOS: no document was found stating it works on iPhone with any GPU delegate; only the experimental extension/training README (platform unspecified) was read."
+  ]
+ },
+ {
+  "summary": "MuJoCo on macOS Apple Silicon in 2026: the physics engine is CPU C code shipped as native arm64 wheels (3.17.0, Oct 22, 2026: cp310-cp315 macosx_11_0_arm64 only; the pinned 3.3.0 also has a cp313 arm64 wheel) and as a universal2 DMG holding MuJoCo.app (simulate) and mujoco.framework for Xcode. Headless offscreen rendering works on macOS through the Apple CGL backend, which the Python bindings pick by default on Darwin (MUJOCO_GL valid values on macOS: cgl, glfw, on/off forms; egl/osmesa are Linux-only), and since 2.3.4 it is not restricted to the main thread; a context may be current on one thread at a time. The GLFW backend creates an invisible window and the interactive viewer needs mjpython (main-thread rule); an open Sept 2026 issue shows NSWindow-off-main-thread failures for the native viewer. UEMA_Research's env.py already uses mujoco.GLContext directly (one context per spawned worker process), which maps onto CGL on macOS without change; only phase0/run_benchmark.py forces MUJOCO_GL=glfw. MJX-JAX lists Apple Silicon as supported, but JAX's own docs say Mac GPU is not supported/experimental, Apple's jax-metal is experimental with no float64, and user reports show MJX failing on Metal with \"failed to legalize operation 'mhlo.reduce'\" and falling back to the JAX CPU backend; UEMA_Research does not use MJX. The project's GPU dependence is in PyTorch, not MuJoCo: requirements pin torch==2.6.0+cu124, the README requires an NVIDIA card, 168 torch.cuda references in 38 files, 163 literal \"cuda\" device strings, a C++ extension built with_cuda=True linking cuda.lib and MSVC detection, and nvcc vision kernels; both native parts fall back to Python paths, and lem_model.py falls to CPU (never MPS) when CUDA is absent. torch 2.6.0 has macOS arm64 wheels (CPU+MPS); MPS lacks float64, which attention_cap.py uses. iOS: MuJoCo's CMakeLists has macOS framework options but no iOS lines; a third-party Swift binding claims iOS without GLContext; Python on iOS is embedded-only and cannot use subprocessing or multiprocessing, which the trainer's PoolSource (spawned worker processes) depends on. No official MuJoCo physics benchmark on Apple Silicon was found.",
+  "findings": [
+   {
+    "claim": "MuJoCo 3.17.0 (the current release) publishes macOS pip wheels only for arm64 (macosx_11_0_arm64), for CPython 3.10 through 3.15 including free-threaded builds; no x86_64 or universal2 macOS wheel exists.",
+    "url": "https://pypi.org/pypi/mujoco/3.17.0/json",
+    "quote": "mujoco-3.17.0-cp313-cp313-macosx_11_0_arm64.whl",
+    "page_date": "2026-10-22T23:57:35 (wheel upload_time)",
+    "confidence": "documented"
+   },
+   {
+    "claim": "The version UEMA_Research pins, mujoco==3.3.0, has a CPython 3.13 macOS arm64 wheel on PyPI (and x86_64 macOS wheels), so the pinned version installs natively on Apple Silicon.",
+    "url": "https://pypi.org/pypi/mujoco/3.3.0/json",
+    "quote": "mujoco-3.3.0-cp313-cp313-macosx_11_0_arm64.whl",
+    "page_date": "2025-02-27T19:15:43 (wheel upload_time)",
+    "confidence": "documented"
+   },
+   {
+    "claim": "UEMA_Research pins mujoco 3.3.0 in its requirements file.",
+    "url": "D:/UEMA_Research/requirements.txt line 9",
+    "quote": "mujoco==3.3.0",
+    "page_date": "",
+    "confidence": "documented"
+   },
+   {
+    "claim": "The MuJoCo 3.17.0 GitHub release ships one macOS binary, a universal2 DMG (arm64 plus x86_64), beside Linux x86_64/aarch64 tarballs and a Windows x86_64 zip.",
+    "url": "https://api.github.com/repos/google-deepmind/mujoco/releases/tags/3.17.0",
+    "quote": "mujoco-3.17.0-macos-universal2.dmg",
+    "page_date": "2026-10-22T21:45:20Z (published_at)",
+    "confidence": "documented"
+   },
+   {
+    "claim": "The macOS DMG contains MuJoCo.app (the simulate GUI) and mujoco.framework, and the framework can be imported as an Xcode framework dependency.",
+    "url": "https://mujoco.readthedocs.io/en/stable/programming/index.html",
+    "quote": "On macOS, the DMG disk image contains `MuJoCo.app`, which you can double-click to launch the `simulate` GUI.",
+    "page_date": "",
+    "confidence": "documented"
+   },
+   {
+    "claim": "MuJoCo's documentation states that Xcode projects can take mujoco.framework as a framework dependency.",
+    "url": "https://mujoco.readthedocs.io/en/stable/programming/index.html",
+    "quote": "If you are using Xcode, you can import it as a framework dependency on your project.",
+    "page_date": "",
+    "confidence": "documented"
+   },
+   {
+    "claim": "MuJoCo's physics engine is written in C and ships pre-built dynamic libraries for arm64 macOS; the programming guide names no GPU requirement.",
+    "url": "https://mujoco.readthedocs.io/en/stable/programming/index.html",
+    "quote": "Pre-built dynamic libraries are available for x86_64 and arm64 machines running Windows, Linux, and macOS.",
+    "page_date": "",
+    "confidence": "documented"
+   },
+   {
+    "claim": "The simulator is C code with a shared-memory C API (no GPU dependency is stated anywhere on the programming page).",
+    "url": "https://mujoco.readthedocs.io/en/stable/programming/index.html",
+    "quote": "The simulator (or physics engine) is written in C.",
+    "page_date": "",
+    "confidence": "documented"
+   },
+   {
+    "claim": "The programming guide still carries a sentence saying MuJoCo requires AVX instructions, even though arm64 builds exist; the AVX path is a CMake option, not a hard requirement.",
+    "url": "https://mujoco.readthedocs.io/en/stable/programming/index.html",
+    "quote": "MuJoCo is a dynamic library compatible with Windows, Linux and macOS, which requires a processor with AVX instructions.",
+    "page_date": "",
+    "confidence": "documented"
+   },
+   {
+    "claim": "MuJoCo's CMake build has AVX intrinsics behind an option, and a macOS framework build option; the file names no iOS, IPHONE or CMAKE_OSX_ARCHITECTURES setting, and the main branch's project version reads 4.0.0.",
+    "url": "https://raw.githubusercontent.com/google-deepmind/mujoco/main/CMakeLists.txt",
+    "quote": "if(MUJOCO_ENABLE_AVX_INTRINSICS)",
+    "page_date": "",
+    "confidence": "documented"
+   },
+   {
+    "claim": "MuJoCo's CMake build has a dedicated macOS frameworks branch.",
+    "url": "https://raw.githubusercontent.com/google-deepmind/mujoco/main/CMakeLists.txt",
+    "quote": "if(APPLE AND MUJOCO_BUILD_MACOS_FRAMEWORKS)",
+    "page_date": "",
+    "confidence": "documented"
+   },
+   {
+    "claim": "MuJoCo has shipped native Apple Silicon universal binaries since version 2.1.1 (December 2021).",
+    "url": "https://mujoco.readthedocs.io/en/stable/changelog.html",
+    "quote": "MacOS packaging. We now ship Universal binaries that natively support both Apple Silicon and Intel CPUs.",
+    "page_date": "Version 2.1.1 (Dec. 16, 2021)",
+    "confidence": "documented"
+   },
+   {
+    "claim": "The only changelog performance note for non-AVX (which includes arm64) builds is in 2.3.1: 14% faster mj_solveLD and 50% faster mju_dotSparse; no Apple-Silicon-specific physics performance figure exists in MuJoCo's official docs or changelog.",
+    "url": "https://mujoco.readthedocs.io/en/stable/changelog.html",
+    "quote": "Performance improvements for non-AVX configurations:",
+    "page_date": "Version 2.3.1 (December 6, 2022)",
+    "confidence": "documented"
+   },
+   {
+    "claim": "The Python bindings refuse to run under Rosetta: an x86_64 Python on an Apple Silicon Mac raises ImportError; a native arm64 Python is required.",
+    "url": "https://raw.githubusercontent.com/google-deepmind/mujoco/main/python/mujoco/__init__.py",
+    "quote": "You are running an x86_64 build of Python on an Apple Silicon machine. This is not supported by MuJoCo.",
+    "page_date": "",
+    "confidence": "documented"
+   },
+   {
+    "claim": "The MUJOCO_GL environment variable is read once at import; valid values are the on/off forms plus 'glfw', and per platform Linux adds 'glx', 'egl', 'osmesa', Windows adds 'wgl', Darwin adds 'cgl'; an unknown value raises RuntimeError 'invalid value for environment variable MUJOCO_GL'. EGL and OSMesa are Linux-only values.",
+    "url": "https://raw.githubusercontent.com/google-deepmind/mujoco/main/python/mujoco/rendering/classic/gl_context.py",
+    "quote": "_MUJOCO_GL = os.environ.get('MUJOCO_GL', '').lower().strip()",
+    "page_date": "",
+    "confidence": "documented"
+   },
+   {
+    "claim": "On macOS with MUJOCO_GL unset, the bindings try the CGL backend first and fall back to GLFW on AttributeError or OSError; MUJOCO_GL=cgl selects CGL explicitly.",
+    "url": "https://raw.githubusercontent.com/google-deepmind/mujoco/main/python/mujoco/rendering/classic/gl_context.py",
+    "quote": "from mujoco.cgl import GLContext as _GLContext",
+    "page_date": "",
+    "confidence": "documented"
+   },
+   {
+    "claim": "The CGL backend creates an offscreen, hardware-accelerated OpenGL context on macOS with no window (pixel format includes CGLPFAAccelerated; context made current via CGLSetCurrentContext).",
+    "url": "https://raw.githubusercontent.com/google-deepmind/mujoco/main/python/mujoco/cgl/__init__.py",
+    "quote": "\"\"\"An Apple CGL context for offscreen rendering on macOS.\"\"\"",
+    "page_date": "",
+    "confidence": "documented"
+   },
+   {
+    "claim": "Since MuJoCo 2.3.4, offscreen rendering on macOS is not restricted to the main thread, because the context is made with the Core OpenGL (CGL) API.",
+    "url": "https://mujoco.readthedocs.io/en/stable/changelog.html",
+    "quote": "Offscreen rendering on macOS is no longer restricted to the main thread.",
+    "page_date": "Version 2.3.4 (April 20, 2023)",
+    "confidence": "documented"
+   },
+   {
+    "claim": "A GL context can be current on one thread at a time and all rendering calls must stay on that thread; this governs any design that renders from several threads in one process.",
+    "url": "https://mujoco.readthedocs.io/en/stable/python.html",
+    "quote": "Note that a context can only be made current on one thread at any given time, and all subsequent rendering calls must be made on the same thread.",
+    "page_date": "",
+    "confidence": "documented"
+   },
+   {
+    "claim": "The Python bindings provide mujoco.GLContext for offscreen rendering; this is the class UEMA_Research's env.py calls directly.",
+    "url": "https://mujoco.readthedocs.io/en/stable/python.html",
+    "quote": "a basic class `mujoco.GLContext` that helps users set up such a context for offscreen rendering.",
+    "page_date": "",
+    "confidence": "documented"
+   },
+   {
+    "claim": "The interactive passive viewer on macOS requires the mjpython launcher because macOS requires the main thread to do the rendering (interactive viewer only; not offscreen rendering).",
+    "url": "https://mujoco.readthedocs.io/en/stable/python.html",
+    "quote": "On MacOS, `launch_passive` requires that the user script is executed via a special `mjpython` launcher,",
+    "page_date": "",
+    "confidence": "documented"
+   },
+   {
+    "claim": "The stated reason for mjpython is a macOS main-thread limitation on rendering.",
+    "url": "https://mujoco.readthedocs.io/en/stable/python.html",
+    "quote": "this is needed to circumvent a platform limitation which requires the main thread to be one that does the rendering.",
+    "page_date": "",
+    "confidence": "documented"
+   },
+   {
+    "claim": "The GLFW backend (MUJOCO_GL=glfw) creates an invisible GLFW window to get its context, so it depends on the windowing system even when used offscreen.",
+    "url": "https://raw.githubusercontent.com/google-deepmind/mujoco/main/python/mujoco/glfw/__init__.py",
+    "quote": "glfw.create_window(width=max_width, height=max_height, title='Invisible window', monitor=None, share=None)",
+    "page_date": "",
+    "confidence": "documented"
+   },
+   {
+    "claim": "An open MuJoCo issue (mujoco 3.13.0, Sep 14, 2026) reports the Studio native viewer failing on macOS because its window is created off the main thread; a fix PR #3697 is open, so window-based viewers on macOS still have a main-thread constraint.",
+    "url": "https://github.com/google-deepmind/mujoco/issues/3579",
+    "quote": "NSWindow should only be instantiated on the main thread!",
+    "page_date": "Sep 14, 2026",
+    "confidence": "reported-by-users"
+   },
+   {
+    "claim": "MuJoCo 3.13.0 added a headless offscreen rendering sample that saves a PNG and supports both Filament and classic OpenGL backends.",
+    "url": "https://mujoco.readthedocs.io/en/stable/changelog.html",
+    "quote": "a headless offscreen rendering sample that saves an image to a PNG image",
+    "page_date": "Version 3.13.0 (September 8, 2026)",
+    "confidence": "documented"
+   },
+   {
+    "claim": "MuJoCo 3.3.1 fixed a macOS-specific shadow flicker in the classic renderer; the pinned 3.3.0 predates this fix, so eye renders on a Mac at 3.3.0 carry that known defect.",
+    "url": "https://mujoco.readthedocs.io/en/stable/changelog.html",
+    "quote": "Fixed a bug that caused shadow rendering to flicker on platforms (e.g., MacOS) that do not support ARB_clip_control.",
+    "page_date": "Version 3.3.1 (Apr 9, 2025)",
+    "confidence": "documented"
+   },
+   {
+    "claim": "MuJoCo's own parallelism is CPU threads: within-step multithreading through a thread pool, and sampling parallelism with one mjData per thread; simulation is serial over time.",
+    "url": "https://mujoco.readthedocs.io/en/stable/programming/simulation.html",
+    "quote": "The key idea is to create one mjData for each thread, and then use it for all per-thread computations.",
+    "page_date": "",
+    "confidence": "documented"
+   },
+   {
+    "claim": "MuJoCo's docs state within-step multi-threading support (CPU thread pool).",
+    "url": "https://mujoco.readthedocs.io/en/stable/programming/simulation.html",
+    "quote": "MuJoCo has support for within-step multi-threading.",
+    "page_date": "",
+    "confidence": "documented"
+   },
+   {
+    "claim": "MJX-JAX officially lists Apple Silicon among its platforms; MJX-Warp targets NVIDIA GPUs only.",
+    "url": "https://mujoco.readthedocs.io/en/stable/mjx.html",
+    "quote": "via the JAX framework (AMD GPUs, Apple Silicon, and Google Cloud TPUs)",
+    "page_date": "",
+    "confidence": "documented"
+   },
+   {
+    "claim": "MJX-Warp is NVIDIA-only.",
+    "url": "https://mujoco.readthedocs.io/en/stable/mjx.html",
+    "quote": "optimizes performance specifically for NVIDIA GPUs",
+    "page_date": "",
+    "confidence": "documented"
+   },
+   {
+    "claim": "JAX's installation guide says Mac GPU is not supported and points Mac users to the CPU install; its platform table marks Apple GPU on Mac aarch64 as experimental.",
+    "url": "https://docs.jax.dev/en/latest/installation.html",
+    "quote": "JAX is not supported on Mac/OSX GPU; instead use the standard [CPU installation](#install-cpu) commands.",
+    "page_date": "",
+    "confidence": "documented"
+   },
+   {
+    "claim": "Apple's jax-metal plug-in is experimental, requires macOS Sonoma 14.4+ and jaxlib >= 0.4.26 (version 0.1.0), and does not support float64.",
+    "url": "https://developer.apple.com/metal/jax/",
+    "quote": "The Metal plug-in is experimental and not all JAX functionality may be supported.",
+    "page_date": "",
+    "confidence": "documented"
+   },
+   {
+    "claim": "jax-metal lists float64 among unsupported data types.",
+    "url": "https://developer.apple.com/metal/jax/",
+    "quote": "Unsupported data types: np.float64, np.complex64, np.complex128",
+    "page_date": "",
+    "confidence": "documented"
+   },
+   {
+    "claim": "A user report says running the MJX tutorials after installing jax-metal fails to compile.",
+    "url": "https://github.com/hello-robot/stretch_mujoco/issues/40",
+    "quote": "error: failed to legalize operation 'mhlo.reduce'",
+    "page_date": "March 27, 2025",
+    "confidence": "reported-by-users"
+   },
+   {
+    "claim": "A 2026 benchmark page on an M4 Max reports Metal unsupported for MJX and runs MJX on the JAX CPU backend instead (Humanoid, 128 parallel rollouts: 114,841 steps/s on CPU).",
+    "url": "https://github.com/robomotic/sim-benchmarks/blob/main/MACMJX.md",
+    "quote": "Metal GPU acceleration not supported (XLA limitation: `mhlo.reduce` operation)",
+    "page_date": "\u00a9 2026 footer; no benchmark date",
+    "confidence": "reported-by-users"
+   },
+   {
+    "claim": "UEMA_Research does not use MJX: a case-insensitive grep for 'mjx' over Source and third_party Python files returns no file.",
+    "url": "D:/UEMA_Research (grep -rln -i mjx Source third_party --include=*.py)",
+    "quote": "(no files matched)",
+    "page_date": "",
+    "confidence": "documented"
+   },
+   {
+    "claim": "UEMA_Research's eye renderer builds one process-wide mujoco.GLContext per worker process and renders into it with mjr_ calls, instead of mujoco.Renderer; on macOS this becomes the CGL offscreen context by default with no code change.",
+    "url": "D:/UEMA_Research/Source/Python/mimo_bridge/env.py line 599",
+    "quote": "_GL_CONTEXT = mujoco.GLContext(max(width, 64), max(height, 64))",
+    "page_date": "",
+    "confidence": "documented"
+   },
+   {
+    "claim": "env.py's comment records why it avoids mujoco.Renderer: a new GLFW window and context per build exhausted an Intel iGPU driver across 20 worker processes.",
+    "url": "D:/UEMA_Research/Source/Python/mimo_bridge/env.py line 591",
+    "quote": "The process-wide GL context. mujoco.Renderer makes a brand-new GLFW window + context",
+    "page_date": "",
+    "confidence": "documented"
+   },
+   {
+    "claim": "The GL context is one per worker process, kept alive across env rebuilds.",
+    "url": "D:/UEMA_Research/Source/Python/mimo_bridge/env.py line 587",
+    "quote": "_GL_CONTEXT = None     # one OpenGL context per worker process, kept alive across env rebuilds",
+    "page_date": "",
+    "confidence": "documented"
+   },
+   {
+    "claim": "The trainer's world pool runs N bodies in N child processes started with the multiprocessing 'spawn' context; each child builds its own BridgeEnv (and so its own GL context) on the child's main thread.",
+    "url": "D:/UEMA_Research/Source/Python/mimo_bridge/datasource.py line 495",
+    "quote": "ctx = mp.get_context(\"spawn\")",
+    "page_date": "",
+    "confidence": "documented"
+   },
+   {
+    "claim": "Each worker process owns one BridgeEnv, built inside the child process.",
+    "url": "D:/UEMA_Research/Source/Python/mimo_bridge/datasource.py line 370",
+    "quote": "def _worker_main(conn, env_kwargs: dict, idx: int):",
+    "page_date": "",
+    "confidence": "documented"
+   },
+   {
+    "claim": "The only place in UEMA_Research that forces a GL backend is the phase-0 MIMo benchmark script, which sets MUJOCO_GL=glfw (valid on macOS but window-based); the trainer path sets nothing and would take CGL on macOS.",
+    "url": "D:/UEMA_Research/Source/Python/mimo_bridge/phase0/run_benchmark.py line 6",
+    "quote": "os.environ.setdefault(\"MUJOCO_GL\", \"glfw\")",
+    "page_date": "",
+    "confidence": "documented"
+   },
+   {
+    "claim": "MIMo's own environment creates gymnasium's MujocoRenderer, and the bridge patch sets camera_id on it per eye; this is a second rendering path on macOS beside env.py's EyeRenderer.",
+    "url": "D:/UEMA_Research/third_party/MIMo/mimo/mimo_infant/simulation/envs/mimo_env.py line 698",
+    "quote": "self.mujoco_renderer = MujocoRenderer(",
+    "page_date": "",
+    "confidence": "documented"
+   },
+   {
+    "claim": "UEMA_Research's GPU dependence is PyTorch CUDA, not MuJoCo: the install instructions pin torch 2.6.0 from the CUDA 12.4 index.",
+    "url": "D:/UEMA_Research/requirements.txt line 3",
+    "quote": "#   pip install torch==2.6.0 --index-url https://download.pytorch.org/whl/cu124",
+    "page_date": "",
+    "confidence": "documented"
+   },
+   {
+    "claim": "The README names an NVIDIA card with a CUDA 12.4 driver as a requirement.",
+    "url": "D:/UEMA_Research/README.md line 123",
+    "quote": "- An NVIDIA graphics card with a CUDA 12.4 capable driver for the pinned `torch==2.6.0+cu124`",
+    "page_date": "",
+    "confidence": "documented"
+   },
+   {
+    "claim": "The README's reference speed on Windows with an RTX 4070 (8 GB), eight bodies: 0.41 to 0.46 model steps per second; this is the anchor any Mac measurement would be compared against.",
+    "url": "D:/UEMA_Research/README.md line 127",
+    "quote": "it trained 0.41 to 0.46 model steps per second (one model step = 50 ms of each of the eight bodies' simulated time)",
+    "page_date": "Measured on Oct 22, 2026 (README)",
+    "confidence": "documented"
+   },
+   {
+    "claim": "torch 2.6.0 has native macOS arm64 wheels on PyPI (CPU plus MPS build) for CPython 3.9-3.13, so the pinned torch version installs on Apple Silicon, but as a different build than +cu124.",
+    "url": "https://pypi.org/pypi/torch/2.6.0/json",
+    "quote": "torch-2.6.0-cp313-none-macosx_11_0_arm64.whl",
+    "page_date": "2025-01-29T16:22:08 (wheel upload_time)",
+    "confidence": "documented"
+   },
+   {
+    "claim": "The model picks CUDA if available and otherwise CPU; it never selects the Apple MPS device, so on a Mac the unmodified code trains on CPU.",
+    "url": "D:/UEMA_Research/Source/Python/mimo_bridge/lem_model.py line 785",
+    "quote": "self.device = torch.device(device if torch.cuda.is_available() else \"cpu\")",
+    "page_date": "",
+    "confidence": "documented"
+   },
+   {
+    "claim": "The trainer's default device flag is cuda:0.",
+    "url": "D:/UEMA_Research/Source/Python/mimo_bridge/train_mimo.py line 233",
+    "quote": "ap.add_argument(\"--device\", default=\"cuda:0\")",
+    "page_date": "",
+    "confidence": "documented"
+   },
+   {
+    "claim": "Across D:/UEMA_Research/Source, grep counts 168 'torch.cuda' references in 38 Python files and 163 literal \"cuda\"/\"cuda:N\" device strings, and zero references to 'mps' or torch.backends.mps; one example is an autocast call hard-wired to \"cuda\".",
+    "url": "D:/UEMA_Research/Source/Python/lem/model/heads_all_slot_path.py line 514",
+    "quote": "with LV.unwatched(model), torch.amp.autocast(\"cuda\", enabled=amp, dtype=getattr(model, \"dtype\", torch.float32)):",
+    "page_date": "",
+    "confidence": "documented"
+   },
+   {
+    "claim": "PyTorch's MPS backend runs training on the Apple GPU through Metal but does not support float64.",
+    "url": "https://docs.pytorch.org/docs/2.15/notes/mps.html",
+    "quote": "The MPS backend does not support `torch.float64` (`torch.double`) or `torch.complex128` (`torch.cdouble`).",
+    "page_date": "PyTorch 2.15 docs",
+    "confidence": "documented"
+   },
+   {
+    "claim": "The model's attention cap computes in float64 with autocast off, which MPS cannot run and which would have to stay on CPU under an MPS port.",
+    "url": "D:/UEMA_Research/Source/Python/lem/model/attention_cap.py line 40",
+    "quote": "float64) with autocast switched off for them; the weighted sum of the values uses the values' own dtype.",
+    "page_date": "",
+    "confidence": "documented"
+   },
+   {
+    "claim": "The native C++ extension is JIT-built with with_cuda=True and links cuda.lib (CUDA driver API), despite its docstring saying no CUDA kernels; it will not build on macOS.",
+    "url": "D:/UEMA_Research/Source/Python/lem/native_ops.py line 3225",
+    "quote": "with_cuda=True,",
+    "page_date": "",
+    "confidence": "documented"
+   },
+   {
+    "claim": "The native extension links the CUDA driver library explicitly.",
+    "url": "D:/UEMA_Research/Source/Python/lem/native_ops.py line 3227",
+    "quote": "extra_ldflags=['cuda.lib'],  # CUDA Driver API (cuModuleLoad, cuLaunchKernel)",
+    "page_date": "",
+    "confidence": "documented"
+   },
+   {
+    "claim": "The native extension's compiler setup is Windows/MSVC-specific (vswhere.exe, vcvarsall.bat).",
+    "url": "D:/UEMA_Research/Source/Python/lem/native_ops.py line 25",
+    "quote": "def _setup_msvc_env():",
+    "page_date": "",
+    "confidence": "documented"
+   },
+   {
+    "claim": "The replay buffer loads the native extension inside try/except and sets it to None on any failure, so the trainer keeps running on the Python fallback path without it.",
+    "url": "D:/UEMA_Research/Source/Python/lem/replay_buffer.py line 282",
+    "quote": "            from lem.native_ops import load_native_ops",
+    "page_date": "",
+    "confidence": "documented"
+   },
+   {
+    "claim": "The vision tokenizer's fused CUDA kernels are optional: without nvcc they load as None and vision.py takes its PyTorch-op path.",
+    "url": "D:/UEMA_Research/Source/Python/tokenizer/modalities/vision_kernels.py line 10",
+    "quote": "Falls back to None if nvcc is unavailable, letting vision.py use the original path.",
+    "page_date": "",
+    "confidence": "documented"
+   },
+   {
+    "claim": "vision.py gates the fused kernel on the kernels having loaded.",
+    "url": "D:/UEMA_Research/Source/Python/tokenizer/modalities/vision.py line 218",
+    "quote": "use_cuda = (self._cuda_kernels is not None",
+    "page_date": "",
+    "confidence": "documented"
+   },
+   {
+    "claim": "lem_model.py imports two functions from lem/live_test.py, which the README says needs the Unreal pipeline to run as a program and which contains CUDA-graph code (import only; the trainer does not run it).",
+    "url": "D:/UEMA_Research/Source/Python/mimo_bridge/lem_model.py line 53",
+    "quote": "from lem.live_test import apply_developmental_constraints, _run_imagination_compiled",
+    "page_date": "",
+    "confidence": "documented"
+   },
+   {
+    "claim": "The README states the Unreal-side CUDA/Direct3D interop code is not in UEMA_Research, so that part is not a porting burden for this repository.",
+    "url": "D:/UEMA_Research/README.md line 72",
+    "quote": "frame transport, Direct3D 12 / CUDA interop, process-separated replay training). One module of",
+    "page_date": "",
+    "confidence": "documented"
+   },
+   {
+    "claim": "A third-party Swift binding claims MuJoCo runs on iOS, with its GL rendering context available only on macOS and Linux (no official MuJoCo iOS build target exists in MuJoCo's CMakeLists).",
+    "url": "https://raw.githubusercontent.com/liuliu/swift-mujoco/main/README.md",
+    "quote": "MuJoCo for Swift should work on macOS, Linux and iOS.",
+    "page_date": "",
+    "confidence": "reported-by-users"
+   },
+   {
+    "claim": "The Swift binding's rendering context is not available on iOS.",
+    "url": "https://raw.githubusercontent.com/liuliu/swift-mujoco/main/README.md",
+    "quote": "The `GLContext` is only available on macOS and Linux.",
+    "page_date": "",
+    "confidence": "reported-by-users"
+   },
+   {
+    "claim": "Python on iOS cannot use subprocesses or multiprocessing, which rules out UEMA_Research's spawned worker-process world pool (datasource.py PoolSource) on an iPhone without a redesign.",
+    "url": "https://docs.python.org/3/library/intro.html",
+    "quote": "An iOS app cannot use any form of subprocessing, multiprocessing, or inter-process communication. If an iOS app attempts to create a subprocess, the process creating the subprocess will either lock up, or crash.",
+    "page_date": "",
+    "confidence": "documented"
+   },
+   {
+    "claim": "Python on mobile platforms runs only embedded in an app; there is no python or pip executable.",
+    "url": "https://docs.python.org/3/library/intro.html",
+    "quote": "Mobile platforms can only use Python in \"embedded\" mode. There is no Python REPL, and no ability to use separate executables such as **python** or **pip**.",
+    "page_date": "",
+    "confidence": "documented"
+   },
+   {
+    "claim": "On iOS every binary Python module (such as mujoco's compiled bindings) must be repackaged as its own signed framework in the app's Frameworks folder.",
+    "url": "https://docs.python.org/3/using/ios.html",
+    "quote": "The iOS App Store requires that _all_ binary modules in an iOS app must be dynamic libraries, contained in a framework with appropriate metadata, stored in the `Frameworks` folder of the packaged app.",
+    "page_date": "",
+    "confidence": "documented"
+   },
+   {
+    "claim": "MuJoCo's Python package exposes egl, glfw and osmesa subpackages for GL contexts (and, from the bindings source, cgl on macOS); the README itself gives no macOS guidance.",
+    "url": "https://raw.githubusercontent.com/google-deepmind/mujoco/main/python/README.md",
+    "quote": "For example, the `egl`, `glfw`, and `osmesa` subpackages contain utilities for setting up OpenGL rendering contexts.",
+    "page_date": "",
+    "confidence": "documented"
+   }
+  ],
+  "open_questions": [
+   "No official MuJoCo physics benchmark on Apple Silicon was found; the docs and changelog carry no Apple-specific speed figure. The number for the MIMo scene must be measured on the target Mac (MuJoCo's testspeed sample or the project's phase0/run_benchmark.py) before any speed claim.",
+   "Whether the pinned mujoco 3.3.0 renders the MIMo eye cameras correctly on macOS through CGL is unmeasured; the macOS shadow-flicker fix landed in 3.3.1, after the pin, so a Mac run at 3.3.0 either accepts that defect or raises the pin (API differences between 3.3.0 and 3.17.0 were not checked).",
+   "Whether gymnasium 1.2.3, opencv-python-headless 5.0.0.93, scipy 1.18.0, scikit-learn 1.9.0 and the other pinned packages have CPython 3.13 macOS arm64 wheels was not checked; only mujoco 3.3.0 and torch 2.6.0 were verified.",
+   "Whether jax-metal still fails MJX with 'failed to legalize operation mhlo.reduce' on current jaxlib is unverified: the reports are from March 2025 and an undated 2026 page; UEMA_Research does not use MJX, so this matters only if MJX were adopted for batched bodies.",
+   "An MPS port of the PyTorch side: 163 literal \"cuda\" device strings, hard-wired torch.amp.autocast(\"cuda\", ...), float64 computations (attention_cap.py), CUDA-graph code in live_test.py, and the CUDA-linked native extension were counted but not individually classified as movable, CPU-fallback, or blocking; the trainer runs on CPU on a Mac today without code change (lem_model.py line 785), with its speed unmeasured.",
+   "iOS: MuJoCo's CMakeLists has no iOS target; the only iOS evidence is a third-party Swift binding claim (no GL context on iOS). Python's own iOS port forbids subprocessing/multiprocessing, so the trainer's spawned worker-process pool (datasource.py line 495) cannot run on an iPhone as written; whether PyTorch has any iOS Python runtime was not researched.",
+   "MuJoCo main branch's CMake project VERSION reads 4.0.0, so a 4.0 release may follow 3.17.0; what it changes for macOS was not researched.",
+   "The GLFW backend on macOS is window-based and subject to the macOS main-thread window rule (issue #3579, PR #3697 open); whether gymnasium's MujocoRenderer inside MIMo (mimo_env.py line 698) uses GLFW or the offscreen context on macOS was not checked."
+  ]
+ },
+ {
+  "summary": "Research on running and training the UEMA_Research code on Apple hardware, with every claim tied to a file line or a fetched page. The release's trainer is hard-wired to CUDA: `lem_model.py:785` collapses any non-CUDA device to \"cpu\", `lem_model.py:798-800` turns mixed precision off except on CUDA, `lem_model.py:2665` names \"cuda\" in `torch.amp.autocast`, `lem_model.py:1876` uses the fused AdamW only on CUDA, and the optional C++ extension (`lem/native_ops.py:3219-3225`) is built with `with_cuda=True` and `cuda.lib` but falls back to pure Python when it fails to compile (`native_ops.py:11`, `training_step.py:22-27`, `replay_buffer.py:282-285`). Two float64-on-device sites (`lem_model.py:2533-2534`, `hand_response.py:107`) would raise on MPS, since MPS has no float64 (library error text documented on the PyTorch forum). PyTorch on macOS: arm64 wheels exist for 2.6.0 through 2.9.0 (PyPI); MPS autocast accepts bfloat16 and float16 only (v2.9.0 `torch/amp/autocast_mode.py`; bfloat16 autocast added in 2.6.0, released 29 Jan 2025); GradScaler on MPS failed in 2.6.0 (`.double()` in `unscale_`) and gained an mps branch by 2.8.0; `torch.compile` for Metal is a 2.7.0 prototype and `MPSInductor` a 2.8.0 feature; 2.9.0 requires macOS 14; unsupported ops raise unless `PYTORCH_ENABLE_MPS_FALLBACK=1` routes them to the CPU; the MPS allocator caps memory at 1.7 x recommendedMaxWorkingSetSize (itself about 75% of system memory), adjustable with `PYTORCH_MPS_HIGH_WATERMARK_RATIO` or `torch.mps.set_per_process_memory_fraction`; MPS tensors through DataLoader workers needed the fork start method (issue 87688) and a Python 3.12+ macOS queue hang is open (issue 153050). PyTorch on iOS: PyTorch Mobile \"is no longer actively supported\"; ExecuTorch has an experimental training extension (SGD and AdamW, Adam \"planned\", backward graph captured ahead of time, loss embedded in the model, \"Integration with backends/delegates is still a work in progress\"), its iOS package needs iOS 17 / macOS 14 and ships Core ML, MLX (experimental) and XNNPACK frameworks, and its MPS backend is deprecated as of ExecuTorch 1.2 for removal in 1.4. Apple MLX: Python, C++, C and Swift APIs; needs Apple silicon, macOS >= 14, Python >= 3.10; Adam/AdamW optimizers; `mx.load` reads `.safetensors` (the release checkpoint is `model.safetensors`); mlx-swift declares `.iOS(.v17)` and ships an MNISTTrainer example that trains on iOS, built through Xcode because SwiftPM cannot compile the Metal shaders. No documented M-series versus RTX 4070 benchmark exists; the mlx-benchmark tables give per-operation milliseconds for M3 Max/M4 Max (MLX and MPS) and for RTX4090/V100/A100 (CUDA) only. MuJoCo ships macOS universal binaries and `macosx_11_0_arm64` wheels for the pinned 3.3.0, renders through OpenGL 1.5 contexts (egl/glfw/osmesa), and has no official iOS build; the only Swift binding found is pinned at MuJoCo v2.3.1, \"Released 3 years ago\". Python 3.13 itself lists iOS as a tier-3 supported platform (PEP 730).",
+  "findings": [
+   {
+    "claim": "The release trainer resolves the device as CUDA-or-CPU only: a requested \"mps\" device becomes \"cpu\" whenever CUDA is absent.",
+    "url": "D:/UEMA_Research/Source/Python/mimo_bridge/lem_model.py:785",
+    "quote": "self.device = torch.device(device if torch.cuda.is_available() else \"cpu\")",
+    "page_date": "release source, read 2026-11-04",
+    "confidence": "documented"
+   },
+   {
+    "claim": "Mixed precision (the fp16 default) is forced to float32 and autocast is disabled on every device type except CUDA.",
+    "url": "D:/UEMA_Research/Source/Python/mimo_bridge/lem_model.py:798",
+    "quote": "if self.device.type != \"cuda\":\n            self.dtype = torch.float32\n        self.use_amp = self.dtype != torch.float32 and self.device.type == \"cuda\"",
+    "page_date": "release source, read 2026-11-04",
+    "confidence": "documented"
+   },
+   {
+    "claim": "The model's default precision is fp16, so a Mac port would be choosing between float32 and MPS float16/bfloat16 autocast.",
+    "url": "D:/UEMA_Research/Source/Python/lem/config/defaults.py:310",
+    "quote": "\"precision\": \"fp16\",",
+    "page_date": "release source, read 2026-11-04",
+    "confidence": "documented"
+   },
+   {
+    "claim": "The trainer's autocast context names the \"cuda\" device type literally (also at lines 4763, 6810, 6877, 6929, 8303, 8310), so an MPS port must change the device_type argument at each site.",
+    "url": "D:/UEMA_Research/Source/Python/mimo_bridge/lem_model.py:2665",
+    "quote": "with torch.amp.autocast(\"cuda\", enabled=self.use_amp, dtype=self.dtype):",
+    "page_date": "release source, read 2026-11-04",
+    "confidence": "documented"
+   },
+   {
+    "claim": "The optimizer is torch.optim.AdamW with the fused kernel only on CUDA.",
+    "url": "D:/UEMA_Research/Source/Python/mimo_bridge/lem_model.py:1876",
+    "quote": "lr=lr or tr[\"lr\"], betas=tuple(tr[\"betas\"]), fused=(d.type == \"cuda\"))",
+    "page_date": "release source, read 2026-11-04",
+    "confidence": "documented"
+   },
+   {
+    "claim": "The trainer creates float64 tensors on the model device for hand goals; on MPS this raises because MPS has no float64.",
+    "url": "D:/UEMA_Research/Source/Python/mimo_bridge/lem_model.py:2533",
+    "quote": "self._hand_current_angles = torch.as_tensor(angles, device=self.device, dtype=torch.float64)",
+    "page_date": "release source, read 2026-11-04",
+    "confidence": "documented"
+   },
+   {
+    "claim": "The hand-response planner path casts an on-device goal tensor to float64 (`.double()`), a second site that fails on MPS.",
+    "url": "D:/UEMA_Research/Source/Python/lem/model/hand_response.py:107",
+    "quote": "goal=goal.double();initial=initial.to(goal);velocity=velocity.to(goal)",
+    "page_date": "release source, read 2026-11-04",
+    "confidence": "documented"
+   },
+   {
+    "claim": "The optional C++ extension is compiled with CUDA headers and linked against cuda.lib, so it cannot build on a Mac.",
+    "url": "D:/UEMA_Research/Source/Python/lem/native_ops.py:3219",
+    "quote": "_MODULE = load_inline(\n                name='lem_native',\n                cpp_sources=[CPP_SOURCE],\n                cuda_sources=[],\n                build_directory=build_dir,\n                verbose=False,\n                with_cuda=True,\n                extra_ldflags=['cuda.lib'],  # CUDA Driver API (cuModuleLoad, cuLaunchKernel)",
+    "page_date": "release source, read 2026-11-04",
+    "confidence": "documented"
+   },
+   {
+    "claim": "The C++ extension's source includes CUDA headers directly (cuda.h, CUDAStream.h, CUDAGraph.h).",
+    "url": "D:/UEMA_Research/Source/Python/lem/native_ops.py:82",
+    "quote": "#include <cuda.h>\n#include <c10/cuda/CUDAStream.h>\n#include <c10/cuda/CUDAGuard.h>\n#include <ATen/cuda/CUDAContext.h>\n#include <ATen/cuda/CUDAGraph.h>",
+    "page_date": "release source, read 2026-11-04",
+    "confidence": "documented"
+   },
+   {
+    "claim": "When that extension fails to compile the trainer continues on pure-Python code paths (the module docstring states the fallback; load_native_ops returns None on failure).",
+    "url": "D:/UEMA_Research/Source/Python/lem/native_ops.py:11",
+    "quote": "Falls back to pure-Python implementations if compilation fails.",
+    "page_date": "release source, read 2026-11-04",
+    "confidence": "documented"
+   },
+   {
+    "claim": "load_native_ops catches any compile exception, logs it and returns None.",
+    "url": "D:/UEMA_Research/Source/Python/lem/native_ops.py:3280",
+    "quote": "except Exception as e:\n        import traceback\n        log.error(\"lem_native compilation failed:\\n%s\", traceback.format_exc())\n        _MODULE = None\n\n    return _MODULE",
+    "page_date": "release source, read 2026-11-04",
+    "confidence": "documented"
+   },
+   {
+    "claim": "training_step.py wraps the native-ops load in try/except, so the training step runs without the extension.",
+    "url": "D:/UEMA_Research/Source/Python/lem/training_step.py:22",
+    "quote": "_native = None\ntry:\n    from lem.native_ops import load_native_ops\n    _native = load_native_ops()\nexcept Exception:\n    pass",
+    "page_date": "release source, read 2026-11-04",
+    "confidence": "documented"
+   },
+   {
+    "claim": "backward_gil_free falls back to plain loss.backward() when the extension is absent.",
+    "url": "D:/UEMA_Research/Source/Python/lem/native_ops.py:3341",
+    "quote": "mod = load_native_ops()\n    if mod is not None:\n        mod.backward_gil_free(loss, retain_graph, create_graph)\n    else:\n        loss.backward(retain_graph=retain_graph, create_graph=create_graph)",
+    "page_date": "release source, read 2026-11-04",
+    "confidence": "documented"
+   },
+   {
+    "claim": "The replay buffer loads the native ops inside try/except and only runs its VRAM estimate on CUDA.",
+    "url": "D:/UEMA_Research/Source/Python/lem/replay_buffer.py:282",
+    "quote": "try:\n            from lem.native_ops import load_native_ops\n            self._native_ops = load_native_ops()\n        except Exception:\n            self._native_ops = None\n\n        # \u2500\u2500 VRAM estimation check \u2500\u2500\n        if device.type == \"cuda\":",
+    "page_date": "release source, read 2026-11-04",
+    "confidence": "documented"
+   },
+   {
+    "claim": "The vision encoder path allocates a torch.cuda.Event only when its device is CUDA, so it has a non-CUDA branch already.",
+    "url": "D:/UEMA_Research/Source/Python/lem/model/encoder_registry.py:116",
+    "quote": "if self._vision_device.type == \"cuda\":\n            self._vision_event = torch.cuda.Event()",
+    "page_date": "release source, read 2026-11-04",
+    "confidence": "documented"
+   },
+   {
+    "claim": "The eight MuJoCo worlds run in separate processes started with the spawn context (relevant to the macOS multiprocessing findings below).",
+    "url": "D:/UEMA_Research/Source/Python/mimo_bridge/datasource.py:495",
+    "quote": "ctx = mp.get_context(\"spawn\")",
+    "page_date": "release source, read 2026-11-04",
+    "confidence": "documented"
+   },
+   {
+    "claim": "Each world process creates one process-wide MuJoCo OpenGL context (mujoco.GLContext) for the eye renderers; MuJoCo's own GLContext backends are glfw/egl/osmesa.",
+    "url": "D:/UEMA_Research/Source/Python/mimo_bridge/env.py:599",
+    "quote": "_GL_CONTEXT = mujoco.GLContext(max(width, 64), max(height, 64))",
+    "page_date": "release source, read 2026-11-04",
+    "confidence": "documented"
+   },
+   {
+    "claim": "The release pins torch 2.6.0 from the CUDA 12.4 index, mujoco 3.3.0 and Python 3.13.3.",
+    "url": "D:/UEMA_Research/requirements.txt:1",
+    "quote": "# Versions this code was developed and tested with (Python 3.13.3).\n# Install torch first from the CUDA 12.4 index:\n#   pip install torch==2.6.0 --index-url https://download.pytorch.org/whl/cu124",
+    "page_date": "release source, read 2026-11-04",
+    "confidence": "documented"
+   },
+   {
+    "claim": "The README's Requirements name an NVIDIA card as a requirement and give the measured RTX 4070 laptop reference: 4,287 MB of graphics memory, committed memory rising 44.0 to 73.8 GB, 0.41 to 0.46 model steps per second.",
+    "url": "D:/UEMA_Research/README.md:123",
+    "quote": "An NVIDIA graphics card with a CUDA 12.4 capable driver for the pinned `torch==2.6.0+cu124`\n  build. Training was developed on an 8 GB card.\n- Measured on Oct 22, 2026 by resuming a clone for 100 model steps on a laptop RTX 4070 (8 GB): the graphics\n  card's memory peaked at 4,287 MB; Windows' committed memory (RAM plus page file) rose from 44.0 GB to 73.8 GB\n  while it ran, about 30 GB for the trainer and its eight world processes; it trained 0.41 to 0.46 model steps\n  per second",
+    "page_date": "release source, read 2026-11-04",
+    "confidence": "documented"
+   },
+   {
+    "claim": "The CUDA-graph, GradScaler and multi-GPU code in lem/live_test.py is not on the MIMo training path: the README states that module needs the Unreal pipeline to run.",
+    "url": "D:/UEMA_Research/README.md:72",
+    "quote": "One module of\nthat side, `lem/live_test.py`, is present because `mimo_bridge/lem_model.py` imports two\nfunctions from it; it needs the Unreal pipeline to run as a program.",
+    "page_date": "release source, read 2026-11-04",
+    "confidence": "documented"
+   },
+   {
+    "claim": "The saved model is 18,131,745 parameters (192-number tokens, 4 transformer blocks), the size any Apple port must hold in memory with its optimizer state.",
+    "url": "D:/UEMA_Research/README.md:27",
+    "quote": "The saved model is small (18,131,745 parameters: 192-number tokens, 4\ntransformer blocks; the specification's full configuration is about 271M at d_model 768)",
+    "page_date": "release source, read 2026-11-04",
+    "confidence": "documented"
+   },
+   {
+    "claim": "The released weights are a safetensors file, the format MLX's loader reads directly.",
+    "url": "D:/UEMA_Research/weights/b1_continue_B1K_skip13_492800/RESUME.md:8",
+    "quote": "| `run/checkpoints/ckpt_step_494025/model.safetensors` | the model's learned numbers |",
+    "page_date": "release source, read 2026-11-04",
+    "confidence": "documented"
+   },
+   {
+    "claim": "MPS has no float64: the PyTorch library raises this error text when a float64 tensor is moved to MPS (reported here on torch 2.5.0, inside GradScaler.unscale_).",
+    "url": "https://discuss.pytorch.org/t/gradscaler-typeerror-cannot-convert-a-mps-tensor-to-float64-dtype-as-the-mps-framework-doesnt-support-float64-please-use-float32-instead/213206",
+    "quote": "Cannot convert a MPS Tensor to float64 dtype as the MPS framework doesn't support float64",
+    "page_date": "2024-11-20",
+    "confidence": "documented"
+   },
+   {
+    "claim": "The official MPS note describes the mps device as GPU training on macOS through Metal.",
+    "url": "https://docs.pytorch.org/docs/2.9/notes/mps.html",
+    "quote": "`mps` device enables high-performance training on GPU for MacOS devices with Metal programming framework.",
+    "page_date": "Created On: May 13, 2022 | Last Updated On: Jun 02, 2022",
+    "confidence": "documented"
+   },
+   {
+    "claim": "An operator with no MPS kernel raises unless PYTORCH_ENABLE_MPS_FALLBACK=1 is set, in which case it runs on the CPU with a warning that it is slower.",
+    "url": "https://raw.githubusercontent.com/pytorch/pytorch/main/aten/src/ATen/mps/MPSFallback.mm",
+    "quote": "As a temporary fix, you can set the environment variable `PYTORCH_ENABLE_MPS_FALLBACK=1` ",
+    "page_date": "main branch, fetched 2026-11-04",
+    "confidence": "documented"
+   },
+   {
+    "claim": "The fallback is chosen at library load by reading the environment variable; unset or \"0\" installs the error handler.",
+    "url": "https://raw.githubusercontent.com/pytorch/pytorch/main/aten/src/ATen/mps/MPSFallback.mm",
+    "quote": "static const auto enable_mps_fallback = c10::utils::get_env(\"PYTORCH_ENABLE_MPS_FALLBACK\");\nif (!enable_mps_fallback || enable_mps_fallback == \"0\") {",
+    "page_date": "main branch, fetched 2026-11-04",
+    "confidence": "documented"
+   },
+   {
+    "claim": "Missing MPS operators are tracked in pytorch/pytorch issue 141287 (named in the library's own error text).",
+    "url": "https://raw.githubusercontent.com/pytorch/pytorch/main/aten/src/ATen/mps/MPSFallback.mm",
+    "quote": "please comment on https://github.com/pytorch/pytorch/issues/141287 and mention use-case, that resulted in missing op",
+    "page_date": "main branch, fetched 2026-11-04",
+    "confidence": "documented"
+   },
+   {
+    "claim": "torch.autocast on \"mps\" supports only bfloat16 and float16 (torch 2.9.0 source).",
+    "url": "https://raw.githubusercontent.com/pytorch/pytorch/v2.9.0/torch/amp/autocast_mode.py",
+    "quote": "elif self.device == \"mps\":\n            supported_dtype = [torch.bfloat16, torch.float16]\n            if self.fast_dtype not in supported_dtype:",
+    "page_date": "v2.9.0 tag",
+    "confidence": "documented"
+   },
+   {
+    "claim": "The MPS autocast warning text names the two supported dtypes, and bfloat16 autocast on MPS additionally requires macOS 14.",
+    "url": "https://raw.githubusercontent.com/pytorch/pytorch/v2.9.0/torch/amp/autocast_mode.py",
+    "quote": "\"MPS Autocast only supports dtype of torch.bfloat16 and torch.float16 currently.\"",
+    "page_date": "v2.9.0 tag",
+    "confidence": "documented"
+   },
+   {
+    "claim": "bfloat16 autocast on MPS and an SDPA autocast rule were added in PyTorch 2.6.0.",
+    "url": "https://github.com/pytorch/pytorch/releases/tag/v2.6.0",
+    "quote": "Add support for bfloat16 autocast",
+    "page_date": "released this 29 Jan (2025)",
+    "confidence": "documented"
+   },
+   {
+    "claim": "GradScaler in torch 2.6.0 computes the inverse scale through .double(), with no mps branch, which is the float64 failure reported on the forum.",
+    "url": "https://raw.githubusercontent.com/pytorch/pytorch/v2.6.0/torch/amp/grad_scaler.py",
+    "quote": "inv_scale = self._scale.double().reciprocal().float()",
+    "page_date": "v2.6.0 tag",
+    "confidence": "documented"
+   },
+   {
+    "claim": "By torch 2.8.0 GradScaler.unscale_ has an mps branch that avoids the float64 cast.",
+    "url": "https://raw.githubusercontent.com/pytorch/pytorch/v2.8.0/torch/amp/grad_scaler.py",
+    "quote": "inv_scale = (\n            self._scale.double().reciprocal().float()\n            if self._scale.device != torch.device(\"mps:0\")\n            else self._scale.reciprocal()\n        )",
+    "page_date": "v2.8.0 tag",
+    "confidence": "documented"
+   },
+   {
+    "claim": "The 2.9 AMP documentation lists only CUDA, XPU and CPU op-reference sections and names GradScaler devices as cuda/cpu/xpu; MPS is not documented there.",
+    "url": "https://docs.pytorch.org/docs/2.9/amp.html",
+    "quote": "torch.float16 for CUDA and torch.bfloat16 for CPU",
+    "page_date": "Created On: Jun 12, 2025 | Last Updated On: Jun 12, 2025",
+    "confidence": "documented"
+   },
+   {
+    "claim": "torch.compile for Metal appeared as a prototype in PyTorch 2.7.0.",
+    "url": "https://github.com/pytorch/pytorch/releases/tag/v2.7.0",
+    "quote": "Prototype of torch.compile for Metal",
+    "page_date": "released this 23 Apr (2025)",
+    "confidence": "documented"
+   },
+   {
+    "claim": "PyTorch 2.8.0 lists MPSInductor (torch.compile for Apple GPUs) as a new feature.",
+    "url": "https://github.com/pytorch/pytorch/releases/tag/v2.8.0",
+    "quote": "`MPSInductor`: `torch.compile` for Apple GPUs",
+    "page_date": "released this 06 Aug (2025)",
+    "confidence": "documented"
+   },
+   {
+    "claim": "PyTorch 2.9.0 requires macOS 14 or later for MPS.",
+    "url": "https://github.com/pytorch/pytorch/releases/tag/v2.9.0",
+    "quote": "PyTorch MPS is only supported on MacOS-14 or later.",
+    "page_date": "released this 15 Oct (2025)",
+    "confidence": "documented"
+   },
+   {
+    "claim": "PyTorch 2.9.0 added partial sparse support and 3D pooling ops to MPS and fixed a batch-norm gradient bug there.",
+    "url": "https://github.com/pytorch/pytorch/releases/tag/v2.9.0",
+    "quote": "Partial sparse support for MPS backend",
+    "page_date": "released this 15 Oct (2025)",
+    "confidence": "documented"
+   },
+   {
+    "claim": "PyPI ships a macOS arm64 wheel of torch 2.6.0 for Python 3.13 (the release's pinned torch version and Python).",
+    "url": "https://pypi.org/pypi/torch/2.6.0/json",
+    "quote": "torch-2.6.0-cp313-none-macosx_11_0_arm64.whl",
+    "page_date": "upload_time 2025-01-29T16:22:08",
+    "confidence": "documented"
+   },
+   {
+    "claim": "PyPI ships macOS arm64 wheels of torch 2.9.0 for Python 3.10 through 3.14; no iOS wheel appears in the list.",
+    "url": "https://pypi.org/pypi/torch/2.9.0/json",
+    "quote": "torch-2.9.0-cp313-none-macosx_11_0_arm64.whl",
+    "page_date": "upload_time 2025-10-15T15:47:38",
+    "confidence": "documented"
+   },
+   {
+    "claim": "torch.mps.set_per_process_memory_fraction caps a process's MPS allocation as a fraction (0 to 2) of the Metal-recommended maximum; above the cap the allocator raises out-of-memory.",
+    "url": "https://docs.pytorch.org/docs/2.9/generated/torch.mps.set_per_process_memory_fraction.html",
+    "quote": "torch.mps.set_per_process_memory_fraction(fraction)",
+    "page_date": "docs 2.9 (source links v2.9.1)",
+    "confidence": "documented"
+   },
+   {
+    "claim": "The MPS allocator's default high watermark is 1.7 x recommendedMaxWorkingSetSize, low watermark 1.4, hard upper bound 2.0.",
+    "url": "https://raw.githubusercontent.com/pytorch/pytorch/main/aten/src/ATen/mps/MPSAllocator.h",
+    "quote": "constexpr static double default_high_watermark_ratio = 1.7;",
+    "page_date": "main branch, fetched 2026-11-04",
+    "confidence": "documented"
+   },
+   {
+    "claim": "recommendedMaxWorkingSetSize is about 75% of total system memory on unified-memory Macs.",
+    "url": "https://raw.githubusercontent.com/pytorch/pytorch/main/aten/src/ATen/mps/MPSAllocator.h",
+    "quote": "// Note: the recommendedMaxWorkingSetSize is typically 75% of the total system memory.",
+    "page_date": "main branch, fetched 2026-11-04",
+    "confidence": "documented"
+   },
+   {
+    "claim": "The allocator reads PYTORCH_MPS_HIGH_WATERMARK_RATIO and PYTORCH_MPS_LOW_WATERMARK_RATIO from the environment; 0.0 disables the upper limit.",
+    "url": "https://raw.githubusercontent.com/pytorch/pytorch/main/aten/src/ATen/mps/MPSAllocator.mm",
+    "quote": "Use PYTORCH_MPS_HIGH_WATERMARK_RATIO=0.0 to disable upper limit for memory allocations (may cause system failure).",
+    "page_date": "main branch, fetched 2026-11-04",
+    "confidence": "documented"
+   },
+   {
+    "claim": "Sharing MPS tensors with DataLoader worker processes raised \"_share_filename_: only available on CPU\"; the closing workaround was multiprocessing_context='fork'.",
+    "url": "https://github.com/pytorch/pytorch/issues/87688",
+    "quote": "RuntimeError: _share_filename_: only available on CPU",
+    "page_date": "opened 2022-10-25, closed 2023-06-06",
+    "confidence": "reported-by-users"
+   },
+   {
+    "claim": "An open PyTorch issue reports that sending tensors through multiprocessing queues on macOS hangs process exit under Python 3.12+ with spawn and forkserver (the release uses spawn and Python 3.13).",
+    "url": "https://github.com/pytorch/pytorch/issues/153050",
+    "quote": "Start methods `spawn` and `forkserver` do not work.",
+    "page_date": "opened 2025-05-07, open",
+    "confidence": "reported-by-users"
+   },
+   {
+    "claim": "PyTorch Mobile is no longer supported; the official iOS tutorial now redirects to ExecuTorch.",
+    "url": "https://docs.pytorch.org/tutorials/beginner/deeplabv3_on_ios.html",
+    "quote": "PyTorch Mobile is no longer actively supported. Please check out ExecuTorch.",
+    "page_date": "Last Updated: Nov 04, 2024",
+    "confidence": "documented"
+   },
+   {
+    "claim": "ExecuTorch's training extension ships C++ SGD and AdamW optimizers; plain Adam is not implemented.",
+    "url": "https://raw.githubusercontent.com/pytorch/executorch/main/extension/training/README.md",
+    "quote": "`optimizer/`: C++ implementations of various optimizers, currently SGD and AdamW. Adam is planned.",
+    "page_date": "main branch, fetched 2026-11-04",
+    "confidence": "documented"
+   },
+   {
+    "claim": "ExecuTorch training does not yet run through hardware delegates (Core ML, MPS, XNNPACK); it runs on the portable runtime.",
+    "url": "https://raw.githubusercontent.com/pytorch/executorch/main/extension/training/README.md",
+    "quote": "Integration with backends/delegates is still a work in progress.",
+    "page_date": "main branch, fetched 2026-11-04",
+    "confidence": "documented"
+   },
+   {
+    "claim": "ExecuTorch training captures the backward graph ahead of time (no runtime autograd), and the optimizer is not part of the exported graph.",
+    "url": "https://raw.githubusercontent.com/pytorch/executorch/main/extension/training/README.md",
+    "quote": "Currently the optimizer is not captured though this may change over time.",
+    "page_date": "main branch, fetched 2026-11-04",
+    "confidence": "documented"
+   },
+   {
+    "claim": "For ExecuTorch training the loss must be computed inside the exported model and returned as its first output, so the release's losses would have to be folded into one exported module.",
+    "url": "https://raw.githubusercontent.com/pytorch/executorch/main/extension/training/README.md",
+    "quote": "Loss functions must be embedded inside the model definition (and be the first output)",
+    "page_date": "main branch, fetched 2026-11-04",
+    "confidence": "documented"
+   },
+   {
+    "claim": "ExecuTorch maintainers announced training support in April 2025, pointing to the extension/training README.",
+    "url": "https://github.com/pytorch/executorch/discussions/8221",
+    "quote": "We have added training support here. Please give it a shot and let us know what sort of improvements or further development you are interested in!",
+    "page_date": "accepted answer 2025-04-25",
+    "confidence": "documented"
+   },
+   {
+    "claim": "The ExecuTorch Apple package needs iOS 17 and macOS 14.",
+    "url": "https://docs.pytorch.org/executorch/stable/using-executorch-ios.html",
+    "quote": "The ExecuTorch package requires a minimum of iOS 17 and macOS 14.",
+    "page_date": "stable docs, fetched 2026-11-04",
+    "confidence": "documented"
+   },
+   {
+    "claim": "The ExecuTorch iOS frameworks are Core ML, MLX and XNNPACK; no MPS framework is listed.",
+    "url": "https://docs.pytorch.org/executorch/stable/using-executorch-ios.html",
+    "quote": "`backend_mlx` - MLX backend",
+    "page_date": "stable docs, fetched 2026-11-04",
+    "confidence": "documented"
+   },
+   {
+    "claim": "ExecuTorch's MPS backend is deprecated as of 1.2 and scheduled for removal in 1.4, with Core ML (iOS/macOS) and Metal (macOS desktop) as replacements.",
+    "url": "https://docs.pytorch.org/executorch/1.2/_sources/backends/mps/mps-overview.md.txt",
+    "quote": "The MPS backend is deprecated as of ExecuTorch 1.2 and will be",
+    "page_date": "ExecuTorch 1.2 docs",
+    "confidence": "documented"
+   },
+   {
+    "claim": "ExecuTorch's platform table marks the iOS MLX backend experimental and lists XNNPACK CPU and Core ML for iOS/iPadOS.",
+    "url": "https://raw.githubusercontent.com/pytorch/executorch/main/README.md",
+    "quote": "iOS / iPadOS | XNNPACK CPU; Core ML; MLX on physical devices *(experimental)*",
+    "page_date": "main branch, fetched 2026-11-04",
+    "confidence": "documented"
+   },
+   {
+    "claim": "MLX has Python, C++, C and Swift APIs.",
+    "url": "https://raw.githubusercontent.com/ml-explore/mlx/main/README.md",
+    "quote": "MLX also has fully featured C++, C, and Swift APIs, which closely mirror the Python API.",
+    "page_date": "main branch, fetched 2026-11-04",
+    "confidence": "documented"
+   },
+   {
+    "claim": "MLX arrays live in unified memory and run on CPU or GPU without transfers.",
+    "url": "https://raw.githubusercontent.com/ml-explore/mlx/main/README.md",
+    "quote": "Arrays in MLX live in shared memory.",
+    "page_date": "main branch, fetched 2026-11-04",
+    "confidence": "documented"
+   },
+   {
+    "claim": "MLX Python requires Apple silicon, a native Python >= 3.10 and macOS >= 14.0.",
+    "url": "https://ml-explore.github.io/mlx/build/html/install.html",
+    "quote": "macOS >= 14.0",
+    "page_date": "MLX docs, fetched 2026-11-04",
+    "confidence": "documented"
+   },
+   {
+    "claim": "MLX provides Adam and AdamW (and SGD, RMSprop, Adagrad, Adafactor, AdaDelta, Adamax, Lion, Muon) optimizers for training.",
+    "url": "https://ml-explore.github.io/mlx/build/html/python/optimizers.html",
+    "quote": "The optimizers in MLX can be used both with `mlx.nn` but also with pure `mlx.core` functions.",
+    "page_date": "MLX docs, fetched 2026-11-04",
+    "confidence": "documented"
+   },
+   {
+    "claim": "MLX's loader reads safetensors files directly, so the release checkpoint's tensors can be read without PyTorch (parameter-name mapping aside).",
+    "url": "https://ml-explore.github.io/mlx/build/html/python/_autosummary/mlx.core.load.html",
+    "quote": "The supported formats are `.npy`, `.npz`, `.safetensors`, and `.gguf`.",
+    "page_date": "MLX docs, fetched 2026-11-04",
+    "confidence": "documented"
+   },
+   {
+    "claim": "mlx-swift declares iOS 17 as a supported platform alongside macOS 14, tvOS 17 and visionOS 1.",
+    "url": "https://raw.githubusercontent.com/ml-explore/mlx-swift/main/Package.swift",
+    "quote": ".iOS(.v17),",
+    "page_date": "main branch, fetched 2026-11-04",
+    "confidence": "documented"
+   },
+   {
+    "claim": "mlx-swift's products include MLXNN and MLXOptimizers, the training pieces.",
+    "url": "https://raw.githubusercontent.com/ml-explore/mlx-swift/main/Package.swift",
+    "quote": "MLX, MLXRandom, MLXNN, MLXOptimizers, MLXFFT, MLXLinalg, MLXFast",
+    "page_date": "main branch, fetched 2026-11-04",
+    "confidence": "documented"
+   },
+   {
+    "claim": "An official MLX Swift example trains a LeNet on MNIST on iOS as well as macOS.",
+    "url": "https://github.com/ml-explore/mlx-swift/blob/main/README.md",
+    "quote": "An example that runs on both iOS and macOS that downloads MNIST training data and trains a LeNet.",
+    "page_date": "main branch, fetched 2026-11-04",
+    "confidence": "documented"
+   },
+   {
+    "claim": "MLX Swift must be built through Xcode (or xcodebuild) because command-line SwiftPM cannot compile the Metal shaders.",
+    "url": "https://github.com/ml-explore/mlx-swift/blob/main/README.md",
+    "quote": "SwiftPM (command line) cannot build the Metal shaders so the ultimate build has to be done via Xcode.",
+    "page_date": "main branch, fetched 2026-11-04",
+    "confidence": "documented"
+   },
+   {
+    "claim": "In Swift, safetensors weights load with MLX.loadArrays(url:) and go into a module through ModuleParameters.unflattened.",
+    "url": "https://huggingface.co/jkrukowski/whisper-tiny-mlx-safetensors",
+    "quote": "let arrays = try MLX.loadArrays(url: encoderUrl)\nlet encoderParams = ModuleParameters.unflattened(arrays)",
+    "page_date": "model card, fetched 2026-11-04",
+    "confidence": "reported-by-users"
+   },
+   {
+    "claim": "No documented benchmark compares M-series MLX/MPS against an RTX 4070; the mlx-benchmark tables cover RTX4090, Tesla V100 and A100 as the CUDA devices, in milliseconds per operation.",
+    "url": "https://raw.githubusercontent.com/TristanBilot/mlx-benchmark/main/benchmarks/average_benchmark.md",
+    "quote": "measured in `milliseconds`",
+    "page_date": "main branch, fetched 2026-11-04",
+    "confidence": "documented"
+   },
+   {
+    "claim": "On the M3 Max (40-GPU-core) row, MatMul takes 4.20 ms in MLX and 7.62 ms in PyTorch MPS; on the RTX4090 desktop row the same MatMul takes 1.36 ms in CUDA, and 2.80 ms on a Tesla V100 PCIe.",
+    "url": "https://raw.githubusercontent.com/TristanBilot/mlx-benchmark/main/benchmarks/average_benchmark.md",
+    "quote": "| MatMul | 4.20 | 4.19 | 25.57 | 7.62 | 585.74 | +0% | +81% | +508% |",
+    "page_date": "main branch, fetched 2026-11-04 (M3 Max row measured with mlx 0.2.0)",
+    "confidence": "documented"
+   },
+   {
+    "claim": "On the same benchmark, Conv2d on the M3 Max is 4.21 ms (MLX) and 1.42 ms (MPS) against 0.25 ms on the RTX4090; MPS beats MLX on several ops, so MLX is not uniformly faster than PyTorch MPS.",
+    "url": "https://raw.githubusercontent.com/TristanBilot/mlx-benchmark/main/benchmarks/average_benchmark.md",
+    "quote": "| Conv2d | 4.21 | 4.14 | 329.47 | 1.42 | 31.25 | +1% | -66% | +7723% |",
+    "page_date": "main branch, fetched 2026-11-04 (M3 Max row measured with mlx 0.2.0)",
+    "confidence": "documented"
+   },
+   {
+    "claim": "MuJoCo's precompiled binaries target Linux, Windows and macOS only; iOS, Android and Metal are not mentioned.",
+    "url": "https://raw.githubusercontent.com/google-deepmind/mujoco/main/README.md",
+    "quote": "built for Linux (x86-64 and AArch64), Windows (x86-64 only), and macOS (universal).",
+    "page_date": "main branch, fetched 2026-11-04",
+    "confidence": "documented"
+   },
+   {
+    "claim": "The pinned mujoco 3.3.0 has a macOS arm64 wheel for Python 3.13.",
+    "url": "https://pypi.org/simple/mujoco/",
+    "quote": "mujoco-3.3.0-cp313-cp313-macosx_11_0_arm64.whl",
+    "page_date": "PyPI simple index, fetched 2026-11-04",
+    "confidence": "documented"
+   },
+   {
+    "claim": "MuJoCo's classic renderer (the one the release's eye cameras use) needs an OpenGL 1.5 context that the caller sets up with mujoco.GLContext.",
+    "url": "https://mujoco.readthedocs.io/en/stable/python.html",
+    "quote": "The MuJoCo classic renderer expects users to set up a working OpenGL context",
+    "page_date": "stable docs, fetched 2026-11-04",
+    "confidence": "documented"
+   },
+   {
+    "claim": "MuJoCo's Python package provides egl, glfw and osmesa context helpers (OpenGL on every path; none of these is a Metal or iOS path).",
+    "url": "https://raw.githubusercontent.com/google-deepmind/mujoco/main/python/README.md",
+    "quote": "the `egl`, `glfw`, and `osmesa` subpackages contain utilities for setting up OpenGL rendering contexts.",
+    "page_date": "main branch, fetched 2026-11-04",
+    "confidence": "documented"
+   },
+   {
+    "claim": "The only Swift binding of MuJoCo found (liuliu/swift-mujoco) is pinned at MuJoCo v2.3.1 and has had no release in three years; the release pins MuJoCo 3.3.0.",
+    "url": "https://swiftpackageindex.com/liuliu/swift-mujoco",
+    "quote": "Swift Binding for MuJoCo: https://mujoco.org/",
+    "page_date": "Last updated on 24 Jul 2025; latest v2.3.1 \"Released 3 years ago\"",
+    "confidence": "documented"
+   },
+   {
+    "claim": "Python 3.13 made iOS a tier-3 supported platform (arm64-apple-ios), so an embedded Python runtime on iPhone is possible in principle; the torch, mujoco and numpy wheels found are macOS-only.",
+    "url": "https://docs.python.org/3/whatsnew/3.13.html",
+    "quote": "iOS is now a PEP 11 supported platform, with the `arm64-apple-ios` and `arm64-apple-ios-simulator` targets at tier 3",
+    "page_date": "Python 3.13 What's New, fetched 2026-11-04",
+    "confidence": "documented"
+   }
+  ],
+  "open_questions": [
+   "Which operators used by the release's forward model, encoders, wellness channels and planner lack an MPS kernel: no op-by-op audit was run; a run on a Mac with PYTORCH_ENABLE_MPS_FALLBACK unset would enumerate them (tracker issue pytorch/pytorch#141287).",
+   "How many float64 sites execute on the model device during a training model step (two found: lem_model.py:2533-2534 and hand_response.py:107) versus in CPU-only analysis tools (the numpy float64 in contact_head.py and body_function.py are host-side); not counted exhaustively.",
+   "Whether the world processes pass torch tensors (not only numpy arrays) through multiprocessing pipes; if they do, pytorch/pytorch#153050 (open, macOS, Python 3.12+, spawn and forkserver hang at exit) applies to the release's Python 3.13 spawn context (datasource.py:495).",
+   "Whether the fp16 default precision (defaults.py:310) trains stably under MPS autocast without a GradScaler, and whether the pinned torch 2.6.0 (GradScaler .double() path, no MPSInductor) must be bumped to 2.8.0 or 2.9.0 for a Mac port (2.9.0 requires macOS 14).",
+   "MPS throughput against the README's RTX 4070 reference of 0.41 to 0.46 model steps per second with eight worlds: unmeasured; no published benchmark pairs an M-series chip with an RTX 4070, and the mlx-benchmark rows are per-operation milliseconds, not whole training steps.",
+   "Whether the Mac's unified memory suffices: the README measured about 30 GB of committed memory for the trainer and its eight world processes plus 4,287 MB of graphics memory on Windows; the MPS allocator caps a process at 1.7 x recommendedMaxWorkingSetSize (about 75% of system memory) by default.",
+   "MuJoCo on iOS: no official build exists; whether MuJoCo 3.3.0's C library compiles for arm64-apple-ios from source, and what replaces the OpenGL 1.5 eye rendering there (OpenGL ES is deprecated on iOS; MuJoCo documents no Metal renderer), is untested. The liuliu/swift-mujoco build matrix statuses for current Swift toolchains were not readable from the fetched page.",
+   "ExecuTorch on-device training on iPhone: training runs only on the portable runtime (delegates are work in progress), the exported graph must embed the loss as its first output, and the optimizers are SGD and AdamW; whether the release's 18,131,745-parameter transformer with its several losses and the planner's inner optimization export through _export_forward_backward is untested.",
+   "MLX Swift training of a model of this size on an iPhone: the only official iOS training example is a LeNet on MNIST; the iOS per-app memory ceiling for an 18M-parameter model with AdamW state and the replay memory was not researched.",
+   "Porting to MLX requires rewriting the model (encoders, forward model, wellness channels, planner, losses) in MLX's API; only the safetensors weight file transfers directly, and the parameter-name mapping between the PyTorch modules and an MLX module tree is unwritten.",
+   "The current stable ExecuTorch version number and whether the MPS backend has already been removed (scheduled for 1.4) were not verified.",
+   "The ExecuTorch and PyTorch docs sites redirected stable pages to a '2.15' path during this research; the versioned 2.9 pages were used instead, so any MPS behavior changed after 2.9.1 is not covered."
+  ]
+ }
+]

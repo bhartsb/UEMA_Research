@@ -359,7 +359,8 @@ def test_without_an_eye_convention_switch_nothing_stored_is_touched(change):
 
 def test_the_trainer_rewrites_the_stored_rows_after_the_companion_and_before_the_first_step():
     src = (PKG / "train_mimo.py").read_text(encoding="utf-8")
-    i_restore = src.index("continuation_state.restore_learner(model,episode_resume['learner'])")
+    # the call continues on the next line with its rng= policy (--rng-continuation), so the match stops at the comma
+    i_restore = src.index("continuation_state.restore_learner(model,episode_resume['learner'],")
     i_switch = src.index("prev_executed, _eye_rows = switch_stored_eye_rows(model, prev_executed)")
     i_loop = src.index("while time.time() < deadline and (args.max_steps <= 0 or step < args.max_steps):")
     assert i_restore < i_switch < i_loop

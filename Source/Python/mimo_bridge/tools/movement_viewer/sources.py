@@ -22,7 +22,9 @@ import hashlib
 import json
 import os
 import re
+import sys
 import time
+from pathlib import Path
 from typing import Dict, List, Optional
 
 from . import HOME, REPO, part_path, replace_file
@@ -32,17 +34,44 @@ TRAINING_PREFIX = "H84_fresh_drivers_"
 _CHUNK = re.compile(r"chunk_(\d+)_(\d+)_(\d+)\.npz$")
 _HEADER = re.compile(r"header_(\d+)_(\d+)\.json$")
 
-# (where, pattern): every world folder the viewer reads. The scratch patterns name the job folders' own run folders,
-# not the reading and rehearsal copies beside them (those are merged anyway, by header name).
+ARCHIVE_ENV = "UEMA_ARCHIVE"
+
+
+def archive_root(platform=None, env=None) -> str:
+    """The development machine's archive of observer recordings (its UEMA_archive folder, which sits beside that
+    checkout at the root of its drive; another machine holds a copy under the checkout's external/D or names one
+    through ARCHIVE_ENV). INPUT: `platform` (sys.platform when None) and `env`, the mapping ARCHIVE_ENV is read from
+    (os.environ when None). OUTPUT, the first that applies: the folder ARCHIVE_ENV names; the checkout's mirror
+    external/D/UEMA_archive when that folder exists; on Windows the folder UEMA_archive at the root of the checkout's
+    drive (the development machine's layout: the archive beside the checkout on one drive); else the mirror folder,
+    absent, whose patterns match nothing."""
+    named = (os.environ if env is None else env).get(ARCHIVE_ENV)
+    if named:
+        return named
+    mirror = REPO / "external" / "D" / "UEMA_archive"
+    if mirror.is_dir():
+        return str(mirror)
+    if (platform or sys.platform) == "win32":
+        return str(Path(REPO.anchor) / "UEMA_archive")
+    return str(mirror)
+
+
+# (where, pattern): every world folder the viewer reads, each under this checkout (external/D mirrors the development
+# machine's data folders; repo_paths re-roots the recorded paths the same way) or under archive_root(). The scratch
+# patterns name the job folders' own run folders, not the reading and rehearsal copies beside them (those are merged
+# anyway, by header name).
+_EXTERNAL = REPO / "external" / "D"
 ROOTS = (
     ("production", str(REPO / "Saved" / "mimo_bridge" / "experiments" / "*" / "observer" / "world")),
-    ("preserved", "D:/UEMA_Research/external/D/UEMA_preserved/*/run/observer/world"),
-    ("archive", "D:/UEMA_archive/observer_raw/*/observer/world"),
-    ("archive", "D:/UEMA_archive/observer_preserved_*/*/observer/world"),
-    ("scratch", "D:/UEMA_Research/external/D/UEMA_scratch/*/run/observer/world"),
-    ("scratch", "D:/UEMA_Research/external/D/UEMA_scratch/*/run/*/observer/world"),
-    ("scratch", "D:/UEMA_Research/external/D/UEMA_scratch/finger_investigation/learning_on/measure/run/*/run/observer/world"),
-    ("scratch", "D:/UEMA_Research/external/D/UEMA_scratch/finger_investigation/probe_path/training_records/*/observer/world"),
+    ("preserved", str(_EXTERNAL / "UEMA_preserved" / "*" / "run" / "observer" / "world")),
+    ("archive", os.path.join(archive_root(), "observer_raw", "*", "observer", "world")),
+    ("archive", os.path.join(archive_root(), "observer_preserved_*", "*", "observer", "world")),
+    ("scratch", str(_EXTERNAL / "UEMA_scratch" / "*" / "run" / "observer" / "world")),
+    ("scratch", str(_EXTERNAL / "UEMA_scratch" / "*" / "run" / "*" / "observer" / "world")),
+    ("scratch", str(_EXTERNAL / "UEMA_scratch" / "finger_investigation" / "learning_on" / "measure" / "run" / "*"
+                   / "run" / "observer" / "world")),
+    ("scratch", str(_EXTERNAL / "UEMA_scratch" / "finger_investigation" / "probe_path" / "training_records" / "*"
+                   / "observer" / "world")),
 )
 
 
@@ -204,7 +233,8 @@ def settings_of(args: dict) -> dict:
 # EACH RUN IN WORDS, shown under its name on the page (the independent review of Oct 19, 2026: the run names are codes):
 # a test run's words come from the title of its own row in docs/gain_of_function_v4/test_registry.json (named beside
 # it; tests/test_movement_viewer.py checks that each row exists); the three finger-investigation runs of Oct 10 have no
-# row and are described from their folder (D:/UEMA_Research/external/D/UEMA_scratch/finger_investigation/learning_on) and their settings
+# row and are described from their folder (external/D/UEMA_scratch/finger_investigation/learning_on under the checkout)
+# and their settings
 RUN_WORDS = {
     "arm_control": ("finger investigation from 481,800: the finger joint servo off", None),
     "arm_finger": ("finger investigation from 481,800: the finger joint servo on", None),

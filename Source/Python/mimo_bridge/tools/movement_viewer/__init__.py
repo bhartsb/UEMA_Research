@@ -33,18 +33,22 @@ REQUESTS_DIR = HOME / "requests"
 STATUS_FILE = HOME / "service_status.json"
 CONTROL_FILE = HOME / "service_control.json"       # {"paused": true} holds the service's background work
 LOCK_FILE = HOME / "service.lock"
-# the pictures: on the large disk when it is present (each drawing is about 1 MB), else beside the index
+# the pictures (each drawing is about 1 MB): the folder UEMA_MOVEMENT_PICTURES names when it is set; else the checkout's
+# mirror of the development machine's large disk, external/D/UEMA_movement_viewer/pictures (the release's 206 drawn
+# commands are there), when that folder exists; else beside the index. No drive letter: the same rule on every platform.
 PICTURES_ENV = "UEMA_MOVEMENT_PICTURES"
-PICTURES_DEFAULT = "D:/UEMA_Research/external/D/UEMA_movement_viewer/pictures"
+PICTURES_DEFAULT = REPO / "external" / "D" / "UEMA_movement_viewer" / "pictures"
 
 
-def pictures_dir() -> Path:
-    named = os.environ.get(PICTURES_ENV)
+def pictures_dir(env=None) -> Path:
+    """The folder the drawings are written to and read from (the comment above PICTURES_ENV). INPUT: `env`, the
+    mapping PICTURES_ENV is read from (os.environ when None). OUTPUT: that path; PICTURES_DEFAULT when it is a folder;
+    else HOME/pictures."""
+    named = (os.environ if env is None else env).get(PICTURES_ENV)
     if named:
         return Path(named)
-    drive = os.path.splitdrive(PICTURES_DEFAULT)[0]
-    if drive and os.path.isdir(drive + os.sep):
-        return Path(PICTURES_DEFAULT)
+    if PICTURES_DEFAULT.is_dir():
+        return PICTURES_DEFAULT
     return HOME / "pictures"
 
 

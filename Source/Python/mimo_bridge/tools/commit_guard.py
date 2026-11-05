@@ -29,6 +29,7 @@ import json
 import os
 import shutil
 import sys
+from pathlib import Path
 
 # the observer's recorders never take the last 12 GiB of a disk (observer_record.DEFAULT_RESERVE_BYTES),
 # and the H84 hourly watcher stops training under 8 GB free (hourly_watch.DISK_STOP_GB): the page file
@@ -41,7 +42,9 @@ GIB = 1024.0 ** 3
 # allowed, took the machine from 52.8 to 59.5 GB committed beside the memory trial's arm, whose own stop line was
 # 62.8 GB. A heavy job's runner holds this lock with the job's declared need (run_in_training_pause.py); while it runs,
 # work that is not part of it also keeps free the part of that need the job's processes have not committed yet.
-HEAVY_LOCK = "C:/Users/bhart/Documents/UEMA_devA_private/Saved/gof_observer_20260924/heavy_job.lock"
+# The lock lives under this checkout (on the development machine, its Saved/gof_observer_20260924 folder).
+REPO = Path(__file__).resolve().parents[4]              # Source/Python/mimo_bridge/tools/commit_guard.py -> the checkout
+HEAVY_LOCK = str(REPO / "Saved" / "gof_observer_20260924" / "heavy_job.lock")
 
 
 def _same_process(pid, created):

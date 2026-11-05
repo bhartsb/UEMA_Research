@@ -1,0 +1,43 @@
+// module.modulemap: the module map of the CMuJoCo target (apple/UEMAKit, work item
+// WI-19 of docs/UEMA_APPLE_PORT_IMPLEMENTATION_PLAN_2026-11-04.html).
+//
+// WHAT THIS FILE DOES. It names the one header Swift sees when a file writes
+// `import CMuJoCo`: shim.h, beside this file, which includes MuJoCo's umbrella header
+// <mujoco/mujoco.h> from the binary target "mujoco" (the MuJoCo 3.3.0 XCFramework that
+// apple/scripts/build_mujoco_xcframework.sh writes, work item WI-18). The XCFramework's
+// own module map (the stage_headers step of that script) declares `module mujoco`, so
+// clang turns the include into an import of module mujoco; `export *` below re-exports
+// it ("The wildcard export syntax export * re-exports all of the modules that were
+// imported in the actual header file", https://clang.llvm.org/docs/Modules.html, read
+// November 4, 2026), so the Swift modules reach mjModel, mjData, mjvScene and the
+// functions through this one import.
+//
+// WHY A CUSTOM MODULE MAP. SwiftPM's ModuleMapGenerator.swift ("First check for a
+// custom module map"; the filename constant moduleMapFilename = "module.modulemap";
+// read November 4, 2026) uses a module.modulemap found in the public headers folder
+// as is. Package.swift gives this target publicHeadersPath ".", so the public headers
+// folder is Sources/CMuJoCo itself and this file sits flat beside shim.h and the
+// placeholder CMuJoCo.c. Without this file SwiftPM would generate no module map: its
+// umbrella-directory rule applies only "if 'PublicHeadersDir' contains only header
+// files and no subdirectories", and CMuJoCo.c is in it. SwiftPM's
+// TargetSourcesBuilder.swift classifies a .modulemap file under its own rule
+// (fileTypes: ["modulemap"]), places it in no source list and emits no diagnostic for
+// it (read November 4, 2026).
+//
+// NO link DECLARATION. The static library is linked because Package.swift names the
+// binary target "mujoco" as this target's dependency; a `link "mujoco"` line here
+// would add an autolink entry that needs a library search path this package does not
+// set, so it is left out.
+//
+// Grammar used (https://clang.llvm.org/docs/Modules.html, "Module Map Language"):
+// module-declaration `module` module-id '{' module-member* '}'; header-declaration
+// `header` string-literal; export-declaration `export` wildcard-module-id.
+//
+// CHECK RUN HERE (Windows, November 4, 2026; no Swift toolchain): clang 20.1.8 parsed
+// this file with -fmodules -fimplicit-module-maps for the target
+// arm64-apple-macosx14.0 against the 14 headers of tag 3.3.0 staged as the script
+// stages them; the test files under Tests/CMuJoCoTests state the commands.
+module CMuJoCo {
+  header "shim.h"
+  export *
+}

@@ -7,14 +7,41 @@ JIT-compiled via torch.utils.cpp_extension.load_inline(). Replaces the
 PyTorch-op sequence (index select + float() + /255 + reshape+permute+reshape)
 with a single kernel pass: one read (4 bytes BGRA), one write (12 bytes RGB float32).
 
-Falls back to None if nvcc is unavailable, letting vision.py use the original path.
+Falls back to None if nvcc is unavailable, letting vision.py use the original path,
+and at once, with no subprocess started, when ``native_build_platform_block()``
+names a missing part (sys.platform not 'win32', or torch.cuda.is_available() False).
 """
 
 import logging
 import os
 import subprocess
+import sys
 
 log = logging.getLogger(__name__)
+
+
+def native_build_platform_block():
+    """Name the reason the CUDA vision kernels cannot be built on this host.
+
+    Inputs: ``sys.platform`` (the interpreter's platform tag, ``'win32'`` on
+    Windows, ``'darwin'`` on macOS) and ``torch.cuda.is_available()`` (True when
+    the CUDA runtime finds a device).
+    Operation: the build needs cl.exe (MSVC; the probe in ``_setup_msvc_env``
+    runs the Windows command ``where cl``) and nvcc with a CUDA device
+    (``load_inline`` compiles CUDA_SOURCE). Each check is a plain comparison;
+    no subprocess runs here.
+    Output: ``''`` when the platform is win32 and CUDA is available, otherwise
+    one sentence naming the missing part, which the loader logs before it
+    returns None and vision.py keeps its PyTorch-op path.
+    """
+    if sys.platform != 'win32':
+        return (f"sys.platform is {sys.platform!r}, not 'win32' "
+                "(the MSVC probe and the build run on Windows only)")
+    import torch
+    if not torch.cuda.is_available():
+        return ("torch.cuda.is_available() is False "
+                "(the kernels compile with nvcc for a CUDA device)")
+    return ''
 
 
 def _setup_msvc_env():
@@ -22,7 +49,11 @@ def _setup_msvc_env():
     Auto-detect MSVC and set up PATH/INCLUDE/LIB for cl.exe.
     Uses vswhere.exe to find VS installation, then runs vcvarsall.bat x64
     and captures the resulting environment variables.
+    Returns False at once off win32: ``where``, vswhere.exe and vcvarsall.bat
+    are Windows programs, so no subprocess is started elsewhere.
     """
+    if sys.platform != 'win32':
+        return False
     # Skip if cl.exe is already findable
     try:
         subprocess.run(['where', 'cl'], capture_output=True, check=True)
@@ -197,6 +228,11 @@ def load_vision_kernels():
     _LOAD_ATTEMPTED = True
 
     try:
+        block = native_build_platform_block()
+        if block:
+            log.info("CUDA vision kernels disabled, PyTorch-op path in use: %s", block)
+            return _KERNEL_MODULE
+
         # Ensure CUDA_HOME is set for nvcc discovery
         if not os.environ.get('CUDA_HOME') and not os.environ.get('CUDA_PATH'):
             cuda_default = r'C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA'

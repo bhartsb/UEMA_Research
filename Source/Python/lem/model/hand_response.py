@@ -15,6 +15,7 @@ from pathlib import Path
 import torch
 from torch import nn
 
+from .float64_host import KeepsFloat64OnHost, float64_device, to_model_device
 from ..trainer_code import trainer_code_hash  # noqa: F401  (admission_check's code hash; see THE ADMISSION below)
 
 VERSION='hand_joint_response_v1'
@@ -59,7 +60,9 @@ def validate_receipt(receipt,geometry):
     return copy.deepcopy(receipt)
 
 
-class CalibratedHandResponse(nn.Module):
+class CalibratedHandResponse(KeepsFloat64OnHost):
+    # KeepsFloat64OnHost: the two float64 buffers below are built on cpu; LemLite's .to(self.device) keeps them on
+    # float64_device(device) (cpu for mps, which has no float64; the model's own device on cpu and cuda, as before)
     def __init__(self,geometry,receipt):
         super().__init__()
         self.geometry=copy.deepcopy(geometry)
@@ -103,8 +106,9 @@ class CalibratedHandResponse(nn.Module):
         if initial.shape!=goal.shape or velocity.shape!=goal.shape or goal.shape[-1]!=len(self.ranges):
             raise ValueError('Hand response needs matching current angles, velocity and goal')
         # Match the qualified fit's arithmetic while retaining genuine gradients
-        # into the float32 planner variables through the cast.
-        goal=goal.double();initial=initial.to(goal);velocity=velocity.to(goal)
+        # into the float32 planner variables through the cast. The float64 arithmetic runs on
+        # float64_device(goal.device): the goal's own device on cpu and cuda, cpu for mps.
+        goal=goal.to(device=float64_device(goal.device),dtype=torch.float64);initial=initial.to(goal);velocity=velocity.to(goal)
         ranges=self.ranges.to(goal)
         features=torch.stack((torch.ones_like(goal),(goal-initial)/ranges,.25*velocity/ranges),dim=-1)
         change=(features*self.coefficients.to(goal)).sum(-1)
@@ -114,7 +118,7 @@ class CalibratedHandResponse(nn.Module):
     def local_goal_cost(self,initial,velocity,goal,target_pose,*,_kinematics=None):
         from .physical_goal import pose_error_per_body
         kin=self.kinematics if _kinematics is None else _kinematics
-        target=kin.local_encoding(target_pose.to(device=goal.device,dtype=torch.float64))
+        target=kin.local_encoding(target_pose.to(device=float64_device(goal.device),dtype=torch.float64))
         template=torch.zeros_like(target);template[...,6]=1.
         predicted=kin.assemble_world(template,self.predict(initial,velocity,goal,_kinematics=kin))
         fingers=[i for hand in kin.geometry['hands'] for i in hand['finger_indices']]
@@ -135,7 +139,7 @@ class CalibratedHandResponse(nn.Module):
         command=canonical_execution.detach().clone()
         raw=raw_initial_goal.detach().to(device=command.device,dtype=torch.float32)
         previous=None if previous_goal is None else previous_goal.detach().to(raw)
-        initial=current_angles.detach().to(device=command.device,dtype=torch.float64)
+        initial=current_angles.detach().to(device=float64_device(command.device),dtype=torch.float64)
         velocity=current_velocity.detach().to(initial);target=target_pose.detach().to(initial)
         if not 0<=float(smoothing)<=1:raise ValueError('Invalid hand smoothing')
         for value in (command,raw,initial,velocity,target):
@@ -156,7 +160,9 @@ class CalibratedHandResponse(nn.Module):
             return kin.project_joints(goal)
         def score():
             goal=executed_goal()
-            costs=self.local_goal_cost(initial,velocity,goal,target,_kinematics=kin)
+            # the costs are float64 on float64_device(command.device); handed to the command's device as float32
+            # only when that is another device (mps), unchanged on cpu and cuda
+            costs=to_model_device(self.local_goal_cost(initial,velocity,goal,target,_kinematics=kin),command.device)
             return torch.where(valid,costs,torch.zeros_like(costs)),goal
         optimizer=torch.optim.Adam([space.joints],lr=.1)
         costs,goal=score();first=costs.detach().clone()

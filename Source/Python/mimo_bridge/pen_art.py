@@ -29,8 +29,26 @@ RED, BLUE, GREEN = (214, 64, 54), (46, 96, 190), (48, 150, 82)
 YELLOW, PURPLE, ORANGE = (238, 190, 40), (140, 74, 178), (232, 130, 40)
 
 
+# Font files tried in this order; the first one Pillow opens draws the glyph walls. The first three are bare Windows
+# font file names and the fourth a bare Linux one: for a bare name that does not open, Pillow (12.3.0,
+# ImageFont.truetype) walks the platform's font folders (WINDIR/fonts on Windows; the XDG data folders' fonts on
+# Linux; /Library/Fonts, /System/Library/Fonts and ~/Library/Fonts on macOS) for a file of exactly that name, letter
+# case included, so on macOS none of the four matches "Arial Bold.ttf" or "Arial.ttf". The next two name macOS's
+# Arial files by full path, which Pillow opens directly. When none opens, Pillow's bitmap font draws instead, which
+# changes the wall art the vision sense sees by an unmeasured amount.
+FONT_FILES = (
+    "arialbd.ttf",
+    "arial.ttf",
+    "segoeuib.ttf",
+    "DejaVuSans-Bold.ttf",
+    "/System/Library/Fonts/Supplemental/Arial Bold.ttf",
+    "/System/Library/Fonts/Supplemental/Arial.ttf",
+)
+
+
 def _font(size: int):
-    for name in ("arialbd.ttf", "arial.ttf", "segoeuib.ttf", "DejaVuSans-Bold.ttf"):
+    """The first font of FONT_FILES Pillow opens at `size` pixels, else Pillow's bitmap font."""
+    for name in FONT_FILES:
         try:
             return ImageFont.truetype(name, size)
         except OSError:

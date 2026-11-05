@@ -7,16 +7,21 @@ import sys
 SRC_PY = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
 if SRC_PY not in sys.path:
     sys.path.insert(0, SRC_PY)
+# this checkout's folder (Source/Python/mimo_bridge/tests -> the checkout); every path below is relative to it, so the
+# file reads the same on Windows, macOS and Linux (it named the development machine's drives until 2026-11-04)
+REPO = os.path.abspath(os.path.join(SRC_PY, "..", ".."))
 
-# PYTEST'S TEMPORARY FOLDERS LIVE ON D: WHEN IT IS THERE (2026-09-25). Tests that start trainer micro-runs
-# write checkpoints into tmp_path; with a dozen agents testing at once C: fell to 6.9 GB free at 7:14 PM PDT,
-# under the H84 hourly watcher's 8 GB training stop, and C: also holds Windows' page file. pytest reads
-# PYTEST_DEBUG_TEMPROOT when it first makes a temporary folder, after this file is imported. Set it yourself
-# to choose another place.
-if "PYTEST_DEBUG_TEMPROOT" not in os.environ and os.path.isdir("D:/"):
+# PYTEST'S TEMPORARY FOLDERS LIVE UNDER THE CHECKOUT'S external/D/UEMA_scratch ON WINDOWS (2026-09-25; the checkout
+# was on the development machine's second drive, so this is the same folder). Tests that start trainer micro-runs
+# write checkpoints into tmp_path; with a dozen agents testing at once C: fell to 6.9 GB free at 7:14 PM PDT, under
+# the H84 hourly watcher's 8 GB training stop, and C: also holds Windows' page file. pytest reads
+# PYTEST_DEBUG_TEMPROOT when it first makes a temporary folder, after this file is imported. Set it yourself to
+# choose another place.
+_PYTEST_TEMPROOT = os.path.join(REPO, "external", "D", "UEMA_scratch", "pytest")
+if "PYTEST_DEBUG_TEMPROOT" not in os.environ and os.name == "nt":
     try:
-        os.makedirs("D:/UEMA_Research/external/D/UEMA_scratch/pytest", exist_ok=True)
-        os.environ["PYTEST_DEBUG_TEMPROOT"] = "D:/UEMA_Research/external/D/UEMA_scratch/pytest"
+        os.makedirs(_PYTEST_TEMPROOT, exist_ok=True)
+        os.environ["PYTEST_DEBUG_TEMPROOT"] = _PYTEST_TEMPROOT
     except OSError:
         pass
 # git refuses a repository on D: as "dubious ownership" (the drive reports another owner), which broke the tests
@@ -45,8 +50,10 @@ if (os.environ.get("PYTEST_DEBUG_TEMPROOT", "").upper().startswith("D:")
 # 9:29 PM PDT); a driver shows only through the runners' heavy-job lock, which
 # every runner job declaring 10 GB or more holds while it runs. A session that such a job runs itself (the lock's
 # holder is one of its parents) still starts.
-_CONTINUATION = "C:/Users/bhart/Documents/UEMA_devA_private/Saved/mimo_bridge/training_continuation.json"
-_HEAVY_LOCK = "C:/Users/bhart/Documents/UEMA_devA_private/Saved/gof_observer_20260924/heavy_job.lock"
+# Both records are read at their path inside this checkout (the development repository's layout, which
+# mimo_bridge/repo_paths.py re-roots here for the package's own tools; this file is imported before that package).
+_CONTINUATION = os.path.join(REPO, "Saved", "mimo_bridge", "training_continuation.json")
+_HEAVY_LOCK = os.path.join(REPO, "Saved", "gof_observer_20260924", "heavy_job.lock")
 
 
 def _live_trainer_pids(path=_CONTINUATION, marker="train_mimo"):

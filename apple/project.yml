@@ -1,0 +1,378 @@
+# apple/project.yml: the XcodeGen project spec of UEMA Mind, the SwiftUI app of the
+# Apple port (target B of docs/UEMA_APPLE_PORT_IMPLEMENTATION_PLAN_2026-11-04.html,
+# work item WI-33). Written November 4, 2026, 5:52 PM PST, on Windows 11 with no Xcode
+# and no XcodeGen: nothing in this file has been generated or built by anyone yet
+# (plan page, section 3, fact 1).
+#
+# WHAT THIS FILE IS. The input of XcodeGen, the program that writes an Xcode project
+# from a project.yml file (plan page, section 2, "Terms"). `cd apple && xcodegen
+# generate` reads this file and writes apple/UEMAMind.xcodeproj beside it (XcodeGen
+# README, "Usage": "This will look for a project spec in the current directory called
+# `project.yml`"; `--project`: "By default this is the directory the spec lives in").
+# The project is build output and is listed in apple/.gitignore (WI-17).
+#
+# WHAT THE PROJECT HOLDS.
+#   UEMAMind-macOS        application, macOS 14.0 and newer
+#   UEMAMind-iOS          application, iOS 17.0 and newer, iPhone and iPad
+#   UEMAMindTests-macOS   XCTest bundle hosted by UEMAMind-macOS
+#   UEMAMindTests-iOS     XCTest bundle hosted by UEMAMind-iOS
+#   UEMAKit               the local Swift package apple/UEMAKit (WI-17), linked by every
+#                         target above through its one library product "UEMAKit"
+# The two app targets compile the same sources, apple/UEMAMind/ (UEMAMindApp.swift and
+# Views/ from WI-38; ViewModels/ from WI-32), SwiftUI only (plan page, section 3,
+# fact 4). The two test targets compile apple/UEMAMind/Tests/ (the "tests" of WI-32)
+# and are marked optional below, so `xcodegen generate` passes before that folder
+# exists; the app source folder is not optional, so `xcodegen generate` stops with a
+# missing-path message until WI-38's files are in place (the plan runs WI-33 and
+# WI-38 in one step: section 8, step 6). The scheme names the acceptance line uses,
+# UEMAMind-macOS and UEMAMind-iOS, are the app targets' names: XcodeGen writes a
+# scheme named after a target when the target carries a `scheme` block
+# (SchemeGenerator.swift: "if let targetScheme = target.scheme {" and
+# "let schemeName = target.name") and lists the block's testTargets in that scheme's
+# test action only ("buildTypes: BuildType.testOnly"), so `xcodebuild -scheme
+# UEMAMind-macOS build` builds the app and the package, never the test bundle.
+#
+# DEPLOYMENT TARGETS. macOS 14.0 (MLX runs on macOS 14.0 or newer: MLX install page,
+# through the WI-17 header) and iOS 17.0 (mlx-swift declares .iOS(.v17): its
+# Package.swift, through the WI-17 header); the same two numbers as UEMAKit's
+# Package.swift, which the app cannot go below.
+#
+# MLX BUILT THROUGH XCODE. UEMAKit depends on mlx-swift, whose Metal shaders the
+# SwiftPM command line cannot compile: "SwiftPM (command line) cannot build the Metal
+# shaders so the ultimate build has to be done via Xcode." and "Although `SwiftPM`
+# (command line) cannot build the Metal shaders, `xcodebuild` can and it can be used
+# to do command line builds" (mlx-swift README, "Installation"). Building this
+# project with xcodebuild or Xcode builds the package, its mlx-swift dependency and
+# the shaders in one go; no build setting below is needed for that.
+#
+# mujoco.xcframework: LINKED STATICALLY THROUGH THE PACKAGE, SIGNED AS PART OF THE
+# APP BINARY. The plan row asks for "mujoco.xcframework embedded and signed". The
+# XCFramework that apple/scripts/build_mujoco_xcframework.sh (WI-18) writes holds
+# three STATIC libraries, libmujoco.a per slice (the script patches
+# "add_library(mujoco SHARED" to "add_library(mujoco STATIC" and runs xcodebuild
+# -create-xcframework with -library), and UEMAKit's Package.swift names it as the
+# binary target "mujoco" that the C module CMuJoCo depends on. An app that links the
+# package product therefore gets MuJoCo's machine code linked INTO its own executable,
+# and the app's code signature covers it; there is no separate MuJoCo file in the app
+# bundle to embed or to sign. For that reason no target below lists the XCFramework as
+# a `framework:` dependency with `embed: true`: a second mention of the same static
+# archive would at best be ignored by the linker and at worst duplicate symbols, and
+# an embed phase has nothing to copy for a static library. The check that MuJoCo is
+# in the signed binary is step 5 of the first-build checklist at the end of this
+# header. If a later XCFramework holds dynamic frameworks instead, add to each app
+# target: `- framework: UEMAKit/Binaries/mujoco.xcframework` with `embed: true`,
+# `codeSign: true` and `link: false` (XcodeGen ProjectSpec, "Dependency": "embed:
+# Whether to embed the dependency. Defaults to true for application target";
+# "codeSign: Whether the `codeSignOnCopy` setting is applied when embedding
+# framework. Defaults to true."; "link: Whether to link the dependency.").
+#
+# CODE SIGNING. Every target uses CODE_SIGN_STYLE Automatic ("Choose `Automatic` to
+# let Xcode automatically create and update profiles, app IDs, and certificates":
+# Build settings reference, "Code Sign Style"). The macOS targets set
+# CODE_SIGN_IDENTITY to "-": the codesign manual, "SIGNING IDENTITIES": "If identity
+# is the single letter "-" (dash), ad-hoc signing is performed.", which is Xcode's
+# "Sign to Run Locally" choice and needs no developer team, so step 3 of the checklist
+# builds on a Mac that has no team configured. The iOS targets set no identity and no
+# team: an iOS device build needs a team ("The team ID of a development team to use
+# for signing certificates and provisioning profiles": Build settings reference,
+# "Development Team"; plan page, section 8, step 8: "needs a signing team; unverified
+# until done"). The founder passes it on the command line, step 6 below, or writes
+# `DEVELOPMENT_TEAM: <team id>` into the iOS targets' settings here (XcodeGen FAQ,
+# "How do I setup code signing": "you need to tell Xcode which development team to
+# use" through DEVELOPMENT_TEAM).
+#
+# NO APP SANDBOX AND NO HARDENED RUNTIME AT THE FIRST BUILD. Both are off on the
+# macOS app (ENABLE_APP_SANDBOX "NO": "When set, enables App Sandbox for a target";
+# ENABLE_HARDENED_RUNTIME "NO": "Enable hardened runtime restrictions"; Build
+# settings reference). Reason: the first build is a local run that reads
+# model.safetensors from a path the file importer returns (WI-38's WeightsPickerView),
+# runs Metal through MLX and MuJoCo from the app binary, and neither the Mac App
+# Store nor notarization is a work item; each of the two switches adds behavior that
+# no test here has measured against MLX's run-time Metal compilation. To turn the
+# sandbox on later, set ENABLE_APP_SANDBOX to "YES" and add to UEMAMind-macOS an
+# `entitlements:` block with `com.apple.security.app-sandbox: true` ("A Boolean value
+# that indicates whether the app may use access control technology to contain damage
+# to the system and user data if an app is compromised"; macOS 10.7 and newer) and
+# `com.apple.security.files.user-selected.read-only: true` ("A Boolean value that
+# indicates whether the app may have read-only access to files the user has selected
+# using an Open or Save dialog"; macOS 10.7 and newer), both from Apple's
+# bundleresources entitlements pages, read November 4, 2026.
+#
+# THE iOS ENTITLEMENT. UEMAMind-iOS carries
+# com.apple.developer.kernel.increased-memory-limit = true: "A Boolean value that
+# indicates whether core features of your app may perform better with a higher memory
+# limit on supported devices."; "Add this entitlement to your app to inform the
+# system that some of your app's core features may perform better by exceeding the
+# default app memory limit on supported devices. If you use this entitlement, make
+# sure your app still behaves correctly if additional memory isn't available."; "An
+# increased memory limit is only available on some device models. Call the
+# os_proc_available_memory function to determine the amount of memory available."
+# (Apple, bundleresources entitlements page; iOS 15.0, iPadOS 15.0). Specification
+# REQ-B-15 reads the peak footprint "with the entitlement" and MemoryViewModel (WI-32)
+# reads os_proc_available_memory.
+#
+# GENERATED FILES. XcodeGen writes each `info:` and `entitlements:` plist to the path
+# given, creating the folder (FileWriter.swift: "try path.parent().mkpath()" before
+# the write; paths resolve against the spec's folder: "let path = project.basePath +
+# path"), and regenerates them on every `xcodegen generate`. They go under
+# apple/Generated/, outside the scanned source folder, so no scan adds them to a
+# build phase. apple/Generated/ is build output like the .xcodeproj; adding it to
+# apple/.gitignore is WI-17's file and is raised in this item's result, not done here.
+# XcodeGen adds these Info.plist keys itself (ProjectSpec, "Plist"): CFBundleIdentifier,
+# CFBundleInfoDictionaryVersion, CFBundleExecutable, CFBundleName,
+# CFBundleDevelopmentRegion, CFBundleShortVersionString, CFBundleVersion,
+# CFBundlePackageType; the keys written below are the rest.
+#
+# BUNDLE IDENTIFIERS. options.bundleIdPrefix "org.uema" plus the target name:
+# PBXProjGenerator.swift sets PRODUCT_BUNDLE_IDENTIFIER to `bundleIdPrefix + "." +
+# escapedTargetName` for a target without that setting, keeping letters, digits, "-"
+# and "." (the CharacterSet line), so the apps are org.uema.UEMAMind-macOS and
+# org.uema.UEMAMind-iOS; Apple allows "alphanumeric characters (A-Z, a-z, 0-9), the
+# dot (.), and the hyphen (-)" (Build settings reference, "Product Bundle
+# Identifier"). The founder replaces the prefix with a team-registered one before an
+# iOS device build. PRODUCT_NAME stays the target name (ProjectSpec, "Platform": "If
+# no `PRODUCT_NAME` build setting is specified for a target, this will be set to the
+# target name"), so the products are UEMAMind-macOS.app and UEMAMind-iOS.app, the
+# names section 8 of the plan uses, and the test bundles' TEST_HOST, which XcodeGen
+# derives from the app dependency's product name
+# ("$(BUILT_PRODUCTS_DIR)/\(dependencyTarget.productName).app/Contents/MacOS/..." for
+# macOS), resolves. CFBundleDisplayName "UEMA Mind" is the name people see ("The
+# user-visible name for the bundle"; "Use this key if you want a product name that's
+# longer than CFBundleName": Apple, CFBundleDisplayName page).
+#
+# SWIFT LANGUAGE MODE. SWIFT_VERSION "5.0" ("The language version used to compile the
+# target's Swift code": Build settings reference, "Swift Language Version") is the
+# Swift 5 language mode, the mode UEMAKit's swift-tools-version 5.9 manifest also
+# gets; XcodeGen's own base preset (SettingPresets/base.yml) sets the same "SWIFT_VERSION:
+# '5.0'", repeated here so the choice is visible. A toolchain of Swift 5.9 or newer
+# is still required (Package.swift's swift-tools-version 5.9); the language mode and
+# the toolchain version are different numbers.
+#
+# SOURCES READ BEFORE WRITING (all on November 4, 2026), with the fact each gave:
+# - https://raw.githubusercontent.com/yonaskolb/XcodeGen/master/Docs/ProjectSpec.md :
+#   the keys name, options (bundleIdPrefix, deploymentTarget per platform,
+#   createIntermediateGroups), packages (local: "path: the path to the package in
+#   local. The path must be directory with a `Package.swift`."), targets (type,
+#   platform, deploymentTarget, sources with "excludes" relative to path and
+#   "optional: Disable missing path check. Defaults to false.", dependencies
+#   "package: name" with "product", "target: name", info and entitlements with path
+#   and properties, scheme with testTargets), settings base, type values
+#   "application" and "bundle.unit-test", and the default configs ("If no configs
+#   are specified, default `Debug` and `Release` configs will be created
+#   automatically.").
+# - https://raw.githubusercontent.com/yonaskolb/XcodeGen/master/README.md : install
+#   ("brew install xcodegen", "mint install yonaskolb/xcodegen"), "xcodegen generate",
+#   the --spec and --project options.
+# - https://raw.githubusercontent.com/yonaskolb/XcodeGen/master/Docs/FAQ.md : the
+#   .gitignore advice for the generated project and the DEVELOPMENT_TEAM answer.
+# - https://raw.githubusercontent.com/yonaskolb/XcodeGen/master/Sources/XcodeGenKit/SchemeGenerator.swift ,
+#   .../FileWriter.swift , .../PBXProjGenerator.swift ,
+#   https://raw.githubusercontent.com/yonaskolb/XcodeGen/master/Sources/ProjectSpec/FileType.swift
+#   and .../TargetScheme.swift : the scheme, plist-writing, TEST_HOST, bundle-id and
+#   file-type rules quoted above ("entitlements": FileType(buildPhase:
+#   BuildPhaseSpec.none); "swift" and "metal": .sources; "xcassets": .resources).
+# - https://raw.githubusercontent.com/yonaskolb/XcodeGen/master/SettingPresets/Platforms/macOS.yml
+#   ("SDKROOT: macosx", LD_RUNPATH_SEARCH_PATHS "@executable_path/../Frameworks"),
+#   .../Platforms/iOS.yml ("SDKROOT: iphoneos", "TARGETED_DEVICE_FAMILY: '1,2'"),
+#   .../Products/bundle.unit-test.yml ("BUNDLE_LOADER: $(TEST_HOST)"), .../base.yml
+#   ("SWIFT_VERSION: '5.0'", "PRODUCT_NAME: $(TARGET_NAME)"): the settings XcodeGen
+#   applies before the ones written here.
+# - https://github.com/yonaskolb/XcodeGen/tags : newest tags 2.46.0 (July 16, 2026)
+#   and 2.45.4 (April 14, 2026); the version the founder installs is recorded at
+#   the first build.
+# - https://raw.githubusercontent.com/ml-explore/mlx-swift/main/README.md : the two
+#   Metal-shader sentences quoted above and the xcodebuild form
+#   "xcodebuild build -scheme Tutorial -destination 'platform=OS X'".
+# - Apple documentation (the JSON behind each page, read November 4, 2026):
+#   bundleresources/entitlements/com.apple.developer.kernel.increased-memory-limit ,
+#   .../com.apple.security.app-sandbox , .../com.apple.security.files.user-selected.read-only ,
+#   bundleresources/information-property-list/uilaunchscreen ("The user interface to
+#   show while an app launches."; "Use this key to configure the user interface
+#   during app launch in a way that doesn't rely on storyboards."; iOS 14.0),
+#   .../uiapplicationscenemanifest ("The presence of this key indicates that the app
+#   supports scenes and doesn't use an app delegate object"; sub-key
+#   UIApplicationSupportsMultipleScenes: "A Boolean value indicating whether the app
+#   supports two or more scenes simultaneously."), .../nsprincipalclass ("Xcode sets
+#   the default value of this key to NSApplication for macOS apps"),
+#   .../lsminimumsystemversion ("The minimum version of the operating system required
+#   for the app to run in macOS."), .../nshighresolutioncapable ("A Boolean value
+#   indicating whether the Cocoa app supports high-resolution displays."),
+#   .../cfbundledisplayname , xcode/build-settings-reference (CODE_SIGN_STYLE,
+#   CODE_SIGN_IDENTITY, DEVELOPMENT_TEAM, ENABLE_HARDENED_RUNTIME, ENABLE_APP_SANDBOX,
+#   PRODUCT_BUNDLE_IDENTIFIER, SWIFT_VERSION, TARGETED_DEVICE_FAMILY: "Comma-separated
+#   list of integers corresponding to device families supported by this target.", 1
+#   iPhone, 2 iPad).
+# - https://keith.github.io/xcode-man-pages/xcodebuild.1.html : "-scheme: Build the
+#   scheme specified by schemename."; "-destination: Use the destination device
+#   described by destinationspecifier." with the "generic/" prefix;
+#   "-allowProvisioningUpdates: Allow xcodebuild to communicate with the Apple
+#   Developer website. For automatically signed targets, xcodebuild will create and
+#   update profiles, app IDs, and certificates."; "buildsetting=value: Set the build
+#   setting buildsetting to value."
+# - https://www.manpagez.com/man/1/codesign/ : the ad-hoc sentence quoted above.
+# - apple/UEMAKit/Package.swift (WI-17), apple/scripts/build_mujoco_xcframework.sh
+#   (WI-18), apple/.gitignore (WI-17), apple/README.md (WI-21): read entire.
+#
+# FIRST BUILD ON A MAC (this work item's acceptance; plan page, section 8, step 6).
+#  1. Prerequisites: a Mac with Apple silicon; Xcode with the macOS 14 and iOS 17
+#     SDKs; XcodeGen (`brew install xcodegen`; record `xcodegen --version`);
+#     network access for the mlx-swift clone; apple/UEMAKit/Binaries/mujoco.xcframework
+#     written by `bash apple/scripts/build_mujoco_xcframework.sh` (WI-18; without it
+#     SwiftPM stops loading UEMAKit, see the WI-17 header, step 2); the app sources of
+#     WI-38 (apple/UEMAMind/UEMAMindApp.swift and Views/) and WI-32 (ViewModels/)
+#     present, since the app source folder below is not optional.
+#  2. `cd apple && xcodegen generate` : exit code 0; apple/UEMAMind.xcodeproj exists;
+#     `ls UEMAMind.xcodeproj/xcshareddata/xcschemes` lists UEMAMind-macOS.xcscheme and
+#     UEMAMind-iOS.xcscheme; apple/Generated/ holds the two Info.plist files and the
+#     iOS entitlements file. A "missing path" message names a source folder that is
+#     not there yet (step 1).
+#  3. `xcodebuild -scheme UEMAMind-macOS -destination 'platform=macOS' build` : exit
+#     code 0 (the acceptance line). The first run resolves mlx-swift over the network
+#     and compiles its Metal shaders. A signing error here means CODE_SIGN_IDENTITY
+#     "-" did not reach the target: read the generated project's build settings.
+#  4. `xcodebuild -scheme UEMAMind-macOS -destination 'platform=macOS' test` : the
+#     UEMAMindTests-macOS bundle runs (WI-32's tests; an empty bundle before WI-32
+#     lands runs 0 tests).
+#  5. MuJoCo inside the signed binary: with APP the path xcodebuild printed for
+#     UEMAMind-macOS.app, `nm -gU "APP/Contents/MacOS/UEMAMind-macOS" | grep -c ' T _mj_'`
+#     prints a count of at least 1 on a Debug build (MuJoCo's exported functions
+#     start with mj_; UEMAPhysics (WI-25) calls mj_step through CMuJoCo (WI-19)),
+#     and `codesign -dv --verbose=2 "APP"`
+#     prints "Signature=adhoc" for the ad-hoc identity. Record both lines.
+#  6. `xcodebuild -scheme UEMAMind-iOS -destination 'generic/platform=iOS'
+#     -allowProvisioningUpdates DEVELOPMENT_TEAM=<10-character team id> build` : exit
+#     code 0 (plan page, section 8, step 8; a team is required). Without a team the
+#     build stops at signing; a compile-only check without signing, if wanted, needs
+#     an xcodebuild build-setting override that this file does not verify.
+#  7. Write each step's command, exit code and clock time (AM/PM Pacific) into
+#     apple/FIRST_BUILD_RECORD.md (WI-41).
+
+name: UEMAMind
+
+options:
+  # Prefix of every PRODUCT_BUNDLE_IDENTIFIER (see BUNDLE IDENTIFIERS above).
+  bundleIdPrefix: org.uema
+  # Project-wide floors; each target repeats its own below.
+  deploymentTarget:
+    macOS: "14.0"
+    iOS: "17.0"
+  # One Xcode group per folder under apple/UEMAMind (Views, ViewModels, Tests).
+  createIntermediateGroups: true
+
+packages:
+  # The local Swift package of WI-17; the path is relative to this file's folder.
+  UEMAKit:
+    path: UEMAKit
+
+settings:
+  base:
+    # Swift 5 language mode (see SWIFT LANGUAGE MODE above).
+    SWIFT_VERSION: "5.0"
+
+targets:
+  # ------------------------------------------------------------------ macOS app
+  UEMAMind-macOS:
+    type: application
+    platform: macOS
+    deploymentTarget: "14.0"
+    sources:
+      # Everything under apple/UEMAMind except the test folder of the bundles below.
+      - path: UEMAMind
+        excludes:
+          - "Tests/**"
+    dependencies:
+      # UEMAKit's one library product, declared in apple/UEMAKit/Package.swift.
+      - package: UEMAKit
+        product: UEMAKit
+    info:
+      path: Generated/UEMAMind-macOS/Info.plist
+      properties:
+        CFBundleDisplayName: UEMA Mind
+        # Xcode substitutes the build setting when it copies the Info.plist.
+        LSMinimumSystemVersion: "$(MACOSX_DEPLOYMENT_TARGET)"
+        NSPrincipalClass: NSApplication
+        NSHighResolutionCapable: true
+    settings:
+      base:
+        CODE_SIGN_STYLE: Automatic
+        # Ad-hoc signature: no developer team needed for a local build and run.
+        CODE_SIGN_IDENTITY: "-"
+        ENABLE_APP_SANDBOX: "NO"
+        ENABLE_HARDENED_RUNTIME: "NO"
+    scheme:
+      # Writes the scheme UEMAMind-macOS; the test bundle is built for testing only.
+      testTargets:
+        - UEMAMindTests-macOS
+      gatherCoverageData: false
+
+  UEMAMindTests-macOS:
+    type: bundle.unit-test
+    platform: macOS
+    deploymentTarget: "14.0"
+    sources:
+      # WI-32's tests; optional so that generation passes before the folder exists.
+      - path: UEMAMind/Tests
+        optional: true
+    dependencies:
+      # The host app: XcodeGen sets TEST_HOST from it; the preset sets BUNDLE_LOADER.
+      - target: UEMAMind-macOS
+      - package: UEMAKit
+        product: UEMAKit
+    settings:
+      base:
+        CODE_SIGN_STYLE: Automatic
+        CODE_SIGN_IDENTITY: "-"
+
+  # -------------------------------------------------------------------- iOS app
+  UEMAMind-iOS:
+    type: application
+    platform: iOS
+    deploymentTarget: "17.0"
+    sources:
+      - path: UEMAMind
+        excludes:
+          - "Tests/**"
+    dependencies:
+      - package: UEMAKit
+        product: UEMAKit
+    info:
+      path: Generated/UEMAMind-iOS/Info.plist
+      properties:
+        CFBundleDisplayName: UEMA Mind
+        # A launch screen without a storyboard: the empty dictionary takes the
+        # system defaults (UILaunchScreen page).
+        UILaunchScreen: {}
+        # One scene: the app runs one body in one world (RunViewModel, WI-32).
+        UIApplicationSceneManifest:
+          UIApplicationSupportsMultipleScenes: false
+    entitlements:
+      path: Generated/UEMAMind-iOS/UEMAMind-iOS.entitlements
+      properties:
+        # REQ-B-15: the peak footprint is read with this entitlement.
+        com.apple.developer.kernel.increased-memory-limit: true
+    settings:
+      base:
+        CODE_SIGN_STYLE: Automatic
+        # 1 = iPhone, 2 = iPad (Build settings reference, TARGETED_DEVICE_FAMILY).
+        TARGETED_DEVICE_FAMILY: "1,2"
+        # DEVELOPMENT_TEAM: set here or on the xcodebuild line (step 6 above).
+    scheme:
+      testTargets:
+        - UEMAMindTests-iOS
+      gatherCoverageData: false
+
+  UEMAMindTests-iOS:
+    type: bundle.unit-test
+    platform: iOS
+    deploymentTarget: "17.0"
+    sources:
+      - path: UEMAMind/Tests
+        optional: true
+    dependencies:
+      - target: UEMAMind-iOS
+      - package: UEMAKit
+        product: UEMAKit
+    settings:
+      base:
+        CODE_SIGN_STYLE: Automatic
+        TARGETED_DEVICE_FAMILY: "1,2"

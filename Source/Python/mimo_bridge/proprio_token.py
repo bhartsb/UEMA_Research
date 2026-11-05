@@ -121,6 +121,8 @@ from typing import Callable, Dict, List, Optional, Sequence
 
 import torch
 
+from mimo_bridge.precision_policy import full_precision
+
 VERSION = "proprio_token_repair_v7"
 # the window's rows are the same raw inputs in every version from 3 on (versions 1 and 2 kept 200 samples)
 READS_VERSIONS = ("proprio_token_repair_v1", "proprio_token_repair_v2", "proprio_token_repair_v3",
@@ -532,7 +534,7 @@ class WithinBody:
         # gradient of ln s_b is the attribution's reading gradient)
         with torch.set_grad_enabled(due and torch.is_grad_enabled()):
             Z = encode(X.reshape(B * n, F)).reshape(B, n, -1)
-            with torch.amp.autocast("cuda", enabled=False), torch.amp.autocast("cpu", enabled=False):
+            with full_precision(X):
                 s_graph = response(Z)
         s = s_graph.detach()
         ratio = ratio_of(s, u)
@@ -564,7 +566,7 @@ class WithinBody:
             # the push needs the posture-only response's graph; the hold's reading does not
             with torch.set_grad_enabled(bool(pushed.any()) and grad_on):
                 Zp = encode(Xp.reshape(B * n, F)).reshape(B, n, -1)
-                with torch.amp.autocast("cuda", enabled=False), torch.amp.autocast("cpu", enabled=False):
+                with full_precision(X):
                     sp_graph = response(Zp)
                     if bool(pushed.any()):
                         terms.append(-(short * torch.log(sp_graph.clamp_min(RESPONSE_EPS))).sum() / B)
@@ -576,7 +578,7 @@ class WithinBody:
                 idx = read.nonzero().flatten()
                 with torch.no_grad():
                     Zpf = encode(fatigue_stepped(Xp.index_select(0, idx)).reshape(-1, F)).reshape(len(idx), n, -1)
-                    with torch.amp.autocast("cuda", enabled=False), torch.amp.autocast("cpu", enabled=False):
+                    with full_precision(X):
                         ans = (fatigue_change(Zp.detach().index_select(0, idx), Zpf)
                                / sp.float().index_select(0, idx).clamp_min(RESPONSE_EPS))
                 for j, b in enumerate(idx.tolist()):
@@ -598,7 +600,7 @@ class WithinBody:
                         zo = (Zp.index_select(0, hot) if Zp.requires_grad
                               else encode(xo.reshape(-1, F)).reshape(len(hot), n, -1))
                         zof = encode(fatigue_stepped(xo).reshape(-1, F)).reshape(len(hot), n, -1)
-                        with torch.amp.autocast("cuda", enabled=False), torch.amp.autocast("cpu", enabled=False):
+                        with full_precision(X):
                             f_graph = fatigue_change(zo, zof)
                             terms.append((over.index_select(0, hot) * torch.log(f_graph.clamp_min(RESPONSE_EPS))).sum()
                                          / B)
@@ -632,7 +634,7 @@ class WithinBody:
             if due:
                 last["spread_posture_only"] = [float(v) for v in sp]
                 last["ratio_posture_only"] = [float(v) for v in ratio_of(sp, u)]
-                with torch.amp.autocast("cuda", enabled=False), torch.amp.autocast("cpu", enabled=False):
+                with full_precision(X):
                     last["content"] = [float(v) for v in posture_content(zd, P, lam=CONTROL_LAMBDA)]
                     last["content_control"] = [float(v) for v in posture_content(zd, P, lam=CONTROL_LAMBDA,
                                                                                   control=True)]
@@ -707,7 +709,7 @@ class WithinBody:
             r_old = ratio_of(s_old, u)
             ref = (self.start or {}).get("ratio") or [float(v) for v in r_old]
             gain = [float(r) / float(r0) if r0 and r0 > 0 else 1.0 for r, r0 in zip(r_old, ref)]
-            with torch.amp.autocast("cuda", enabled=False), torch.amp.autocast("cpu", enabled=False):
+            with full_precision(X):
                 cg = gain_matched_content(z, P, gain)
         self.held_out = dict(step=int(self._step), encoder_step=int(self.snapshot_step),
                              ratio=[float(v) for v in r_old], content_gain_matched=[float(v) for v in cg])

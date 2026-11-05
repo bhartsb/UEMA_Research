@@ -5,6 +5,9 @@
 Layouts come from the model's own reader constants (tokenizer/config.py) and the model's own
 action writer (lem/action/writer.py, lem/action/shm.py). Windows named shared memory via mmap
 tagnames, the same call the model's CPUReader uses.
+Windows only: every open calls lem.action.shm.require_windows_named_shared_memory, which
+raises RuntimeError naming the platform on macOS and Linux (the training path, Mode A, never
+opens one).
 
 LEM_Pipeline (62720 B):
   0   uint32 magic "LEMP" (0x4C454D50)   4 uint32 version 1   8 int64 latest frame
@@ -36,6 +39,7 @@ class PipelineSHMWriter:
         self.num_slots = C.NUM_PARITY_SLOTS
         self.slot_size = C.FRAME_BUFFER_SIZE_ALIGNED
         self.data_offset = C.SHM_CPU_DATA_OFFSET
+        ASHM.require_windows_named_shared_memory(name)
         self.shm = mmap.mmap(-1, self.total, name, access=mmap.ACCESS_WRITE)
         self.shm[:] = b"\x00" * self.total
         struct.pack_into("<I", self.shm, C.SHM_OFF_MAGIC, C.SHM_MAGIC)
@@ -67,6 +71,7 @@ class VisionSHMWriter:
     def __init__(self, name: str = "LEM_Vision"):
         self.name = name
         self.total = C.VISION_TOTAL_SIZE
+        ASHM.require_windows_named_shared_memory(name)
         self.shm = mmap.mmap(-1, self.total, name, access=mmap.ACCESS_WRITE)
         struct.pack_into("<I", self.shm, C.VISION_OFF_MAGIC, C.VISION_MAGIC)
         struct.pack_into("<I", self.shm, C.VISION_OFF_VERSION, C.VISION_VERSION)
@@ -105,6 +110,7 @@ class ActionSHMReader:
         self.name = name
         self.total = ASHM.ACTION_SHM_HEADER_SIZE + buffer_size
         self.shm = None
+        ASHM.require_windows_named_shared_memory(name)
         for _ in range(retries):
             try:
                 self.shm = mmap.mmap(-1, self.total, name, access=mmap.ACCESS_READ)

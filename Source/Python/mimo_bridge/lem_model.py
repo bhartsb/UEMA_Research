@@ -53,7 +53,11 @@ from lem.training.latent_regularizer import LatentRegularizer
 from lem.live_test import apply_developmental_constraints, _run_imagination_compiled
 from lem.source_mask import to_str as _src_to_str
 from lem.model.body_schema import DifferentiableBodySchema
+from lem.model.float64_host import float64_device
+from mimo_bridge.device_resolve import DeviceLike, resolve_device
+from mimo_bridge.optimizer_factory import make_adamw, apply_fused_rule, fused_for
 from mimo_bridge.replay import ReplayMemory
+from mimo_bridge.precision_policy import PrecisionPolicy
 
 # The motor token carries BOTH halves of the transition contract:
 #   slots 0..9   achieved handle state (pos, quat, radius, strength, active) - what the
@@ -550,7 +554,10 @@ class LemLite:
         if self.lesson_probe is not None and term is not None:
             self.lesson_probe.terms[name] = term
 
-    def __init__(self, device: str = "cuda:0", overrides: Optional[dict] = None, no_vision: bool = False,
+    # device: the request mimo_bridge.device_resolve.resolve_device reads ("auto", "cpu", "cuda", "cuda:N", "mps" or a
+    # torch.device); "auto" by default, as train_mimo.py --device, so a caller that names no device gets cuda:0 on a
+    # CUDA machine, mps on a Mac with the Metal device, else cpu, and never a refused "cuda:0" on a machine without CUDA
+    def __init__(self, device: DeviceLike = "auto", overrides: Optional[dict] = None, no_vision: bool = False,
                  wellness_mode: str = "baseline", motor_state_formula: str = "preference",
                  imagination: Optional[bool] = None, latent_reg: Optional[bool] = None,
                  curiosity: Optional[bool] = None, seed: int = 0, lr: Optional[float] = None,
@@ -686,7 +693,15 @@ class LemLite:
                  # --vestibular-input-path (lem/model/vestibular_input_path.py): "off" builds nothing; "on" adds one
                  # Linear(28 -> 192) from the vestibular encoder's own input to its output, in units of that output's
                  # own spread, its weight zero at the start; it learns from the live row only
-                 vestibular_input_path: str = "off"):
+                 vestibular_input_path: str = "off",
+                 # --mps-autocast (mimo_bridge/precision_policy.py): None runs an mps model in float32 with
+                 # autocast off; "bf16" or "fp16" runs it under autocast in that dtype (its rounding against
+                 # the CUDA bf16 receipts is unmeasured). Refused on any other device.
+                 mps_autocast: Optional[str] = None,
+                 # an injected PrecisionPolicy (Apple port specification section 5: the composition root builds
+                 # it and hands it in); None builds the policy's table row for the resolved device. Refused
+                 # when its device type is not the model's, or when --mps-autocast is given beside it.
+                 precision: Optional[PrecisionPolicy] = None):
         from .body_layout import names_for, config_overrides
         # PUBLIC names on purpose: the episode companion (continuation_state.capture_learner) carries
         # every _* and last_* attribute across a resume and would put a saved value back over the
@@ -782,7 +797,10 @@ class LemLite:
                                     {"model": {"motor_controller": {"adaptive": True, "max_depth": 4}}})
         torch.manual_seed(seed)
         np.random.seed(seed)
-        self.device = torch.device(device if torch.cuda.is_available() else "cpu")
+        # The device is the one the request names, resolved once in mimo_bridge.device_resolve (REQ-A-1 of the
+        # Apple port, WI-2): "auto" takes cuda:0, then mps, then cpu; a named device that is not available raises
+        # ValueError naming it instead of running on cpu in silence (the rule this line held until 2026-11-04).
+        self.device = resolve_device(device)
         self.config = build_config(overrides, no_vision=no_vision)
         cfg = self.config
         self.d_model = cfg["model"]["d_model"]
@@ -793,11 +811,19 @@ class LemLite:
         self.n_mod = len(self.active)
         self.ctx_len = cfg["model"]["context_length"]
         self.pred_mods = list(cfg["_prediction_head_modalities"])
-        prec = cfg["model"].get("precision", "fp32")
-        self.dtype = {"fp16": torch.float16, "bf16": torch.bfloat16, "fp32": torch.float32}.get(prec, torch.float32)
-        if self.device.type != "cuda":
-            self.dtype = torch.float32
-        self.use_amp = self.dtype != torch.float32 and self.device.type == "cuda"
+        # mixed precision per device (mimo_bridge/precision_policy.py): cuda runs the config's precision
+        # ("bf16" on the released command) under autocast; cpu runs float32 with autocast off; mps runs
+        # float32 with autocast off unless --mps-autocast names bf16 or fp16. self.dtype and self.use_amp
+        # keep their names: the switch checks, the tools and the tests read them.
+        if precision is not None and mps_autocast is not None:
+            raise ValueError("give a precision policy or --mps-autocast %r, not both" % (mps_autocast,))
+        if precision is not None and precision.device.type != self.device.type:
+            raise ValueError("the precision policy is for device type %r; the model is on %r"
+                             % (precision.device.type, self.device.type))
+        self.precision = precision if precision is not None else PrecisionPolicy(
+            self.device, requested=cfg["model"].get("precision", "fp32"), mps_autocast=mps_autocast)
+        self.dtype = self.precision.dtype
+        self.use_amp = self.precision.use_amp
 
         d = self.device
         self.encoder_registry = EncoderRegistry(cfg).to(d)
@@ -1117,7 +1143,8 @@ class LemLite:
         self.gaze_copy_now = None
         self.replay_slot_step = None
         # THE EXECUTED-COMMAND STREAM'S RUNNING PER-COLUMN MEAN AND MEAN SQUARE (prediction_audit.
-        # command_spread_update: {mean, sq: float64 [26 x 9], weight, steps}), read only by the swap test's shifted-own
+        # command_spread_update: {mean, sq: float64 [26 x 9], weight, steps}, on float64_device(self.device): the
+        # model's device on cpu and cuda, cpu for mps), read only by the swap test's shifted-own
         # arm for each column's standard deviation. Not a parameter, never trained, no gradient; it starts with "_" so
         # the episode companion carries it across a resume (plain tensors and numbers, which the companion can save)
         self._command_spread = None
@@ -1870,10 +1897,12 @@ class LemLite:
         # bias and every 1-D buffer-like parameter that exists now or later.
         decay = [p for p in params if p.dim() >= 2]
         no_decay = [p for p in params if p.dim() < 2]
-        self.optimizer = torch.optim.AdamW(
+        # The fused flag (torch's one CUDA kernel versus its per-tensor loop) is decided in
+        # mimo_bridge/optimizer_factory.py, one place with its test: cuda True, cpu and mps False.
+        self.optimizer = make_adamw(
             [{"params": decay, "weight_decay": tr["weight_decay"]},
              {"params": no_decay, "weight_decay": 0.0}],
-            lr=lr or tr["lr"], betas=tuple(tr["betas"]), fused=(d.type == "cuda"))
+            d, lr=lr or tr["lr"], betas=tuple(tr["betas"]))
         log.info("optimizer: %d decayed tensors (%d params), %d undecayed (%d params)",
                  len(decay), sum(p.numel() for p in decay),
                  len(no_decay), sum(p.numel() for p in no_decay))
@@ -2530,8 +2559,10 @@ class LemLite:
                 if (angles.shape != expected or velocities.shape != expected
                         or not np.isfinite(angles).all() or not np.isfinite(velocities).all()):
                     raise ValueError('Hand goals require finite native joint angles and velocities')
-                self._hand_current_angles = torch.as_tensor(angles, device=self.device, dtype=torch.float64)
-                self._hand_current_velocities = torch.as_tensor(velocities, device=self.device, dtype=torch.float64)
+                # float64 on float64_device(self.device) (cpu for mps, which has no float64; the model's device on cpu
+                # and cuda); hand_response.choose_hand_goal reads them there and hands its costs back as float32
+                self._hand_current_angles = torch.as_tensor(angles, device=float64_device(self.device), dtype=torch.float64)
+                self._hand_current_velocities = torch.as_tensor(velocities, device=float64_device(self.device), dtype=torch.float64)
                 self._hand_native_seen = True
             elif (self._hand_native_seen or any(v is not None for q, v in readings)
                   or (any(q is not None for q, v in readings) and not all(q is not None for q, v in readings))):
@@ -2662,7 +2693,7 @@ class LemLite:
                 pro[:, :, 4:11] = pro[:, :, 4:11] * g.view(B, 1, 1)   # pos/vel/fatigue only:
                 frame["proprioception"] = pro.view(B, -1)             # never scale quat/index
 
-        with torch.amp.autocast("cuda", enabled=self.use_amp, dtype=self.dtype):
+        with self.precision.autocast():
             self_spatial=self_spatial_valid=None
             if self.self_prediction_mode=='grounded_residual':
                 from lem.model.spatial import encode_spatial
@@ -3544,7 +3575,7 @@ class LemLite:
                 # it (its inputs are recorded poses and changes); the term is already weighted.
                 # Full precision: it grades changes of a few degrees and centimetres, the size the
                 # card's bf16 would round at the third significant figure
-                with torch.amp.autocast("cuda", enabled=False):
+                with self.precision.autocast(enabled=False):
                     _syn_terms = self._synergy_lesson(exec_t, executed_order_id, handle_state,
                                                       step, B, train)
                 for _k, _v in _syn_terms.items():
@@ -3998,7 +4029,7 @@ class LemLite:
                 # cosine error against a decision line the real frames sat 0.21 or more
                 # away from, so no admission decision changed - this is precision
                 # hygiene for a reported statistic, not a repair of a wrong result.
-                with torch.amp.autocast("cuda", enabled=False):
+                with self.precision.autocast(enabled=False):
                     self._hself.observe(self.last_tokens, wellness_out["grounded"])
             if self.entity_self_mode != "off":
                 # the same kind of watching over NAMED things, whose presence the world
@@ -4760,7 +4791,7 @@ class LemLite:
         # literal that stood here said 23
         toks, ach = w["tokens"], w["achieved"]              # [R, ctx+1, n_mod, d], [R, ctx+1, n_handles, 10]
         Rn = toks.shape[0]
-        with torch.amp.autocast("cuda", enabled=self.use_amp, dtype=self.dtype):
+        with self.precision.autocast():
             # context = the first ctx-1 moments, current = moment ctx-1, target = moment ctx
             # The live context buffer stores forward_model's ctx_update, which is the
             # frame AFTER modality embeddings are added (forward_model.py:314, and its
@@ -6807,7 +6838,7 @@ class LemLite:
         if ps.shape != (Bn, CH.N_PATCHES):
             raise ValueError(f"patch_state must be [{Bn}, {CH.N_PATCHES}], got {tuple(ps.shape)}")
         order_enc = command_for_encoder(order)
-        with torch.amp.autocast("cuda", enabled=self.use_amp, dtype=self.dtype):
+        with self.precision.autocast():
             latent = self._latent_for_order(state, order_enc)
             lg = self.contact_head(latent, CH.order_features(order, state.achieved, self.GAZE_IDX),
                                    self._contact_prev_input(ps, self.device))
@@ -6874,7 +6905,7 @@ class LemLite:
         if order.ndim == 2:
             order = order.unsqueeze(0)
         order_enc = command_for_encoder(order)
-        with torch.amp.autocast("cuda", enabled=self.use_amp, dtype=self.dtype):
+        with self.precision.autocast():
             latent = self._latent_for_order(state, order_enc)
             # efference_v2: the heads read the pose the order starts from (the asked change, the
             # head's and the eye's orientation) and, with --vestibular-sense on, the head's motion
@@ -6926,7 +6957,7 @@ class LemLite:
         cmd = command_for_encoder(torch.as_tensor(o, device=self.device))
         depth = max(1, int(depth))
         out = {}
-        with torch.amp.autocast("cuda", enabled=self.use_amp, dtype=self.dtype):
+        with self.precision.autocast():
             st = state
             for k in range(1, depth + 1):
                 st = transition(self.forward_model, self.encoder_registry, self.prediction_heads,
@@ -8300,14 +8331,14 @@ class LemLite:
             cur = {m: torch.cat([c[1][m] for c in calls], dim=0) for m in calls[0][1]}
             if x.shape[0] >= 2:
                 with torch.no_grad(), _LV.unwatched(self), \
-                        torch.amp.autocast("cuda", enabled=self.use_amp, dtype=self.dtype):
+                        self.precision.autocast():
                     out["head_read"] = _ASP.head_read(self.prediction_heads, x, cur)
                     # the old head's and the path's fixed vectors on the same rows (version 2: fixed_parts)
                     out["fixed"] = _ASP.fixed_parts(self.prediction_heads, x, cur)
             heads = getattr(self.prediction_heads, "_orig_mod", self.prediction_heads)
             sums = {}
             with torch.enable_grad(), _LV.unwatched(self), path.frozen(), \
-                    torch.amp.autocast("cuda", enabled=self.use_amp, dtype=self.dtype):
+                    self.precision.autocast():
                 for c in calls:
                     targets = c[2] if len(c) > 2 else {}
                     if not targets:
@@ -9515,6 +9546,15 @@ class LemLite:
         self._migrate_efference_scales(path, load_optimizer)
         self._migrate_contact_order_scales(path, load_optimizer)
         self._migrate_synergy_scales(path, load_optimizer)
+        # torch's Optimizer.load_state_dict (torch 2.6.0, torch/optim/optimizer.py, update_group) keeps the SAVED
+        # groups' settings; the released checkpoint saves fused True from its cuda run (ckpt_step_494025's
+        # optimizer.pt, both groups), which would put a cpu or mps resume on torch's fused cpu or mps kernel. The
+        # rule of mimo_bridge/optimizer_factory.py is put back after every optimizer load and migration above.
+        _fused_reset = apply_fused_rule(self.optimizer, self.device)
+        if _fused_reset:
+            log.warning("optimizer: fused flag set to %s on %d of %d parameter groups after the checkpoint load "
+                        "(the checkpoint saved it for another device type)", fused_for(self.device),
+                        _fused_reset, len(self.optimizer.param_groups))
         self.step_count = int(res.get("step", 0))
         self.loaded_from = os.path.abspath(path)
         if self.persistent_memory is not None and self.persistent_memory.repaired:

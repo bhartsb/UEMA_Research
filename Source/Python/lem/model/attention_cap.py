@@ -60,6 +60,8 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
+from .float64_host import float64_device, same_device
+
 VERSION = "attention_cap_v1"
 MODES = ("off", "on")
 # THE COSINE'S EPSILON: a query or key vector of length under EPS is divided by EPS instead of its length (its cosine
@@ -132,8 +134,16 @@ def check_switch(mode, bound) -> Optional[float]:
 # ------------------------------------------------------------------------------------------------- the scores
 def cosine_scores(q: torch.Tensor, k: torch.Tensor, bound: float) -> torch.Tensor:
     """q [..., L, d], k [..., S, d] -> [..., L, S] = bound x cos(q_i, k_j), computed in float32 (float64 for float64
-    inputs) with autocast switched off."""
+    inputs) with autocast switched off. With q and k on a device without float64 (mps), the scores are computed on
+    float64_device(q.device) (cpu) in float64 and returned to q's device as the dtype named above (float32 for
+    float32 inputs); on cpu and cuda nothing changes (the gradient to q and k flows back through the copies)."""
     dtype = torch.promote_types(q.dtype, torch.float32)
+    host = float64_device(q.device)
+    if not same_device(host, q.device):
+        with torch.autocast(device_type=host.type, enabled=False):
+            qn = F.normalize(q.to(device=host, dtype=torch.float64), dim=-1, eps=EPS)
+            kn = F.normalize(k.to(device=host, dtype=torch.float64), dim=-1, eps=EPS)
+            return (float(bound) * torch.matmul(qn, kn.transpose(-1, -2))).to(device=q.device, dtype=dtype)
     with torch.autocast(device_type=q.device.type, enabled=False):
         qn = F.normalize(q.to(dtype), dim=-1, eps=EPS)
         kn = F.normalize(k.to(dtype), dim=-1, eps=EPS)
