@@ -293,3 +293,39 @@ public struct EyeRenderPass {
         return images
     }
 }
+
+// MARK: - Downsampling
+
+// Plain Swift with no SceneKit or Metal call, so it lives here and not in SceneKitEyeRenderer.swift,
+// which calls it after reading the rendered texture back.
+
+/// Averages each `factor` x `factor` block of an RGBA image (`width` x `width` pixels, 4 bytes
+/// per pixel, rows top-down) into one RGB pixel, rounding half up; the result is
+/// (width / factor) squared pixels x 3 bytes, rows top-down. `width` must be a multiple of
+/// `factor`.
+public func eyeDownsample(rgba: UnsafeBufferPointer<UInt8>, width: Int, factor: Int) -> [UInt8] {
+    precondition(factor >= 1 && width % factor == 0, "width \(width) is not a multiple of \(factor)")
+    precondition(rgba.count >= width * width * 4, "RGBA buffer holds \(rgba.count) bytes, need \(width * width * 4)")
+    let outWidth = width / factor
+    let samples = factor * factor
+    var out = [UInt8](repeating: 0, count: outWidth * outWidth * 3)
+    for oy in 0 ..< outWidth {
+        for ox in 0 ..< outWidth {
+            var r = 0, g = 0, b = 0
+            for sy in 0 ..< factor {
+                let row = (oy * factor + sy) * width
+                for sx in 0 ..< factor {
+                    let i = (row + ox * factor + sx) * 4
+                    r += Int(rgba[i])
+                    g += Int(rgba[i + 1])
+                    b += Int(rgba[i + 2])
+                }
+            }
+            let o = (oy * outWidth + ox) * 3
+            out[o] = UInt8((r + samples / 2) / samples)
+            out[o + 1] = UInt8((g + samples / 2) / samples)
+            out[o + 2] = UInt8((b + samples / 2) / samples)
+        }
+    }
+    return out
+}

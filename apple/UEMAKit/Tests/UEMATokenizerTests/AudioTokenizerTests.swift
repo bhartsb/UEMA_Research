@@ -49,18 +49,15 @@ final class AudioTokenizerTests: XCTestCase {
         XCTAssertEqual(meta[4], 0.2)
     }
 
-    /// The 5 metadata numbers of `tokenize_audio` are already divided: the pair is the first 2,
-    /// copied (lem_model.py:2476-2477). Another length throws.
-    func testFiveNumberMetadataGivesItsFirstTwo() throws {
-        let reading = SenseReading(
-            sense: .audio,
-            primary: ShapedArray(zerosOfShape: [256, 2]),
-            auxiliary: try ShapedArray(shape: [5], values: [0.325, -0.17, 0.5, 0.9, 0.1]))
-        XCTAssertEqual(try AudioTokenizer().tokenize(reading).auxiliary?.values, [0.325, -0.17])
-        let bad = SenseReading(
-            sense: .audio,
-            primary: ShapedArray(zerosOfShape: [256, 2]),
-            auxiliary: ShapedArray(zerosOfShape: [3]))
-        XCTAssertThrowsError(try AudioTokenizer().tokenize(bad))
+    /// One auxiliary layout: the reader's 6 raw metadata numbers. The [5] and [2] layouts this
+    /// tokenizer took before November 5, 2026 are refused, as is any other width.
+    func testOnlyTheSixNumberMetadataIsAccepted() throws {
+        for width in [2, 3, 5, 7] {
+            let reading = SenseReading(
+                sense: .audio,
+                primary: ShapedArray(zerosOfShape: [256, 2]),
+                auxiliary: ShapedArray(zerosOfShape: [width]))
+            XCTAssertThrowsError(try AudioTokenizer().tokenize(reading), "width \(width)")
+        }
     }
 }

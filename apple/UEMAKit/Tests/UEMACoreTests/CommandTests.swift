@@ -1,6 +1,6 @@
 // CommandTests.swift: the tests of Command.swift (work item WI-20): the command holds 234
 // numbers (26 handles x 9 columns), the handle and column names, the scale conversion, the
-// gaze round trip, the handle mask, the finger joint goals and the 92 motor controls.
+// gaze round trip, the handle mask, the finger joint goals and the 90 motor controls.
 // Not compiled on the machine that wrote it (no Swift toolchain on Windows).
 
 import Foundation
@@ -122,20 +122,21 @@ final class CommandTests: XCTestCase {
         XCTAssertEqual(GazeAngles.straightAhead, GazeAngles(azimuth: 0, elevation: 0))
     }
 
-    /// 92 controls; clipped() brings every control into -1 to 1.
-    func testMotorControlsHold92Numbers() throws {
-        XCTAssertEqual(MotorControls.count, 92)
-        XCTAssertEqual(MotorControls.zero.values.count, 92)
+    /// 90 controls, the released scene's nu; clipped() brings every control into -1 to 1.
+    func testMotorControlsHold90Numbers() throws {
+        XCTAssertEqual(MotorControls.count, 90)
+        XCTAssertEqual(MotorControls.count, PhysicsSizes.released.nu)
+        XCTAssertEqual(MotorControls.zero.values.count, 90)
         XCTAssertTrue(MotorControls.zero.isWithinRange)
         XCTAssertThrowsError(try MotorControls(values: [0, 1]))
-        var values = Array(repeating: 0.0, count: 92)
+        var values = Array(repeating: 0.0, count: 90)
         values[0] = 2.5
-        values[91] = -3
+        values[89] = -3
         let controls = try MotorControls(values: values)
         XCTAssertFalse(controls.isWithinRange)
         let clipped = controls.clipped()
         XCTAssertEqual(clipped.values[0], 1)
-        XCTAssertEqual(clipped.values[91], -1)
+        XCTAssertEqual(clipped.values[89], -1)
         XCTAssertEqual(clipped.values[1], 0)
         XCTAssertTrue(clipped.isWithinRange)
         XCTAssertEqual(MotorControls.range, (-1.0) ... (1.0))

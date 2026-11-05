@@ -32,7 +32,7 @@ final class StubPhysics: Physics {
     var writtenControls: [MotorControls] = []
     var resets = 0
 
-    let sizes = PhysicsSizes(nq: 1, nv: 1, nu: 92, nbody: 1, njnt: 1, nsensordata: 0, ngeom: 0, ncam: 0)
+    let sizes = PhysicsSizes(nq: 1, nv: 1, nu: MotorControls.count, nbody: 1, njnt: 1, nsensordata: 0, ngeom: 0, ncam: 0)
     var time: Double = 0
     var qpos: [Double] = [0]
     var qvel: [Double] = [0]
@@ -42,8 +42,8 @@ final class StubPhysics: Physics {
     var xmat: [Double] = [1, 0, 0, 0, 1, 0, 0, 0, 1]
     var xaxis: [Double] = [0, 0, 1]
     var xanchor: [Double] = [0, 0, 0]
-    var actuatorForce: [Double] = Array(repeating: 0, count: 92)
-    var control: [Double] = Array(repeating: 0, count: 92)
+    var actuatorForce: [Double] = Array(repeating: 0, count: MotorControls.count)
+    var control: [Double] = Array(repeating: 0, count: MotorControls.count)
     var contacts: [Contact] = []
     var isLoaded = true
 

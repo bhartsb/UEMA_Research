@@ -40,16 +40,12 @@
 // SpringDamperModel (actuation.py:76-81; SpringDamperModel, actuation.py:107-197, does not
 // override it), so a physics step here runs nothing before mj_step.
 //
-// THE MOTOR COUNT. UEMACore's MotorControls holds exactly 92 numbers (Command.swift:490-507,
-// "The motors of the released body: 92"). The released scene compiles to nu = 90: bundle.json
-// model_counts.nu 90, its observer_header.nu 90 (the trainer's own run), Python mujoco 3.3.0 on
-// scene.xml 90 (November 4, 2026), env.py:2918 "18 of 90 actuators". So `write(controls:
-// MotorControls)` throws PhysicsError.wrongCount(name: "controls", expected: 90, found: 92) on
-// the released scene until the two counts agree, and `write(controls: [Double])` (nu numbers)
-// is the path that runs today, with stepEnvStep(controlValues:) and stepModelStep(controlValues:)
-// beside it. UEMACommand's decoder writes through the MotorControls path (CommandDecoder.swift
-// header, "THE MOTOR COUNT DISAGREES") and so stops on the released scene as well. The
-// disagreement is the UEMACore owner's (WI-20) to settle: MotorControls.count 92 against nu 90.
+// THE MOTOR COUNT. The released scene compiles to nu = 90: bundle.json model_counts.nu 90, its
+// observer_header.nu 90 (the trainer's own run), Python mujoco 3.3.0 on scene.xml 90 (November 4,
+// 2026), env.py:2918 "18 of 90 actuators". UEMACore's MotorControls.count is 90 (it read 92
+// before November 5, 2026, a figure from another body file), so `write(controls: MotorControls)`
+// writes on the released scene and throws PhysicsError.wrongCount only for a scene of another nu;
+// `write(controls: [Double])` takes nu numbers for any scene.
 //
 // MEMORY. Python measured one mjData arena of this scene at 380 MB (plan row WI-40). This class
 // holds one mjData for the state and, only after the first scratchBodyPosition call, a second one
@@ -125,8 +121,8 @@
 //         1.0 s within 1e-9 s, 200 physics-step callbacks, every qpos finite). The tests find
 //         scene.xml from their own path (#filePath), three folders up, then
 //         Sources/UEMAScene/Resources/crib_age24_trunk_v1/scene.xml.
-//  [ ] 4. testMotorControlsWriteMatchesTheModelCount passes by asserting the 92-against-90 throw: that is
-//         the expected result described under THE MOTOR COUNT, not a build fault.
+//  [ ] 4. testMotorControlsWriteMatchesTheModelCount passes by writing MotorControls (90 against nu
+//         90, THE MOTOR COUNT); it passed on the Linux harness of apple/FIRST_BUILD_CHECKLIST.md.
 //  [ ] 5. Write each command, exit code and clock time (AM/PM Pacific) into
 //         apple/FIRST_BUILD_RECORD.md (WI-41); the plan page's WI-25 row moves to VERIFIED or
 //         FAILED with the commit hash.
@@ -261,8 +257,8 @@ public final class MuJoCoPhysics: Physics, SceneGeomReading, PhysicsModelDescrib
 
     // MARK: Writing and stepping
 
-    /// Writes the 92 controls of UEMACore's MotorControls. Throws PhysicsError.wrongCount when the
-    /// model's nu is not 92 (90 on the released scene; see THE MOTOR COUNT in this file's header).
+    /// Writes the 90 controls of UEMACore's MotorControls. Throws PhysicsError.wrongCount when the
+    /// model's nu is not MotorControls.count (THE MOTOR COUNT in this file's header).
     public func write(controls: MotorControls) throws {
         try write(controls: controls.values)
     }

@@ -46,8 +46,8 @@
 // in source order, left camera before right camera (eye_left, eye_right, fovea_left,
 // fovea_right), each width x height x 3 row-major; V = 2 x 256^2 x 3 + 2 x 288^2 x 3 =
 // 890,880. `auxiliary` shape [2, 2]: [[left yaw, left pitch], [right yaw, right pitch]] in
-// radians. The UEMACore comment on `SenseReading` names "[5, height, width, 3]" for vision; one
-// array of that shape cannot hold images of 256 and 288 px, so this layout replaces it.
+// radians. UEMACore declares this layout (`VisionReadingLayout`, VisionReading.swift) and the
+// UEMASenses VisionReader produces it; `reading(images:left:right:)` packs through it.
 //
 // SOLID. `VisionPatcher` has one job (images and gaze to patch rows); the camera set is data
 // (`VisionSource`), so another layout is another source list with no change here.
@@ -128,24 +128,8 @@ public struct VisionSource: Equatable, Hashable, Sendable {
     public static let released: [VisionSource] = [wide, fovea]
 }
 
-/// One eye's gaze: the eye joints' yaw and pitch in radians (env.eye_yaw_pitch,
-/// env.py:2212-2220; the right yaw is negated there, so both eyes use the same sign rule:
-/// positive yaw = eye-left).
-public struct EyeGaze: Equatable, Hashable, Codable, Sendable {
-    /// Rotation about the head's up axis, radians, positive = eye-left.
-    public let yaw: Double
-    /// Rotation about the eye's left axis, radians.
-    public let pitch: Double
-
-    /// A gaze of `yaw` and `pitch` radians.
-    public init(yaw: Double, pitch: Double) {
-        self.yaw = yaw
-        self.pitch = pitch
-    }
-
-    /// The eye looking straight ahead: yaw 0, pitch 0.
-    public static let level = EyeGaze(yaw: 0, pitch: 0)
-}
+// EyeGaze, one eye's yaw and pitch in radians, is declared in UEMACore (VisionReading.swift),
+// beside the reading layout that the vision reader in UEMASenses builds with it.
 
 /// The unit ray through one patch centre in the eye's rest frame, columns (forward, left, up)
 /// (vision_adapter.py:68-83).
@@ -388,6 +372,14 @@ public struct VisionPatcher: Tokenizer, Sendable {
         sources.flatMap { [$0.leftCamera, $0.rightCamera] }
     }
 
+    /// The reading layout of this patcher's sources, left camera before right camera per source.
+    public var readingLayout: VisionReadingLayout {
+        VisionReadingLayout(entries: sources.flatMap {
+            [VisionReadingLayout.Entry($0.leftCamera, pixelSize: $0.sizePixels),
+             VisionReadingLayout.Entry($0.rightCamera, pixelSize: $0.sizePixels)]
+        })
+    }
+
     /// The length of `primary` in the reading layout: each camera's size^2 x 3 bytes, summed
     /// (890,880 on the released layout).
     public var readingValueCount: Int {
@@ -399,8 +391,6 @@ public struct VisionPatcher: Tokenizer, Sendable {
     /// Each image must be exactly its source's size.
     public func reading(images: [EyeCamera: EyeImage], left: EyeGaze, right: EyeGaze,
                         isFresh: Bool = true) throws -> SenseReading {
-        var values: [Float] = []
-        values.reserveCapacity(readingValueCount)
         for source in sources {
             for camera in [source.leftCamera, source.rightCamera] {
                 guard let image = images[camera] else {
@@ -411,15 +401,10 @@ public struct VisionPatcher: Tokenizer, Sendable {
                         camera: camera.mujocoName, expectedSize: source.sizePixels,
                         width: image.width, height: image.height)
                 }
-                values.append(contentsOf: image.rgb.map { Float($0) })
             }
         }
-        let gaze: [Float] = [Float(left.yaw), Float(left.pitch), Float(right.yaw), Float(right.pitch)]
-        return SenseReading(
-            sense: .vision,
-            primary: try ShapedArray(shape: [values.count], values: values),
-            auxiliary: try ShapedArray(shape: [2, 2], values: gaze),
-            isFresh: isFresh)
+        // One packing for the reader and the tokenizer: UEMACore's VisionReadingLayout.
+        return try readingLayout.reading(images: images, left: left, right: right, isFresh: isFresh)
     }
 
     /// Reads the `SenseReading` layout of this file's header back into images and gazes and
@@ -436,21 +421,7 @@ public struct VisionPatcher: Tokenizer, Sendable {
                 sense: .vision, array: "auxiliary", expected: "[2, 2]: left and right yaw, pitch in radians",
                 found: reading.auxiliary?.shape ?? [])
         }
-        var images: [EyeCamera: EyeImage] = [:]
-        var offset = 0
-        for source in sources {
-            let length = source.sizePixels * source.sizePixels * 3
-            for camera in [source.leftCamera, source.rightCamera] {
-                let bytes = reading.primary.values[offset ..< offset + length].map { value -> UInt8 in
-                    value.isFinite ? UInt8(min(max(value.rounded(), 0), 255)) : 0
-                }
-                images[camera] = try EyeImage(
-                    camera: camera, width: source.sizePixels, height: source.sizePixels, rgb: bytes)
-                offset += length
-            }
-        }
-        let left = EyeGaze(yaw: Double(gaze.values[0]), pitch: Double(gaze.values[1]))
-        let right = EyeGaze(yaw: Double(gaze.values[2]), pitch: Double(gaze.values[3]))
+        let (images, left, right) = try readingLayout.images(of: reading)
         let result = try patch(images: images, left: left, right: right)
         return EncoderInput(sense: .vision, primary: result.patches, auxiliary: result.angles, isFresh: reading.isFresh)
     }

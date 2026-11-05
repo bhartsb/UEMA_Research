@@ -5,7 +5,8 @@
 // was compiled on the machine that wrote it (no Swift toolchain on Windows).
 
 /// MuJoCoPhysics over the CMuJoCo module (work item WI-25): loads the scene
-/// bundle with mj_loadXML, writes the 92 motor controls clipped to -1..1, runs
+/// bundle with mj_loadXML, writes the 90 motor controls clipped to the
+/// actuator bounds (-1..1 narrowed to each motor's force range), runs
 /// one model step as 5 env steps of 2 x (mj_step + mj_rnePostConstraint) at
 /// the scene's 0.005 s timestep (10 physics steps of 5 ms; mimo_env.py:573-575,
 /// env.py:1157), and reads qpos, qvel, sensordata, xpos, xquat, actuator_force

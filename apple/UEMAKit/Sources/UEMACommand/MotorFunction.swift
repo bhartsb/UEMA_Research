@@ -48,7 +48,7 @@
 //     (TIMING above); check on the real stack that FatigueCapacities reads the capacities after
 //     env step t-1 when env step t is decoded.
 //  4. On the WI-15 bundle: MotorFunctionModulator(tables:) does not throw (every actuator has
-//     gaintype 0 and biastype 0) and `actuatorBodySet` gives a set to each of the 92 actuators
+//     gaintype 0 and biastype 0) and `actuatorBodySet` gives a set to each of the 90 actuators
 //     whose joint body is named in body_set_for_mimo_body (proprio_adapter.py:48-68); record
 //     the count with no set in apple/FIRST_BUILD_RECORD.md (WI-41).
 

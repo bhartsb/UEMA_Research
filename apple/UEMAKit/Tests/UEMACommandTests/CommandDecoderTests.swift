@@ -1,5 +1,5 @@
 // CommandDecoderTests.swift: 10 tests of CommandDecoder (UEMACore's CommandDecoding),
-// MotorCommandWriter over PlantPhysics (the 92-motor test plant of CommandTestBodies.swift) and
+// MotorCommandWriter over PlantPhysics (the 90-motor test plant of CommandTestBodies.swift) and
 // the adapters over UEMAPhysics.
 // The held-command test follows the pattern of Source/Python/mimo_bridge/tests/
 // test_command_moves_body.py (hold one command for 25 env steps, check the named body part
@@ -82,7 +82,7 @@ final class CommandDecoderTests: XCTestCase {
         }
     }
 
-    /// A false mask entry for the head leaves all 92 controls at 0; the result is the decoder's
+    /// A false mask entry for the head leaves all 90 controls at 0; the result is the decoder's
     /// lastControls.
     func testMaskSilencesTheHandle() throws {
         let decoder = try makeDecoder(physics: PlantPhysics())
@@ -94,7 +94,7 @@ final class CommandDecoderTests: XCTestCase {
         XCTAssertEqual(decoder.lastControls, controls)
     }
 
-    /// The decoder refuses an engine that does not make 92 controls, and a finger id list
+    /// The decoder refuses an engine that does not make 90 controls, and a finger id list
     /// that is not 44 long.
     func testShapeChecksAtInit() throws {
         let small = try HandleCommandDecoder(

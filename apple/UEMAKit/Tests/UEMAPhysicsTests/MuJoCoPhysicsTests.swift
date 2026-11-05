@@ -73,6 +73,9 @@ final class MuJoCoPhysicsTests: XCTestCase {
         XCTAssertTrue(physics.isLoaded)
         XCTAssertEqual(physics.sizes, PhysicsSizes(nq: 146, nv: 136, nu: 90, nbody: 76, njnt: 104,
                                                    nsensordata: 168, ngeom: 188, ncam: 6))
+        // UEMACore's constant for the released scene and its motor count agree with the file.
+        XCTAssertEqual(physics.sizes, PhysicsSizes.released)
+        XCTAssertEqual(physics.sizes.nu, MotorControls.count)
         XCTAssertEqual(physics.timestep, 0.005, accuracy: 1e-15)
         XCTAssertEqual(physics.time, 0)
         XCTAssertEqual(physics.qpos.count, 146)
@@ -219,24 +222,25 @@ final class MuJoCoPhysicsTests: XCTestCase {
         XCTAssertEqual(physics.control, [Double](repeating: 0, count: nu))
     }
 
-    /// UEMACore's MotorControls (92 numbers) is written when the model has 92 motors and throws
-    /// wrongCount otherwise; the released scene has 90 (MuJoCoPhysics.swift, THE MOTOR COUNT).
+    /// UEMACore's MotorControls (90 numbers) is written on the released scene (nu 90) and the
+    /// protocol's default model step runs on it; on a scene of another nu the write throws
+    /// wrongCount before any physics step (MuJoCoPhysics.swift, THE MOTOR COUNT).
     func testMotorControlsWriteMatchesTheModelCount() throws {
         let physics = try loadedPhysics()
-        let nu = physics.sizes.nu
-        if nu == MotorControls.count {
-            XCTAssertNoThrow(try physics.write(controls: MotorControls.zero))
-        } else {
-            XCTAssertThrowsError(try physics.write(controls: MotorControls.zero)) { error in
-                XCTAssertEqual(error as? PhysicsError,
-                               .wrongCount(name: "controls", expected: nu, found: MotorControls.count))
-            }
-            // The Physics protocol's default model step writes first, so it throws before any
-            // physics step runs.
-            XCTAssertThrowsError(try physics.stepModelStep(controls: MotorControls.zero, afterEachPhysicsStep: { _ in }))
-            XCTAssertEqual(physics.physicsStepCount, 0)
-            XCTAssertEqual(physics.time, 0)
+        XCTAssertEqual(physics.sizes.nu, MotorControls.count)
+        XCTAssertNoThrow(try physics.write(controls: MotorControls.zero))
+        try physics.stepModelStep(controls: MotorControls.zero, afterEachPhysicsStep: { _ in })
+        XCTAssertEqual(physics.physicsStepCount, 10)
+
+        let other = MuJoCoPhysics()
+        try other.load(sceneXML: try temporaryScene(Self.oneBodyXML(timestep: "0.005")))
+        XCTAssertThrowsError(try other.write(controls: MotorControls.zero)) { error in
+            XCTAssertEqual(error as? PhysicsError,
+                           .wrongCount(name: "controls", expected: 0, found: MotorControls.count))
         }
+        XCTAssertThrowsError(try other.stepModelStep(controls: MotorControls.zero, afterEachPhysicsStep: { _ in }))
+        XCTAssertEqual(other.physicsStepCount, 0)
+        XCTAssertEqual(other.time, 0)
     }
 
     // MARK: State

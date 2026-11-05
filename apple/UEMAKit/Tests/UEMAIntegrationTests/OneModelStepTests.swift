@@ -50,7 +50,7 @@
 //  1. Physics: 5 env steps (ModelStep.envStepsPerModelStep, args.json:154 `action_repeat` 5).
 //     Before each env step, in the order of env.py:2884-2893 (MotorCommandWriter in
 //     CommandDecoder.swift keeps the same order): the decoder turns the executed command into
-//     92 controls (a fresh decode every env step: command_decoder.md section 1, quoted in
+//     90 controls (a fresh decode every env step: command_decoder.md section 1, quoted in
 //     Protocols.swift's `stepEnvStep` doc) with the gaze pair of the `GazeSourcing` stage (nil:
 //     the command's eye row); the executed command and the mask are written to the
 //     `ExecutedCommandRecording` stage; the `BodyFunctionModulating` stage runs; then the write.
@@ -147,7 +147,7 @@
 //   physicsStepsPerEnvStep 2, physicsTimestepSeconds 0.005, seconds 0.050,
 //   goalRingMinimumForPlanning 20, planningInterval 10, `isPlanningCandidate`.
 // - apple/UEMAKit/Sources/UEMACore/Command.swift: Command (234 numbers, scale),
-//   MotorControls (92, range -1 to 1, `isWithinRange`), HandleMask.allTrue, FingerJointGoals,
+//   MotorControls (90, range -1 to 1, `isWithinRange`), HandleMask.allTrue, FingerJointGoals,
 //   GazeAngles.
 // - apple/UEMAKit/Sources/UEMACore/SenseName.swift: SenseName.active (six senses), Token
 //   (192 numbers), TokenSet, `missingActiveSenses`.
@@ -317,7 +317,7 @@ struct ModelStepStack {
     let planner: any Planning
     /// The raw command into the executed command.
     let executor: any CommandExecuting
-    /// The executed command into 92 controls.
+    /// The executed command into 90 controls.
     let decoder: any CommandDecoding
     /// The decoder's handle mask: all 26 true in the released run (lem_model.py:5692-5693).
     let mask: HandleMask
@@ -988,22 +988,22 @@ final class FakeStack {
     }
 }
 
-/// A physics with the released model's sizes (Protocols.swift PhysicsSizes doc: nq 146, nv
-/// 136, nu 92, nbody 76, njnt 97, nsensordata 56; ngeom and ncam 0 here, unread by the loop)
+/// A physics with the released model's sizes (`PhysicsSizes.released`: nq 146, nv 136, nu 90,
+/// nbody 76, njnt 104, nsensordata 168, ngeom 188, ncam 6; ngeom and ncam are unread by the loop)
 /// whose time advances 0.005 s per physics step and whose qpos[0] follows control[0].
 final class FakePhysics: Physics {
-    let sizes = PhysicsSizes(nq: 146, nv: 136, nu: 92, nbody: 76, njnt: 97, nsensordata: 56, ngeom: 0, ncam: 0)
+    let sizes = PhysicsSizes.released
     private(set) var time: Double = 0
     private(set) var qpos: [Double] = Array(repeating: 0, count: 146)
     private(set) var qvel: [Double] = Array(repeating: 0, count: 136)
-    let sensordata: [Double] = Array(repeating: 0, count: 56)
+    let sensordata: [Double] = Array(repeating: 0, count: 168)
     let xpos: [Double] = Array(repeating: 0, count: 76 * 3)
     let xquat: [Double] = Array(repeating: 0, count: 76 * 4)
     let xmat: [Double] = Array(repeating: 0, count: 76 * 9)
-    let xaxis: [Double] = Array(repeating: 0, count: 97 * 3)
-    let xanchor: [Double] = Array(repeating: 0, count: 97 * 3)
-    let actuatorForce: [Double] = Array(repeating: 0, count: 92)
-    private(set) var control: [Double] = Array(repeating: 0, count: 92)
+    let xaxis: [Double] = Array(repeating: 0, count: 104 * 3)
+    let xanchor: [Double] = Array(repeating: 0, count: 104 * 3)
+    let actuatorForce: [Double] = Array(repeating: 0, count: 90)
+    private(set) var control: [Double] = Array(repeating: 0, count: 90)
     let contacts: [Contact] = []
     private(set) var isLoaded = false
     private(set) var physicsStepCount = 0

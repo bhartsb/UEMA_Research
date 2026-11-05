@@ -452,11 +452,11 @@ struct FakeStackSessionBuilder: SessionBuilding {
     }
 }
 
-/// Physics with the released sizes (nq 146, nv 136, nu 92, nbody 76, njnt 97, nsensordata
-/// 56; Protocols.swift:242-245) and no dynamics beyond time and one coordinate: each
+/// Physics with the released sizes (`PhysicsSizes.released`: nq 146, nv 136, nu 90, nbody 76,
+/// njnt 104, nsensordata 168) and no dynamics beyond time and one coordinate: each
 /// physics step adds 0.005 s and moves qpos[0] by 0.001 x the mean control.
 final class PreviewFakePhysics: Physics {
-    let sizes = PhysicsSizes(nq: 146, nv: 136, nu: 92, nbody: 76, njnt: 97, nsensordata: 56, ngeom: 0, ncam: 5)
+    let sizes = PhysicsSizes.released
     private(set) var time: Double = 0
     private(set) var qpos: [Double] = Array(repeating: 0, count: 146)
     private(set) var qvel: [Double] = Array(repeating: 0, count: 136)
@@ -467,7 +467,7 @@ final class PreviewFakePhysics: Physics {
     var xaxis: [Double] { Array(repeating: 0, count: sizes.njnt * 3) }
     var xanchor: [Double] { Array(repeating: 0, count: sizes.njnt * 3) }
     var actuatorForce: [Double] { Array(repeating: 0, count: sizes.nu) }
-    private(set) var control: [Double] = Array(repeating: 0, count: 92)
+    private(set) var control: [Double] = Array(repeating: 0, count: MotorControls.count)
     var contacts: [Contact] { [] }
     private(set) var isLoaded = true
 

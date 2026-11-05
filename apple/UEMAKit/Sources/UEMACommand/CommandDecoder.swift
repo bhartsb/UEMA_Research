@@ -33,14 +33,11 @@
 // OUTPUT: ctrl, one Double per motor, each within its control bounds (-1..1 narrowed to the
 //   actuator force range as float32, actuation.py:136-138), to be written into data.ctrl through
 //   UEMACore's `Physics.write(controls:)` (MotorCommandWriter below; actuation.py:153-154).
-//   THE MOTOR COUNT DISAGREES. UEMACore's MotorControls holds exactly 92 numbers
-//   (Command.swift "The motors of the released body: 92", the plan's figure), and CommandDecoder
-//   below refuses an engine of any other count. The exported crib scene compiles to nu = 90
-//   (Sources/UEMAScene/Resources/crib_age24_trunk_v1/bundle.json "nu": 90; env.py:2918 "18 of 90
-//   actuators"; MuJoCoPhysics.swift header "THE MOTOR COUNT"). So `CommandDecoder.released`
-//   throws CommandDecoderError.inconsistentTables("engine has 90 controls, MotorControls 92") on
-//   the released bundle until UEMACore's count (work item WI-20) is corrected to 90.
-//   HandleCommandDecoder itself works for any nu.
+//   THE MOTOR COUNT. UEMACore's MotorControls holds exactly 90 numbers, the nu of the exported
+//   crib scene (Sources/UEMAScene/Resources/crib_age24_trunk_v1/bundle.json "nu": 90; env.py:2918
+//   "18 of 90 actuators"; MuJoCoPhysics.swift header "THE MOTOR COUNT"); it read 92 before
+//   November 5, 2026. CommandDecoder below refuses an engine of any other count with
+//   CommandDecoderError.inconsistentTables. HandleCommandDecoder itself works for any nu.
 //
 // SOURCES READ ENTIRE BEFORE WRITING (November 4, 2026): action_decoder.py (527 lines);
 // apple/UEMAKit/Specs/command_decoder.md; Specs/proprio_rows.md; Specs/motor_controller_input.md;
@@ -419,7 +416,7 @@ public struct ActuatedBodyTables: Equatable, Sendable {
     /// mjtBias value of no bias (mjmodel.h:233 mjBIAS_NONE = 0).
     public static let noBiasType = 0
 
-    /// nu, the number of motors (92 on the released body).
+    /// nu, the number of motors (90 on the released body).
     public let actuatorCount: Int
     /// Body names by body id (mj_id2name with mjOBJ_BODY), body 0 the world.
     public let bodyNames: [String]
@@ -1424,7 +1421,7 @@ public struct PhysicsBodyState: BodyStateReading, Sendable {
 
 /// The command decoder of UEMACore's contract (CommandDecoding; specification REQ-B-13): one
 /// command at `.centimetres` scale, the handle mask, the gaze pair and the 44 finger joint
-/// goals into the 92 motor controls of the current env step. It converts UEMACore's value
+/// goals into the 90 motor controls of the current env step. It converts UEMACore's value
 /// types into the arrays of the injected ControlDecoding and reads the body state from the
 /// injected PhysicsReading; the arithmetic is the engine's.
 public final class CommandDecoder: CommandDecoding {
@@ -1470,7 +1467,7 @@ public final class CommandDecoder: CommandDecoding {
     private let physics: any PhysicsReading
 
     /// Makes the decoder. Throws CommandDecoderError.inconsistentTables when the engine's
-    /// handle rows are not 26, its controls not 92, or `fingerJointIDs` not 44 entries.
+    /// handle rows are not 26, its controls not MotorControls.count (90), or `fingerJointIDs` not 44 entries.
     public init(engine: ControlDecoding, physics: any PhysicsReading, fingerJointIDs: [Int]) throws {
         if engine.handleCount != Command.handleCount {
             throw CommandDecoderError.inconsistentTables("engine has \(engine.handleCount) handle rows, Command \(Command.handleCount)")
@@ -1621,7 +1618,7 @@ extension CommandDecoder {
     /// force range, the reach measured by CornerSweepReach over the scratch kinematics, and the
     /// 44 finger joint ids looked up by name. Throws CommandDecoderError.missingBody for a body
     /// or finger joint the scene lacks, and CommandDecoderError.inconsistentTables when the
-    /// scene's nu is not MotorControls.count (THE MOTOR COUNT DISAGREES, this file's header).
+    /// scene's nu is not MotorControls.count (THE MOTOR COUNT, this file's header).
     public static func released<P: PhysicsReading & PhysicsModelDescribing & ScratchKinematicsQuerying>(
         physics: P
     ) throws -> CommandDecoder {

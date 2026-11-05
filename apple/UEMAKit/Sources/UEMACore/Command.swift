@@ -1,6 +1,6 @@
 // Command.swift: the command (26 body handles x 9 numbers), its handle and column names,
 // the gaze angles of the eyes' row, the handle mask, the 44 finger joint goals and the
-// 92 motor controls the decoder makes of a command. Work item WI-20, target B of
+// 90 motor controls the decoder makes of a command. Work item WI-20, target B of
 // docs/UEMA_APPLE_PORT_IMPLEMENTATION_PLAN_2026-11-04.html.
 //
 // Nothing in this file was compiled on the machine that wrote it (Windows 11, no Swift
@@ -51,10 +51,14 @@
 //   plus `head`, `lower_trunk`: 14 handles"; `finger_handles` "handle indices whose name
 //   starts with a `FINGER_DIGITS` word (10 of them)"; `ctrl_low`, `ctrl_high` from
 //   `actuator_ctrlrange` "else -1, 1"; section 3 step 5: "`ctrl = clip(ctrl, ctrl_low,
-//   ctrl_high)`"; section 4: "`ctrl`: [nu] float64, nu = `model.nu` (92 motors on the
-//   released body ...)".
+//   ctrl_high)`"; section 4: "`ctrl`: [nu] float64, nu = `model.nu`".
 // - docs/UEMA_APPLE_PORT_IMPLEMENTATION_PLAN_2026-11-04.html row WI-25: "writes ctrl
-//   clipped to -1..1"; evidence "92 motors ctrlrange -1 1 (inventory2 mimo-body)".
+//   clipped to -1..1". The row's evidence "92 motors ctrlrange -1 1 (inventory2 mimo-body)"
+//   counts a different body file: the released scene
+//   (Sources/UEMAScene/Resources/crib_age24_trunk_v1/scene.xml) compiles to nu = 90 in Python
+//   mujoco 3.3.0 (measured November 5, 2026: 90 actuators, every one a joint transmission on a
+//   hinge joint) and in the Linux build of MuJoCoPhysics (MuJoCoPhysicsTests
+//   testLoadsReleasedSceneWithMeasuredSizes); bundle.json model_counts.nu is 90.
 // - apple/UEMAKit/Specs/proprio_rows.md section 5 step 1: "`echo[:, 9] = handle_mask` as
 //   1.0/0.0 (1.0 when no mask)".
 // - The round trip of `gazeAngles` after `setGaze` was checked here with numpy on a 25 x 25
@@ -80,6 +84,8 @@ public enum UEMACoreError: Error, Equatable, Sendable {
     case missingSense(SenseName)
     /// A command of scale `found` was given where `expected` was required.
     case wrongScale(expected: CommandScale, found: CommandScale)
+    /// A vision reading lacks the image of this camera (its scene XML name).
+    case missingCamera(String)
 }
 
 // MARK: - Handles and columns
@@ -213,7 +219,7 @@ public enum CommandScale: String, Codable, Hashable, Sendable {
 /// row-major (`values[handle.rawValue * 9 + column.rawValue]`), tagged with the scale of its
 /// position columns. The motor controller emits one every model step at `.normalized`
 /// scale; the planner refines one every 10th model step; the decoder reads one at
-/// `.centimetres` scale and turns it into 92 motor controls (`MotorControls`).
+/// `.centimetres` scale and turns it into 90 motor controls (`MotorControls`).
 public struct Command: Equatable, Hashable, Codable, Sendable {
     /// The handles per command: 26.
     public static let handleCount = BodyHandle.count
@@ -485,20 +491,20 @@ public struct FingerJointGoals: Equatable, Hashable, Codable, Sendable {
 
 // MARK: - Motor controls
 
-/// The 92 motor controls the decoder writes to the body each env step (`ctrl`, [nu] float64,
-/// nu = 92 on the released body; command_decoder.md section 4), each within the actuator
+/// The 90 motor controls the decoder writes to the body each env step (`ctrl`, [nu] float64,
+/// nu = 90 on the released crib scene, `PhysicsSizes.released`), each within the actuator
 /// control range -1 to 1 (plan row WI-25: "writes ctrl clipped to -1..1").
 public struct MotorControls: Equatable, Hashable, Codable, Sendable {
-    /// The motors of the released body: 92.
-    public static let count = 92
+    /// The motors of the released body: 90 (`PhysicsSizes.released.nu`).
+    public static let count = 90
 
     /// The control range of every motor: -1 to 1 (`actuator_ctrlrange`; plan row WI-25).
     public static let range: ClosedRange<Double> = (-1.0) ... (1.0)
 
-    /// The 92 controls, in MuJoCo actuator sequence.
+    /// The 90 controls, in MuJoCo actuator sequence.
     public let values: [Double]
 
-    /// Wraps exactly 92 controls; any other count throws `UEMACoreError.wrongCount`.
+    /// Wraps exactly 90 controls; any other count throws `UEMACoreError.wrongCount`.
     public init(values: [Double]) throws {
         guard values.count == MotorControls.count else {
             throw UEMACoreError.wrongCount(
@@ -511,7 +517,7 @@ public struct MotorControls: Equatable, Hashable, Codable, Sendable {
         self.values = values
     }
 
-    /// All 92 controls at 0.
+    /// All 90 controls at 0.
     public static let zero = MotorControls(unchecked: Array(repeating: 0, count: MotorControls.count))
 
     /// True when every control lies within -1 to 1.

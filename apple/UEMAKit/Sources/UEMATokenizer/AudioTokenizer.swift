@@ -7,13 +7,11 @@
 // INPUT. The audio reader's spectrum for one model step (the last env step's render), float32
 // [256, 2]: column 0 the left ear, column 1 the right ear, each bin the summed linear magnitude
 // of every sounding source (`p_l`, `p_r` of `CribAudio.render`, Source/Python/mimo_bridge/
-// audio_adapter.py:222-269), bins log-spaced from 40 Hz to 8,000 Hz. Optionally the render's
-// metadata as `auxiliary`: [6] = [left_rms, right_rms, ild_db (dB), itd_ms (ms), azimuth (rad),
-// front_back] (audio_adapter.py:285-290; audio_render.md section 3 step 6); or [5] = the
-// tokenizer's own metadata, already divided, [ild_db / 20, itd_ms / 1.0, azimuth_deg / 90,
-// front_back, left_rms] (`tokenize_audio`, tokenizer/modalities/audio.py:71-77; the layout
-// UEMACore's `SenseReading` and `EncoderInput` comments name, "the first 2 of the reading's 5
-// metadata numbers"); or [2] = [ild_db, itd_ms].
+// audio_adapter.py:222-269), bins log-spaced from 40 Hz to 8,000 Hz. The render's metadata as
+// `auxiliary`, [6] = [left_rms, right_rms, ild_db (dB), itd_ms (ms), azimuth (rad), front_back]
+// (audio_adapter.py:285-290; audio_render.md section 3 step 6), or none. This is the one layout
+// UEMASenses' AudioReader produces (settled November 5, 2026; the [5] and [2] layouts this
+// tokenizer also took before are refused).
 //
 // OPERATION.
 //  1. Spectrum (audio_adapter.py:276-277), in float64, stored float32: db = 10 log10(magnitude +
@@ -98,23 +96,14 @@ public struct AudioTokenizer: Tokenizer, Sendable {
         let spectrum = reading.primary.values.map(AudioTokenizer.unitDecibels)
         var pair: [Float] = [0, 0]
         if let meta = reading.auxiliary {
-            if meta.shape == [6] {
-                pair = AudioTokenizer.spatial(
-                    interauralLevelDecibels: meta.values[2], interauralTimeMilliseconds: meta.values[3])
-            } else if meta.shape == [5] {
-                // Already divided by `tokenize_audio`: the spatial pair is its first 2 numbers,
-                // copied (`[:2]`, lem_model.py:2476-2477).
-                pair = Array(meta.values[0 ..< 2])
-            } else if meta.shape == [2] {
-                pair = AudioTokenizer.spatial(
-                    interauralLevelDecibels: meta.values[0], interauralTimeMilliseconds: meta.values[1])
-            } else {
+            guard meta.shape == [6] else {
                 throw TokenizerError.wrongShape(
                     sense: .audio, array: "auxiliary",
-                    expected: "[6] (left_rms, right_rms, ild_db, itd_ms, azimuth, front_back), "
-                        + "[5] (ild_db / 20, itd_ms, azimuth_deg / 90, front_back, left_rms) or [2] (ild_db, itd_ms)",
+                    expected: "[6] (left_rms, right_rms, ild_db, itd_ms, azimuth, front_back)",
                     found: meta.shape)
             }
+            pair = AudioTokenizer.spatial(
+                interauralLevelDecibels: meta.values[2], interauralTimeMilliseconds: meta.values[3])
         }
         return EncoderInput(
             sense: .audio,

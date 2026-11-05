@@ -87,7 +87,8 @@
 // - docs/UEMA_APPLE_PORT_SPECIFICATION_2026-11-04.html section 5 (the protocol table quoted
 //   above), REQ-B-3: "a tactile read every physics substep [I2 env.py:2358-2360]", REQ-B-12
 //   (planner inputs and outputs), REQ-B-13: "Input: the command (26 x 9), the handle mask
-//   [26] and the 44 finger joint targets ... Output: ctrl[92]", REQ-B-14 (the sense panel's
+//   [26] and the 44 finger joint targets ... Output: ctrl[92]" (the released scene has nu = 90, `PhysicsSizes.released`; the
+//   specification's 92 is corrected here, not followed), REQ-B-14 (the sense panel's
 //   "prediction error (mean squared difference)"), REQ-B-17: "the only gradient is the
 //   planner's with respect to the command".
 // - https://mujoco.readthedocs.io/en/stable/APIreference/APItypes.html (mjContact):
@@ -205,10 +206,13 @@ public struct ShapedArray: Equatable, Hashable, Codable, Sendable {
 /// One sense's raw arrays for one model step as its `SenseReader` produced them (plan
 /// section 2, stage 2), before the tokenizer's divisors. `primary` is the sense's main
 /// array (proprioception [26, 12]; motor [26, 10] achieved; vestibular [29]; tactile
-/// [256, 10] patch fields; vision the five rendered images laid as [5, height, width, 3];
-/// audio [256, 2]); `auxiliary` is the second array of a sense that has one (vision's
-/// gaze and camera angles; audio's interaural metadata, whose width the audio reader and
-/// UEMATokenizer's AudioTokenizer (WI-30) agree on: [6] or [2]); nil otherwise. `isFresh` is false when
+/// [n, 10] patch fields, n the patch count (53 shipped); vision [890,880], the RGB bytes of
+/// eye_left, eye_right, fovea_left and fovea_right end to end (`VisionReadingLayout`,
+/// VisionReading.swift); audio [256, 2], each ear's linear magnitude per frequency bin); `auxiliary`
+/// is the second array of a sense that has one (tactile [n, 10]; motor [24]; vision [2, 2], each
+/// eye's yaw and pitch in radians; audio [6], the render's raw metadata left_rms, right_rms,
+/// ild_db, itd_ms, azimuth in radians, front_back, of which UEMATokenizer's AudioTokenizer passes
+/// [ild_db / 20, itd_ms] to the encoder: UEMASenses AudioReader.swift); nil otherwise. `isFresh` is false when
 /// the reader had no new reading this model step (vision on a model step without a render;
 /// vestibular with its `valid` flag 0), which the Python trainer marks "stale".
 public struct SenseReading: Equatable, Codable, Sendable {
@@ -265,10 +269,10 @@ public struct EncoderInput: Equatable, Codable, Sendable {
 
 // MARK: - Physics
 
-/// The sizes of the loaded MuJoCo model: nq (generalized coordinates; 146 on the released
-/// crib scene, plan row WI-15), nv (degrees of freedom; 136, cameras.json model_check),
-/// nu (actuators; 92), nbody (76), njnt (joints; 97, specification "The setting"),
-/// nsensordata (56, plan section 2 stage 1), ngeom and ncam.
+/// The sizes of the loaded MuJoCo model. On the released crib scene (`released`, measured with
+/// Python mujoco 3.3.0 on Sources/UEMAScene/Resources/crib_age24_trunk_v1/scene.xml, November 5,
+/// 2026, and by MuJoCoPhysicsTests on the same file): nq 146, nv 136, nu 90, nbody 76, njnt 104,
+/// nsensordata 168 (from nsensor 56 sensors), ngeom 188, ncam 6.
 public struct PhysicsSizes: Equatable, Hashable, Codable, Sendable {
     /// Generalized coordinates (mjModel.nq).
     public let nq: Int
@@ -286,6 +290,10 @@ public struct PhysicsSizes: Equatable, Hashable, Codable, Sendable {
     public let ngeom: Int
     /// Cameras (mjModel.ncam).
     public let ncam: Int
+
+    /// The sizes of the released crib scene (this type's doc comment gives the measurement).
+    public static let released = PhysicsSizes(
+        nq: 146, nv: 136, nu: 90, nbody: 76, njnt: 104, nsensordata: 168, ngeom: 188, ncam: 6)
 
     /// The sizes as read from the loaded model.
     public init(nq: Int, nv: Int, nu: Int, nbody: Int, njnt: Int, nsensordata: Int, ngeom: Int, ncam: Int) {
@@ -433,7 +441,7 @@ public protocol PhysicsReading: AnyObject {
 }
 
 /// The MuJoCo physics the session drives (plan row WI-25; specification REQ-B-3): load the
-/// scene, write the 92 controls, run physics steps, and read the state through
+/// scene, write the 90 controls, run physics steps, and read the state through
 /// `PhysicsReading`. The two step methods with closures have default implementations below
 /// in terms of `write(controls:)` and `stepPhysicsStep()`; a concrete type may replace them.
 public protocol Physics: PhysicsReading {
@@ -449,7 +457,7 @@ public protocol Physics: PhysicsReading {
     /// Sets qpos (nq) and qvel (nv), as the fixtures of WI-14 and WI-34 do.
     func setState(qpos: [Double], qvel: [Double]) throws
 
-    /// Writes the 92 controls to mjData.ctrl, each clipped to -1 to 1 (plan row WI-25).
+    /// Writes the 90 controls to mjData.ctrl, each clipped to -1 to 1 (plan row WI-25).
     func write(controls: MotorControls) throws
 
     /// One physics step: mj_step followed by mj_rnePostConstraint (mimo_env.py:573-575),
@@ -809,7 +817,7 @@ extension Planning {
 
 /// The command decoder (plan row WI-37; specification REQ-B-13; command_decoder.md): one
 /// command at `.centimetres` scale, the handle mask, the gaze pair and the finger joint
-/// goals into the 92 motor controls of the current env step, reading the body's state from
+/// goals into the 90 motor controls of the current env step, reading the body's state from
 /// the physics it was given at init. Class-bound: it keeps its scratch data and the last
 /// controls.
 public protocol CommandDecoding: AnyObject {
@@ -818,7 +826,7 @@ public protocol CommandDecoding: AnyObject {
     /// (command_decoder.md section 2 and section 5 point C).
     var motorContract: String { get }
 
-    /// The 92 controls for this env step. `command` must be at `.centimetres` scale (a
+    /// The 90 controls for this env step. `command` must be at `.centimetres` scale (a
     /// `.normalized` command throws `UEMACoreError.wrongScale`); `gaze` nil means the pair
     /// read from the command's eyes' row (`Command.gazeAngles`); `fingerGoals` nil means the
     /// finger rows are decoded from their quaternions like every other row.

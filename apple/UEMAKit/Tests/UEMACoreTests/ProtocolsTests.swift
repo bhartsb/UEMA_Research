@@ -28,18 +28,18 @@ private enum FakeError: Error, Equatable {
 /// physics step. It implements only the requirements without a default, so the two step
 /// methods under test are the protocol extension's.
 private final class FakePhysics: Physics {
-    var sizes = PhysicsSizes(nq: 146, nv: 136, nu: 92, nbody: 76, njnt: 97, nsensordata: 56, ngeom: 0, ncam: 5)
+    var sizes = PhysicsSizes.released
     var time: Double = 0
     var qpos: [Double] = Array(repeating: 0, count: 146)
     var qvel: [Double] = Array(repeating: 0, count: 136)
-    var sensordata: [Double] = Array(repeating: 0, count: 56)
+    var sensordata: [Double] = Array(repeating: 0, count: 168)
     var xpos: [Double] = Array(repeating: 0, count: 76 * 3)
     var xquat: [Double] = Array(repeating: 0, count: 76 * 4)
     var xmat: [Double] = Array(repeating: 0, count: 76 * 9)
-    var xaxis: [Double] = Array(repeating: 0, count: 97 * 3)
-    var xanchor: [Double] = Array(repeating: 0, count: 97 * 3)
-    var actuatorForce: [Double] = Array(repeating: 0, count: 92)
-    var control: [Double] = Array(repeating: 0, count: 92)
+    var xaxis: [Double] = Array(repeating: 0, count: 104 * 3)
+    var xanchor: [Double] = Array(repeating: 0, count: 104 * 3)
+    var actuatorForce: [Double] = Array(repeating: 0, count: 90)
+    var control: [Double] = Array(repeating: 0, count: 90)
     var contacts: [Contact] = []
     var isLoaded = false
     var log: [String] = []
@@ -483,7 +483,7 @@ final class ProtocolsTests: XCTestCase {
         var executed = Command.zero(scale: .centimetres)
         executed[.wristL, .positionX] = 30
         let controls = try decoder.decode(executed, mask: .allTrue, gaze: nil, fingerGoals: nil)
-        XCTAssertEqual(controls.values.count, 92)
+        XCTAssertEqual(controls.values.count, 90)
         XCTAssertEqual(controls.values[0], 1)
         XCTAssertTrue(controls.isWithinRange)
         XCTAssertThrowsError(try decoder.decode(output.command, mask: .allTrue, gaze: .straightAhead, fingerGoals: nil)) { error in

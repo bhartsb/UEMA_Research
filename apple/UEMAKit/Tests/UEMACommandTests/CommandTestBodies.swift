@@ -115,14 +115,14 @@ final class FixedCapacities: BodySetCapacityReading {
     }
 }
 
-/// A test plant behind UEMACore's Physics: 92 hinge joints, one motor each; joint 0 sits on
-/// body 1 ("left_upper_arm", body set Arm_L) and turns about z at the origin, joints 1-91 sit
+/// A test plant behind UEMACore's Physics: 90 hinge joints (MotorControls.count), one motor each;
+/// joint 0 sits on body 1 ("left_upper_arm", body set Arm_L) and turns about z at the origin, joints 1-89 sit
 /// on body 2 ("dummy") and never move. Per physics step of 0.005 s, joint 0's speed gains
 /// gain0 x ctrl0 / inertia x 0.005 and its angle gains speed x 0.005 (semi-implicit Euler).
 /// The inertia is a test constant (0.1, chosen so 25 env steps of a saturated control turn the
 /// joint by 0.22 rad), not a property of the MIMo body.
 final class PlantPhysics: Physics, ActuatorStrengthWriting {
-    static let motorCount = 92
+    static let motorCount = MotorControls.count
     static let inertia = 0.1
 
     var angle = 0.0
@@ -203,7 +203,7 @@ final class PlantPhysics: Physics, ActuatorStrengthWriting {
     }
 
     /// The tables of this plant: bodies world, left_upper_arm, dummy; joint 0 named
-    /// "plant_hinge" on body 1, joints 1-91 "dummy_<k>" on body 2.
+    /// "plant_hinge" on body 1, joints 1-89 "dummy_<k>" on body 2.
     static func tables() throws -> ActuatedBodyTables {
         var joints = [TestJoint(name: "plant_hinge", body: 1, axis: Vector3(0, 0, 1))]
         for k in 1..<motorCount {
