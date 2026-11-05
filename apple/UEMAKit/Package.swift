@@ -147,15 +147,15 @@
 //     toolchain reads none of the tags' manifests (SwiftPM drops a tag whose tools
 //     version it cannot validate, silently; see THE mlx-swift VERSION above): update
 //     Xcode and resolve again.
-//  4. `xcodebuild -scheme UEMAKit-Package build -destination 'platform=macOS'` : exit
+//  4. `xcodebuild -scheme UEMAKit build -destination 'platform=macOS'` : exit
 //     code 0 (Xcode's build, not `swift build`: the README line above). The scheme
-//     UEMAKit-Package is the one Xcode generates for a package named UEMAKit.
+//     UEMAKit is the one Xcode generates for a package named UEMAKit.
 //     If CMuJoCo fails with "contains mixed language source files", a .swift file was
 //     added to Sources/CMuJoCo: move it to Sources/UEMAPhysics. If linking fails on OpenGL
 //     symbols from the MuJoCo static library's renderer objects, add
 //     `linkerSettings: [.linkedFramework("OpenGL", .when(platforms: [.macOS]))]` to
 //     CMuJoCo and record the symbol names in apple/FIRST_BUILD_RECORD.md.
-//  5. `xcodebuild -scheme UEMAKit-Package test -destination 'platform=macOS'` : every test
+//  5. `xcodebuild -scheme UEMAKit test -destination 'platform=macOS'` : every test
 //     target passes. apple/FIRST_BUILD_CHECKLIST.md lists the per-target counts and the
 //     tests that already passed on the Linux harness (Swift 6.2, MuJoCo 3.3.0), so a
 //     failure on the Mac in one of those points at a platform difference, not a logic error.

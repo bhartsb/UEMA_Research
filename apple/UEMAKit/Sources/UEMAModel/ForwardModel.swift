@@ -87,6 +87,7 @@ public struct EncoderSet {
     /// The released encoders read from the weights (keys "encoder_registry.encoders.<sense>.").
     public static func released(from weights: any MLXTensorSource,
                                 motorAdjustment: (any PooledVectorAdjusting)? = nil) throws -> EncoderSet {
+        MLXFloat32Precision.enforce()
         func scope(_ sense: SenseName) -> ScopedMLXTensorSource {
             weights.scoped("encoder_registry.encoders.\(sense.rawValue).")
         }
@@ -278,6 +279,7 @@ public final class ForwardModel {
                                 withAllSlotPath: Bool = true,
                                 memoryBias: any MemoryBiasProviding = NoMemoryBias(),
                                 motorAdjustment: (any PooledVectorAdjusting)? = nil) throws -> ForwardModel {
+        MLXFloat32Precision.enforce()
         let centreTable = try centres ?? PredictionHeadCentres.bundled()
         let encoders = try EncoderSet.released(from: weights, motorAdjustment: motorAdjustment)
         let core = try TransformerCore(source: weights.scoped("forward_model."))

@@ -26,7 +26,7 @@ Record each command, its exit code and the clock time (AM/PM Pacific) in `apple/
 5. **MuJoCo XCFramework (WI-18).** `bash apple/scripts/build_mujoco_xcframework.sh`: exit 0; three
    slices; `xcrun lipo -info` names arm64 for each. Never run yet.
 6. **Resolve (WI-17).** `cd apple/UEMAKit && swift package resolve`: exit 0; commit `Package.resolved`.
-7. **Package tests on macOS.** `xcodebuild -scheme UEMAKit-Package test -destination 'platform=macOS'`:
+7. **Package tests on macOS.** `xcodebuild -scheme UEMAKit test -destination 'platform=macOS'`:
    every test target passes. Test functions per target, counted in the files on November 4, 2026:
    CMuJoCoTests 12, UEMACoreTests 31, UEMAPhysicsTests 24, UEMASceneTests 27, UEMASensesTests 103
    (86 of them already passed on Linux, section 2; the other 17 are GeomMirrorTests 10 and
@@ -65,6 +65,39 @@ build on Linux: 0.31.4 stops at MLXNN's MLXFast calls, 0.32.3 at cuda.h, 0.33.0 
 all measured November 4, 2026); GeomMirror.swift and SceneKitEyeRenderer.swift (SceneKit, Metal); the
 app's views and UEMAMindApp.swift (SwiftUI). For those files a script compared every type name they use
 with the declarations in `apple/`: all resolve except the four of section 3, item 1.
+
+## 2a. The first Mac build and the fixes after it
+
+The first build ran on November 4, 2026 (`apple/FIRST_BUILD_RECORD.md`: MacBook Air M5, macOS 26.7.2,
+Xcode 27.2, Swift 6.4.2, mlx-swift 0.33.0). Everything compiled; 372 tests ran with 20 assertion
+failures in three places. What was found and changed after it, for the second build:
+
+1. **ModelPassTests, 11 tolerance failures.** The three encoders with real matrix products (vision,
+   tactile, motor; 1,160, 32 and 26 rows) came out 2e-3 to 2.7e-3 relative off the fixtures' pooled
+   vectors, the batch-1 MLP encoders within 1e-5, the transformer's latents 0.05 to 0.08 off. The same
+   arithmetic run in float32 numpy (`Fixtures/prediction_heads/check_model_pass_numpy.py` with
+   float32 instead of float64, November 4, 2026) is within 1.3e-6 on every token and 0.023 on every
+   pooled vector, so the line of 1e-3 is reachable and stays. The cause is mlx's Metal matmul: on a
+   GPU with tensor units (the M5) it routes float32 products through them when `MLX_ENABLE_TF32` is
+   1, its default, at about 10 mantissa bits (mlx/utils.h, mlx/backend/metal/matmul.cpp). Fix:
+   `MLXFloat32Precision.enforce()` (TransformerCore.swift) sets `MLX_ENABLE_TF32=0` before the first
+   matmul; `ForwardModel.released`, `EncoderSet.released`, `SafetensorsLoader.load` and the test's
+   `setUp` call it. The app must call it at launch once it wires the model. If the second build
+   still shows the 2e-3, read the mlx checkout under Xcode's DerivedData `SourcePackages/checkouts`
+   for the variable's name in mlx-swift 0.33.0, or set the variable in the scheme's environment.
+2. **ModelPassTests, synthetic weights.** The vision token's root mean square on synthetic weights was
+   0.176 against a guessed floor of 0.5; the test now checks the LayerNorm relation
+   sqrt(v / (v + 1e-5)) against the measured pooled variance instead of guessing the variance.
+3. **SceneKitEyeRendererTests, 8 failures, every pixel 0.** The renderer chose its attachment
+   formats (.rgba8Unorm, .depth32Float); SceneKit builds its pipelines for the formats it reports
+   (colorPixelFormat, depthPixelFormat, stencilPixelFormat), and a pass with other attachments draws
+   nothing. The renderer now takes the reported formats, attaches the stencil plane when the depth
+   format carries one, keeps SceneKit's own depth direction (clearing to match `usesReverseZ` as
+   read), calls `prepare` before the pass, and converts the read-back to linear RGBA (BGRA order and
+   sRGB decoding when the format says so). `lastDiagnostics` and the tests print the formats, the
+   depth direction, the read-back's mean alpha (255 = the pass reached the texture) and the drawn
+   count, so a third build, if needed, says which stage fails.
+4. **Scheme name.** The workspace scheme is `UEMAKit`, not `UEMAKit-Package`; every file now says so.
 
 ## 3. Mismatches left
 

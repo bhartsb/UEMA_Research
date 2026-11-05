@@ -116,7 +116,7 @@
 // FIRST BUILD ON A MAC (this work item's acceptance; plan section 8 and README.md steps 1 to 4).
 //  1. Steps 1 to 3 of apple/README.md "The Mac first-build sequence" have passed (weights fetched,
 //     MuJoCo XCFramework built, `swift package resolve` exit 0).
-//  2. `xcodebuild -scheme UEMAKit-Package test -destination 'platform=macOS'
+//  2. `xcodebuild -scheme UEMAKit test -destination 'platform=macOS'
 //     -only-testing:UEMAModelTests/SafetensorsLoaderTests` : exit code 0.
 //     Without the released file (every test but the last; 15 tests): the loader's expected-key set equals the
 //     manifest's 802 keys; a removed key, an added key, a changed shape and a changed dtype are
@@ -865,6 +865,7 @@ public final class SafetensorsLoader {
     /// Throws SafetensorsLoaderError.keysDiffer or .tensorsDiffer naming every offending key,
     /// or the reader's own error when the file cannot be read.
     public func load(url: URL) throws -> LoadedWeights {
+        MLXFloat32Precision.enforce()
         let arrays = try reader.readArrays(url: url)
         try check(arrays)
         eval(Array(arrays.values))

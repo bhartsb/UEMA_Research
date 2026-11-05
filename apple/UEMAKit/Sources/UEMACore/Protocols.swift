@@ -41,11 +41,11 @@
 //     swift package resolve` exit 0 (WI-17). The package manifest does not load without the
 //     MuJoCo binary target, so UEMACore cannot be built alone before them even though it
 //     depends on nothing but Foundation.
-//  2. `cd apple/UEMAKit && xcodebuild -scheme UEMAKit-Package build -destination
+//  2. `cd apple/UEMAKit && xcodebuild -scheme UEMAKit build -destination
 //     'platform=macOS'` : exit 0. A compile error in this module is corrected here; a
 //     compile error in a later module that names a requirement of this file means that
 //     module's conformance or fake is out of date with this contract, and this file wins.
-//  3. `xcodebuild -scheme UEMAKit-Package test -destination 'platform=macOS'
+//  3. `xcodebuild -scheme UEMAKit test -destination 'platform=macOS'
 //     -only-testing:UEMACoreTests` : exit 0 with every test passing. The tests are
 //     UEMACorePackageTests (1, WI-17), CommandTests (8), SenseNameTests (4), ModelStepTests
 //     (4) and ProtocolsTests (10): 27 in all.

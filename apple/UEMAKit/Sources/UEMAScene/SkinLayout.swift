@@ -76,7 +76,7 @@
 //   returns nil when the resource is not found.
 //
 // FIRST BUILD ON A MAC (this work item's acceptance: "4,683 points parsed"; plan section 8,
-// step 4). `xcodebuild -scheme UEMAKit-Package test -destination 'platform=macOS'
+// step 4). `xcodebuild -scheme UEMAKit test -destination 'platform=macOS'
 // -only-testing:UEMASceneTests` : exit code 0. Tests/UEMASceneTests/SkinLayoutTests.swift checks:
 // the JSON is found; pointCount, points.count and pointPositions.count read 4,683; bodies.count
 // 53; vertexCount 5,005; layoutDigest and computedDigest() both read "0581069917fae467"; the

@@ -71,7 +71,7 @@
 // points parsed"; plan section 8, step 4).
 //  1. Package.swift's steps 1 to 4 (the XCFramework of WI-18, `swift package resolve`, the
 //     xcodebuild build) have passed; this module adds no dependency.
-//  2. `xcodebuild -scheme UEMAKit-Package test -destination 'platform=macOS'
+//  2. `xcodebuild -scheme UEMAKit test -destination 'platform=macOS'
 //     -only-testing:UEMASceneTests` : exit code 0. The tests of Tests/UEMASceneTests/
 //     SceneBundleTests.swift (14 tests) check that the bundle folder is found, that scene.xml
 //     exists at sceneXMLURL, that the manifest lists 9 files, 2 includes and 6 textures, that

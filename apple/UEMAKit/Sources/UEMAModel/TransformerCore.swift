@@ -98,7 +98,7 @@
 // device, no NaN, matching the fixture's predicted tokens within a tolerance recorded in section 9").
 //  1. apple/README.md steps 1 to 3 have passed (weights fetched, MuJoCo XCFramework built,
 //     `swift package resolve` exit 0) and SafetensorsLoaderTests pass (WI-31).
-//  2. `cd apple/UEMAKit && xcodebuild -scheme UEMAKit-Package build -destination 'platform=macOS'`
+//  2. `cd apple/UEMAKit && xcodebuild -scheme UEMAKit build -destination 'platform=macOS'`
 //     : exit 0. Constructs to check first if it fails, each used on purpose: the variadic
 //     `transposed(0, 2, 1, 3)`; the subscripts `x[0..., 0 ..< n]` and `x[0..., n...]`;
 //     `split(parts: 3, axis: 0)` returning [MLXArray]; `x * Float(...)` (MLXArray times
@@ -107,7 +107,7 @@
 //     MotorController.swift declares a different protocol, TensorSource, returning ShapedArray; the
 //     two coexist under different names). The resource Resources/prediction_head_centres.json must
 //     be in the module bundle (Package.swift copies the whole Resources folder).
-//  3. `xcodebuild -scheme UEMAKit-Package test -destination 'platform=macOS'
+//  3. `xcodebuild -scheme UEMAKit test -destination 'platform=macOS'
 //     -only-testing:UEMAModelTests/ModelPassTests` : exit 0. Without model.safetensors the
 //     shape tests run (each component reads exactly its manifest keys and parameter count; every
 //     output has its shape and is finite); with it (found at the manifest's source.path under the
@@ -178,6 +178,29 @@ public enum ModelPortError: Error, Equatable, CustomStringConvertible {
 /// rounding errors of independent terms partly cancel; (c) the specification's own band (REQ-B-10: "Swift stays within that band of the cpu
 /// result", the cpu-versus-cuda band of WI-46) is unmeasured today. A first-build difference above
 /// 1e-3 reads FAILED in section 9, never "recorded".
+/// The float32 precision of MLX's Metal matrix products. mlx (the C++ core under mlx-swift) routes
+/// a float32 matmul through the GPU's tensor units when `MLX_ENABLE_TF32` is 1, its default
+/// (mlx/utils.h `enable_tf32_ = get_var("MLX_ENABLE_TF32", 1)`; mlx/backend/metal/matmul.cpp
+/// `(env::enable_tf32() || a.dtype() != float32)` gating the nax kernels; read in mlx-swift 0.32.3
+/// on November 4, 2026). Those units round the products to about 10 mantissa bits. The first Mac
+/// build (Apple M5, mlx-swift 0.33.0) measured the result: pooled vectors of the three encoders
+/// with real matrix products (vision, tactile, motor) 2e-3 to 2.7e-3 relative off the fixtures,
+/// the batch-1 MLP encoders within 1e-5, while the same arithmetic in float32 numpy is within
+/// 1.3e-6 on every token. The variable is read once, at the first matmul of the process, so
+/// `enforce()` runs before the weights are read.
+public enum MLXFloat32Precision {
+    /// Sets MLX_ENABLE_TF32=0 for this process unless it is already set; returns the value in
+    /// force. Call before the first MLX operation.
+    @discardableResult
+    public static func enforce() -> String {
+        if let existing = ProcessInfo.processInfo.environment["MLX_ENABLE_TF32"] {
+            return existing
+        }
+        setenv("MLX_ENABLE_TF32", "0", 1)
+        return "0"
+    }
+}
+
 public enum ModelPassTolerance {
     /// The pass line for tokens and predicted tokens: 1e-3 token units.
     public static let maxAbsoluteDifference: Float = 1e-3

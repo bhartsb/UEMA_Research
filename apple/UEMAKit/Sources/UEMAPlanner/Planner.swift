@@ -50,8 +50,8 @@
 // (test_planner_selection.py's pattern) the planner returns the command it scored best; with
 // the real model, 21 evaluations counted and the chosen score at or below the start"):
 //  1. Run WI-17's steps 1 to 4 (XCFramework in place, `swift package resolve` exit 0,
-//     `xcodebuild -scheme UEMAKit-Package build -destination 'platform=macOS'` exit 0).
-//  2. `xcodebuild -scheme UEMAKit-Package test -destination 'platform=macOS'
+//     `xcodebuild -scheme UEMAKit build -destination 'platform=macOS'` exit 0).
+//  2. `xcodebuild -scheme UEMAKit test -destination 'platform=macOS'
 //     -only-testing:UEMAPlannerTests` : exit 0. The test files: GoalRingTests.swift,
 //     AdamCommandSearchTests.swift (classes TorchAdamTests and AdamCommandSearchTests),
 //     PlannerTests.swift, HandDescentTests.swift, the shared PlannerTestSupport.swift, and the

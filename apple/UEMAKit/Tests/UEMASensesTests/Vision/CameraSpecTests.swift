@@ -2,7 +2,7 @@
 // downsampling arithmetic in SceneKitEyeRenderer.swift (work item WI-29). They use no GPU and
 // draw nothing. Nothing here was compiled on the machine that wrote it (no Swift toolchain).
 //
-// FIRST BUILD ON A MAC: `cd apple/UEMAKit && xcodebuild -scheme UEMAKit-Package test
+// FIRST BUILD ON A MAC: `cd apple/UEMAKit && xcodebuild -scheme UEMAKit test
 // -destination 'platform=macOS' -only-testing:UEMASensesTests/CameraSpecTests` : exit 0, 13 tests.
 
 import Foundation

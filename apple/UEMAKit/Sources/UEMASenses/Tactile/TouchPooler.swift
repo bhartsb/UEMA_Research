@@ -57,7 +57,7 @@
 //
 // FIRST BUILD ON A MAC (this work item's acceptance; plan section 8, step 4). After the
 // package resolves (Package.swift header, steps 1 to 3):
-//  1. `xcodebuild -scheme UEMAKit-Package build -destination 'platform=macOS'` : exit code 0.
+//  1. `xcodebuild -scheme UEMAKit build -destination 'platform=macOS'` : exit code 0.
 //     Constructs to check first if UEMASenses fails to compile: `SkinTable` is declared once,
 //     in SkinSpread.swift (UEMAScene names its own protocol `SkinLayoutReading`,
 //     SkinLayout.swift:433-457, and SkinLayoutAdapter.swift wraps `SkinLayout` as a
@@ -65,7 +65,7 @@
 //     static stored values of non-Sendable types (`RigidPointVelocity.atBodyOrigin`,
 //     `Vec3.zero`, `Mat3.identity`, `TactileToken.empty`) compile in the Swift 5 language
 //     mode of swift-tools-version 5.9; Swift 6 mode would ask for `Sendable`.
-//  2. `xcodebuild -scheme UEMAKit-Package test -destination 'platform=macOS'
+//  2. `xcodebuild -scheme UEMAKit test -destination 'platform=macOS'
 //     -only-testing:UEMASensesTests` : exit code 0. The Tactile* test files beside
 //     UEMASensesPackageTests.swift must all pass:
 //     - TactileSkinSpreadTests: one synthetic contact on a three-point line spreads to the

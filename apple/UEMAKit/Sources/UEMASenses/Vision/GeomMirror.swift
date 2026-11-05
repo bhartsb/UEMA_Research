@@ -51,7 +51,7 @@
 // update(...) returns GeomMirrorReport: counts drawn per type and skipped per type.
 //
 // FIRST BUILD ON A MAC (this file's part of WI-29's acceptance).
-//  1. `cd apple/UEMAKit && xcodebuild -scheme UEMAKit-Package test -destination
+//  1. `cd apple/UEMAKit && xcodebuild -scheme UEMAKit test -destination
 //     'platform=macOS' -only-testing:UEMASensesTests/GeomMirrorTests` : exit 0. These tests
 //     build nodes and read transforms; they draw nothing.
 //  2. If SCNCapsule's `capRadius`/`height`, SCNCylinder's `radius`/`height` or

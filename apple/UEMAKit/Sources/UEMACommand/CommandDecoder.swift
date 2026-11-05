@@ -101,10 +101,10 @@
 // map them one to one. This file names no MuJoCo C symbol.
 //
 // FIRST BUILD ON A MAC (work item WI-37's acceptance; plan section 8 steps 1 to 4 first):
-//  1. `cd apple/UEMAKit && xcodebuild -scheme UEMAKit-Package build -destination 'platform=macOS'`
+//  1. `cd apple/UEMAKit && xcodebuild -scheme UEMAKit build -destination 'platform=macOS'`
 //     exits 0 with UEMACommand compiled. A compiler error in this file or MotorFunction.swift is
 //     copied into apple/records/first_build.md (REQ-B-18 item 4) and fixed here.
-//  2. `xcodebuild -scheme UEMAKit-Package test -destination 'platform=macOS' -only-testing:UEMACommandTests`
+//  2. `xcodebuild -scheme UEMAKit test -destination 'platform=macOS' -only-testing:UEMACommandTests`
 //     prints every test of Tests/UEMACommandTests passing: 31 in all (HandleCommandDecoderTests 14,
 //     CommandDecoderTests 10, MotorFunctionTests 6, UEMACommandPackageTests 1). The acceptance
 //     pattern on the test plant is CommandDecoderTests.testHeldCommandMovesTheBodyPartInTheAskedDirection.

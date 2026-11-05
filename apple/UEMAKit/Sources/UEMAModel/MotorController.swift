@@ -110,7 +110,7 @@
 //  1. apple/README.md "The Mac first-build sequence" steps 1 to 3 have passed (weights fetched
 //     to weights/b1_continue_B1K_skip13_492800/run/checkpoints/ckpt_step_494025/model.safetensors,
 //     MuJoCo XCFramework built, `swift package resolve` exit 0).
-//  2. `cd apple/UEMAKit && xcodebuild -scheme UEMAKit-Package test -destination
+//  2. `cd apple/UEMAKit && xcodebuild -scheme UEMAKit test -destination
 //     'platform=macOS' -only-testing:UEMAModelTests/MotorControllerTests
 //     -only-testing:UEMAModelTests/WellnessTests` : exit code 0, 26 tests (MotorControllerTests
 //     14, WellnessTests 12). Without the weights file

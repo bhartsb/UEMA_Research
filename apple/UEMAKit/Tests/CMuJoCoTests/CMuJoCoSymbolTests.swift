@@ -52,7 +52,7 @@
 // FIRST BUILD ON A MAC (plan section 8; this file is step 4 of shim.h's checklist)
 //  [ ] 1. bash apple/scripts/build_mujoco_xcframework.sh : exit code 0 (WI-18).
 //  [ ] 2. cd apple/UEMAKit && swift package resolve : exit code 0 (WI-17).
-//  [ ] 3. xcodebuild -scheme UEMAKit-Package test -destination 'platform=macOS'
+//  [ ] 3. xcodebuild -scheme UEMAKit test -destination 'platform=macOS'
 //         -only-testing:CMuJoCoTests : every test of this file passes;
 //         testVersionStringIs330 is the acceptance line of WI-19.
 //  [ ] 4. If a comparison fails, copy the failure lines (name, index, both numbers)

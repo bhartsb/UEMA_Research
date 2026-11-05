@@ -21,7 +21,7 @@
 //   in section 9 from these numbers. Without abstract_scene.json the test skips and names the
 //   exporter.
 //
-// FIRST BUILD ON A MAC: `cd apple/UEMAKit && xcodebuild -scheme UEMAKit-Package test
+// FIRST BUILD ON A MAC: `cd apple/UEMAKit && xcodebuild -scheme UEMAKit test
 // -destination 'platform=macOS' -only-testing:UEMASensesTests/SceneKitEyeRendererTests` :
 // exit 0, 7 tests (the fixture test skipped until step 2 of the renderer's checklist has run).
 
@@ -53,6 +53,14 @@ final class SceneKitEyeRendererTests: XCTestCase {
         get throws { try CameraPose(position: [0, 0, 0], rotation: identity) }
     }
 
+    /// One line of what the last render ran with, for apple/FIRST_BUILD_RECORD.md.
+    private func diagnostics(_ renderer: SceneKitEyeRenderer) -> String {
+        guard let d = renderer.lastDiagnostics else { return "renderer diagnostics: none" }
+        return "renderer diagnostics: color format \(d.colorPixelFormat), depth format \(d.depthPixelFormat), "
+            + "stencil format \(d.stencilPixelFormat), usesReverseZ \(d.usesReverseZ), clear depth \(d.clearDepth), "
+            + "alpha mean \(d.alphaMean), drawn \(d.drawnCount)"
+    }
+
     /// Every camera renders at its own square size; an empty scene is the background (black).
     func testImageSizePerCameraAndEmptyScene() throws {
         let renderer = try makeRenderer()
@@ -73,6 +81,9 @@ final class SceneKitEyeRendererTests: XCTestCase {
         let image = try renderer.render(camera: .eyeLeft, pose: try originPose,
                                         geoms: [try box(at: [0, 0, -1], half: 0.2, rgba: [1, 0, 0, 1])],
                                         appearances: [GeomAppearance(emission: 1, specular: 0, shininess: 0)])
+        print(diagnostics(renderer))
+        // The pass clears alpha to 1: a read-back whose alpha is not 255 never received the pass.
+        XCTAssertEqual(renderer.lastDiagnostics?.alphaMean ?? 0, 255, accuracy: 0.5, "the read-back holds no pass output")
         let centre = image.pixel(x: 128, y: 128)
         XCTAssertGreaterThan(centre.red, 240)
         XCTAssertLessThan(centre.green, 15)
@@ -107,7 +118,8 @@ final class SceneKitEyeRendererTests: XCTestCase {
                                         geoms: [try box(at: [0, 0, -1], half: 0.2, rgba: [0.5, 0.5, 0.5, 1])],
                                         appearances: [GeomAppearance(emission: 0, specular: 0, shininess: 0.5)])
         let centre = image.pixel(x: 128, y: 128)
-        print("headlight shading: centre pixel \(centre.red) \(centre.green) \(centre.blue); classic arithmetic 64")
+        print("headlight shading: centre pixel \(centre.red) \(centre.green) \(centre.blue); classic arithmetic 64; "
+              + diagnostics(renderer))
         XCTAssertEqual(Double(centre.red), 64, accuracy: 6)
         XCTAssertEqual(Double(centre.green), 64, accuracy: 6)
         XCTAssertEqual(Double(centre.blue), 64, accuracy: 6)
@@ -126,6 +138,7 @@ final class SceneKitEyeRendererTests: XCTestCase {
                                         geoms: [try box(at: [0, 0, -2], half: 0.4, rgba: [0, 1, 0, 1]),
                                                 try box(at: [0, 0, -1], half: 0.1, rgba: [1, 0, 0, 1])],
                                         appearances: look)
+        print(diagnostics(renderer))
         let centre = image.pixel(x: 128, y: 128)
         XCTAssertGreaterThan(centre.red, 240, "near red box must be drawn")
         XCTAssertLessThan(centre.green, 15, "far green box must be hidden behind it")

@@ -78,7 +78,7 @@ Run the steps in this sequence. Each step names its pass line and the work item 
 2. `bash apple/scripts/build_mujoco_xcframework.sh`: exit 0; three slices (ios-arm64,
    ios-arm64-simulator, macos-arm64); `xcrun lipo -info` names arm64 for each (WI-18).
 3. `cd apple/UEMAKit && swift package resolve`: exit 0 (WI-17).
-4. `xcodebuild -scheme UEMAKit-Package test -destination 'platform=macOS'`: every XCTest target
+4. `xcodebuild -scheme UEMAKit test -destination 'platform=macOS'`: every XCTest target
    passes; the tests of WI-28, WI-29, WI-35 and WI-36 print their measured differences, which go into
    the plan page's section 9 as pass lines.
 5. `cd apple && xcodegen generate && xcodebuild -scheme UEMAMind-macOS build`: exit 0 (WI-33, WI-38).

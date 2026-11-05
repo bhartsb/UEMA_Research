@@ -37,7 +37,7 @@
 // the capacities after env step t-1. MotorCommandWriter in CommandDecoder.swift keeps that order.
 //
 // FIRST BUILD ON A MAC (with CommandDecoder.swift's checklist):
-//  1. `xcodebuild -scheme UEMAKit-Package test -destination 'platform=macOS' -only-testing:UEMACommandTests/MotorFunctionTests`
+//  1. `xcodebuild -scheme UEMAKit test -destination 'platform=macOS' -only-testing:UEMACommandTests/MotorFunctionTests`
 //     passes every test of Tests/UEMACommandTests/MotorFunctionTests.swift.
 //  2. The two adapters at the end of this file join the other modules: ActuatorParameterStrengthWriter
 //     over UEMAPhysics's ActuatorParameterWriting (MuJoCoPhysics writes actuator_gainprm[a * 10]

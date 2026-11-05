@@ -3,7 +3,7 @@
 // MuJoCo draws the geom, node reuse, and the skipped types. They build SceneKit nodes and draw
 // nothing. Nothing here was compiled on the machine that wrote it (no Swift toolchain).
 //
-// FIRST BUILD ON A MAC: `cd apple/UEMAKit && xcodebuild -scheme UEMAKit-Package test
+// FIRST BUILD ON A MAC: `cd apple/UEMAKit && xcodebuild -scheme UEMAKit test
 // -destination 'platform=macOS' -only-testing:UEMASensesTests/GeomMirrorTests` : exit 0, 10 tests.
 
 import Foundation

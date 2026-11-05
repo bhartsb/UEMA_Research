@@ -49,7 +49,7 @@
 //
 // FIRST BUILD ON A MAC (this file's part of WI-29's acceptance).
 //  1. Run WI-17's steps 1 to 3 (MuJoCo XCFramework in place, `swift package resolve` exit 0).
-//  2. `cd apple/UEMAKit && xcodebuild -scheme UEMAKit-Package test -destination
+//  2. `cd apple/UEMAKit && xcodebuild -scheme UEMAKit test -destination
 //     'platform=macOS' -only-testing:UEMASensesTests/CameraSpecTests` : exit 0. These tests use
 //     no GPU and no SceneKit.
 //  3. A compile error naming EyeImage, EyeCamera, CameraPose, SceneGeom or SceneGeomReading

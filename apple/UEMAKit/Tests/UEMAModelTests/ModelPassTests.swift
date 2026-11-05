@@ -73,6 +73,12 @@ final class SyntheticTensorSource: MLXTensorSource {
 }
 
 final class ModelPassTests: XCTestCase {
+    /// Before any MLX operation of the process (TransformerCore.swift, MLXFloat32Precision).
+    override class func setUp() {
+        super.setUp()
+        print("MLX_ENABLE_TF32 in force: \(MLXFloat32Precision.enforce())")
+    }
+
 
     // MARK: Helpers
 
@@ -201,11 +207,18 @@ final class ModelPassTests: XCTestCase {
         XCTAssertEqual(pass.achieved.shape, [1, 26, 10])
         XCTAssertTrue(NeuralOps.isFinite(pass.transformer.latents))
         for (sense, token) in pass.tokens {
-            // the shared output LayerNorm without affine parameters gives a root mean square of
-            // sqrt(v / (v + 1e-5)) for a pooled vector of variance v: at most 1, and above 0.5 unless v
-            // is below 3.3e-6 (the synthetic weights' smallest pooled variance is of order 1e-4)
+            // The shared output LayerNorm without affine parameters gives a root mean square of
+            // sqrt(v / (v + 1e-5)) for a pooled vector of variance v, so at most 1. The variance
+            // of the synthetic weights' pooled vectors is checked, not assumed: on the first Mac
+            // build (November 4, 2026) the vision one measured 3.2e-7 (root mean square 0.176).
+            let pooled = NeuralOps.floats(try XCTUnwrap(pass.pooled[sense]))
+            let mean = pooled.reduce(0, +) / Float(pooled.count)
+            let variance = pooled.reduce(0) { $0 + ($1 - mean) * ($1 - mean) } / Float(pooled.count)
+            let expected = (variance / (variance + 1e-5)).squareRoot()
+            XCTAssertTrue(token.values.allSatisfy { $0.isFinite }, sense.rawValue)
             XCTAssertLessThanOrEqual(token.rootMeanSquare, 1.0001, sense.rawValue)
-            XCTAssertGreaterThan(token.rootMeanSquare, 0.5, sense.rawValue)
+            XCTAssertEqual(token.rootMeanSquare, expected, accuracy: 1e-3,
+                           "\(sense.rawValue): pooled variance \(variance)")
         }
         XCTAssertEqual(model.filledContextSteps, 1)
         // a second model step with an executed command exercises the motor-slot back-fill

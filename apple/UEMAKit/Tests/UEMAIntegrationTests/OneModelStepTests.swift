@@ -109,7 +109,7 @@
 //     `python fetch_weights.py --accept-license` (model.safetensors, 73,119,988 bytes, not in
 //     git), `bash apple/scripts/build_mujoco_xcframework.sh` exit 0 (WI-18), `cd apple/UEMAKit
 //     && swift package resolve` exit 0 (WI-17).
-//  2. `xcodebuild -scheme UEMAKit-Package test -destination 'platform=macOS'
+//  2. `xcodebuild -scheme UEMAKit test -destination 'platform=macOS'
 //     -only-testing:UEMAIntegrationTests` : exit 0. Without the condition UEMA_REAL_STACK the
 //     released-stack test reports "skipped" with the reason printed, and the other 8 tests of
 //     this file pass: the loop on fakes (20 model steps, 200 physics steps, 95 decodes, 1

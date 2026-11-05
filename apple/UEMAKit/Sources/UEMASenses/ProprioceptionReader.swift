@@ -97,7 +97,7 @@
 // rows equal hand-computed rows; counts 26, 29, 26 x 10"):
 //  1. Run the package steps of Package.swift's header first (MuJoCo XCFramework in place,
 //     `swift package resolve` exit 0).
-//  2. `cd apple/UEMAKit && xcodebuild -scheme UEMAKit-Package build -destination
+//  2. `cd apple/UEMAKit && xcodebuild -scheme UEMAKit build -destination
 //     'platform=macOS'` : exit 0. Constructs to check first if this fails: the protocol
 //     `MuJoCoModelDescribing` returning `LimitPair` values; `public let sense: SenseName =
 //     .proprioception` satisfying the protocol's `{ get }` requirement; `final class` readers
@@ -105,7 +105,7 @@
 //     UEMAPhysics` in this file (for `PhysicsModelTables`; a compile error inside UEMAPhysics
 //     itself is WI-25's to correct first); `while current != 0, steps <= count` in
 //     `ModelTablesDescription.rootIds(parents:)`.
-//  3. `xcodebuild -scheme UEMAKit-Package test -destination 'platform=macOS'
+//  3. `xcodebuild -scheme UEMAKit test -destination 'platform=macOS'
 //     -only-testing:UEMASensesTests/BodySenseReaderTests` : exit 0 with every test passing
 //     (22 tests in BodySenseReaderTests.swift: counts 26 x 12, 26 x 10 with 24 auxiliary,
 //     29; the hand-computed rows, fatigue, energy, gaze row, vestibular fields against the

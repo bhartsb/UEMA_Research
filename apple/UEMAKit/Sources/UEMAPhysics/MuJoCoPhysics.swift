@@ -106,7 +106,7 @@
 // steps (1.0 s); nq equals 146; simulated time advanced 1.0 s; no NaN in qpos").
 //  [ ] 1. Plan section 8 steps 1 to 4 first: `bash apple/scripts/build_mujoco_xcframework.sh`
 //         exit 0 (WI-18), `cd apple/UEMAKit && swift package resolve` exit 0 (WI-17).
-//  [ ] 2. `xcodebuild -scheme UEMAKit-Package build -destination 'platform=macOS'` : exit 0 with
+//  [ ] 2. `xcodebuild -scheme UEMAKit build -destination 'platform=macOS'` : exit 0 with
 //         UEMAPhysics compiled. Constructs to check first if it fails: `mjvScene()`,
 //         `mjvOption()`, `mjvCamera()` (the zero initializers Swift gives an imported C struct);
 //         `&option` passed to a `const mjvOption*` parameter; the String `path` passed to a
@@ -114,7 +114,7 @@
 //         the tuple fields `contact.geom.0`, `geom.mat.8`; the overload pair write(controls:
 //         MotorControls) and write(controls: [Double]); the int* fields geom_bodyid and
 //         body_rootid read into PhysicsModelTables.
-//  [ ] 3. `xcodebuild -scheme UEMAKit-Package test -destination 'platform=macOS'
+//  [ ] 3. `xcodebuild -scheme UEMAKit test -destination 'platform=macOS'
 //         -only-testing:UEMAPhysicsTests` : every test passes (18 in MuJoCoPhysicsTests, 5 in
 //         PhysicsStateTests, 1 in UEMAPhysicsPackageTests). The acceptance test is
 //         MuJoCoPhysicsTests.testTwentyModelStepsAdvanceOneSecondWithFiniteQpos (nq 146, time

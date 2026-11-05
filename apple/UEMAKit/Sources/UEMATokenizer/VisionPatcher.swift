@@ -56,11 +56,11 @@
 // equal to the recorded count and the first 4 angle rows within 1e-5; each other tokenizer
 // reproduces one hand-computed row"). After the package resolves (Package.swift header, steps 1
 // to 3; the MuJoCo XCFramework must be in place for the manifest to load):
-//  1. `cd apple/UEMAKit && xcodebuild -scheme UEMAKit-Package build -destination
+//  1. `cd apple/UEMAKit && xcodebuild -scheme UEMAKit build -destination
 //     'platform=macOS'` : exit code 0. Constructs to check first if this module fails: the
 //     existential `any Tokenizer` in TokenizerBank.swift (Swift 5.6 or newer); the tuple return
 //     of `VisionPatcher.patch(images:left:right:)`; `Set<Int>` literals in TokenizerSupport.swift.
-//  2. `xcodebuild -scheme UEMAKit-Package test -destination 'platform=macOS'
+//  2. `xcodebuild -scheme UEMAKit test -destination 'platform=macOS'
 //     -only-testing:UEMATokenizerTests` : exit code 0, every test passing:
 //     - VisionPatcherTests: N = 1,160 on the released layout; a 32 x 32 synthetic image pair
 //       gives the hand-computed patch bytes and the angles 0.2810349 / 0.2705498 rad (patch 0,

@@ -39,15 +39,23 @@
 //     angle: spotOuterAngle 90 degrees, spotInnerAngle 0, a linear fall-off between them instead
 //     of MuJoCo's cos^10. SceneKit lights have one colour for diffuse and specular; the light's
 //     diffuse colour is used. All ambient parts are summed into one .ambient light.
-//  4. SCNRenderer(device:options:) renders at time 0 into a .rgba8Unorm texture of
-//     (size x supersampling) pixels square with a .depth32Float depth texture, through
-//     render(atTime:viewport:commandBuffer:passDescriptor:); a blit copies the texture into a
-//     shared MTLBuffer; the command buffer is committed and waited on. The renderer's
-//     usesReverseZ is set to false and the depth attachment is cleared to 1 (the far end of a
-//     forward depth buffer): SceneKit's reverse depth buffer stores the near end as 1 and passes
-//     a fragment only when its depth is greater than the stored one, so a clear to 1 under
-//     reverse depth would reject every fragment and leave the image at the background. The
-//     clear value is read from usesReverseZ at each render, so the two cannot disagree.
+//  4. SCNRenderer(device:options:) renders at time 0 into a colour texture of
+//     (size x supersampling) pixels square and a depth texture, through
+//     render(atTime:viewport:commandBuffer:passDescriptor:); a blit copies the colour texture
+//     into a shared MTLBuffer; the command buffer is committed and waited on. The textures use
+//     the pixel formats the renderer reports (SCNSceneRenderer.colorPixelFormat,
+//     depthPixelFormat, stencilPixelFormat): SceneKit builds its pipeline states for those
+//     formats, and a pass whose attachments differ draws nothing (the first Mac build, November
+//     4, 2026, 11:23 PM Pacific: every pixel 0 with .rgba8Unorm and .depth32Float chosen here).
+//     When the depth format carries a stencil, the same texture is the stencil attachment. The
+//     depth clear follows usesReverseZ as the renderer reports it (SceneKit's own reverse depth
+//     by default: near end 1, clear 0, fragments pass when greater; a forward buffer clears to
+//     1), so the two cannot disagree. The read-back bytes are put into RGBA order (the renderer
+//     may report a BGRA format) and, for an sRGB-encoded format, decoded back to linear 8-bit
+//     values, so the image carries the classic renderer's linear arithmetic either way.
+//     `lastDiagnostics` records the formats, the depth direction and the mean alpha of the
+//     read-back bytes (255 when the pass cleared and the copy worked; 0 when the copy itself
+//     gave nothing), for the first-build record.
 //  5. eyeDownsample averages each supersampling x supersampling block of the RGBA bytes into one
 //     RGB pixel, rounding half up: supersampling 2 gives 4 samples per pixel, the count of MuJoCo's
 //     default offscreen multisampling (vis.quality offsamples default 4; the scene does not set
@@ -99,7 +107,7 @@
 //     lights, extent and each geom's emission, specular, shininess) and exits 0 only when the
 //     classic renderer reproduces every fixture PNG exactly. Commit those files with the
 //     integration commit. Without them the fixture test skips and names this step.
-//  3. `cd apple/UEMAKit && xcodebuild -scheme UEMAKit-Package test -destination
+//  3. `cd apple/UEMAKit && xcodebuild -scheme UEMAKit test -destination
 //     'platform=macOS' -only-testing:UEMASensesTests/SceneKitEyeRendererTests` : exit 0. The
 //     synthetic tests check size, layout and colour; the fixture test prints one line per state
 //     and camera: "<state> <camera>: mean abs per channel r g b, max r g b, differing share s,
@@ -109,10 +117,12 @@
 //  4. If the images are uniformly darker or brighter than the fixture PNGs (mean intensity
 //     printed beside the fixture's), the colour-space step above is wrong for this SDK: try a
 //     .bgra8Unorm_srgb target, record both numbers, keep the smaller difference.
-//  5. If SceneKit draws nothing (every pixel the background), check first that
-//     `renderer.usesReverseZ` reads false after init and the depth clear is 1 (OPERATION step
-//     4), then that the depth attachment format is accepted (try .depth32Float_stencil8) and
-//     that `pointOfView` is set.
+//  5. If SceneKit draws nothing (every pixel the background), read the line
+//     SceneKitEyeRendererTests prints ("renderer diagnostics: ..."): alpha mean 0 means the
+//     blit copy gave nothing (the colour texture or the command buffer); alpha mean 255 with a
+//     drawn count above 0 means the draws failed (depth direction, pixel formats, the camera).
+//     The first Mac build (November 4, 2026) drew nothing with the attachment formats chosen
+//     by this file rather than the renderer's; the formats now come from the renderer.
 //  6. If the shading differs most on specular highlights, SCNMaterial.shininess may not be the
 //     raw exponent: retry with shininess x 1 instead of x 128 (GeomMirror.apply) and record both.
 //  7. SceneKit is marked deprecated in the 26.0 SDKs (developer.apple.com, SCNRenderer, read
@@ -312,6 +322,29 @@ public enum EyeRenderError: Error, Equatable, CustomStringConvertible {
     }
 }
 
+// MARK: - Diagnostics
+
+/// What the last render ran with, for the first-build record and the tests' printed line.
+public struct EyeRenderDiagnostics: Equatable, Sendable {
+    /// MTLPixelFormat.rawValue of the colour attachment (80 bgra8Unorm, 81 bgra8Unorm_srgb,
+    /// 70 rgba8Unorm, 71 rgba8Unorm_srgb).
+    public let colorPixelFormat: UInt
+    /// MTLPixelFormat.rawValue of the depth attachment (252 depth32Float, 260
+    /// depth32Float_stencil8, 250 depth16Unorm, 255 depth24Unorm_stencil8).
+    public let depthPixelFormat: UInt
+    /// MTLPixelFormat.rawValue of the stencil attachment; 0 (invalid) when there is none.
+    public let stencilPixelFormat: UInt
+    /// The renderer's reverse-depth setting as read before the pass.
+    public let usesReverseZ: Bool
+    /// The depth clear value the pass used: 0 under reverse depth, 1 otherwise.
+    public let clearDepth: Double
+    /// The mean of the alpha bytes read back, 0 to 255: the pass clears alpha to 1, so 255
+    /// shows the clear and the copy worked.
+    public let alphaMean: Double
+    /// The geoms the mirror drew.
+    public let drawnCount: Int
+}
+
 // MARK: - The renderer
 
 /// The Apple port's eye renderer: SceneKit on the default Metal device, offscreen, RGB 8-bit
@@ -364,8 +397,43 @@ public final class SceneKitEyeRenderer: EyeRendering {
         renderer.scene = scene
         renderer.pointOfView = cameraNode
         renderer.autoenablesDefaultLighting = false
-        // A forward depth buffer, matched by the depth clear in render(...) (header, step 4).
-        renderer.usesReverseZ = false
+        // The depth direction stays SceneKit's own (reverse depth by default); render(...) reads
+        // usesReverseZ and clears to match (header, OPERATION step 4).
+    }
+
+    /// What the last render ran with; nil before the first.
+    public private(set) var lastDiagnostics: EyeRenderDiagnostics?
+
+    /// The colour format the renderer builds its pipelines for; one of the four 8-bit formats
+    /// this file reads back, else .rgba8Unorm.
+    private var colorFormat: MTLPixelFormat {
+        switch renderer.colorPixelFormat {
+        case .bgra8Unorm, .bgra8Unorm_srgb, .rgba8Unorm, .rgba8Unorm_srgb:
+            return renderer.colorPixelFormat
+        default:
+            return .rgba8Unorm
+        }
+    }
+
+    /// The depth format the renderer builds its pipelines for; a depth format, else .depth32Float.
+    private var depthFormat: MTLPixelFormat {
+        switch renderer.depthPixelFormat {
+        case .depth32Float, .depth32Float_stencil8, .depth16Unorm:
+            return renderer.depthPixelFormat
+        default:
+            #if os(macOS)
+            if renderer.depthPixelFormat == .depth24Unorm_stencil8 { return .depth24Unorm_stencil8 }
+            #endif
+            return .depth32Float
+        }
+    }
+
+    /// Whether `depthFormat` carries a stencil plane.
+    private var depthHasStencil: Bool {
+        #if os(macOS)
+        if depthFormat == .depth24Unorm_stencil8 { return true }
+        #endif
+        return depthFormat == .depth32Float_stencil8
     }
 
     /// A renderer on the system's default Metal device.
@@ -406,12 +474,22 @@ public final class SceneKitEyeRenderer: EyeRendering {
         pass.depthAttachment.texture = target.depth
         pass.depthAttachment.loadAction = .clear
         pass.depthAttachment.storeAction = .dontCare
-        // The far end of the depth buffer: 1 for a forward buffer, 0 for SceneKit's reverse one.
-        pass.depthAttachment.clearDepth = renderer.usesReverseZ ? 0 : 1
+        // The far end of the depth buffer: 0 for SceneKit's reverse buffer, 1 for a forward one.
+        let reverseZ = renderer.usesReverseZ
+        let clearDepth = reverseZ ? 0.0 : 1.0
+        pass.depthAttachment.clearDepth = clearDepth
+        if depthHasStencil {
+            pass.stencilAttachment.texture = target.depth
+            pass.stencilAttachment.loadAction = .clear
+            pass.stencilAttachment.storeAction = .dontCare
+            pass.stencilAttachment.clearStencil = 0
+        }
 
         guard let commandBuffer = queue.makeCommandBuffer() else {
             throw EyeRenderError.metalAllocationFailed("a command buffer")
         }
+        // Resources of nodes added since the last render are uploaded before the pass.
+        _ = renderer.prepare(scene, shouldAbortBlock: nil)
         renderer.render(atTime: 0, viewport: CGRect(x: 0, y: 0, width: width, height: width),
                         commandBuffer: commandBuffer, passDescriptor: pass)
         guard let blit = commandBuffer.makeBlitCommandEncoder() else {
@@ -432,23 +510,59 @@ public final class SceneKitEyeRenderer: EyeRendering {
 
         let byteCount = bytesPerRow * width
         let pointer = target.readback.contents().bindMemory(to: UInt8.self, capacity: byteCount)
-        let rgb = eyeDownsample(rgba: UnsafeBufferPointer(start: pointer, count: byteCount),
-                                width: width, factor: settings.supersampling)
+        let raw = UnsafeBufferPointer(start: pointer, count: byteCount)
+        let rgba = SceneKitEyeRenderer.linearRGBA(raw, format: colorFormat)
+        var alphaSum = 0
+        for index in stride(from: 3, to: byteCount, by: 4) { alphaSum += Int(raw[index]) }
+        lastDiagnostics = EyeRenderDiagnostics(
+            colorPixelFormat: colorFormat.rawValue, depthPixelFormat: depthFormat.rawValue,
+            stencilPixelFormat: depthHasStencil ? depthFormat.rawValue : 0,
+            usesReverseZ: reverseZ, clearDepth: clearDepth,
+            alphaMean: Double(alphaSum) / Double(width * width), drawnCount: lastReport?.drawnCount ?? 0)
+        let rgb = rgba.withUnsafeBufferPointer { eyeDownsample(rgba: $0, width: width, factor: settings.supersampling) }
         return try EyeImage(camera: camera, width: size, height: size, rgb: rgb)
+    }
+
+    /// sRGB-encoded byte to linear byte, rounding half up (IEC 61966-2-1: x / 12.92 below
+    /// 0.04045, else ((x + 0.055) / 1.055) ^ 2.4).
+    static let srgbToLinear: [UInt8] = (0 ..< 256).map { byte in
+        let x = Double(byte) / 255
+        let linear = x <= 0.04045 ? x / 12.92 : pow((x + 0.055) / 1.055, 2.4)
+        return UInt8(min(255, (linear * 255 + 0.5).rounded(.down)))
+    }
+
+    /// The read-back bytes as linear RGBA: channels put into R, G, B, A order for a BGRA
+    /// format, and decoded through `srgbToLinear` for an sRGB format.
+    static func linearRGBA(_ bytes: UnsafeBufferPointer<UInt8>, format: MTLPixelFormat) -> [UInt8] {
+        let swap = format == .bgra8Unorm || format == .bgra8Unorm_srgb
+        let decode = format == .bgra8Unorm_srgb || format == .rgba8Unorm_srgb
+        var out = [UInt8](repeating: 0, count: bytes.count)
+        var index = 0
+        while index + 3 < bytes.count {
+            let r = bytes[index + (swap ? 2 : 0)]
+            let g = bytes[index + 1]
+            let b = bytes[index + (swap ? 0 : 2)]
+            out[index] = decode ? srgbToLinear[Int(r)] : r
+            out[index + 1] = decode ? srgbToLinear[Int(g)] : g
+            out[index + 2] = decode ? srgbToLinear[Int(b)] : b
+            out[index + 3] = bytes[index + 3]
+            index += 4
+        }
+        return out
     }
 
     /// The colour texture, depth texture and read-back buffer for one square width, made once.
     private func renderTarget(width: Int) throws -> (color: MTLTexture, depth: MTLTexture, readback: MTLBuffer) {
         if let existing = targets[width] { return existing }
         let colorDescriptor = MTLTextureDescriptor.texture2DDescriptor(
-            pixelFormat: .rgba8Unorm, width: width, height: width, mipmapped: false)
+            pixelFormat: colorFormat, width: width, height: width, mipmapped: false)
         colorDescriptor.usage = [.renderTarget, .shaderRead]
         colorDescriptor.storageMode = .private
         guard let color = device.makeTexture(descriptor: colorDescriptor) else {
             throw EyeRenderError.metalAllocationFailed("a \(width) x \(width) colour texture")
         }
         let depthDescriptor = MTLTextureDescriptor.texture2DDescriptor(
-            pixelFormat: .depth32Float, width: width, height: width, mipmapped: false)
+            pixelFormat: depthFormat, width: width, height: width, mipmapped: false)
         depthDescriptor.usage = [.renderTarget]
         depthDescriptor.storageMode = .private
         guard let depth = device.makeTexture(descriptor: depthDescriptor) else {
