@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>H-JEPA and UEMA</title>
+<meta name="description" content="Reading note: an end-to-end recipe for multi-timescale latent prediction without reward or reconstruction, and what it says about UEMA's planned slow latent channel.">
+<style>
+:root{--ink:#18343d;--teal:#086b62;--line:#cbdcd5;--soft:#e8f2ec;--warm:#fbf6ea;--warmline:#d9b25a;--red:#9c3328;--redsoft:#fbefec;--muted:#3b595e;--bg:#eff3ee;--card:#ffffff}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--ink:#dbe8e4;--teal:#5cc7b8;--line:#2f4a48;--soft:#1b302d;--warm:#2e2a1d;--warmline:#a8873e;--red:#e88b7e;--redsoft:#33211e;--muted:#a9c0bb;--bg:#101a19;--card:#162321}}
+:root[data-theme="dark"]{--ink:#dbe8e4;--teal:#5cc7b8;--line:#2f4a48;--soft:#1b302d;--warm:#2e2a1d;--warmline:#a8873e;--red:#e88b7e;--redsoft:#33211e;--muted:#a9c0bb;--bg:#101a19;--card:#162321}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:18px/1.6 system-ui,-apple-system,"Segoe UI",sans-serif}
+main{max-width:980px;margin:28px auto;background:var(--card);padding:38px 44px;border:1px solid var(--line);border-radius:16px}
+.eyebrow{font-size:13px;font-weight:750;text-transform:uppercase;letter-spacing:.1em;color:var(--teal)}
+h1{font-size:clamp(28px,4.2vw,40px);line-height:1.15;letter-spacing:-.02em;margin:12px 0 10px}
+.meta{font-size:15px;color:var(--muted);margin:0 0 22px}
+h2{font-size:24px;line-height:1.25;margin:0 0 10px}
+h3{font-size:19px;margin:24px 0 6px}
+section{border-top:2px solid var(--line);padding:26px 0 8px;scroll-margin-top:12px}
+p{margin:10px 0 14px}li{margin:7px 0}
+p,li,td,th{overflow-wrap:anywhere}
+nav{display:flex;flex-wrap:wrap;gap:6px 18px;margin:8px 0 24px;font-size:15px}
+a{color:var(--teal);text-underline-offset:3px}a:focus-visible{outline:3px solid var(--warmline);outline-offset:4px}
+.simple{background:var(--warm);border:1px solid var(--warmline);border-radius:12px;padding:20px 24px;margin:6px 0 26px}
+.simple h2{font-size:22px}
+.simple p{font-size:19px}
+.callout{border-left:5px solid var(--teal);background:var(--soft);padding:14px 18px;margin:16px 0;border-radius:0 8px 8px 0}
+.warn{border-left:5px solid var(--red);background:var(--redsoft);padding:14px 18px;margin:16px 0;border-radius:0 8px 8px 0}
+.prop{border:1px solid var(--line);border-radius:12px;padding:6px 22px 14px;margin:20px 0}
+.prop h3{margin-top:16px}
+.tag{display:inline-block;font-size:12px;font-weight:750;letter-spacing:.08em;text-transform:uppercase;color:var(--teal);border:1px solid var(--teal);border-radius:999px;padding:1px 10px;margin-left:6px;vertical-align:middle}
+.table-scroll{overflow-x:auto;margin:12px 0 18px}
+table{border-collapse:collapse;width:100%;font-size:16px}
+th,td{padding:9px 11px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+th{background:var(--soft)}
+.fit{display:grid;grid-template-columns:1fr 1fr;gap:14px 18px;margin:14px 0}
+.fit div{border:1px solid var(--line);border-radius:10px;padding:12px 16px}
+.fit b{display:block;margin-bottom:4px;color:var(--teal)}
+.fit p{margin:0;font-size:16px}
+blockquote{margin:12px 0;padding:10px 18px;border-left:4px solid var(--warmline);background:var(--warm);border-radius:0 8px 8px 0;font-size:16px}
+blockquote p{margin:4px 0}
+.sources{font-size:15px;color:var(--muted)}
+code{font-size:.86em}
+@media(max-width:700px){main{margin:0;border:0;border-radius:0;padding:24px 16px}body{font-size:17px}h2{font-size:21px}.fit{grid-template-columns:1fr}}
+@media print{body{background:#fff}main{margin:0;border:0;max-width:none;padding:12px}.prop,.simple,table,.fit div{break-inside:avoid}}
+</style>
+</head>
+<body><main>
+<div class="eyebrow">Mind Machine Learning · UEMA research reading · 2026 papers</div>
+<h1>H-JEPA: training a stack of world models, each predicting further ahead in its own latent space</h1>
+<p class="meta">Wancong Zhang, Basile Terver, Michael Rabbat, Yann LeCun and Randall Balestriero (New York University; AMI; INRIA; Brown). Preprint (v2, 1 November 2026). arXiv 2610.06805, 5 October 2026 · Code: <a href="https://github.com/kevinghst/H-JEPA">https://github.com/kevinghst/H-JEPA</a>.<br>
+Reading note written November 5, 2026 against UEMA specification v3.5 (<code>docs/UEMA_Specs/UEMA_Spec_v3_5.txt</code>). Section numbers are v3.5's.</p>
+<nav><a href="#short">The short version</a><a href="#did">What the paper did</a><a href="#results">What they measured</a><a href="#fit">Where it touches UEMA</a><a href="#useful">How it could help us</a><a href="#caution">What to be careful about</a><a href="#quotes">In the authors' words</a><a href="#sources">Sources</a></nav>
+
+<div class="simple" id="short"><h2>The short version</h2><p><strong>The idea:</strong> instead of one forward model at one speed, train a tower of them. Level 1 predicts the next step from pixels. Level 2 reads level 1's latent, predicts two steps of level 1 at a time, in its own smaller latent space. Level 3 does the same to level 2. Everything is trained together from scratch with only prediction losses and an anti-collapse regulariser. Planning runs top-down: the top level plans toward the goal, and each level's predictions become subgoals for the level below.</p>
+<p><strong>What it showed:</strong> on a visual ant-maze, success went from 18% (flat) to 73% with three levels, with less planning compute. Higher levels learned to keep slow things (where the agent is) and forget fast things (how its legs are posed), but only when the task had a clear separation between slow and fast.</p>
+<p><strong>Why it matters to us:</strong> the spec's FUTURE "dual-timescale latent channel" (§6.3) is a two-level version of this. The paper tells us how to train it, what it will learn, and when it will not help.</p></div>
+
+<section id="did"><h2>What the paper did</h2>
+<h3>The problem they set out to solve</h3><p>Task-agnostic JEPA world models predict and plan in one latent space at one timescale. That has two costs: long horizons need many fine steps so error compounds and the search space balloons; and a single latent must serve both low-level dynamics and goal matching, so when the goal is more abstract than the state (a location rather than a pose) the goal cost is poor. The paper asks whether a hierarchy can be trained end-to-end without reward or reconstruction, whether top-down planning through it beats flat planning, and what each level learns.</p>
+<h3>What they built</h3><p>Level 1 is LeWM: a small vision transformer encoder, a causal transformer predictor, and the SIGReg regulariser that pushes the latent toward an isotropic Gaussian. Each upper level has its own small MLP state encoder on the lower latent, an action encoder that pools the intervening lower actions into a 4-dimensional macro-action, and its own causal transformer predictor. Each level's loss is next-latent prediction plus its own SIGReg term; gradients from upper levels flow down through lower encoders. No decoder, no EMA target, no stop-gradient, no pretrained weights. Planning: the top level gradient-descends over macro-actions to reach the goal; its predicted states are subgoals for the level below; level 1 outputs primitive actions; execute ten environment steps, replan. On real-robot video with changing scenes (DROID), pure prediction collapsed to encoding the static background, so an inverse-dynamics head (predict the action from two consecutive latents) was added.</p>
+<ul>
+<li>Stride 2 per level: each level's single step spans twice the time of the level below; level 1 steps are 5 environment steps.</li>
+<li>Latent 192 dimensions; upper encoders two-layer MLPs; three seeds; all datasets offline.</li>
+<li>Deeper hierarchies need longer clips (16, 31, 61, 121 environment steps for 1 to 4 levels), so datasets with short episodes feed deeper models fewer samples.</li>
+</ul>
+</section>
+
+<section id="results"><h2>What they measured</h2><ul><li>Visual AntMaze success: flat 18.0%; two levels 39.3%; three levels 73.3%; four levels 63.3%. FourRoom with distractors: 40.7% to 96.0% at three levels. Cube pick-and-place: 32.0% to 60.0%.</li><li>PushT: 40.0% flat, 45.3% at two levels, then 17.3% and 0.7% at three and four levels, attributed to short episodes starving the deeper levels of training clips.</li><li>Each added level up to three moved the success-versus-compute frontier up and to the left on three of four environments.</li><li>Subgoal costs were far more monotone along a trajectory (0.89 to 1.00) than the flat full-horizon goal cost (0.48 to 0.75), which is what makes greedy tracking work.</li><li>Selective abstraction: higher levels dropped fast-changing content (body state, moving distractors) and kept slow content (agent position). This appeared only on datasets whose fast and slow content differed by about 3 times or more in frequency; it did not appear on PushT, Cube or DROID.</li><li>A theoretical note: any regulariser that only looks at the marginal distribution of latents (VICReg, whitening, SIGReg) cannot rule out 'slow-feature collapse', where the encoder keeps only the unchanging background. A barrier has to act on the joint law across time; their inverse-dynamics head is one.</li><li>Data specialisation: training level 1 on broad exploration data and level 2 on goal-directed data gave the best result (67%), beating the union on both levels.</li></ul></section>
+
+<section id="fit"><h2>Where it touches UEMA</h2>
+<p>Each box names a part of the UEMA specification and says, in plain terms, what the paper has to say about it.</p>
+<div class="fit"><div><b>§6.3 FUTURE dual-timescale latent channels</b><p>The spec proposes a slow channel updated every ~30 steps alongside the fast 60 Hz channel and says to evaluate it after the recursive motor controller and deep supervision. H-JEPA is a tested recipe for exactly that channel, with the training losses, strides and a known failure condition (too little slow-fast separation).</p></div><div><b>§5.7 Encoder collapse prevention</b><p>UEMA relies on VICReg. H-JEPA's proposition says VICReg and its relatives cannot exclude slow-feature collapse when the scene changes between episodes. UEMA's scenes are fixed (reach, selfbody, floor), which limits the risk today, but Stream 2 external video would hit it. Their fix, predicting the action from consecutive latents, is already half-present in UEMA: the motor token is an input and could be a target.</p></div><div><b>§24.4 Split-rate modalities</b><p>The forward model already handles vision at a slower rate than the other senses. H-JEPA's 'window and stride' definition of a level is a clean vocabulary for that, and a second level would simply have a longer stride for every sense.</p></div><div><b>§10.6 and §10.3</b><p>Like HWM, H-JEPA's planning gives the short-horizon planner a nearby subgoal, which is the structural answer to the detour problem. H-JEPA adds that each level can score the goal in an abstraction appropriate to it.</p></div><div><b>§11.4 Hierarchical self-model</b><p>The spec's three self levels work at 100, 10K and 100K frames. H-JEPA's finding that upper levels keep slow entities and drop fast ones is the representational side of that idea: a level 2 self needs a level 2 latent to live in.</p></div><div><b>§20.2 and §20.5 Training streams</b><p>The data-specialisation result (broad babbling for the low level, goal-directed data for the high level) matches the spec's ordering of Stream 1 babbling before Stream 4 goal-directed behaviour, and suggests the slow channel should start training later than the fast one.</p></div></div>
+</section>
+
+<section id="useful"><h2>How it could help us</h2><p><strong>1. Check the slow-fast gap before building the slow channel.</strong> The paper's selective abstraction only emerged when slow and fast content differed by roughly 3 times or more in spectral centroid. Compute that on UEMA's own token streams (body posture versus object position on the reach scene, for example). If the gap is small, the slow channel is unlikely to learn anything the fast one does not already carry.</p>
+<p><strong>2. When the time comes, train the slow channel as H-JEPA trains level 2.</strong> Its own small encoder on the forward model's latent, a pooled macro-motor token over the stride, its own prediction head, its own collapse regulariser, gradients allowed to flow down. Start it later in training than the fast model and feed it more goal-directed experience.</p>
+<p><strong>3. Add an inverse-dynamics target now, cheaply.</strong> Predicting the motor token from two consecutive encoded states is a loss term that is insensitive to the slow-feature trap and that UEMA's architecture can support without new inputs. It is also a direct test of the action-sensitivity problem the UWM-JEPA note raises.</p>
+<p><strong>4. Note the episode-length constraint.</strong> Deeper hierarchies need longer uninterrupted experience. UEMA's continuous stream is an advantage here: there are no episode boundaries to starve a slow level.</p></section>
+
+<section id="caution"><h2>What to be careful about</h2><p>All results are offline on fixed datasets; the real-robot video evaluation is open-loop and measured by trajectory similarity, not success. The deeper levels failed outright on short-episode data. The authors are explicit that an upper-level cost need not improve planning, and that their results do not establish that selective abstraction causes the gains. Optimiser steps were not matched across depths. The macro-action is only 4 numbers, suitable for an arm with one goal; UEMA's 26 handles times 9 numbers per step is a much larger command to pool. Planning is gradient descent on action candidates with up to 90 iterations per level, which is more compute than UEMA's frame budget allows at 60 Hz, though the spec's deep path (§9.2) is allowed to be slow.</p></section>
+
+<section id="quotes"><h2>In the authors' words</h2><blockquote><p>each level predicts farther ahead in its own learned latent space. Planning proceeds top-down: the top level optimizes progress toward the goal, and each level's predictions become subgoals for the planner below it.</p><p class="sources">Abstract</p></blockquote><blockquote><p>prediction-error gradients flow through the encoder, encouraging each level to retain features it can predict at its own timescale and abstract away those it cannot.</p><p class="sources">Section 3</p></blockquote><blockquote><p>A prediction loss falling toward zero is the signature of collapse, since constant embeddings are trivially predictable.</p><p class="sources">Appendix C.1</p></blockquote><blockquote><p>Variance–covariance regularization, whitening, entropy penalties and SIGReg all look only at the marginal law, so none can exclude the collapse; a barrier has to act on the joint law of z across time.</p><p class="sources">Appendix L.3</p></blockquote><blockquote><p>the low-level model benefits from broad, weakly-correlated exploration while the abstract level benefits from more temporally coherent, goal-directed trajectories.</p><p class="sources">Appendix G</p></blockquote></section>
+
+<section id="sources"><h2>Sources</h2><ul class="sources"><li><a href="https://arxiv.org/html/2610.06805">arXiv 2610.06805 v2 (HTML full text)</a></li><li><a href="https://arxiv.org/abs/2610.06805">arXiv abstract page</a></li><li><a href="https://github.com/kevinghst/H-JEPA">Code</a></li><li><a href="https://h-jepa.com/">Project page</a></li>
+<li>UEMA specification v3.5, <code>docs/UEMA_Specs/UEMA_Spec_v3_5.txt</code>, read November 5, 2026.</li></ul>
+<p class="sources">This page was written by Claude (an AI assistant) from a reading of the paper's full text on arXiv on November 5, 2026, together with the UEMA v3.5 specification. Numbers are the authors' own. Judgements about fit with UEMA are a reader's, not the authors'. Nothing on this page is implemented in UEMA.</p>
+</section>
+</main></body></html>

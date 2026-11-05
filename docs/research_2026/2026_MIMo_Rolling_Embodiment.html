@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>MIMo rolling and UEMA</title>
+<meta name="description" content="Reading note: the first computational model of infant rolling, on the same MIMo body UEMA runs on, read against the floor scene and the developmental constraints.">
+<style>
+:root{--ink:#18343d;--teal:#086b62;--line:#cbdcd5;--soft:#e8f2ec;--warm:#fbf6ea;--warmline:#d9b25a;--red:#9c3328;--redsoft:#fbefec;--muted:#3b595e;--bg:#eff3ee;--card:#ffffff}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--ink:#dbe8e4;--teal:#5cc7b8;--line:#2f4a48;--soft:#1b302d;--warm:#2e2a1d;--warmline:#a8873e;--red:#e88b7e;--redsoft:#33211e;--muted:#a9c0bb;--bg:#101a19;--card:#162321}}
+:root[data-theme="dark"]{--ink:#dbe8e4;--teal:#5cc7b8;--line:#2f4a48;--soft:#1b302d;--warm:#2e2a1d;--warmline:#a8873e;--red:#e88b7e;--redsoft:#33211e;--muted:#a9c0bb;--bg:#101a19;--card:#162321}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:18px/1.6 system-ui,-apple-system,"Segoe UI",sans-serif}
+main{max-width:980px;margin:28px auto;background:var(--card);padding:38px 44px;border:1px solid var(--line);border-radius:16px}
+.eyebrow{font-size:13px;font-weight:750;text-transform:uppercase;letter-spacing:.1em;color:var(--teal)}
+h1{font-size:clamp(28px,4.2vw,40px);line-height:1.15;letter-spacing:-.02em;margin:12px 0 10px}
+.meta{font-size:15px;color:var(--muted);margin:0 0 22px}
+h2{font-size:24px;line-height:1.25;margin:0 0 10px}
+h3{font-size:19px;margin:24px 0 6px}
+section{border-top:2px solid var(--line);padding:26px 0 8px;scroll-margin-top:12px}
+p{margin:10px 0 14px}li{margin:7px 0}
+p,li,td,th{overflow-wrap:anywhere}
+nav{display:flex;flex-wrap:wrap;gap:6px 18px;margin:8px 0 24px;font-size:15px}
+a{color:var(--teal);text-underline-offset:3px}a:focus-visible{outline:3px solid var(--warmline);outline-offset:4px}
+.simple{background:var(--warm);border:1px solid var(--warmline);border-radius:12px;padding:20px 24px;margin:6px 0 26px}
+.simple h2{font-size:22px}
+.simple p{font-size:19px}
+.callout{border-left:5px solid var(--teal);background:var(--soft);padding:14px 18px;margin:16px 0;border-radius:0 8px 8px 0}
+.warn{border-left:5px solid var(--red);background:var(--redsoft);padding:14px 18px;margin:16px 0;border-radius:0 8px 8px 0}
+.prop{border:1px solid var(--line);border-radius:12px;padding:6px 22px 14px;margin:20px 0}
+.prop h3{margin-top:16px}
+.tag{display:inline-block;font-size:12px;font-weight:750;letter-spacing:.08em;text-transform:uppercase;color:var(--teal);border:1px solid var(--teal);border-radius:999px;padding:1px 10px;margin-left:6px;vertical-align:middle}
+.table-scroll{overflow-x:auto;margin:12px 0 18px}
+table{border-collapse:collapse;width:100%;font-size:16px}
+th,td{padding:9px 11px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+th{background:var(--soft)}
+.fit{display:grid;grid-template-columns:1fr 1fr;gap:14px 18px;margin:14px 0}
+.fit div{border:1px solid var(--line);border-radius:10px;padding:12px 16px}
+.fit b{display:block;margin-bottom:4px;color:var(--teal)}
+.fit p{margin:0;font-size:16px}
+blockquote{margin:12px 0;padding:10px 18px;border-left:4px solid var(--warmline);background:var(--warm);border-radius:0 8px 8px 0;font-size:16px}
+blockquote p{margin:4px 0}
+.sources{font-size:15px;color:var(--muted)}
+code{font-size:.86em}
+@media(max-width:700px){main{margin:0;border:0;border-radius:0;padding:24px 16px}body{font-size:17px}h2{font-size:21px}.fit{grid-template-columns:1fr}}
+@media print{body{background:#fff}main{margin:0;border:0;max-width:none;padding:12px}.prop,.simple,table,.fit div{break-inside:avoid}}
+</style>
+</head>
+<body><main>
+<div class="eyebrow">Mind Machine Learning · UEMA research reading · 2026 papers</div>
+<h1>Embodiment shapes rolling in MIMo: strength, not size, decides when the infant model can roll over</h1>
+<p class="meta">Leon Philipp, Francisco M. López and Jochen Triesch (Frankfurt Institute for Advanced Studies; Goethe University; UNSW). IEEE ICDL 2026. arXiv 2606.17456, 16 June 2026.<br>
+Reading note written November 5, 2026 against UEMA specification v3.5 (<code>docs/UEMA_Specs/UEMA_Spec_v3_5.txt</code>). Section numbers are v3.5's.</p>
+<nav><a href="#short">The short version</a><a href="#did">What the paper did</a><a href="#results">What they measured</a><a href="#fit">Where it touches UEMA</a><a href="#useful">How it could help us</a><a href="#caution">What to be careful about</a><a href="#quotes">In the authors' words</a><a href="#sources">Sources</a></nav>
+
+<div class="simple" id="short"><h2>The short version</h2><p><strong>What they did:</strong> trained MIMo, the same MuJoCo infant body UEMA uses, to roll from its back onto its front, using reinforcement learning with the body set to 1, 3, 6 and 9 months of age. Everything else was held fixed. Then they separated body size from muscle strength and tested every combination.</p>
+<p><strong>What it showed:</strong> older bodies rolled more often and faster, like real infants. The decisive factor was strength, not size: a 1-month strength level failed at every body size, and at 6 or 9 months of strength the body size barely mattered. The learned coordination patterns matched published infant patterns, without any infant data in the loop.</p>
+<p><strong>Why it matters to us:</strong> UEMA's floor scene is "MIMo stands free, falls and rolls", and the October 27 documents study fall and recovery. This paper is a measured reference for what the same body can do, by age, and its strength finding bears directly on the spec's developmental constraints, which start every handle at 2% strength.</p></div>
+
+<section id="did"><h2>What the paper did</h2>
+<h3>The problem they set out to solve</h3><p>Rolling, learned between 2 and 7 months, is one of the first whole-body coordinated milestones, but infant data are hard to collect and the roles of body, brain and experience are hard to separate. The authors state there were no existing computational models of infant rolling. They ask how the embodiment itself (size and strength at each age) shapes whether and how rolling emerges when the learning algorithm and budget are held fixed.</p>
+<h3>What they built</h3><p>MIMo lies on its back in a slightly randomised pose with proprioception (joint angles, velocities, torques, commands) and vestibular sense (head orientation and motion); no vision or touch. A PPO policy controls all 46 joints. The reward is shaped on an orientation measure (how far pelvis and torso have turned toward prone), a bonus of 500 on success, and a small penalty on control effort. Each model trains for one million steps, under three hours of simulated practice, and is evaluated frozen on 40 episodes. The body is set to 1, 3, 6 or 9 months using MIMo's growth model, which changes both size and actuation strength; a cross-embodiment test then re-evaluates each model on every combination of size-age and strength-age. Behaviour is analysed with the same support-pattern and movement-pattern coding used in infant studies, with time windows scaled because MIMo rolls about six times faster than infants.</p>
+<ul>
+<li>18 trained models per age (36 at 9 months); success means rolling in at least 30 of 40 test episodes.</li>
+<li>Effort penalty weight 0.02 chosen as the largest value still giving over 90% successful models at 9 months.</li>
+</ul>
+</section>
+
+<section id="results"><h2>What they measured</h2><ul><li>Older bodies reached higher success and rolled faster, with the same algorithm and budget.</li><li>Cross-embodiment: 1-month strength failed across all body sizes; at 6 or 9 months of strength, size had little effect. The authors conclude muscle development, more than growth, supports the emergence of rolling.</li><li>Coordination patterns: the distribution of movement patterns for 6-month models matched 5 to 7 month infants and 9-month models matched 8 to 10 month infants, with all divergences below 0.3 on a 0 to 1 scale.</li><li>Every trained model rolled to one side only (laterality index 1), which the authors attribute to the optimisation method; most models nonetheless used two or more patterns depending on the starting pose.</li><li>MIMo rolls about six times faster than infants; the authors say results are qualitative and that conduction delays, absent in the model, may explain the difference.</li><li>Some 1-month models did roll, which real 1-month-olds cannot; attributed to the extrinsic reward and missing infant constraints.</li></ul></section>
+
+<section id="fit"><h2>Where it touches UEMA</h2>
+<p>Each box names a part of the UEMA specification and says, in plain terms, what the paper has to say about it.</p>
+<div class="fit"><div><b>The floor scene and the fall-and-recovery work</b><p>Rolling is the recovery half of 'falls and rolls'. This paper gives age-indexed reference numbers for whether MIMo can roll at all and how fast, under a reward-driven ceiling. UEMA's wellness-driven version should be compared against it, not against real infants.</p></div><div><b>§9.4 Developmental motor constraints</b><p>The spec starts all handles at 2% strength and 5% range of motion and advances on mastery metrics. This paper's cross-embodiment result says strength, not range, is what gates whole-body milestones. It argues for advancing strength before range, and for using MIMo's own age model to set the phases rather than fixed step counts.</p></div><div><b>§9.5 Bootstrap without scaffold</b><p>The authors trained with an explicit reward, which the spec rejects. Their observation that the reward produced unrealistically early rolling (1-month models rolling) is a point in the spec's favour: a wellness gradient over the body's own capacity should not drive a body to do what its muscles cannot sustain.</p></div><div><b>§3.4 Fatigue and energy</b><p>The effort penalty was the one tuned hyperparameter, and its value decided how many models succeeded. UEMA's capacity wellness term plays the same role. The paper's sweep is a reference for how sensitive the outcome is to it.</p></div><div><b>§19.2 Motor babbling and the vestibular sense</b><p>The authors note vestibular activity peaks during a roll-over and speculate an infant might learn to roll by seeking vestibular activation. UEMA's vestibular token and curiosity drive (§21) could produce that without a reward; the paper's measurements say what to look for.</p></div><div><b>§15 Mastery detection</b><p>Movement-pattern coding (support patterns, movement patterns A to F) is a ready-made behavioural vocabulary for the test registry, already validated against infant data.</p></div></div>
+</section>
+
+<section id="useful"><h2>How it could help us</h2><p><strong>1. Use the paper's success criterion and age settings as a floor-scene recheck.</strong> Supine to prone with torso and pelvis orientation above 0.95, 40 test episodes from jittered starts, at MIMo ages matching the current developmental phase. This puts a number on UEMA's rolling that can be compared with a known reference.</p>
+<p><strong>2. Re-examine the developmental schedule.</strong> If strength is the gating variable, the neonate-to-infant transition in §9.4 should be driven by a strength mastery metric and the range-of-motion unlock can trail it. MIMo's growth model gives a principled strength curve to follow.</p>
+<p><strong>3. Look for lateral preference.</strong> The paper's models always rolled to one side. UEMA's November 5 addendum raises handedness as an open question for mirrored demonstrations. Whether a wellness-driven roller also lateralises is a cheap, telling measurement.</p>
+<p><strong>4. Record conduction delay as a parameter.</strong> The authors suspect sensorimotor delays explain the six-fold speed gap. UEMA's bridge already has configurable delays (the env is 'built by the trainer's own constructor (age, delays, seed...)' per §20.6), so matching infant timing is a setting, not a change.</p></section>
+
+<section id="caution"><h2>What to be careful about</h2><p>Reinforcement learning with a hand-written reward, which UEMA's thesis rules out; the comparison is for reference values only. Proprioception and vestibular sense only; no vision or touch. Results are qualitative because MIMo is far faster than infants and lacks many of their constraints. Per-age numbers are in figures, not text. No code is released, and the MIMo version is not stated beyond the cited growth paper. One behaviour, one starting posture.</p></section>
+
+<section id="quotes"><h2>In the authors' words</h2><blockquote><p>physical strength is the key to a successful roll across all body configurations. An actuation age of 1 month yields low success rates across all body sizes. Conversely, for embodiments with actuation ages of 6 or 9 months, varying the body size has little impact on rolling performance.</p><p class="sources">Section III-A</p></blockquote><blockquote><p>we find that muscle development, more so than growth, supports the emergence of rolling and potentially other whole-body behaviors such as crawling or walking.</p><p class="sources">Section III-A</p></blockquote><blockquote><p>MIMo was in no way incentivized to display a variety of coordination patterns nor was he given access to data from real infants.</p><p class="sources">Section III-B</p></blockquote><blockquote><p>it is trained with an extrinsic reward, i.e., his only purpose is to achieve a roll over.</p><p class="sources">Section III-A</p></blockquote><blockquote><p>real infants have to deal with substantial conduction delays of sensory and motor signals from and to the periphery. Such delays are known to cause instabilities and oscillations in control systems.</p><p class="sources">Section IV</p></blockquote></section>
+
+<section id="sources"><h2>Sources</h2><ul class="sources"><li><a href="https://arxiv.org/html/2606.17456">arXiv 2606.17456 (HTML full text)</a></li><li><a href="https://arxiv.org/abs/2606.17456">arXiv abstract page</a></li>
+<li>UEMA specification v3.5, <code>docs/UEMA_Specs/UEMA_Spec_v3_5.txt</code>, read November 5, 2026.</li></ul>
+<p class="sources">This page was written by Claude (an AI assistant) from a reading of the paper's full text on arXiv on November 5, 2026, together with the UEMA v3.5 specification. Numbers are the authors' own. Judgements about fit with UEMA are a reader's, not the authors'. Nothing on this page is implemented in UEMA.</p>
+</section>
+</main></body></html>

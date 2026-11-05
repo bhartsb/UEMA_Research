@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>JEPA-TTT and UEMA</title>
+<meta name="description" content="Reading note: a careful study of updating only the predictor from the agent's own executed transitions, and the design choices that made it work.">
+<style>
+:root{--ink:#18343d;--teal:#086b62;--line:#cbdcd5;--soft:#e8f2ec;--warm:#fbf6ea;--warmline:#d9b25a;--red:#9c3328;--redsoft:#fbefec;--muted:#3b595e;--bg:#eff3ee;--card:#ffffff}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--ink:#dbe8e4;--teal:#5cc7b8;--line:#2f4a48;--soft:#1b302d;--warm:#2e2a1d;--warmline:#a8873e;--red:#e88b7e;--redsoft:#33211e;--muted:#a9c0bb;--bg:#101a19;--card:#162321}}
+:root[data-theme="dark"]{--ink:#dbe8e4;--teal:#5cc7b8;--line:#2f4a48;--soft:#1b302d;--warm:#2e2a1d;--warmline:#a8873e;--red:#e88b7e;--redsoft:#33211e;--muted:#a9c0bb;--bg:#101a19;--card:#162321}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:18px/1.6 system-ui,-apple-system,"Segoe UI",sans-serif}
+main{max-width:980px;margin:28px auto;background:var(--card);padding:38px 44px;border:1px solid var(--line);border-radius:16px}
+.eyebrow{font-size:13px;font-weight:750;text-transform:uppercase;letter-spacing:.1em;color:var(--teal)}
+h1{font-size:clamp(28px,4.2vw,40px);line-height:1.15;letter-spacing:-.02em;margin:12px 0 10px}
+.meta{font-size:15px;color:var(--muted);margin:0 0 22px}
+h2{font-size:24px;line-height:1.25;margin:0 0 10px}
+h3{font-size:19px;margin:24px 0 6px}
+section{border-top:2px solid var(--line);padding:26px 0 8px;scroll-margin-top:12px}
+p{margin:10px 0 14px}li{margin:7px 0}
+p,li,td,th{overflow-wrap:anywhere}
+nav{display:flex;flex-wrap:wrap;gap:6px 18px;margin:8px 0 24px;font-size:15px}
+a{color:var(--teal);text-underline-offset:3px}a:focus-visible{outline:3px solid var(--warmline);outline-offset:4px}
+.simple{background:var(--warm);border:1px solid var(--warmline);border-radius:12px;padding:20px 24px;margin:6px 0 26px}
+.simple h2{font-size:22px}
+.simple p{font-size:19px}
+.callout{border-left:5px solid var(--teal);background:var(--soft);padding:14px 18px;margin:16px 0;border-radius:0 8px 8px 0}
+.warn{border-left:5px solid var(--red);background:var(--redsoft);padding:14px 18px;margin:16px 0;border-radius:0 8px 8px 0}
+.prop{border:1px solid var(--line);border-radius:12px;padding:6px 22px 14px;margin:20px 0}
+.prop h3{margin-top:16px}
+.tag{display:inline-block;font-size:12px;font-weight:750;letter-spacing:.08em;text-transform:uppercase;color:var(--teal);border:1px solid var(--teal);border-radius:999px;padding:1px 10px;margin-left:6px;vertical-align:middle}
+.table-scroll{overflow-x:auto;margin:12px 0 18px}
+table{border-collapse:collapse;width:100%;font-size:16px}
+th,td{padding:9px 11px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+th{background:var(--soft)}
+.fit{display:grid;grid-template-columns:1fr 1fr;gap:14px 18px;margin:14px 0}
+.fit div{border:1px solid var(--line);border-radius:10px;padding:12px 16px}
+.fit b{display:block;margin-bottom:4px;color:var(--teal)}
+.fit p{margin:0;font-size:16px}
+blockquote{margin:12px 0;padding:10px 18px;border-left:4px solid var(--warmline);background:var(--warm);border-radius:0 8px 8px 0;font-size:16px}
+blockquote p{margin:4px 0}
+.sources{font-size:15px;color:var(--muted)}
+code{font-size:.86em}
+@media(max-width:700px){main{margin:0;border:0;border-radius:0;padding:24px 16px}body{font-size:17px}h2{font-size:21px}.fit{grid-template-columns:1fr}}
+@media print{body{background:#fff}main{margin:0;border:0;max-width:none;padding:12px}.prop,.simple,table,.fit div{break-inside:avoid}}
+</style>
+</head>
+<body><main>
+<div class="eyebrow">Mind Machine Learning · UEMA research reading · 2026 papers</div>
+<h1>JEPA-TTT: keeping the forward model learning while the body is in use, without letting the encoder drift</h1>
+<p class="meta">Zheyuan Zhang, Suyu Ye, Nakul Agarwal, Hossein Nourkhiz Mahjoub, Ehsan Moradi Pari, Daniel Khashabi, Tianmin Shu and Vaishnav Tadiparthi (Honda Research Institute USA; Johns Hopkins University). World Models in Physical AI Workshop, NeurIPS 2026. arXiv 2610.00722, 30 September 2026.<br>
+Reading note written November 5, 2026 against UEMA specification v3.5 (<code>docs/UEMA_Specs/UEMA_Spec_v3_5.txt</code>). Section numbers are v3.5's.</p>
+<nav><a href="#short">The short version</a><a href="#did">What the paper did</a><a href="#results">What they measured</a><a href="#fit">Where it touches UEMA</a><a href="#useful">How it could help us</a><a href="#caution">What to be careful about</a><a href="#quotes">In the authors' words</a><a href="#sources">Sources</a></nav>
+
+<div class="simple" id="short"><h2>The short version</h2><p><strong>What they did:</strong> took a pretrained latent world model, changed the physics underneath it (rotated the controls, added forces, delayed an axis), and let the model keep training itself from its own actions and observations while it planned. Only the predictor was allowed to change; the visual encoder and the scoring head were frozen. The updates, the optimiser state and the memory of past transitions all persisted across 500 episodes.</p>
+<p><strong>What it showed:</strong> planning performance went up 153% over the frozen model, and imagined prediction error fell by 83%. Resetting the predictor every episode (as a concurrent paper does) threw most of that away: persistence alone took the score from 0.29 to 0.73 with the same number of updates.</p>
+<p><strong>Why it matters to us:</strong> UEMA has always trained online on the body's own stream. This paper is a controlled look at the part of that process UEMA takes for granted, and its findings about what to freeze, how to sample the replay, and what was not measured (forgetting) are directly relevant.</p></div>
+
+<section id="did"><h2>What the paper did</h2>
+<h3>The problem they set out to solve</h3><p>A world model pretrained under one set of dynamics makes systematic errors when actuation, contact or action mapping changes at deployment, and a planner then mis-ranks candidate plans. The authors ask whether an action-conditioned latent world model can keep adapting its dynamics predictor at test time from its own executed transitions, with no goal image and no reward, and whether that adaptation should persist across episodes rather than being reset.</p>
+<h3>What they built</h3><p>Pretrain a LeWM-style model (small vision transformer encoder, autoregressive transformer predictor, SIGReg regulariser) offline on 3,000 episodes per task. Fit a small reward head on frozen encoder features. At test time, plan with sampled action sequences scored through the predictor; execute the first block; encode every executed transition with the frozen encoder and store it; take at most one optimiser step per replanning step on the predictor alone, with a plain mean-squared-error loss toward the frozen encoder's latents. "Dense replay" starts a training window at every raw environment step, not only at action-block boundaries, which gives about five times more windows. Because the encoder is frozen, the targets cannot drift, so no collapse prevention is needed online.</p>
+<ul>
+<li>Shifts: action rotation and contact rotation on PushT; force fields in Two-Room; joint-dependent rotations on Reacher; cross-axis crosstalk and a one-step delay on the cube task.</li>
+<li>500 test episodes per deployment, three runs, held-out evaluation every 50 episodes.</li>
+<li>Baselines: the frozen model; a PPO agent adapted with oracle reward; AdaJEPA, a concurrent method that resets the predictor each episode.</li>
+</ul>
+</section>
+
+<section id="results"><h2>What they measured</h2><ul><li>Best held-out score averaged over eight shifts: frozen 0.267, JEPA-TTT 0.678 (+153%); PPO with oracle reward 0.307; per-episode reset 0.297. JEPA-TTT won every shift.</li><li>Imagined 5-block latent error after 500 episodes: 83% lower on average, from 45% to 99% depending on the shift.</li><li>Persistence ablation with the same number of updates: persistent 0.729 versus reset-each-episode 0.289.</li><li>Dense replay 0.678 versus sparse block-aligned windows 0.497; a compute-matched sparse variant reached 0.625.</li><li>Control with no dynamics shift: continued training gave no consistent benefit and slightly hurt Reacher (0.9995 to 0.952).</li><li>A model retrained offline on the shifted dynamics was still much better on Reacher (0.999 versus 0.758), so online adaptation did not close the whole gap there.</li></ul></section>
+
+<section id="fit"><h2>Where it touches UEMA</h2>
+<p>Each box names a part of the UEMA specification and says, in plain terms, what the paper has to say about it.</p>
+<div class="fit"><div><b>§20 Training pipeline, 'no dataset, trains on its own stream'</b><p>UEMA is the always-online case. This paper studies the stripped-down version and shows two things UEMA should want to confirm on itself: persistence across time helps enormously, and the gains can turn slightly negative when nothing has changed.</p></div><div><b>§5.7 Encoder collapse prevention</b><p>Their online stability came from freezing the encoder so the targets could not move. UEMA trains encoders and forward model jointly online, which is harder; VICReg carries that load. The paper is a reminder that the two loops (what the encoder means, what the predictor expects) can chase each other.</p></div><div><b>§6.3 Latent regulariser</b><p>The spec's regulariser tracks running statistics of real encoder outputs and penalises predictions outside two standard deviations. In this paper the equivalent anchor is the frozen encoder itself. Both are ways of holding a reference still while the predictor moves.</p></div><div><b>§20.6 UE transfer contracts and §3.4 physics handles</b><p>The shifts they tested (rotated action mapping, delayed axis routing, crosstalk) are exactly the kinds of defects Contract 2 warns about between the engine and the learner. A forward model that is adapting online can mask such a defect by learning around it, which is why the contracts insist on a trace before training.</p></div><div><b>§9.4 Developmental constraints</b><p>Each developmental phase change (more range of motion, more strength) is a dynamics shift from the model's point of view. The paper's adaptation curve (how many episodes until the predictor catches up) is a quantity UEMA could measure at each phase transition.</p></div><div><b>§15 Mastery detection and §13 natural gradient dynamics</b><p>Many Minds says a mastered mind keeps learning with gradients near zero and optimiser state evicted. This paper's no-shift control shows what continued updates do when there is nothing to learn: small, inconsistent, occasionally harmful. Eviction is defensible.</p></div></div>
+</section>
+
+<section id="useful"><h2>How it could help us</h2><p><strong>1. Measure adaptation time at developmental phase transitions.</strong> When the constraints loosen (§9.4), log forward-model prediction error per step afterward and count how many model steps it takes to return to the pre-transition level. This is the paper's main curve, and it is free to record.</p>
+<p><strong>2. Try dense replay sampling in the resume path.</strong> UEMA already keeps a ring buffer of recent frames. If multi-step training windows are started only at fixed boundaries, starting them at every frame would be a cheap change the paper found worth about 0.18 on its score.</p>
+<p><strong>3. Decide what to anchor.</strong> The paper froze the encoder to stabilise online predictor training. UEMA should not freeze encoders (they must keep learning what matters), but it can log the encoder's running statistics and the latent regulariser's envelope over time to see whether the encoder is drifting under the predictor. If it is, slowing the encoder's learning rate relative to the forward model's is the mild version of the paper's choice.</p>
+<p><strong>4. Note what was not measured.</strong> Forgetting of previously learned dynamics was explicitly out of scope. For UEMA, whose body changes with development and whose scenes change, the retention question matters more than the adaptation question.</p></section>
+
+<section id="caution"><h2>What to be careful about</h2><p>Single fixed shift per experiment; no sequences of shifts, no return to the original dynamics, no retention measurement. The encoder and reward head were frozen, so visual shifts are out of reach. Small models on four simple tasks. The PushT scoring head underpredicted good states and no strict successes were recorded there even for the frozen model. Standard deviations reflect test-time variation only, conditional on one pretrained model. The approach needed an offline pretraining dataset, which UEMA does not have by design.</p></section>
+
+<section id="quotes"><h2>In the authors' words</h2><blockquote><p>Self-supervised updates accumulate across episodes, while the visual encoder and reward head remain fixed, preserving the pretrained representation and task objective.</p><p class="sources">Abstract</p></blockquote><blockquote><p>Freezing the encoder also prevents the target representation from drifting during online predictor optimization.</p><p class="sources">Section 3.3</p></blockquote><blockquote><p>The predictor parameters, optimizer state, and online training buffer all persist across episode boundaries.</p><p class="sources">Section 3.3</p></blockquote><blockquote><p>retaining the predictor and optimizer state increases the best score from 0.289 to 0.729 and mean AUC from 0.273 to 0.637, with the same number of predictor updates.</p><p class="sources">Section 4.4</p></blockquote><blockquote><p>Persistent predictor updates may degrade predictions for previously learned dynamics, including the training dynamics. Our experiments therefore do not measure retention, forward/backward transfer, or catastrophic forgetting in continual learning settings.</p><p class="sources">Section 6</p></blockquote></section>
+
+<section id="sources"><h2>Sources</h2><ul class="sources"><li><a href="https://arxiv.org/html/2610.00722v1">arXiv 2610.00722 (HTML full text)</a></li><li><a href="https://arxiv.org/abs/2610.00722">arXiv abstract page</a></li><li><a href="https://jepa-ttt.github.io/">Project page</a></li>
+<li>UEMA specification v3.5, <code>docs/UEMA_Specs/UEMA_Spec_v3_5.txt</code>, read November 5, 2026.</li></ul>
+<p class="sources">This page was written by Claude (an AI assistant) from a reading of the paper's full text on arXiv on November 5, 2026, together with the UEMA v3.5 specification. Numbers are the authors' own. Judgements about fit with UEMA are a reader's, not the authors'. Nothing on this page is implemented in UEMA.</p>
+</section>
+</main></body></html>

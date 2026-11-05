@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Kinematic rollouts and UEMA</title>
+<meta name="description" content="Reading note: a cheap diagnostic that tells whether a forward model imagines physics or only extrapolates motion, and why it matters for UEMA's fall-and-recovery work.">
+<style>
+:root{--ink:#18343d;--teal:#086b62;--line:#cbdcd5;--soft:#e8f2ec;--warm:#fbf6ea;--warmline:#d9b25a;--red:#9c3328;--redsoft:#fbefec;--muted:#3b595e;--bg:#eff3ee;--card:#ffffff}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--ink:#dbe8e4;--teal:#5cc7b8;--line:#2f4a48;--soft:#1b302d;--warm:#2e2a1d;--warmline:#a8873e;--red:#e88b7e;--redsoft:#33211e;--muted:#a9c0bb;--bg:#101a19;--card:#162321}}
+:root[data-theme="dark"]{--ink:#dbe8e4;--teal:#5cc7b8;--line:#2f4a48;--soft:#1b302d;--warm:#2e2a1d;--warmline:#a8873e;--red:#e88b7e;--redsoft:#33211e;--muted:#a9c0bb;--bg:#101a19;--card:#162321}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:18px/1.6 system-ui,-apple-system,"Segoe UI",sans-serif}
+main{max-width:980px;margin:28px auto;background:var(--card);padding:38px 44px;border:1px solid var(--line);border-radius:16px}
+.eyebrow{font-size:13px;font-weight:750;text-transform:uppercase;letter-spacing:.1em;color:var(--teal)}
+h1{font-size:clamp(28px,4.2vw,40px);line-height:1.15;letter-spacing:-.02em;margin:12px 0 10px}
+.meta{font-size:15px;color:var(--muted);margin:0 0 22px}
+h2{font-size:24px;line-height:1.25;margin:0 0 10px}
+h3{font-size:19px;margin:24px 0 6px}
+section{border-top:2px solid var(--line);padding:26px 0 8px;scroll-margin-top:12px}
+p{margin:10px 0 14px}li{margin:7px 0}
+p,li,td,th{overflow-wrap:anywhere}
+nav{display:flex;flex-wrap:wrap;gap:6px 18px;margin:8px 0 24px;font-size:15px}
+a{color:var(--teal);text-underline-offset:3px}a:focus-visible{outline:3px solid var(--warmline);outline-offset:4px}
+.simple{background:var(--warm);border:1px solid var(--warmline);border-radius:12px;padding:20px 24px;margin:6px 0 26px}
+.simple h2{font-size:22px}
+.simple p{font-size:19px}
+.callout{border-left:5px solid var(--teal);background:var(--soft);padding:14px 18px;margin:16px 0;border-radius:0 8px 8px 0}
+.warn{border-left:5px solid var(--red);background:var(--redsoft);padding:14px 18px;margin:16px 0;border-radius:0 8px 8px 0}
+.prop{border:1px solid var(--line);border-radius:12px;padding:6px 22px 14px;margin:20px 0}
+.prop h3{margin-top:16px}
+.tag{display:inline-block;font-size:12px;font-weight:750;letter-spacing:.08em;text-transform:uppercase;color:var(--teal);border:1px solid var(--teal);border-radius:999px;padding:1px 10px;margin-left:6px;vertical-align:middle}
+.table-scroll{overflow-x:auto;margin:12px 0 18px}
+table{border-collapse:collapse;width:100%;font-size:16px}
+th,td{padding:9px 11px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+th{background:var(--soft)}
+.fit{display:grid;grid-template-columns:1fr 1fr;gap:14px 18px;margin:14px 0}
+.fit div{border:1px solid var(--line);border-radius:10px;padding:12px 16px}
+.fit b{display:block;margin-bottom:4px;color:var(--teal)}
+.fit p{margin:0;font-size:16px}
+blockquote{margin:12px 0;padding:10px 18px;border-left:4px solid var(--warmline);background:var(--warm);border-radius:0 8px 8px 0;font-size:16px}
+blockquote p{margin:4px 0}
+.sources{font-size:15px;color:var(--muted)}
+code{font-size:.86em}
+@media(max-width:700px){main{margin:0;border:0;border-radius:0;padding:24px 16px}body{font-size:17px}h2{font-size:21px}.fit{grid-template-columns:1fr}}
+@media print{body{background:#fff}main{margin:0;border:0;max-width:none;padding:12px}.prop,.simple,table,.fit div{break-inside:avoid}}
+</style>
+</head>
+<body><main>
+<div class="eyebrow">Mind Machine Learning · UEMA research reading · 2026 papers</div>
+<h1>Imagined rollouts are kinematic, not dynamic: a test for whether a world model understands contact</h1>
+<p class="meta">Finn Rasmus Schäfer, Korbinian Moller, Yuan Gao, Christian Oefinger, Sebastian Schmidt and Johannes Betz (Technical University of Munich). RSS 2026 Robot World Model Workshop. arXiv 2607.05966, 7 July 2026 · Code: <a href="https://github.com/TUM-AVS/iKCE">https://github.com/TUM-AVS/iKCE</a>.<br>
+Reading note written November 5, 2026 against UEMA specification v3.5 (<code>docs/UEMA_Specs/UEMA_Spec_v3_5.txt</code>). Section numbers are v3.5's.</p>
+<nav><a href="#short">The short version</a><a href="#did">What the paper did</a><a href="#results">What they measured</a><a href="#fit">Where it touches UEMA</a><a href="#useful">How it could help us</a><a href="#caution">What to be careful about</a><a href="#quotes">In the authors' words</a><a href="#sources">Sources</a></nav>
+
+<div class="simple" id="short"><h2>The short version</h2><p><strong>The claim:</strong> when a world model's imagination goes wrong over long horizons, the usual explanation is "small errors pile up". These authors say that misses the point. Their walker-robot world model did not imagine physics at all. It imagined smooth continuation of position and speed, and it kept imagining exactly the same thing when the floor was made slippery, even though the real robot's gait collapsed.</p>
+<p><strong>The test:</strong> measure how far each imagined step departs from plain "keep going at the same speed" extrapolation, then change something physical (floor friction) and see whether that measurement moves. Real physics shows contact spikes that shift with friction. The world model's imagination was flat.</p>
+<p><strong>Why it matters to us:</strong> UEMA's wellness-driven falling and recovery work depends on the forward model predicting what contact will do. This paper gives a two-hour test that would tell us whether our forward model has learned the floor or only learned the momentum.</p></div>
+
+<section id="did"><h2>What the paper did</h2>
+<h3>The problem they set out to solve</h3><p>Long-horizon failure of imagined rollouts is usually attributed to "compounding error". The authors argue this phrase is accurate but says nothing about what kind of error compounds. Their hypothesis: current world models imagine kinematically (extending position, velocity and acceleration patterns with simple update rules) rather than dynamically (reproducing the mass, friction and contact constraints that produce real motion). A model like that can look stable and accurate inside its training regime and still be blind the moment conditions cross a physical boundary.</p>
+<h3>What they built</h3><p>They define a per-step quantity, the imagined kinematic-consistency error: how far each imagined next state is from a closed-form constant-velocity guess based on the previous imagined state. On its own that number is not enough, because a trivially kinematic predictor scores zero. The diagnostic is the response: a dynamic imagination should show this error growing with horizon and changing when the physical regime changes. So they sweep floor friction across a boundary where the trained policy's reward collapses, and ask whether imagined rollouts notice. A positive control (joint-angle noise, a kinematic perturbation) checks that the model is not simply insensitive to everything.</p>
+<ul>
+<li>Model: DreamerV3, walker-walk, 1 million environment steps, reward 955 ± 30; three seeds plus a domain-randomised checkpoint trained across all friction values.</li>
+<li>Protocol: condition on 5 observations (125 ms, under one gait period), then imagine freely for the rest of 16 or 64 steps; compare with real physics under the same policy; 13 friction values, 20 rollouts per cell; bootstrap confidence intervals on the log-log slope.</li>
+<li>Compute: about 24 hours to train a checkpoint and about 2 hours for the full diagnostic sweep on one GPU.</li>
+</ul>
+</section>
+
+<section id="results"><h2>What they measured</h2><ul><li>Imagined rollouts were further from the constant-velocity baseline than real physics was: about 180 times at 16 steps and 30 times at 64 steps. The model is not trivially kinematic; it adds its own structure.</li><li>Friction sweep at 64 steps: the world model's slope was −0.009 with a confidence interval straddling zero, for all three seeds. Real physics had slope −0.220 with the interval well away from zero. The policy's reward fell from about 650 to about 200 across the same sweep; the imagination did not register that.</li><li>The domain-randomised model, which had seen every friction value during training, was equally flat (slope −0.026).</li><li>Physics only shows its friction sensitivity at horizons of 32 to 64 steps, longer than one gait period. Short tests cannot see it.</li><li>Per-step traces: physics shows sparse contact-event spikes whose timing shifts with friction; the world model shows a one-to-two-step transient and then a smooth tail that does not change with friction.</li><li>An actor trained on 64-step imagined rollouts instead of 15 reached about 400 reward instead of 955 and was unstable throughout, which the authors read as consistent with their hypothesis.</li></ul></section>
+
+<section id="fit"><h2>Where it touches UEMA</h2>
+<p>Each box names a part of the UEMA specification and says, in plain terms, what the paper has to say about it.</p>
+<div class="fit"><div><b>§6.3 Distribution shift mitigation</b><p>The spec's countermeasures (latent regulariser, imagination-aware training) are aimed at errors piling up. This paper says there is a second failure that those cannot fix: a model that never learned the contact physics in the first place. Its diagnostic distinguishes the two.</p></div><div><b>§8 Pain and pleasure as trajectories; the floor scene</b><p>The current fall-and-recovery work (October 27 documents) assumes the forward model can predict what contact with the floor does. This test checks exactly that, and the walker's failure mode (smooth, contact-blind imagination) is what a failing forward model would look like on the floor scene.</p></div><div><b>§3.1 Tactile sensing and §5.2 tactile encoder</b><p>The paper's regime variable was floor friction. UEMA's tactile channels include slip rate, which is the direct sensory correlate. A forward model that predicts slip tokens correctly across friction should pass this test; one that does not will not.</p></div><div><b>§4.2 TODO and the November 5 addendum (A4)</b><p>The addendum proposes running the same command sequence in imagination and in the simulator from one restored state and measuring the gap. This paper's friction-sweep protocol is the version of that test that asks a physics question rather than a general one.</p></div><div><b>§9.2 Adaptive computation depth</b><p>Deep motor computation uses imagination rollouts to compare candidates. If imagination is friction-blind, deeper search cannot find a wellness-improving recovery that depends on contact. Depth only pays once the forward model passes the diagnostic.</p></div><div><b>§25 Training compute budget</b><p>The diagnostic costs about 2 hours per checkpoint on one GPU. It could be run on every saved model and recorded in the ability rechecks.</p></div></div>
+</section>
+
+<section id="useful"><h2>How it could help us</h2><p><strong>1. Add a friction sweep to the ability rechecks.</strong> From restored identical states on the floor scene, vary the floor friction in MuJoCo across a range that includes the point where recovery fails, replay a fixed command sequence in the simulator and in the forward model's imagination, and compare the per-step departure from constant-velocity continuation. If the simulator's trace moves with friction and imagination's does not, the forward model has not learned the floor, and the wellness fall-and-recovery sequence cannot yet be learned through imagination.</p>
+<p><strong>2. Use horizons longer than one movement cycle.</strong> The paper found friction effects only beyond 32 to 64 steps. UEMA's imagination-aware training chains 3 steps and plans are "naturally short" (§10.3). Both are shorter than the physics the test needs to see. The measurement can be long even when the training chain is short.</p>
+<p><strong>3. Read the per-step traces, not only the totals.</strong> The contact-spike pattern in real physics versus the smooth tail in imagination is visible in a single plot and is the clearest evidence either way.</p>
+<p><strong>4. Treat the result as a gate for intention and depth.</strong> §10 (intention) and §9.2 (deep motor computation) both lean on imagination. This test gives a concrete pass condition for turning them on for contact-dependent behaviour.</p></section>
+
+<section id="caution"><h2>What to be careful about</h2><p>One embodiment (a 2D nine-joint walker), one model family (DreamerV3), one kinematic slice (root height and vertical speed). The physics side has a known confound: the real policy also adapts its gait to friction in closed loop, so part of the physics slope is the policy, not the floor. Imagined rollouts are conditioned on only five observations, so a world model might fail the test because the prefix carries no friction evidence, not because it cannot represent friction; the authors list a prefix-length sweep as open work. Low per-step error at long horizons partly reflects that motion decays over the rollout. The diagnostic is structural, not predictive: passing it does not certify accuracy, failing it does not certify uselessness.</p></section>
+
+<section id="quotes"><h2>In the authors' words</h2><blockquote><p>Long-horizon failure in world models is conventionally attributed to compounding error, a generic framing that does not distinguish what kind of error compounds.</p><p class="sources">Abstract</p></blockquote><blockquote><p>Current world models imagine kinematically rather than dynamically: they extrapolate position-velocity-acceleration trajectories that are internally consistent with linear kinematic update rules, but inconsistent with the physical constraints that produce real motion.</p><p class="sources">Section I</p></blockquote><blockquote><p>The diagnostic protocol should be applied at horizons longer than the embodiment's gait period.</p><p class="sources">Section III-B</p></blockquote><blockquote><p>The trained policy's reward, by contrast, collapses through the same range (from ~650 at mu=0.5 to ~200 at mu=0.10), a real behavioral regime change to which the WM's imagined rollouts are blind.</p><p class="sources">Section IV</p></blockquote><blockquote><p>physics exhibits sparse contact-event spikes whose positions shift with mu ... while the WM shows a one-to-two-step encoder-decoder transient followed by a smooth, friction-invariant tail.</p><p class="sources">Appendix A-B3</p></blockquote></section>
+
+<section id="sources"><h2>Sources</h2><ul class="sources"><li><a href="https://arxiv.org/html/2607.05966">arXiv 2607.05966 (HTML full text)</a></li><li><a href="https://arxiv.org/abs/2607.05966">arXiv abstract page</a></li><li><a href="https://github.com/TUM-AVS/iKCE">Diagnostic code</a></li>
+<li>UEMA specification v3.5, <code>docs/UEMA_Specs/UEMA_Spec_v3_5.txt</code>, read November 5, 2026.</li></ul>
+<p class="sources">This page was written by Claude (an AI assistant) from a reading of the paper's full text on arXiv on November 5, 2026, together with the UEMA v3.5 specification. Numbers are the authors' own. Judgements about fit with UEMA are a reader's, not the authors'. Nothing on this page is implemented in UEMA.</p>
+</section>
+</main></body></html>

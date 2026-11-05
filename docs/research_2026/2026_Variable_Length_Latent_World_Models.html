@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Variable-length prediction and UEMA</title>
+<meta name="description" content="Reading note: training the forward model to predict k steps ahead in one jump, as a way around the "telephone game" of chained imagination.">
+<style>
+:root{--ink:#18343d;--teal:#086b62;--line:#cbdcd5;--soft:#e8f2ec;--warm:#fbf6ea;--warmline:#d9b25a;--red:#9c3328;--redsoft:#fbefec;--muted:#3b595e;--bg:#eff3ee;--card:#ffffff}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--ink:#dbe8e4;--teal:#5cc7b8;--line:#2f4a48;--soft:#1b302d;--warm:#2e2a1d;--warmline:#a8873e;--red:#e88b7e;--redsoft:#33211e;--muted:#a9c0bb;--bg:#101a19;--card:#162321}}
+:root[data-theme="dark"]{--ink:#dbe8e4;--teal:#5cc7b8;--line:#2f4a48;--soft:#1b302d;--warm:#2e2a1d;--warmline:#a8873e;--red:#e88b7e;--redsoft:#33211e;--muted:#a9c0bb;--bg:#101a19;--card:#162321}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:18px/1.6 system-ui,-apple-system,"Segoe UI",sans-serif}
+main{max-width:980px;margin:28px auto;background:var(--card);padding:38px 44px;border:1px solid var(--line);border-radius:16px}
+.eyebrow{font-size:13px;font-weight:750;text-transform:uppercase;letter-spacing:.1em;color:var(--teal)}
+h1{font-size:clamp(28px,4.2vw,40px);line-height:1.15;letter-spacing:-.02em;margin:12px 0 10px}
+.meta{font-size:15px;color:var(--muted);margin:0 0 22px}
+h2{font-size:24px;line-height:1.25;margin:0 0 10px}
+h3{font-size:19px;margin:24px 0 6px}
+section{border-top:2px solid var(--line);padding:26px 0 8px;scroll-margin-top:12px}
+p{margin:10px 0 14px}li{margin:7px 0}
+p,li,td,th{overflow-wrap:anywhere}
+nav{display:flex;flex-wrap:wrap;gap:6px 18px;margin:8px 0 24px;font-size:15px}
+a{color:var(--teal);text-underline-offset:3px}a:focus-visible{outline:3px solid var(--warmline);outline-offset:4px}
+.simple{background:var(--warm);border:1px solid var(--warmline);border-radius:12px;padding:20px 24px;margin:6px 0 26px}
+.simple h2{font-size:22px}
+.simple p{font-size:19px}
+.callout{border-left:5px solid var(--teal);background:var(--soft);padding:14px 18px;margin:16px 0;border-radius:0 8px 8px 0}
+.warn{border-left:5px solid var(--red);background:var(--redsoft);padding:14px 18px;margin:16px 0;border-radius:0 8px 8px 0}
+.prop{border:1px solid var(--line);border-radius:12px;padding:6px 22px 14px;margin:20px 0}
+.prop h3{margin-top:16px}
+.tag{display:inline-block;font-size:12px;font-weight:750;letter-spacing:.08em;text-transform:uppercase;color:var(--teal);border:1px solid var(--teal);border-radius:999px;padding:1px 10px;margin-left:6px;vertical-align:middle}
+.table-scroll{overflow-x:auto;margin:12px 0 18px}
+table{border-collapse:collapse;width:100%;font-size:16px}
+th,td{padding:9px 11px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+th{background:var(--soft)}
+.fit{display:grid;grid-template-columns:1fr 1fr;gap:14px 18px;margin:14px 0}
+.fit div{border:1px solid var(--line);border-radius:10px;padding:12px 16px}
+.fit b{display:block;margin-bottom:4px;color:var(--teal)}
+.fit p{margin:0;font-size:16px}
+blockquote{margin:12px 0;padding:10px 18px;border-left:4px solid var(--warmline);background:var(--warm);border-radius:0 8px 8px 0;font-size:16px}
+blockquote p{margin:4px 0}
+.sources{font-size:15px;color:var(--muted)}
+code{font-size:.86em}
+@media(max-width:700px){main{margin:0;border:0;border-radius:0;padding:24px 16px}body{font-size:17px}h2{font-size:21px}.fit{grid-template-columns:1fr}}
+@media print{body{background:#fff}main{margin:0;border:0;max-width:none;padding:12px}.prop,.simple,table,.fit div{break-inside:avoid}}
+</style>
+</head>
+<body><main>
+<div class="eyebrow">Mind Machine Learning · UEMA research reading · 2026 papers</div>
+<h1>Variable-length latent world models: one predictor that can jump several steps at once</h1>
+<p class="meta">Tianqi Du, Qi Zhang, Yifei Wang and Yisen Wang (Peking University; Amazon AGI). Preprint. arXiv 2606.21775, 19 June 2026.<br>
+Reading note written November 5, 2026 against UEMA specification v3.5 (<code>docs/UEMA_Specs/UEMA_Spec_v3_5.txt</code>). Section numbers are v3.5's.</p>
+<nav><a href="#short">The short version</a><a href="#did">What the paper did</a><a href="#results">What they measured</a><a href="#fit">Where it touches UEMA</a><a href="#useful">How it could help us</a><a href="#caution">What to be careful about</a><a href="#quotes">In the authors' words</a><a href="#sources">Sources</a></nav>
+
+<div class="simple" id="short"><h2>The short version</h2><p><strong>The problem they attack:</strong> a forward model trained only to predict the next moment has to be chained many times to look far ahead, and each link adds error. UEMA calls this the telephone game (§6.3).</p>
+<p><strong>Their move:</strong> train the same predictor to answer "where will I be after these k actions?" for any k from 1 up to a maximum, by feeding it the k actions as a sequence of tokens. At planning time, a long horizon becomes a few long jumps instead of many short steps. They needed a curriculum (short jumps first, then longer) or training fell apart.</p>
+<p><strong>What it showed:</strong> on three simulated tasks, planning with jumps beat the one-step model by about 13 points on average, with the biggest gains on the hardest, farthest goals (a two-room navigation task went from 36% to 68% success at the longest range).</p>
+<p><strong>Why it matters to us:</strong> it is a training-recipe change, not an architecture change, and it directly addresses the spec's complaint that plans are "naturally short because imagination drifts" (§10.3).</p></div>
+
+<section id="did"><h2>What the paper did</h2>
+<h3>The problem they set out to solve</h3><p>JEPA-style latent world models are trained on t to t+1 and rolled out recursively for planning. The authors say this creates two coupled problems. The training objective is mismatched with the planning task, because long-range consistency is never optimised; worse, consecutive frames are so similar that next-step prediction can be solved by near-identity mapping, which teaches local appearance change rather than dynamics. And the action is usually fused into each transformer block, which locks the architecture to exactly one action per prediction step.</p>
+<h3>What they built</h3><p>Keep the standard setup (online encoder, EMA target encoder, transformer predictor, planning by sampling action sequences and scoring imagined outcomes). Change the training target: for each sample draw a horizon k, feed the predictor the current latent plus the k actions as first-class tokens, and train it to match the target encoder's latent at time t+k. The one-step model is the special case k = 1. Training on a wide range of k from scratch was unstable ("noisy gradients, optimization failure, and representation collapse"), so they use a cumulative curriculum: stage j samples k from 1 to j. At planning time, the horizon is split into chunks and each chunk is predicted in one jump. Three chunking rules are tried: a fixed chunk size, random sizes, and long-to-short (big jumps early, small jumps near the goal).</p>
+<ul>
+<li>Encoder: a small vision transformer (192-dim latent) trained jointly; predictor: 6-layer causal transformer with three past states as context.</li>
+<li>Maximum jump 5 predictor steps, which with frame-skip 5 is 25 environment steps per jump.</li>
+<li>Planner: cross-entropy method, 300 samples, 30 iterations, horizon 25 environment steps, goals 25 to 100 steps away.</li>
+<li>Tasks: PushT (pushing a block), a cube pick-and-place arm, and a two-room navigation task with a door.</li>
+</ul>
+</section>
+
+<section id="results"><h2>What they measured</h2><ul><li>Success rates, best jump strategy versus the one-step baseline, at goal distances 25/50/75/100 steps: PushT 94/60/20/12 vs 90/46/12/8; cube 74/54/54/50 vs 74/44/46/42; two-room 96/80/70/68 vs 88/58/34/36.</li><li>The gains grow with goal distance, which is the authors' main evidence that one-step supervision is the bottleneck for long horizons.</li><li>No single chunking rule won everywhere: random chunks were best on the cube, long-to-short on PushT and the far two-room goals. A fixed chunk of 3 was worse than the baseline on far PushT goals.</li><li>The curriculum helped on PushT and two-room but slightly hurt the cube task at middle distances.</li><li>Linear probes on the frozen latents were slightly better for position and block angle than the one-step model's.</li><li>No timing or compute measurements are given; the only stated benefit is fewer recursive predictor calls.</li></ul></section>
+
+<section id="fit"><h2>Where it touches UEMA</h2>
+<p>Each box names a part of the UEMA specification and says, in plain terms, what the paper has to say about it.</p>
+<div class="fit"><div><b>§6.3 Distribution shift during imagination</b><p>The spec's imagination-aware loss chains the model through its own 3-step predictions. This paper offers a different handle on the same problem: train the model to make the long prediction in one step, so there is nothing to chain.</p></div><div><b>§10.3 Multi-step intention</b><p>The spec says plans are naturally short because imagination drifts, forcing plan-execute-re-observe loops. Jumps make longer plans feasible with the same number of predictor calls.</p></div><div><b>§6 Forward model architecture</b><p>UEMA's forward model already takes a sequence of per-timestep tokens, including a motor token per step. Feeding k motor tokens and asking for the state at t+k is a natural extension of what the block already does, with the temporal attention of stage 2.</p></div><div><b>§5.7 Encoder collapse prevention</b><p>The authors saw representation collapse when training with long horizons from scratch and needed a curriculum. UEMA's online training would need the same care; VICReg alone was not their fix.</p></div><div><b>§10.6 From predictions to reusable skill</b><p>Candidate (b) in §10.6 is 'a short joint action-sequence objective'. This paper's predictor is exactly the object that objective needs: a model that scores a 2 or 3 action sequence by its end state in one call.</p></div><div><b>§24.4 Split-rate modalities</b><p>Vision updates every 2 to 3 frames anyway. A predictor that is comfortable with variable offsets fits the existing uneven update pattern better than a strict one-step predictor.</p></div></div>
+</section>
+
+<section id="useful"><h2>How it could help us</h2><p><strong>1. Add multi-offset targets to the forward model's training.</strong> At each training step, besides the next-frame prediction, sample an offset k up to a small maximum (the paper used 5 predictor steps), feed the k motor tokens, and train against the encoded real state at t+k. Ramp k up over training as the paper did. This is a loss and data-sampling change inside training_step.py; the three-stage block is unchanged.</p>
+<p><strong>2. Use the jump for the §10.6 detour test.</strong> The acceptance test needs the first action of a sequence to be scored by where the sequence ends. A predictor that answers "after these three commands, where am I?" in one call gives candidate (b) its objective without a greedy chain.</p>
+<p><strong>3. Keep the replay reference measurement.</strong> The November 5 addendum's replay-versus-imagination gap can be measured for jumps as well as for chains, which would tell us directly whether the jump is more faithful than the chain at the same offset.</p></section>
+
+<section id="caution"><h2>What to be careful about</h2><p>Everything is offline on fixed datasets of expert or heuristic trajectories; UEMA trains online on its own stream, which is a different stability regime. The maximum jump is only 5 predictor steps. Absolute success on far PushT goals stayed low (20% and 12%) even with jumps. Chunking strategy had to be chosen per task, and the authors name an adaptive rule as open work. No compute numbers are reported, and no code is released. Longer targets are inherently more uncertain, which is what the curriculum papers over; a model forced to commit to a single point far ahead may learn a blurred average rather than a real outcome.</p></section>
+
+<section id="quotes"><h2>In the authors' words</h2><blockquote><p>next-step prediction can frequently be solved through short-term interpolation or near-identity mappings, encouraging models to capture local appearance changes rather than the higher-level dynamics required for long-horizon reasoning and planning.</p><p class="sources">Section 1</p></blockquote><blockquote><p>Instead of always supervising the next step, we train a single predictor g_phi to forecast the latent at an arbitrary future offset k &gt;= 1.</p><p class="sources">Section 3.2</p></blockquote><blockquote><p>Long-horizon prediction targets are inherently more uncertain, leading to noisy gradient signals for the predictor. We therefore adopt a curriculum strategy, which gradually introduces longer-range targets once the model has sufficiently learned shorter-horizon predictions.</p><p class="sources">Section 3.3</p></blockquote><blockquote><p>a small k* (or even k*=1) for short-horizon, fine-grained control where every action must be evaluated precisely, and a larger k* for long-horizon goals where coarse jumps reduce error accumulation.</p><p class="sources">Section 3.4</p></blockquote><blockquote><p>developing a principled adaptive strategy that selects {k_i} online remains an important direction for future work.</p><p class="sources">Section 4.4</p></blockquote></section>
+
+<section id="sources"><h2>Sources</h2><ul class="sources"><li><a href="https://arxiv.org/html/2606.21775v1">arXiv 2606.21775 (HTML full text)</a></li><li><a href="https://arxiv.org/abs/2606.21775">arXiv abstract page</a></li>
+<li>UEMA specification v3.5, <code>docs/UEMA_Specs/UEMA_Spec_v3_5.txt</code>, read November 5, 2026.</li></ul>
+<p class="sources">This page was written by Claude (an AI assistant) from a reading of the paper's full text on arXiv on November 5, 2026, together with the UEMA v3.5 specification. Numbers are the authors' own. Judgements about fit with UEMA are a reader's, not the authors'. Nothing on this page is implemented in UEMA.</p>
+</section>
+</main></body></html>

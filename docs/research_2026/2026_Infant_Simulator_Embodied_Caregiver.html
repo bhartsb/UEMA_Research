@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Caregiver simulator and UEMA</title>
+<meta name="description" content="Reading note: a physics-based caregiver that holds, sways and caresses MIMo, with touch tagged by origin, read against UEMA's caregiver work and its touch pipeline.">
+<style>
+:root{--ink:#18343d;--teal:#086b62;--line:#cbdcd5;--soft:#e8f2ec;--warm:#fbf6ea;--warmline:#d9b25a;--red:#9c3328;--redsoft:#fbefec;--muted:#3b595e;--bg:#eff3ee;--card:#ffffff}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--ink:#dbe8e4;--teal:#5cc7b8;--line:#2f4a48;--soft:#1b302d;--warm:#2e2a1d;--warmline:#a8873e;--red:#e88b7e;--redsoft:#33211e;--muted:#a9c0bb;--bg:#101a19;--card:#162321}}
+:root[data-theme="dark"]{--ink:#dbe8e4;--teal:#5cc7b8;--line:#2f4a48;--soft:#1b302d;--warm:#2e2a1d;--warmline:#a8873e;--red:#e88b7e;--redsoft:#33211e;--muted:#a9c0bb;--bg:#101a19;--card:#162321}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:18px/1.6 system-ui,-apple-system,"Segoe UI",sans-serif}
+main{max-width:980px;margin:28px auto;background:var(--card);padding:38px 44px;border:1px solid var(--line);border-radius:16px}
+.eyebrow{font-size:13px;font-weight:750;text-transform:uppercase;letter-spacing:.1em;color:var(--teal)}
+h1{font-size:clamp(28px,4.2vw,40px);line-height:1.15;letter-spacing:-.02em;margin:12px 0 10px}
+.meta{font-size:15px;color:var(--muted);margin:0 0 22px}
+h2{font-size:24px;line-height:1.25;margin:0 0 10px}
+h3{font-size:19px;margin:24px 0 6px}
+section{border-top:2px solid var(--line);padding:26px 0 8px;scroll-margin-top:12px}
+p{margin:10px 0 14px}li{margin:7px 0}
+p,li,td,th{overflow-wrap:anywhere}
+nav{display:flex;flex-wrap:wrap;gap:6px 18px;margin:8px 0 24px;font-size:15px}
+a{color:var(--teal);text-underline-offset:3px}a:focus-visible{outline:3px solid var(--warmline);outline-offset:4px}
+.simple{background:var(--warm);border:1px solid var(--warmline);border-radius:12px;padding:20px 24px;margin:6px 0 26px}
+.simple h2{font-size:22px}
+.simple p{font-size:19px}
+.callout{border-left:5px solid var(--teal);background:var(--soft);padding:14px 18px;margin:16px 0;border-radius:0 8px 8px 0}
+.warn{border-left:5px solid var(--red);background:var(--redsoft);padding:14px 18px;margin:16px 0;border-radius:0 8px 8px 0}
+.prop{border:1px solid var(--line);border-radius:12px;padding:6px 22px 14px;margin:20px 0}
+.prop h3{margin-top:16px}
+.tag{display:inline-block;font-size:12px;font-weight:750;letter-spacing:.08em;text-transform:uppercase;color:var(--teal);border:1px solid var(--teal);border-radius:999px;padding:1px 10px;margin-left:6px;vertical-align:middle}
+.table-scroll{overflow-x:auto;margin:12px 0 18px}
+table{border-collapse:collapse;width:100%;font-size:16px}
+th,td{padding:9px 11px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+th{background:var(--soft)}
+.fit{display:grid;grid-template-columns:1fr 1fr;gap:14px 18px;margin:14px 0}
+.fit div{border:1px solid var(--line);border-radius:10px;padding:12px 16px}
+.fit b{display:block;margin-bottom:4px;color:var(--teal)}
+.fit p{margin:0;font-size:16px}
+blockquote{margin:12px 0;padding:10px 18px;border-left:4px solid var(--warmline);background:var(--warm);border-radius:0 8px 8px 0;font-size:16px}
+blockquote p{margin:4px 0}
+.sources{font-size:15px;color:var(--muted)}
+code{font-size:.86em}
+@media(max-width:700px){main{margin:0;border:0;border-radius:0;padding:24px 16px}body{font-size:17px}h2{font-size:21px}.fit{grid-template-columns:1fr}}
+@media print{body{background:#fff}main{margin:0;border:0;max-width:none;padding:12px}.prop,.simple,table,.fit div{break-inside:avoid}}
+</style>
+</head>
+<body><main>
+<div class="eyebrow">Mind Machine Learning · UEMA research reading · 2026 papers</div>
+<h1>An infant simulator with an embodied caregiver: what MIMo sees and feels while being held</h1>
+<p class="meta">Noemi Vaculinova and Matej Hoffmann (Czech Technical University in Prague). Preprint. arXiv 2610.05997, 5 October 2026 · Code: <a href="https://github.com/ctu-vras/mom-for-mimo">https://github.com/ctu-vras/mom-for-mimo</a>.<br>
+Reading note written November 5, 2026 against UEMA specification v3.5 (<code>docs/UEMA_Specs/UEMA_Spec_v3_5.txt</code>). Section numbers are v3.5's.</p>
+<nav><a href="#short">The short version</a><a href="#did">What the paper did</a><a href="#results">What they measured</a><a href="#fit">Where it touches UEMA</a><a href="#useful">How it could help us</a><a href="#caution">What to be careful about</a><a href="#quotes">In the authors' words</a><a href="#sources">Sources</a></nav>
+
+<div class="simple" id="short"><h2>The short version</h2><p><strong>What they did:</strong> built an adult caregiver body in MuJoCo, in MIMo's style, drove it with motion capture of an actor holding and caressing a newborn-sized doll, and let a passive MIMo be held. Every touch on MIMo's skin is logged with its origin (caregiver, self, or environment), mapped to 50 body regions, and MIMo's eye cameras record what it sees, including when its face is pressed into the caregiver's chest.</p>
+<p><strong>What it showed:</strong> holding concentrates touch on the back and torso; face-to-face holding fills the infant's view with the caregiver; caressing raises back-region touch rates; a two-month body nests differently from a newborn and gets more torso contact. Hand self-touch rates were in the range of real infants, though biased toward regions squeezed by the hold.</p>
+<p><strong>Why it matters to us:</strong> UEMA has a caregiver review document (September 12) and the Many Minds intermind sense that would carry another agent. This is a released, physics-based caregiver on the same body, and its touch-origin tagging is exactly the self/other distinction §19.3 wants the system to discover.</p></div>
+
+<section id="did"><h2>What the paper did</h2>
+<h3>The problem they set out to solve</h3><p>Early development happens in caregiver-infant dyads, yet infant simulators including MIMo model infants alone. Manual coding of touch from video is laborious, cannot cover whole-body or occluded contact or forces, and cannot say who touched whom. Head cameras are too intrusive for young infants. The paper adds a physics-based caregiver so holding and soothing interactions can be replayed and the infant's first-person touch and vision logged, including contacts no camera sees.</p>
+<h3>What they built</h3><p>A rigid capsule-based adult female body is built from anthropometric tables and resized to a recorded actor. An actor in a 43-marker motion-capture suit held and caressed a newborn-sized doll in eight short scenarios (holding close, swaying, holding away face-to-face, shoulder hold, back caressing). In MuJoCo, motion-capture bodies drive the caregiver; the infant MIMo is passive, its pose emerging from physics and contact rather than from retargeting, a deliberate trade of pose accuracy for physically consistent forces. MIMo's touch pipeline is extended to tag each contact with an origin and to map sensors onto 50 regions matching a standard infant coding figure; the near clipping distance of the eye cameras is reduced so vision renders during hugs. Validation uses paint transfer from the actor's painted upper body to the doll, replay at two MIMo ages, and comparison with manually coded real-infant hand self-touch rates.</p>
+<ul>
+<li>MIMo newborn and two-month models; about three thousand touch sensors in the default configuration, denser on hands and feet.</li>
+<li>Scenarios up to 40 seconds; outputs are third-person renders, both eye views, origin-coloured touch maps and touch-rate heatmaps. Code and data are public.</li>
+</ul>
+</section>
+
+<section id="results"><h2>What they measured</h2><ul><li>Close holding gives substantial caregiver contact on the torso and back; face-to-face holding keeps the caregiver's head and upper body in the infant's eye views; caressing raises back-region rates.</li><li>Paint-transfer check: most touched areas were detected in simulation; the main miss was the head, approximated as a sphere.</li><li>Same caregiver motion on a two-month body: more torso-dominated contact and less leg contact than the newborn, because the larger body does not nest the same way.</li><li>Simulated hand self-touch rates were broadly comparable in magnitude to real infants' but concentrated on regions compressed during holding, as expected from a passive infant.</li><li>Caregiver-origin contact dominated the total touch rate in every scenario.</li></ul></section>
+
+<section id="fit"><h2>Where it touches UEMA</h2>
+<p>Each box names a part of the UEMA specification and says, in plain terms, what the paper has to say about it.</p>
+<div class="fit"><div><b>§19.3 Discovery of self versus world</b><p>The spec expects correlation statistics to partition sensors into self, sometimes-correlated world, and never-correlated world. A caregiver's touch is the hardest case: it is on the body, it is not caused by the body's commands, and it is sometimes correlated with them (being lifted after reaching up). The paper's origin tags are ground truth for whether the body schema sorts that case correctly.</p></div><div><b>§5.6 Inter-mind communication and §13 to §18</b><p>Many Minds broadcasts other minds' internal state as a sixth sense. A caregiver is the first 'other' with its own intentions that MIMo would meet. This paper gives the caregiver a body before it has a mind, which is the right order for testing the intermind channel against something physical.</p></div><div><b>The Body, Caregiver and Dashboard Review (September 12)</b><p>That document and this paper are working on the same component on the same body. The paper's released caregiver model and scenarios are a candidate replacement or reference for whatever UEMA's review proposed.</p></div><div><b>§3.1 Tactile sensing and §7.2 tactile wellness</b><p>Being held is pressure without self-caused motion. The spec's pleasure walkthrough (§8.2) is about light touch; the paper's touch maps say where on the body such touch actually lands during care, which is where tactile wellness should be able to rise.</p></div><div><b>§20.6 Contract 1, touch into the learner</b><p>The paper's validation (painted shirt versus simulated contacts) is a physical check that simulated touch lands where real touch would. It is the same kind of trace Contract 1 demands, from a different direction.</p></div><div><b>§22 Stress and grief</b><p>A caregiver who leaves is the simplest loss of a Level 2 self entity (§11.4). This simulator makes caregiver presence a controllable variable, which the grief milestone in §22.2 needs.</p></div></div>
+</section>
+
+<section id="useful"><h2>How it could help us</h2><p><strong>1. Add the caregiver scenarios as a fourth scene.</strong> The code targets MIMo in MuJoCo. A 'held' scene alongside reach, selfbody and floor would give the forward model experience of pressure and movement that it did not command, which is the case the body schema most needs to see.</p>
+<p><strong>2. Score the body schema against origin tags.</strong> During replay, compare each skin patch's self-membership (§11.1) with the paper's origin label. Patches touched by the caregiver should have low membership even though they are on the body; patches touched by MIMo's own hand should have high membership on both sides of the contact.</p>
+<p><strong>3. Let the infant act.</strong> The paper's infant is passive and its authors name active infant control as the next step. UEMA is an active infant. Running the wellness-driven model inside the caregiver's hold, with the caregiver replayed, is the experiment both groups are pointing at.</p></section>
+
+<section id="caution"><h2>What to be careful about</h2><p>The infant is passive, so its self-touch statistics are not those of an exploring infant. Bodies are rigid capsules; head contact was poorly captured; the interactions are an actor with a doll, not a real dyad. Touch is a single contact point spread to neighbours, not a deformable skin. Vision was not validated. The paper reports no learning. Numerical touch rates exist only in figures.</p></section>
+
+<section id="quotes"><h2>In the authors' words</h2><blockquote><p>the simulated infant is treated as a passive physical body, whose pose emerges from physics and caregiver contact, rather than full-body kinematic retargeting. This design choice trades pose accuracy for physically consistent collision and force generation.</p><p class="sources">Section II-D</p></blockquote><blockquote><p>We extend MIMo's touch processing to assign each contact a touch origin category</p><p class="sources">Section II-E</p></blockquote><blockquote><p>This illustrates how a single caregiver motion dataset can be reused to probe developmental changes in contact statistics induced purely by morphology.</p><p class="sources">Section III-E</p></blockquote><blockquote><p>This mismatch is expected given our passive infant and emphasizes the need to integrate active infant control</p><p class="sources">Section IV-D</p></blockquote><blockquote><p>Eventually, both the caregiver and the infant could autonomously generate behaviors, in a closed-loop fashion taking into account the behavior of the interaction partner.</p><p class="sources">Section IV-D</p></blockquote></section>
+
+<section id="sources"><h2>Sources</h2><ul class="sources"><li><a href="https://arxiv.org/html/2610.05997v1">arXiv 2610.05997 (HTML full text)</a></li><li><a href="https://arxiv.org/abs/2610.05997">arXiv abstract page</a></li><li><a href="https://github.com/ctu-vras/mom-for-mimo">Code</a></li>
+<li>UEMA specification v3.5, <code>docs/UEMA_Specs/UEMA_Spec_v3_5.txt</code>, read November 5, 2026.</li></ul>
+<p class="sources">This page was written by Claude (an AI assistant) from a reading of the paper's full text on arXiv on November 5, 2026, together with the UEMA v3.5 specification. Numbers are the authors' own. Judgements about fit with UEMA are a reader's, not the authors'. Nothing on this page is implemented in UEMA.</p>
+</section>
+</main></body></html>

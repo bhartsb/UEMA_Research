@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Sub-JEPA and UEMA</title>
+<meta name="description" content="Reading note: regularising the latent inside many small random subspaces instead of the whole space, and what it implies for UEMA's VICReg settings.">
+<style>
+:root{--ink:#18343d;--teal:#086b62;--line:#cbdcd5;--soft:#e8f2ec;--warm:#fbf6ea;--warmline:#d9b25a;--red:#9c3328;--redsoft:#fbefec;--muted:#3b595e;--bg:#eff3ee;--card:#ffffff}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--ink:#dbe8e4;--teal:#5cc7b8;--line:#2f4a48;--soft:#1b302d;--warm:#2e2a1d;--warmline:#a8873e;--red:#e88b7e;--redsoft:#33211e;--muted:#a9c0bb;--bg:#101a19;--card:#162321}}
+:root[data-theme="dark"]{--ink:#dbe8e4;--teal:#5cc7b8;--line:#2f4a48;--soft:#1b302d;--warm:#2e2a1d;--warmline:#a8873e;--red:#e88b7e;--redsoft:#33211e;--muted:#a9c0bb;--bg:#101a19;--card:#162321}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:18px/1.6 system-ui,-apple-system,"Segoe UI",sans-serif}
+main{max-width:980px;margin:28px auto;background:var(--card);padding:38px 44px;border:1px solid var(--line);border-radius:16px}
+.eyebrow{font-size:13px;font-weight:750;text-transform:uppercase;letter-spacing:.1em;color:var(--teal)}
+h1{font-size:clamp(28px,4.2vw,40px);line-height:1.15;letter-spacing:-.02em;margin:12px 0 10px}
+.meta{font-size:15px;color:var(--muted);margin:0 0 22px}
+h2{font-size:24px;line-height:1.25;margin:0 0 10px}
+h3{font-size:19px;margin:24px 0 6px}
+section{border-top:2px solid var(--line);padding:26px 0 8px;scroll-margin-top:12px}
+p{margin:10px 0 14px}li{margin:7px 0}
+p,li,td,th{overflow-wrap:anywhere}
+nav{display:flex;flex-wrap:wrap;gap:6px 18px;margin:8px 0 24px;font-size:15px}
+a{color:var(--teal);text-underline-offset:3px}a:focus-visible{outline:3px solid var(--warmline);outline-offset:4px}
+.simple{background:var(--warm);border:1px solid var(--warmline);border-radius:12px;padding:20px 24px;margin:6px 0 26px}
+.simple h2{font-size:22px}
+.simple p{font-size:19px}
+.callout{border-left:5px solid var(--teal);background:var(--soft);padding:14px 18px;margin:16px 0;border-radius:0 8px 8px 0}
+.warn{border-left:5px solid var(--red);background:var(--redsoft);padding:14px 18px;margin:16px 0;border-radius:0 8px 8px 0}
+.prop{border:1px solid var(--line);border-radius:12px;padding:6px 22px 14px;margin:20px 0}
+.prop h3{margin-top:16px}
+.tag{display:inline-block;font-size:12px;font-weight:750;letter-spacing:.08em;text-transform:uppercase;color:var(--teal);border:1px solid var(--teal);border-radius:999px;padding:1px 10px;margin-left:6px;vertical-align:middle}
+.table-scroll{overflow-x:auto;margin:12px 0 18px}
+table{border-collapse:collapse;width:100%;font-size:16px}
+th,td{padding:9px 11px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+th{background:var(--soft)}
+.fit{display:grid;grid-template-columns:1fr 1fr;gap:14px 18px;margin:14px 0}
+.fit div{border:1px solid var(--line);border-radius:10px;padding:12px 16px}
+.fit b{display:block;margin-bottom:4px;color:var(--teal)}
+.fit p{margin:0;font-size:16px}
+blockquote{margin:12px 0;padding:10px 18px;border-left:4px solid var(--warmline);background:var(--warm);border-radius:0 8px 8px 0;font-size:16px}
+blockquote p{margin:4px 0}
+.sources{font-size:15px;color:var(--muted)}
+code{font-size:.86em}
+@media(max-width:700px){main{margin:0;border:0;border-radius:0;padding:24px 16px}body{font-size:17px}h2{font-size:21px}.fit{grid-template-columns:1fr}}
+@media print{body{background:#fff}main{margin:0;border:0;max-width:none;padding:12px}.prop,.simple,table,.fit div{break-inside:avoid}}
+</style>
+</head>
+<body><main>
+<div class="eyebrow">Mind Machine Learning · UEMA research reading · 2026 papers</div>
+<h1>Sub-JEPA: a gentler anti-collapse regulariser that lets the latent shrink to the task's real size</h1>
+<p class="meta">Kai Zhao, Dongliang Nie, Yuchen Lin, Zhehan Luo, Yixiao Gu, Deng-Ping Fan and Dan Zeng (Shanghai University; University of Manchester; Nankai University). Preprint. arXiv 2605.09241, 10 May 2026 · Code: <a href="https://github.com/intcomp/sub-jepa">https://github.com/intcomp/sub-jepa</a>.<br>
+Reading note written November 5, 2026 against UEMA specification v3.5 (<code>docs/UEMA_Specs/UEMA_Spec_v3_5.txt</code>). Section numbers are v3.5's.</p>
+<nav><a href="#short">The short version</a><a href="#did">What the paper did</a><a href="#results">What they measured</a><a href="#fit">Where it touches UEMA</a><a href="#useful">How it could help us</a><a href="#caution">What to be careful about</a><a href="#quotes">In the authors' words</a><a href="#sources">Sources</a></nav>
+
+<div class="simple" id="short"><h2>The short version</h2><p><strong>The problem:</strong> a world model trained end-to-end from pixels can "collapse", mapping everything to the same latent so that prediction is trivially perfect. The usual cure pushes the whole latent toward a spread-out Gaussian cloud. These authors say that cure is too strong: the states a body actually visits live on a low-dimensional surface, and forcing the full 192-dimensional space to be isotropic fights that.</p>
+<p><strong>Their fix:</strong> apply the same Gaussian test, but separately inside many small random, fixed subspaces of the latent. Collapse is still prevented in every subspace, but the relationship between subspaces is left free, so the latent can contract toward the task's true dimensionality.</p>
+<p><strong>What it showed:</strong> with nothing else changed, planning success rose on all four tasks (for example 84% to 95% on a two-room navigation task). The gain tracked how much the latent's effective rank fell. Too-small subspaces broke training badly (28% and 9% on PushT), so the subspace size is a real knob.</p>
+<p><strong>Why it matters to us:</strong> UEMA uses VICReg, a close cousin of this regulariser, with fixed weights chosen in 2026-06. The paper suggests those weights are a bias on the latent's geometry, not just a safety rail, and shows how to test whether it is too strong.</p></div>
+
+<section id="did"><h2>What the paper did</h2>
+<h3>The problem they set out to solve</h3><p>JEPA world models face a bias-variance trade-off: too little structural constraint and the encoder collapses; too much and representational richness is suppressed. LeWorldModel achieved stable end-to-end training with two terms, prediction plus a Gaussian regulariser on the full latent. The authors argue that control-task latents lie on low-dimensional manifolds, so enforcing an isotropic Gaussian in the full ambient space is an overly strong bias that mismatches the intrinsic geometry.</p>
+<h3>What they built</h3><p>Keep LeWorldModel unchanged (encoder, predictor, optimiser, schedule, loss-weight protocol). Replace the full-space Gaussian regulariser with one applied independently in K random, frozen, orthonormal subspaces of the latent, each of dimension 192 divided by K. Inside each subspace, random one-dimensional projections of the batch are tested for Gaussianity with the same statistic LeWM uses, and the results are averaged over subspaces and directions. K = 1 recovers LeWM. The projections are never trained; the authors show that letting them train lets the encoder co-adapt and weakens the regulariser.</p>
+<ul>
+<li>K = 32 (subspace size 6) for Two-Room, Reacher and the cube task; K = 16 (size 12) for PushT; chosen on a validation split.</li>
+<li>Six seeds per result; planning with the LeWM cross-entropy-method pipeline.</li>
+<li>Diagnostics: effective rank of the latent (exponential of spectral entropy), linear and MLP probes of physical quantities, straightness of latent paths over time, open-loop rollouts decoded to pixels.</li>
+</ul>
+</section>
+
+<section id="results"><h2>What they measured</h2><ul><li>Planning success, Sub-JEPA versus LeWM: Two-Room 95.0 vs 84.3; Reacher 84.0 vs 82.7; PushT 89.0 vs 84.7; cube 76.3 vs 67.3 (a frozen pretrained-encoder model, DINO-WM, still led the cube task at 86).</li><li>The larger the drop in effective rank from LeWM to Sub-JEPA, the larger the planning gain; Two-Room and the cube showed the most contraction and the most gain.</li><li>Subspace size matters: on PushT, K = 32 (size 6) fell to 28% and K = 64 (size 3) to 9%, because the Gaussianity test becomes unreliable in tiny subspaces.</li><li>Non-orthogonal random projections (PushT 13%) and trainable projections (57%) both failed; frozen orthonormal projections are necessary.</li><li>Linear probes improved for translational quantities but slightly worsened for block angle (correlation 0.884 vs 0.902), which the authors attribute to angular structure fragmenting across subspaces.</li><li>Latent paths over time were straighter, and open-loop rollouts on Two-Room drifted less at distant steps.</li></ul></section>
+
+<section id="fit"><h2>Where it touches UEMA</h2>
+<p>Each box names a part of the UEMA specification and says, in plain terms, what the paper has to say about it.</p>
+<div class="fit"><div><b>§5.7 Preventing encoder collapse</b><p>UEMA's VICReg (variance 1.0, covariance 0.04, target 1.0) enforces per-dimension variance and decorrelation across the whole 768-dimensional token. That is a full-space constraint of the kind this paper argues is too strong. The paper's method is a drop-in alternative with one knob.</p></div><div><b>§28 Open questions, 'vision encoder depth: single pooled token may be too aggressive'</b><p>The paper's effective-rank diagnostic answers a neighbouring question: how many of the 768 numbers in a token are actually used. If the rank is far below 768, the pooled token is not the bottleneck; if it is pinned near 768 by the regulariser, the regulariser is.</p></div><div><b>§6.3 Distribution shift during imagination</b><p>Straighter latent paths and less open-loop drift are the paper's secondary results. A latent that is allowed to contract toward the body's real degrees of freedom is easier for the forward model to extrapolate.</p></div><div><b>§11.1 Self as motor-correlation boundary</b><p>The body schema reads correlations between motor and sensor changes. A latent whose rank matches the body's degrees of freedom would make those correlations cleaner; a latent forced to be isotropic in 768 dimensions spreads them thin.</p></div><div><b>§29.2 CF-5, removing the 128-dim internal bottleneck</b><p>CF-5 argues encoders should run at full width so they decide what to discard at the end. This paper is the complementary caution: at full width, the anti-collapse term must not force the output to use all of that width.</p></div></div>
+</section>
+
+<section id="useful"><h2>How it could help us</h2><p><strong>1. Measure the effective rank of each modality token on the saved model.</strong> Take 2,000 encoded tokens per sense from the reach scene, centre them, compute the exponential of the spectral entropy. This is a few lines and tells us whether the 192-dimensional tokens of the research model (or 768 at target) are being filled by the regulariser or by the data.</p>
+<p><strong>2. Run a VICReg weight sweep against that rank.</strong> If lowering the variance weight lets the rank fall and prediction error on held-out frames improves, UEMA's current setting is biasing the geometry. The paper's correlation between rank contraction and planning success is the pattern to look for.</p>
+<p><strong>3. If a sweep is not enough, try the subspace form.</strong> Apply VICReg's variance and covariance terms inside K random frozen orthonormal subspaces of each token rather than on the full token. Keep subspaces at least 12 wide; the paper's failures at width 6 and 3 are the warning. This is a change inside compute_vicreg in loss_manager.py and nowhere else.</p>
+<p><strong>4. Watch rotational quantities.</strong> The paper's one regression was block angle. UEMA's handle rotations are quaternions; if a subspace regulariser is tried, probe rotation decodability before and after.</p></section>
+
+<section id="caution"><h2>What to be careful about</h2><p>The paper never shows an actual collapsed run; its argument is about bias, not failure. All training is offline on fixed datasets, and the regulariser strength, number of directions and model sizes are inherited from LeWM and not restated. The gains on Reacher and PushT are within or near one standard deviation. Subspace size had to be tuned per task, and the wrong size was catastrophic. The regulariser used is SIGReg (a Gaussianity test), not VICReg; the idea of applying it in subspaces should transfer, but nobody has published that combination. A pretrained frozen encoder still beat it on the richest task.</p></section>
+
+<section id="quotes"><h2>In the authors' words</h2><blockquote><p>latent representations inherently lie on low-dimensional manifolds within a high-dimensional ambient space, and enforcing an isotropic Gaussian prior directly in this ambient space introduces an overly strong bias.</p><p class="sources">Abstract</p></blockquote><blockquote><p>Freezing the projections prevents the regularizer itself from adapting to the evolving latent distribution</p><p class="sources">Section 3.2</p></blockquote><blockquote><p>Subspace-wise regularization relaxes this bias and allows the latent geometry to contract toward the task's intrinsic dimensionality—the greater this contraction, the larger the planning gain.</p><p class="sources">Section 4.2.2</p></blockquote><blockquote><p>K controls a trade-off between flexibility and statistical reliability.</p><p class="sources">Section 4.3.1</p></blockquote><blockquote><p>subspace-wise regularization reduces geometric distortion relative to full-space SIGReg, offering a geometric explanation for the planning gains</p><p class="sources">Section 4.6</p></blockquote></section>
+
+<section id="sources"><h2>Sources</h2><ul class="sources"><li><a href="https://arxiv.org/pdf/2605.09241">arXiv 2605.09241 (PDF full text)</a></li><li><a href="https://arxiv.org/abs/2605.09241">arXiv abstract page</a></li><li><a href="https://github.com/intcomp/sub-jepa">Code</a></li>
+<li>UEMA specification v3.5, <code>docs/UEMA_Specs/UEMA_Spec_v3_5.txt</code>, read November 5, 2026.</li></ul>
+<p class="sources">This page was written by Claude (an AI assistant) from a reading of the paper's full text on arXiv on November 5, 2026, together with the UEMA v3.5 specification. Numbers are the authors' own. Judgements about fit with UEMA are a reader's, not the authors'. Nothing on this page is implemented in UEMA.</p>
+</section>
+</main></body></html>

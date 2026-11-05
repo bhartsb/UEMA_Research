@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>TouchWorld and UEMA</title>
+<meta name="description" content="Reading note: a three-timescale tactile control stack on a humanoid with dexterous hands, read for what its timescale separation says about UEMA's single 60 Hz loop.">
+<style>
+:root{--ink:#18343d;--teal:#086b62;--line:#cbdcd5;--soft:#e8f2ec;--warm:#fbf6ea;--warmline:#d9b25a;--red:#9c3328;--redsoft:#fbefec;--muted:#3b595e;--bg:#eff3ee;--card:#ffffff}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--ink:#dbe8e4;--teal:#5cc7b8;--line:#2f4a48;--soft:#1b302d;--warm:#2e2a1d;--warmline:#a8873e;--red:#e88b7e;--redsoft:#33211e;--muted:#a9c0bb;--bg:#101a19;--card:#162321}}
+:root[data-theme="dark"]{--ink:#dbe8e4;--teal:#5cc7b8;--line:#2f4a48;--soft:#1b302d;--warm:#2e2a1d;--warmline:#a8873e;--red:#e88b7e;--redsoft:#33211e;--muted:#a9c0bb;--bg:#101a19;--card:#162321}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:18px/1.6 system-ui,-apple-system,"Segoe UI",sans-serif}
+main{max-width:980px;margin:28px auto;background:var(--card);padding:38px 44px;border:1px solid var(--line);border-radius:16px}
+.eyebrow{font-size:13px;font-weight:750;text-transform:uppercase;letter-spacing:.1em;color:var(--teal)}
+h1{font-size:clamp(28px,4.2vw,40px);line-height:1.15;letter-spacing:-.02em;margin:12px 0 10px}
+.meta{font-size:15px;color:var(--muted);margin:0 0 22px}
+h2{font-size:24px;line-height:1.25;margin:0 0 10px}
+h3{font-size:19px;margin:24px 0 6px}
+section{border-top:2px solid var(--line);padding:26px 0 8px;scroll-margin-top:12px}
+p{margin:10px 0 14px}li{margin:7px 0}
+p,li,td,th{overflow-wrap:anywhere}
+nav{display:flex;flex-wrap:wrap;gap:6px 18px;margin:8px 0 24px;font-size:15px}
+a{color:var(--teal);text-underline-offset:3px}a:focus-visible{outline:3px solid var(--warmline);outline-offset:4px}
+.simple{background:var(--warm);border:1px solid var(--warmline);border-radius:12px;padding:20px 24px;margin:6px 0 26px}
+.simple h2{font-size:22px}
+.simple p{font-size:19px}
+.callout{border-left:5px solid var(--teal);background:var(--soft);padding:14px 18px;margin:16px 0;border-radius:0 8px 8px 0}
+.warn{border-left:5px solid var(--red);background:var(--redsoft);padding:14px 18px;margin:16px 0;border-radius:0 8px 8px 0}
+.prop{border:1px solid var(--line);border-radius:12px;padding:6px 22px 14px;margin:20px 0}
+.prop h3{margin-top:16px}
+.tag{display:inline-block;font-size:12px;font-weight:750;letter-spacing:.08em;text-transform:uppercase;color:var(--teal);border:1px solid var(--teal);border-radius:999px;padding:1px 10px;margin-left:6px;vertical-align:middle}
+.table-scroll{overflow-x:auto;margin:12px 0 18px}
+table{border-collapse:collapse;width:100%;font-size:16px}
+th,td{padding:9px 11px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+th{background:var(--soft)}
+.fit{display:grid;grid-template-columns:1fr 1fr;gap:14px 18px;margin:14px 0}
+.fit div{border:1px solid var(--line);border-radius:10px;padding:12px 16px}
+.fit b{display:block;margin-bottom:4px;color:var(--teal)}
+.fit p{margin:0;font-size:16px}
+blockquote{margin:12px 0;padding:10px 18px;border-left:4px solid var(--warmline);background:var(--warm);border-radius:0 8px 8px 0;font-size:16px}
+blockquote p{margin:4px 0}
+.sources{font-size:15px;color:var(--muted)}
+code{font-size:.86em}
+@media(max-width:700px){main{margin:0;border:0;border-radius:0;padding:24px 16px}body{font-size:17px}h2{font-size:21px}.fit{grid-template-columns:1fr}}
+@media print{body{background:#fff}main{margin:0;border:0;max-width:none;padding:12px}.prop,.simple,table,.fit div{break-inside:avoid}}
+</style>
+</head>
+<body><main>
+<div class="eyebrow">Mind Machine Learning · UEMA research reading · 2026 papers</div>
+<h1>TouchWorld: touch as a slow prediction and a fast correction, running at different speeds</h1>
+<p class="meta">Jianyi Zhou, Feiyang Hong, Yunhao Li, Yicheng Zhao, Yongjue Cen, Zirui Liu, Jiakang Huang, Zirui Chen, Ruiyang Zhang, Weizhuo Zhu, Xuhua Song and Shuo Yang (Harbin Institute of Technology, Shenzhen; PHANES AI). Preprint (v2). arXiv 2607.07287, 8 July 2026.<br>
+Reading note written November 5, 2026 against UEMA specification v3.5 (<code>docs/UEMA_Specs/UEMA_Spec_v3_5.txt</code>). Section numbers are v3.5's.</p>
+<nav><a href="#short">The short version</a><a href="#did">What the paper did</a><a href="#results">What they measured</a><a href="#fit">Where it touches UEMA</a><a href="#useful">How it could help us</a><a href="#caution">What to be careful about</a><a href="#quotes">In the authors' words</a><a href="#sources">Sources</a></nav>
+
+<div class="simple" id="short"><h2>The short version</h2><p><strong>The complaint:</strong> most robot policies treat touch as one more slow input, processed at the same pace as vision and language. But touch does two different jobs. It tells you what contact should look like a second from now (slow, predictive) and it tells you the object just slipped (fast, reactive). Mixing both into one loop wastes the fast signal.</p>
+<p><strong>Their design:</strong> three loops at three speeds. A slow planner and tactile world model that produces a short video of what the hand should see and feel next. A middle policy that generates action chunks toward that goal. A fast residual network that reads a short tactile history and nudges the actions a few steps at a time.</p>
+<p><strong>What it showed:</strong> 65% average success on six contact-rich humanoid tasks versus 49% for the best baseline, and the gap widened when a human disturbed the robot mid-task (54% vs 35%). Removing tactile input hurt most; removing the fast loop hurt most under disturbance.</p>
+<p><strong>Why it matters to us:</strong> this is a large, imitation-trained, language-model-based stack, so its parts are not UEMA's parts. But the separation of timescales it demonstrates is one UEMA's spec already gestures at (split-rate modalities, adaptive depth) and has not yet built.</p></div>
+
+<section id="did"><h2>What the paper did</h2>
+<h3>The problem they set out to solve</h3><p>Dexterous manipulation needs anticipation (how should contact evolve) and fast reaction (correct slip, misalignment, unstable grasp, force mismatch). Vision and language cannot reveal hidden contact states. Existing vision-language-action policies, when they use touch at all, append tactile readings as extra tokens at the same slow rate as everything else, so slow reasoning, chunked action generation and fast contact feedback are coupled in one monolithic loop.</p>
+<h3>What they built</h3><p>A slow high-level layer has a subtask planner (a 4B vision-language model fine-tuned with a memory of previous subtasks) and a tactile world model (a 5B video model fine-tuned to generate a 17-frame clip of future camera views and tactile images, refreshed only when the subtask changes). A middle-rate visuo-tactile goal-conditioned policy, trained by flow matching, outputs 32-step chunks of a 120-dimensional action; tactile readings are rendered as images so the policy sees touch in the same form as vision. A fast tactile residual transformer takes a 16-step lookahead of nominal actions, short proprioceptive and tactile histories, and the policy's context, and outputs a residual added to a 58-dimensional tactile-sensitive subspace of the action; the controller commits four corrected actions then re-predicts. Four separate training stages; no end-to-end backpropagation; no explicit slip detector.</p>
+<ul>
+<li>Hardware: a humanoid with Wuji dexterous hands and a tactile glove; 200 teleoperated demonstrations per task on six tasks; the world model pretrained on egocentric human video with palm pressure maps, then 10 hours of robot demonstrations.</li>
+<li>No rates in hertz are given for any layer; the authors say the fast rate depends on the control frequency and commit interval.</li>
+</ul>
+</section>
+
+<section id="results"><h2>What they measured</h2><ul><li>Clean success averaged over six tasks: TouchWorld 65.0% vs FTP-1 49.3%, Pi-0.5 40.7%, GR00T N1.7 39.3%.</li><li>Under human perturbation: 53.7% vs 35.2% for the best baseline.</li><li>Tactile subgoal prediction: temporal contact accuracy 86.3% vs 70.4% for copying the current tactile state.</li><li>Ablations (figure only): removing tactile input caused the largest drop; removing the fast residual loop hurt most under perturbation; removing the planner reduced long-horizon consistency.</li><li>Memory-augmented planner: subtask accuracy 88% vs 73% without memory and 43% zero-shot.</li></ul></section>
+
+<section id="fit"><h2>Where it touches UEMA</h2>
+<p>Each box names a part of the UEMA specification and says, in plain terms, what the paper has to say about it.</p>
+<div class="fit"><div><b>§24.4 Split-rate modality architecture</b><p>UEMA already runs vision at 24 Hz and touch, proprioception and motor at 60 Hz, and the spec says the cross-modal bridge should weight touch more in fast-changing situations. TouchWorld is the control-side counterpart: touch gets its own fast correction loop rather than only a faster encoder.</p></div><div><b>§9.2 Adaptive computation depth</b><p>The spec produces 'fast for familiar, deep for novel' from one controller. TouchWorld separates them structurally. The spec's rationale (§9.1) rejects hardcoded tiers because they cannot discover a fourth strategy; TouchWorld is evidence that two tiers work well in practice, which is useful to know even if UEMA's answer is to let them emerge.</p></div><div><b>§11.3 Slip detection as self-contraction</b><p>TouchWorld has no slip detector; the fast loop reacts to whatever the short tactile history shows. UEMA's slip rate channel and self-contraction mechanism are more explicit. The paper's finding that the fast loop is what survives disturbance is support for making that mechanism fast.</p></div><div><b>§13 to §18 Many Minds</b><p>A grasp subordinate mind that owns the hand handles and runs every frame is UEMA's version of the fast residual loop. The difference is that UEMA's subordinate is a whole prediction-wellness mind, not a residual on someone else's plan.</p></div><div><b>§20.3 Stream 2, observation pre-training</b><p>Their tactile world model was pretrained on human egocentric video with palm pressure before seeing any robot data. That is a tactile analogue of Stream 2 and a reminder that such data exists.</p></div><div><b>§1 Core thesis</b><p>Every component here is an imitation-trained policy or a fine-tuned foundation model. None of it transfers as architecture. What transfers is the measurement: performance under mid-task disturbance, which UEMA could adopt as a recheck.</p></div></div>
+</section>
+
+<section id="useful"><h2>How it could help us</h2><p><strong>1. Add a disturbance recheck.</strong> The paper's clearest result is the gap between clean and perturbed success. UEMA's ability rechecks could include a version of each reach or grasp test in which the object or the arm is nudged mid-movement, with success measured after the nudge. That measures the §10.6 'how to continue under disturbance' function directly.</p>
+<p><strong>2. Measure how quickly the tactile token reaches the motor output.</strong> In UEMA every sense reaches the motor controller through the forward model each frame, so there is a fast path in principle. The question is latency in frames from a slip onset in the grounded register to a change in the strength command. That number, recorded on the grasp tests, would say whether a separate fast loop is needed at all.</p>
+<p><strong>3. Keep the tactile goal idea for later.</strong> TouchWorld's world model predicts what touch should feel like at the subgoal. In UEMA terms that is a predicted tactile token for the goal ring (§10.6), which the approximate wellness evaluator could score. It needs the FeelWorld-style structured tactile prediction first.</p></section>
+
+<section id="caution"><h2>What to be careful about</h2><p>This is a large imitation-learning stack built on language and video foundation models, trained in four separate stages with no end-to-end learning; its architecture is outside UEMA's §1 thesis. No rates are given, so the 'fast' loop's actual speed is unknown. Six tasks, one sensor layout, no simulation. Ablation numbers exist only as a figure. Tactile details (taxel count, shear, rate) are not stated. The paper's value for UEMA is the measurement protocol and the timescale argument, not its components.</p></section>
+
+<section id="quotes"><h2>In the authors' words</h2><blockquote><p>a robot must predict how contact should evolve while rapidly correcting local errors caused by slip, misalignment, unstable grasping, or force mismatch.</p><p class="sources">Abstract</p></blockquote><blockquote><p>most existing policies treat touch as a low-frequency observation stream within a monolithic action model, coupling slow task reasoning, action generation, and fast contact feedback in a single loop.</p><p class="sources">Abstract</p></blockquote><blockquote><p>tactile histories are short-range, local, and most informative near contact transitions such as slip, impact, or insertion misalignment.</p><p class="sources">Section 2.3</p></blockquote><blockquote><p>Removing the Tactile-Conditioned Refinement Policy particularly hurts the human perturbation setting, where the system must correct local execution errors online.</p><p class="sources">Section 4.4</p></blockquote><blockquote><p>This design treats touch as both a predictive cue for contact-aware goal generation and a fast feedback signal for online correction.</p><p class="sources">Conclusion</p></blockquote></section>
+
+<section id="sources"><h2>Sources</h2><ul class="sources"><li><a href="https://arxiv.org/html/2607.07287">arXiv 2607.07287 v2 (HTML full text)</a></li><li><a href="https://arxiv.org/abs/2607.07287">arXiv abstract page</a></li><li><a href="https://phanes-lab.github.io/TouchWorld-website/">Project page</a></li>
+<li>UEMA specification v3.5, <code>docs/UEMA_Specs/UEMA_Spec_v3_5.txt</code>, read November 5, 2026.</li></ul>
+<p class="sources">This page was written by Claude (an AI assistant) from a reading of the paper's full text on arXiv on November 5, 2026, together with the UEMA v3.5 specification. Numbers are the authors' own. Judgements about fit with UEMA are a reader's, not the authors'. Nothing on this page is implemented in UEMA.</p>
+</section>
+</main></body></html>

@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>FeelWorld and UEMA</title>
+<meta name="description" content="Reading note: structured tactile prediction (contact, force-like latent, slip) with contact-gated fusion, and what it suggests for UEMA's tactile encoder and slip handling.">
+<style>
+:root{--ink:#18343d;--teal:#086b62;--line:#cbdcd5;--soft:#e8f2ec;--warm:#fbf6ea;--warmline:#d9b25a;--red:#9c3328;--redsoft:#fbefec;--muted:#3b595e;--bg:#eff3ee;--card:#ffffff}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--ink:#dbe8e4;--teal:#5cc7b8;--line:#2f4a48;--soft:#1b302d;--warm:#2e2a1d;--warmline:#a8873e;--red:#e88b7e;--redsoft:#33211e;--muted:#a9c0bb;--bg:#101a19;--card:#162321}}
+:root[data-theme="dark"]{--ink:#dbe8e4;--teal:#5cc7b8;--line:#2f4a48;--soft:#1b302d;--warm:#2e2a1d;--warmline:#a8873e;--red:#e88b7e;--redsoft:#33211e;--muted:#a9c0bb;--bg:#101a19;--card:#162321}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:18px/1.6 system-ui,-apple-system,"Segoe UI",sans-serif}
+main{max-width:980px;margin:28px auto;background:var(--card);padding:38px 44px;border:1px solid var(--line);border-radius:16px}
+.eyebrow{font-size:13px;font-weight:750;text-transform:uppercase;letter-spacing:.1em;color:var(--teal)}
+h1{font-size:clamp(28px,4.2vw,40px);line-height:1.15;letter-spacing:-.02em;margin:12px 0 10px}
+.meta{font-size:15px;color:var(--muted);margin:0 0 22px}
+h2{font-size:24px;line-height:1.25;margin:0 0 10px}
+h3{font-size:19px;margin:24px 0 6px}
+section{border-top:2px solid var(--line);padding:26px 0 8px;scroll-margin-top:12px}
+p{margin:10px 0 14px}li{margin:7px 0}
+p,li,td,th{overflow-wrap:anywhere}
+nav{display:flex;flex-wrap:wrap;gap:6px 18px;margin:8px 0 24px;font-size:15px}
+a{color:var(--teal);text-underline-offset:3px}a:focus-visible{outline:3px solid var(--warmline);outline-offset:4px}
+.simple{background:var(--warm);border:1px solid var(--warmline);border-radius:12px;padding:20px 24px;margin:6px 0 26px}
+.simple h2{font-size:22px}
+.simple p{font-size:19px}
+.callout{border-left:5px solid var(--teal);background:var(--soft);padding:14px 18px;margin:16px 0;border-radius:0 8px 8px 0}
+.warn{border-left:5px solid var(--red);background:var(--redsoft);padding:14px 18px;margin:16px 0;border-radius:0 8px 8px 0}
+.prop{border:1px solid var(--line);border-radius:12px;padding:6px 22px 14px;margin:20px 0}
+.prop h3{margin-top:16px}
+.tag{display:inline-block;font-size:12px;font-weight:750;letter-spacing:.08em;text-transform:uppercase;color:var(--teal);border:1px solid var(--teal);border-radius:999px;padding:1px 10px;margin-left:6px;vertical-align:middle}
+.table-scroll{overflow-x:auto;margin:12px 0 18px}
+table{border-collapse:collapse;width:100%;font-size:16px}
+th,td{padding:9px 11px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+th{background:var(--soft)}
+.fit{display:grid;grid-template-columns:1fr 1fr;gap:14px 18px;margin:14px 0}
+.fit div{border:1px solid var(--line);border-radius:10px;padding:12px 16px}
+.fit b{display:block;margin-bottom:4px;color:var(--teal)}
+.fit p{margin:0;font-size:16px}
+blockquote{margin:12px 0;padding:10px 18px;border-left:4px solid var(--warmline);background:var(--warm);border-radius:0 8px 8px 0;font-size:16px}
+blockquote p{margin:4px 0}
+.sources{font-size:15px;color:var(--muted)}
+code{font-size:.86em}
+@media(max-width:700px){main{margin:0;border:0;border-radius:0;padding:24px 16px}body{font-size:17px}h2{font-size:21px}.fit{grid-template-columns:1fr}}
+@media print{body{background:#fff}main{margin:0;border:0;max-width:none;padding:12px}.prop,.simple,table,.fit div{break-inside:avoid}}
+</style>
+</head>
+<body><main>
+<div class="eyebrow">Mind Machine Learning · UEMA research reading · 2026 papers</div>
+<h1>FeelWorld: a world model that predicts touch in three layers and only listens to touch when there is contact</h1>
+<p class="meta">Wenxuan Ma, Chaofan Zhang, Chao Xue, Yinghao Cai, Guocai Yao, Shaowei Cui and Shuo Wang (Institute of Automation, Chinese Academy of Sciences; Imprintx Robotics; Beijing Academy of AI). Preprint. arXiv 2607.24267, 27 July 2026.<br>
+Reading note written November 5, 2026 against UEMA specification v3.5 (<code>docs/UEMA_Specs/UEMA_Spec_v3_5.txt</code>). Section numbers are v3.5's.</p>
+<nav><a href="#short">The short version</a><a href="#did">What the paper did</a><a href="#results">What they measured</a><a href="#fit">Where it touches UEMA</a><a href="#useful">How it could help us</a><a href="#caution">What to be careful about</a><a href="#quotes">In the authors' words</a><a href="#sources">Sources</a></nav>
+
+<div class="simple" id="short"><h2>The short version</h2><p><strong>The idea:</strong> a world model that predicts what the hand will feel, not only what the camera will see. The authors split touch into three questions in order: is there contact at all; what does the contact feel like (a latent that keeps the force magnitude); and is the object slipping. They supervise all three explicitly instead of treating touch as one undifferentiated blob.</p>
+<p><strong>The clever part:</strong> touch only means something during contact. In free space the tactile signal is noise, and letting it mix with vision made visual prediction worse. So vision is allowed to read touch only when contact is predicted; touch always reads vision.</p>
+<p><strong>What it showed:</strong> better visual prediction than a vision-only model, contact onset predicted within half a frame, slip detected with 0.83 F1 though slip was under 1% of frames, and a planner that used predicted slip went from 49% to 82% average success on real grasping and insertion tasks.</p>
+<p><strong>Why it matters to us:</strong> UEMA's tactile channels (pressure, shear, slip rate, contact area, vibration) are richer than this paper's sensor, but the paper's structure (gate on contact, keep magnitudes, treat slip as a temporal judgement) maps onto the tactile encoder and the slip-as-self-contraction mechanism.</p></div>
+
+<section id="did"><h2>What the paper did</h2>
+<h3>The problem they set out to solve</h3><p>Visual world models can imagine plausible-looking futures that violate physics because they ignore the contact states that govern manipulation. Prior visuo-tactile world models treat touch as a monolithic target, which gives weak supervision. And tactile signals only carry physical meaning during contact; during free-space motion they are noise that corrupts visual prediction if fused naively.</p>
+<h3>What they built</h3><p>A frozen V-JEPA 2 encoder handles two camera views; a frozen tactile encoder turns each timestep's 3D tactile point cloud into one latent. A spatio-temporal transformer takes nine frames of context (1.5 seconds), proprioception, the action and a contact gate, and predicts the next visual latent and tactile component. Three heads read the tactile component: a contact probability, the tactile latent itself (regressed without layer normalisation so that magnitude, which encodes contact intensity, survives), and a slip probability from a causal convolution over a short window, trained only at contact timesteps with a focal loss because slip is rare. Fusion is asymmetric: tactile tokens always attend to visual tokens; visual tokens attend to tactile tokens only when the gate is open. Training adds a four-step autoregressive rollout loss with injected context noise to mimic inference-time error. Planning is a contact-aware cross-entropy method: visual distance to the goal at every step, plus, only when contact is predicted, tactile distance to a goal tactile latent and a penalty equal to predicted slip probability.</p>
+<ul>
+<li>Real robot only; 200 training and 40 test trajectories per task on three tasks (chip grasp, fruit grasp, USB insertion); about 30% of trajectories are failures and are kept.</li>
+<li>Contact roughly balanced; slip 0.93% of frames. Labels from the sensor's own API.</li>
+<li>Planner: 400 samples, 6 imagined steps, 8 iterations, execute two actions then replan. The authors say this is too expensive for high-frequency control.</li>
+</ul>
+</section>
+
+<section id="results"><h2>What they measured</h2><ul><li>Ten-step prediction: PSNR 28.89 vs 24.37 for vision-only V-JEPA 2; contact F1 0.981; slip F1 0.834.</li><li>Contact onset error 0.44 frames vs 1.17 for the vision-only model; visual quality barely dropped at contact transitions (LPIPS 0.046 to 0.055) where the vision-only model degraded (0.089 to 0.127).</li><li>Ablations: a single monolithic tactile target cost 2.2 dB of PSNR; removing the contact gate cost 1.4 dB and lowered slip F1 to 0.803.</li><li>Eighty-step rollouts (13 seconds): LPIPS rose only from 0.055 to 0.062; 61% lower than vision-only at the end.</li><li>Planning success, average over three tasks: visual-only 49.2%; tactile terms always on 57.5%; contact-gated tactile terms 81.7%. USB insertion under visual occlusion went from 37.5% to 75.0%.</li></ul></section>
+
+<section id="fit"><h2>Where it touches UEMA</h2>
+<p>Each box names a part of the UEMA specification and says, in plain terms, what the paper has to say about it.</p>
+<div class="fit"><div><b>§3.1 Tactile sensing and §5.2 tactile encoder</b><p>UEMA's patches already carry normal pressure, shear, slip rate, contact area and vibration; the encoder pools them with cross-patch attention. The paper's lesson is to keep magnitude (no normalisation before pooling) and to let the forward model predict contact as a separate, easy target that gates the harder ones.</p></div><div><b>§6.1 Three-stage attention block, stage 1 cross-modal attention</b><p>Stage 1 lets every modality attend to every other at each timestep. FeelWorld found that letting vision attend to touch in free space hurt. A learned or predicted contact gate on the vision-to-touch direction is a small change to stage 1 that the paper's ablation says is worth about 1.4 dB.</p></div><div><b>§11.3 Slip detection as self-contraction</b><p>The spec derives grip correction from slip lowering self-coherence and therefore wellness. FeelWorld gives the forward model a predicted slip probability one step ahead. The two combine naturally: predicted slip is a wellness drop in the predictive register (§4.3), which is exactly what the approximate wellness evaluator is meant to see before it happens.</p></div><div><b>§7.2 Grounded wellness, tactile_wellness(input_dim=8)</b><p>The paper's slip was 0.93% of frames and needed a focal loss to learn. UEMA's tactile wellness term will face the same rarity on the reach and grasp scenes; the fix (weight rare events more) is standard and the paper gives the numbers.</p></div><div><b>§8.1 and §8.2 Pain and pleasure walkthroughs</b><p>Both walkthroughs begin with contact detection. A contact head trained as its own target is the computational version of 'TMC detection' in those walkthroughs.</p></div><div><b>§20.6 Contract 1, touch into the learner</b><p>The paper notes that visible deformation, valid force estimates and information reaching the learner are three different things, which is the spec's own warning in Contract 1. FeelWorld's contact-onset error of 0.44 frames is a benchmark for what a verified touch pipeline should achieve.</p></div></div>
+</section>
+
+<section id="useful"><h2>How it could help us</h2><p><strong>1. Add a contact head to the tactile prediction.</strong> From the predicted tactile token, predict a contact probability per patch group (or per hand) against the simulator's contact list. It is an easy target, it gives the forward model a clean 'contact will begin next frame' signal, and it is the gate the next two ideas need.</p>
+<p><strong>2. Gate vision-to-touch attention on contact.</strong> In stage 1 of the forward model block, mask the vision token's attention to the tactile token when no contact is predicted. Measure visual prediction error with and without. The paper's ablation says the gain is real and the cost is nothing.</p>
+<p><strong>3. Predict slip and feed it to approximate wellness.</strong> A slip head trained with focal loss at contact timesteps gives the approximate wellness evaluator (§7.3) an input that exists before the grounded register sees the slip. The §11.3 mechanism then has an anticipatory version: imagined slip lowers imagined coherence, which lowers imagined wellness, which biases the command before the object moves.</p>
+<p><strong>4. Keep failed episodes in training.</strong> Thirty percent of the paper's data were failures. UEMA's stream is nothing but attempts; the paper is evidence that failures are where slip and contact learning come from.</p></section>
+
+<section id="caution"><h2>What to be careful about</h2><p>Real robot, one gripper, three tasks, and the world model was trained on trajectories from those same tasks; no simulation, no unseen objects. Sensor details (taxel count, shear channels, rate) and the predictor's size are not reported, nor is any latency. Slip labels come from the sensor's own API, so "slip" means whatever that API means, which is the same unit-boundary trap Contract 1 warns about. Planning by cross-entropy method is too slow for high-frequency control by the authors' own admission. No code is released.</p></section>
+
+<section id="quotes"><h2>In the authors' words</h2><blockquote><p>Our central observation is that tactile interaction decomposes into three hierarchical tactile states.</p><p class="sources">Section 1</p></blockquote><blockquote><p>We omit LayerNorm for [h_t], as normalization may remove magnitude information associated with contact intensity.</p><p class="sources">Section III-B</p></blockquote><blockquote><p>naive concatenation with standard self-attention allows noisy tactile signals during free-space motion to interfere with visual tokens, potentially degrading visual prediction.</p><p class="sources">Section III-C</p></blockquote><blockquote><p>Prediction errors at each step become input errors at the next.</p><p class="sources">Section III-D</p></blockquote><blockquote><p>Despite these results, CEM-based planning remains computationally expensive and is not suitable for high-frequency real-time control.</p><p class="sources">Section V</p></blockquote></section>
+
+<section id="sources"><h2>Sources</h2><ul class="sources"><li><a href="https://arxiv.org/html/2607.24267">arXiv 2607.24267 (HTML full text)</a></li><li><a href="https://arxiv.org/abs/2607.24267">arXiv abstract page</a></li>
+<li>UEMA specification v3.5, <code>docs/UEMA_Specs/UEMA_Spec_v3_5.txt</code>, read November 5, 2026.</li></ul>
+<p class="sources">This page was written by Claude (an AI assistant) from a reading of the paper's full text on arXiv on November 5, 2026, together with the UEMA v3.5 specification. Numbers are the authors' own. Judgements about fit with UEMA are a reader's, not the authors'. Nothing on this page is implemented in UEMA.</p>
+</section>
+</main></body></html>

@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Probabilistic TRM and UEMA</title>
+<meta name="description" content="Reading note: the follow-up to the TRM paper the spec cites for its recursive motor controller, and what it teaches about the halt head.">
+<style>
+:root{--ink:#18343d;--teal:#086b62;--line:#cbdcd5;--soft:#e8f2ec;--warm:#fbf6ea;--warmline:#d9b25a;--red:#9c3328;--redsoft:#fbefec;--muted:#3b595e;--bg:#eff3ee;--card:#ffffff}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--ink:#dbe8e4;--teal:#5cc7b8;--line:#2f4a48;--soft:#1b302d;--warm:#2e2a1d;--warmline:#a8873e;--red:#e88b7e;--redsoft:#33211e;--muted:#a9c0bb;--bg:#101a19;--card:#162321}}
+:root[data-theme="dark"]{--ink:#dbe8e4;--teal:#5cc7b8;--line:#2f4a48;--soft:#1b302d;--warm:#2e2a1d;--warmline:#a8873e;--red:#e88b7e;--redsoft:#33211e;--muted:#a9c0bb;--bg:#101a19;--card:#162321}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:18px/1.6 system-ui,-apple-system,"Segoe UI",sans-serif}
+main{max-width:980px;margin:28px auto;background:var(--card);padding:38px 44px;border:1px solid var(--line);border-radius:16px}
+.eyebrow{font-size:13px;font-weight:750;text-transform:uppercase;letter-spacing:.1em;color:var(--teal)}
+h1{font-size:clamp(28px,4.2vw,40px);line-height:1.15;letter-spacing:-.02em;margin:12px 0 10px}
+.meta{font-size:15px;color:var(--muted);margin:0 0 22px}
+h2{font-size:24px;line-height:1.25;margin:0 0 10px}
+h3{font-size:19px;margin:24px 0 6px}
+section{border-top:2px solid var(--line);padding:26px 0 8px;scroll-margin-top:12px}
+p{margin:10px 0 14px}li{margin:7px 0}
+p,li,td,th{overflow-wrap:anywhere}
+nav{display:flex;flex-wrap:wrap;gap:6px 18px;margin:8px 0 24px;font-size:15px}
+a{color:var(--teal);text-underline-offset:3px}a:focus-visible{outline:3px solid var(--warmline);outline-offset:4px}
+.simple{background:var(--warm);border:1px solid var(--warmline);border-radius:12px;padding:20px 24px;margin:6px 0 26px}
+.simple h2{font-size:22px}
+.simple p{font-size:19px}
+.callout{border-left:5px solid var(--teal);background:var(--soft);padding:14px 18px;margin:16px 0;border-radius:0 8px 8px 0}
+.warn{border-left:5px solid var(--red);background:var(--redsoft);padding:14px 18px;margin:16px 0;border-radius:0 8px 8px 0}
+.prop{border:1px solid var(--line);border-radius:12px;padding:6px 22px 14px;margin:20px 0}
+.prop h3{margin-top:16px}
+.tag{display:inline-block;font-size:12px;font-weight:750;letter-spacing:.08em;text-transform:uppercase;color:var(--teal);border:1px solid var(--teal);border-radius:999px;padding:1px 10px;margin-left:6px;vertical-align:middle}
+.table-scroll{overflow-x:auto;margin:12px 0 18px}
+table{border-collapse:collapse;width:100%;font-size:16px}
+th,td{padding:9px 11px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+th{background:var(--soft)}
+.fit{display:grid;grid-template-columns:1fr 1fr;gap:14px 18px;margin:14px 0}
+.fit div{border:1px solid var(--line);border-radius:10px;padding:12px 16px}
+.fit b{display:block;margin-bottom:4px;color:var(--teal)}
+.fit p{margin:0;font-size:16px}
+blockquote{margin:12px 0;padding:10px 18px;border-left:4px solid var(--warmline);background:var(--warm);border-radius:0 8px 8px 0;font-size:16px}
+blockquote p{margin:4px 0}
+.sources{font-size:15px;color:var(--muted)}
+code{font-size:.86em}
+@media(max-width:700px){main{margin:0;border:0;border-radius:0;padding:24px 16px}body{font-size:17px}h2{font-size:21px}.fit{grid-template-columns:1fr}}
+@media print{body{background:#fff}main{margin:0;border:0;max-width:none;padding:12px}.prop,.simple,table,.fit div{break-inside:avoid}}
+</style>
+</head>
+<body><main>
+<div class="eyebrow">Mind Machine Learning · UEMA research reading · 2026 papers</div>
+<h1>Probabilistic Tiny Recursive Model: many noisy recursions in parallel, pick the one the halt head trusts</h1>
+<p class="meta">Amin Sghaier, Ali Parviz and Alexia Jolicoeur-Martineau (Mila; ILLS and ETS Montreal). Preprint. arXiv 2605.19943, 19 May 2026.<br>
+Reading note written November 5, 2026 against UEMA specification v3.5 (<code>docs/UEMA_Specs/UEMA_Spec_v3_5.txt</code>). Section numbers are v3.5's.</p>
+<nav><a href="#short">The short version</a><a href="#did">What the paper did</a><a href="#results">What they measured</a><a href="#fit">Where it touches UEMA</a><a href="#useful">How it could help us</a><a href="#caution">What to be careful about</a><a href="#quotes">In the authors' words</a><a href="#sources">Sources</a></nav>
+
+<div class="simple" id="short"><h2>The short version</h2><p><strong>Background:</strong> UEMA's spec (§9.3 FUTURE) plans to replace the six-layer motor network with a tiny network recursed one to six times and a learned "halt" head, citing the Hierarchical Reasoning Model and the Tiny Recursive Model. This paper is by the TRM author and her colleagues.</p>
+<p><strong>The finding:</strong> a deterministic recursion can get stuck circling a wrong answer. Adding a little noise to the latent at every recursion step and running many copies in parallel lets some copies escape. The halt head, which TRM trains to predict whether the current answer is correct, turns out to be a reliable judge of which copy to trust. No retraining needed.</p>
+<p><strong>What it showed:</strong> a 5M-parameter model went from 87% to 99% on hard Sudoku and a 7M model from 63% to 91% on a puzzle benchmark, purely at inference. Tripling the recursion depth instead gave only 3 points. Where the halt head was a weak judge (mazes), the gains were small even though correct answers were present.</p>
+<p><strong>Why it matters to us:</strong> it says the halt head is worth more than halting, and that width (several parallel candidates) beats depth (more recursion). Both ideas fit the adaptive motor controller's design.</p></div>
+
+<section id="did"><h2>What the paper did</h2>
+<h3>The problem they set out to solve</h3><p>Tiny Recursive Models solve hard puzzles with 5 to 7 million parameters by repeatedly refining a latent state and an answer. Their inference is deterministic: one input, one trajectory, one answer, and the authors show many wrong answers come from trajectories trapped in bad basins that deterministic recursion cannot leave. Existing workarounds use task-specific input augmentations plus voting. The paper asks whether TRM can scale with test-time compute by sampling many trajectories and selecting with a verifier, without retraining.</p>
+<h3>What they built</h3><p>Purely an inference procedure on an unmodified TRM checkpoint. At each of the D supervision steps, add isotropic Gaussian noise of scale sigma to the latent before recursing. Run K such noisy rollouts in parallel from the same input. Score each final state with the Q head (a linear head TRM already trains to predict whether the answer is exactly correct, originally used only to stop training early) and return the rollout with the highest score. Halting is not used at inference; every rollout runs a fixed D steps and the Q head is a selector. A Langevin variant that also followed the Q head's gradient gave nothing beyond the noise alone.</p>
+<ul>
+<li>Models: 5M-parameter MLP TRM (Sudoku) and 7M-parameter attention TRM (mazes, ARC-AGI-2, pencil puzzles); a 27M direct-prediction transformer baseline.</li>
+<li>Typical settings: K = 100 rollouts, D = 16 to 64 steps, sigma 0.2 to 1.0; three seeds.</li>
+<li>Cost: about a tenth of a cent per puzzle on one GPU.</li>
+</ul>
+</section>
+
+<section id="results"><h2>What they measured</h2><ul><li>Sudoku-Extreme: 87.4% deterministic to 98.75% with selection (99.06% if any rollout counts). Pencil-puzzle benchmark: 62.6% to 91.2%; a 7-model frontier-LLM ensemble with a perfect verifier reached 55.1% at over 1,000 times the cost.</li><li>Depth alone (16 to 48 steps, one rollout) gave 3.4 points; width (100 rollouts) gave 27 points at the same depth.</li><li>The Q head's logit separated correct from incorrect converged trajectories at about +6 versus −6, and on the validation set the selected rollout was within one point of the best available rollout at every K.</li><li>Maze-Hard: correct rollouts rose from 83.8% to 95.6% of cases, but the Q head could only pick them 85.2% of the time. The gap is the verifier's weakness, not the search's.</li><li>ARC-AGI-2: small gains (pass@1 7.36 to 8.47) with the same verifier limitation.</li><li>On one failed puzzle, 8 of 100 noisy rollouts escaped to the correct basin; with 5 or 25 rollouts, 0 and 1 did.</li></ul></section>
+
+<section id="fit"><h2>Where it touches UEMA</h2>
+<p>Each box names a part of the UEMA specification and says, in plain terms, what the paper has to say about it.</p>
+<div class="fit"><div><b>§9.3 FUTURE recursive motor controller</b><p>The spec's plan is 2 layers recursed 1 to 6 times with a learned halt head. This paper says: train the halt head as TRM does (a correctness classifier), but at inference use it as a judge over several noisy candidates rather than only as a stop signal. That is a design detail for the controller the spec has not yet built.</p></div><div><b>§9.2 Adaptive computation depth, the confidence estimator</b><p>The spec's confidence estimator gates whether to go deep. TRM's Q head is the same object trained with a sharper target (was this exact output correct?). The paper shows such a head can rank candidates, which is what the deep path's loop (compare candidate commands by approximate wellness) needs when wellness is uncertain.</p></div><div><b>§10.4 Cross-simulation attention</b><p>The spec already proposes running several noisy rollouts for one goal and attending across them to find the consensus. This paper's result argues for selection by a learned judge rather than consensus: on mazes the consensus (mode) gained 3 points while the best-available gained 12. Consensus washes out the rare escape.</p></div><div><b>§9.2 Energy budget for thinking</b><p>Width is parallel and depth is sequential. On the GPU budget in §24.5, several parallel candidate commands cost almost the same wall time as one, while deeper recursion costs more frames. That favours width for a real-time controller.</p></div><div><b>§23.2 Meta-prediction level 2</b><p>A head that predicts 'my current answer is right' is a small, concrete form of the spec's 'I predict my prediction will be wrong by ε'. TRM trains it from exact-match supervision; UEMA would train it from realised prediction error.</p></div></div>
+</section>
+
+<section id="useful"><h2>How it could help us</h2><p><strong>1. When the recursive motor controller is built, train its halt head as a correctness predictor.</strong> The target is whether the command the controller just produced led to the predicted wellness improvement, which is available one frame later from the grounded register. That gives a head that both halts and judges.</p>
+<p><strong>2. Generate several noisy candidates in the deep path.</strong> The §9.2 loop compares candidates at increasing depth. Replace 'one candidate per depth' with 'a handful of noisy candidates at a fixed modest depth', scored by the approximate wellness evaluator and the halt head together. The paper's width-over-depth result and the §24.5 parallel budget both point this way.</p>
+<p><strong>3. Measure the verifier gap.</strong> Record, for each decision, the best candidate by realised wellness one frame later versus the candidate actually chosen. The paper's Maze-Hard result shows this gap is where the headroom lives.</p>
+<p><strong>4. Keep the halting adaptive in training, as TRM does.</strong> The paper did not make halting probabilistic at inference; it ran fixed depth. The spec's adaptive depth remains the right target; this paper adds the selection use.</p></section>
+
+<section id="caution"><h2>What to be careful about</h2><p>Puzzles are discrete problems with exact answers; a motor command has no exact-match label, so the Q head's training target must be redefined before any of this applies. The paper's models are tiny and the puzzles small. Gains vary by task and are smallest where verification is hard. Halting at inference is fixed, not adaptive. No code is released. The spec's own warning holds: the recursive controller is deferred until context length and forward-model accuracy are in place.</p></section>
+
+<section id="quotes"><h2>In the authors' words</h2><blockquote><p>TRM's Q head is trained jointly (as a correctness classifier) with the rest of the network and is conventionally used only at training time for adaptive computation (ACT). It carries valuable information that the standard inference procedure discards.</p><p class="sources">Section 1</p></blockquote><blockquote><p>at convergence, the Q logit sharply separates the two populations where q_hat ≈ +6 (sigmoid ≈ 1) for correct trajectories and q_hat ≈ -6 (sigmoid ≈ 0) for incorrect ones.</p><p class="sources">Section 3.2</p></blockquote><blockquote><p>Since rollouts are independent and parallelizable while extra depth is sequential, width is the more practical scaling axis.</p><p class="sources">Section 4.2</p></blockquote><blockquote><p>The gap between best-Q@K and pass@K represents headroom for a stronger verifier which is left for future work.</p><p class="sources">Section 5.4</p></blockquote><blockquote><p>the gain from this approach was entirely attributable to the Langevin noise term, with the gradient component contributing nothing measurable</p><p class="sources">Appendix C</p></blockquote></section>
+
+<section id="sources"><h2>Sources</h2><ul class="sources"><li><a href="https://arxiv.org/html/2605.19943v1">arXiv 2605.19943 (HTML full text)</a></li><li><a href="https://arxiv.org/abs/2605.19943">arXiv abstract page</a></li>
+<li>UEMA specification v3.5, <code>docs/UEMA_Specs/UEMA_Spec_v3_5.txt</code>, read November 5, 2026.</li></ul>
+<p class="sources">This page was written by Claude (an AI assistant) from a reading of the paper's full text on arXiv on November 5, 2026, together with the UEMA v3.5 specification. Numbers are the authors' own. Judgements about fit with UEMA are a reader's, not the authors'. Nothing on this page is implemented in UEMA.</p>
+</section>
+</main></body></html>

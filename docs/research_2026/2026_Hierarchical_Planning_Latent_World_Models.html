@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Hierarchical planning and UEMA</title>
+<meta name="description" content="Reading note: the clearest published demonstration of the "detour problem" named in UEMA §10.6, and a mechanism that solves it without rewards or policy networks.">
+<style>
+:root{--ink:#18343d;--teal:#086b62;--line:#cbdcd5;--soft:#e8f2ec;--warm:#fbf6ea;--warmline:#d9b25a;--red:#9c3328;--redsoft:#fbefec;--muted:#3b595e;--bg:#eff3ee;--card:#ffffff}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--ink:#dbe8e4;--teal:#5cc7b8;--line:#2f4a48;--soft:#1b302d;--warm:#2e2a1d;--warmline:#a8873e;--red:#e88b7e;--redsoft:#33211e;--muted:#a9c0bb;--bg:#101a19;--card:#162321}}
+:root[data-theme="dark"]{--ink:#dbe8e4;--teal:#5cc7b8;--line:#2f4a48;--soft:#1b302d;--warm:#2e2a1d;--warmline:#a8873e;--red:#e88b7e;--redsoft:#33211e;--muted:#a9c0bb;--bg:#101a19;--card:#162321}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:18px/1.6 system-ui,-apple-system,"Segoe UI",sans-serif}
+main{max-width:980px;margin:28px auto;background:var(--card);padding:38px 44px;border:1px solid var(--line);border-radius:16px}
+.eyebrow{font-size:13px;font-weight:750;text-transform:uppercase;letter-spacing:.1em;color:var(--teal)}
+h1{font-size:clamp(28px,4.2vw,40px);line-height:1.15;letter-spacing:-.02em;margin:12px 0 10px}
+.meta{font-size:15px;color:var(--muted);margin:0 0 22px}
+h2{font-size:24px;line-height:1.25;margin:0 0 10px}
+h3{font-size:19px;margin:24px 0 6px}
+section{border-top:2px solid var(--line);padding:26px 0 8px;scroll-margin-top:12px}
+p{margin:10px 0 14px}li{margin:7px 0}
+p,li,td,th{overflow-wrap:anywhere}
+nav{display:flex;flex-wrap:wrap;gap:6px 18px;margin:8px 0 24px;font-size:15px}
+a{color:var(--teal);text-underline-offset:3px}a:focus-visible{outline:3px solid var(--warmline);outline-offset:4px}
+.simple{background:var(--warm);border:1px solid var(--warmline);border-radius:12px;padding:20px 24px;margin:6px 0 26px}
+.simple h2{font-size:22px}
+.simple p{font-size:19px}
+.callout{border-left:5px solid var(--teal);background:var(--soft);padding:14px 18px;margin:16px 0;border-radius:0 8px 8px 0}
+.warn{border-left:5px solid var(--red);background:var(--redsoft);padding:14px 18px;margin:16px 0;border-radius:0 8px 8px 0}
+.prop{border:1px solid var(--line);border-radius:12px;padding:6px 22px 14px;margin:20px 0}
+.prop h3{margin-top:16px}
+.tag{display:inline-block;font-size:12px;font-weight:750;letter-spacing:.08em;text-transform:uppercase;color:var(--teal);border:1px solid var(--teal);border-radius:999px;padding:1px 10px;margin-left:6px;vertical-align:middle}
+.table-scroll{overflow-x:auto;margin:12px 0 18px}
+table{border-collapse:collapse;width:100%;font-size:16px}
+th,td{padding:9px 11px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+th{background:var(--soft)}
+.fit{display:grid;grid-template-columns:1fr 1fr;gap:14px 18px;margin:14px 0}
+.fit div{border:1px solid var(--line);border-radius:10px;padding:12px 16px}
+.fit b{display:block;margin-bottom:4px;color:var(--teal)}
+.fit p{margin:0;font-size:16px}
+blockquote{margin:12px 0;padding:10px 18px;border-left:4px solid var(--warmline);background:var(--warm);border-radius:0 8px 8px 0;font-size:16px}
+blockquote p{margin:4px 0}
+.sources{font-size:15px;color:var(--muted)}
+code{font-size:.86em}
+@media(max-width:700px){main{margin:0;border:0;border-radius:0;padding:24px 16px}body{font-size:17px}h2{font-size:21px}.fit{grid-template-columns:1fr}}
+@media print{body{background:#fff}main{margin:0;border:0;max-width:none;padding:12px}.prop,.simple,table,.fit div{break-inside:avoid}}
+</style>
+</head>
+<body><main>
+<div class="eyebrow">Mind Machine Learning · UEMA research reading · 2026 papers</div>
+<h1>Hierarchical planning with latent world models: a long-horizon model that hands subgoals to a short-horizon one</h1>
+<p class="meta">Wancong Zhang, Basile Terver, Artem Zholus, Soham Chitnis, Harsh Sutaria, Mido Assran, Randall Balestriero, Amir Bar, Adrien Bardes, Yann LeCun and Nicolas Ballas (FAIR at Meta; New York University; Mila; Brown). CoRL 2026. arXiv 2604.03208, 3 April 2026, revised 12 October 2026 · Code: <a href="https://github.com/kevinghst/HWM_PLDM">https://github.com/kevinghst/HWM_PLDM</a>.<br>
+Reading note written November 5, 2026 against UEMA specification v3.5 (<code>docs/UEMA_Specs/UEMA_Spec_v3_5.txt</code>). Section numbers are v3.5's.</p>
+<nav><a href="#short">The short version</a><a href="#did">What the paper did</a><a href="#results">What they measured</a><a href="#fit">Where it touches UEMA</a><a href="#useful">How it could help us</a><a href="#caution">What to be careful about</a><a href="#quotes">In the authors' words</a><a href="#sources">Sources</a></nav>
+
+<div class="simple" id="short"><h2>The short version</h2><p><strong>This paper is about UEMA's detour problem.</strong> Section 10.6 of the spec names it: a planner that scores each action by its next predicted state has no reason to take a first step that moves away from the goal, so it cannot learn to reach around a barrier. These authors found the same thing on a real robot. A state-of-the-art world-model planner scored 0% on pick-and-place, because the hand has to go to the object first, which is "away" from the final goal picture.</p>
+<p><strong>Their fix:</strong> train a second world model in the same latent space that predicts several steps ahead at once, using compressed "macro-actions". Plan with the slow model first; its predicted waypoints become subgoals; a fast one-step planner then only has to reach the next waypoint, which is close enough that greedy works. No reward, no policy network, no hand-written skills.</p>
+<p><strong>What it showed:</strong> 70% pick-and-place on the real robot from a single goal image where the flat planner got 0%. And a decisive control: given a hand-drawn subgoal, the flat planner reached 80%, so the failure was in planning structure, not in what the model knew.</p></div>
+
+<section id="did"><h2>What the paper did</h2>
+<h3>The problem they set out to solve</h3><p>Flat model-predictive control with a latent world model minimises distance to the goal at the end of an imagined rollout. The authors identify two failure regimes. On non-greedy tasks like pick-and-place, the right trajectory must temporarily move away from the goal, so the cost is non-monotone and local optimisers get trapped in greedy shortcuts even at modest horizons. On long-horizon tasks, prediction errors compound over the rollout and the action search space grows exponentially. Prior hierarchical methods either learn task-specific policies or assume known dynamics.</p>
+<h3>What they built</h3><p>Two world models share one encoder and one latent space. The low-level model is the ordinary one-step predictor (they use VJEPA2-AC, DINO-WM or PLDM, unchanged). The high-level model predicts "waypoint" latents several steps ahead, conditioned on a learned macro-action: a small vector (4 numbers for the arm tasks, 8 for the maze) that an action encoder produces by compressing the chunk of primitive actions between two waypoints. Training samples waypoints from trajectories (random or fixed stride) and fits the high-level model by teacher-forced prediction. Planning is top-down: optimise macro-actions so the high-level rollout ends at the goal; unroll to get latent subgoals; then optimise primitive actions so the low-level rollout reaches the first subgoal; execute a few actions and replan both levels.</p>
+<ul>
+<li>Real robot: a Franka arm with the VJEPA2-AC backbone (frozen ViT-g encoder, 300M-parameter predictor) trained on about 130 hours of public robot video; high-level waypoints span 0.33 to 4 seconds.</li>
+<li>Simulated: PushT with DINO-WM, and a diverse point-maze with the small PLDM model (which uses VICReg against collapse).</li>
+<li>Macro-action search is initialised and clipped from statistics of 4096 macro-actions recorded during training, because latent actions have no known scale.</li>
+</ul>
+</section>
+
+<section id="results"><h2>What they measured</h2><ul><li>Real Franka, single goal image: pick-and-place cup 70% (flat VJEPA2-AC 0%, a 2026 language-conditioned VLA 68%); box 60% (0%, 36%); drawer 70% (30%). HWM used about 77 times less training data than the VLAs.</li><li>Manual-subgoal control: with a hand-annotated grasp-point image as subgoal, the flat planner reached 80% on both objects. The authors conclude the failure of single-level planning is hierarchical, not representational.</li><li>PushT at the farthest goal distance: 61% vs 17% flat. Maze hard: 83% vs 44% flat.</li><li>Planning compute: equal or better success with 3 to 4 times less planning time.</li><li>Error versus horizon: the low-level model is more accurate up to about 1 second, the high-level model beyond 1.5 seconds.</li><li>Macro-action size matters: too few dimensions gives blurry predictions, too many produces subgoals the greedy low-level planner cannot reach; 4 was the balance for the arm. Learned macro-actions beat concatenated raw actions 83% to 37% on the hard maze.</li></ul></section>
+
+<section id="fit"><h2>Where it touches UEMA</h2>
+<p>Each box names a part of the UEMA specification and says, in plain terms, what the paper has to say about it.</p>
+<div class="fit"><div><b>§10.6 The detour problem</b><p>This is the published version of the problem §10.6 describes, with the same diagnosis: a per-step greedy objective cannot prefer a first step that moves away from the goal. The manual-subgoal control is the kind of evidence §10.6's upstream gate asks for: it separates 'the model does not know' from 'the planner cannot use what the model knows'.</p></div><div><b>§10.6 candidate (a), a learned subgoal mechanism</b><p>HWM is a worked example of candidate (a). The subgoals are the long-horizon model's own predictions, selected by latent distance to the goal. Nothing is hand-authored per behaviour, which keeps it inside §1's rule.</p></div><div><b>§10.3 Multi-step intention</b><p>The spec's plan_multistep chains the one-step model and breaks when imagination drifts. HWM's structure keeps each level's rollout short: a few macro steps at the top, a few primitive steps at the bottom.</p></div><div><b>§10.4 Cross-simulation attention</b><p>Both are ways of making a plan commit to a stable intermediate target. HWM's waypoint is explicit and measurable; cross-simulation attention's consensus is implicit. A waypoint gives the §12 anticipation metrics something concrete to compare against.</p></div><div><b>§6.3 and the FUTURE dual-timescale latent</b><p>A slow channel updated every ~30 steps (§6.3 FUTURE) is close to a high-level model with a fixed stride. HWM shows what such a channel is for: planning, not only prediction.</p></div><div><b>§1 Core thesis</b><p>HWM uses no reward and no policy network; action selection is search through a learned model. The macro-action encoder is a learned compression of commands, not a policy. The design is compatible with the thesis as written.</p></div></div>
+</section>
+
+<section id="useful"><h2>How it could help us</h2><p><strong>1. Reproduce the manual-subgoal control before anything else.</strong> On the reach-around-a-barrier test the November 5 addendum is building material for, hand the intention generator an intermediate goal state (recorded from a successful demonstration) and see whether it then succeeds. If it does, the §10.6 gap is in planning structure and a subgoal mechanism is the right candidate to try first. If it does not, the forward model itself is the blocker and no planner change will help yet.</p>
+<p><strong>2. Build the high-level model as a second head, not a second system.</strong> UEMA's forward model already encodes motor commands per step. A macro-action encoder that pools a chunk of motor tokens into a small vector, plus a prediction head trained on waypoints sampled at a stride, is an addition inside the forward model's family. The spec's hierarchy of minds (§13 to §18) is about ownership of handles, not timescales, so this does not collide with Many Minds.</p>
+<p><strong>3. Use the acceptance test exactly as §10.6 states it.</strong> The final goal must change the first action, held-out barrier layouts must succeed, and the simple reach must survive. HWM's own numbers show the approach can clear a test of this shape on a real arm; UEMA's version would be on MIMo.</p>
+<p><strong>4. Watch the macro-action size.</strong> The paper's finding that a too-expressive macro-action proposes unreachable subgoals is a real design constraint, and it is a hyperparameter UEMA would have to tune on its own body.</p></section>
+
+<section id="caution"><h2>What to be careful about</h2><p>The models are trained offline on large datasets and planned with cross-entropy-method search, which is costly and not UEMA's gradient-descent intention generator. Success still degrades with horizon for every method. Two of ten arm configurations scored zero. Subgoals are sampled at random or fixed strides; the authors say skill discovery could replace this. The high level loses fine detail, and there is no feedback from the low-level planner back up. UEMA has a further question the paper does not face: the spec requires the forward model to learn online while the body lives, and training a second model's waypoints online from a still-improving latent space is not something this paper tested.</p></section>
+
+<section id="quotes"><h2>In the authors' words</h2><blockquote><p>On tasks with non-greedy objectives, such as pick-and-place, the optimal trajectory must temporarily move away from the goal. The resulting non-monotone goal-matching cost can trap local optimizers in greedy shortcuts even at modest horizons</p><p class="sources">Section 1</p></blockquote><blockquote><p>predictions from the long horizon model serve as subgoals for the short horizon model via latent matching—without task-specific rewards or hierarchical policies.</p><p class="sources">Abstract</p></blockquote><blockquote><p>the failure of single-level planning is hierarchical in nature, not representational.</p><p class="sources">Appendix E</p></blockquote><blockquote><p>Restricting the latent-action dimensionality biases the planner toward proposing subgoals that are achievable with greedy behavior.</p><p class="sources">Appendix D.3</p></blockquote><blockquote><p>skill or subgoal discovery, or dynamic chunking, could replace this waypoint scheme without changing the rest of the framework</p><p class="sources">Section 6</p></blockquote></section>
+
+<section id="sources"><h2>Sources</h2><ul class="sources"><li><a href="https://arxiv.org/html/2604.03208v3">arXiv 2604.03208 v3 (HTML full text)</a></li><li><a href="https://arxiv.org/abs/2604.03208">arXiv abstract page</a></li><li><a href="https://github.com/kevinghst/HWM_PLDM">Code</a></li><li><a href="https://kevinghst.github.io/HWM/">Project page</a></li>
+<li>UEMA specification v3.5, <code>docs/UEMA_Specs/UEMA_Spec_v3_5.txt</code>, read November 5, 2026.</li></ul>
+<p class="sources">This page was written by Claude (an AI assistant) from a reading of the paper's full text on arXiv on November 5, 2026, together with the UEMA v3.5 specification. Numbers are the authors' own. Judgements about fit with UEMA are a reader's, not the authors'. Nothing on this page is implemented in UEMA.</p>
+</section>
+</main></body></html>

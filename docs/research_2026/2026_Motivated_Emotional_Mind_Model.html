@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Motivated Emotional Mind and UEMA</title>
+<meta name="description" content="Reading note: a fully written-out set of equations for an embodied agent that learns by minimising deviations from allostatic ranges, read against UEMA's wellness, curiosity and emotion sections. No simulations.">
+<style>
+:root{--ink:#18343d;--teal:#086b62;--line:#cbdcd5;--soft:#e8f2ec;--warm:#fbf6ea;--warmline:#d9b25a;--red:#9c3328;--redsoft:#fbefec;--muted:#3b595e;--bg:#eff3ee;--card:#ffffff}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--ink:#dbe8e4;--teal:#5cc7b8;--line:#2f4a48;--soft:#1b302d;--warm:#2e2a1d;--warmline:#a8873e;--red:#e88b7e;--redsoft:#33211e;--muted:#a9c0bb;--bg:#101a19;--card:#162321}}
+:root[data-theme="dark"]{--ink:#dbe8e4;--teal:#5cc7b8;--line:#2f4a48;--soft:#1b302d;--warm:#2e2a1d;--warmline:#a8873e;--red:#e88b7e;--redsoft:#33211e;--muted:#a9c0bb;--bg:#101a19;--card:#162321}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:18px/1.6 system-ui,-apple-system,"Segoe UI",sans-serif}
+main{max-width:980px;margin:28px auto;background:var(--card);padding:38px 44px;border:1px solid var(--line);border-radius:16px}
+.eyebrow{font-size:13px;font-weight:750;text-transform:uppercase;letter-spacing:.1em;color:var(--teal)}
+h1{font-size:clamp(28px,4.2vw,40px);line-height:1.15;letter-spacing:-.02em;margin:12px 0 10px}
+.meta{font-size:15px;color:var(--muted);margin:0 0 22px}
+h2{font-size:24px;line-height:1.25;margin:0 0 10px}
+h3{font-size:19px;margin:24px 0 6px}
+section{border-top:2px solid var(--line);padding:26px 0 8px;scroll-margin-top:12px}
+p{margin:10px 0 14px}li{margin:7px 0}
+p,li,td,th{overflow-wrap:anywhere}
+nav{display:flex;flex-wrap:wrap;gap:6px 18px;margin:8px 0 24px;font-size:15px}
+a{color:var(--teal);text-underline-offset:3px}a:focus-visible{outline:3px solid var(--warmline);outline-offset:4px}
+.simple{background:var(--warm);border:1px solid var(--warmline);border-radius:12px;padding:20px 24px;margin:6px 0 26px}
+.simple h2{font-size:22px}
+.simple p{font-size:19px}
+.callout{border-left:5px solid var(--teal);background:var(--soft);padding:14px 18px;margin:16px 0;border-radius:0 8px 8px 0}
+.warn{border-left:5px solid var(--red);background:var(--redsoft);padding:14px 18px;margin:16px 0;border-radius:0 8px 8px 0}
+.prop{border:1px solid var(--line);border-radius:12px;padding:6px 22px 14px;margin:20px 0}
+.prop h3{margin-top:16px}
+.tag{display:inline-block;font-size:12px;font-weight:750;letter-spacing:.08em;text-transform:uppercase;color:var(--teal);border:1px solid var(--teal);border-radius:999px;padding:1px 10px;margin-left:6px;vertical-align:middle}
+.table-scroll{overflow-x:auto;margin:12px 0 18px}
+table{border-collapse:collapse;width:100%;font-size:16px}
+th,td{padding:9px 11px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+th{background:var(--soft)}
+.fit{display:grid;grid-template-columns:1fr 1fr;gap:14px 18px;margin:14px 0}
+.fit div{border:1px solid var(--line);border-radius:10px;padding:12px 16px}
+.fit b{display:block;margin-bottom:4px;color:var(--teal)}
+.fit p{margin:0;font-size:16px}
+blockquote{margin:12px 0;padding:10px 18px;border-left:4px solid var(--warmline);background:var(--warm);border-radius:0 8px 8px 0;font-size:16px}
+blockquote p{margin:4px 0}
+.sources{font-size:15px;color:var(--muted)}
+code{font-size:.86em}
+@media(max-width:700px){main{margin:0;border:0;border-radius:0;padding:24px 16px}body{font-size:17px}h2{font-size:21px}.fit{grid-template-columns:1fr}}
+@media print{body{background:#fff}main{margin:0;border:0;max-width:none;padding:12px}.prop,.simple,table,.fit div{break-inside:avoid}}
+</style>
+</head>
+<body><main>
+<div class="eyebrow">Mind Machine Learning · UEMA research reading · 2026 papers</div>
+<h1>A mathematical model of the Motivated Emotional Mind: needs as range violations, affect as a single control signal</h1>
+<p class="meta">Wiesław L. Galus and Janusz A. Starzyk. Theory paper (preprint). arXiv 2609.20437, 17 September 2026.<br>
+Reading note written November 5, 2026 against UEMA specification v3.5 (<code>docs/UEMA_Specs/UEMA_Spec_v3_5.txt</code>). Section numbers are v3.5's.</p>
+<nav><a href="#short">The short version</a><a href="#did">What the paper did</a><a href="#results">What they measured</a><a href="#fit">Where it touches UEMA</a><a href="#useful">How it could help us</a><a href="#caution">What to be careful about</a><a href="#quotes">In the authors' words</a><a href="#sources">Sources</a></nav>
+
+<div class="simple" id="short"><h2>The short version</h2><p><strong>What it is:</strong> thirty-four numbered equations describing an embodied agent with no external reward. Needs are defined as how far internal variables have strayed outside tolerated ranges. A single signed number, "global affect", summarises all violations. Its size raises the learning rate and the exploration rate; its sign tags memories as good or bad. Actions are chosen to minimise expected future violation cost, with the most urgent violation getting priority and the planning horizon shrinking under pressure.</p>
+<p><strong>Why it is interesting:</strong> it is the closest thing in the 2026 literature to a formal statement of UEMA's wellness-driven design, written by people who have been building motivated-learning agents for fifteen years. It also says precisely what the authors think prediction error cannot do: it guides learning, but on its own it does not explain feeling, and they locate feeling in recurrent reconstruction of sensory and bodily state.</p>
+<p><strong>Why it matters to us:</strong> several of UEMA's informal claims (stress, grief, curiosity as moderate error, pain and pleasure as trajectories) have an equation here that either matches or disagrees. The disagreements are the useful part.</p></div>
+
+<section id="did"><h2>What the paper did</h2>
+<h3>The problem they set out to solve</h3><p>The authors want a mathematical formalisation of their Motivated Emotional Mind architecture, in which an embodied system learns to maintain homeostasis through "motivated learning" driven by its own internal needs rather than external reward. Their deeper goal is a physicalist account of phenomenal experience as receptor-grounded, affectively modulated, recurrent reconstruction of sensory and bodily representations. They argue reward learning, information theory, global workspace, integrated information and predictive processing are each insufficient without affect derived from need violations and top-down reconstruction.</p>
+<h3>What they built</h3><p>State: sensory input, bodily input, a vector of allostatic variables each with time-varying tolerated bounds, a bodily-motivational context, and a representational activity vector. Needs are one-sided violations of the bounds. Global affect is a saturating function (tanh) of the weighted violations; it is "not a particular emotion" but a regulatory pressure. An asymmetric quadratic cost penalises under- and over-range deviations with separate coefficients, so too much pain is strongly penalised while a decrease in pain is not a violation. Memory units pair a sensory prototype, a context prototype and a valence; they are matched to the current state, laterally primed, selected by softmax, and reconstruct a top-down sensory map that is blended with the bottom-up one (the blend weight set by affect, covering priming, imagination and hallucination). Affect magnitude scales the learning rate; its sign updates valences. The policy is over programs (sequences of transition operators) chosen to minimise expected discounted cost; an urgent-response rule restricts search to programs relevant to the worst violation; the horizon shortens under pressure. Curiosity is a function of reconstruction error and affect magnitude and sets the exploration probability. A "procedural gap" (no program good enough) triggers generation of new candidate programs.</p>
+<ul>
+<li>No simulations, no numbers, no code, no affiliations stated. Several functions are left to the implementer.</li>
+</ul>
+</section>
+
+<section id="results"><h2>What they measured</h2><ul><li>None. The paper states what would weaken it: if conscious imagery and affective recall proved independent of sensory or bodily reactivation, or if allostatic manipulations failed to affect learning, valence and policy selection once reward variables were controlled.</li><li>Qualitative predictions: changes in bodily state should alter matching, valence tagging, imagery vividness and the exploration-exploitation balance; perturbing feedback to early sensory maps should affect imagery and recall more than fast discrimination.</li><li>Stated open problems: stability analysis, conditions under which the model reduces to optimal control, how a regulatory objective differs from a reward function, parameter identifiability.</li></ul></section>
+
+<section id="fit"><h2>Where it touches UEMA</h2>
+<p>Each box names a part of the UEMA specification and says, in plain terms, what the paper has to say about it.</p>
+<div class="fit"><div><b>§7.1 Wellness and §7.4 wellness gradient</b><p>The paper's cost is a sum of squared range violations, asymmetric per variable; the policy minimises its expected discounted sum. UEMA's wellness is a learned sigmoid per component summed to a scalar whose gradient drives motor commands. The paper's explicit asymmetry (overshoot and undershoot cost differently) is something UEMA's symmetric sigmoids do not express and could.</p></div><div><b>§21 Curiosity as moderate prediction error</b><p>Direct disagreement. The paper's curiosity rises with reconstruction error and with affect, with no preferred band, and the authors say curiosity 'arises when perceptual mismatch matters for regulation'. UEMA's band (0.1 to 0.4) is flat with respect to wellness. Gating the curiosity drive by current wellness is the paper's position, and §28 lists the band as unsettled.</p></div><div><b>§22.1 Stress and §22.2 grief</b><p>Neither word appears in the paper. What it has instead is affect that saturates (tanh), a learning rate that rises with affect, and memories whose valence is re-tagged by affect. UEMA's stress (sustained unresolved error) would in this model raise the learning rate indefinitely; the saturation is the paper's answer to runaway.</p></div><div><b>§8 Pain and pleasure</b><p>The paper has no pleasure variable; positive affect is movement back toward the tolerated range and a positive valence tag. The spec's pleasure walkthrough (§8.2) assumes a learned pleasant association raises tactile wellness. The paper would say pleasure is relief, not a separate signal. This is a real design difference worth stating in §8.</p></div><div><b>§9.2 Adaptive computation depth and the energy budget</b><p>The paper's planning horizon shortens under regulatory pressure and lengthens when stable. UEMA's depth is gated by confidence and by an energy budget. Adding 'current wellness' as a third gate (think less when in trouble, act) is the paper's rule.</p></div><div><b>§4.2 and §23.2, imagination and the reality gap</b><p>The paper's secondary perception blends top-down reconstruction with bottom-up input, with the blend set by affect, and it places feeling in that reconstruction. UEMA's two registers keep imagination and perception separate and learn the gap between them. These are different commitments about where experience lives, and the paper's falsification conditions apply to both.</p></div></div>
+</section>
+
+<section id="useful"><h2>How it could help us</h2><p><strong>1. Make the wellness components asymmetric.</strong> Replace each symmetric sigmoid with two one-sided terms (below-range cost, above-range cost) with separate learned weights. Joint-limit wellness is already one-sided in effect; capacity wellness is not, and the paper's point that recovery is not a violation would let a resting body score well without forcing it to seek maximal capacity.</p>
+<p><strong>2. Gate curiosity by wellness.</strong> Multiply the §21 drive by a function of total wellness so that a depleted or unwell body explores less. This is a one-line change in training_step.py and resolves the paper's disagreement in UEMA's favour only if measured: compare learning speed and violation rate with and without the gate.</p>
+<p><strong>3. Let affect magnitude scale the learning rate.</strong> The paper's rule, learning rate proportional to one plus the size of the affect, is the formal version of 'events important for survival are remembered more strongly'. UEMA uses one AdamW learning rate. A per-step multiplier from the wellness drop is cheap to try and gives §22's stress a mechanism.</p>
+<p><strong>4. Write down UEMA's position on pleasure.</strong> The paper's 'pleasure is relief' and the spec's 'pleasure is learned pleasant association' are testable against each other on the tactile wellness term. State which one UEMA means.</p></section>
+
+<section id="caution"><h2>What to be careful about</h2><p>Pure theory with no simulation; stability is explicitly unanalysed and depends on thresholds, coefficients and horizon. Key functions are left unspecified. No affiliations are given. The consciousness claims are philosophical commitments, not results. The equations use discrete programs and memory prototypes that do not map onto UEMA's continuous transformer, so what transfers is the shape of the cost, the affect rule and the curiosity gate, not the architecture.</p></section>
+
+<section id="quotes"><h2>In the authors' words</h2><blockquote><p>Motivated learning means that action selection is guided not only by external reward but by deviations from viable allostatic ranges and by the need to reduce them over time.</p><p class="sources">Section 1</p></blockquote><blockquote><p>Information can be measured without being felt, and a controller can minimize error without pain.</p><p class="sources">Section 1</p></blockquote><blockquote><p>For example, too much pain may be strongly penalized, whereas a decrease of pain is not a violation at all.</p><p class="sources">Section 4</p></blockquote><blockquote><p>Curiosity in MEM is not free-floating novelty seeking. It arises when perceptual mismatch matters for regulation.</p><p class="sources">Section 9.1</p></blockquote><blockquote><p>Learning is therefore not classical reward maximization but minimization of a cost functional dominated by discounted deviations of regulatory variables from preferred ranges.</p><p class="sources">Section 11</p></blockquote></section>
+
+<section id="sources"><h2>Sources</h2><ul class="sources"><li><a href="https://arxiv.org/pdf/2609.20437">arXiv 2609.20437 (PDF full text)</a></li><li><a href="https://arxiv.org/abs/2609.20437">arXiv abstract page</a></li>
+<li>UEMA specification v3.5, <code>docs/UEMA_Specs/UEMA_Spec_v3_5.txt</code>, read November 5, 2026.</li></ul>
+<p class="sources">This page was written by Claude (an AI assistant) from a reading of the paper's full text on arXiv on November 5, 2026, together with the UEMA v3.5 specification. Numbers are the authors' own. Judgements about fit with UEMA are a reader's, not the authors'. Nothing on this page is implemented in UEMA.</p>
+</section>
+</main></body></html>

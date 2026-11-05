@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Mixture of world models and UEMA</title>
+<meta name="description" content="Reading note: a mixture of domain-specialist world models with prototype routing, test-time router refinement and few-shot expansion by initialising new experts from the mixture, read against UEMA's Many Minds growth.">
+<style>
+:root{--ink:#18343d;--teal:#086b62;--line:#cbdcd5;--soft:#e8f2ec;--warm:#fbf6ea;--warmline:#d9b25a;--red:#9c3328;--redsoft:#fbefec;--muted:#3b595e;--bg:#eff3ee;--card:#ffffff}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--ink:#dbe8e4;--teal:#5cc7b8;--line:#2f4a48;--soft:#1b302d;--warm:#2e2a1d;--warmline:#a8873e;--red:#e88b7e;--redsoft:#33211e;--muted:#a9c0bb;--bg:#101a19;--card:#162321}}
+:root[data-theme="dark"]{--ink:#dbe8e4;--teal:#5cc7b8;--line:#2f4a48;--soft:#1b302d;--warm:#2e2a1d;--warmline:#a8873e;--red:#e88b7e;--redsoft:#33211e;--muted:#a9c0bb;--bg:#101a19;--card:#162321}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:18px/1.6 system-ui,-apple-system,"Segoe UI",sans-serif}
+main{max-width:980px;margin:28px auto;background:var(--card);padding:38px 44px;border:1px solid var(--line);border-radius:16px}
+.eyebrow{font-size:13px;font-weight:750;text-transform:uppercase;letter-spacing:.1em;color:var(--teal)}
+h1{font-size:clamp(28px,4.2vw,40px);line-height:1.15;letter-spacing:-.02em;margin:12px 0 10px}
+.meta{font-size:15px;color:var(--muted);margin:0 0 22px}
+h2{font-size:24px;line-height:1.25;margin:0 0 10px}
+h3{font-size:19px;margin:24px 0 6px}
+section{border-top:2px solid var(--line);padding:26px 0 8px;scroll-margin-top:12px}
+p{margin:10px 0 14px}li{margin:7px 0}
+p,li,td,th{overflow-wrap:anywhere}
+nav{display:flex;flex-wrap:wrap;gap:6px 18px;margin:8px 0 24px;font-size:15px}
+a{color:var(--teal);text-underline-offset:3px}a:focus-visible{outline:3px solid var(--warmline);outline-offset:4px}
+.simple{background:var(--warm);border:1px solid var(--warmline);border-radius:12px;padding:20px 24px;margin:6px 0 26px}
+.simple h2{font-size:22px}
+.simple p{font-size:19px}
+.callout{border-left:5px solid var(--teal);background:var(--soft);padding:14px 18px;margin:16px 0;border-radius:0 8px 8px 0}
+.warn{border-left:5px solid var(--red);background:var(--redsoft);padding:14px 18px;margin:16px 0;border-radius:0 8px 8px 0}
+.prop{border:1px solid var(--line);border-radius:12px;padding:6px 22px 14px;margin:20px 0}
+.prop h3{margin-top:16px}
+.tag{display:inline-block;font-size:12px;font-weight:750;letter-spacing:.08em;text-transform:uppercase;color:var(--teal);border:1px solid var(--teal);border-radius:999px;padding:1px 10px;margin-left:6px;vertical-align:middle}
+.table-scroll{overflow-x:auto;margin:12px 0 18px}
+table{border-collapse:collapse;width:100%;font-size:16px}
+th,td{padding:9px 11px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+th{background:var(--soft)}
+.fit{display:grid;grid-template-columns:1fr 1fr;gap:14px 18px;margin:14px 0}
+.fit div{border:1px solid var(--line);border-radius:10px;padding:12px 16px}
+.fit b{display:block;margin-bottom:4px;color:var(--teal)}
+.fit p{margin:0;font-size:16px}
+blockquote{margin:12px 0;padding:10px 18px;border-left:4px solid var(--warmline);background:var(--warm);border-radius:0 8px 8px 0;font-size:16px}
+blockquote p{margin:4px 0}
+.sources{font-size:15px;color:var(--muted)}
+code{font-size:.86em}
+@media(max-width:700px){main{margin:0;border:0;border-radius:0;padding:24px 16px}body{font-size:17px}h2{font-size:21px}.fit{grid-template-columns:1fr}}
+@media print{body{background:#fff}main{margin:0;border:0;max-width:none;padding:12px}.prop,.simple,table,.fit div{break-inside:avoid}}
+</style>
+</head>
+<body><main>
+<div class="eyebrow">Mind Machine Learning · UEMA research reading · 2026 papers</div>
+<h1>Test-time mixture of world models: a growing set of specialists, routed by similarity, extended by cloning the mixture</h1>
+<p class="meta">Jinwoo Jang, Minjong Yoo, Sihyung Yoon and Honguk Woo (Sungkyunkwan University). ICLR 2026. arXiv 2601.22647, 30 January 2026 · Code: <a href="https://github.com/doldam0/tmow">https://github.com/doldam0/tmow</a>.<br>
+Reading note written November 5, 2026 against UEMA specification v3.5 (<code>docs/UEMA_Specs/UEMA_Spec_v3_5.txt</code>). Section numbers are v3.5's.</p>
+<nav><a href="#short">The short version</a><a href="#did">What the paper did</a><a href="#results">What they measured</a><a href="#fit">Where it touches UEMA</a><a href="#useful">How it could help us</a><a href="#caution">What to be careful about</a><a href="#quotes">In the authors' words</a><a href="#sources">Sources</a></nav>
+
+<div class="simple" id="short"><h2>The short version</h2><p><strong>The idea:</strong> keep a set of small specialist world models, one per domain, on top of one shared frozen base. Decide which specialists to use for the current situation by comparing the situation's embedding with each specialist's "prototype" (the average embedding of its training data), at several levels of detail. Adjust the prototypes a little during use with no gradient steps. When a new domain appears, create a new specialist by starting from the current weighted blend of the old ones and fine-tuning briefly.</p>
+<p><strong>What it showed:</strong> on household and manipulation benchmarks, the mixture beat the best baseline by 27 points on unseen domains; a new specialist initialised from the blend reached 82% versus 60% from scratch with less data; adding specialists did not hurt old ones.</p>
+<p><strong>Why it matters to us:</strong> the specialists are language-model adapters, which is nothing like UEMA. But the growth rules are. Many Minds (§15 to §18) creates a subordinate by cloning the parent, blends motor outputs by confidence, and has no router. This paper's "initialise the new one from the blend" and its finding that blending more than a few specialists hurts are both results UEMA's design can use.</p></div>
+
+<section id="did"><h2>What the paper did</h2>
+<h3>The problem they set out to solve</h3><p>Language-model-based embodied agents have capabilities frozen at training; retraining is costly and in-context learning only shifts the cost to inference. Mixture-of-experts models are modular, but their router is fixed after training, so adapting to a new domain still means retraining. The paper asks how an agent can recombine existing world models for unseen domains at test time, and add new ones from a few demonstrations without retraining the whole system.</p>
+<h3>What they built</h3><p>Each expert is a low-rank adapter on a frozen 1B-parameter language model, trained on one domain's demonstrations to predict the next action and observation. Observations are relational scene graphs. Routing is by prototypes: a graph network produces a per-layer embedding of the current instruction and scene; each expert's prototype is the mean of those embeddings over its training data; routing weight is cosine similarity, kept for the top three experts and softmax-normalised. Early layers capture object-level features and later layers scene-level structure, so routing is "multi-granular". At test time, each prototype is nudged toward a similarity-weighted combination of the others, so the prototypes densify around what is actually encountered, with no gradient update. To add an expert, initialise it as the router-weighted mixture of existing adapters, fine-tune on the few-shot demonstrations, compute its prototype, and append it.</p>
+<ul>
+<li>Benchmarks: VirtualHome, ALFWorld, RLBench, a driving simulator and a real Franka arm; domains are task-scene combinations with held-out unseen ones.</li>
+<li>Inference is one forward pass producing an action; no rollout or planning is used despite the world-model framing.</li>
+</ul>
+</section>
+
+<section id="results"><h2>What they measured</h2><ul><li>Unseen VirtualHome domains: 80.2% success versus 49.5% for the best baseline; average gain of 27.2 points over the best baseline across three benchmarks on unseen domains.</li><li>Few-shot expansion: a new expert initialised from the mixture reached 81.6% versus 59.8% trained from scratch, with about 40% less data.</li><li>Routing breadth: using 1 expert 65.4%, 3 experts 80.2%, 5 experts 77.5%, 7 experts 66.0%. Blending too many specialists hurt.</li><li>Routing by object-level features only 65.3%; by scene-level only 8.7%; both 80.7%.</li><li>Test-time prototype refinement was worth about 7 points; successful unseen episodes used a more mixed set of experts than failed ones.</li><li>Adding experts improved performance on existing domains and did not cause forgetting (figure only). Real Franka unseen scenes: 74.6% versus 36.0%.</li></ul></section>
+
+<section id="fit"><h2>Where it touches UEMA</h2>
+<p>Each box names a part of the UEMA specification and says, in plain terms, what the paper has to say about it.</p>
+<div class="fit"><div><b>§15.2 The split operation</b><p>UEMA creates a subordinate by deep-copying the parent's forward model. This paper initialises a new specialist from the confidence-weighted blend of all existing specialists, and shows it learns faster than from scratch. For UEMA's second and later splits, cloning the blend rather than the parent alone is a concrete alternative to test.</p></div><div><b>§17 Motor arbitration, confidence-weighted blend per handle</b><p>The spec blends every mind's command for a handle by softmax over confidences with a learned temperature. The paper's result that blending more than about three specialists hurts (80% at three, 66% at seven) is a warning that the temperature must be sharp enough to keep the blend small as the hierarchy grows.</p></div><div><b>§15.1 Mastery detection by correlation clustering</b><p>The spec discovers domains by clustering handles with low error by motor-sensor correlation. The paper discovers nothing; domains are given. But its prototype idea (a specialist is summarised by the mean embedding of what it has seen) is a cheap way for each UEMA mind to carry a description of its own domain that other minds can compare against.</p></div><div><b>§16 Inter-mind readable state</b><p>The paper's routing by similarity between the current state and each specialist's prototype is a form of reading which mind is relevant now. UEMA's z_intermind broadcasts each mind's internal state; a mind whose prototype is far from the current state would, in the paper's scheme, get low weight. That is close to the spec's 'broader-scope mind dominates when more wellness dimensions active'.</p></div><div><b>§28, 'Subordinate model size: full forward model clone or domain-specific subset?'</b><p>The paper answers for its setting: a frozen shared base plus a small per-domain adapter. UEMA's analogue would be shared encoders (already the plan, §14) plus a small per-mind forward model, which §14 also allows ('potentially smaller').</p></div><div><b>§1 Core thesis</b><p>Every component here is an imitation-trained language model. The architecture does not transfer; the growth and blending rules might.</p></div></div>
+</section>
+
+<section id="useful"><h2>How it could help us</h2><p><strong>1. Plan the second split as 'clone the blend'.</strong> When Many Minds is implemented, test two initialisations for a new subordinate: a deep copy of the parent (the spec) and a confidence-weighted average of all existing minds' weights (the paper). Measure domain error at 10K and 50K steps after the split.</p>
+<p><strong>2. Give each mind a prototype.</strong> An EMA of the encoded sensory tokens a mind has acted on is a few kilobytes per mind and gives the arbitration a similarity signal that does not depend on each mind's self-reported confidence. The paper's multi-granular trick (early-layer and late-layer embeddings) maps to UEMA's per-modality tokens and the forward model's pooled latent.</p>
+<p><strong>3. Bound the blend.</strong> Keep at most three minds active per handle in the §17 softmax, or learn the temperature with a penalty on the blend's entropy. The paper's curve is the reason.</p>
+<p><strong>4. Measure forgetting after each split.</strong> The paper reports none for its setting. UEMA's subordinate keeps learning with gradients near zero; whether the parent's prediction of the subordinate's domain degrades after the split is a measurement the test registry should carry.</p></section>
+
+<section id="caution"><h2>What to be careful about</h2><p>The specialists are adapters on a frozen 1B-parameter language model trained by imitation, with scene-graph inputs; nothing about the models transfers to UEMA. Despite the name, no world-model rollout is used at inference. Domains are given, not discovered, and the number of experts is never stated. Several equations have undefined terms. Performance is bounded by the base language model, as the authors say. The forgetting result is a figure without numbers.</p></section>
+
+<section id="quotes"><h2>In the authors' words</h2><blockquote><p>[MoE routers] remain fixed after training, making adaptation to novel domains possible only through costly retraining.</p><p class="sources">Section 1</p></blockquote><blockquote><p>We introduce multi-granular prototypes that capture environmental semantics across multiple levels of abstraction.</p><p class="sources">Section 3.2</p></blockquote><blockquote><p>We initialize a new world model m' as mixture of existing models, then fine-tune it</p><p class="sources">Section 3.4</p></blockquote><blockquote><p>TMoW consistently outperforms all baselines across both seen and unseen domains.</p><p class="sources">Section 4.1</p></blockquote><blockquote><p>its performance is inherently bounded by the capabilities of the underlying LLM used for planning.</p><p class="sources">Section 5</p></blockquote></section>
+
+<section id="sources"><h2>Sources</h2><ul class="sources"><li><a href="https://arxiv.org/html/2601.22647">arXiv 2601.22647 (HTML full text)</a></li><li><a href="https://arxiv.org/abs/2601.22647">arXiv abstract page</a></li><li><a href="https://github.com/doldam0/tmow">Code</a></li>
+<li>UEMA specification v3.5, <code>docs/UEMA_Specs/UEMA_Spec_v3_5.txt</code>, read November 5, 2026.</li></ul>
+<p class="sources">This page was written by Claude (an AI assistant) from a reading of the paper's full text on arXiv on November 5, 2026, together with the UEMA v3.5 specification. Numbers are the authors' own. Judgements about fit with UEMA are a reader's, not the authors'. Nothing on this page is implemented in UEMA.</p>
+</section>
+</main></body></html>

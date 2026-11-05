@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>UWM-JEPA and UEMA</title>
+<meta name="description" content="Reading note: the density-matrix latent world model named in the UEMA v3.5 section 4.2 TODO, and what its results do and do not show.">
+<style>
+:root{--ink:#18343d;--teal:#086b62;--line:#cbdcd5;--soft:#e8f2ec;--warm:#fbf6ea;--warmline:#d9b25a;--red:#9c3328;--redsoft:#fbefec;--muted:#3b595e;--bg:#eff3ee;--card:#ffffff}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--ink:#dbe8e4;--teal:#5cc7b8;--line:#2f4a48;--soft:#1b302d;--warm:#2e2a1d;--warmline:#a8873e;--red:#e88b7e;--redsoft:#33211e;--muted:#a9c0bb;--bg:#101a19;--card:#162321}}
+:root[data-theme="dark"]{--ink:#dbe8e4;--teal:#5cc7b8;--line:#2f4a48;--soft:#1b302d;--warm:#2e2a1d;--warmline:#a8873e;--red:#e88b7e;--redsoft:#33211e;--muted:#a9c0bb;--bg:#101a19;--card:#162321}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:18px/1.6 system-ui,-apple-system,"Segoe UI",sans-serif}
+main{max-width:980px;margin:28px auto;background:var(--card);padding:38px 44px;border:1px solid var(--line);border-radius:16px}
+.eyebrow{font-size:13px;font-weight:750;text-transform:uppercase;letter-spacing:.1em;color:var(--teal)}
+h1{font-size:clamp(28px,4.2vw,40px);line-height:1.15;letter-spacing:-.02em;margin:12px 0 10px}
+.meta{font-size:15px;color:var(--muted);margin:0 0 22px}
+h2{font-size:24px;line-height:1.25;margin:0 0 10px}
+h3{font-size:19px;margin:24px 0 6px}
+section{border-top:2px solid var(--line);padding:26px 0 8px;scroll-margin-top:12px}
+p{margin:10px 0 14px}li{margin:7px 0}
+p,li,td,th{overflow-wrap:anywhere}
+nav{display:flex;flex-wrap:wrap;gap:6px 18px;margin:8px 0 24px;font-size:15px}
+a{color:var(--teal);text-underline-offset:3px}a:focus-visible{outline:3px solid var(--warmline);outline-offset:4px}
+.simple{background:var(--warm);border:1px solid var(--warmline);border-radius:12px;padding:20px 24px;margin:6px 0 26px}
+.simple h2{font-size:22px}
+.simple p{font-size:19px}
+.callout{border-left:5px solid var(--teal);background:var(--soft);padding:14px 18px;margin:16px 0;border-radius:0 8px 8px 0}
+.warn{border-left:5px solid var(--red);background:var(--redsoft);padding:14px 18px;margin:16px 0;border-radius:0 8px 8px 0}
+.prop{border:1px solid var(--line);border-radius:12px;padding:6px 22px 14px;margin:20px 0}
+.prop h3{margin-top:16px}
+.tag{display:inline-block;font-size:12px;font-weight:750;letter-spacing:.08em;text-transform:uppercase;color:var(--teal);border:1px solid var(--teal);border-radius:999px;padding:1px 10px;margin-left:6px;vertical-align:middle}
+.table-scroll{overflow-x:auto;margin:12px 0 18px}
+table{border-collapse:collapse;width:100%;font-size:16px}
+th,td{padding:9px 11px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+th{background:var(--soft)}
+.fit{display:grid;grid-template-columns:1fr 1fr;gap:14px 18px;margin:14px 0}
+.fit div{border:1px solid var(--line);border-radius:10px;padding:12px 16px}
+.fit b{display:block;margin-bottom:4px;color:var(--teal)}
+.fit p{margin:0;font-size:16px}
+blockquote{margin:12px 0;padding:10px 18px;border-left:4px solid var(--warmline);background:var(--warm);border-radius:0 8px 8px 0;font-size:16px}
+blockquote p{margin:4px 0}
+.sources{font-size:15px;color:var(--muted)}
+code{font-size:.86em}
+@media(max-width:700px){main{margin:0;border:0;border-radius:0;padding:24px 16px}body{font-size:17px}h2{font-size:21px}.fit{grid-template-columns:1fr}}
+@media print{body{background:#fff}main{margin:0;border:0;max-width:none;padding:12px}.prop,.simple,table,.fit div{break-inside:avoid}}
+</style>
+</head>
+<body><main>
+<div class="eyebrow">Mind Machine Learning · UEMA research reading · 2026 papers</div>
+<h1>UWM-JEPA: a world model that imagines in "belief space" instead of committing to one future</h1>
+<p class="meta">Santosh Kumar Radha and Oktay Goktas (AgentField AI, Toronto). Preprint. arXiv 2605.25313, 25 May 2026 · Code: <a href="https://github.com/santoshkumarradha/uwm-jepa">https://github.com/santoshkumarradha/uwm-jepa</a>.<br>
+Reading note written November 5, 2026 against UEMA specification v3.5 (<code>docs/UEMA_Specs/UEMA_Spec_v3_5.txt</code>). Section numbers are v3.5's.</p>
+<nav><a href="#short">The short version</a><a href="#did">What the paper did</a><a href="#results">What they measured</a><a href="#fit">Where it touches UEMA</a><a href="#useful">How it could help us</a><a href="#caution">What to be careful about</a><a href="#quotes">In the authors' words</a><a href="#sources">Sources</a></nav>
+
+<div class="simple" id="short"><h2>The short version</h2><p><strong>This is the paper the specification already names.</strong> Section 4.2 of UEMA v3.5 carries a TODO asking whether the forward model's latent should be a "density matrix" instead of a single vector. This is that paper. We now have its full text and numbers.</p>
+<p><strong>The idea in one sentence:</strong> when the senses cannot tell which of several futures is coming, the model should carry all of them forward during imagination rather than pick one, and the paper gives the latent a shape (a matrix of probabilities) and an update rule (a rotation) that cannot throw any of them away.</p>
+<p><strong>What it showed:</strong> on two small toy tasks, the belief-space model kept far more usable information over 1 to 5 imagined steps than an ordinary vector model, and it was the only one of the two that reacted correctly to "what if I did a different action". Beyond 10 imagined steps both models were weak, so the long-horizon question the TODO asks is still open.</p>
+<p><strong>Why it matters to us:</strong> it is a direct, low-risk candidate experiment for the forward model's internals, and it comes with a training lesson that applies to UEMA whether or not we adopt the matrix: the ordinary next-step loss can leave the action input dead.</p></div>
+
+<section id="did"><h2>What the paper did</h2>
+<h3>The problem they set out to solve</h3><p>UEMA's forward model, like most "JEPA" world models, predicts one vector for the next moment. The authors point out that under partial observability the same sensory history is consistent with several hidden states, so the honest object to predict is a spread of possibilities, a belief, not a point. A vector has no built-in way to carry that spread forward through several steps of imagination, and nothing in the usual training loss tells the model which uncertainty to keep, which to average away, or how a counterfactual action should move the belief.</p>
+<h3>What they built</h3><p>The latent is a 16 by 16 positive matrix (a "density matrix") living on a joint "system times environment" space. Each new observation squeezes the matrix with a learned measurement operator; each imagined step rotates it with a learned unitary map. A rotation preserves the matrix's spectrum, purity and entropy exactly, so by construction the predictor cannot dissipate the uncertainty it is carrying. Actions enter by adding a learned action-dependent term to the generator of the rotation. The usual JEPA loss (match the target encoder's latent, with stop-gradient and an EMA target) is applied after projecting back to the system part.</p>
+<p>The most useful finding is about training, not architecture. With the ordinary teacher-forced target, the action pathway learned to be almost inert, because the real future already contains the action's effect and the loss cannot tell an action-sensitive solution from an action-blind one. The fix was a "counterfactual target": sample a random action sequence, run the simulator forward from the true state under it, encode the result, and train the predictor to match that. This requires simulator-state access during training.</p>
+<ul>
+<li>Latent: 16x16 density matrix (system 8, environment 2); probes read the 8x8 reduced state.</li>
+<li>Predictor: unitary conjugation, two batched matrix multiplies per rollout step; invariants drift under 2.4e-7 over 30 steps.</li>
+<li>Trained at a 5-step horizon; evaluated at 1, 3, 5, 10 and 20 steps; 3 seeds for rollout tests.</li>
+<li>Environments: a partially observed oscillator and a CartPole-style spring task. Model sizes and compute are not reported; the released code only regenerates figures.</li>
+</ul>
+</section>
+
+<section id="results"><h2>What they measured</h2><ul><li>Context-encoder quality: a tie with the LSTM baseline (linear-probe R² 0.901 vs 0.894, p = 0.70). The gain is not a better encoder.</li><li>Action sensitivity: with the ordinary loss the action term's size relative to the base dynamics was about 0.03; with counterfactual targets it was 1.00 ± 0.15.</li><li>Hidden-velocity test (predict the sign of an unseen velocity 5 steps ahead): 0.770 with the correct actions vs 0.639 with wrong actions. The vector baseline scored 0.530 under every condition, which is the majority-class rate.</li><li>Information lost during blind rollout (lower is better): belief model 0.023 at 1 step, 0.069 at 3, 0.091 at 5; vector model 0.413, 0.678, 0.013 at the same horizons. At 10 and 20 steps both models are weak and the ranking is not reliable.</li><li>Anti-collapse sweep: no run collapsed; EMA plus VICReg gave the best probe (0.979). The authors stress that collapse must be diagnosed with a held-out probe, not from the training curve.</li><li>Authors' scope statement: not a stronger encoder, not an anti-collapse method, not a competitive planner.</li></ul></section>
+
+<section id="fit"><h2>Where it touches UEMA</h2>
+<p>Each box names a part of the UEMA specification and says, in plain terms, what the paper has to say about it.</p>
+<div class="fit"><div><b>§4.2 Predictive Register, the density-matrix TODO</b><p>This is the cited paper. Its evidence supports the TODO's hypothesis for short rollouts (1 to 5 steps) and leaves the beyond-10-frames question the TODO asks explicitly unanswered; the authors say so themselves.</p></div><div><b>§6 Forward model internals</b><p>The change is confined to the forward model's latent and predictor, exactly as the TODO claims. Encoders, wellness terms and the motor controller are untouched in the paper's design.</p></div><div><b>§6.3 Distribution shift during imagination</b><p>The paper's blind-rollout protocol (encode a prefix, then roll forward with no new observations and probe what is left) is the measurement UEMA's imagination-aware training needs. It is also the test the November 5 addendum (A4) proposes using replay for.</p></div><div><b>§10.2 Intention as model inversion</b><p>The intention generator needs the forward model to respond to counterfactual actions. This paper shows the ordinary next-step loss can leave that response dead, and that a counterfactual target revives it. UEMA has simulator-state access and restore-from-state replay, so the fix is available.</p></div><div><b>§5.7 Encoder collapse prevention</b><p>Independent confirmation that VICReg-style regularisation on top of an EMA target works, and a reminder that collapse is invisible in the loss curve.</p></div><div><b>§23.2 Meta-prediction</b><p>A latent that carries a distribution rather than a point gives the model something concrete to be uncertain about, which is what Level 2 ('I predict my prediction will be wrong by ε') needs as input.</p></div></div>
+</section>
+
+<section id="useful"><h2>How it could help us</h2><p><strong>1. Run the action-sensitivity check first, before any architecture change.</strong> Measure how much the forward model's prediction moves when the motor token is swapped for a different command from the same restored state. UEMA already has identical-state replay (the §10.6 upstream gate). If the prediction barely moves, the intention generator is inverting a model that is not listening to actions, and no planner built on it can work. This test costs nothing and would explain the "chosen goal approach indistinguishable from random" finding in §10.6.</p>
+<p><strong>2. Add counterfactual targets to imagination-aware training.</strong> The spec's imagination-aware loss (§6.3) chains the model through its own predictions and compares to the real trajectory. The paper suggests also sampling a different command sequence, replaying it from the restored simulator state, and training the model to predict that outcome. This is a loss change, not an architecture change, and the November 5 replay addendum supplies the machinery.</p>
+<p><strong>3. Then, optionally, try the density-matrix latent as a small side experiment.</strong> The test is the one the TODO names: rollout retention at k = 1, 3, 5, 10 and the 20-step case, against the current vector forward model, on the reach scene. The paper's own results say to expect help at short horizons and nothing settled beyond 10.</p></section>
+
+<section id="caution"><h2>What to be careful about</h2><p>The environments are tiny (an oscillator and a cart on a spring) and the models are small and unreported in size. There are no Transformer or state-space baselines, which are the obvious comparison for UEMA's forward model. The guarantee that nothing is forgotten holds for the full joint matrix, but the part that is read out is a partial trace, and information can hide in system-environment correlations where a linear probe cannot see it. The counterfactual target needs simulator-state access; it would not work on Stream 2 video. Three seeds is thin. Treat the paper as a well-posed hypothesis with encouraging toy evidence, not as a result that transfers.</p></section>
+
+<section id="quotes"><h2>In the authors' words</h2><blockquote><p>The construction preserves the joint-state spectrum exactly during rollout, so the predictor itself cannot dissipate the represented uncertainty.</p><p class="sources">Abstract</p></blockquote><blockquote><p>Beyond k=10, both models have low or negative blind probe scores, so long-horizon retention remains an open question rather than a settled claim.</p><p class="sources">Section 1</p></blockquote><blockquote><p>Teacher forcing alone leaves the action pathway inert under a JEPA target.</p><p class="sources">Section 4.2</p></blockquote><blockquote><p>The architecture is not a universally stronger encoder, a general anti-collapse mechanism, or a competitive planner.</p><p class="sources">Section 7</p></blockquote><blockquote><p>collapsed and healthy encoders can produce training curves that look nearly identical.</p><p class="sources">Appendix S2</p></blockquote></section>
+
+<section id="sources"><h2>Sources</h2><ul class="sources"><li><a href="https://arxiv.org/html/2605.25313">arXiv 2605.25313 (HTML full text)</a></li><li><a href="https://arxiv.org/abs/2605.25313">arXiv abstract page</a></li><li><a href="https://github.com/santoshkumarradha/uwm-jepa">Code and figure data</a></li>
+<li>UEMA specification v3.5, <code>docs/UEMA_Specs/UEMA_Spec_v3_5.txt</code>, read November 5, 2026.</li></ul>
+<p class="sources">This page was written by Claude (an AI assistant) from a reading of the paper's full text on arXiv on November 5, 2026, together with the UEMA v3.5 specification. Numbers are the authors' own. Judgements about fit with UEMA are a reader's, not the authors'. Nothing on this page is implemented in UEMA.</p>
+</section>
+</main></body></html>

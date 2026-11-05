@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Amortised planning and UEMA</title>
+<meta name="description" content="Reading note: a 1.5M-parameter goal-conditioned inverse model that matched or beat sampling-based planning at 100 times lower cost, and what it says about UEMA's intention generator.">
+<style>
+:root{--ink:#18343d;--teal:#086b62;--line:#cbdcd5;--soft:#e8f2ec;--warm:#fbf6ea;--warmline:#d9b25a;--red:#9c3328;--redsoft:#fbefec;--muted:#3b595e;--bg:#eff3ee;--card:#ffffff}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--ink:#dbe8e4;--teal:#5cc7b8;--line:#2f4a48;--soft:#1b302d;--warm:#2e2a1d;--warmline:#a8873e;--red:#e88b7e;--redsoft:#33211e;--muted:#a9c0bb;--bg:#101a19;--card:#162321}}
+:root[data-theme="dark"]{--ink:#dbe8e4;--teal:#5cc7b8;--line:#2f4a48;--soft:#1b302d;--warm:#2e2a1d;--warmline:#a8873e;--red:#e88b7e;--redsoft:#33211e;--muted:#a9c0bb;--bg:#101a19;--card:#162321}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:18px/1.6 system-ui,-apple-system,"Segoe UI",sans-serif}
+main{max-width:980px;margin:28px auto;background:var(--card);padding:38px 44px;border:1px solid var(--line);border-radius:16px}
+.eyebrow{font-size:13px;font-weight:750;text-transform:uppercase;letter-spacing:.1em;color:var(--teal)}
+h1{font-size:clamp(28px,4.2vw,40px);line-height:1.15;letter-spacing:-.02em;margin:12px 0 10px}
+.meta{font-size:15px;color:var(--muted);margin:0 0 22px}
+h2{font-size:24px;line-height:1.25;margin:0 0 10px}
+h3{font-size:19px;margin:24px 0 6px}
+section{border-top:2px solid var(--line);padding:26px 0 8px;scroll-margin-top:12px}
+p{margin:10px 0 14px}li{margin:7px 0}
+p,li,td,th{overflow-wrap:anywhere}
+nav{display:flex;flex-wrap:wrap;gap:6px 18px;margin:8px 0 24px;font-size:15px}
+a{color:var(--teal);text-underline-offset:3px}a:focus-visible{outline:3px solid var(--warmline);outline-offset:4px}
+.simple{background:var(--warm);border:1px solid var(--warmline);border-radius:12px;padding:20px 24px;margin:6px 0 26px}
+.simple h2{font-size:22px}
+.simple p{font-size:19px}
+.callout{border-left:5px solid var(--teal);background:var(--soft);padding:14px 18px;margin:16px 0;border-radius:0 8px 8px 0}
+.warn{border-left:5px solid var(--red);background:var(--redsoft);padding:14px 18px;margin:16px 0;border-radius:0 8px 8px 0}
+.prop{border:1px solid var(--line);border-radius:12px;padding:6px 22px 14px;margin:20px 0}
+.prop h3{margin-top:16px}
+.tag{display:inline-block;font-size:12px;font-weight:750;letter-spacing:.08em;text-transform:uppercase;color:var(--teal);border:1px solid var(--teal);border-radius:999px;padding:1px 10px;margin-left:6px;vertical-align:middle}
+.table-scroll{overflow-x:auto;margin:12px 0 18px}
+table{border-collapse:collapse;width:100%;font-size:16px}
+th,td{padding:9px 11px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+th{background:var(--soft)}
+.fit{display:grid;grid-template-columns:1fr 1fr;gap:14px 18px;margin:14px 0}
+.fit div{border:1px solid var(--line);border-radius:10px;padding:12px 16px}
+.fit b{display:block;margin-bottom:4px;color:var(--teal)}
+.fit p{margin:0;font-size:16px}
+blockquote{margin:12px 0;padding:10px 18px;border-left:4px solid var(--warmline);background:var(--warm);border-radius:0 8px 8px 0;font-size:16px}
+blockquote p{margin:4px 0}
+.sources{font-size:15px;color:var(--muted)}
+code{font-size:.86em}
+@media(max-width:700px){main{margin:0;border:0;border-radius:0;padding:24px 16px}body{font-size:17px}h2{font-size:21px}.fit{grid-template-columns:1fr}}
+@media print{body{background:#fff}main{margin:0;border:0;max-width:none;padding:12px}.prop,.simple,table,.fit div{break-inside:avoid}}
+</style>
+</head>
+<body><main>
+<div class="eyebrow">Mind Machine Learning · UEMA research reading · 2026 papers</div>
+<h1>Latent geometry beyond search: when a learned inverse model can replace planning by search</h1>
+<p class="meta">Hoang Nguyen, Xiaohao Xu and Xiaonan Huang (University of Michigan, Robotics). Preprint (v2, 5 June 2026). arXiv 2605.08732, 9 May 2026 · Code: <a href="https://github.com/hdnndh/Latent-Geometry-Beyond-Search-Amortizing-Planning-in-World-Models">https://github.com/hdnndh/Latent-Geometry-Beyond-Search-Amortizing-Planning-in-World-Models</a>.<br>
+Reading note written November 5, 2026 against UEMA specification v3.5 (<code>docs/UEMA_Specs/UEMA_Spec_v3_5.txt</code>). Section numbers are v3.5's.</p>
+<nav><a href="#short">The short version</a><a href="#did">What the paper did</a><a href="#results">What they measured</a><a href="#fit">Where it touches UEMA</a><a href="#useful">How it could help us</a><a href="#caution">What to be careful about</a><a href="#quotes">In the authors' words</a><a href="#sources">Sources</a></nav>
+
+<div class="simple" id="short"><h2>The short version</h2><p><strong>The "planning tax":</strong> a good latent world model makes prediction cheap, but choosing actions still means running thousands of imagined rollouts per decision (9,000 per step in the model they studied). The authors ask whether that search is necessary, or whether the latent space is smooth enough that "which action takes me toward this goal" can be learned once, offline, as a small function.</p>
+<p><strong>What they built:</strong> a tiny network that takes the current latent, the goal latent and the number of steps left, and outputs the next action. One forward pass per step, no imagination at all, re-encode and repeat.</p>
+<p><strong>What it showed:</strong> it matched or beat search in seven of eight settings, at 100 to 130 times lower cost per decision and with 15 to 35 times smoother actions. It did not win on the contact-rich PushT task. A straightforward gradient-descent planner through the predictor, which is what UEMA's intention generator is, did badly at the library's default step size.</p></div>
+
+<section id="did"><h2>What the paper did</h2>
+<h3>The problem they set out to solve</h3><p>LeWorldModel's default planner uses 300 samples times 30 iterations times a 5-step horizon, which is 9,000 candidate rollouts and 45,000 predictor calls per planning step. The authors call the mismatch between cheap prediction and expensive decision the planning tax, and hypothesise that when the latent is smooth and action-sensitive (which the Gaussian regulariser encourages), action selection becomes a local inverse problem that a small learned map can solve.</p>
+<h3>What they built</h3><p>Freeze a pretrained LeWorldModel. Train a goal-conditioned inverse dynamics model: inputs are the current latent, the goal latent and the remaining horizon (normalised, sinusoidally encoded, injected by adaptive layer norm); output is the next action. It is trained on triples (state at t, state at t+h, action at t) from the same offline demonstrations the world model was trained on, with h sampled up to 50. At test time the goal is encoded once, the current observation is re-encoded every step, and the predicted action is executed. The predictor is never called. A failed pilot is also reported: decoding actions along a straight-line interpolation between start and goal latents reconstructed actions almost perfectly but controlled poorly, because the straight line "must curve through the doorway".</p>
+<ul>
+<li>Three-layer MLP, hidden 512, about 1.5M parameters, 0.71 ms per call; about 20 minutes to train per environment.</li>
+<li>Compared against CEM, iCEM, MPPI and a first-order gradient solver that backpropagates through the predictor (SGD, step 1.0, 30 iterations).</li>
+<li>Four tasks: Two-Room navigation, PushT, a cube reach, and Reacher; 200 parallel evaluation runs, three seeds.</li>
+</ul>
+</section>
+
+<section id="results"><h2>What they measured</h2><ul><li>Success at 200 runs, inverse model versus CEM: Two-Room 100.0 vs 84.0; PushT 84.2 vs 82.5; cube 98.7 vs 67.0; Reacher 99.7 vs 70.3. Per-decision cost 100 to 130 times lower.</li><li>No CEM configuration in a 500-fold compute sweep was both faster and more successful; CEM's best PushT result (90%) cost 35 times more planning.</li><li>The gradient solver through the predictor reached only 2.5% to 32% success. The authors attribute this to the default step size, not to gradient planning as such.</li><li>Removing the horizon input (making it one-step goal-conditioned imitation) dropped success by 42 points on average; widening the network did not recover it.</li><li>Action jerk was 15 to 35 times lower than CEM's, because closed-loop single-step inference inherits the smoothness of the demonstrations while block-wise replanning injects discontinuities.</li><li>The model succeeded on Two-Room with a training fit of only 0.20 R²: directionally correct steps, re-evaluated every step, accumulate like following a potential field.</li><li>Held-out episodes performed the same as in-distribution ones; data efficiency plateaued at 5% of the data on three tasks but not on PushT.</li></ul></section>
+
+<section id="fit"><h2>Where it touches UEMA</h2>
+<p>Each box names a part of the UEMA specification and says, in plain terms, what the paper has to say about it.</p>
+<div class="fit"><div><b>§10.2 Intention as differentiable model inversion</b><p>UEMA's intention generator is a gradient-descent planner through the forward model: 50 Adam steps per decision. This paper's first-order solver is the same idea and failed at the default step, while a learned inverse map succeeded. The authors flag the step size, so this is a warning about tuning, not a verdict. But it also shows the alternative: the inverse map that §1's thesis rejects as a policy network, if it maps goal to action directly.</p></div><div><b>§1 Core thesis</b><p>A goal-conditioned inverse model is a learned mapping from (state, desired state) to action. That is not f(observation) = action, because the desired state is an input chosen by the planner, but it is a network that outputs actions without imagining. Whether it belongs inside UEMA is a specification decision; the spec's own intention generator computes the same inverse by search.</p></div><div><b>§10.3 Multi-step intention</b><p>The paper's pilot failure is instructive: good local inversion plus a straight-line latent path still fails when the path must curve. That is the detour problem again, now seen from the inverse side. The remaining-horizon input is what let their model learn to curve.</p></div><div><b>§9.2 Adaptive computation depth</b><p>The spec's fast path is 'single forward pass when confidence is high'. The paper is evidence that a single pass can carry most of the planning load when the latent is well shaped, and that the deep path (search) earns its cost on contact-rich tasks like PushT.</p></div><div><b>§5.7 and §6.3 Latent regularisation</b><p>The authors' whole premise is that the regulariser makes the latent smooth and action-sensitive enough for a local inverse to exist. That is a reason to care about the geometry diagnostics in the Sub-JEPA note.</p></div></div>
+</section>
+
+<section id="useful"><h2>How it could help us</h2><p><strong>1. Tune the intention generator's optimiser before judging it.</strong> The paper's gradient solver used SGD with step 1.0 and failed; UEMA uses Adam with learning rate 0.1 for 50 steps (§10.2). Run the §10.6 attribution probe across learning rates and step counts. If chosen actions only beat matched random controls at some settings, the 2026-09-08 null result may be a tuning result.</p>
+<p><strong>2. Use an inverse map as a proposal, not a replacement.</strong> The authors suggest exactly this hybrid: a fast learned proposal, corrected occasionally by search. In UEMA terms, a small head trained on the body's own (state, later state, command) triples could initialise the intention generator's 50-step descent instead of starting from the current command. That keeps every executed command inside the prediction-wellness loop while cutting the search's work.</p>
+<p><strong>3. Log action jerk.</strong> It is a cheap, body-relevant measure of plan quality that UEMA's movement viewer could show, and it is where the paper's method was most clearly better.</p>
+<p><strong>4. Include remaining horizon in any goal-conditioned head.</strong> It was worth 42 points in the paper and costs nothing.</p></section>
+
+<section id="caution"><h2>What to be careful about</h2><p>The inverse model is trained on demonstration data with action labels, offline; UEMA's equivalent would be trained on the body's own stream, which contains no demonstrations of the detour. It does not reason about multi-step consequences and the authors expect it to fail under strong irreversibility. Action spaces were 2 to 5 dimensional; UEMA's is 26 handles times 9. The world model backbone was one small model. The gradient-planner comparison was run only at a library default and the authors say so. The theoretical conditions (local invertibility, isotropic latent) were stated but not verified on the model used.</p></section>
+
+<section id="quotes"><h2>In the authors' words</h2><blockquote><p>planning can be amortized into a latent inverse-dynamics mapping instead of requiring online search.</p><p class="sources">Abstract</p></blockquote><blockquote><p>We refer to this mismatch between cheap prediction and expensive decision-making as the planning tax.</p><p class="sources">Section 1</p></blockquote><blockquote><p>the bottleneck is not decoding actions from well-posed local transitions; it is constructing a valid latent path between distant states.</p><p class="sources">Section 4.1</p></blockquote><blockquote><p>the latent goal distance ‖z_t − z_g‖ acts as a potential field, and GC-IDM approximately follows its gradient at each step; per-step replanning accumulates these directionally correct predictions into successful trajectories.</p><p class="sources">Section 4.2</p></blockquote><blockquote><p>a hybrid scheme using GC-IDM as a fast proposal with CEM as an occasional corrector would be a natural extension.</p><p class="sources">Appendix G</p></blockquote></section>
+
+<section id="sources"><h2>Sources</h2><ul class="sources"><li><a href="https://arxiv.org/pdf/2605.08732">arXiv 2605.08732 (PDF full text)</a></li><li><a href="https://arxiv.org/abs/2605.08732">arXiv abstract page</a></li>
+<li>UEMA specification v3.5, <code>docs/UEMA_Specs/UEMA_Spec_v3_5.txt</code>, read November 5, 2026.</li></ul>
+<p class="sources">This page was written by Claude (an AI assistant) from a reading of the paper's full text on arXiv on November 5, 2026, together with the UEMA v3.5 specification. Numbers are the authors' own. Judgements about fit with UEMA are a reader's, not the authors'. Nothing on this page is implemented in UEMA.</p>
+</section>
+</main></body></html>

@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>EyeRobot 2.0 and UEMA</title>
+<meta name="description" content="Reading note: learned active fixation with foveated processing on a real bimanual robot, read against UEMA's gaze head and foveated vision design.">
+<style>
+:root{--ink:#18343d;--teal:#086b62;--line:#cbdcd5;--soft:#e8f2ec;--warm:#fbf6ea;--warmline:#d9b25a;--red:#9c3328;--redsoft:#fbefec;--muted:#3b595e;--bg:#eff3ee;--card:#ffffff}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--ink:#dbe8e4;--teal:#5cc7b8;--line:#2f4a48;--soft:#1b302d;--warm:#2e2a1d;--warmline:#a8873e;--red:#e88b7e;--redsoft:#33211e;--muted:#a9c0bb;--bg:#101a19;--card:#162321}}
+:root[data-theme="dark"]{--ink:#dbe8e4;--teal:#5cc7b8;--line:#2f4a48;--soft:#1b302d;--warm:#2e2a1d;--warmline:#a8873e;--red:#e88b7e;--redsoft:#33211e;--muted:#a9c0bb;--bg:#101a19;--card:#162321}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:18px/1.6 system-ui,-apple-system,"Segoe UI",sans-serif}
+main{max-width:980px;margin:28px auto;background:var(--card);padding:38px 44px;border:1px solid var(--line);border-radius:16px}
+.eyebrow{font-size:13px;font-weight:750;text-transform:uppercase;letter-spacing:.1em;color:var(--teal)}
+h1{font-size:clamp(28px,4.2vw,40px);line-height:1.15;letter-spacing:-.02em;margin:12px 0 10px}
+.meta{font-size:15px;color:var(--muted);margin:0 0 22px}
+h2{font-size:24px;line-height:1.25;margin:0 0 10px}
+h3{font-size:19px;margin:24px 0 6px}
+section{border-top:2px solid var(--line);padding:26px 0 8px;scroll-margin-top:12px}
+p{margin:10px 0 14px}li{margin:7px 0}
+p,li,td,th{overflow-wrap:anywhere}
+nav{display:flex;flex-wrap:wrap;gap:6px 18px;margin:8px 0 24px;font-size:15px}
+a{color:var(--teal);text-underline-offset:3px}a:focus-visible{outline:3px solid var(--warmline);outline-offset:4px}
+.simple{background:var(--warm);border:1px solid var(--warmline);border-radius:12px;padding:20px 24px;margin:6px 0 26px}
+.simple h2{font-size:22px}
+.simple p{font-size:19px}
+.callout{border-left:5px solid var(--teal);background:var(--soft);padding:14px 18px;margin:16px 0;border-radius:0 8px 8px 0}
+.warn{border-left:5px solid var(--red);background:var(--redsoft);padding:14px 18px;margin:16px 0;border-radius:0 8px 8px 0}
+.prop{border:1px solid var(--line);border-radius:12px;padding:6px 22px 14px;margin:20px 0}
+.prop h3{margin-top:16px}
+.tag{display:inline-block;font-size:12px;font-weight:750;letter-spacing:.08em;text-transform:uppercase;color:var(--teal);border:1px solid var(--teal);border-radius:999px;padding:1px 10px;margin-left:6px;vertical-align:middle}
+.table-scroll{overflow-x:auto;margin:12px 0 18px}
+table{border-collapse:collapse;width:100%;font-size:16px}
+th,td{padding:9px 11px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+th{background:var(--soft)}
+.fit{display:grid;grid-template-columns:1fr 1fr;gap:14px 18px;margin:14px 0}
+.fit div{border:1px solid var(--line);border-radius:10px;padding:12px 16px}
+.fit b{display:block;margin-bottom:4px;color:var(--teal)}
+.fit p{margin:0;font-size:16px}
+blockquote{margin:12px 0;padding:10px 18px;border-left:4px solid var(--warmline);background:var(--warm);border-radius:0 8px 8px 0;font-size:16px}
+blockquote p{margin:4px 0}
+.sources{font-size:15px;color:var(--muted)}
+code{font-size:.86em}
+@media(max-width:700px){main{margin:0;border:0;border-radius:0;padding:24px 16px}body{font-size:17px}h2{font-size:21px}.fit{grid-template-columns:1fr}}
+@media print{body{background:#fff}main{margin:0;border:0;max-width:none;padding:12px}.prop,.simple,table,.fit div{break-inside:avoid}}
+</style>
+</head>
+<body><main>
+<div class="eyebrow">Mind Machine Learning · UEMA research reading · 2026 papers</div>
+<h1>EyeRobot 2.0: choosing where to look as a motor action, and acting in the frame of what you are looking at</h1>
+<p class="meta">Kush Hari, Justin Kerr, Nidhya Shivakumar, Samarth Mahapatra, Carmelo Sferrazza, Jiahui Lei, Jitendra Malik, C. Karen Liu, Ken Goldberg and Angjoo Kanazawa (Amazon FAR; UC Berkeley; Stanford). Preprint; project page eyerobot2.github.io. arXiv 2610.03710, 2 October 2026.<br>
+Reading note written November 5, 2026 against UEMA specification v3.5 (<code>docs/UEMA_Specs/UEMA_Spec_v3_5.txt</code>). Section numbers are v3.5's.</p>
+<nav><a href="#short">The short version</a><a href="#did">What the paper did</a><a href="#results">What they measured</a><a href="#fit">Where it touches UEMA</a><a href="#useful">How it could help us</a><a href="#caution">What to be careful about</a><a href="#quotes">In the authors' words</a><a href="#sources">Sources</a></nav>
+
+<div class="simple" id="short"><h2>The short version</h2><p><strong>The idea:</strong> most precise robot manipulation uses cameras bolted to the wrists. These authors replace them with one fixed stereo camera and two "virtual eyes" that swivel (by image warping) to fixate a 3D point the robot chooses. The images are processed foveally, with more attention near the fixation point. Where to look is learned as an action, and the arm's commands are expressed relative to where the eyes are looking.</p>
+<p><strong>What it showed:</strong> with passive stereo alone, success fell from 52% to 27%; with active fixation it came back to match wrist cameras when those were clear (69% vs 64%) and doubled them when a grasped object blocked the wrist view (48% vs 22%). Expressing actions in the gaze frame rather than the world frame was worth 21 points on its own.</p>
+<p><strong>Why it matters to us:</strong> UEMA already treats gaze as a limb (handle 23) with a 5-degree fovea and a panorama. This paper is the strongest 2026 evidence that the choice is right, and it adds one idea the spec does not have: command the hand in the coordinates of the fixation point.</p></div>
+
+<section id="did"><h2>What the paper did</h2>
+<h3>The problem they set out to solve</h3><p>Nearly all bimanual manipulation systems rely on wrist-mounted cameras for precision. Colocating a camera with the gripper is limiting: grasped objects occlude it, it constrains gripper design, it blurs with motion, and it creates a domain gap with human egocentric video. With only a passive fixed stereo camera, standard behaviour-cloning policies lose much of their performance. The paper asks whether human-like active fixation can replace wrist cameras, and how gaze should be chosen without hand-labelled gaze.</p>
+<h3>What they built</h3><p>One calibrated stereo camera sits between the arms. Because rotating a camera about its optical centre only requires warping the image, "virtual eyes" are re-aimed at any 3D fixation point without 3D reconstruction, so gaze can be rendered counterfactually on top of existing teleoperation recordings. Fixation-centred images go through a pyramid of centred crops at several resolutions into a frozen vision transformer, so more tokens land near the centre. Gaze is hierarchical: a low-level gaze policy, trained by reinforcement learning on paused frames with a reward of negative distance between the fixation point and the named object's 3D centroid, outputs discrete deltas in azimuth, elevation and fixation depth (119 bins) at 30 Hz; a small target selector picks which object to fixate and when, rewarded by how much the fixation helps the arm policy's action prediction. The arm policy is behaviour cloning whose proprioception and action chunks are expressed in the fixation frame, with the fixation distance as a depth anchor.</p>
+<ul>
+<li>Hardware: two 7-DoF arms, one stereo camera 35 cm above the base, 120-degree field of view per eye at 1600 by 1200.</li>
+<li>Data: 1,278 demonstrations, about 288 minutes, over 7 real and 6 simulated tasks; over 1,000 real trials for evaluation.</li>
+<li>Fixation accuracy about 3.5 cm; end-to-end throughput about 20 Hz for the active-fixation policies.</li>
+</ul>
+</section>
+
+<section id="results"><h2>What they measured</h2><ul><li>Removing wrist cameras from standard policies: real success 52% to 27%. Active fixation beat passive stereo by 40 points in the real world and 20 in simulation across 13 tasks.</li><li>Versus wrist cameras: 69% vs 64% when wrist views were clear; 48% vs 22% when grasped objects occluded them.</li><li>Precision tasks: marker insertion 4% (passive) to 68% (active); straw insertion 8% to 44%, on the same camera stream.</li><li>Real ablations: removing foveation cost 20 points (66.5% to 46.5%); removing stereo depth cost 18.</li><li>Simulated ablations: expressing actions in the world frame instead of the fixation frame cost 21 points and put the method back on par with no gaze at all; fixating the wrong object throughout cost 24.</li><li>Gaze behaviour: every simulated policy learned to look first at the object the robot grasps first; gaze switched to a second object on handover tasks and stayed on the first on pot and spoon tasks.</li></ul></section>
+
+<section id="fit"><h2>Where it touches UEMA</h2>
+<p>Each box names a part of the UEMA specification and says, in plain terms, what the paper has to say about it.</p>
+<div class="fit"><div><b>§6.4 Gaze head and handle 23</b><p>UEMA emits gaze as azimuth and elevation from a learned query over forward-model latents. EyeRobot 2.0 does the same with a third output, fixation depth, and discretises the deltas. Their reason for discretising (breaking ties between duplicate objects) is a mild argument for a categorical gaze output alongside the continuous one.</p></div><div><b>§3.2 Foveated vision and §24.3 vision is 96% of compute</b><p>The paper's foveation (a pyramid of centred crops through a frozen encoder) was worth 20 points on real tasks. UEMA's fovea plus panorama is a stronger version of the same allocation. The paper's result is evidence that the compute-driven choice in §24.4 is also a capability-driven choice.</p></div><div><b>§12 Grounded anticipation, gaze dwell</b><p>The learned policies fixated the object about to be grasped before grasping it, which is precisely the gaze-dwell metric §12.1 lists as observable motor preparation. EyeRobot 2.0's selector reward (fixate where it helps action prediction) is a mechanism by which that anticipation could be learned rather than supervised.</p></div><div><b>§3.4 Physics handles, target_position in world coordinates</b><p>The paper's largest single lesson: commands expressed relative to the fixation point beat commands in a fixed world frame by 21 points. UEMA's handle targets are world positions. A fixation-relative command frame is a representational change the spec does not consider.</p></div><div><b>§11.1 Self as motor-correlation boundary</b><p>Gaze that tracks the hand or the object changes what correlates with motor commands in vision. If commands are expressed in the gaze frame, the correlation structure the body schema reads becomes gaze-dependent. This is a subtlety to keep in view if idea 4 is tried.</p></div><div><b>§1 Core thesis</b><p>Gaze here is learned by reinforcement learning with a hand-written reward, and the arm is a behaviour-cloned policy. Neither transfers. What transfers is the finding that gaze-as-action and gaze-relative commands matter, which UEMA can realise through the wellness gradient instead.</p></div></div>
+</section>
+
+<section id="useful"><h2>How it could help us</h2><p><strong>1. Test a fixation-relative command frame on the reach scene.</strong> Express each handle target as an offset from the point the eyes are fixating, convert to world coordinates for the physics, and compare reach success with the current world-frame targets from restored identical states. The paper's 21-point gap is the effect size to look for. This is a representational change in the motor encoder and the structured motor head, nothing else.</p>
+<p><strong>2. Add fixation depth to the gaze head.</strong> Azimuth and elevation say where; a third number says how far, and it anchored the paper's depth reasoning. MIMo's binocular eyes give vergence as the natural signal.</p>
+<p><strong>3. Record gaze dwell as an ability recheck.</strong> Time the fovea spends on the ball before the hand arrives is the paper's clearest emergent behaviour and the spec's own anticipation metric. It can be measured on the saved model today.</p>
+<p><strong>4. Use counterfactual gaze rendering for Stream 3.</strong> The paper renders any gaze on top of recorded demonstrations because the camera is fixed. In the simulator UEMA can do the same: replay a demonstration with different gaze sequences and let the forward model learn what looking does.</p></section>
+
+<section id="caution"><h2>What to be careful about</h2><p>Everything is task-specific imitation learning plus reinforcement learning with a geometric reward, on a real robot with a single fixed camera; none of the components fit UEMA's no-reward, no-policy design. Head and neck are not controlled; only the eyes. Gaze is object-level only. Simulation did not reproduce the foveation or stereo gains, which the authors attribute to missing visual complexity, so UEMA's MuJoCo scenes may also understate them. Throughput halved (40 Hz to 20 Hz) with active fixation. Code is promised but not yet released.</p></section>
+
+<section id="quotes"><h2>In the authors' words</h2><blockquote><p>Fixating on a dynamic task-relevant 3D point acts as a form of physical attention which centers input observations, compacts the data distribution, filters irrelevant visual regions, and allocates additional resolution where it matters for fine-grained tasks without the cost of processing the full panorama at high resolution.</p><p class="sources">Section 1</p></blockquote><blockquote><p>This canonicalized action representation moves dynamically with fixation, which results in a significant performance improvement over a fixed world frame.</p><p class="sources">Section 3.2</p></blockquote><blockquote><p>We prefer discretized action spaces as they help break ties in ambiguous actions (i.e., duplicate objects).</p><p class="sources">Appendix B.1</p></blockquote><blockquote><p>Including gaze while still allowing a global output space for the policy seems to still afford overfitting to specific trajectory positions in this low-data regime.</p><p class="sources">Section 5.1</p></blockquote><blockquote><p>in this work we do not control head or neck movement, and only propose how to coordinate fine-grained eye movements provided a good head position is already available.</p><p class="sources">Section 6</p></blockquote></section>
+
+<section id="sources"><h2>Sources</h2><ul class="sources"><li><a href="https://arxiv.org/html/2610.03710v1">arXiv 2610.03710 (HTML full text)</a></li><li><a href="https://arxiv.org/abs/2610.03710">arXiv abstract page</a></li><li><a href="https://eyerobot2.github.io/">Project page</a></li>
+<li>UEMA specification v3.5, <code>docs/UEMA_Specs/UEMA_Spec_v3_5.txt</code>, read November 5, 2026.</li></ul>
+<p class="sources">This page was written by Claude (an AI assistant) from a reading of the paper's full text on arXiv on November 5, 2026, together with the UEMA v3.5 specification. Numbers are the authors' own. Judgements about fit with UEMA are a reader's, not the authors'. Nothing on this page is implemented in UEMA.</p>
+</section>
+</main></body></html>

@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Interoceptive machines and UEMA</title>
+<meta name="description" content="Reading note: a conceptual framework that organises interoception into homeostatic, allostatic and enactive principles, read against UEMA's wellness design. No experiments.">
+<style>
+:root{--ink:#18343d;--teal:#086b62;--line:#cbdcd5;--soft:#e8f2ec;--warm:#fbf6ea;--warmline:#d9b25a;--red:#9c3328;--redsoft:#fbefec;--muted:#3b595e;--bg:#eff3ee;--card:#ffffff}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--ink:#dbe8e4;--teal:#5cc7b8;--line:#2f4a48;--soft:#1b302d;--warm:#2e2a1d;--warmline:#a8873e;--red:#e88b7e;--redsoft:#33211e;--muted:#a9c0bb;--bg:#101a19;--card:#162321}}
+:root[data-theme="dark"]{--ink:#dbe8e4;--teal:#5cc7b8;--line:#2f4a48;--soft:#1b302d;--warm:#2e2a1d;--warmline:#a8873e;--red:#e88b7e;--redsoft:#33211e;--muted:#a9c0bb;--bg:#101a19;--card:#162321}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:18px/1.6 system-ui,-apple-system,"Segoe UI",sans-serif}
+main{max-width:980px;margin:28px auto;background:var(--card);padding:38px 44px;border:1px solid var(--line);border-radius:16px}
+.eyebrow{font-size:13px;font-weight:750;text-transform:uppercase;letter-spacing:.1em;color:var(--teal)}
+h1{font-size:clamp(28px,4.2vw,40px);line-height:1.15;letter-spacing:-.02em;margin:12px 0 10px}
+.meta{font-size:15px;color:var(--muted);margin:0 0 22px}
+h2{font-size:24px;line-height:1.25;margin:0 0 10px}
+h3{font-size:19px;margin:24px 0 6px}
+section{border-top:2px solid var(--line);padding:26px 0 8px;scroll-margin-top:12px}
+p{margin:10px 0 14px}li{margin:7px 0}
+p,li,td,th{overflow-wrap:anywhere}
+nav{display:flex;flex-wrap:wrap;gap:6px 18px;margin:8px 0 24px;font-size:15px}
+a{color:var(--teal);text-underline-offset:3px}a:focus-visible{outline:3px solid var(--warmline);outline-offset:4px}
+.simple{background:var(--warm);border:1px solid var(--warmline);border-radius:12px;padding:20px 24px;margin:6px 0 26px}
+.simple h2{font-size:22px}
+.simple p{font-size:19px}
+.callout{border-left:5px solid var(--teal);background:var(--soft);padding:14px 18px;margin:16px 0;border-radius:0 8px 8px 0}
+.warn{border-left:5px solid var(--red);background:var(--redsoft);padding:14px 18px;margin:16px 0;border-radius:0 8px 8px 0}
+.prop{border:1px solid var(--line);border-radius:12px;padding:6px 22px 14px;margin:20px 0}
+.prop h3{margin-top:16px}
+.tag{display:inline-block;font-size:12px;font-weight:750;letter-spacing:.08em;text-transform:uppercase;color:var(--teal);border:1px solid var(--teal);border-radius:999px;padding:1px 10px;margin-left:6px;vertical-align:middle}
+.table-scroll{overflow-x:auto;margin:12px 0 18px}
+table{border-collapse:collapse;width:100%;font-size:16px}
+th,td{padding:9px 11px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+th{background:var(--soft)}
+.fit{display:grid;grid-template-columns:1fr 1fr;gap:14px 18px;margin:14px 0}
+.fit div{border:1px solid var(--line);border-radius:10px;padding:12px 16px}
+.fit b{display:block;margin-bottom:4px;color:var(--teal)}
+.fit p{margin:0;font-size:16px}
+blockquote{margin:12px 0;padding:10px 18px;border-left:4px solid var(--warmline);background:var(--warm);border-radius:0 8px 8px 0;font-size:16px}
+blockquote p{margin:4px 0}
+.sources{font-size:15px;color:var(--muted)}
+code{font-size:.86em}
+@media(max-width:700px){main{margin:0;border:0;border-radius:0;padding:24px 16px}body{font-size:17px}h2{font-size:21px}.fit{grid-template-columns:1fr}}
+@media print{body{background:#fff}main{margin:0;border:0;max-width:none;padding:12px}.prop,.simple,table,.fit div{break-inside:avoid}}
+</style>
+</head>
+<body><main>
+<div class="eyebrow">Mind Machine Learning · UEMA research reading · 2026 papers</div>
+<h1>The interoceptive machine framework: a review that defines what it would mean for an agent to feel its own condition</h1>
+<p class="meta">Diego Candia-Rivera (Sorbonne University, Paris Brain Institute). Review article (preprint). arXiv 2604.24527, 27 April 2026.<br>
+Reading note written November 5, 2026 against UEMA specification v3.5 (<code>docs/UEMA_Specs/UEMA_Spec_v3_5.txt</code>). Section numbers are v3.5's.</p>
+<nav><a href="#short">The short version</a><a href="#did">What the paper did</a><a href="#results">What they measured</a><a href="#fit">Where it touches UEMA</a><a href="#useful">How it could help us</a><a href="#caution">What to be careful about</a><a href="#quotes">In the authors' words</a><a href="#sources">Sources</a></nav>
+
+<div class="simple" id="short"><h2>The short version</h2><p><strong>What it is:</strong> a review and position paper, not an experiment. It asks what "interoception" (sensing one's own bodily condition) should mean for a machine, and answers: not where a signal comes from, but what it does. A variable is interoceptive if it encodes the system's condition relative to the limits it must stay within, if it changes which actions are chosen, and if it runs regulatory loops at several timescales.</p>
+<p><strong>The structure:</strong> three principles. Homeostatic: keep internal variables inside ranges, with a cost that task success cannot buy off. Allostatic: a "gut feeling" variable that anticipates trouble from imagined rollouts and tunes exploration and risk before anything goes wrong. Enactive: explore to learn about one's own internal variables, not only the world. The three are blended by weights that shift with how safe things are.</p>
+<p><strong>Why it matters to us:</strong> UEMA's wellness vector is already an interoceptive architecture by this paper's definition. The paper's value is a checklist of what such an architecture must do, a list of failure modes (reward hacking on internal proxies, refusing to act), and an evaluation plan.</p></div>
+
+<section id="did"><h2>What the paper did</h2>
+<h3>The problem they set out to solve</h3><p>Current embodied agents rely on externally specified objectives and lack self-regulation; they are rigid, task-focused and brittle to novel contexts. Biological agents adapt goals by integrating perception, memory and internal state. The paper argues that embodied AI lacks a principled account of how agents generate context-relevant significance grounded in internal regulation, and proposes a framework with motivating applications in assistive technology. It explicitly uses consciousness only as a functional term.</p>
+<h3>What they built</h3><p>Four requirements for interoceptive AI: internal state estimation; viability regulation (variables kept in bounded ranges); uncertainty-sensitive modulation of learning rate, exploration and decision thresholds; and internally modulated goal adjustment rather than reliance on externally defined reward. Each principle gets equations. Homeostatic: a viability vector with preferred ranges, a deviation cost, a reward that subtracts that cost from any task reward, and a policy temperature set by viability (either cautious when depleted or risk-seeking when depleted, two named strategies). Allostatic: a latent that is the discounted expected sum, over predicted rollouts, of viability-relevant features such as boundary proximity, growth of uncertainty and escalation of prediction error; it modulates policy parameters rather than being optimised. Enactive: an intrinsic objective of information gain about external and internal variables. An arbitration layer blends the three with weights summing to one. The paper then proposes evaluation metrics and a factorial ablation benchmark, and lists failure modes.</p>
+<ul>
+<li>No simulations, no numbers, no code; the author says the proposal is conceptual and architectural rather than empirically validated.</li>
+</ul>
+</section>
+
+<section id="results"><h2>What they measured</h2><ul><li>None. Predicted signatures only: fewer unsafe actions and faster recovery (homeostatic); better calibration and abstention under shift (allostatic); more efficient exploration under cost (enactive); interaction effects when all three are combined.</li><li>Proposed metrics: constraint-violation rate, recovery time, internal-state variance; calibration error, abstention accuracy; information gain per unit cost; factorial ablations across modules.</li><li>Named failure modes: internal proxies becoming optimisation targets (reward hacking); maladaptive avoidance (refusing to act, deferring, disengaging) when aversive internal signals dominate; conflict between self-preservation and external objectives.</li></ul></section>
+
+<section id="fit"><h2>Where it touches UEMA</h2>
+<p>Each box names a part of the UEMA specification and says, in plain terms, what the paper has to say about it.</p>
+<div class="fit"><div><b>§7.1 What wellness is</b><p>The spec defines wellness as a region of perception space where predictions succeed, sensors function, capacity is available and the self-model is coherent. That is a viability vector with bounded ranges in this paper's terms. UEMA meets the paper's four requirements on paper: state estimation (grounded register), regulation (wellness gradient), uncertainty modulation (adaptive depth), internally set goals (curiosity and intention).</p></div><div><b>§7.3 Approximate wellness in imagination</b><p>The paper's allostatic 'gut feeling' is a discounted sum of viability features over predicted rollouts that tunes exploration before anything goes wrong. UEMA's approximate wellness evaluator over imagined tokens is the same object, and the paper's point that it should modulate, not be maximised, is a design caution for how it is used in §9.2.</p></div><div><b>§21 Curiosity</b><p>The enactive principle adds information gain about internal variables to the usual curiosity about the world. UEMA's curiosity is a band on prediction error with no internal-variable term; a curiosity about one's own capacity and fatigue dynamics is a small extension the spec does not have.</p></div><div><b>§9.5 Bootstrap and §22 emergence</b><p>The paper's named failure, maladaptive avoidance, is exactly what a wellness gradient could produce in a neonate: the safest action is stillness. The spec's answer is curiosity's negative drive when prediction error is too low (§21). The paper's framing makes that answer a requirement, not a nicety.</p></div><div><b>§7.4 Wellness gradient to motor</b><p>The paper insists that task success must not be able to compensate for internal instability. UEMA has no task reward, so the risk is reversed: wellness terms can be gamed by the model that evaluates them. The paper's mitigation, separating the monitored variables from the acting policy, is the spec's grounded register being authoritative (§4.3).</p></div><div><b>§28 Open questions</b><p>The paper's evaluation table (violation rate, recovery time, internal-state variance, calibration) is a candidate set of registry metrics for wellness that the spec does not yet list.</p></div></div>
+</section>
+
+<section id="useful"><h2>How it could help us</h2><p><strong>1. Adopt the paper's evaluation metrics for wellness.</strong> Constraint-violation rate (how often capacity or joint-limit wellness crosses a floor), recovery time after a fall or a depletion, and variance of each wellness component over a session are all computable from the saved model's runs and would give the wellness evaluators their first standardised numbers.</p>
+<p><strong>2. Check for maladaptive avoidance explicitly.</strong> Measure movement magnitude as a function of wellness. If the model moves less as wellness rises, and curiosity's negative drive is not pulling it back, the paper's failure mode is present.</p>
+<p><strong>3. Consider curiosity about internal variables.</strong> A term that rewards reduction of prediction error on the proprioception token's capacity and fatigue fields would be the enactive principle in UEMA's terms, and would push the model to learn its own limits rather than only the world's.</p>
+<p><strong>4. Use the paper's four requirements as a one-page audit.</strong> For each, name the UEMA component that meets it and the test that shows it does. Requirement four, internally modulated goal adjustment, is the one UEMA cannot yet demonstrate, because select_goal does not exist (§21).</p></section>
+
+<section id="caution"><h2>What to be careful about</h2><p>There are no experiments. The equations are proposals with free functions and weights, and the author says so. The framework keeps a task reward term, which UEMA does not have, so the reward-hacking warning transfers in a modified form. The application focus is assistive and clinical robotics, not developmental learning. The paper is useful as a vocabulary and a checklist, not as evidence.</p></section>
+
+<section id="quotes"><h2>In the authors' words</h2><blockquote><p>In this framework, artificial interoception is defined not by the physical origin of a signal, but by its function, which is represented as an architecture.</p><p class="sources">Section 1</p></blockquote><blockquote><p>Unlike simple reward shaping, this may ensure that task success cannot compensate for shattering internal instability, mirroring biological agents whose survival constraints override opportunistic behavior.</p><p class="sources">Section 2.1</p></blockquote><blockquote><p>Rather than serving as an optimization target, g_t acts as a regulatory signal that modulates policy parameters.</p><p class="sources">Section 3.1</p></blockquote><blockquote><p>when maintaining internal stability requires doing little, the system prioritizes staying safe. When the situation allows some risk but remains uncertain, the system explores carefully. And when conditions are stable and safe, the drive to explore and learn takes the lead.</p><p class="sources">Section 4.1</p></blockquote><blockquote><p>this proposal remains conceptual and architectural rather than fully validated empirically.</p><p class="sources">Section 7.2</p></blockquote></section>
+
+<section id="sources"><h2>Sources</h2><ul class="sources"><li><a href="https://arxiv.org/pdf/2604.24527">arXiv 2604.24527 (PDF full text)</a></li><li><a href="https://arxiv.org/abs/2604.24527">arXiv abstract page</a></li>
+<li>UEMA specification v3.5, <code>docs/UEMA_Specs/UEMA_Spec_v3_5.txt</code>, read November 5, 2026.</li></ul>
+<p class="sources">This page was written by Claude (an AI assistant) from a reading of the paper's full text on arXiv on November 5, 2026, together with the UEMA v3.5 specification. Numbers are the authors' own. Judgements about fit with UEMA are a reader's, not the authors'. Nothing on this page is implemented in UEMA.</p>
+</section>
+</main></body></html>

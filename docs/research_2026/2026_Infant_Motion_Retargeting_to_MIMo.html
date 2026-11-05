@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Infant motion retargeting and UEMA</title>
+<meta name="description" content="Reading note: a released pipeline from infant video to MIMo movement with sub-centimetre accuracy, read as the missing front end for UEMA's Stream 3 imitation grounding.">
+<style>
+:root{--ink:#18343d;--teal:#086b62;--line:#cbdcd5;--soft:#e8f2ec;--warm:#fbf6ea;--warmline:#d9b25a;--red:#9c3328;--redsoft:#fbefec;--muted:#3b595e;--bg:#eff3ee;--card:#ffffff}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--ink:#dbe8e4;--teal:#5cc7b8;--line:#2f4a48;--soft:#1b302d;--warm:#2e2a1d;--warmline:#a8873e;--red:#e88b7e;--redsoft:#33211e;--muted:#a9c0bb;--bg:#101a19;--card:#162321}}
+:root[data-theme="dark"]{--ink:#dbe8e4;--teal:#5cc7b8;--line:#2f4a48;--soft:#1b302d;--warm:#2e2a1d;--warmline:#a8873e;--red:#e88b7e;--redsoft:#33211e;--muted:#a9c0bb;--bg:#101a19;--card:#162321}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:18px/1.6 system-ui,-apple-system,"Segoe UI",sans-serif}
+main{max-width:980px;margin:28px auto;background:var(--card);padding:38px 44px;border:1px solid var(--line);border-radius:16px}
+.eyebrow{font-size:13px;font-weight:750;text-transform:uppercase;letter-spacing:.1em;color:var(--teal)}
+h1{font-size:clamp(28px,4.2vw,40px);line-height:1.15;letter-spacing:-.02em;margin:12px 0 10px}
+.meta{font-size:15px;color:var(--muted);margin:0 0 22px}
+h2{font-size:24px;line-height:1.25;margin:0 0 10px}
+h3{font-size:19px;margin:24px 0 6px}
+section{border-top:2px solid var(--line);padding:26px 0 8px;scroll-margin-top:12px}
+p{margin:10px 0 14px}li{margin:7px 0}
+p,li,td,th{overflow-wrap:anywhere}
+nav{display:flex;flex-wrap:wrap;gap:6px 18px;margin:8px 0 24px;font-size:15px}
+a{color:var(--teal);text-underline-offset:3px}a:focus-visible{outline:3px solid var(--warmline);outline-offset:4px}
+.simple{background:var(--warm);border:1px solid var(--warmline);border-radius:12px;padding:20px 24px;margin:6px 0 26px}
+.simple h2{font-size:22px}
+.simple p{font-size:19px}
+.callout{border-left:5px solid var(--teal);background:var(--soft);padding:14px 18px;margin:16px 0;border-radius:0 8px 8px 0}
+.warn{border-left:5px solid var(--red);background:var(--redsoft);padding:14px 18px;margin:16px 0;border-radius:0 8px 8px 0}
+.prop{border:1px solid var(--line);border-radius:12px;padding:6px 22px 14px;margin:20px 0}
+.prop h3{margin-top:16px}
+.tag{display:inline-block;font-size:12px;font-weight:750;letter-spacing:.08em;text-transform:uppercase;color:var(--teal);border:1px solid var(--teal);border-radius:999px;padding:1px 10px;margin-left:6px;vertical-align:middle}
+.table-scroll{overflow-x:auto;margin:12px 0 18px}
+table{border-collapse:collapse;width:100%;font-size:16px}
+th,td{padding:9px 11px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+th{background:var(--soft)}
+.fit{display:grid;grid-template-columns:1fr 1fr;gap:14px 18px;margin:14px 0}
+.fit div{border:1px solid var(--line);border-radius:10px;padding:12px 16px}
+.fit b{display:block;margin-bottom:4px;color:var(--teal)}
+.fit p{margin:0;font-size:16px}
+blockquote{margin:12px 0;padding:10px 18px;border-left:4px solid var(--warmline);background:var(--warm);border-radius:0 8px 8px 0;font-size:16px}
+blockquote p{margin:4px 0}
+.sources{font-size:15px;color:var(--muted)}
+code{font-size:.86em}
+@media(max-width:700px){main{margin:0;border:0;border-radius:0;padding:24px 16px}body{font-size:17px}h2{font-size:21px}.fit{grid-template-columns:1fr}}
+@media print{body{background:#fff}main{margin:0;border:0;max-width:none;padding:12px}.prop,.simple,table,.fit div{break-inside:avoid}}
+</style>
+</head>
+<body><main>
+<div class="eyebrow">Mind Machine Learning · UEMA research reading · 2026 papers</div>
+<h1>Simulating infant first-person experience by retargeting baby motion onto MIMo</h1>
+<p class="meta">Francisco M. López, Hoshinori Kanazawa, Ondrej Fiala, Yakov Balashov, Valentin Marcel, Lukas Rustler, Miles Lenz, Dongmin Kim, Yasuo Kuniyoshi, Jochen Triesch and Matej Hoffmann (FIAS; UNSW; University of Tokyo; Czech Technical University; Goethe University). IEEE ICDL 2026. arXiv 2604.27583, 30 April 2026, revised 16 June 2026 · Code: <a href="https://github.com/ctu-vras/motion-retargeting/">https://github.com/ctu-vras/motion-retargeting/</a>.<br>
+Reading note written November 5, 2026 against UEMA specification v3.5 (<code>docs/UEMA_Specs/UEMA_Spec_v3_5.txt</code>). Section numbers are v3.5's.</p>
+<nav><a href="#short">The short version</a><a href="#did">What the paper did</a><a href="#results">What they measured</a><a href="#fit">Where it touches UEMA</a><a href="#useful">How it could help us</a><a href="#caution">What to be careful about</a><a href="#quotes">In the authors' words</a><a href="#sources">Sources</a></nav>
+
+<div class="simple" id="short"><h2>The short version</h2><p><strong>What they did:</strong> filmed a 6-month-old lying on its back with several cameras, recovered the 3D skeleton frame by frame, and "puppeteered" four humanoid bodies, including MIMo, to copy the movement. While MIMo moves, every one of its senses is recorded: what its eyes see, which of its 13,833 skin sensors fire, what its joints and inner ear report.</p>
+<p><strong>What it showed:</strong> on MIMo the copy was accurate to 4.6 millimetres in position and about 2 degrees in limb direction, far better than the other bodies. Self-touch events in the simulation matched expert hand-coding of the video reasonably well. The code is public.</p>
+<p><strong>Why it matters to us:</strong> UEMA's Stream 3 (§20.4) wants real movement played on the body so the forward model learns what coordinated movement feels like, and its hard prerequisite is a working extraction pipeline. This is that pipeline, on the right body, released, by the MIMo authors. It also feeds the November 5 addendum on transformed-demonstration replay.</p></div>
+
+<section id="did"><h2>What the paper did</h2>
+<h3>The problem they set out to solve</h3><p>Developmental science has third-person video of infants, hand-coded or pose-estimated, but no dense first-person data, because head-mounted cameras are too invasive for young infants. The paper bridges the gap: from video, estimate 3D pose, retarget it onto physical and simulated humanoids, and replay it to generate the infant's simulated first-person multisensory experience for analysis, semi-automated annotation, early detection of atypical development, and robotics.</p>
+<h3>What they built</h3><p>A multi-camera recording (2,900 frames per camera over about two minutes) is processed with a 2D keypoint detector per view and triangulated to 3D; a single-camera alternative lifts 2D to 3D with an infant body model. For MIMo, the body's geometric primitives are first scaled to the infant's measured dimensions, then at every timestep MuJoCo motion-capture bodies attached to each keypoint pull the corresponding body part toward its target through the constraint solver, so the pose is reached through physics rather than by setting joint angles. When the solver settles, the pose is stored, the next frame's targets are set, and all sensory streams are logged. Accuracy is measured against the triangulated 3D keypoints; a cross-embodiment analysis compares the sensory streams across bodies; a self-touch analysis compares simulated hand-to-body contacts with expert coding.</p>
+<ul>
+<li>Bodies: the physical iCub, its Python simulator, the musculoskeletal EMFANT model, and MIMo (46 DoF, 13,833 skin sensors in this configuration, binocular vision, vestibular sense).</li>
+<li>One infant, one session, used as pseudo-ground truth; MIMo also reached sub-centimetre accuracy on another public infant dataset (not shown).</li>
+</ul>
+</section>
+
+<section id="results"><h2>What they measured</h2><ul><li>Position error on MIMo 4.6 mm; under 10 cm on all bodies against a 66 cm infant.</li><li>Limb orientation error on MIMo 1.96 degrees versus over 5 degrees on every other platform; limb angular velocity error 0.15 degrees per step, the lowest.</li><li>Cross-body comparison of the generated touch, proprioception and vision streams: rank correlation about 0.4 between any two simulators versus under 0.2 for shuffled windows; a 20-dimensional latent captured most of the shared structure.</li><li>Self-touch annotation against expert coding: the simulated iCub matched best, then MIMo, then EMFANT.</li><li>Vestibular acceleration peaked at the moment of a supine-to-prone roll-over.</li><li>Most of MIMo's skin sensors were inactive over the session; active ones were mainly hands, torso and lower legs, with activation spreading from the contact point to neighbours.</li></ul></section>
+
+<section id="fit"><h2>Where it touches UEMA</h2>
+<p>Each box names a part of the UEMA specification and says, in plain terms, what the paper has to say about it.</p>
+<div class="fit"><div><b>§20.4 Stream 3, imitation grounding</b><p>The spec's hard prerequisite is 'PH extraction pipeline working'. This paper is a released extraction pipeline from video to MIMo movement with the sensory streams recorded in parallel. It does not produce physics-handle commands, but it produces the achieved poses and the sensations that Stream 3 needs the forward model to predict.</p></div><div><b>The November 5 addendum, transformed-demonstration replay</b><p>The addendum's A1 proposes transforming a few authored demonstrations into many. This paper is the source of the demonstrations: real infant movement rather than authored movement, on the same body, with a verification measure (keypoint error) already defined.</p></div><div><b>§20.6 Contract 2, requested versus achieved</b><p>The paper's puppeteering reaches poses through MuJoCo's constraint solver, so the achieved pose and the target pose differ by a known residual (4.6 mm). That residual is a measured instance of the gap Contract 2 insists must be carried as separate fields.</p></div><div><b>§19.3 Discovery of self versus world, and §11.1</b><p>Replayed infant movement produces the correlated proprioception, touch and vision that the body schema reads. The paper's self-touch statistics (which hand touches which region, how often) are a reference distribution for what babbling-era self-contact should look like.</p></div><div><b>§3.1 Tactile sensing</b><p>13,833 skin sensors versus UEMA's roughly 200 patches: the paper shows the activation pattern over a real movement session. Where UEMA's patches sit relative to the regions that actually get touched is a question this data answers.</p></div><div><b>§12 Grounded anticipation, gaze</b><p>Stream 3 says gaze data is critical for teaching gaze-leads-hand timing. The paper's hand-regard demonstration (an infant looking at its own hand) is the simplest case of that, now reproducible in the simulator.</p></div></div>
+</section>
+
+<section id="useful"><h2>How it could help us</h2><p><strong>1. Run the released pipeline on the research model's MIMo configuration.</strong> The code is public and targets MIMo. The first product is a replayed infant session with all six of UEMA's senses logged, which is Stream 3 data at step zero as §20.4 intends.</p>
+<p><strong>2. Train the forward model on replayed movement and measure prediction error by sense.</strong> The spec's claim is that the forward model learns what coordinated movement feels like. The test is whether tactile and proprioceptive prediction error on replayed infant movement falls faster than on babbling, from the same starting checkpoint.</p>
+<p><strong>3. Feed the addendum's verification gate.</strong> The addendum needs each transformed demonstration to be checked against a recording. The paper's keypoint error and contact-order measures are a ready-made gate.</p>
+<p><strong>4. Compare self-touch statistics.</strong> Record which body regions UEMA's babbling hand touches and how often, and compare with the paper's infant-derived distribution. A large mismatch would say the neonate constraints are placing the hands somewhere infants do not.</p></section>
+
+<section id="caution"><h2>What to be careful about</h2><p>One infant and one session as ground truth; accuracy is bounded by the 3D pose estimator. The replay is kinematic puppeteering, not motor control: MIMo is pulled into poses by constraint forces, so the forward model would be learning the sensory consequences of being moved, not of moving, until commands are inferred (the spec's Stream 3 says exactly this is the point, but it should be kept distinct from Stream 1). No physics-handle commands are produced. Per-platform error numbers for the other bodies are in figures only. No infant video dataset is released, only the code.</p></section>
+
+<section id="quotes"><h2>In the authors' words</h2><blockquote><p>MIMo's pose is adjusted at every timestep using MuJoCo's inverse kinematics solver with auxiliary motion capture (mocap) bodies. These mocap bodies exert forces over all the joints so as to minimize the distance between each keypoint and the corresponding target position.</p><p class="sources">Section II-D</p></blockquote><blockquote><p>MIMo's multimodal sensory streams are recorded in parallel.</p><p class="sources">Section II-D</p></blockquote><blockquote><p>MIMo's MAE for this session is 4.6 mm.</p><p class="sources">Section III-A</p></blockquote><blockquote><p>We speculate that curiosity-driven infants might learn such behaviors simply by attempting to maximize their vestibular activations.</p><p class="sources">Section V-D</p></blockquote><blockquote><p>MIMo is a 'growing platform' and achieves extremely accurate retargeting (average error under 0.5 cm).</p><p class="sources">Section VII</p></blockquote></section>
+
+<section id="sources"><h2>Sources</h2><ul class="sources"><li><a href="https://arxiv.org/html/2604.27583v2">arXiv 2604.27583 v2 (HTML full text)</a></li><li><a href="https://arxiv.org/abs/2604.27583">arXiv abstract page</a></li><li><a href="https://github.com/ctu-vras/motion-retargeting/">Code</a></li><li><a href="https://youtu.be/8iGdArv4QZ0">Video</a></li>
+<li>UEMA specification v3.5, <code>docs/UEMA_Specs/UEMA_Spec_v3_5.txt</code>, read November 5, 2026.</li></ul>
+<p class="sources">This page was written by Claude (an AI assistant) from a reading of the paper's full text on arXiv on November 5, 2026, together with the UEMA v3.5 specification. Numbers are the authors' own. Judgements about fit with UEMA are a reader's, not the authors'. Nothing on this page is implemented in UEMA.</p>
+</section>
+</main></body></html>

@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Curiosity-Critic and UEMA</title>
+<meta name="description" content="Reading note: a derivation that turns "improve the world model everywhere" into a per-step curiosity signal with a learned noise-floor baseline, read against UEMA's moderate-error curiosity band.">
+<style>
+:root{--ink:#18343d;--teal:#086b62;--line:#cbdcd5;--soft:#e8f2ec;--warm:#fbf6ea;--warmline:#d9b25a;--red:#9c3328;--redsoft:#fbefec;--muted:#3b595e;--bg:#eff3ee;--card:#ffffff}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--ink:#dbe8e4;--teal:#5cc7b8;--line:#2f4a48;--soft:#1b302d;--warm:#2e2a1d;--warmline:#a8873e;--red:#e88b7e;--redsoft:#33211e;--muted:#a9c0bb;--bg:#101a19;--card:#162321}}
+:root[data-theme="dark"]{--ink:#dbe8e4;--teal:#5cc7b8;--line:#2f4a48;--soft:#1b302d;--warm:#2e2a1d;--warmline:#a8873e;--red:#e88b7e;--redsoft:#33211e;--muted:#a9c0bb;--bg:#101a19;--card:#162321}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:18px/1.6 system-ui,-apple-system,"Segoe UI",sans-serif}
+main{max-width:980px;margin:28px auto;background:var(--card);padding:38px 44px;border:1px solid var(--line);border-radius:16px}
+.eyebrow{font-size:13px;font-weight:750;text-transform:uppercase;letter-spacing:.1em;color:var(--teal)}
+h1{font-size:clamp(28px,4.2vw,40px);line-height:1.15;letter-spacing:-.02em;margin:12px 0 10px}
+.meta{font-size:15px;color:var(--muted);margin:0 0 22px}
+h2{font-size:24px;line-height:1.25;margin:0 0 10px}
+h3{font-size:19px;margin:24px 0 6px}
+section{border-top:2px solid var(--line);padding:26px 0 8px;scroll-margin-top:12px}
+p{margin:10px 0 14px}li{margin:7px 0}
+p,li,td,th{overflow-wrap:anywhere}
+nav{display:flex;flex-wrap:wrap;gap:6px 18px;margin:8px 0 24px;font-size:15px}
+a{color:var(--teal);text-underline-offset:3px}a:focus-visible{outline:3px solid var(--warmline);outline-offset:4px}
+.simple{background:var(--warm);border:1px solid var(--warmline);border-radius:12px;padding:20px 24px;margin:6px 0 26px}
+.simple h2{font-size:22px}
+.simple p{font-size:19px}
+.callout{border-left:5px solid var(--teal);background:var(--soft);padding:14px 18px;margin:16px 0;border-radius:0 8px 8px 0}
+.warn{border-left:5px solid var(--red);background:var(--redsoft);padding:14px 18px;margin:16px 0;border-radius:0 8px 8px 0}
+.prop{border:1px solid var(--line);border-radius:12px;padding:6px 22px 14px;margin:20px 0}
+.prop h3{margin-top:16px}
+.tag{display:inline-block;font-size:12px;font-weight:750;letter-spacing:.08em;text-transform:uppercase;color:var(--teal);border:1px solid var(--teal);border-radius:999px;padding:1px 10px;margin-left:6px;vertical-align:middle}
+.table-scroll{overflow-x:auto;margin:12px 0 18px}
+table{border-collapse:collapse;width:100%;font-size:16px}
+th,td{padding:9px 11px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+th{background:var(--soft)}
+.fit{display:grid;grid-template-columns:1fr 1fr;gap:14px 18px;margin:14px 0}
+.fit div{border:1px solid var(--line);border-radius:10px;padding:12px 16px}
+.fit b{display:block;margin-bottom:4px;color:var(--teal)}
+.fit p{margin:0;font-size:16px}
+blockquote{margin:12px 0;padding:10px 18px;border-left:4px solid var(--warmline);background:var(--warm);border-radius:0 8px 8px 0;font-size:16px}
+blockquote p{margin:4px 0}
+.sources{font-size:15px;color:var(--muted)}
+code{font-size:.86em}
+@media(max-width:700px){main{margin:0;border:0;border-radius:0;padding:24px 16px}body{font-size:17px}h2{font-size:21px}.fit{grid-template-columns:1fr}}
+@media print{body{background:#fff}main{margin:0;border:0;max-width:none;padding:12px}.prop,.simple,table,.fit div{break-inside:avoid}}
+</style>
+</head>
+<body><main>
+<div class="eyebrow">Mind Machine Learning · UEMA research reading · 2026 papers</div>
+<h1>Curiosity-Critic: curiosity as error above the noise floor, so the agent is not trapped by what cannot be learned</h1>
+<p class="meta">Vin Bhaskara and Haicheng Wang (University of Toronto). Epistemic Intelligence in Machine Learning Workshop, ICML 2026. arXiv 2604.18701, 20 April 2026, revised 16 June 2026 · Code: <a href="https://github.com/vinbhaskara/Curiosity-Critic">https://github.com/vinbhaskara/Curiosity-Critic</a>.<br>
+Reading note written November 5, 2026 against UEMA specification v3.5 (<code>docs/UEMA_Specs/UEMA_Spec_v3_5.txt</code>). Section numbers are v3.5's.</p>
+<nav><a href="#short">The short version</a><a href="#did">What the paper did</a><a href="#results">What they measured</a><a href="#fit">Where it touches UEMA</a><a href="#useful">How it could help us</a><a href="#caution">What to be careful about</a><a href="#quotes">In the authors' words</a><a href="#sources">Sources</a></nav>
+
+<div class="simple" id="short"><h2>The short version</h2><p><strong>The problem:</strong> curiosity based on raw prediction error gets stuck staring at things that are unpredictable and always will be, the "noisy TV". Curiosity based on how much error dropped after the last update avoids that but is a jittery signal tied to the optimiser's mood.</p>
+<p><strong>Their derivation:</strong> start from the ideal, "reward the transition by how much the whole model's error over everything it has ever seen goes down", and show that in the long run this collapses to a per-step quantity: current error minus the error the model will eventually have on this transition. That eventual error is the irreducible noise floor. A small critic network learns to predict it; the reward is error above the floor.</p>
+<p><strong>What it showed:</strong> on a grid world half deterministic and half noise, raw-error curiosity spent all its time in the noise (error 7.1 on the learnable half); the critic version learned the learnable half best of all non-oracle methods (1.86) and the critic estimated the noise floor to within 5% after 1% of training.</p>
+<p><strong>Why it matters to us:</strong> UEMA's curiosity band (seek error between 0.1 and 0.4) is a hand-set guess, listed as open in §28. This paper gives a principled replacement for the lower part of the band: error that is above what the model can ever remove.</p></div>
+
+<section id="did"><h2>What the paper did</h2>
+<h3>The problem they set out to solve</h3><p>Model-based agents are bottlenecked by world-model quality, so the question is which intrinsic signal drives the agent to collect the data that most improves the model. Raw prediction-error curiosity is trapped by aleatoric transitions; one-step error-reduction curiosity suppresses them but is highly variable. Both compute reward only from the current transition and ignore the model's cumulative error across everything visited, so neither prefers transitions that globally reduce error.</p>
+<h3>What they built</h3><p>Define the ideal reward as the total reduction, after one model update, of prediction error summed over every transition ever visited. Summed over an episode this telescopes (in the undiscounted limit) to a per-step form: each transition's error when visited minus its error under the final model. Two approximations make it computable online: replace the final model by the asymptotic one, and replace the single sample by its expectation. The result is current error minus an asymptotic baseline, which for a squared-error model is the irreducible noise of that state-action pair. A small critic is trained alongside the model to regress the post-update error, and the reward is current error minus the critic's estimate. Negative rewards are clipped to zero. Raw-error curiosity is the special case with baseline zero; one-step-reduction curiosity is the special case with baseline equal to the post-update error.</p>
+<ul>
+<li>Environment: a 30 by 30 grid; the left half emits fixed 200-bit observations, the right half emits fresh random bits every visit (noise floor 7.07). Metric: error on the deterministic half after 35,000 steps, five seeds.</li>
+<li>World model and critic are small MLPs; the policy is a value table with epsilon-greedy exploration. One CPU laptop.</li>
+</ul>
+</section>
+
+<section id="results"><h2>What they measured</h2><ul><li>Final error on the learnable half (lower is better): neural critic 1.858; tabular critic 1.912; oracle with the true noise floor 1.736; RND on states 2.220; random walk 2.348; one-step error reduction 2.939; visit counts 5.588; RND on observations 6.842; raw prediction error 7.114.</li><li>Raw-error curiosity's visits to the learnable half fell to about zero: the noisy-TV trap reproduced.</li><li>The neural critic's noise-floor estimate was within 5% of the truth by step 400, about 1% of training.</li><li>Fraction of the last 5,000 steps spent on the learnable half: critic 70.9%, RND 52.8%, random 42.6%, oracle 95.3%.</li><li>Time to first reach error 3.0: critic 13,400 steps; RND 21,700; one-step reduction 34,400.</li></ul></section>
+
+<section id="fit"><h2>Where it touches UEMA</h2>
+<p>Each box names a part of the UEMA specification and says, in plain terms, what the paper has to say about it.</p>
+<div class="fit"><div><b>§21 Curiosity, the 0.1 to 0.4 band</b><p>The band's lower edge ('too easy, bored') and upper edge ('too hard, overwhelmed') are absolute numbers. This paper replaces the upper edge with a learned, state-specific floor: error above what the model can ever remove is worth pursuing; error at the floor is not, however large. The band becomes 'learnable error', which §28 asks for.</p></div><div><b>§19.4 Progressive prediction refinement</b><p>The spec notes that stochastic world events (another agent acts) remain hard to predict. Those are exactly the transitions a raw-error curiosity would fixate on. A noise-floor baseline is what lets the model leave them alone once it has learned what it can.</p></div><div><b>§22.1 Stress as sustained prediction error</b><p>Stress is 'elevated error that resists reduction despite effort'. The critic's baseline is a learned estimate of exactly that quantity per state. A high floor is the model's own knowledge that this is not going to get better, which is the computational content of the spec's distinction between stress and curiosity.</p></div><div><b>§23.2 Meta-prediction level 2</b><p>'I predict my prediction will be wrong by ε' is, word for word, what the critic learns: the post-update error of the model on this input. UEMA could get level 2 meta-prediction and a better curiosity signal from one small head.</p></div><div><b>§7.2 prediction_wellness(input_dim=1)</b><p>The prediction wellness term takes raw prediction error. If it took error above the learned floor instead, a body facing an inherently unpredictable event would not have its wellness pushed down by something it cannot fix.</p></div><div><b>§1 Core thesis</b><p>The paper's reward drives a policy, which UEMA rejects. But the quantity itself, error minus learned floor, is a modulation of the wellness gradient in UEMA's terms, which is how §21 already uses curiosity.</p></div></div>
+</section>
+
+<section id="useful"><h2>How it could help us</h2><p><strong>1. Add a critic head that predicts next-step prediction error.</strong> Input: the forward model's latent for the current step. Target: the realised prediction error on that step after the model update. This head is the spec's level 2 meta-prediction and the paper's noise-floor estimator at once. Training cost is negligible.</p>
+<p><strong>2. Replace the curiosity band's inputs.</strong> Feed compute_drive() the error above the critic's estimate rather than raw error. Keep the lower edge (boredom) as is. Measure whether the model spends less time on the floor scene's chaotic falls and more on the learnable approach to the ball.</p>
+<p><strong>3. Log the critic's output as a stress map.</strong> Where the critic predicts a high floor, the body is in a situation it expects not to learn. That is a direct, per-state measurement for the §22.1 emergence claim.</p>
+<p><strong>4. Try the same baseline in prediction wellness.</strong> It is a one-input evaluator; the input can be error above floor instead of error.</p></section>
+
+<section id="caution"><h2>What to be careful about</h2><p>A 30 by 30 grid world with a two-layer model and a tabular policy; the authors say high-dimensional behaviour is uncharacterised and name MuJoCo as a next step. No comparison with disagreement-based or ensemble methods. The random walk did well only because the grid is open. The baseline is an approximation and sat about 7% above the oracle. Critic overestimation (declaring something unlearnable too early) is not studied. The spec's 'too hard, overwhelmed' edge is about learning stability, not only unlearnability, so the floor does not replace it entirely.</p></section>
+
+<section id="quotes"><h2>In the authors' words</h2><blockquote><p>The reward is higher for learnable transitions and collapses toward zero for stochastic ones.</p><p class="sources">Abstract</p></blockquote><blockquote><p>[the baseline is] precisely the irreducible noise floor that no model can learn away.</p><p class="sources">Section 4.1</p></blockquote><blockquote><p>the critic only has to learn how hard a transition is to predict, not what comes next.</p><p class="sources">Section 4.2</p></blockquote><blockquote><p>This reward is positive when the current model error exceeds the estimated noise floor</p><p class="sources">Section 4.3</p></blockquote><blockquote><p>behaviour in high-dimensional settings is not yet characterized empirically.</p><p class="sources">Section 6</p></blockquote></section>
+
+<section id="sources"><h2>Sources</h2><ul class="sources"><li><a href="https://arxiv.org/html/2604.18701">arXiv 2604.18701 v3 (HTML full text)</a></li><li><a href="https://arxiv.org/abs/2604.18701">arXiv abstract page</a></li><li><a href="https://github.com/vinbhaskara/Curiosity-Critic">Code</a></li>
+<li>UEMA specification v3.5, <code>docs/UEMA_Specs/UEMA_Spec_v3_5.txt</code>, read November 5, 2026.</li></ul>
+<p class="sources">This page was written by Claude (an AI assistant) from a reading of the paper's full text on arXiv on November 5, 2026, together with the UEMA v3.5 specification. Numbers are the authors' own. Judgements about fit with UEMA are a reader's, not the authors'. Nothing on this page is implemented in UEMA.</p>
+</section>
+</main></body></html>

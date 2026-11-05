@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Self-prior mirror test and UEMA</title>
+<meta name="description" content="Reading note: a learned density over familiar multisensory experience used as the preferred state in active inference, producing mark-directed behaviour, read against UEMA's body schema and wellness design.">
+<style>
+:root{--ink:#18343d;--teal:#086b62;--line:#cbdcd5;--soft:#e8f2ec;--warm:#fbf6ea;--warmline:#d9b25a;--red:#9c3328;--redsoft:#fbefec;--muted:#3b595e;--bg:#eff3ee;--card:#ffffff}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--ink:#dbe8e4;--teal:#5cc7b8;--line:#2f4a48;--soft:#1b302d;--warm:#2e2a1d;--warmline:#a8873e;--red:#e88b7e;--redsoft:#33211e;--muted:#a9c0bb;--bg:#101a19;--card:#162321}}
+:root[data-theme="dark"]{--ink:#dbe8e4;--teal:#5cc7b8;--line:#2f4a48;--soft:#1b302d;--warm:#2e2a1d;--warmline:#a8873e;--red:#e88b7e;--redsoft:#33211e;--muted:#a9c0bb;--bg:#101a19;--card:#162321}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:18px/1.6 system-ui,-apple-system,"Segoe UI",sans-serif}
+main{max-width:980px;margin:28px auto;background:var(--card);padding:38px 44px;border:1px solid var(--line);border-radius:16px}
+.eyebrow{font-size:13px;font-weight:750;text-transform:uppercase;letter-spacing:.1em;color:var(--teal)}
+h1{font-size:clamp(28px,4.2vw,40px);line-height:1.15;letter-spacing:-.02em;margin:12px 0 10px}
+.meta{font-size:15px;color:var(--muted);margin:0 0 22px}
+h2{font-size:24px;line-height:1.25;margin:0 0 10px}
+h3{font-size:19px;margin:24px 0 6px}
+section{border-top:2px solid var(--line);padding:26px 0 8px;scroll-margin-top:12px}
+p{margin:10px 0 14px}li{margin:7px 0}
+p,li,td,th{overflow-wrap:anywhere}
+nav{display:flex;flex-wrap:wrap;gap:6px 18px;margin:8px 0 24px;font-size:15px}
+a{color:var(--teal);text-underline-offset:3px}a:focus-visible{outline:3px solid var(--warmline);outline-offset:4px}
+.simple{background:var(--warm);border:1px solid var(--warmline);border-radius:12px;padding:20px 24px;margin:6px 0 26px}
+.simple h2{font-size:22px}
+.simple p{font-size:19px}
+.callout{border-left:5px solid var(--teal);background:var(--soft);padding:14px 18px;margin:16px 0;border-radius:0 8px 8px 0}
+.warn{border-left:5px solid var(--red);background:var(--redsoft);padding:14px 18px;margin:16px 0;border-radius:0 8px 8px 0}
+.prop{border:1px solid var(--line);border-radius:12px;padding:6px 22px 14px;margin:20px 0}
+.prop h3{margin-top:16px}
+.tag{display:inline-block;font-size:12px;font-weight:750;letter-spacing:.08em;text-transform:uppercase;color:var(--teal);border:1px solid var(--teal);border-radius:999px;padding:1px 10px;margin-left:6px;vertical-align:middle}
+.table-scroll{overflow-x:auto;margin:12px 0 18px}
+table{border-collapse:collapse;width:100%;font-size:16px}
+th,td{padding:9px 11px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+th{background:var(--soft)}
+.fit{display:grid;grid-template-columns:1fr 1fr;gap:14px 18px;margin:14px 0}
+.fit div{border:1px solid var(--line);border-radius:10px;padding:12px 16px}
+.fit b{display:block;margin-bottom:4px;color:var(--teal)}
+.fit p{margin:0;font-size:16px}
+blockquote{margin:12px 0;padding:10px 18px;border-left:4px solid var(--warmline);background:var(--warm);border-radius:0 8px 8px 0;font-size:16px}
+blockquote p{margin:4px 0}
+.sources{font-size:15px;color:var(--muted)}
+code{font-size:.86em}
+@media(max-width:700px){main{margin:0;border:0;border-radius:0;padding:24px 16px}body{font-size:17px}h2{font-size:21px}.fit{grid-template-columns:1fr}}
+@media print{body{background:#fff}main{margin:0;border:0;max-width:none;padding:12px}.prop,.simple,table,.fit div{break-inside:avoid}}
+</style>
+</head>
+<body><main>
+<div class="eyebrow">Mind Machine Learning · UEMA research reading · 2026 papers</div>
+<h1>A self-prior in the mirror-mark task: a simulated infant removes a sticker from its own face with no reward and no instruction</h1>
+<p class="meta">Dongmin Kim, Hoshinori Kanazawa and Yasuo Kuniyoshi (University of Tokyo). IEEE ICDL 2026. arXiv 2604.09673, 2 April 2026, revised 15 June 2026 · Code: <a href="https://github.com/kim135797531/self-prior-mirror">https://github.com/kim135797531/self-prior-mirror</a>.<br>
+Reading note written November 5, 2026 against UEMA specification v3.5 (<code>docs/UEMA_Specs/UEMA_Spec_v3_5.txt</code>). Section numbers are v3.5's.</p>
+<nav><a href="#short">The short version</a><a href="#did">What the paper did</a><a href="#results">What they measured</a><a href="#fit">Where it touches UEMA</a><a href="#useful">How it could help us</a><a href="#caution">What to be careful about</a><a href="#quotes">In the authors' words</a><a href="#sources">Sources</a></nav>
+
+<div class="simple" id="short"><h2>The short version</h2><p><strong>The experiment:</strong> a simulated infant sits in front of a mirror with only a camera eye and joint-angle sense, no touch. It learns a world model of itself and a "self-prior": a learned sense of what its own familiar experience looks like. One day a sticker appears on its face. The sticker makes the current experience unfamiliar, and the agent, acting to get back to familiar states, reaches to its own face and removes it, about 70% of the time, with no reward and no instruction.</p>
+<p><strong>Why it is interesting:</strong> the preferred state in this active-inference agent is not written by hand; it is learned from the agent's own history. The authors say the self-prior plays a role "functionally analogous to the body schema".</p>
+<p><strong>Why it matters to us:</strong> UEMA's body schema is a correlation statistic and its wellness is a learned evaluator over sensors. This paper shows a third ingredient that is close to §7.1's definition of wellness as a region of perception space: a learned density of familiar self-states, from which a restoring drive falls out. It also shows the failure mode: the agent can reduce unfamiliarity by hiding the sticker from view instead of removing it.</p></div>
+
+<section id="did"><h2>What the paper did</h2>
+<h3>The problem they set out to solve</h3><p>The mirror mark test is a standard indicator of self-awareness in infants and animals, but computationally it is unclear why detecting an anomaly in the mirror should spontaneously produce action toward one's own body. Prior models either hand-build the mapping from visual anomaly to motor command or learn dedicated self-versus-other representations, so the internal criterion that motivates removal is still designed by the experimenter. The authors ask how mark-directed behaviour can emerge from the agent's own experience alone.</p>
+<h3>What they built</h3><p>A simulated infant on the EMFANT platform (MuJoCo) with 12 controllable joints sits before a mirror and receives a 64 by 64 image from its right eye plus joint angles. Touch is deliberately withheld so the sticker cannot be found by feel. A DreamerV3-style world model with a discrete latent fuses vision and proprioception. A separate transformer, the self-prior, models the density of that latent, trained almost entirely on sticker-free episodes. The policy minimises expected free energy, which reduces to negative log-density under the self-prior plus an entropy term, trained on 16-step imagined rollouts inside the world model. Because sticker states have low density, the agent learns to act so as to return to familiar states, which in practice is reaching to the sticker seen in the mirror. The self-prior never computes where the sticker is; it scores how familiar the whole state is.</p>
+<ul>
+<li>50,000 episodes of 5 seconds; evaluation on 8 seeds times 10 runs; success is the hand within 2 cm of the sticker for half a second.</li>
+<li>The released code is a simplified robot version; the infant environment is private.</li>
+</ul>
+</section>
+
+<section id="results"><h2>What they measured</h2><ul><li>Sticker removal success rose from about 20% early in training to about 70% by the end.</li><li>Expected free energy was lower after removal than before (67.3 versus 79.3) across all 80 evaluations, with a highly significant paired test; an untrained model showed no such difference.</li><li>Mean hand-to-sticker distance fell steadily during training even while success was still under 50%.</li><li>Sampling the self-prior with no sensory input produced sticker-free selves in varied poses; with vision zeroed, a diffuse visual self could be reconstructed from proprioception alone.</li><li>Failure modes: the hand occluding the sticker in the mirror; turning the head so the sticker leaves view; some locations unreachable given joint limits.</li></ul></section>
+
+<section id="fit"><h2>Where it touches UEMA</h2>
+<p>Each box names a part of the UEMA specification and says, in plain terms, what the paper has to say about it.</p>
+<div class="fit"><div><b>§7.1 What wellness is, 'a region in grounded perception space'</b><p>The self-prior is literally a learned density over the agent's own states, and the agent is driven back toward its high-density region. That is one concrete implementation of the spec's definition, learned from experience rather than scored by four small evaluators.</p></div><div><b>§11.1 Self as motor-correlation boundary</b><p>The paper's authors say the self-prior is functionally analogous to the body schema. UEMA's schema is an EMA correlation statistic with no trainable weights. The two are complementary: correlation says what responds to commands; a density says what the responding thing usually looks and feels like.</p></div><div><b>§11.5 Self-preservation and §22.2 grief</b><p>A deeply reinforced prediction that becomes false is the spec's grief. The sticker is a small version: a reinforced self-image violated. The agent's response (act until familiarity returns) is the restorative half; the paper's occlusion failure mode is the maladaptive half (make the evidence disappear).</p></div><div><b>§23.4 The critical test and §23.1 (4), distinguishing self from other</b><p>A mirror task is a test of self-recognition the spec does not list. MIMo has eyes and a selfbody scene; a mirror and a sticker are cheap additions to the test registry, and the paper gives the success criterion.</p></div><div><b>§1 Core thesis</b><p>The policy is trained by imagined rollouts inside a learned world model, with the objective computed by the agent's own learned prior. There is no external reward. This is close in spirit to UEMA's prediction-wellness loop, though it still ends in a policy network.</p></div><div><b>§3.1 Tactile sensing</b><p>The authors withheld touch to make the test about vision. UEMA has touch. A mirror test with touch available would show whether the wellness gradient routes through the mirror or through the skin.</p></div></div>
+</section>
+
+<section id="useful"><h2>How it could help us</h2><p><strong>1. Add a mirror and a sticker to the selfbody scene as a recheck.</strong> MIMo sits with both hands free in that scene already. A mirror plane and a small coloured patch on the head are small scene changes. The measurement is the paper's: hand within 2 cm of the patch for half a second, with and without touch.</p>
+<p><strong>2. Try a learned self-density as a fifth wellness component.</strong> The grounded evaluator has prediction, tactile, capacity and coherence terms. A density model over the proprioception and vision tokens, trained on the body's own stream, gives a 'familiarity' term with no hand-written features. Its gradient with respect to motor commands is a restoring drive the spec does not currently have. The paper's occlusion failure is the warning: familiarity can be restored by not looking, so the term should be combined with, not substituted for, the others.</p>
+<p><strong>3. Use the self-prior's reconstruction as a diagnostic.</strong> The paper could regenerate a visual self from proprioception alone. The same test on UEMA's forward model (mask vision, predict the vision token from proprioception) measures how far the cross-modal body model has formed.</p></section>
+
+<section id="caution"><h2>What to be careful about</h2><p>Simulation only, one body, one mirror geometry, 12 joints, no touch. Success plateaued at 70% and part of the gain came from hiding the sticker rather than removing it, which the authors say is driven by environment structure and body mechanics as much as by the prior. The authors stop short of claiming higher-order self-consciousness. The full environment is not released. The policy is still a policy network; what UEMA can borrow is the learned preferred distribution and the test, not the training loop.</p></section>
+
+<section id="quotes"><h2>In the authors' words</h2><blockquote><p>A simulated infant, relying solely on vision and proprioception without tactile input, discovered a sticker placed on its own face in the mirror and removed it in approximately 70% of cases without any explicit instruction.</p><p class="sources">Abstract</p></blockquote><blockquote><p>The present results suggest that the self-prior can play a role functionally analogous to the body schema.</p><p class="sources">Section IV</p></blockquote><blockquote><p>the reward is not supplied by the environment but is the log-density that the agent itself evaluates under its learned self-prior. Furthermore, unlike standard active inference, in which the preferred distribution is specified by hand, our approach learns this preferred distribution itself from the agent's own experience.</p><p class="sources">Section IV</p></blockquote><blockquote><p>mismatch with the self-prior can be partially reduced merely by making the sticker visually disappear rather than physically removing it</p><p class="sources">Section IV</p></blockquote><blockquote><p>Tactile input was not provided to prevent sticker removal based on touch alone, even without the mirror.</p><p class="sources">Section II-A</p></blockquote></section>
+
+<section id="sources"><h2>Sources</h2><ul class="sources"><li><a href="https://arxiv.org/html/2604.09673v2">arXiv 2604.09673 v2 (HTML full text)</a></li><li><a href="https://arxiv.org/abs/2604.09673">arXiv abstract page</a></li><li><a href="https://github.com/kim135797531/self-prior-mirror">Code (simplified robot version)</a></li>
+<li>UEMA specification v3.5, <code>docs/UEMA_Specs/UEMA_Spec_v3_5.txt</code>, read November 5, 2026.</li></ul>
+<p class="sources">This page was written by Claude (an AI assistant) from a reading of the paper's full text on arXiv on November 5, 2026, together with the UEMA v3.5 specification. Numbers are the authors' own. Judgements about fit with UEMA are a reader's, not the authors'. Nothing on this page is implemented in UEMA.</p>
+</section>
+</main></body></html>
